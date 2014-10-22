@@ -1,0 +1,25 @@
+mr_controller:
+  type: velocity_controllers/JointTrajectoryController
+  joints:
+     - front_left_wheel_joint
+     - back_left_wheel_joint
+     - back_right_wheel_joint
+     - front_right_wheel_joint
+
+  gains:
+    front_left_wheel_joint: {p: 1.0, i: 0.0, d: 0.3, i_clamp: 0.0}
+    back_left_wheel_joint: {p: 1.0, i: 0.0, d: 0.3, i_clamp: 0.0}
+    back_right_wheel_joint: {p: 1.0, i: 0.0, d: 0.3, i_clamp: 0.0}
+    front_right_wheel_joint: {p: 1.0, i: 0.0, d: 0.3, i_clamp: 0.0}
+
+  constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.5
+      front_left_wheel_joint: {trajectory: 0.1, goal: 0.1}
+      back_left_wheel_joint: {trajectory: 0.1, goal: 0.1}
+      back_right_wheel_joint: {trajectory: 0.1, goal: 0.1}
+      front_right_wheel_joint: {trajectory: 0.1, goal: 0.1}
+
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10

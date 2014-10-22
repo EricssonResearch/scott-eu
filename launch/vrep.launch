@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find vrep_ros_control_example)/urdf/MyRobot.urdf.xacro'" />
+
+  <!-- Robot state publisher node -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <param name="tf_prefix" type="string" value="" />
+  </node>
+
+  <!-- Start controllers -->
+  <rosparam file="$(find vrep_ros_control_example)/control/mr_controller.yaml" command="load"/> <!-- Joint trajectory controller (this is not a low-level controller) -->
+
+  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="mr_controller" />
+
+</launch>

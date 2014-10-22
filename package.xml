@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <name>vrep_ros_control_example</name>
+  <version>1.0.0</version>
+  <description>ros_control robot-specific back end for vrep (i.e. ~ gazebo_ros_control but for vrep and for a specific robot)</description>
+
+  <maintainer email="antoinerennuit@hotmail.com">Antoine Rennuit</maintainer>
+
+  <license>MIT</license>
+
+  <author email="antoinerennuit@hotmail.com">Antoine Rennuit</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>vrep_skeleton_msg_and_srv</build_depend>
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>rosconsole</run_depend>
+  <run_depend>roslib</run_depend>
+
+</package>
