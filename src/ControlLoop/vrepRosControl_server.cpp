@@ -17,7 +17,7 @@ ros::Publisher ROS_server::sm_objectCount_publisher;
 ros::Subscriber ROS_server::sm_addStatusBarMessage_subscriber;
 
 // Control.
-LBC::MyRobot_vrepHW * ROS_server::sm_myRobotHw = 0;
+MR::MyRobot_vrepHW * ROS_server::sm_myRobotHw = 0;
 controller_manager::ControllerManager * ROS_server::sm_ctrlManager = 0;
 
 ros::CallbackQueue * ROS_server::sm_rosControlCallbackQueue = 0;
@@ -51,7 +51,7 @@ bool ROS_server::initialize()
     assert(sm_rosControlCallbackQueue);
     sm_node->setCallbackQueue(sm_rosControlCallbackQueue);
 
-    sm_myRobotHw = new LBC::MyRobot_vrepHW();
+    sm_myRobotHw = new MR::MyRobot_vrepHW();
     assert(sm_myRobotHw);
 
     sm_ctrlManager = new controller_manager::ControllerManager(sm_myRobotHw, *sm_node);
@@ -131,8 +131,6 @@ void ROS_server::mainScriptAboutToBeCalled()
         sm_ctrlManager->update(simulationTime, simulationTime - simulationTime_km1);
         sm_myRobotHw->write();
     }
-
-    //spinOnce();
 
     simulationTime_km1_vrep = simulationTime_vrep;
 }

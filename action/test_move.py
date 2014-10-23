@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import time
-import roslib; roslib.load_manifest('ur_driver')
+import roslib;
 import rospy
 import actionlib
 from control_msgs.msg import *
@@ -8,11 +8,9 @@ from trajectory_msgs.msg import *
 
 JOINT_NAMES = ['front_left_wheel_joint', 'back_left_wheel_joint', 'back_right_wheel_joint', 'front_right_wheel_joint']
 
-Q1_PI = 1.5708
-Q2_PI = 3.1416
-Q3_PI = 4.7124
+Q1_ANGLE = 1.5708
 Q0 = [0, 0, 0, 0]
-Q1 = [Q1_PI, Q1_PI, Q1_PI, Q1_PI]
+Q1 = [Q1_ANGLE, Q1_ANGLE, Q1_ANGLE, Q1_ANGLE]
 
 client = None
 

@@ -7,7 +7,7 @@
 // API services:
 #include "vrep_skeleton_msg_and_srv/displayText.h"
 
-namespace LBC
+namespace MR
 {
 class MyRobot_vrepHW;
 }
@@ -56,7 +56,7 @@ private:
     // Control.
     static ros::CallbackQueue * sm_rosControlCallbackQueue;
 
-    static LBC::MyRobot_vrepHW * sm_myRobotHw;
+    static MR::MyRobot_vrepHW * sm_myRobotHw;
     static controller_manager::ControllerManager * sm_ctrlManager;
 
     static ros::AsyncSpinner * sm_spinner;
