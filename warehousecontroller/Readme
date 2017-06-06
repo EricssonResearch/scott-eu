@@ -2,6 +2,7 @@ Mission to Plan Service
 
 Usage instructions:
 
+0. Configure mission2plan.py file with the path to the FF planner (See below)
 1. python mission2plan.py - starts the server at port 5000
 2. Test the service is running using curltest3
 3. POST a mission file in json format. Look at the curl comand in the file curltest4
@@ -13,6 +14,12 @@ Current set of files
    mission.json - example input file, which will be coming with a call from the MOO_manager
    curltest3 - tests whether service is running or no
    curltest4 - tests the returned plan steps with the input "mission.json"
+
+FF Planner
+	Get the source code from 
+	https://fai.cs.uni-saarland.de/hoffmann/metric-ff.html
+	and compile. Current implementation uses metric-FF v2.0
+	
 
 Details of mission2plan.py
 	The PDDL problem file has two parts. The :init part is derived from the kb.json file.
