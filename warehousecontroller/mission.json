@@ -1,0 +1,6 @@
+{
+	"id" : "xyz",
+	"goal" : [["o1", "cbOut2"],["o2", "cbOut2"]],
+	"responseTimeout" : "60",
+	"missionDeadline" : "10"
+}

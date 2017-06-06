@@ -1,0 +1,90 @@
+{
+	"id" : "xyz",
+	"time" : "1234567",
+	"Waypoint":
+	{
+		"wp1" :
+		{
+			"can-move" : ["wp2", "wp3"],
+			"location" : ["a1", "b1"]
+		},
+		"wp2" :
+		{
+			"can-move" : ["wp3", "wp4"],
+			"location" : ["a2", "b2"]
+		},
+		"wp3" :
+		{
+			"can-move" : ["wp1", "wp4"],
+			"location" : ["a3", "b3"]
+		},
+		"wp4" :
+		{
+			"can-move" : [],
+			"location" : ["a4", "b4"]
+		}
+	},
+	"Place" :
+	{
+		"cbIn1" :
+		{
+			"type" : "ConveyorBelt",
+			"location" : "wp1",
+			"capacity" : "3"
+		},
+		"cbOut2" :
+		{
+			"type" : "ConveyorBelt",
+			"location" : "wp3",
+			"capacity" : "3"
+		},
+		"shelf1" :
+		{
+			"type" : "Shelf",
+			"location" : "wp2",
+			"capacity" : "5"
+		},
+		"chargingStation1" :
+		{
+			"type" : "ChargingStation",
+			"location" : "wp4"
+		}
+	},
+	"Object":
+	{
+		"o1" : 
+		{
+			"type" : "Simple",
+			"location" : "shelf1"
+		},
+		"o2" : 
+		{
+			"type" : "Simple",
+			"location" : "cbIn1"
+		}
+	},
+	"Robot" :
+	{
+		"robot1" : 
+		{
+			"location" : "wp2", 
+			"charge-level" : "7", 
+			"capacity" : "1",
+			"max-charge" : "10",
+			"high-charge" : "6",
+			"low-charge" : "3",
+			"charging-state" : "0"
+		},
+		"robot2" : 
+		{
+			"location" : "wp3",
+			"charge-level" : "20",
+			"capacity" : "1",
+			"max-charge" : "10",
+			"high-charge" : "6",
+			"low-charge" : "3",
+			"charging-state" : "0"
+		}
+	}
+
+}

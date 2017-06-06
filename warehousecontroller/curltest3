@@ -1,0 +1,2 @@
+curl --request POST --data @mission.json http://127.0.0.1:5000/warehouse/api/v1.0/genplan --header "Content-Type: application/json"
+
