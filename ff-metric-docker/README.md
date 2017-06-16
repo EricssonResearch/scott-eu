@@ -1,8 +1,8 @@
 
 This is an early example of using ff-metric with Docker
 
-To build: docker build -t planner . (in the same directory as the Dockerfile)
-To run: docker run -ti planner -o work/gripper-domain-1.pddl -f work/gripper-problem-1.pddl
+To build: docker build -t ff-metric . (in the same directory as the Dockerfile)
+To run: docker run -ti ff-metric -o work/gripper-domain-1.pddl -f work/gripper-problem-1.pddl
 
 Limitations:
 
