@@ -6,7 +6,7 @@ RUN apt-get update
 RUN apt-get -yq upgrade
 
 # install gcc, make, flex and bison
-RUN apt-get install -yq make gcc curl wget flex bison
+RUN apt-get install -yq make gcc wget flex bison
 
 # download ff-metric from source
 WORKDIR /opt
