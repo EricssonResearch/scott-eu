@@ -20,9 +20,9 @@ WORKDIR /opt/Metric-FF-v2.0
 RUN make
 
 # copy problem/domain files
-RUN mkdir work
-COPY gripper-problem-1.pddl work
-COPY gripper-domain-1.pddl work
+#RUN mkdir work
+#COPY gripper-problem-1.pddl work
+#COPY gripper-domain-1.pddl work
 
 # set entrypoint
 ENTRYPOINT [ "/opt/Metric-FF-v2.0/ff" ]
