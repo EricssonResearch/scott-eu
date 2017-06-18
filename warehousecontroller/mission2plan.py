@@ -154,8 +154,15 @@ def compute_mission_data():
 	finalPlan = []
 	if (m2 > m1) :
 		for i in range(m1,m2, 1):
-			step = planData[i].split(':')
-			finalPlan.append(step[1].strip())
+			step = planData[i].split(':')[1]
+			print step
+			planStep = (step.strip()).split(' ')
+			print planStep
+			if (planStep[0] == 'moveToWaypoint'):
+				print "changing the format of move to suit the MOO_Manager"
+				del(planStep[2])
+				step = " ".join(str(x) for x in planStep)
+			finalPlan.append(step.strip())
 			# print step[1]
 	
 	print "Final plan"
