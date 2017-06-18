@@ -7,7 +7,7 @@ app = Flask(__name__)
 waypoint = [
     {'id' : 'xyz',
     'time' : 'time', # time at which snapshot is recovered from KB
-    'waypointList' : [['a1', 'b1'], ['a2', 'b2']], # /* all points are reachable from each other so there is no connectivity information need to be maintained */​
+    'waypointList' : [['a1', 'b1'], ['a2', 'b2']], # all points are reachable from each other so there is no connectivity information need to be maintained
 
     'bayList': {
         'bay1': {'location' : ['a1', 'b1'], 'capacity' : 5},
@@ -30,9 +30,11 @@ waypoint = [
         'robot1' : {'location':['a2', 'b2'], 'charge_level':'30pct', 'capacity':2}
     }}]
 
+
+
 @app.route('/kb/api/v1.0/waypoint', methods=['GET'])
 def get_tasks():
     return jsonify({'waypoint': waypoint})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
