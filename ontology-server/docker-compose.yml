@@ -1,0 +1,11 @@
+version: '2'
+services:
+  nginx:
+    build: ./nginx
+    ports:
+     - "80:80"
+  cliopatria:
+    build: ./cliopatria
+    ports:
+     - "3020:3020"
+    stdin_open: true
