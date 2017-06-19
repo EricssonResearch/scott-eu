@@ -8,6 +8,9 @@ import logging
 optic_path='/home/swarup/Documents/optic/debug/optic/optic-clp'
 ff_path='/home/swarup/Documents/Metric-FF-v2.0/ff'
 
+# use end point instead of path
+optic_end_point = "http://tools_ff_metric_1:5000"
+
 app = Flask(__name__)
 
 @app.errorhandler(404)
