@@ -1,13 +1,35 @@
+Usage
+------
+Run the planner service by:
+1) docker build -t ff-metric .
+2) docker run -it -p:5000:5000 ff-metric
 
-This is an early example of using ff-metric with Docker
+HOST=localhost
+PORT:5000
 
-To build: docker build -t ff-metric . (in the same directory as the Dockerfile)
-To run: docker run -ti ff-metric -o work/gripper-domain-1.pddl -f work/gripper-problem-1.pddl
+Service entry-points and example test files using Curl
+--------------------
+Test : GET HOST:port/planner/test
+Example : curltest-test
 
-Limitations:
+upload a domain file : POST HOST:port/planner/upload_domain
+Example : curltest-upload-domain
 
-1) No support for parellelism (limitation of the planner)
-2) domain file and problem files need to be copied directly into the image, 
-therefore they need to be known to the Dockerfile (proposed resolution: create a 
-shared volume between container and docker image and copy domain file and 
-problem file there)
+upload a problem file : POST HOST:port/planner/upload_problem
+Example : curltest-upload-problem
+
+generate a plan : GET HOST:port/planner/generate_plan
+Example : curltest-plan : supplies a json file containing planner, domain and problem
+specification
+Example : curltest-jsonplan : supplies a json string containing planner, domain and problem
+
+To be done
+-----------
+1. mission2plan.py file to be modified to make the call to the planner service
+2. include OPTIC and the plan extraction from OPTIC output.
+3. Consider code modifications to FF and OPTIC to directly generate the processed plan files
+4. Supply options to FF and OPTIC through the JSON input
+
+Limitations
+-----------
+Planner does not support parallelism

@@ -8,6 +8,12 @@ RUN apt-get -yq upgrade
 # install gcc, make, flex and bison
 RUN apt-get install -yq make gcc wget flex bison
 
+# install python, pip
+RUN apt-get install -yq python python-pip
+
+# upgrade pip
+RUN pip install --upgrade pip
+
 # download ff-metric from source
 WORKDIR /opt
 RUN wget --quiet https://fai.cs.uni-saarland.de/hoffmann/ff/Metric-FF-v2.0.tgz
@@ -19,10 +25,17 @@ RUN tar xfz Metric-FF-v2.0.tgz
 WORKDIR /opt/Metric-FF-v2.0
 RUN make
 
-# copy problem/domain files
-#RUN mkdir work
-#COPY gripper-problem-1.pddl work
-#COPY gripper-domain-1.pddl work
+# copy flask-app
+RUN mkdir /opt/flask-wrapper
+COPY app.py /opt/flask-wrapper
+COPY requirements.txt /opt/flask-wrapper
+WORKDIR /opt/flask-wrapper
 
-# set entrypoint
-ENTRYPOINT [ "/opt/Metric-FF-v2.0/ff" ]
+# INSTALL requirements.txt
+RUN pip install -r requirements.txt
+
+# expose port
+EXPOSE 5000
+
+# set entry point
+ENTRYPOINT ["python", "app.py"]
