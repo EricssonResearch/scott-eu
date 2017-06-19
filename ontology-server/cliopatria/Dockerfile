@@ -17,6 +17,7 @@ RUN git clone https://github.com/ClioPatria/ClioPatria.git
 RUN mkdir /opt/OntologyServer
 WORKDIR /opt/OntologyServer
 RUN sh ../ClioPatria/configure
+COPY users.db .
 
 # expose port
 EXPOSE 3020

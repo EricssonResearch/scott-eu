@@ -1,0 +1,3 @@
+created(1497883249.6893322).
+assert(user(admin,[realname('Administrator'),password('$1$vUXiHMJy$88PZBLs1Qd7lGxhqBW5qW1'),allow([read(_,_),write(_,_),admin(_)])])).
+assert(user(anonymous,[realname('Define rights for not-logged in users'),allow([read(_,_)])])).
