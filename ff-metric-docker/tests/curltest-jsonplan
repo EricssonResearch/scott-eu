@@ -1,0 +1,2 @@
+curl --request GET --data '{"planner" : "FF", "domain" : "tower-domain-1.pddl", "problem" : "tower-problem-1.pddl"}' http://127.0.0.1:5000/planner/generate_plan --header "Content-Type: application/json"
+
