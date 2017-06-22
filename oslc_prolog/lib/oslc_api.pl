@@ -13,8 +13,8 @@
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
 
-:- rdf_meta assert_resource(r, r, -).
-:- rdf_meta assert_resource(r, r, -, -).
+:- rdf_meta assert_resource(r, -).
+:- rdf_meta assert_resource(r, -, -).
 :- rdf_meta resource_print_rdf(r).
 :- rdf_meta resource_save_rdf(-, r).
 
