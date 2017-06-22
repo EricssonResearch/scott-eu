@@ -29,3 +29,7 @@ dispatcher(Request) :-
   ).
 
 dispatch(message, [], _).
+
+% rdf_save(stream(current_output), [graph(mygraph)]).
+% rdf_save_turtle(stream(current_output), [graph(mygraph)]).
+% current_output(Out), rdf_save_subject(Out, 'http://my.com/catalog', [nsmap([])]).
