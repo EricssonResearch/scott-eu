@@ -1,0 +1,888 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rddl="http://www.rddl.org/">
+
+	<owl:Ontology rdf:about="http://open-services.net/ns/core#">
+		<dcterms:title>The OSLC Core Vocabulary
+		</dcterms:title>
+		<dcterms:description rdf:parseType="Literal">
+			All vocabulary URIs defined in the OSLC Core namespace.
+		</dcterms:description>
+		<dcterms:source rdf:resource="http://open-services.net/ns/core/core.rdf" />
+		<rdfs:label>Core</rdfs:label>
+		<rdfs:seeAlso rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+		<rdfs:seeAlso rdf:resource="http://open-services.net/ns/core/core.rdf" />
+		<rdfs:seeAlso>
+			<rdf:Description rdf:about="http://open-services.net/ns/core/core.rdf">
+				<rddl:nature rdf:resource="http://www.w3.org/2000/01/rdf-schema#" />
+			</rdf:Description>
+		</rdfs:seeAlso>		
+	</owl:Ontology>
+
+	<!-- ********** Resource Types (Classes) ********** -->
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#ServiceProvider">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>ServiceProvider</rdfs:label>
+		<rdfs:comment>The Service Provider resource</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service_Provider" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#ServiceProviderCatalog">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>ServiceProviderCatalog</rdfs:label>
+		<rdfs:comment>The Service Provider Catalog resource</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service_Provider_Catalog" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#ResponseInfo">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>ResponseInfo</rdfs:label>
+		<rdfs:comment>The ResponseInfo included in query results.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_ResponseInfo" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Service">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Service</rdfs:label>
+		<rdfs:comment>The Service definition included in a ServiceProvider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#CreationFactory">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>CreationFactory</rdfs:label>
+		<rdfs:comment>The CreationFactory definition included in a ServiceProvider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Creation_Factory" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#QueryCapability">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>QueryCapability</rdfs:label>
+		<rdfs:comment>The QueryCapability definition included in a ServiceProvider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Dialog">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Dialog</rdfs:label>
+		<rdfs:comment>The Dialog definition included in ServiceProvider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Dialog" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Publisher">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Publisher</rdfs:label>
+		<rdfs:comment>The Publisher definition included in ServiceProvider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Publisher" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#PrefixDefinition">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>PrefixDefinition</rdfs:label>
+		<rdfs:comment>The PrefixDefinition definition included in ServiceProvider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Prefix_Definition" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#OAuthConfiguration">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>OAuthConfiguration</rdfs:label>
+		<rdfs:comment>The OAuthConfiguration definition included in ServiceProvider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_OAuth_Configuration" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Error">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Error</rdfs:label>
+		<rdfs:comment>Basis for forming an error response.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Error" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#ExtendedError">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>ExtendedError</rdfs:label>
+		<rdfs:comment>Extended error information.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Extended_Error" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#ResourceShape">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>ResourceShape</rdfs:label>
+		<rdfs:comment>The Resource Shape used for creation, query and modify.  Formally, a shape S applies to a resource R if there is a triple R rdf:type T and there is a triple S oslc:describes T, or if there is a triple R oslc:instanceShape S.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#Resource_Resource_Shape" />
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/ns/core#describes" />
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/ns/core#instanceShape" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#AllowedValues">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>AllowedValues</rdfs:label>
+		<rdfs:comment>Allowed values for one property.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#Resource_Allowed_Values" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Property">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Property</rdfs:label>
+		<rdfs:comment>A Property resource describes one allowed or required property of a resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#Value_type_Property" />
+	</rdfs:Class>
+	
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Comment">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Comment</rdfs:label>
+		<rdfs:comment>A Comment resource represents a single note, or comment, in a discussion thread.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#oslc_Comment_Resource" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Discussion">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Discussion</rdfs:label>
+		<rdfs:comment>A Discussion resource is intended to represent a sequence of comments or notes regarding the associated resource</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#oslc_Discussion_Resource" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Preview">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Preview</rdfs:label>
+		<rdfs:comment>The UI Preview representation.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreUiPreview#Resource_Preview" />
+	</rdfs:Class>
+
+	<rdfs:Class rdf:about="http://open-services.net/ns/core#Compact">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Compact</rdfs:label>
+		<rdfs:comment>The Compact representation, fetched as application/x-oslc-compact+xml</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreUiPreview#Resource_Compact" />
+	</rdfs:Class>
+
+	<!-- ********** Properties: Common ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#serviceProvider">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>serviceProvider</rdfs:label>
+		<rdfs:comment>A link to the resource's OSLC Service Provider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#OSLC_Properties" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#instanceShape">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>instanceShape</rdfs:label>
+		<rdfs:comment>The URI of a Resource Shape that describes the possible properties.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#OSLC_Properties" />
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/ns/core#ResourceShape" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#shortTitle">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>shortTitle</rdfs:label>
+		<rdfs:comment>Shorter form of dcterms:title for the resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#OSLC_Properties" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#shortId">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>shortId</rdfs:label>
+		<rdfs:comment>Shorter form of dcterms:identifier for the resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#OSLC_Properties" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#discussedBy">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>discussedBy</rdfs:label>
+		<rdfs:comment>A series of notes and comments about this resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#OSLC_Properties" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#modifiedBy">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>modifiedBy</rdfs:label>
+		<rdfs:comment>The URI of a resource describing the entity that most recently modified this resource.  The link target is usually a foaf:Person or foaf:Agent, but could be any type.  This is modeled after dcterms:creator, but Dublin Core currently has no equivalent property.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#OSLC_Properties" />
+		<rdfs:seeAlso
+			rdf:resource="http://dublincore.org/documents/dcmi-terms/#terms-creator" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Comment ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#partOfDiscussion">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>partOfDiscussion</rdfs:label>
+		<rdfs:comment>Reference to owning Discussion resource .</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#inReplyTo">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>inReplyTo</rdfs:label>
+		<rdfs:comment>Reference to comment this comment is in reply to.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Discussion ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#discussionAbout">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>discussionAbout</rdfs:label>
+		<rdfs:comment>Reference to associated resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#comment">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>comment</rdfs:label>
+		<rdfs:comment>Comment about the resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<!-- ********** Properties: OAuthConfiguration ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#oauthRequestTokenURI">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>oauthRequestTokenURI</rdfs:label>
+		<rdfs:comment>URI for obtaining OAuth request token.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#authorizationURI">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>authorizationURI</rdfs:label>
+		<rdfs:comment>URI for obtaining OAuth authorization.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#oauthAccessTokenURI">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>oauthAccessTokenURI</rdfs:label>
+		<rdfs:comment>URI for obtaining OAuth access token.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<!-- ********** Properties: PrefixDefinition ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#prefix">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>prefix</rdfs:label>
+		<rdfs:comment>Namespace prefix to be used for this namespace.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#prefixBase">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>prefixBase</rdfs:label>
+		<rdfs:comment>The base URI of the namespace.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Service ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#domain">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>domain</rdfs:label>
+		<rdfs:comment>Namespace URI of the specification that is implemented by this service. In most cases this namespace URI will be for an OSLC domain, but other URIs MAY be used.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#creationFactory">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>creationFactory</rdfs:label>
+		<rdfs:comment>Enables clients to create new resources.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#queryCapability">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>queryCapability</rdfs:label>
+		<rdfs:comment>Enables clients query across a collection of resources.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#selectionDialog">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>selectionDialog</rdfs:label>
+		<rdfs:comment>Enables clients to select a resource via UI.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#creationDialog">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>creationDialog</rdfs:label>
+		<rdfs:comment>Enables clients to create a resource via UI.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Service Provider ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#service">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>service</rdfs:label>
+		<rdfs:comment>Describes a service offered by the service provider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service_Provider" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#details">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>details</rdfs:label>
+		<rdfs:comment>A URL that may be used to retrieve a web page to determine additional details about the service provider.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service_Provider" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#prefixDefinition">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>prefixDefinition</rdfs:label>
+		<rdfs:comment>Defines a namespace prefix for use in JSON representations and in forming OSLC Query Syntax strings.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service_Provider" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#oauthConfiguration">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>oauthConfiguration</rdfs:label>
+		<rdfs:comment>Defines the three OAuth URIs required for a client to act as an OAuth consumer.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service_Provider" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Service Provider Catalog ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#serviceProviderCatalog">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>serviceProviderCatalog</rdfs:label>
+		<rdfs:comment>Additional service provider catalog.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service_Provider_Catalog" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Publisher ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#label">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>label</rdfs:label>
+		<rdfs:comment>Very short label for use in menu items.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Publisher" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#icon">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>icon</rdfs:label>
+		<rdfs:comment>URL to an icon file that represents the provider. This icon should be a favicon format and 16x16 pixels in size.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Publisher" />
+	</rdf:Property>
+
+	<!-- ********** Properties: CreationFactory ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#creation">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>creation</rdfs:label>
+		<rdfs:comment>To create a new resource via the factory, post it to this URI.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Creation_Factory" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#resourceShape">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>resourceShape</rdfs:label>
+		<rdfs:comment>A Creation Factory MAY provide Resource Shapes that describe shapes of resources that may be created.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Creation_Factory" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#resourceType">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>resourceType</rdfs:label>
+		<rdfs:comment>The expected resource type URI of the resource that will be created using this creation factory. These would be the URIs found in the result resource's rdf:type property.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Creation_Factory" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#usage">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>usage</rdfs:label>
+		<rdfs:comment>An identifier URI for the domain specified usage of this creation factory. If a service provides multiple creation factories, it may designate the primary or default one that should be used with a property value of http://open-services.net/ns/core#default.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Creation_Factory" />
+	</rdf:Property>
+
+	<!-- ********** Properties: QueryCapability ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#queryBase">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>queryBase</rdfs:label>
+		<rdfs:comment>The base URI to use for queries. Queries may be invoked either by HTTP GET or HTTP POST. For HTTP GET, a query URI is formed by appending a key=value pair to the base URI. For HTTP POST, the query parameters are encoded as content with media type application/x-www-form-urlencoded and sent in the request body. The base URI MAY accept other query languages and media types in the request body, e.g. application/sparql-query for SPARQL queries.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Query_Capability" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Dialog ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#dialog">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>dialog</rdfs:label>
+		<rdfs:comment>The URI of the dialog.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Dialog" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#hintWidth">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>hintWidth</rdfs:label>
+		<rdfs:comment>Values MUST be expressed in relative length units as defined in the W3C Cascading Style Sheets Specification (CSS 2.1) Em and ex units are interpreted relative to the default system font (at 100% size).</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Dialog" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#hintHeight">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>hintHeight</rdfs:label>
+		<rdfs:comment>Values MUST be expressed in relative length units as defined in the W3C Cascading Style Sheets Specification (CSS 2.1) Em and ex units are interpreted relative to the default system font (at 100% size).</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Dialog" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Error ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#statusCode">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>statusCode</rdfs:label>
+		<rdfs:comment>The HTTP status code reported with the error.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Error" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#message">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>message</rdfs:label>
+		<rdfs:comment>An informative message describing the error that occurred.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Error" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#extendedError">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>extendedError</rdfs:label>
+		<rdfs:comment>Extended (additional) error information.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Error" />
+	</rdf:Property>
+
+	<!-- ********** Properties: ExtendedError ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#moreInfo">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>moreInfo</rdfs:label>
+		<rdfs:comment>A resource giving more information on the error SHOULD be of an HTML content-type.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Extended_Error" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#rel">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>rel</rdfs:label>
+		<rdfs:comment>If present and set to 'alternate' then indicates that work-around is provided, behavior for other values is undefined.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Extended_Error" />
+	</rdf:Property>
+
+	<!-- ********** Property: results ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#results">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>results</rdfs:label>
+		<rdfs:comment>Used to hold the results of dialog action or JSON query results (default).
+		The JSON query result attribute 'oslc:results' is used whenever a provider doesn't have
+		a suitable property already in its model for such purposes.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<!-- ********** Properties: ResponseInfo ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#totalCount">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>totalCount</rdfs:label>
+		<rdfs:comment>This optional property indicates the total number of results across all pages, 
+		its value should be non-negative. In the context of a query resource, this value SHOULD 
+		be the total number of results, i.e. the number of resources that match the query. 
+		In the context of other resources, the value SHOULD be the total number of property 
+		values (i.e. RDF triples) of the resource. Unless Stable Paging is in effect, the 
+		total count MAY vary as a client retrieves subsequent pages.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Response_Information" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#nextPage">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>nextPage</rdfs:label>
+		<rdfs:comment>Link to next page of response.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification#Response_Information" />
+	</rdf:Property>
+	
+	<!-- ********** Properties: ResourceShape ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#describes">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>describes</rdfs:label>
+		<rdfs:comment>This shape describes resources that are of the RDF type given by the object of the oslc:describes predicate. Formally, a shape S applies to a resource R if there is a triple R rdf:type T and there is a triple S oslc:describes T.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/ns/core#ResourceShape" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#property">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>property</rdfs:label>
+		<rdfs:comment>The properties that are allowed or required by this shape.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<!-- ********** Properties: AllowedValues ********** -->
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#allowedValue">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>allowedValue</rdfs:label>
+		<rdfs:comment>value allowed for a property.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<!-- ********** Properties: Property ********** -->
+	
+	<rdf:Property rdf:about="http://open-services.net/ns/core#allowedValues">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>allowedValues</rdfs:label>
+		<rdfs:comment>Resource with allowed values for the property being defined. Range of oslc:AllowedValues</rdfs:comment>
+		<rdfs:range rdf:resource="http://open-services.net/ns/core#AllowedValues" />
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#defaultValue">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>defaultValue</rdfs:label>
+		<rdfs:comment>A default value for property, inlined into property definition.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#hidden">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>hidden</rdfs:label>
+		<rdfs:comment>A hint that indicates that property MAY be hidden when presented in a user interface.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#isMemberProperty">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>isMemberProperty</rdfs:label>
+		<rdfs:comment>Used to define when a property is a member of a container, useful for query.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#name">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>name</rdfs:label>
+		<rdfs:comment>Name of property being defined, i.e. second part of property's Prefixed Name.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#maxSize">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>maxSize</rdfs:label>
+		<rdfs:comment>For String properties only, specifies maximum characters allowed. If not set, then there is no maximum or maximum is specified elsewhere.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#occurs">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>occurs</rdfs:label>
+		<rdfs:comment>MUST be either http://open-services.net/ns/core#Exactly-one, http://open-services.net/ns/core#Zero-or-one, http://open-services.net/ns/core#Zero-or-many or http://open-services.net/ns/core#One-or-many.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#propertyDefinition">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>propertyDefinition</rdfs:label>
+		<rdfs:comment>URI of the property whose usage is being described.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#range">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>range</rdfs:label>
+		<rdfs:comment>For properties with a resource value-type, Providers MAY also specify the range of possible resource types allowed, each specified by URI. The default range is http://open-services.net/ns/core#Any.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#readOnly">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>readOnly</rdfs:label>
+		<rdfs:comment>true if the property is read-only. If omitted, or set to false, then the property is writable. Providers SHOULD declare a property read-only when changes to the value of that property will not be accepted after the resource has been created, e.g. on PUT/PATCH requests. Consumers should note that the converse does not apply: Providers MAY reject a change to the value of a writable property.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#representation">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>representation</rdfs:label>
+		<rdfs:comment>Should be http://open-services.net/ns/core#Reference, http://open-services.net/ns/core#Inline or http://open-services.net/ns/core#Either</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#valueType">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>valueType</rdfs:label>
+		<rdfs:comment>A URI that indicates the value type, for example XML Schema or RDF URIs for literal value types, and OSLC-specified for others.  If this property is omitted, then the value type is unconstrained.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<rdf:Property rdf:about="http://open-services.net/ns/core#valueShape">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>valueShape</rdfs:label>
+		<rdfs:comment>if the value-type is a resource type, then Property MAY provide a shape value to indicate the Resource Shape that applies to the resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Property>
+
+	<!-- ********** Properties: oslc:Compact ********** -->
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#smallPreview">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>smallPreview</rdfs:label>
+		<rdfs:comment>URI and sizing properties for an HTML document to be used for a small preview.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreUiPreview#Representation_Compact" />
+	</rdf:Description>
+	
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#largePreview">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>largePreview</rdfs:label>
+		<rdfs:comment>URI and sizing properties for an HTML document to be used for a large preview.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreUiPreview#Representation_Compact" />
+	</rdf:Description>
+
+	<!-- ********** Properties: oslc:Preview ********** -->
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#document">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>document</rdfs:label>
+		<rdfs:comment>The URI of an HTML document to be used for the preview.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreUiPreview#Resource_Preview" />
+	</rdf:Description>	
+
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#initialHeight">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>initialHeight</rdfs:label>
+		<rdfs:comment>Recommended initial height of the preview. The presence of this property indicates that the preview supports dynamically computing its size. Values MUST be expressed in relative length units as defined in the W3C Cascading Style Sheets Specification (CSS 2.1). Em and ex units are interpreted relative to the default system font (at 100% size). </rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreUiPreview#Representation_Preview" />
+	</rdf:Description>	
+
+	<!-- ********** Property: oslc:valueType allowed values ********** -->
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#Resource">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Resource</rdfs:label>
+		<rdfs:comment>Resource: value is a resource at a specified URI (i.e. a URI Reference).</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#LocalResource">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>LocalResource</rdfs:label>
+		<rdfs:comment>Local Resource: value is an resource available only inside the resource being defined (i.e. a Blank Node).</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#AnyResource">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>AnyResource</rdfs:label>
+		<rdfs:comment>AnyResource: value is either a Resource or Local Resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<!-- ********** Property: oslc:representation allowed values ********** -->
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#Reference">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Reference</rdfs:label>
+		<rdfs:comment>A URI Reference representation to a resource.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#Inline">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Inline</rdfs:label>
+		<rdfs:comment>An inline (RDF blank node) representation.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#Either">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Either</rdfs:label>
+		<rdfs:comment>Representations is either a URI reference or blank node.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<!-- ********** Property: oslc:occurs allowed values ********** -->
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#Exactly-one">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Exactly-one</rdfs:label>
+		<rdfs:comment>Property with value is required.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#Zero-or-one">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Zero-or-one</rdfs:label>
+		<rdfs:comment>Property is optional and single valued.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#Zero-or-many">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Zero-or-many</rdfs:label>
+		<rdfs:comment>Property is optional and multi-valued.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#One-or-many">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>One-or-many</rdfs:label>
+		<rdfs:comment>Property is required and multi-valued.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<!-- ********** Property: oslc:range allowed values ********** -->
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#Any">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>Any</rdfs:label>
+		<rdfs:comment>Any value type is allowed.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<!-- ********** oslc:usage - Usages ********** -->
+	<rdf:Description
+		rdf:about="http://open-services.net/ns/core#default">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>default</rdfs:label>
+		<rdfs:comment>Used in conjunction with oslc:usage property used to identify
+		which service is the default usage.</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/bin/view/Main/OslcCoreSpecification" />
+	</rdf:Description>
+
+	<!-- ********** Properties: future actions ********** -->
+	<rdf:Property
+		rdf:about="http://open-services.net/ns/core#futureAction">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>futureAction</rdfs:label>
+		<rdfs:comment>A predicate that links to an action that is not currently executable on the subject resource, 
+		but may be executable in the future and/or on other resources. 
+		For example, in OSLC Automation this is expected to link from an oslc_auto:AutomationPlan to an 
+		oslc:Action resource with zero bindings (as it is not executable), 
+		with the meaning that the executable form of the action may be available on oslc_auto:AutomationResult resources 
+		generated by executing that Automation Plan.  Similarly, resource shapes can allow discovery of actions
+		available on the output of a creation factory.
+		</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/wiki/core/Actions-2.0/#Future-actions" />
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/wiki/automation/OSLC-Automation-Specification-Version-2.1/#Future-actions" />
+	</rdf:Property>
+
+	<rdf:Property
+		rdf:about="http://open-services.net/ns/core#executes">
+		<rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/core#" />
+		<rdfs:label>executes</rdfs:label>
+		<rdfs:comment>Link from a currently available action to the future action it realizes.
+		</rdfs:comment>
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/wiki/core/Actions-2.0/#Future-actions" />
+		<rdfs:seeAlso
+			rdf:resource="http://open-services.net/wiki/automation/OSLC-Automation-Specification-Version-2.1/#Future-actions" />
+	</rdf:Property>
+
+</rdf:RDF>
