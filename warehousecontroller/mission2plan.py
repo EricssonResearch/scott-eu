@@ -1,15 +1,22 @@
 import os, sys, json, re
 import cStringIO, StringIO, io
 from flask import Flask, jsonify, abort, request, make_response
-import subprocess
+import subprocess, requests
 import logging
 
 #planner path - application
 optic_path='/home/swarup/Documents/optic/debug/optic/optic-clp'
 ff_path='/home/swarup/Documents/Metric-FF-v2.0/ff'
 
+# planner 
+planner = "FF" 
+
+#Warehouse Domain File
+warehouseDomainFile = "whdomain-2.pddl"
+
 # use end point instead of path
-optic_end_point = "http://tools_ff_metric_1:5000"
+#ff_end_point = "http://tools_ff_metric_1:5000"
+ff_end_point = "http://127.0.0.1:5000"
 
 app = Flask(__name__)
 
@@ -34,7 +41,7 @@ def queryKB(spec, obj, level):
 	#print kb
 	return kb
 
-def constructPddlProblem(entity, level, whState, missionGoal, missionHints):
+def generatePddlProblemFile(pddlProblemFileName, entity, level, whState, missionGoal, missionHints):
 	pddlProblemHeaderString = "(define (problem " + entity + "-" + level + ")\n" \
 					"\t (:domain warehouse-domain)\n"
 	objectString = "\n\t(:objects"
@@ -84,7 +91,7 @@ def constructPddlProblem(entity, level, whState, missionGoal, missionHints):
 	for goal in missionGoal:
 		goalString = goalString + "\n\t\t\t(is-on " + goal[0] + " " + goal[1] + ")"
 	
-	OutFile = open("warehouseProblemGen.pddl", 'w')
+	OutFile = open(pddlProblemFileName, 'w') #overwrites the earlier file
 	
 	OutFile.write(pddlProblemHeaderString)
 	OutFile.write(objectString)
@@ -96,6 +103,7 @@ def constructPddlProblem(entity, level, whState, missionGoal, missionHints):
 	OutFile.write(metricString)
 	OutFile.write("\n )")
 	
+	OutFile.close()
 	print pddlProblemHeaderString
 	print objectString
 	print ")\n"
@@ -106,30 +114,9 @@ def constructPddlProblem(entity, level, whState, missionGoal, missionHints):
 	print metricString
 	print ")"
 	
-@app.route('/warehouse/api/v1.0/genplan', methods=['POST'])
-def compute_mission_data():
-	if not request.json:
-        	abort(400)
-	mission = request.json
-	print mission
-	
-	# Extract mission and hints
-	#mission = extractMission(mission)
-	goals = extractGoals(mission)
-	hints   = extractHints(mission)
-	
-	print "mission, goals, hints"
-	print mission, goals, hints
-	
-	# get waypoint model and policies from KB
-	warehouseState = queryKB("state", "warehouse", "waypoint")
-	#print warehouseState
-	#waypointPolicy = extractWaypointPolicy("policy", "warehouse", "waypoint")
-	#p waypointPolicy
-	
-	# init state - needed to optimize
-	#warehouseInitState = extractInit(waypointState, goals)
 
+
+def callPlanner(warehouseState, goals, hints):
 	pddlProblem = constructPddlProblem("warehouse", "waypoint", warehouseState, goals, hints)
 	# - to be taken up later addPolicies(pddlDomain, policy)
 	
@@ -170,25 +157,44 @@ def compute_mission_data():
 	
 	print "Final plan"
 	print finalPlan
-	return jsonify(finalPlan), 200
-# def gen_workflow():
-	# if not request.json:
-        	# abort(400)
-	# inp = request.json
-	# print inp
+	return finalPlan
 	
-	# # Extract mission and hints
-	# mission = extractMission(inp)
-	# goals = extractGoals(mission)
-	# hints   = extractHints(mission)
+@app.route('/warehouse/api/v1.0/genplan', methods=['POST'])
+def compute_mission_data():
+	if not request.json:
+        	abort(400)
+	mission = request.json
 	
-	# # get waypoint model and policies from KB
-	# waypointModel = queryKB("warehouse", "waypoint")
-	# waypointState = extractWaypointState(waypointModel)
-	# waypointPolicy = extractWaypointPolicy(waypointModel)
-	
+	# Extract mission and hints
+	goals = extractGoals(mission)
+	hints   = extractHints(mission)
 
-	# return jsonify(graph), 200
+	print "mission, goals, hints"
+	print mission, goals, hints
+	
+	# get waypoint model and policies from KB
+	warehouseState = queryKB("state", "warehouse", "waypoint")
+	#print warehouseState
+	#waypointPolicy = extractWaypointPolicy("policy", "warehouse", "waypoint")
+	#p waypointPolicy
+	
+	#Generate problem file which is in the string warehouseProblemFile
+	warehouseProblemFile = "warehouseProblemGen.pddl"
+	generatePddlProblemFile(warehouseProblemFile, "warehouse", "waypoint", warehouseState, goals, hints)
+	
+	#Get the domain file whose name is a string in warehouseDomainFile
+	#warehouseDomainFile = 
+
+	res = requests.post(ff_end_point+"/planner/upload_domain", files={'file': open(warehouseDomainFile, 'rb')})
+	print res.text, warehouseDomainFile
+	res = requests.post(ff_end_point+"/planner/upload_problem", files={'file': open(warehouseProblemFile, 'rb')})
+	print res.text, warehouseProblemFile
+	
+	payload = {"planner" : planner, "domain" : warehouseDomainFile, "problem" : warehouseProblemFile}
+	res = requests.get(ff_end_point+"/planner/generate_plan", json=payload)
+	print res.json()
+	
+	return jsonify(res.json()), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
