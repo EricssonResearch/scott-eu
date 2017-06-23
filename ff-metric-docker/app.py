@@ -7,6 +7,8 @@ import logging
 #planner path - application
 ff_path='/opt/Metric-FF-v2.0/ff'
 
+#upload path
+UPLOAD_FOLDER = '/uploads'
 # host name and port
 # HOST = 127.0.0.1
 # PORT = 5000
@@ -14,6 +16,7 @@ ff_path='/opt/Metric-FF-v2.0/ff'
 # service route
 # '/planner'
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Helper functions
 def process_ffplan(plan):
@@ -60,11 +63,16 @@ def test_service():
 @app.route('/planner/upload_domain', methods=['GET', 'POST'])
 def upload_domain():
 	if request.method == 'POST':
+		# check if the post request has the file part
+		if 'file' not in request.files:
+			flash('No file part')
+			return redirect(request.url)
 		f = request.files['file']
 		print "file to be uploaded", f.filename
 		#check if it is a pddl domain file
 		
 		f.save(f.filename)
+		#f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
 		#f.save(secure_filename(f.filename))
 		return make_response(jsonify({'message' : 'file uploaded successfully'}),200)
 	else:
@@ -73,11 +81,16 @@ def upload_domain():
 @app.route('/planner/upload_problem', methods=['GET', 'POST'])
 def upload_problem():
 	if request.method == 'POST':
+		# check if the post request has the file part
+		if 'file' not in request.files:
+			flash('No file part')
+			return redirect(request.url)
 		f = request.files['file']
 		print "file to be uploaded", f.filename
 		#check if it is a pddl problem file
 		
 		f.save(f.filename)
+		#f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
 		#f.save(secure_filename(f.filename))
 		return make_response(jsonify({'message' : 'file uploaded successfully'}),200)
 	else:
