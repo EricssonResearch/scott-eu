@@ -37,5 +37,8 @@ RUN pip install -r requirements.txt
 # expose port
 EXPOSE 5000
 
+# set path for ff_metric
+ENV ff_metric_path=/opt/Metric-FF-v2.0
+
 # set entry point
 ENTRYPOINT ["python", "app.py"]

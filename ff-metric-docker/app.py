@@ -5,13 +5,11 @@ import subprocess
 import logging
 
 #planner path - application
-ff_path='/opt/Metric-FF-v2.0/ff'
+ff_path=os.getenv("ff_metric_path")
+#'/opt/Metric-FF-v2.0/ff'
 
 #upload path
 UPLOAD_FOLDER = '/uploads'
-# host name and port
-# HOST = 127.0.0.1
-# PORT = 5000
 
 # service route
 # '/planner'
