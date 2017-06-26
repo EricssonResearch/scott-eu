@@ -5,7 +5,7 @@ import subprocess
 import logging
 
 #planner path - application
-ff_path=os.getenv("ff_metric_path")
+ff_path=os.getenv("ff_metric_path")+"/ff"
 #'/opt/Metric-FF-v2.0/ff'
 
 #upload path
