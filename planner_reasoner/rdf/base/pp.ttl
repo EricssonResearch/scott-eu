@@ -1,0 +1,42 @@
+@prefix : <http://ontology.cf.ericsson.net/planning_problem#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@base <http://ontology.cf.ericsson.net/planning_problem> .
+
+<http://ontology.cf.ericsson.net/planning_problem> rdf:type owl:Ontology ;
+                                                   owl:versionIRI <http://ontology.cf.ericsson.net/planning_problem/1.0.0> .
+
+:Action rdf:type owl:Class .
+:Variable rdf:type owl:Class .
+:Type rdf:type owl:Class .
+:Fluent rdf:type owl:Class .
+:Predicate rdf:type owl:Class .
+
+:And rdf:type owl:Class .
+:Or rdf:type owl:Class .
+:Not rdf:type owl:Class .
+:Imply rdf:type owl:Class .
+
+:GT rdf:type owl:Class .
+:LT rdf:type owl:Class .
+:EQ rdf:type owl:Class .
+:GE rdf:type owl:Class .
+:LE rdf:type owl:Class .
+
+:Plus rdf:type owl:Class .
+:Minus rdf:type owl:Class .
+:Multply rdf:type owl:Class .
+:Divide rdf:type owl:Class .
+
+:Forall rdf:type owl:Class .
+:Exists rdf:type owl:Class .
+
+:When rdf:type owl:Class .
+
+:hasVariables rdf:type owl:ObjectProperty .
+:hasTypes rdf:type owl:ObjectProperty .
+:hasPrecondition rdf:type owl:ObjectProperty .
+:hasEffect rdf:type owl:ObjectProperty .
+:hasArguments rdf:type owl:ObjectProperty .
+:type rdf:type owl:ObjectProperty .

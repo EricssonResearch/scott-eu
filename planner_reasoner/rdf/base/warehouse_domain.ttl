@@ -1,0 +1,77 @@
+@prefix : <http://ontology.cf.ericsson.net/warehouse_domain#> .
+@prefix pp: <http://ontology.cf.ericsson.net/planning_problem#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@base <http://ontology.cf.ericsson.net/warehouse_domain#> .
+
+# types
+
+_:t1 rdf:type owl:NamedIndividual ,
+              pp:Type ;
+     rdfs:label "Robot".
+
+_:t2 rdf:type owl:NamedIndividual ,
+              pp:Type ;
+    rdfs:label "Waypoint".
+
+# variables
+
+_:robot rdf:type owl:NamedIndividual ,
+                 pp:Variable ;
+    rdfs:label "robot";
+    pp:type _:t1 .
+
+_:from_waypoint rdf:type owl:NamedIndividual ,
+                pp:Variable ;
+    rdfs:label "from_waypoint";
+    pp:type _:t2 .
+
+# fluents
+
+_:charge_level1 rdf:type owl:NamedIndividual ,
+                         pp:Fluent ;
+                rdfs:label "charge-level";
+                pp:hasArguments ( _:robot ) .
+
+_:low_charge1 rdf:type owl:NamedIndividual ,
+                       pp:Fluent ;
+                rdfs:label "low-charge";
+                pp:hasArguments ( _:robot ) .
+
+
+# predicates (don't have labels)
+
+_:and1 rdf:type owl:NamedIndividual ,
+                pp:And ;
+       pp:hasArguments (_:isat1 _:not1) .
+
+_:isat1 rdf:type owl:NamedIndividual ,
+                 pp:Predicate ;
+        pp:hasArguments (_:robot _:from_waypoint) .
+
+_:not1 rdf:type owl:NamedIndividual ,
+                pp:Not ;
+       pp:hasArguments (_:isrecharging1 ) .
+
+_:isrecharging1 rdf:type owl:NamedIndividual ,
+                         pp:Predicate ;
+                pp:hasArguments (_:robot) .
+
+_:gt1 rdf:type owl:NamedIndividual ,
+               pp:GT ;
+      pp:hasArguments (_:charge_level1 _:low_charge1) .
+
+
+_:eff1 rdf:type owl:NamedIndividual ,
+                pp:Not ;
+       pp:hasArguments (_:isrecharging1) .
+
+# actions
+
+:move rdf:type owl:NamedIndividual ,
+               pp:Action ;
+      pp:hasVariables (_:robot _:from_waypoint) ;
+      pp:hasTypes (_:t1 _:t2) ;
+      pp:hasPrecondition _:and1 ;
+      pp:hasEffect _:eff1 .

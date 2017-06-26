@@ -8,7 +8,10 @@
 :- use_module(library(http/http_json)).
 :- use_module(library(http/http_error)).
 
-:- http_handler('/metamodel/', dispatcher, [prefix]).
+:- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/', 'Base URI').
+%setting(oslc_prolog_server:base_uri, BaseURI)
+
+:- http_handler(/, dispatcher, [prefix]).
 
 atoms_strings([], []) :- !.
 atoms_strings([H|T], [SH|ST]) :-
