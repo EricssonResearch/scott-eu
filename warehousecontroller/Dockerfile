@@ -18,6 +18,7 @@ COPY mission2plan.py .
 COPY requirements.txt .
 COPY kb.json .
 COPY mission.json . 
+COPY whdomain-2.pddl .
 
 # INSTALL requirements.txt
 RUN pip install -r requirements.txt
