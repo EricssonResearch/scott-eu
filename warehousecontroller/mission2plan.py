@@ -15,8 +15,8 @@ planner = "FF"
 warehouseDomainFile = "whdomain-2.pddl"
 
 # use end point instead of path
-#ff_end_point = "http://tools_ff_metric_1:5000"
-ff_end_point = "http://127.0.0.1:5000"
+ff_end_point = "http://ff-metric_1:5000"
+#ff_end_point = "http://127.0.0.1:5000"
 
 app = Flask(__name__)
 
