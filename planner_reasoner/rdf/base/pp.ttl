@@ -9,8 +9,9 @@
 
 :Action rdf:type owl:Class .
 :Variable rdf:type owl:Class .
-:Type rdf:type owl:Class .
+:VariableType rdf:type owl:Class .
 :Fluent rdf:type owl:Class .
+:FluentType rdf:type owl:Class .
 :Predicate rdf:type owl:Class .
 
 :And rdf:type owl:Class .
