@@ -7,11 +7,22 @@
 :- use_module(library(http/json)).
 :- use_module(library(http/http_json)).
 :- use_module(library(http/http_error)).
+:- use_module(library(broadcast)).
 
-:- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/', 'Base URI').
-%setting(oslc_prolog_server:base_uri, BaseURI)
+:- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/oslc/', 'Base URI').
 
-:- http_handler(/, dispatcher, [prefix]).
+:- http_handler('/oslc/', dispatcher, [prefix]).
+
+:- listen(settings(changed(oslc_prolog_server:base_uri,Old,New)), (
+     uri_components(New, uri_components(_,_,NewPath,_,_)),
+     (  sub_atom(NewPath,_,1,0,'/')
+     -> http_handler(NewPath, dispatcher, [prefix]),
+        uri_components(Old, uri_components(_,_,OldPath,_,_)),
+        http_delete_handler(path(OldPath))
+     ;  atom_concat(New, '/', NewGood),
+        set_setting(oslc_prolog_server:base_uri, NewGood)
+     )
+   )).
 
 atoms_strings([], []) :- !.
 atoms_strings([H|T], [SH|ST]) :-
@@ -19,19 +30,26 @@ atoms_strings([H|T], [SH|ST]) :-
     atoms_strings(T, ST).
 
 dispatcher(Request) :-
-  ( ( member(path_info(P), Request),
-      split_string(P, '/', '/', Parts),
-      atoms_strings([H|T], Parts),
-      dispatch(H, T, Request),
-      format('Status: 200~n'),
-      format('Content-type: text/plain~n~n'),
-      format('OK~n')
+  ( (
+      member(protocol(Protocol), Request),
+      member(host(Host), Request),
+      member(port(Port), Request),
+      member(path(Path), Request),
+      atomic_list_concat([Protocol,'://',Host,':',Port,Path], '', Uri),
+      setting(oslc_prolog_server:base_uri, Prefix),
+      atom_concat(Prefix,ServicePath,Uri),
+      split_string(ServicePath, '/', '/', Parts),
+      dispatch(Request, Parts)
     )
   ->  true
   ; format('Status: 404~n~n')
   ).
 
-dispatch(message, [], _).
+dispatch(_, Parts) :-
+  format('Status: 200~n'),
+  format('Content-type: text/plain~n~n'),
+  format('Parts = ~w~n', [Parts]).
+
 
 % rdf_save(stream(current_output), [graph(mygraph)]).
 % rdf_save_turtle(stream(current_output), [graph(mygraph)]).
