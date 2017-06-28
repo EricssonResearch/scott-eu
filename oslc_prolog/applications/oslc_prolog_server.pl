@@ -13,21 +13,16 @@
 
 :- http_handler('/oslc/', dispatcher, [prefix]).
 
-:- listen(settings(changed(oslc_prolog_server:base_uri,Old,New)), (
-     uri_components(New, uri_components(_,_,NewPath,_,_)),
-     (  sub_atom(NewPath,_,1,0,'/')
+:- listen(settings(changed(oslc_prolog_server:base_uri, Old, New)), (
+     uri_components(New, uri_components(Schema, Authority, NewPath, _, _)),
+     (  sub_atom(NewPath, _, 1, 0, '/')
      -> http_handler(NewPath, dispatcher, [prefix]),
-        uri_components(Old, uri_components(_,_,OldPath,_,_)),
+        uri_components(Old, uri_components(_, _, OldPath, _, _)),
         http_delete_handler(path(OldPath))
-     ;  atom_concat(New, '/', NewGood),
-        set_setting(oslc_prolog_server:base_uri, NewGood)
+     ;  atomic_list_concat([Schema, '://', Authority, NewPath, '/'], '', NewSetting),
+        set_setting(oslc_prolog_server:base_uri, NewSetting)
      )
    )).
-
-atoms_strings([], []) :- !.
-atoms_strings([H|T], [SH|ST]) :-
-    atom_string(H, SH),
-    atoms_strings(T, ST).
 
 dispatcher(Request) :-
   ( (
@@ -35,9 +30,9 @@ dispatcher(Request) :-
       member(host(Host), Request),
       member(port(Port), Request),
       member(path(Path), Request),
-      atomic_list_concat([Protocol,'://',Host,':',Port,Path], '', Uri),
+      atomic_list_concat([Protocol, '://', Host, ':', Port,  Path], '', Uri),
       setting(oslc_prolog_server:base_uri, Prefix),
-      atom_concat(Prefix,ServicePath,Uri),
+      atom_concat(Prefix, ServicePath, Uri),
       split_string(ServicePath, '/', '/', Parts),
       dispatch(Request, Parts)
     )
@@ -48,8 +43,11 @@ dispatcher(Request) :-
 dispatch(_, Parts) :-
   format('Status: 200~n'),
   format('Content-type: text/plain~n~n'),
-  format('Parts = ~w~n', [Parts]).
-
+  current_output(Out),
+  setting(oslc_prolog_server:base_uri, Prefix),
+  atomic_list_concat(Parts, '/', Suffix),
+  atom_concat(Prefix, Suffix, Resource),
+  rdf_save_subject(Out, Resource, [nsmap([])]).
 
 % rdf_save(stream(current_output), [graph(mygraph)]).
 % rdf_save_turtle(stream(current_output), [graph(mygraph)]).
