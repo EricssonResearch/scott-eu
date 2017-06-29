@@ -46,19 +46,11 @@ Mock KB (`/mockkb`) exposes a mock knowledge base on port 5001.
 > :point_right: Start by running the service using Docker ([README](mockkb/README.md)) and doing a GET request to `/kb/api/v1.0/waypoint`.
 
 
-# Ontology server
+## Ontology server
 
-Ontology server (`/ontology-server`) exposes named graphs in the [Cliopatria](http://cliopatria.swi-prolog.org/home) installation over HTTP in RDF format via Nginx server.
+Ontology server (`/ontology-server`) exposes named graphs in the [Cliopatria](http://cliopatria.swi-prolog.org/home) installation over HTTP in RDF format via an Nginx server.
 
-> :point_right: Start by:
->
-> * running the project using `docker-compose up` command
-> * logging into the Cliopatria instance via http://localhost:3020 using `admin` login and password that you got from Leo via Slack.
-> * Upload [pp.ttl](planner_reasoner/rdf/base/pp.ttl) into named graph `http://ontology.cf.ericsson.net/planning_problem` via the http://localhost:3020/user/loadFile
-> * Upload [warehouse_domain.ttl](planner_reasoner/rdf/base/warehouse_domain.ttl) into named graph `http://ontology.cf.ericsson.net/warehouse_domain` via the http://localhost:3020/user/loadFile
-> * Open http://localhost:80/warehouse_domain. Nginx should return the named graph with the URI `http://ontology.cf.ericsson.net/` (URI base) *plus* `warehouse_domain` (URI fragment from your request).
-
-> :fire: **Leo**, the last step is not working, I am getting *404 not found* (Andrew).
+> :point_right: Start by following the [Getting Started section](ontology-server/README.md#getting-started) in the README.
 
 
 ## Optic Docker

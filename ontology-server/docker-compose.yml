@@ -1,7 +1,11 @@
 version: '2'
 services:
   nginx:
-    build: ./nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      args:
+       - ONTOLOGY_HOSTNAME=localhost
     ports:
      - "80:80"
   cliopatria:
