@@ -42,12 +42,14 @@ dispatcher(Request) :-
 
 dispatch(_, Parts) :-
   format('Status: 200~n'),
-  format('Content-type: text/plain~n~n'),
+  format('Content-type: application/rdf+xml; charset=utf-8~n~n'),
   current_output(Out),
   setting(oslc_prolog_server:base_uri, Prefix),
   atomic_list_concat(Parts, '/', Suffix),
   atom_concat(Prefix, Suffix, Resource),
-  rdf_save_subject(Out, Resource, [nsmap([])]).
+  rdf_save_header(Out, [namespaces([rdf])]),
+  rdf_save_subject(Out, Resource, [nsmap([])]),
+  rdf_save_footer(Out).
 
 % rdf_save(stream(current_output), [graph(mygraph)]).
 % rdf_save_turtle(stream(current_output), [graph(mygraph)]).
