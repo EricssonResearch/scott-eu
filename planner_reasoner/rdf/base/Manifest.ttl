@@ -1,0 +1,18 @@
+@prefix	lib: <http://www.swi-prolog.org/rdf/library/> .
+@prefix	dcterms: <http://purl.org/dc/terms/> .
+@prefix	pp: <http://ontology.cf.ericsson.net/planning_problem#> .
+@prefix	wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
+
+<pp>
+	a lib:Schema ;
+	a lib:Virtual ;
+	dcterms:title "Vocabulary to define a planning problem" ;
+	lib:source pp: ;
+	lib:schema <pp.ttl> .
+
+<wd>
+	a lib:Instances ;
+	a lib:Virtual ;
+	dcterms:title "Sample planning problem" ;
+	lib:source wd: ;
+	lib:schema <warehouse_domain.ttl> .

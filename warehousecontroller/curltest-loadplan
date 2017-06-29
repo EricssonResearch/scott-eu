@@ -1,0 +1,15 @@
+if [ "$#" -ne 2 ] ; then
+  echo "Usage: $0 <domain> <problem>" >&2
+  exit 1
+fi
+
+curl --request POST -H "Content-Type: multipart/form-data" -F "file=@$1" http://127.0.0.1:5000/planner/upload_problem
+
+curl --request POST -H "Content-Type: multipart/form-data" -F "file=@$2" http://127.0.0.1:5000/planner/upload_problem
+
+echo $1, $2
+
+json='{"planner" : "FF", "domain" : "'${1}'", "problem" : "expr $2"}'
+echo $json
+
+curl --request GET --data '{"planner" : "FF", "domain" : "'${1}'", "problem" : "'${2}'"}' http://127.0.0.1:5000/planner/generate_plan --header "Content-Type: application/json"

@@ -77,7 +77,7 @@ OSLC Prolog (`/oslc_prolog`) is a Prolog library designed to help developing OSL
 
 ## PDDL Examples
 
-PDDL Examples (`/pddl-examples`) ís a folder with example PDDL files (domain and problem files), just for learning and testing purposes of the planners. 
+PDDL Examples (`/pddl-examples`) ï¿½s a folder with example PDDL files (domain and problem files), just for learning and testing purposes of the planners.
 
 
 
@@ -96,8 +96,3 @@ Planner Reasoner (`/planner_reasoner`) uses an [internal planning ontology](plan
 > :point_right: Start by reading about the [`generate_pddl/2` predicate](planner_reasoner/lib/planner_reasoner.pl).
 
 > **NB!** The project is called a *reasoner* because it is using Prolog reasoning facilities, it does not do any reasoning over the ontology and does not produce any inferred triples (as of now).
-
-
-
-
-

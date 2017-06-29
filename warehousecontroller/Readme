@@ -1,0 +1,56 @@
+Mission to Plan Service
+-----------------------
+
+Usage instructions:
+
+0. Configure mission2plan.py file as follows:
+	a. 
+		# planner name
+		planner = "FF" 
+
+		#Warehouse Domain File - set to a working domain file
+		warehouseDomainFile = "whdomain-2.pddl"
+
+		# use end point instead of path to the executable for the planner
+		#ff_end_point = "http://tools_ff_metric_1:5000"
+		ff_end_point = "http://127.0.0.1:5000"
+
+1. python mission2plan.py - starts the server at port 5001 in localhost. Host:port
+   combination should be different from ff_end_point
+2. Test the service is running using curltest3 which does
+   HTTP POST of a mission file in json format. 
+
+Current set of files
+   mission2plan.py - service to derive a plan from a mission
+   whdomain-2.pddl - current version of the warehouse domain file
+   kb.json - a local file which will be accessed from the KB service in full deployment
+   mission.json - example input file, which will be coming with a call from the MOO_manager
+   curltest3 - tests the returned plan steps with the input "mission.json"
+   curltest4 - tests whether service is running or no
+   curltest-loadplan dom prob - loads local files dom and prob to the dockerized planner and
+	gets back the plan. Note : the files are to be local, with no "/".
+   
+
+FF Planner
+	Get the source code from 
+	https://fai.cs.uni-saarland.de/hoffmann/metric-ff.html
+	and compile. Current implementation uses metric-FF v2.0
+	
+
+Details of mission2plan.py
+	The PDDL problem file has two parts. The :init part is derived from the kb.json file.
+	The :final part is derived from the goals in the mission.json file. Both these tasks
+	are done in the generatePddlProblemFile function. compute_mission_data is the main end-point
+	invoked by the external entity (MOO_Manager) which parses the mission input file and 
+	calls the generatePddlProblemFile. 
+	The callPlanner function is not used at present because of the call to the planner service.
+
+	
+   
+Future plans 
+	1. mission2plan.py is a monolithic code which will be modularaized in the coming versions
+	2. Exception handling to be added
+	3. Use a test folder for all the tests
+	4. Add more tests to test both functionality coverage and scalability
+	5. domain file is local at present, this is also to be obtained from a repository
+	6. provide a way to call the planner locally for testing purposes ising the callPlanner function

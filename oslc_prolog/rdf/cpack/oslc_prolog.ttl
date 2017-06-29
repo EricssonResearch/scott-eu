@@ -1,0 +1,28 @@
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix cpack:   <http://cliopatria.swi-prolog.org/schema/cpack#> .
+
+# This file is a Turtle-format RDF file that describes the package.  It
+# *must* be located in rdf/cpack/oslc_prolog.ttl
+#
+# Author is a FOAF Person. If you have a FOAF profile, you can link to
+# this.  Otherwise you can specify the information inline as done below.
+# See http://xmlns.com/foaf/spec/ for defines fields.
+
+<> a cpack:Library ;
+	cpack:packageName "oslc_prolog" ;
+	dcterms:title "OSLC Prolog" ;
+	cpack:author [ a foaf:Person ;
+		       foaf:name "Leonid Mokrushin" ;
+		       foaf:mbox <leonid.mokrushin@ericsson.com> ;
+		     ] ;
+	cpack:primaryRepository
+	    [ a cpack:GitRepository ;
+	      cpack:gitURL <ssh://gitolite@openalm.lmera.ericsson.se/scott/scott.git>
+	    ] ;
+	cpack:description
+
+"""This is an implementation of OSLC in Prolog.
+""" .
