@@ -27,6 +27,11 @@ _:from_waypoint rdf:type owl:NamedIndividual ,
     rdfs:label "from_waypoint";
     pp:type _:t2 .
 
+_:to_waypoint rdf:type owl:NamedIndividual ,
+                    pp:Variable ;
+        rdfs:label "to_waypoint";
+        pp:type _:t2 .
+
 # fluent Types
 
 _:charge_level rdf:type owl:NamedIndividual ,
@@ -76,10 +81,10 @@ _:eff1 rdf:type owl:NamedIndividual ,
 
 # actions
 
-:stopRecharge rdf:type owl:NamedIndividual ,
+:moveToWaypoint rdf:type owl:NamedIndividual ,
                        pp:Action ;
-      rdfs:label "stopRecharge";
-      pp:hasVariables (_:robot _:from_waypoint) ;
-      pp:hasTypes (_:t1 _:t2) ;
+      rdfs:label "moveToWaypoint";
+      pp:hasVariables (_:robot _:from_waypoint _:to_waypoint) ;
+      pp:hasTypes (_:t1 _:t2 _:t2) ;
       pp:hasPrecondition _:and1 ;
       pp:hasEffect _:eff1 .
