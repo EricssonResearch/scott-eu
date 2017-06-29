@@ -77,9 +77,8 @@ OSLC Prolog (`/oslc_prolog`) is a Prolog library designed to help developing OSL
 
 ## PDDL Examples
 
-PDDL Examples (`/pddl-examples`) seems to be a folder with outdated PDDL files using a dummy domain.
+PDDL Examples (`/pddl-examples`) ís a folder with example PDDL files (domain and problem files), just for learning and testing purposes of the planners. 
 
-> :fire: **Aneta**, what shall we do with this? (Andrew)
 
 
 ## PDDL Planner
