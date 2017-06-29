@@ -11,7 +11,7 @@
 
 :- http_handler('/oslc/', dispatcher, [prefix]).
 
-:- listen(settings(changed(oslc_prolog_server:base_uri, Old, New)), (
+:- listen(settings(changed(oslc_prolog_server:base_uri, Old, New)), ( % listen on base URI setting changes
      uri_components(New, uri_components(Schema, Authority, NewPath, _, _)),
      (  sub_atom(NewPath, _, 1, 0, '/') % if new base URI is ending with '/'
      -> http_handler(NewPath, dispatcher, [prefix]), % set a handler for new base URI
@@ -30,7 +30,7 @@ dispatcher(Request) :-
       member(path(Path), Request),
       atomic_list_concat([Protocol, '://', Host, ':', Port,  Path], '', Uri), % determine URI called
       setting(oslc_prolog_server:base_uri, Prefix),
-      atom_concat(Prefix, ServicePath, Uri), % check if URI called start with base URI
+      atom_concat(Prefix, ServicePath, Uri), % check if URI called starts with the base URI
       dispatch(Request, ServicePath) % call dispatch with computed suffix
     )
   ->  true
@@ -65,14 +65,14 @@ uuid(Id) :-
   atom_number(Id, Num).
 
 select_content_type(Request, ContentType) :-
-  member(accept(Accept), Request),
+  member(accept(Accept), Request), % fetch accept header
   predsort(accept_compare, Accept, AcceptSorted), % sort requested content types according to qualities
-  select_content_type0(AcceptSorted, ContentType).
+  select_content_type0(AcceptSorted, ContentType). % select the best matching content type
 
 select_content_type0([], nil) :- !.
 select_content_type0([media(H,_,_,_)|T], ContentType) :- % go through all requested content types
   ( member(H, [application/'rdf+xml', text/'turtle', application/'x-turtle'])
-  -> ContentType = H % if content type is */* then H becomes _VAR/_VAR and matches application/'rdf+xml'
+  -> !, ContentType = H % if content type is */* then H becomes _VAR/_VAR and matches application/'rdf+xml'
   ; select_content_type0(T, ContentType)
   ).
 
