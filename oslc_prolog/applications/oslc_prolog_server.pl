@@ -49,7 +49,8 @@ dispatch(Request, ServicePath) :-
     -> format('Status: 415~n~n') % requested content-type cannot be served
     ;  format('Status: 200~n'),
        format('Content-type: ~w; charset=utf-8~n~n', [ContentType]),
-       save_graph(Out, Graph, ContentType) % serialize temporary RDF graph to the response
+       serializer(ContentType, Serializer), % select proper serializer
+       save_graph(Out, Graph, Serializer) % serialize temporary RDF graph to the response
     )
   ), rdf_unload_graph(Graph)). % regardless of the result remove temporary RDF graph
 
@@ -71,7 +72,7 @@ select_content_type(Request, ContentType) :-
 
 select_content_type0([], nil) :- !.
 select_content_type0([media(H,_,_,_)|T], ContentType) :- % go through all requested content types
-  ( member(H, [application/'rdf+xml', text/'turtle', application/'x-turtle'])
+  ( serializer(H, _)
   -> !, ContentType = H % if content type is */* then H becomes _VAR/_VAR and matches application/'rdf+xml'
   ; select_content_type0(T, ContentType)
   ).
@@ -80,11 +81,14 @@ accept_compare(<, media(_,_,W1,_), media(_,_,W2,_)) :- % sort qualities in rever
   W1 > W2.
 accept_compare(<, _, _).
 
-save_graph(Out, Graph, application/'rdf+xml') :-
+serializer(application/'rdf+xml', rdf).
+serializer(text/'rdf+xml', rdf).
+serializer(application/'x-turtle', turtle).
+serializer(application/'turtle', turtle).
+serializer(text/'turtle', turtle).
+
+save_graph(Out, Graph, rdf) :-
   rdf_save(stream(Out), [graph(Graph)]).
 
-save_graph(Out, Graph, text/'turtle') :-
-  rdf_save_turtle(Out, [graph(Graph)]).
-
-save_graph(Out, Graph, application/'x-turtle') :-
+save_graph(Out, Graph, turtle) :-
   rdf_save_turtle(Out, [graph(Graph)]).
