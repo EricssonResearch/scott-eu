@@ -58,7 +58,16 @@ make_graph(Resource, Graph) :-
   uuid(Graph), % generate unique identifier for the temporary RDF graph
   rdf_create_graph(Graph),
   rdf_persistency(Graph, false), % do not persist (keep only in RAM)
-  forall(rdf(Resource, P, O), rdf_assert(Resource, P, O, Graph)). % poor man's populate method
+  traverse_resource(Resource, Graph).
+
+traverse_resource(Resource, Graph) :-
+  forall(rdf(Resource, P, O), (
+    rdf_assert(Resource, P, O, Graph),
+    ( rdf_is_bnode(O)
+    -> traverse_resource(O,Graph)
+    ;  true
+    )
+  )).
 
 uuid(Id) :-
   Max is 1<<128,
