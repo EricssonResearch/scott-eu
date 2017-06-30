@@ -32,6 +32,8 @@ generate_parameters(Variables, Types, Indent, Out) :-
   rdf_list(Types, TypeList),
   format(Out, '~*|:parameters (', [Indent]),
   generate_parameters0(VarList, TypeList, Out),
+  format(Out, ')~n', []),
+  format(Out, '~*|:precondition (', [Indent]),
   format(Out, ')~n', []).
 
 generate_parameters0([], [], _) :- !.
