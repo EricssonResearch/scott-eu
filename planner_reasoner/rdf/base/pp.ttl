@@ -14,12 +14,23 @@
 :FluentType rdf:type owl:Class .
 :Predicate rdf:type owl:Class .
 
-:And rdf:type owl:Class .
+
+#logical operators
+:And rdf:type owl:Class ;
+     rdfs:label "and".
+
 :Or rdf:type owl:Class .
-:Not rdf:type owl:Class .
+
+:Not rdf:type owl:Class ;
+    rdfs:label "not".
+
 :Imply rdf:type owl:Class .
 
-:GT rdf:type owl:Class .
+
+
+#aritmetic operators
+:GT rdf:type owl:Class ;
+    rdfs:label ">".
 :LT rdf:type owl:Class .
 :EQ rdf:type owl:Class .
 :GE rdf:type owl:Class .
