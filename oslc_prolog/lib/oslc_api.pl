@@ -1,8 +1,6 @@
 :- module(oslc_api, [
-    assert_resource/2,
-    assert_resource/3,
-    resource_print_rdf/1,
-    resource_save_rdf/2
+    oslc_resource/3,
+    oslc_service_provider_catalog/9
 ]).
 
 :- use_module(library(semweb/rdf11)).
@@ -13,28 +11,61 @@
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
 
-:- rdf_meta assert_resource(r, -).
-:- rdf_meta assert_resource(r, -, -).
-:- rdf_meta resource_print_rdf(r).
-:- rdf_meta resource_save_rdf(-, r).
+:- rdf_meta oslc_resource(r, t, -).
+:- rdf_meta oslc_service_provider_catalog(r, -, -, r, t, t, t, t, -).
 
-assert_resource(URI, Properties) :-
-  assert_resource(URI, Properties, user).
+oslc_resource(_, [], _) :- !.
 
-assert_resource(_, [], _) :- !.
+oslc_resource(URI, [Key=TV|T], Graph) :-
+  TV =.. [Type, Value],
+  rw_property(URI, Key, Type, Value, Graph), !,
+  oslc_resource(URI, T, Graph).
 
-assert_resource(URI, [H|T], Graph) :-
-  H =.. [Predicate, Object],
-  property(Predicate, P),
-  rdf_assert(URI, P, Object, Graph),
-  assert_resource(URI, T, Graph).
+rw_property(URI, Key, string, Value, Graph) :-
+  ( var(Value)
+  -> rdf(URI, Key, ^^(Value, _))
+  ;  rdf_assert(URI, Key, Value^^xsd:string, Graph)
+  ).
 
-resource_print_rdf(URI) :-
-  current_output(Out),
-  resource_save_rdf(Out, URI).
+rw_property(URI, Key, resource, Value, Graph) :-
+  ( var(Value)
+  -> rdf(URI, Key, Value)
+  ;  ( rdf_is_resource(Value)
+     -> rdf_assert(URI, Key, Value, Graph)
+     ;  throw(error(type_error(resource, Value), _))
+     )
+  ).
 
-resource_save_rdf(Out, URI) :-
-  rdf_save_subject(Out, URI, [nsmap([])]).
+rw_property(URI, Key, list, TV, Graph) :-
+  TV =.. [Type, Value],
+  ( var(Value)
+  -> findall(X, rw_property(URI, Key, Type, X, Graph), Value)
+  ;  ( is_list(Value)
+     -> rw_list_property(URI, Key, Type, Value, Graph)
+     ;  throw(error(type_error(list, Value), _))
+     )
+  ).
 
-property(type, rdf:'Type').
-property(title, dcterms:title).
+rw_list_property(_, _, _, [], _) :- !.
+
+rw_list_property(URI, Key, Type, [H|T], Graph) :-
+  rw_property(URI, Key, Type, H, Graph),
+  rw_list_property(URI, Key, Type, T, Graph).
+
+oslc_service_provider_catalog(URI, Title, Description, Publisher, Domains,
+                              ServiceProviders, ServiceProviderCatalogs,
+                              OauthConfigurations, Graph) :-
+  nonvar(URI),
+  oslc_resource(URI, [
+    rdf:type = list(resource([owl:'NamedIndividual', oslc:'ServiceProviderCatalog'])),
+    dcterms:title = string(Title),
+    dcterms:description = string(Description),
+    dcterms:publisher = resource(Publisher),
+    oslc:domain = list(resource(Domains)),
+    oslc:serviceProvider = list(resource(ServiceProviders)),
+    oslc:serviceProviderCatalog = list(resource(ServiceProviderCatalogs)),
+    oslc:oauthConfiguration = list(resource(OauthConfigurations))
+  ], Graph).
+
+% oslc_api:oslc_service_provider_catalog(q,tit,des,pub,[d1,d2],[a,b,c,d],[spc1],[oc1],user)
+% oslc_api:oslc_service_provider_catalog(q,Title,Description,Publisher,Domains,SPs,SPCs,OCs,user)
