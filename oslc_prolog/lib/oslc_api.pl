@@ -8,7 +8,10 @@
   oslc_publisher/6,
   oslc_prefix_definition/4,
   oslc_oauth_configuration/5,
-  oslc_response_info/6
+  oslc_response_info/6,
+  oslc_error/5,
+  oslc_extended_error/6,
+  oslc_results/4
 ]).
 
 :- use_module(library(semweb/rdf_library)).
@@ -29,6 +32,9 @@
 :- rdf_meta oslc_prefix_definition(r, -, r, -).
 :- rdf_meta oslc_oauth_configuration(r, r, r, r, -).
 :- rdf_meta oslc_response_info(r, -, -, r, -, -).
+:- rdf_meta oslc_error(r, -, -, r, -).
+:- rdf_meta oslc_extended_error(r, r, -, -, -, -).
+:- rdf_meta oslc_results(r, r, -, -).
 
 oslc_service_provider_catalog(URI, Title, Description, Publisher, Domains,
                               ServiceProviders, ServiceProviderCatalogs,
@@ -171,6 +177,39 @@ oslc_response_info(URI, Title, Description, NextPage, TotalCount, Graph) :-
     ], Graph)
   ).
 
+oslc_error(URI, StatusCode, Message, ExtendedError, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'Error'),
+      oslc:statusCode = string(StatusCode),
+      oslc:message = string(Message),
+      oslc:extendedError = optional(resource(ExtendedError))
+    ], Graph)
+  ).
+
+oslc_extended_error(URI, MoreInfo, Rel, HintWidth, HintHeight, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'ExtendedError'),
+      oslc:moreInfo = optional(resource(MoreInfo)),
+      oslc:rel = optional(string(Rel)),
+      oslc:hintWidth = optional(string(HintWidth)),
+      oslc:hintHeight = optional(string(HintHeight))
+    ], Graph)
+  ).
+
+oslc_results(URI, Resource, Label, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'results'),
+      rdf:resource = optional(resource(Resource)),
+      oslc:label = optional(string(Label))
+    ], Graph)
+  ).
+
 % -------------------
 
 oslc_example :-
@@ -183,4 +222,7 @@ oslc_example :-
   oslc_dialog(sd,'dialog',lab,d,'100px','200px',[rt5],[u7,u8],user),
   oslc_publisher(pub,'publisher',lab,id,icon,user),
   oslc_oauth_configuration(oc, artu, au, oatu, user),
-  oslc_response_info(ri,'response info',des,np,5,user).
+  oslc_response_info(ri,'response info',des,np,5,user),
+  oslc_error(er,'404','not found',exterr,user),
+  oslc_extended_error(exterr,mi,rel,'50px','60px',user),
+  oslc_results(results,res,lab,user).
