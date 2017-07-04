@@ -44,7 +44,6 @@ rw_property(URI, Key, integer(Value), Graph) :-
      )
   ).
 
-
 rw_property(URI, Key, resource(Value), Graph) :-
   ( var(Value)
   -> rdf(URI, Key, Value)
