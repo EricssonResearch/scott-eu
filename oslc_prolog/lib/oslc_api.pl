@@ -1,71 +1,186 @@
 :- module(oslc_api, [
-    oslc_resource/3,
-    oslc_service_provider_catalog/9
+  oslc_service_provider_catalog/9,
+  oslc_service_provider/9,
+  oslc_service/8,
+  oslc_creation_factory/8,
+  oslc_query_capability/8,
+  oslc_dialog/9,
+  oslc_publisher/6,
+  oslc_prefix_definition/4,
+  oslc_oauth_configuration/5,
+  oslc_response_info/6
 ]).
 
-:- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_library)).
+:- use_module(library(oslc_resource)).
 
 :- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
 
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
 
-:- rdf_meta oslc_resource(r, t, -).
 :- rdf_meta oslc_service_provider_catalog(r, -, -, r, t, t, t, t, -).
-
-oslc_resource(_, [], _) :- !.
-
-oslc_resource(URI, [Key=TV|T], Graph) :-
-  TV =.. [Type, Value],
-  rw_property(URI, Key, Type, Value, Graph), !,
-  oslc_resource(URI, T, Graph).
-
-rw_property(URI, Key, string, Value, Graph) :-
-  ( var(Value)
-  -> rdf(URI, Key, ^^(Value, _))
-  ;  rdf_assert(URI, Key, Value^^xsd:string, Graph)
-  ).
-
-rw_property(URI, Key, resource, Value, Graph) :-
-  ( var(Value)
-  -> rdf(URI, Key, Value)
-  ;  ( rdf_is_resource(Value)
-     -> rdf_assert(URI, Key, Value, Graph)
-     ;  throw(error(type_error(resource, Value), _))
-     )
-  ).
-
-rw_property(URI, Key, list, TV, Graph) :-
-  TV =.. [Type, Value],
-  ( var(Value)
-  -> findall(X, rw_property(URI, Key, Type, X, Graph), Value)
-  ;  ( is_list(Value)
-     -> rw_list_property(URI, Key, Type, Value, Graph)
-     ;  throw(error(type_error(list, Value), _))
-     )
-  ).
-
-rw_list_property(_, _, _, [], _) :- !.
-
-rw_list_property(URI, Key, Type, [H|T], Graph) :-
-  rw_property(URI, Key, Type, H, Graph),
-  rw_list_property(URI, Key, Type, T, Graph).
+:- rdf_meta oslc_service_provider(r, -, -, r, t, t, t, t, -).
+:- rdf_meta oslc_service(r, r, t, t, t, t, r, -).
+:- rdf_meta oslc_creation_factory(r, -, -, r, t, t, t, -).
+:- rdf_meta oslc_query_capability(r, -, -, r, t, t, t, -).
+:- rdf_meta oslc_dialog(r, -, -, r, -, -, t, t, -).
+:- rdf_meta oslc_publisher(r, -, -, -, r, -).
+:- rdf_meta oslc_prefix_definition(r, -, r, -).
+:- rdf_meta oslc_oauth_configuration(r, r, r, r, -).
+:- rdf_meta oslc_response_info(r, -, -, r, -, -).
 
 oslc_service_provider_catalog(URI, Title, Description, Publisher, Domains,
                               ServiceProviders, ServiceProviderCatalogs,
                               OauthConfigurations, Graph) :-
   nonvar(URI),
-  oslc_resource(URI, [
-    rdf:type = list(resource([owl:'NamedIndividual', oslc:'ServiceProviderCatalog'])),
-    dcterms:title = string(Title),
-    dcterms:description = string(Description),
-    dcterms:publisher = resource(Publisher),
-    oslc:domain = list(resource(Domains)),
-    oslc:serviceProvider = list(resource(ServiceProviders)),
-    oslc:serviceProviderCatalog = list(resource(ServiceProviderCatalogs)),
-    oslc:oauthConfiguration = list(resource(OauthConfigurations))
-  ], Graph).
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'ServiceProviderCatalog'),
+      dcterms:title = optional(xmlliteral(Title)),
+      dcterms:description = optional(xmlliteral(Description)),
+      dcterms:publisher = optional(resource(Publisher)),
+      oslc:domain = list(0, resource, Domains),
+      oslc:serviceProvider = list(0, resource, ServiceProviders),
+      oslc:serviceProviderCatalog = list(0, resource, ServiceProviderCatalogs),
+      oslc:oauthConfiguration = list(0, resource, OauthConfigurations)
+    ], Graph)
+  ).
 
-% oslc_api:oslc_service_provider_catalog(q,tit,des,pub,[d1,d2],[a,b,c,d],[spc1],[oc1],user)
-% oslc_api:oslc_service_provider_catalog(q,Title,Description,Publisher,Domains,SPs,SPCs,OCs,user)
+oslc_service_provider(URI, Title, Description, Publisher,
+                      Services, Details, PrefixDefinitions,
+                      OauthConfigurations, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'ServiceProvider'),
+      dcterms:title = optional(xmlliteral(Title)),
+      dcterms:description = optional(xmlliteral(Description)),
+      dcterms:publisher = optional(resource(Publisher)),
+      oslc:service = list(1, resource, Services),
+      oslc:details = list(0, resource, Details),
+      oslc:prefixDefinition = list(0, resource, PrefixDefinitions),
+      oslc:oauthConfiguration = list(0, resource, OauthConfigurations)
+    ], Graph)
+  ).
+
+oslc_service(URI, Domain, CreationFactories, QueryCapabilities,
+             SelectionDialogs, CreationDialogs, Usages, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'Service'),
+      oslc:domain = resource(Domain),
+      oslc:creationFactory = list(0, resource, CreationFactories),
+      oslc:queryCapability = list(0, resource, QueryCapabilities),
+      oslc:selectionDialog = list(0, resource, SelectionDialogs),
+      oslc:creationDialog = list(0, resource, CreationDialogs),
+      oslc:usage = list(0, resource, Usages)
+    ], Graph)
+  ).
+
+oslc_creation_factory(URI, Title, Label, Creation, ResourceShapes,
+                      ResourceTypes, Usages, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'CreationFactory'),
+      dcterms:title = xmlliteral(Title),
+      oslc:label = optional(string(Label)),
+      oslc:creation = resource(Creation),
+      oslc:resourceShape = list(0, resource, ResourceShapes),
+      oslc:resourceType = list(0, resource, ResourceTypes),
+      oslc:usage = list(0, resource, Usages)
+    ], Graph)
+  ).
+
+oslc_query_capability(URI, Title, Label, QueryBase, ResourceShapes,
+                      ResourceTypes, Usages, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'QueryCapability'),
+      dcterms:title = xmlliteral(Title),
+      oslc:label = optional(string(Label)),
+      oslc:queryBase = resource(QueryBase),
+      oslc:resourceShape = list(0, resource, ResourceShapes),
+      oslc:resourceType = list(0, resource, ResourceTypes),
+      oslc:usage = list(0, resource, Usages)
+    ], Graph)
+  ).
+
+oslc_dialog(URI, Title, Label, Dialog, HintWidth, HintHeight,
+            ResourceTypes, Usages, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'Dialog'),
+      dcterms:title = xmlliteral(Title),
+      oslc:label = optional(string(Label)),
+      oslc:dialog = resource(Dialog),
+      oslc:hintWidth = optional(string(HintWidth)),
+      oslc:hintHeight = optional(string(HintHeight)),
+      oslc:resourceType = list(0, resource, ResourceTypes),
+      oslc:usage = list(0, resource, Usages)
+    ], Graph)
+  ).
+
+oslc_publisher(URI, Title, Label, Identifier, Icon, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'Publisher'),
+      dcterms:title = xmlliteral(Title),
+      oslc:label = optional(string(Label)),
+      dcterms:identifier = string(Identifier),
+      oslc:icon = optional(resource(Icon))
+    ], Graph)
+  ).
+
+oslc_prefix_definition(URI, Prefix, PrefixBase, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'PrefixDefinition'),
+      dcterms:title = string(Prefix),
+      oslc:label = resource(PrefixBase)
+    ], Graph)
+  ).
+
+oslc_oauth_configuration(URI, OauthRequestTokenURI, AuthorizationURI,
+                         OauthAccessTokenURI, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'OAuthConfiguration'),
+      oslc:oauthRequestTokenURI = resource(OauthRequestTokenURI),
+      oslc:authorizationURI = resource(AuthorizationURI),
+      oslc:oauthAccessTokenURI = resource(OauthAccessTokenURI)
+    ], Graph)
+  ).
+
+oslc_response_info(URI, Title, Description, NextPage, TotalCount, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'ResponseInfo'),
+      dcterms:title = optional(xmlliteral(Title)),
+      dcterms:description = optional(xmlliteral(Description)),
+      oslc:nextPage = optional(resource(NextPage)),
+      oslc:totalCount = optional(integer(TotalCount))
+    ], Graph)
+  ).
+
+% -------------------
+
+oslc_example :-
+  rdf_unload_graph(user),
+  oslc_service_provider_catalog(spc,'service provider catalog',des,pub,[d1,d2],[sp],[spc1],[oc],user),
+  oslc_service_provider(sp,'sevice provider',des,pub,[s],[d1,d2,d3],[pd1],[oc2],user),
+  oslc_service(s,dom,[cf,cf2],[qc,qc2],[sd,sd2],[cd1,cd2],[u1,u2],user),
+  oslc_creation_factory(cf,'creation factory',lab,cr,[rs1,rs2],[rt1,rt2],[u3,u4],user),
+  oslc_query_capability(qc,'query capability',lab,qb,[rs3,rs4],[rt3,rt4],[u5,u6],user),
+  oslc_dialog(sd,'dialog',lab,d,'100px','200px',[rt5],[u7,u8],user),
+  oslc_publisher(pub,'publisher',lab,id,icon,user),
+  oslc_oauth_configuration(oc, artu, au, oatu, user),
+  oslc_response_info(ri,'response info',des,np,5,user).
