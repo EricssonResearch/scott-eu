@@ -19,25 +19,30 @@
 :And rdf:type owl:Class ;
      rdfs:label "and".
 
-:Or rdf:type owl:Class .
+:Or rdf:type owl:Class ;
+    rdfs:label "or".
 
 :Not rdf:type owl:Class ;
-    rdfs:label "not".
+     rdfs:label "not".
 
-:Imply rdf:type owl:Class .
+:Imply rdf:type owl:Class ;
+       rdfs:label "imply".
 
 
 
 #aritmetic operators
 :GT rdf:type owl:Class ;
     rdfs:label ">".
-:LT rdf:type owl:Class .
+:LT rdf:type owl:Class ;
+    rdfs:label "<".
 :EQ rdf:type owl:Class .
 :GE rdf:type owl:Class .
 :LE rdf:type owl:Class .
 
-:Plus rdf:type owl:Class .
-:Minus rdf:type owl:Class .
+:Plus rdf:type owl:Class ;
+      rdfs:label "increase".
+:Minus rdf:type owl:Class ;
+      rdfs:label "decrease".
 :Multply rdf:type owl:Class .
 :Divide rdf:type owl:Class .
 

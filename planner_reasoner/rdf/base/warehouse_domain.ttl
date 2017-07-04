@@ -35,12 +35,12 @@ _:robot1 rdf:type owl:NamedIndividual ,
     rdfs:label "robot";
     pp:type _:t1 .
 
-_:from_waypoint rdf:type owl:NamedIndividual ,
+_:from_waypoint1 rdf:type owl:NamedIndividual ,
                 pp:Variable ;
     rdfs:label "from_waypoint";
     pp:type _:t2 .
 
-_:to_waypoint rdf:type owl:NamedIndividual ,
+_:to_waypoint1 rdf:type owl:NamedIndividual ,
                     pp:Variable ;
         rdfs:label "to_waypoint";
         pp:type _:t2 .
@@ -60,12 +60,12 @@ _:waypoint3 rdf:type owl:NamedIndividual ,
             rdfs:label "waypoint";
             pp:type _:t2 .
 
-_:object rdf:type owl:NamedIndividual ,
+_:object1 rdf:type owl:NamedIndividual ,
                   pp:Variable ;
         rdfs:label "object";
         pp:type _:t4 .
 
-_:place rdf:type owl:NamedIndividual ,
+_:place1 rdf:type owl:NamedIndividual ,
                   pp:Variable ;
         rdfs:label "place";
         pp:type _:t3 .
@@ -79,25 +79,25 @@ _:capacity rdf:type owl:NamedIndividual ,
            pp:hasTypes (_:t1) .
 
 _:charge_level rdf:type owl:NamedIndividual ,
-               pp:FluentType ;
+                        pp:FluentType ;
                rdfs:label "charge-level";
                pp:hasVariables ("r") ;
                pp:hasTypes (_:t1) .
 
  _:max_charge rdf:type owl:NamedIndividual ,
-                pp:FluentType ;
-                rdfs:label "max-Charge";
-                pp:hasVariables ("r") ;
-                pp:hasTypes (_:t1) .
+                       pp:FluentType ;
+              rdfs:label "max-Charge";
+              pp:hasVariables ("r") ;
+              pp:hasTypes (_:t1) .
 
 _:low_charge rdf:type owl:NamedIndividual ,
-               pp:FluentType;
-               rdfs:label "low-Charge";
-               pp:hasVariables ("r") ;
-               pp:hasTypes (_:t1) .
+                      pp:FluentType;
+             rdfs:label "low-Charge";
+             pp:hasVariables ("r") ;
+             pp:hasTypes (_:t1) .
 
 _:high_charge rdf:type owl:NamedIndividual ,
-              pp:FluentType;
+                       pp:FluentType;
               rdfs:label "high-Charge";
               pp:hasVariables ("r") ;
               pp:hasTypes (_:t1) .
@@ -106,61 +106,64 @@ _:high_charge rdf:type owl:NamedIndividual ,
 # fluents
 
 _:charge_level1 rdf:type owl:NamedIndividual ,
-               pp:Fluent ;
-               pp:hasVariables ( _:robot) ;
+                         pp:Fluent ;
+               pp:hasVariables ( _:robot1) ;
                pp:Type ( _:charge-level ) .
 
 _:low_charge1 rdf:type owl:NamedIndividual ,
-                pp:Fluent ;
-                pp:hasVariables ( _:robot) ;
-                pp:Type ( _:low_charge ) .
+                      pp:Fluent ;
+              pp:hasVariables ( _:robot1) ;
+              pp:Type ( _:low_charge ) .
 
 # predicates
 
 _:and1 rdf:type owl:NamedIndividual ,
                 pp:And ;
-                pp:hasArguments (_:isat1 _:can_move1 _:not1 _:gt1) .
+       pp:hasArguments (_:isat1 _:can_move1 _:not1).
 
 _:isat1 rdf:type owl:NamedIndividual ,
                  pp:Predicate ;
-                 pp:hasArguments (_:robot _:from_waypoint) ;
-                 rdfs:label "is-at".
+        pp:hasArguments (_:robot1 _:from_waypoint1) ;
+        rdfs:label "is-at".
 
-_:canmove rdf:type owl:NamedIndividual ,
-                pp:Predicate ;
-                pp:hasArguments (_:from_waypoint _:to_waypoint) ;
-                rdfs:label "can-move".
+_:can_move1 rdf:type owl:NamedIndividual ,
+                     pp:Predicate ;
+            pp:hasArguments (_:from_waypoint1 _:to_waypoint1) ;
+            rdfs:label "can-move".
 
 _:not1 rdf:type owl:NamedIndividual ,
                 pp:Not ;
-                pp:hasArguments (_:isrecharging) .
+       pp:hasArguments (_:isrecharging1) .
+
+_:not2 rdf:type owl:NamedIndividual ,
+                pp:Not ;
+       pp:hasArguments (_:isat1) .
 
 _:isrecharging1 rdf:type owl:NamedIndividual ,
-                pp:Predicate ;
-                pp:hasArguments (_:robot) ;
+                         pp:Predicate ;
+                pp:hasArguments (_:robot1) ;
                 rdfs:label "is-recharging".
 
 _:isrechargingstation1 rdf:type owl:NamedIndividual ,
-                pp:Predicate ;
-                pp:hasArguments (_:Place) ;
-                rdfs:label "is-recharging".
+                                pp:Predicate ;
+                       pp:hasArguments (_:place1) ;
+                       rdfs:label "is-recharging".
 
 _:gt1 rdf:type owl:NamedIndividual ,
                pp:GT ;
-               pp:hasArguments (_:charge_level1 _:low_charge1) .
-
+      pp:hasArguments (_:charge_level1 _:low_charge1) .
 
 
 _:eff1 rdf:type owl:NamedIndividual ,
-                pp:Not ;
-                pp:hasArguments (_:isrecharging1) .
+                       pp:And ;
+              pp:hasArguments (_:isat1 _:not1) .
 
 # actions
 
 :moveToWaypoint rdf:type owl:NamedIndividual ,
-                       pp:Action ;
-      rdfs:label "moveToWaypoint";
-      pp:hasVariables (_:robot1 _:from_waypoint _:to_waypoint) ;
-      pp:hasTypes (_:t1 _:t2 _:t2) ;
-      pp:hasPrecondition _:and1 ;
-      pp:hasEffect _:eff1 .
+                         pp:Action ;
+                rdfs:label "moveToWaypoint";
+                pp:hasVariables (_:robot1 _:from_waypoint1 _:to_waypoint1) ;
+                pp:hasTypes (_:t1 _:t2 _:t2) ;
+                pp:hasPrecondition _:and1 ;
+                pp:hasEffect _:eff1 .
