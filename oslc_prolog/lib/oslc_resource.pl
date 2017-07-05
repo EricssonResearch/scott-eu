@@ -20,18 +20,18 @@ rw_property(URI, Key, optional(Value), Graph) :-
 rw_property(URI, Key, xmlliteral(Value), Graph) :-
   ( var(Value)
   -> rdf(URI, Key, ^^(Value, rdf:'XMLLiteral'))
-  ;  ( atom(Value)
+  ;  ( atomic(Value)
      -> rdf_assert(URI, Key, Value^^rdf:'XMLLiteral', Graph)
-     ;  throw(error(type_error(atom, Value), _))
+     ;  throw(error(type_error(atomic, Value), _))
      )
   ).
 
 rw_property(URI, Key, string(Value), Graph) :-
   ( var(Value)
   -> rdf(URI, Key, ^^(Value, xsd:string))
-  ;  ( atom(Value)
+  ;  ( atomic(Value)
      -> rdf_assert(URI, Key, Value^^xsd:string, Graph)
-     ;  throw(error(type_error(atom, Value), _))
+     ;  throw(error(type_error(atomic, Value), _))
      )
   ).
 
@@ -47,7 +47,7 @@ rw_property(URI, Key, integer(Value), Graph) :-
 rw_property(URI, Key, boolean(Value), Graph) :-
   ( var(Value)
   -> rdf(URI, Key, ^^(Value, xsd:boolean))
-  ;  ( atom(Value), member(Value, [true, false])
+  ;  ( member(Value, [true, false])
      -> rdf_assert(URI, Key, Value^^xsd:boolean, Graph)
      ;  throw(error(type_error(boolean, Value), _))
      )
@@ -56,7 +56,7 @@ rw_property(URI, Key, boolean(Value), Graph) :-
 rw_property(URI, Key, datetime(Value), Graph) :-
   ( var(Value)
   -> rdf(URI, Key, ^^(Value, xsd:dateTime))
-  ;  ( atom(Value), parse_time(Value, iso_8601, _)
+  ;  ( parse_time(Value, iso_8601, _)
      -> rdf_assert(URI, Key, Value^^xsd:dateTime, Graph)
      ;  throw(error(type_error(datetime, Value), _))
      )
