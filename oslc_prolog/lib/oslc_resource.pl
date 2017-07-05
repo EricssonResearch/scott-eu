@@ -44,6 +44,24 @@ rw_property(URI, Key, integer(Value), Graph) :-
      )
   ).
 
+rw_property(URI, Key, boolean(Value), Graph) :-
+  ( var(Value)
+  -> rdf(URI, Key, ^^(Value, xsd:boolean))
+  ;  ( atom(Value), member(Value, [true, false])
+     -> rdf_assert(URI, Key, Value^^xsd:boolean, Graph)
+     ;  throw(error(type_error(boolean, Value), _))
+     )
+  ).
+
+rw_property(URI, Key, datetime(Value), Graph) :-
+  ( var(Value)
+  -> rdf(URI, Key, ^^(Value, xsd:dateTime))
+  ;  ( atom(Value), parse_time(Value, iso_8601, _)
+     -> rdf_assert(URI, Key, Value^^xsd:dateTime, Graph)
+     ;  throw(error(type_error(datetime, Value), _))
+     )
+  ).
+
 rw_property(URI, Key, resource(Value), Graph) :-
   ( var(Value)
   -> rdf(URI, Key, Value)

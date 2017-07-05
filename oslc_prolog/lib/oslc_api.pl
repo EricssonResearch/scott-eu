@@ -11,7 +11,11 @@
   oslc_response_info/6,
   oslc_error/5,
   oslc_extended_error/6,
-  oslc_results/4
+  oslc_resource_shape/5,
+  oslc_allowed_values/3,
+  oslc_property/18,
+  oslc_comment/9,
+  oslc_discussion/4
 ]).
 
 :- use_module(library(semweb/rdf_library)).
@@ -34,7 +38,11 @@
 :- rdf_meta oslc_response_info(r, -, -, r, -, -).
 :- rdf_meta oslc_error(r, -, -, r, -).
 :- rdf_meta oslc_extended_error(r, r, -, -, -, -).
-:- rdf_meta oslc_results(r, r, -, -).
+:- rdf_meta oslc_resource_shape(r, -, t, t, -).
+:- rdf_meta oslc_allowed_values(r, t, -).
+:- rdf_meta oslc_property(r, -, -, r, t, r, -, -, -, -, r, r, t, -, r, t, r, -).
+:- rdf_meta oslc_comment(r, -, r, -, -, -, r, r, -).
+:- rdf_meta oslc_discussion(r, r, t, -).
 
 oslc_service_provider_catalog(URI, Title, Description, Publisher, Domains,
                               ServiceProviders, ServiceProviderCatalogs,
@@ -200,13 +208,74 @@ oslc_extended_error(URI, MoreInfo, Rel, HintWidth, HintHeight, Graph) :-
     ], Graph)
   ).
 
-oslc_results(URI, Resource, Label, Graph) :-
+oslc_resource_shape(URI, Title, Describes, Properties, Graph) :-
   nonvar(URI),
   rdf_transaction(
     oslc_resource(URI, [
-      rdf:type = resource(oslc:'results'),
-      rdf:resource = optional(resource(Resource)),
-      oslc:label = optional(string(Label))
+      rdf:type = resource(oslc:'ResourceShape'),
+      dcterms:title = optional(xmlliteral(Title)),
+      oslc:describes = list(0, resource, Describes),
+      oslc:property = list(0, resource, Properties)
+    ], Graph)
+  ).
+
+oslc_allowed_values(URI, AllowedValues, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'AllowedValues'),
+      oslc:allowedValues = list(0, resource, AllowedValues)
+    ], Graph)
+  ).
+
+oslc_property(URI, Description, Title, AllowedValues, AllowedValueList, DefaultValue,
+              Hidden, IsMemberProperty, Name, MaxSize, Occurs, PropertyDefinition,
+              Ranges, ReadOnly, Representation, ValueTypes, ValueShape, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'Property'),
+      dcterms:description = optional(xmlliteral(Description)),
+      dcterms:title = optional(xmlliteral(Title)),
+      oslc:allowedValues = optional(resource(AllowedValues)),
+      oslc:allowedValue = list(0, resource, AllowedValueList),
+      oslc:defaultValue = optional(resource(DefaultValue)),
+      oslc:hidden = optional(boolean(Hidden)),
+      oslc:isMemberProperty = optional(boolean(IsMemberProperty)),
+      oslc:name = string(Name),
+      oslc:maxSize = optional(integer(MaxSize)),
+      oslc:occurs = resource(Occurs),
+      oslc:propertyDefinition = resource(PropertyDefinition),
+      oslc:range = list(0, resource, Ranges),
+      oslc:readOnly = optional(boolean(ReadOnly)),
+      oslc:representation = optional(resource(Representation)),
+      oslc:valueType = list(0, resource, ValueTypes),
+      oslc:valueShape = optional(resource(ValueShape))
+    ], Graph)
+  ).
+
+oslc_comment(URI, Identifier, Creator, Title, Created, Description,
+             PartOfDiscussion, InReplyTo, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      rdf:type = resource(oslc:'Comment'),
+      dcterms:identifier = string(Identifier),
+      dcterms:creator = resource(Creator),
+      dcterms:title = optional(xmlliteral(Title)),
+      dcterms:created = datetime(Created),
+      dcterms:description = xmlliteral(Description),
+      oslc:partOfDiscussion = resource(PartOfDiscussion),
+      oslc:inReplyTo = optional(resource(InReplyTo))
+    ], Graph)
+  ).
+
+oslc_discussion(URI, DiscussionAbout, Comments, Graph) :-
+  nonvar(URI),
+  rdf_transaction(
+    oslc_resource(URI, [
+      oslc:discussionAbout = resource(DiscussionAbout),
+      oslc:comment = list(0, resource, Comments)
     ], Graph)
   ).
 
@@ -217,7 +286,7 @@ oslc_example :-
   oslc_service_provider_catalog(spc,'service provider catalog',des,pub,[d1,d2],[sp],[spc1],[oc],user),
   oslc_service_provider(sp,'sevice provider',des,pub,[s],[d1,d2,d3],[pd1],[oc2],user),
   oslc_service(s,dom,[cf,cf2],[qc,qc2],[sd,sd2],[cd1,cd2],[u1,u2],user),
-  oslc_creation_factory(cf,'creation factory',lab,cr,[rs1,rs2],[rt1,rt2],[u3,u4],user),
+  oslc_creation_factory(cf,'creation factory',lab,cr,[rs,rs2],[rt1,rt2],[u3,u4],user),
   oslc_query_capability(qc,'query capability',lab,qb,[rs3,rs4],[rt3,rt4],[u5,u6],user),
   oslc_dialog(sd,'dialog',lab,d,'100px','200px',[rt5],[u7,u8],user),
   oslc_publisher(pub,'publisher',lab,id,icon,user),
@@ -225,4 +294,8 @@ oslc_example :-
   oslc_response_info(ri,'response info',des,np,5,user),
   oslc_error(er,'404','not found',exterr,user),
   oslc_extended_error(exterr,mi,rel,'50px','60px',user),
-  oslc_results(results,res,lab,user).
+  oslc_resource_shape(rs,'resource shape',[de1,de2],[pr,pr2],user),
+  oslc_allowed_values(av,[av1,av2],user),
+  oslc_property(pr,des,'property',av,[av3],dv,true,false,n,10,o,pd,[r1],false,rep,[vt1,vt2],vs,user),
+  oslc_comment(com,id,cr,'comment','2006-12-08T17:29:44+02:00',des,pod,irt,user),
+  oslc_discussion(dis,da,[com,com2],user).
