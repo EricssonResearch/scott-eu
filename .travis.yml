@@ -1,0 +1,9 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  - (cd ff-metric-docker && docker build -t ff-metric .)
+  - (cd warehousecontroller && docker build -t wc .)
+  - (cd deployment && docker-compose build)
