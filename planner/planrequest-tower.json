@@ -1,6 +1,0 @@
-{
-	"id" : "xyz",
-	"planner" : "FF",
-	"domain" : "tower-domain-1.pddl",
-	"problem" : "tower-problem-1.pddl"
-}
