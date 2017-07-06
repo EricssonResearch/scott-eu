@@ -44,22 +44,34 @@
 :- rdf_meta oslc_comment(r, -, r, -, -, -, r, r, -).
 :- rdf_meta oslc_discussion(r, r, t, -).
 
+
 oslc_service_provider_catalog(URI, Title, Description, Publisher, Domains,
                               ServiceProviders, ServiceProviderCatalogs,
                               OauthConfigurations, Graph) :-
   nonvar(URI),
   rdf_transaction(
     oslc_resource(URI, [
-      rdf:type = resource(oslc:'ServiceProviderCatalog'),
-      dcterms:title = optional(xmlliteral(Title)),
-      dcterms:description = optional(xmlliteral(Description)),
-      dcterms:publisher = optional(resource(Publisher)),
-      oslc:domain = list(0, resource, Domains),
-      oslc:serviceProvider = list(0, resource, ServiceProviders),
-      oslc:serviceProviderCatalog = list(0, resource, ServiceProviderCatalogs),
-      oslc:oauthConfiguration = list(0, resource, OauthConfigurations)
+      rdf:type = property(oslc:'Exactly-one', resource, oslc:'ServiceProviderCatalog'),
+      dcterms:title = property(oslc:'Zero-or-one', rdf:'XMLLiteral', Title),
+      dcterms:description = property(oslc:'Zero-or-one', rdf:'XMLLiteral', Description),
+      dcterms:publisher = property(oslc:'Zero-or-one', resource, Publisher),
+      oslc:domain = property(oslc:'Zero-or-many', resource, Domains),
+      oslc:serviceProvider = property(oslc:'Zero-or-many', resource, ServiceProviders),
+      oslc:serviceProviderCatalog = property(oslc:'Zero-or-many', resource, ServiceProviderCatalogs),
+      oslc:oauthConfiguration = property(oslc:'Zero-or-many', resource, OauthConfigurations)
     ], Graph)
   ).
+
+/*
+test :-
+  rdf_unload_graph(user),
+  oslc_service_provider_catalog(spc,call(oslc_api:test2),des,pub,[d1,d2],[sp],[spc1],[oc],user),
+  oslc_service_provider_catalog(spc,T,D,_,_,_,_,_,user),
+  format(current_output, 'RES = ~w ~w~n', [T,D]).
+
+test2(_URI, _Key, Value, _Graph) :-
+  Value = 'haha'.
+*/
 
 oslc_service_provider(URI, Title, Description, Publisher,
                       Services, Details, PrefixDefinitions,
@@ -67,7 +79,7 @@ oslc_service_provider(URI, Title, Description, Publisher,
   nonvar(URI),
   rdf_transaction(
     oslc_resource(URI, [
-      rdf:type = resource(oslc:'ServiceProvider'),
+      rdf:type = property(oslc:'Exactly-one', resource, oslc:'ServiceProvider'),
       dcterms:title = optional(xmlliteral(Title)),
       dcterms:description = optional(xmlliteral(Description)),
       dcterms:publisher = optional(resource(Publisher)),
