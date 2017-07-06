@@ -22,9 +22,11 @@
 :- use_module(library(oslc_resource)).
 
 :- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
+:- rdf_register_prefix(eos, 'http://ontology.cf.ericsson.net/eos#').
 
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
+:- rdf_load_library(eos).
 
 :- rdf_meta oslc_service_provider_catalog(r, -, -, r, t, t, t, t, -).
 :- rdf_meta oslc_service_provider(r, -, -, r, t, t, t, t, -).
