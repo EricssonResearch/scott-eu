@@ -15,14 +15,6 @@
 
 # ======== Properties
 
-:rdfType
-  a oslc:Property ;
-  oslc:propertyDefinition rdf:type ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
-  :prologName "type"^^rdf:XMLLiteral .
-
 :dctermsTitleZO
   a oslc:Property ;
   oslc:propertyDefinition dcterms:title ;
@@ -377,8 +369,7 @@
 :serviceProviderCatalogShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ServiceProviderCatalog ;
-  oslc:property :rdfType ,
-                :dctermsTitleZO ,
+  oslc:property :dctermsTitleZO ,
                 :dctermsDescription ,
                 :dctermsPublisher ,
                 :oslcDomain ,
@@ -396,8 +387,7 @@
 :serviceProviderShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ServiceProvider ;
-  oslc:property :rdfType ,
-                :dctermsTitleZO ,
+  oslc:property :dctermsTitleZO ,
                 :dctermsDescription ,
                 :dctermsPublisher ,
                 :oslcService ,
@@ -415,8 +405,7 @@
 :serviceShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Service ;
-  oslc:property :rdfType ,
-                :oslcDomainEO ,
+  oslc:property :oslcDomainEO ,
                 :oslcCreationFactory ,
                 :oslcQueryCapability ,
                 :oslcSelectionDialog ,
@@ -433,8 +422,7 @@
 :creationFactoryShape
   a oslc:ResourceShape ;
   oslc:describes oslc:CreationFactory ;
-  oslc:property :rdfType ,
-                :dctermsTitleEO ,
+  oslc:property :dctermsTitleEO ,
                 :oslcLabel ,
                 :oslcCreation ,
                 :oslcResourceShapeZM ,
@@ -451,8 +439,7 @@
 :queryCapabilityShape
   a oslc:ResourceShape ;
   oslc:describes oslc:QueryCapability ;
-  oslc:property :rdfType ,
-                :dctermsTitleEO ,
+  oslc:property :dctermsTitleEO ,
                 :oslcLabel ,
                 :oslcQueryBase ,
                 :oslcResourceShapeZO ,
@@ -469,8 +456,7 @@
 :dialogShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Dialog ;
-  oslc:property :rdfType ,
-                :dctermsTitleEO ,
+  oslc:property :dctermsTitleEO ,
                 :oslcLabel ,
                 :oslcDialog ,
                 :oslcHintWidth ,
@@ -488,8 +474,7 @@
 :publisherShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Publisher ;
-  oslc:property :rdfType ,
-                :dctermsTitleEO ,
+  oslc:property :dctermsTitleEO ,
                 :oslcLabel ,
                 :dctermsIdentifier ,
                 :oslcIcon .
@@ -504,8 +489,7 @@
 :prefixDefinitionShape
   a oslc:ResourceShape ;
   oslc:describes oslc:PrefixDefinition ;
-  oslc:property :rdfType ,
-                :oslcPrefix ,
+  oslc:property :oslcPrefix ,
                 :oslcPrefixBase .
 
 :prefixDefinition
@@ -518,8 +502,7 @@
 :oauthConfigurationShape
   a oslc:ResourceShape ;
   oslc:describes oslc:OAuthConfiguration ;
-  oslc:property :rdfType ,
-                :oslcOauthRequestTokenURI ,
+  oslc:property :oslcOauthRequestTokenURI ,
                 :oslcAuthorizationURI ,
                 :oslcOauthAccessTokenURI .
 
@@ -533,8 +516,7 @@
 :errorShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Error ;
-  oslc:property :rdfType ,
-                :oslcStatusCode ,
+  oslc:property :oslcStatusCode ,
                 :oslcMessage ,
                 :oslcExtendedError .
 
@@ -548,8 +530,7 @@
 :extendedErrorShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ExtendedError ;
-  oslc:property :rdfType ,
-                :oslcMoreInfo ,
+  oslc:property :oslcMoreInfo ,
                 :oslcRel ,
                 :oslcHintWidth ,
                 :oslcHintHeight .
