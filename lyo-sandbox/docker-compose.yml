@@ -4,3 +4,7 @@ services:
     build: ./sandbox-warehouse-webapp
     ports:
      - "8080:8080"
+  sandbox-twin:
+    build: ./sandbox-twin-webapp
+    ports:
+     - "8081:8080"

@@ -105,8 +105,8 @@ public class Application extends OslcWinkApplication {
             RESOURCE_CLASSES.add(VariableInstance.class);
             RESOURCE_CLASSES.add(Waypoint.class);
             RESOURCE_CLASSES.add(WhObject.class);
-            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.ConsumersService"));
-            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.OAuthService"));
+//            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.ConsumersService"));
+//            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.OAuthService"));
 
             // Catalog resources
             RESOURCE_CLASSES.add(ServiceProviderCatalogService.class);
@@ -132,24 +132,24 @@ public class Application extends OslcWinkApplication {
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE,                  Service.class);
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER,         ServiceProvider.class);
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER_CATALOG, ServiceProviderCatalog.class);
-        } catch (ClassNotFoundException e)
+        } catch (Exception e)
         {
             e.printStackTrace();
             System.err.println("Application failed to initialize");
         }
 
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_ACTION, Action.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_ACTIONTYPE, ActionType.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_MISSION, Mission.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_PLACE, Place.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_PLAN, Plan.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_PREDICATE, Predicate.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_PROBLEMSTATE, ProblemState.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_ACTION, Action.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_ACTIONTYPE, ActionType.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_MISSION, Mission.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_PLACE, Place.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_PLAN, Plan.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_PREDICATE, Predicate.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_PROBLEMSTATE, ProblemState.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_ROBOT, Robot.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_VARIABLE, Variable.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_VARIABLEINSTANCE, VariableInstance.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_WAYPOINT, Waypoint.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_WHOBJECT, WhObject.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_VARIABLE, Variable.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_VARIABLEINSTANCE, VariableInstance.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_WAYPOINT, Waypoint.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinConstants.PATH_WHOBJECT, WhObject.class);
     }
 
     public Application()

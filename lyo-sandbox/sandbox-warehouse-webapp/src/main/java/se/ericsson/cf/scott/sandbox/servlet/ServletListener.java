@@ -23,8 +23,6 @@ package se.ericsson.cf.scott.sandbox.servlet;
 
 import java.net.MalformedURLException;
 import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -32,15 +30,17 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.ServletRegistration;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.WarehouseControllerManager;
 
 // Start of user code imports
 // End of user code
 
 public class ServletListener implements ServletContextListener  {
+    private final static Logger log = LoggerFactory.getLogger(ServletListener.class);
     private static final String DEFAULT_BASE = "http://localhost:8080";
     private static final String PROPERTY_BASE = servletContextParameterName("baseurl");
-    private static final Logger logger = Logger.getLogger(ServletListener.class.getName());
 
     //If you are using another servletName in your web.xml configuration file, modify this variable early in the method contextInitialized below
     private static String servletName = "JAX-RS Servlet";
@@ -66,18 +66,20 @@ public class ServletListener implements ServletContextListener  {
         try {
             servletUrlPattern = getServletUrlPattern(servletContextEvent);
         } catch (Exception e1) {
-            logger.log(Level.SEVERE, "servletListner encountered problems identifying the servlet URL pattern.", e1);
+            log.error("servletListner encountered problems identifying the servlet URL pattern.", e1);
         }
         try {
             OSLC4JUtils.setPublicURI(baseUrl);
             OSLC4JUtils.setServletPath(servletUrlPattern);
+            log.info("Setting public URI to {}", baseUrl);
+            log.info("Setting setServletPath URI to {}", servletUrlPattern);
         } catch (MalformedURLException e) {
-            logger.log(Level.SEVERE, "servletListner encountered MalformedURLException.", e);
+            log.error("servletListner encountered MalformedURLException.", e);
         } catch (IllegalArgumentException e) {
-            logger.log(Level.SEVERE, "servletListner encountered IllegalArgumentException.", e);
+            log.error("servletListner encountered IllegalArgumentException.", e);
         }
 
-        logger.log(Level.INFO, "servletListner contextInitialized.");
+        log.debug("servletListner contextInitialized.");
 
         // Establish connection to data backbone etc ...
         WarehouseControllerManager.contextInitializeServletListener(servletContextEvent);

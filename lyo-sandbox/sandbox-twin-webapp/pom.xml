@@ -123,7 +123,7 @@
 				<version>9.3.9.v20160517</version>
 				<configuration>
 					<webAppConfig>
-						<contextPath>/sandbox-warehouse</contextPath>
+						<contextPath>/sandbox-twin</contextPath>
 					</webAppConfig>
 					<reload>automatic</reload>
 					<scanIntervalSeconds>5</scanIntervalSeconds>
