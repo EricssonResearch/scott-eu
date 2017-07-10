@@ -1,4 +1,4 @@
-# SCOTT sandbox
+﻿# SCOTT sandbox
 
 This repository contains all projects that are part of the *SCOTT Warehouse Sandbox* as described in the [SCOTT WP10](https://projects.avl.com/16/0094/WP10/default.aspx).
 
@@ -80,8 +80,7 @@ OSLC Prolog (`/oslc_prolog`) is a Prolog library designed to help developing OSL
 PDDL Examples (`/pddl-examples`) �s a folder with example PDDL files (domain and problem files), just for learning and testing purposes of the planners.
 
 
-
-## PDDL Planner
+## PDDL Planner   - deprecated code that has been merged into Metric-FF Docker (`/ff-metric-docker`) 
 
 PDDL Planner (`/planner`) exposes PDDL planners via a REST API (so does the [Metric-FF Docker](#metric-ff-docker), but using dockerised Metric-FF). Theoretically supports both OPTIC and Metric-FF, but only implements support for Metric-FF. Requires local installation of Metric-FF (see `ff_path` in [plannerService.py](planner/plannerService.py)).
 
@@ -96,3 +95,4 @@ Planner Reasoner (`/planner_reasoner`) uses an [internal planning ontology](plan
 > :point_right: Start by reading about the [`generate_pddl/2` predicate](planner_reasoner/lib/planner_reasoner.pl).
 
 > **NB!** The project is called a *reasoner* because it is using Prolog reasoning facilities, it does not do any reasoning over the ontology and does not produce any inferred triples (as of now).
+

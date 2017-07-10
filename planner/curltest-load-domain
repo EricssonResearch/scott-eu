@@ -1,7 +1,0 @@
-
-if [ "$#" -ne 1 ] ; then
-  echo "Usage: $0 <file-to-upload>" >&2
-  exit 1
-fi
-curl --request POST -H "Content-Type: multipart/form-data" -F "file=@$1" http://127.0.0.1:5000/planner/upload_problem
-
