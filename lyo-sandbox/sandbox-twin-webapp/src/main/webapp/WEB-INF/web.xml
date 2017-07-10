@@ -3,7 +3,7 @@
   xmlns="http://java.sun.com/xml/ns/javaee"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
   id="WebApp_ID" version="3.0">
-  <display-name>Adaptor Testing</display-name>
+  <display-name>Twin Adaptor</display-name>
   <context-param>
     <description>Base URI for the adaptor.</description>
     <param-name>com.sample.testing.servlet.baseurl</param-name>
@@ -14,7 +14,7 @@
     <listener-class>se.ericsson.cf.scott.sandbox.servlet.ServletListener</listener-class>
   </listener>
   <servlet>
-    <servlet-name>JAX-RS Servlet</servlet-name>
+    <servlet-name>oslc-servlet</servlet-name>
     <servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
     <init-param>
       <param-name>javax.ws.rs.Application</param-name>
