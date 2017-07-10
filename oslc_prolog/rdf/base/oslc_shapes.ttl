@@ -3,15 +3,9 @@
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
-@prefix	: <http://ontology.cf.ericsson.net/eos#> .
-@base	<http://ontology.cf.ericsson.net/eos> .
+@prefix	: <http://ontology.cf.ericsson.net/oslc_shapes#> .
+@base	<http://ontology.cf.ericsson.net/oslc_shapes> .
 
-
-:PrologPredicate
-  a rdfs:Class .
-
-:prologName
-  a rdf:Property .
 
 # ======== Properties
 
@@ -20,24 +14,21 @@
   oslc:propertyDefinition dcterms:title ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType rdf:XMLLiteral ;
-  :prologName "title"^^rdf:XMLLiteral .
+  oslc:valueType rdf:XMLLiteral .
 
 :dctermsTitleEO
   a oslc:Property ;
   oslc:propertyDefinition dcterms:title ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdf:XMLLiteral ;
-  :prologName "title"^^rdf:XMLLiteral .
+  oslc:valueType rdf:XMLLiteral .
 
 :dctermsDescription
   a oslc:Property ;
   oslc:propertyDefinition dcterms:description ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType rdf:XMLLiteral ;
-  :prologName "description"^^rdf:XMLLiteral .
+  oslc:valueType rdf:XMLLiteral .
 
 :dctermsPublisher
   a oslc:Property ;
@@ -46,8 +37,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:range oslc:Publisher ;
-  oslc:representation oslc:Inline ;
-  :prologName "publisher"^^rdf:XMLLiteral .
+  oslc:representation oslc:Inline .
 
 :oslcDomainZM
   a oslc:Property ;
@@ -55,8 +45,7 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "domain"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcDomainEO
   a oslc:Property ;
@@ -64,8 +53,7 @@
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "domain"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcServiceProvider
   a oslc:Property ;
@@ -74,8 +62,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:range oslc:ServiceProvider ;
-  oslc:representation oslc:Either ;
-  :prologName "service_provider"^^rdf:XMLLiteral .
+  oslc:representation oslc:Either .
 
 :oslcServiceProviderCatalog
   a oslc:Property ;
@@ -84,8 +71,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:range oslc:ServiceProviderCatalog ;
-  oslc:representation oslc:Either ;
-  :prologName "service_provider_catalog"^^rdf:XMLLiteral .
+  oslc:representation oslc:Either .
 
 :oslcOauthConfigurationZM
   a oslc:Property ;
@@ -94,8 +80,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:range oslc:OAuthConfiguration ;
-  oslc:representation oslc:Inline ;
-  :prologName "oauth_configuration"^^rdf:XMLLiteral .
+  oslc:representation oslc:Inline .
 
 :oslcOauthConfigurationZO
   a oslc:Property ;
@@ -104,8 +89,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:range oslc:OAuthConfiguration ;
-  oslc:representation oslc:Inline ;
-  :prologName "oauth_configuration"^^rdf:XMLLiteral .
+  oslc:representation oslc:Inline .
 
 :oslcService
   a oslc:Property ;
@@ -114,8 +98,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:range oslc:Service ;
-  oslc:representation oslc:Inline ;
-  :prologName "service"^^rdf:XMLLiteral .
+  oslc:representation oslc:Inline .
 
 :oslcDetails
   a oslc:Property ;
@@ -123,8 +106,7 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "details"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcPrefixDefinition
   a oslc:Property ;
@@ -132,8 +114,7 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Inline ;
-  :prologName "prefix_definition"^^rdf:XMLLiteral .
+  oslc:representation oslc:Inline .
 
 :oslcCreationFactory
   a oslc:Property ;
@@ -141,8 +122,7 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:range oslc:CreationFactory ;
-  :prologName "creation_factory"^^rdf:XMLLiteral .
+  oslc:range oslc:CreationFactory .
 
 :oslcQueryCapability
   a oslc:Property ;
@@ -150,8 +130,7 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:range oslc:QueryCapability ;
-  :prologName "query_capability"^^rdf:XMLLiteral .
+  oslc:range oslc:QueryCapability .
 
 :oslcSelectionDialog
   a oslc:Property ;
@@ -159,8 +138,7 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:range oslc:Dialog ;
-  :prologName "selection_dialog"^^rdf:XMLLiteral .
+  oslc:range oslc:Dialog .
 
 :oslcCreationDialog
   a oslc:Property ;
@@ -168,8 +146,7 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:range oslc:Dialog ;
-  :prologName "creation_dialog"^^rdf:XMLLiteral .
+  oslc:range oslc:Dialog .
 
 :oslcUsage
   a oslc:Property ;
@@ -177,16 +154,14 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "usage"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcLabel
   a oslc:Property ;
   oslc:propertyDefinition oslc:label ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType xsd:string ;
-  :prologName "label"^^rdf:XMLLiteral .
+  oslc:valueType xsd:string .
 
 :oslcCreation
   a oslc:Property ;
@@ -194,8 +169,7 @@
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "creation"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcResourceShapeZM
   a oslc:Property ;
@@ -204,8 +178,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:representation oslc:Reference ;
-  oslc:range oslc:ResourceShape ;
-  :prologName "resource_shape"^^rdf:XMLLiteral .
+  oslc:range oslc:ResourceShape .
 
 :oslcResourceShapeZO
   a oslc:Property ;
@@ -214,8 +187,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:representation oslc:Reference ;
-  oslc:range oslc:ResourceShape ;
-  :prologName "resource_shape"^^rdf:XMLLiteral .
+  oslc:range oslc:ResourceShape .
 
 :oslcResourceType
   a oslc:Property ;
@@ -223,8 +195,7 @@
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "resource_type"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcQueryBase
   a oslc:Property ;
@@ -232,8 +203,7 @@
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "query_base"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcDialog
   a oslc:Property ;
@@ -241,32 +211,28 @@
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "dialog"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcHintWidth
   a oslc:Property ;
   oslc:propertyDefinition oslc:hintWidth ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType xsd:string ;
-  :prologName "hint_width"^^rdf:XMLLiteral .
+  oslc:valueType xsd:string .
 
 :oslcHintHeight
   a oslc:Property ;
   oslc:propertyDefinition oslc:hintHeight ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType xsd:string ;
-  :prologName "hint_height"^^rdf:XMLLiteral .
+  oslc:valueType xsd:string .
 
 :dctermsIdentifier
   a oslc:Property ;
   oslc:propertyDefinition dcterms:identifier ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType xsd:string ;
-  :prologName "identifier"^^rdf:XMLLiteral .
+  oslc:valueType xsd:string .
 
 :oslcIcon
   a oslc:Property ;
@@ -274,16 +240,14 @@
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "icon"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcPrefix
   a oslc:Property ;
   oslc:propertyDefinition oslc:prefix ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType xsd:string ;
-  :prologName "prefix"^^rdf:XMLLiteral .
+  oslc:valueType xsd:string .
 
 :oslcPrefixBase
   a oslc:Property ;
@@ -291,8 +255,7 @@
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "prefix_base"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcOauthRequestTokenURI
   a oslc:Property ;
@@ -300,8 +263,7 @@
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "oauth_request_token_uri"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcAuthorizationURI
   a oslc:Property ;
@@ -309,8 +271,7 @@
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "authorization_uri"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcOauthAccessTokenURI
   a oslc:Property ;
@@ -318,24 +279,21 @@
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "oauth_access_token_uri"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcStatusCode
   a oslc:Property ;
   oslc:propertyDefinition oslc:statusCode ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType xsd:string ;
-  :prologName "status_code"^^rdf:XMLLiteral .
+  oslc:valueType xsd:string .
 
 :oslcMessage
   a oslc:Property ;
   oslc:propertyDefinition oslc:message ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType xsd:string ;
-  :prologName "message"^^rdf:XMLLiteral .
+  oslc:valueType xsd:string .
 
 :oslcExtendedError
   a oslc:Property ;
@@ -344,8 +302,7 @@
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
   oslc:representation oslc:Either ;
-  oslc:range oslc:ExtendedError ;
-  :prologName "extended_error"^^rdf:XMLLiteral .
+  oslc:range oslc:ExtendedError .
 
 :oslcMoreInfo
   a oslc:Property ;
@@ -353,16 +310,14 @@
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
   oslc:valueType rdfs:Resource ;
-  oslc:representation oslc:Reference ;
-  :prologName "more_info"^^rdf:XMLLiteral .
+  oslc:representation oslc:Reference .
 
 :oslcRel
   a oslc:Property ;
   oslc:propertyDefinition oslc:rel ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType xsd:string ;
-  :prologName "rel"^^rdf:XMLLiteral .
+  oslc:valueType xsd:string .
 
 # ======== Service Provider Catalog
 
@@ -377,11 +332,6 @@
                 :oslcServiceProviderCatalog ,
                 :oslcOauthConfigurationZM .
 
-:serviceProviderCatalog
-  a :PrologPredicate ;
-  :prologName "oslc_service_provider_catalog"^^rdf:XMLLiteral ;
-  oslc:resourceShape :serviceProviderCatalogShape .
-
 # ======== Service Provider
 
 :serviceProviderShape
@@ -395,11 +345,6 @@
                 :oslcPrefixDefinition ,
                 :oslcOauthConfigurationZO .
 
-:serviceProvider
-  a :PrologPredicate ;
-  :prologName "oslc_service_provider"^^rdf:XMLLiteral ;
-  oslc:resourceShape :serviceProviderShape .
-
 # ======== Service
 
 :serviceShape
@@ -411,11 +356,6 @@
                 :oslcSelectionDialog ,
                 :oslcCreationDialog ,
                 :oslcUsage .
-
-:service
-  a :PrologPredicate ;
-  :prologName "oslc_service"^^rdf:XMLLiteral ;
-  oslc:resourceShape :serviceShape .
 
 # ======== Creation Factory
 
@@ -429,11 +369,6 @@
                 :oslcResourceType ,
                 :oslcUsage .
 
-:creationFactory
-  a :PrologPredicate ;
-  :prologName "creation_factory"^^rdf:XMLLiteral ;
-  oslc:resourceShape :creationFactoryShape .
-
 # ======== Query Capability
 
 :queryCapabilityShape
@@ -445,11 +380,6 @@
                 :oslcResourceShapeZO ,
                 :oslcResourceType ,
                 :oslcUsage .
-
-:queryCapability
-  a :PrologPredicate ;
-  :prologName "query_capability"^^rdf:XMLLiteral ;
-  oslc:resourceShape :queryCapabilityShape .
 
 # ======== Dialog
 
@@ -464,11 +394,6 @@
                 :oslcResourceType ,
                 :oslcUsage .
 
-:queryCapability
-  a :PrologPredicate ;
-  :prologName "query_capability"^^rdf:XMLLiteral ;
-  oslc:resourceShape :queryCapabilityShape .
-
 # ======== Publisher
 
 :publisherShape
@@ -479,11 +404,6 @@
                 :dctermsIdentifier ,
                 :oslcIcon .
 
-:publisher
-  a :PrologPredicate ;
-  :prologName "publisher"^^rdf:XMLLiteral ;
-  oslc:resourceShape :publisherShape .
-
 # ======== Prefix Definition
 
 :prefixDefinitionShape
@@ -491,11 +411,6 @@
   oslc:describes oslc:PrefixDefinition ;
   oslc:property :oslcPrefix ,
                 :oslcPrefixBase .
-
-:prefixDefinition
-  a :PrologPredicate ;
-  :prologName "prefix_definition"^^rdf:XMLLiteral ;
-  oslc:resourceShape :prefixDefinitionShape .
 
 # ======== OAuth Configuration
 
@@ -506,11 +421,6 @@
                 :oslcAuthorizationURI ,
                 :oslcOauthAccessTokenURI .
 
-:oauthConfiguration
-  a :PrologPredicate ;
-  :prologName "oauth_configuration"^^rdf:XMLLiteral ;
-  oslc:resourceShape :oauthConfigurationShape .
-
 # ======== Error
 
 :errorShape
@@ -519,11 +429,6 @@
   oslc:property :oslcStatusCode ,
                 :oslcMessage ,
                 :oslcExtendedError .
-
-:error
-  a :PrologPredicate ;
-  :prologName "error"^^rdf:XMLLiteral ;
-  oslc:resourceShape :errorShape .
 
 # ======== Extended Error
 
@@ -534,8 +439,3 @@
                 :oslcRel ,
                 :oslcHintWidth ,
                 :oslcHintHeight .
-
-:extendedError
-  a :PrologPredicate ;
-  :prologName "extended_error"^^rdf:XMLLiteral ;
-  oslc:resourceShape :extendedErrorShape .

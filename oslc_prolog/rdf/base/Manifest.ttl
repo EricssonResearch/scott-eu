@@ -1,7 +1,8 @@
 @prefix	lib: <http://www.swi-prolog.org/rdf/library/> .
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
-@prefix	eos: <http://ontology.cf.ericsson.net/eos#> .
+@prefix	oslcs: <http://ontology.cf.ericsson.net/oslc_shapes#> .
+@prefix	oslcp: <http://ontology.cf.ericsson.net/oslc_prolog#> .
 
 <oslc>
 	a lib:Schema ;
@@ -10,9 +11,16 @@
 	lib:source oslc: ;
 	lib:schema <oslc.rdf> .
 
-<eos>
+<oslcs>
 	a lib:Schema ;
 	a lib:Virtual ;
-	dcterms:title "Extensions to Open Services for Prolog implementation" ;
-	lib:source eos: ;
-	lib:schema <eos.ttl> .
+	dcterms:title "OSLC resource shapes" ;
+	lib:source oslcs: ;
+	lib:schema <oslc_shapes.ttl> .
+
+<oslcp>
+	a lib:Schema ;
+	a lib:Virtual ;
+	dcterms:title "Prolog names of OSLC resources" ;
+	lib:source oslcp: ;
+	lib:schema <oslc_prolog.ttl> .
