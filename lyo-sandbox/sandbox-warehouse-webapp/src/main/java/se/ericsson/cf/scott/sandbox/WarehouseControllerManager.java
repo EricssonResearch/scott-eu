@@ -22,12 +22,16 @@
 
 package se.ericsson.cf.scott.sandbox;
 
+import com.google.common.collect.ImmutableList;
+import java.net.URI;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.resources.ResourceFactory;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.resources.Mission;
@@ -48,10 +52,72 @@ import se.ericsson.cf.scott.sandbox.resources.WhObject;
 public class WarehouseControllerManager {
 
     // Start of user code class_attributes
+    public final static String spId = "dummy";
+    private final static ResourceFactory factory = new ResourceFactory();
     // End of user code
     
     
     // Start of user code class_methods
+    private static List<Waypoint> getWaypoints() {
+        final List<Waypoint> resources;
+        resources = ImmutableList.of(factory.buildWaypoint("wp1",
+            ImmutableList.of(factory.wayPointLink("wp2"), factory.wayPointLink("wp2"))),
+            factory.buildWaypoint("wp2",
+                ImmutableList.of(factory.wayPointLink("wp3"), factory.wayPointLink("wp4"))),
+            factory.buildWaypoint("wp3",
+                ImmutableList.of(factory.wayPointLink("wp1"), factory.wayPointLink("wp4"))),
+            factory.buildWaypoint("wp4", ImmutableList.of()));
+        return resources;
+    }
+
+    private static List<Place> getPlaces() {
+        final List<Place> resources;
+        resources = ImmutableList.of(
+            factory.buildPlace("cbIn1", "ConveyorBelt", factory.wayPointLink("wp1"), 3),
+            factory.buildPlace("cbIn2", "ConveyorBelt", factory.wayPointLink("wp3"), 3),
+            factory.buildPlace("shelf1", "Shelf", factory.wayPointLink("wp2"), 5),
+            factory.buildPlace("chargingStation1", "ChargingStation",
+                factory.wayPointLink("wp4")));
+        return resources;
+    }
+
+    private static List<WhObject> getWhObjects() {
+        final List<WhObject> resources;
+        resources = ImmutableList.of(
+            factory.buildObject("o1", "Simple", factory.placeLink("shelf1")),
+            factory.buildObject("o2", "Simple", factory.placeLink("cbIn1")));
+        return resources;
+    }
+
+//    private static List<Robot> getRobots() {
+//        final List<Robot> resources;
+//        resources = ImmutableList.of(
+//            factory.buildRobot("robot1", factory.wayPointLink("wp2"), 7, 1, 10, 6, 3, false),
+//            factory.buildRobot("robot2", factory.wayPointLink("wp3"), 7, 1, 10, 6, 3, false));
+//        return resources;
+//    }
+
+    private static <T extends AbstractResource> T findResource(final List<T> resources,
+        final String uri) {
+        final Optional<T> opt = resources.stream().filter(
+            resource -> resource.getAbout().equals(URI.create(uri))).findFirst();
+        return opt.get();
+    }
+
+    /**
+     * https://stackoverflow.com/a/2222268/464590
+     */
+    public static String getFullURL(HttpServletRequest request) {
+        StringBuffer requestURL = request.getRequestURL();
+        String queryString = request.getQueryString();
+
+        if (queryString == null) {
+            return requestURL.toString();
+        } else {
+            return requestURL.append('?').append(queryString).toString();
+        }
+    }
+
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -75,7 +141,10 @@ public class WarehouseControllerManager {
         ServiceProviderInfo[] serviceProviderInfos = {};
         
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
-        // TODO Implement code to return the set of ServiceProviders
+        final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
+        serviceProviderInfo.serviceProviderId = spId;
+        serviceProviderInfo.name = "Handcrafted warehouse";
+        serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
         // End of user code
         return serviceProviderInfos;
     }
@@ -85,7 +154,7 @@ public class WarehouseControllerManager {
         List<WhObject> resources = null;
         
         // Start of user code queryWhObjects
-        // TODO Implement code to return a set of resources
+        resources = getWhObjects();
         // End of user code
         return resources;
     }
@@ -94,7 +163,7 @@ public class WarehouseControllerManager {
         List<Place> resources = null;
         
         // Start of user code queryPlaces
-        // TODO Implement code to return a set of resources
+        resources = getPlaces();
         // End of user code
         return resources;
     }
@@ -103,7 +172,7 @@ public class WarehouseControllerManager {
         List<Waypoint> resources = null;
         
         // Start of user code queryWaypoints
-        // TODO Implement code to return a set of resources
+        resources = getWaypoints();
         // End of user code
         return resources;
     }
@@ -123,7 +192,7 @@ public class WarehouseControllerManager {
         Place aResource = null;
         
         // Start of user code getPlace
-        // TODO Implement code to return a resource
+        aResource = findResource(getPlaces(), getFullURL(httpServletRequest));
         // End of user code
         return aResource;
     }
@@ -132,7 +201,7 @@ public class WarehouseControllerManager {
         Waypoint aResource = null;
         
         // Start of user code getWaypoint
-        // TODO Implement code to return a resource
+        aResource = findResource(getWaypoints(), getFullURL(httpServletRequest));
         // End of user code
         return aResource;
     }
@@ -141,7 +210,7 @@ public class WarehouseControllerManager {
         WhObject aResource = null;
         
         // Start of user code getWhObject
-        // TODO Implement code to return a resource
+        aResource = findResource(getWhObjects(), getFullURL(httpServletRequest));
         // End of user code
         return aResource;
     }
