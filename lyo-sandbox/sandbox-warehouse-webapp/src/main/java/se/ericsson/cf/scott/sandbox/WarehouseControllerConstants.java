@@ -28,18 +28,36 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 // Start of user code imports
 // End of user code
 
-public interface WarehouseAdaptorConstants
+public interface WarehouseControllerConstants
 {
     // Start of user code user constants
     // End of user code
 
+    public static String DUBLIN_CORE_DOMAIN = "http://purl.org/dc/terms/#";
+    public static String DUBLIN_CORE_NAMSPACE = "http://purl.org/dc/terms/#";
+    public static String DUBLIN_CORE_NAMSPACE_PREFIX = "dcterms";
+    public static String PLANNING_DOMAIN = "http://ontology.cf.ericsson.net/planning_problem#";
+    public static String PLANNING_NAMSPACE = "http://ontology.cf.ericsson.net/planning_problem#";
+    public static String PLANNING_NAMSPACE_PREFIX = "pp";
+    public static String RDFS_DOMAIN = "http://www.w3.org/2000/01/rdf-schema#";
+    public static String RDFS_NAMSPACE = "http://www.w3.org/2000/01/rdf-schema#";
+    public static String RDFS_NAMSPACE_PREFIX = "rdfs";
     public static String WAREHOUSE_DOMAIN = "http://aide.md.kth.se/ns/wh#";
     public static String WAREHOUSE_NAMSPACE = "http://aide.md.kth.se/ns/wh#";
     public static String WAREHOUSE_NAMSPACE_PREFIX = "wh";
 
+    public static String MISSION = "Mission";
+    public static String PATH_MISSION = "mission";
+    public static String TYPE_MISSION = PLANNING_NAMSPACE + "Mission";
     public static String PLACE = "Place";
     public static String PATH_PLACE = "place";
     public static String TYPE_PLACE = WAREHOUSE_NAMSPACE + "Place";
+    public static String PREDICATE = "Predicate";
+    public static String PATH_PREDICATE = "predicate";
+    public static String TYPE_PREDICATE = PLANNING_NAMSPACE + "Predicate";
+    public static String PROBLEMSTATE = "ProblemState";
+    public static String PATH_PROBLEMSTATE = "problemState";
+    public static String TYPE_PROBLEMSTATE = PLANNING_NAMSPACE + "ProblemState";
     public static String ROBOT = "Robot";
     public static String PATH_ROBOT = "robot";
     public static String TYPE_ROBOT = WAREHOUSE_NAMSPACE + "Robot";

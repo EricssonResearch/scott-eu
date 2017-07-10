@@ -47,7 +47,7 @@ End of user code
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <title>QueryCapability1</title>
+    <title>QueryCapabilityObjects</title>
     <%--
 Start of user code (RECOMMENDED) headStuff
     --%>
@@ -62,7 +62,7 @@ End of user code
         <tr>
           <td id="title">
             <p>
-              QueryCapability1
+              QueryCapabilityObjects
             </p>
           </td>
           <td id="information">

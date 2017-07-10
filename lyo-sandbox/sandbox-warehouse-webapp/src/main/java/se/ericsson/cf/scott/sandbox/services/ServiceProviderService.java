@@ -44,7 +44,7 @@ import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorManager;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 
 // Start of user code imports

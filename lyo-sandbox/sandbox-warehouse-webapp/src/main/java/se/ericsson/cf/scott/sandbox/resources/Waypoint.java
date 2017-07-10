@@ -68,11 +68,10 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorConstants;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 
 // Start of user code imports
-import java.lang.Object;
 // End of user code
 
 // Start of user code preClassCode
@@ -80,9 +79,9 @@ import java.lang.Object;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE)
-@OslcName(WarehouseAdaptorConstants.WAYPOINT)
-@OslcResourceShape(title = "Waypoint Resource Shape", describes = WarehouseAdaptorConstants.TYPE_WAYPOINT)
+@OslcNamespace(WarehouseControllerConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WarehouseControllerConstants.WAYPOINT)
+@OslcResourceShape(title = "Waypoint Resource Shape", describes = WarehouseControllerConstants.TYPE_WAYPOINT)
 public class Waypoint
     extends AbstractResource
     implements IWaypoint
@@ -146,7 +145,7 @@ public class Waypoint
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        WarehouseAdaptorConstants.PATH_WAYPOINT,  
+        WarehouseControllerConstants.PATH_WAYPOINT,  
         Waypoint.class);
     }
     
@@ -212,10 +211,10 @@ public class Waypoint
     // Start of user code getterAnnotation:canMove
     // End of user code
     @OslcName("canMove")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "canMove")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "canMove")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({WarehouseAdaptorConstants.TYPE_WAYPOINT})
+    @OslcRange({WarehouseControllerConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public HashSet<Link> getCanMove()
     {

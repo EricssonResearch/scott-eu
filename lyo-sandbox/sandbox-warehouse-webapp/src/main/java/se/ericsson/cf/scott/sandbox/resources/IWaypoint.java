@@ -62,25 +62,25 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorConstants;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 import se.ericsson.cf.scott.sandbox.resources.IWaypoint;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE)
-@OslcName(WarehouseAdaptorConstants.WAYPOINT)
-@OslcResourceShape(title = "Waypoint Resource Shape", describes = WarehouseAdaptorConstants.TYPE_WAYPOINT)
+@OslcNamespace(WarehouseControllerConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WarehouseControllerConstants.WAYPOINT)
+@OslcResourceShape(title = "Waypoint Resource Shape", describes = WarehouseControllerConstants.TYPE_WAYPOINT)
 public interface IWaypoint
 {
 
     public void addCanMove(final Link canMove );
 
     @OslcName("canMove")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "canMove")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "canMove")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({WarehouseAdaptorConstants.TYPE_WAYPOINT})
+    @OslcRange({WarehouseControllerConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public HashSet<Link> getCanMove();
 

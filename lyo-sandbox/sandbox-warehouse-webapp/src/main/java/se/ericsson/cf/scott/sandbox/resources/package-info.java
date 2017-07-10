@@ -26,7 +26,10 @@
     @OslcNamespaceDefinition(prefix = OslcConstants.OSLC_DATA_NAMESPACE_PREFIX,           namespaceURI = OslcConstants.OSLC_DATA_NAMESPACE),
     @OslcNamespaceDefinition(prefix = OslcConstants.RDF_NAMESPACE_PREFIX,                 namespaceURI = OslcConstants.RDF_NAMESPACE),
     @OslcNamespaceDefinition(prefix = OslcConstants.RDFS_NAMESPACE_PREFIX,                namespaceURI = OslcConstants.RDFS_NAMESPACE),
-    @OslcNamespaceDefinition(prefix = WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE_PREFIX, namespaceURI = WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE)
+    @OslcNamespaceDefinition(prefix = WarehouseControllerConstants.DUBLIN_CORE_NAMSPACE_PREFIX, namespaceURI = WarehouseControllerConstants.DUBLIN_CORE_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = WarehouseControllerConstants.PLANNING_NAMSPACE_PREFIX, namespaceURI = WarehouseControllerConstants.PLANNING_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = WarehouseControllerConstants.RDFS_NAMSPACE_PREFIX, namespaceURI = WarehouseControllerConstants.RDFS_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = WarehouseControllerConstants.WAREHOUSE_NAMSPACE_PREFIX, namespaceURI = WarehouseControllerConstants.WAREHOUSE_NAMSPACE)
 })
 package se.ericsson.cf.scott.sandbox.resources;
 
@@ -34,5 +37,5 @@ import org.eclipse.lyo.oslc4j.core.annotation.OslcNamespaceDefinition;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcSchema;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorConstants;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 

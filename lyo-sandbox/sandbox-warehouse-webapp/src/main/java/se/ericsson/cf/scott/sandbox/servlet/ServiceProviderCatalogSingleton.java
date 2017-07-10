@@ -47,7 +47,7 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorManager;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
 
 // Start of user code imports
@@ -264,7 +264,7 @@ public class ServiceProviderCatalogSingleton
 
             String basePath = OSLC4JUtils.getServletURI();
 
-            ServiceProviderInfo [] serviceProviderInfos = WarehouseAdaptorManager.getServiceProviderInfos(httpServletRequest);
+            ServiceProviderInfo [] serviceProviderInfos = WarehouseControllerManager.getServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (ServiceProviderInfo serviceProviderInfo : serviceProviderInfos) {
                 String identifier = serviceProviderIdentifier(serviceProviderInfo.serviceProviderId);

@@ -43,7 +43,7 @@ End of user code
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <title>WarehouseAdaptor OSLC Adapter: Service Provider Catalog</title>
+    <title>WarehouseController OSLC Adapter: Service Provider Catalog</title>
     <%--
 Start of user code (RECOMMENDED) headStuff
     --%>

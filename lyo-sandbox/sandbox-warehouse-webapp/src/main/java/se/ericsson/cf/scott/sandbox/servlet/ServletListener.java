@@ -32,7 +32,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.ServletRegistration;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorManager;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerManager;
 
 // Start of user code imports
 // End of user code
@@ -79,7 +79,7 @@ public class ServletListener implements ServletContextListener  {
         logger.log(Level.INFO, "servletListner contextInitialized.");
 
         // Establish connection to data backbone etc ...
-        WarehouseAdaptorManager.contextInitializeServletListener(servletContextEvent);
+        WarehouseControllerManager.contextInitializeServletListener(servletContextEvent);
 
         // Start of user code contextInitialized_final
         // End of user code
@@ -92,7 +92,7 @@ public class ServletListener implements ServletContextListener  {
         // End of user code
 
         // Shutdown connections to data backbone etc...
-        WarehouseAdaptorManager.contextDestroyServletListener(servletContextEvent);
+        WarehouseControllerManager.contextDestroyServletListener(servletContextEvent);
 
         // Start of user code contextDestroyed_final
         // End of user code

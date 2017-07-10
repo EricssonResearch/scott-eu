@@ -37,8 +37,8 @@ import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorConstants;
-import se.ericsson.cf.scott.sandbox.services.PlaceAndRobotAndWaypointAndWhObjectService;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
+import se.ericsson.cf.scott.sandbox.services.MissionAndPlaceAndWaypointAndWhObjectService;
 
 // Start of user code imports
 // End of user code
@@ -47,7 +47,7 @@ public class ServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        PlaceAndRobotAndWaypointAndWhObjectService.class
+        MissionAndPlaceAndWaypointAndWhObjectService.class
     };
 
     private ServiceProvidersFactory()
@@ -75,7 +75,13 @@ public class ServiceProvidersFactory
             new PrefixDefinition(OslcConstants.OSLC_DATA_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_DATA_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDF_NAMESPACE_PREFIX, new URI(OslcConstants.RDF_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
-            new PrefixDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE_PREFIX, new URI(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE))
+            new PrefixDefinition(WarehouseControllerConstants.DUBLIN_CORE_NAMSPACE_PREFIX, new URI(WarehouseControllerConstants.DUBLIN_CORE_NAMSPACE))
+,
+            new PrefixDefinition(WarehouseControllerConstants.PLANNING_NAMSPACE_PREFIX, new URI(WarehouseControllerConstants.PLANNING_NAMSPACE))
+,
+            new PrefixDefinition(WarehouseControllerConstants.RDFS_NAMSPACE_PREFIX, new URI(WarehouseControllerConstants.RDFS_NAMSPACE))
+,
+            new PrefixDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE_PREFIX, new URI(WarehouseControllerConstants.WAREHOUSE_NAMSPACE))
         };
 
         serviceProvider.setPrefixDefinitions(prefixDefinitions);

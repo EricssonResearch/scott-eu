@@ -68,7 +68,7 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorConstants;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 
 // Start of user code imports
@@ -79,9 +79,9 @@ import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE)
-@OslcName(WarehouseAdaptorConstants.ROBOT)
-@OslcResourceShape(title = "Robot Resource Shape", describes = WarehouseAdaptorConstants.TYPE_ROBOT)
+@OslcNamespace(WarehouseControllerConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WarehouseControllerConstants.ROBOT)
+@OslcResourceShape(title = "Robot Resource Shape", describes = WarehouseControllerConstants.TYPE_ROBOT)
 public class Robot
     extends AbstractResource
     implements IRobot
@@ -130,40 +130,11 @@ public class Robot
         // End of user code
     }
     
-    public Robot(final String serviceProviderId, final String robotId)
-           throws URISyntaxException
-    {
-        this (constructURI(serviceProviderId, robotId));
-        // Start of user code constructor3
-        // End of user code
-    }
-    
-    public static URI constructURI(final String serviceProviderId, final String robotId)
-    {
-        String basePath = OSLC4JUtils.getServletURI();
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("serviceProviderId", serviceProviderId);
-        pathParameters.put("robotId", robotId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/resources/robots/{robotId}";
-    
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
-    }
-    
-    public static Link constructLink(final String serviceProviderId, final String robotId , final String label)
-    {
-        return new Link(constructURI(serviceProviderId, robotId), label);
-    }
-    
-    public static Link constructLink(final String serviceProviderId, final String robotId)
-    {
-        return new Link(constructURI(serviceProviderId, robotId));
-    }
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        WarehouseAdaptorConstants.PATH_ROBOT,  
+        WarehouseControllerConstants.PATH_ROBOT,  
         Robot.class);
     }
     
@@ -224,7 +195,7 @@ public class Robot
     // Start of user code getterAnnotation:capacity
     // End of user code
     @OslcName("capacity")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "capacity")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "capacity")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
@@ -239,7 +210,7 @@ public class Robot
     // Start of user code getterAnnotation:chargeLevel
     // End of user code
     @OslcName("chargeLevel")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "chargeLevel")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "chargeLevel")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
@@ -253,10 +224,10 @@ public class Robot
     // Start of user code getterAnnotation:isAt
     // End of user code
     @OslcName("isAt")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "isAt")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "isAt")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({WarehouseAdaptorConstants.TYPE_WAYPOINT})
+    @OslcRange({WarehouseControllerConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public Link getIsAt()
     {
@@ -268,7 +239,7 @@ public class Robot
     // Start of user code getterAnnotation:isCharging
     // End of user code
     @OslcName("isCharging")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "isCharging")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "isCharging")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
@@ -282,7 +253,7 @@ public class Robot
     // Start of user code getterAnnotation:maxCharge
     // End of user code
     @OslcName("maxCharge")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "maxCharge")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "maxCharge")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
@@ -296,7 +267,7 @@ public class Robot
     // Start of user code getterAnnotation:highCharge
     // End of user code
     @OslcName("highCharge")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "highCharge")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "highCharge")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
@@ -310,7 +281,7 @@ public class Robot
     // Start of user code getterAnnotation:lowCharge
     // End of user code
     @OslcName("lowCharge")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "lowCharge")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "lowCharge")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

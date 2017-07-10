@@ -62,29 +62,29 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorConstants;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 import se.ericsson.cf.scott.sandbox.resources.IWaypoint;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE)
-@OslcName(WarehouseAdaptorConstants.PLACE)
-@OslcResourceShape(title = "Place Resource Shape", describes = WarehouseAdaptorConstants.TYPE_PLACE)
+@OslcNamespace(WarehouseControllerConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WarehouseControllerConstants.PLACE)
+@OslcResourceShape(title = "Place Resource Shape", describes = WarehouseControllerConstants.TYPE_PLACE)
 public interface IPlace
 {
 
 
     @OslcName("situatedAt")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "situatedAt")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "situatedAt")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({WarehouseAdaptorConstants.TYPE_WAYPOINT})
+    @OslcRange({WarehouseControllerConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public Link getSituatedAt();
 
     @OslcName("isChargingStation")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "isChargingStation")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "isChargingStation")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
@@ -92,14 +92,14 @@ public interface IPlace
     public Boolean isIsChargingStation();
 
     @OslcName("type")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "type")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "type")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)
     @OslcReadOnly(false)
     public String getType();
 
     @OslcName("capacity")
-    @OslcPropertyDefinition(WarehouseAdaptorConstants.WAREHOUSE_NAMSPACE + "capacity")
+    @OslcPropertyDefinition(WarehouseControllerConstants.WAREHOUSE_NAMSPACE + "capacity")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

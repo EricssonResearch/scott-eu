@@ -69,10 +69,13 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorManager;
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorConstants;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerManager;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.resources.Mission;
 import se.ericsson.cf.scott.sandbox.resources.Place;
+import se.ericsson.cf.scott.sandbox.resources.Predicate;
+import se.ericsson.cf.scott.sandbox.resources.ProblemState;
 import se.ericsson.cf.scott.sandbox.resources.Robot;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 import se.ericsson.cf.scott.sandbox.resources.WhObject;
@@ -82,9 +85,9 @@ import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 // Start of user code pre_class_code
 // End of user code
-@OslcService(WarehouseAdaptorConstants.WAREHOUSE_DOMAIN)
+@OslcService(WarehouseControllerConstants.WAREHOUSE_DOMAIN)
 @Path("serviceProviders/{serviceProviderId}/resources")
-public class PlaceAndRobotAndWaypointAndWhObjectService
+public class MissionAndPlaceAndWaypointAndWhObjectService
 {
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
@@ -96,17 +99,17 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
     // Start of user code class_methods
     // End of user code
 
-    public PlaceAndRobotAndWaypointAndWhObjectService()
+    public MissionAndPlaceAndWaypointAndWhObjectService()
     {
         super();
     }
 
     @OslcQueryCapability
     (
-        title = "QueryCapability1",
-        label = "QueryCapability1",
-        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseAdaptorConstants.PATH_WHOBJECT,
-        resourceTypes = {WarehouseAdaptorConstants.TYPE_WHOBJECT},
+        title = "QueryCapabilityObjects",
+        label = "",
+        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseControllerConstants.PATH_WHOBJECT,
+        resourceTypes = {WarehouseControllerConstants.TYPE_WHOBJECT},
         usages = {OslcConstants.OSLC_USAGE_DEFAULT}
     )
     @GET
@@ -128,10 +131,10 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         }
 
         // Start of user code queryWhObjects
-        // Here additional logic can be implemented that complements main action taken in WarehouseAdaptorManager
+        // Here additional logic can be implemented that complements main action taken in WarehouseControllerManager
         // End of user code
 
-        final List<WhObject> resources = WarehouseAdaptorManager.queryWhObjects(httpServletRequest, serviceProviderId, where, page, limit);
+        final List<WhObject> resources = WarehouseControllerManager.queryWhObjects(httpServletRequest, serviceProviderId, where, page, limit);
         return resources.toArray(new WhObject [resources.size()]);
     }
 
@@ -156,7 +159,7 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         // Start of user code queryWhObjectsAsHtml
         // End of user code
 
-        final List<WhObject> resources = WarehouseAdaptorManager.queryWhObjects(httpServletRequest, serviceProviderId, where, page, limit);
+        final List<WhObject> resources = WarehouseControllerManager.queryWhObjects(httpServletRequest, serviceProviderId, where, page, limit);
 
         if (resources!= null) {
             httpServletRequest.setAttribute("resources", resources);
@@ -179,10 +182,10 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
 
     @OslcQueryCapability
     (
-        title = "QueryCapability2",
-        label = "QueryCapability2",
-        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseAdaptorConstants.PATH_PLACE,
-        resourceTypes = {WarehouseAdaptorConstants.TYPE_PLACE},
+        title = "QueryCapabilityPlaces",
+        label = "",
+        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseControllerConstants.PATH_PLACE,
+        resourceTypes = {WarehouseControllerConstants.TYPE_PLACE},
         usages = {OslcConstants.OSLC_USAGE_DEFAULT}
     )
     @GET
@@ -204,10 +207,10 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         }
 
         // Start of user code queryPlaces
-        // Here additional logic can be implemented that complements main action taken in WarehouseAdaptorManager
+        // Here additional logic can be implemented that complements main action taken in WarehouseControllerManager
         // End of user code
 
-        final List<Place> resources = WarehouseAdaptorManager.queryPlaces(httpServletRequest, serviceProviderId, where, page, limit);
+        final List<Place> resources = WarehouseControllerManager.queryPlaces(httpServletRequest, serviceProviderId, where, page, limit);
         return resources.toArray(new Place [resources.size()]);
     }
 
@@ -232,7 +235,7 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         // Start of user code queryPlacesAsHtml
         // End of user code
 
-        final List<Place> resources = WarehouseAdaptorManager.queryPlaces(httpServletRequest, serviceProviderId, where, page, limit);
+        final List<Place> resources = WarehouseControllerManager.queryPlaces(httpServletRequest, serviceProviderId, where, page, limit);
 
         if (resources!= null) {
             httpServletRequest.setAttribute("resources", resources);
@@ -255,86 +258,10 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
 
     @OslcQueryCapability
     (
-        title = "QueryCapability3",
-        label = "QueryCapability3",
-        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseAdaptorConstants.PATH_ROBOT,
-        resourceTypes = {WarehouseAdaptorConstants.TYPE_ROBOT},
-        usages = {OslcConstants.OSLC_USAGE_DEFAULT}
-    )
-    @GET
-    @Path("queryRobots")
-    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
-    public Robot[] queryRobots(
-                                                    @PathParam("serviceProviderId") final String serviceProviderId ,
-                                                     @QueryParam("oslc.where") final String where,
-                                                     @QueryParam("page") final String pageString,
-                                                    @QueryParam("limit") final String limitString) throws IOException, ServletException
-    {
-        int page=0;
-        int limit=20;
-        if (null != pageString) {
-            page = Integer.parseInt(pageString);
-        }
-        if (null != limitString) {
-            limit = Integer.parseInt(limitString);
-        }
-
-        // Start of user code queryRobots
-        // Here additional logic can be implemented that complements main action taken in WarehouseAdaptorManager
-        // End of user code
-
-        final List<Robot> resources = WarehouseAdaptorManager.queryRobots(httpServletRequest, serviceProviderId, where, page, limit);
-        return resources.toArray(new Robot [resources.size()]);
-    }
-
-    @GET
-    @Path("queryRobots")
-    @Produces({ MediaType.TEXT_HTML })
-    public Response queryRobotsAsHtml(
-                                    @PathParam("serviceProviderId") final String serviceProviderId ,
-                                       @QueryParam("oslc.where") final String where,
-                                       @QueryParam("page") final String pageString,
-                                    @QueryParam("limit") final String limitString) throws ServletException, IOException
-    {
-        int page=0;
-        int limit=20;
-        if (null != pageString) {
-            page = Integer.parseInt(pageString);
-        }
-        if (null != limitString) {
-            limit = Integer.parseInt(limitString);
-        }
-
-        // Start of user code queryRobotsAsHtml
-        // End of user code
-
-        final List<Robot> resources = WarehouseAdaptorManager.queryRobots(httpServletRequest, serviceProviderId, where, page, limit);
-
-        if (resources!= null) {
-            httpServletRequest.setAttribute("resources", resources);
-            // Start of user code queryRobotsAsHtml_setAttributes
-            // End of user code
-
-            httpServletRequest.setAttribute("queryUri",
-                    uriInfo.getAbsolutePath().toString() + "?oslc.paging=true");
-            if (resources.size() > limit) {
-                resources.remove(resources.size() - 1);
-                httpServletRequest.setAttribute("nextPageUri",
-                        uriInfo.getAbsolutePath().toString() + "?oslc.paging=true&amp;page=" + (page + 1));
-            }
-            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/robotscollection.jsp");
-            rd.forward(httpServletRequest,httpServletResponse);
-        }
-
-        throw new WebApplicationException(Status.NOT_FOUND);
-    }
-
-    @OslcQueryCapability
-    (
-        title = "QueryCapability4",
-        label = "QueryCapability4",
-        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseAdaptorConstants.PATH_WAYPOINT,
-        resourceTypes = {WarehouseAdaptorConstants.TYPE_WAYPOINT},
+        title = "QueryCapabilityWaypoints",
+        label = "",
+        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseControllerConstants.PATH_WAYPOINT,
+        resourceTypes = {WarehouseControllerConstants.TYPE_WAYPOINT},
         usages = {OslcConstants.OSLC_USAGE_DEFAULT}
     )
     @GET
@@ -356,10 +283,10 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         }
 
         // Start of user code queryWaypoints
-        // Here additional logic can be implemented that complements main action taken in WarehouseAdaptorManager
+        // Here additional logic can be implemented that complements main action taken in WarehouseControllerManager
         // End of user code
 
-        final List<Waypoint> resources = WarehouseAdaptorManager.queryWaypoints(httpServletRequest, serviceProviderId, where, page, limit);
+        final List<Waypoint> resources = WarehouseControllerManager.queryWaypoints(httpServletRequest, serviceProviderId, where, page, limit);
         return resources.toArray(new Waypoint [resources.size()]);
     }
 
@@ -384,7 +311,7 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         // Start of user code queryWaypointsAsHtml
         // End of user code
 
-        final List<Waypoint> resources = WarehouseAdaptorManager.queryWaypoints(httpServletRequest, serviceProviderId, where, page, limit);
+        final List<Waypoint> resources = WarehouseControllerManager.queryWaypoints(httpServletRequest, serviceProviderId, where, page, limit);
 
         if (resources!= null) {
             httpServletRequest.setAttribute("resources", resources);
@@ -406,44 +333,44 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
     }
 
     @GET
-    @Path("whObjects/{whObjectId}")
+    @Path("missions/{missionId}")
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
-    public WhObject getWhObject(
-                @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("whObjectId") final String whObjectId
+    public Mission getMission(
+                @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("missionId") final String missionId
         ) throws IOException, ServletException, URISyntaxException
     {
         // Start of user code getResource_init
         // End of user code
 
-        final WhObject aWhObject = WarehouseAdaptorManager.getWhObject(httpServletRequest, serviceProviderId, whObjectId);
+        final Mission aMission = WarehouseControllerManager.getMission(httpServletRequest, serviceProviderId, missionId);
 
-        if (aWhObject != null) {
-            // Start of user code getWhObject
+        if (aMission != null) {
+            // Start of user code getMission
             // End of user code
-            return aWhObject;
+            return aMission;
         }
 
         throw new WebApplicationException(Status.NOT_FOUND);
     }
 
     @GET
-    @Path("whObjects/{whObjectId}")
+    @Path("missions/{missionId}")
     @Produces({ MediaType.TEXT_HTML })
-    public Response getWhObjectAsHtml(
-        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("whObjectId") final String whObjectId
+    public Response getMissionAsHtml(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("missionId") final String missionId
         ) throws ServletException, IOException, URISyntaxException
     {
-        // Start of user code getWhObjectAsHtml_init
+        // Start of user code getMissionAsHtml_init
         // End of user code
 
-        final WhObject aWhObject = WarehouseAdaptorManager.getWhObject(httpServletRequest, serviceProviderId, whObjectId);
+        final Mission aMission = WarehouseControllerManager.getMission(httpServletRequest, serviceProviderId, missionId);
 
-        if (aWhObject != null) {
-            httpServletRequest.setAttribute("aWhObject", aWhObject);
-            // Start of user code getWhObjectAsHtml_setAttributes
+        if (aMission != null) {
+            httpServletRequest.setAttribute("aMission", aMission);
+            // Start of user code getMissionAsHtml_setAttributes
             // End of user code
 
-            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/whobject.jsp");
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/mission.jsp");
             rd.forward(httpServletRequest,httpServletResponse);
         }
 
@@ -460,7 +387,7 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         // Start of user code getResource_init
         // End of user code
 
-        final Place aPlace = WarehouseAdaptorManager.getPlace(httpServletRequest, serviceProviderId, placeId);
+        final Place aPlace = WarehouseControllerManager.getPlace(httpServletRequest, serviceProviderId, placeId);
 
         if (aPlace != null) {
             // Start of user code getPlace
@@ -481,7 +408,7 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         // Start of user code getPlaceAsHtml_init
         // End of user code
 
-        final Place aPlace = WarehouseAdaptorManager.getPlace(httpServletRequest, serviceProviderId, placeId);
+        final Place aPlace = WarehouseControllerManager.getPlace(httpServletRequest, serviceProviderId, placeId);
 
         if (aPlace != null) {
             httpServletRequest.setAttribute("aPlace", aPlace);
@@ -489,51 +416,6 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
             // End of user code
 
             RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/place.jsp");
-            rd.forward(httpServletRequest,httpServletResponse);
-        }
-
-        throw new WebApplicationException(Status.NOT_FOUND);
-    }
-
-    @GET
-    @Path("robots/{robotId}")
-    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
-    public Robot getRobot(
-                @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("robotId") final String robotId
-        ) throws IOException, ServletException, URISyntaxException
-    {
-        // Start of user code getResource_init
-        // End of user code
-
-        final Robot aRobot = WarehouseAdaptorManager.getRobot(httpServletRequest, serviceProviderId, robotId);
-
-        if (aRobot != null) {
-            // Start of user code getRobot
-            // End of user code
-            return aRobot;
-        }
-
-        throw new WebApplicationException(Status.NOT_FOUND);
-    }
-
-    @GET
-    @Path("robots/{robotId}")
-    @Produces({ MediaType.TEXT_HTML })
-    public Response getRobotAsHtml(
-        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("robotId") final String robotId
-        ) throws ServletException, IOException, URISyntaxException
-    {
-        // Start of user code getRobotAsHtml_init
-        // End of user code
-
-        final Robot aRobot = WarehouseAdaptorManager.getRobot(httpServletRequest, serviceProviderId, robotId);
-
-        if (aRobot != null) {
-            httpServletRequest.setAttribute("aRobot", aRobot);
-            // Start of user code getRobotAsHtml_setAttributes
-            // End of user code
-
-            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/robot.jsp");
             rd.forward(httpServletRequest,httpServletResponse);
         }
 
@@ -550,7 +432,7 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         // Start of user code getResource_init
         // End of user code
 
-        final Waypoint aWaypoint = WarehouseAdaptorManager.getWaypoint(httpServletRequest, serviceProviderId, waypointId);
+        final Waypoint aWaypoint = WarehouseControllerManager.getWaypoint(httpServletRequest, serviceProviderId, waypointId);
 
         if (aWaypoint != null) {
             // Start of user code getWaypoint
@@ -571,7 +453,7 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
         // Start of user code getWaypointAsHtml_init
         // End of user code
 
-        final Waypoint aWaypoint = WarehouseAdaptorManager.getWaypoint(httpServletRequest, serviceProviderId, waypointId);
+        final Waypoint aWaypoint = WarehouseControllerManager.getWaypoint(httpServletRequest, serviceProviderId, waypointId);
 
         if (aWaypoint != null) {
             httpServletRequest.setAttribute("aWaypoint", aWaypoint);
@@ -579,6 +461,51 @@ public class PlaceAndRobotAndWaypointAndWhObjectService
             // End of user code
 
             RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/waypoint.jsp");
+            rd.forward(httpServletRequest,httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("whObjects/{whObjectId}")
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
+    public WhObject getWhObject(
+                @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("whObjectId") final String whObjectId
+        ) throws IOException, ServletException, URISyntaxException
+    {
+        // Start of user code getResource_init
+        // End of user code
+
+        final WhObject aWhObject = WarehouseControllerManager.getWhObject(httpServletRequest, serviceProviderId, whObjectId);
+
+        if (aWhObject != null) {
+            // Start of user code getWhObject
+            // End of user code
+            return aWhObject;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("whObjects/{whObjectId}")
+    @Produces({ MediaType.TEXT_HTML })
+    public Response getWhObjectAsHtml(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("whObjectId") final String whObjectId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getWhObjectAsHtml_init
+        // End of user code
+
+        final WhObject aWhObject = WarehouseControllerManager.getWhObject(httpServletRequest, serviceProviderId, whObjectId);
+
+        if (aWhObject != null) {
+            httpServletRequest.setAttribute("aWhObject", aWhObject);
+            // Start of user code getWhObjectAsHtml_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/whobject.jsp");
             rd.forward(httpServletRequest,httpServletResponse);
         }
 

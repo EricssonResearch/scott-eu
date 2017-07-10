@@ -50,8 +50,8 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorConstants;
-import se.ericsson.cf.scott.sandbox.WarehouseAdaptorManager;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 
 // Start of user code imports
@@ -114,7 +114,7 @@ public class ServiceProviderCatalogService
         ServiceProviderCatalog catalog =  ServiceProviderCatalogSingleton.getServiceProviderCatalog(httpServletRequest);
 
         if (catalog != null) {
-            httpServletResponse.addHeader(WarehouseAdaptorConstants.HDR_OSLC_VERSION,"2.0");
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION,"2.0");
             return catalog;
         }
 

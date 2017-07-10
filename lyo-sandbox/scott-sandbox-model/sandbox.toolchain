@@ -4,31 +4,37 @@
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Service Provider" description="Service Provider">
         <services domainSpecification="//@specification/@domainSpecifications.0">
-          <queryCapabilities title="QueryCapability1" label="QueryCapability1" queryBaseURI="queryObjects" resourceTypes="//@specification/@domainSpecifications.0/@resources.3"/>
-          <queryCapabilities title="QueryCapability2" label="QueryCapability2" queryBaseURI="queryPlaces" resourceTypes="//@specification/@domainSpecifications.0/@resources.1"/>
-          <queryCapabilities title="QueryCapability3" label="QueryCapability3" queryBaseURI="queryRobots" resourceTypes="//@specification/@domainSpecifications.0/@resources.0"/>
-          <queryCapabilities title="QueryCapability4" label="QueryCapability4" queryBaseURI="queryWaypoints" resourceTypes="//@specification/@domainSpecifications.0/@resources.2"/>
-          <basicCapabilities resourceTypes="//@specification/@domainSpecifications.0/@resources.3 //@specification/@domainSpecifications.0/@resources.1 //@specification/@domainSpecifications.0/@resources.0 //@specification/@domainSpecifications.0/@resources.2"/>
+          <queryCapabilities title="QueryCapabilityObjects" label="" queryBaseURI="queryObjects" resourceTypes="//@specification/@domainSpecifications.0/@resources.3"/>
+          <queryCapabilities title="QueryCapabilityPlaces" label="" queryBaseURI="queryPlaces" resourceTypes="//@specification/@domainSpecifications.0/@resources.1"/>
+          <queryCapabilities title="QueryCapabilityWaypoints" label="" queryBaseURI="queryWaypoints" resourceTypes="//@specification/@domainSpecifications.0/@resources.2"/>
+          <basicCapabilities resourceTypes="//@specification/@domainSpecifications.1/@resources.27 //@specification/@domainSpecifications.0/@resources.1 //@specification/@domainSpecifications.0/@resources.2 //@specification/@domainSpecifications.0/@resources.3"/>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>
     <specification/>
     <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
-  <adaptorInterfaces name="PlannerReasoner" javaClassBaseNamespace="your.basepackage.name" javaFilesBasePath="../planning-client/src/main/java/" jspFilesBasePath="../planning-client/src/main/webapp/" javascriptFilesBasePath="../planning-client/src/main/webapp/">
+  <adaptorInterfaces name="PlannerReasoner" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox" javaFilesBasePath="../scott-planner-webapp/src/main/java/" jspFilesBasePath="../scott-planner-webapp/src/main/webapp/" javascriptFilesBasePath="../scott-planner-webapp/src/main/webapp/">
+    <serviceProviderCatalog title="Planner Reasoner catalog">
+      <serviceProviders title="robot" description="Robot planner provider">
+        <services domainSpecification="//@specification/@domainSpecifications.1">
+          <basicCapabilities resourceTypes="//@specification/@domainSpecifications.1/@resources.28"/>
+        </services>
+      </serviceProviders>
+    </serviceProviderCatalog>
     <specification/>
-    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor" servicedResources="//@specification/@domainSpecifications.0/@resources.1 //@specification/@domainSpecifications.0/@resources.0 //@specification/@domainSpecifications.0/@resources.2 //@specification/@domainSpecifications.0/@resources.3"/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor" servicedResources="//@specification/@domainSpecifications.1/@resources.27"/>
   </adaptorInterfaces>
-  <adaptorInterfaces name="MOO" javaClassBaseNamespace="your.basepackage.name" javaFilesBasePath="../adaptorInterface3/src/main/java/" jspFilesBasePath="../adaptorInterface3/src/main/webapp/" javascriptFilesBasePath="../adaptorInterface3/src/main/webapp/">
+  <adaptorInterfaces name="Twin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox" javaFilesBasePath="../sandbox-twin-webapp/src/main/java/" jspFilesBasePath="../sandbox-twin-webapp/src/main/webapp/" javascriptFilesBasePath="../sandbox-twin-webapp/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Service Provider" description="Service Provider">
-        <services domainSpecification="//@specification/@domainSpecifications.1">
-          <basicCapabilities/>
+        <services domainSpecification="//@specification/@domainSpecifications.0">
+          <basicCapabilities resourceTypes="//@specification/@domainSpecifications.0/@resources.0"/>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>
     <specification/>
-    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor" servicedResources="//@specification/@domainSpecifications.1/@resources.28"/>
   </adaptorInterfaces>
   <specification>
     <domainSpecifications name="Warehouse" namespaceURI="http://aide.md.kth.se/ns/wh#" namespacePrefix="//@specification/@domainPrefixes.0">
@@ -50,23 +56,94 @@
       <resourceProperties name="highCharge" valueType="Integer"/>
       <resourceProperties name="lowCharge" valueType="Integer"/>
     </domainSpecifications>
-    <domainSpecifications name="PDDL Planning" namespaceURI="http://ontology.cf.ericsson.net/planning_problem#" namespacePrefix="//@specification/@domainPrefixes.1">
-      <resources name="Problem" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.5 //@specification/@domainSpecifications.1/@resourceProperties.6"/>
+    <domainSpecifications name="Planning" namespaceURI="http://ontology.cf.ericsson.net/planning_problem#" namespacePrefix="//@specification/@domainPrefixes.1">
+      <resources name="Problem" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.5"/>
       <resources name="ProblemState" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.1 //@specification/@domainSpecifications.1/@resourceProperties.2 //@specification/@domainSpecifications.1/@resourceProperties.3 //@specification/@domainSpecifications.1/@resourceProperties.4"/>
       <resources name="ProblemFile" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.0"/>
-      <resources name="Action"/>
-      <resources name="Variable"/>
-      <resources name="VariableType"/>
+      <resources name="ActionType">
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.6"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.16"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.17"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
+      </resources>
+      <resources name="VariableInstance">
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.8"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.10"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.18"/>
+      </resources>
+      <resources name="Variable">
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.7"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.10"/>
+      </resources>
+      <resources name="FluentInstance" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.11 //@specification/@domainSpecifications.1/@resourceProperties.9"/>
+      <resources name="Fluent">
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.6"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
+      </resources>
+      <resources name="GreaterThan" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
+      <resources name="And" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
+      <resources name="Or" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
+      <resources name="Not" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
+      <resources name="Imply"/>
+      <resources name="LessThan" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
+      <resources name="EqualTo" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
+      <resources name="Minus" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
+      <resources name="Multiply" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
+      <resources name="GreaterOrEqual" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
+      <resources name="Plus" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
+      <resources name="Divide" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
+      <resources name="LessOrEqual" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
+      <resources name="ForAll" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.15"/>
+      <resources name="Exists"/>
+      <resources name="When"/>
+      <resources name="Predicate">
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
+      </resources>
+      <resources name="DomainPredicate" extends="//@specification/@domainSpecifications.1/@resources.24" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.15"/>
+      <resources name="PredicateArgument" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.14 //@specification/@domainSpecifications.1/@resourceProperties.10"/>
+      <resources name="Mission">
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.19"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.20"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.21"/>
+        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.22"/>
+      </resources>
+      <resources name="Plan" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.23 //@specification/@domainSpecifications.1/@resourceProperties.25"/>
+      <resources name="Action" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.24 //@specification/@domainSpecifications.1/@resourceProperties.9 //@specification/@domainSpecifications.1/@resourceProperties.10"/>
       <resourceProperties name="body" valueType="String"/>
       <resourceProperties name="robots" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.0" description=""/>
       <resourceProperties name="places" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.1"/>
       <resourceProperties name="objects" occurs="zeroOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.3"/>
       <resourceProperties name="waypoints" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.2"/>
-      <resourceProperties name="state" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.1"/>
       <resourceProperties name="problemOutput" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.2"/>
-      <resourceProperties name="variableType" occurs="zeroOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.0 //@specification/@domainSpecifications.1/@resources.4"/>
+      <resourceProperties title="" name="hasVariable" occurs="zeroOrMany" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.5"/>
+      <resourceProperties name="resourceType" valueType="Resource"/>
+      <resourceProperties name="value" valueType="LocalResource"/>
+      <resourceProperties name="withVariable" occurs="zeroOrMany" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.4"/>
+      <resourceProperties name="order" valueType="Integer"/>
+      <resourceProperties name="fluentType" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.7"/>
+      <resourceProperties name="leftPredicate" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
+      <resourceProperties name="rightPredicate" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
+      <resourceProperties name="predicate" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
+      <resourceProperties name="argument" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.26"/>
+      <resourceProperties name="precondition" occurs="zeroOrOne" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
+      <resourceProperties name="effect" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
+      <resourceProperties title="" name="instanceOf" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.5"/>
+      <resourceProperties name="planningDeadline" valueType="DateTime"/>
+      <resourceProperties name="missionDeadline" valueType="DateTime"/>
+      <resourceProperties name="goalPredicate" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
+      <resourceProperties name="initialState" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.1"/>
+      <resourceProperties name="forMission" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.27"/>
+      <resourceProperties name="ofActionType" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.3"/>
+      <resourceProperties name="relatesToAction" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.29"/>
     </domainSpecifications>
+    <domainSpecifications name="Domain3" namespaceURI="http://your.organisation.domain/nsp3#" namespacePrefix="//@specification/@domainPrefixes.2"/>
     <domainPrefixes name="wh"/>
-    <domainPrefixes name="pddl"/>
+    <domainPrefixes name="pp"/>
+    <domainPrefixes name="nsp3"/>
   </specification>
 </oslc4j_tc:Toolchain>
