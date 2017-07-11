@@ -1,6 +1,0 @@
-{
-	"id" : "xyz",
-	"planner" : "FF",
-	"domain" : "gripper-domain-1.pddl",
-	"problem" : "gripper-problem-1.pddl"
-}
