@@ -326,7 +326,7 @@
   oslc:property :dctermsTitleZO ,
                 :dctermsDescription ,
                 :dctermsPublisher ,
-                :oslcDomain ,
+                :oslcDomainZM ,
                 :oslcServiceProvider ,
                 :oslcServiceProviderCatalog ,
                 :oslcOauthConfigurationZM .
