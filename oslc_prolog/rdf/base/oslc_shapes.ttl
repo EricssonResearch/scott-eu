@@ -1,5 +1,4 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
@@ -35,7 +34,7 @@
   oslc:propertyDefinition dcterms:publisher ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:range oslc:Publisher ;
   oslc:representation oslc:Inline .
 
@@ -44,7 +43,7 @@
   oslc:propertyDefinition oslc:domain ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcDomainEO
@@ -52,7 +51,7 @@
   oslc:propertyDefinition oslc:domain ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcServiceProvider
@@ -60,7 +59,7 @@
   oslc:propertyDefinition oslc:serviceProvider ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:range oslc:ServiceProvider ;
   oslc:representation oslc:Either .
 
@@ -69,7 +68,7 @@
   oslc:propertyDefinition oslc:serviceProviderCatalog ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:range oslc:ServiceProviderCatalog ;
   oslc:representation oslc:Either .
 
@@ -78,7 +77,7 @@
   oslc:propertyDefinition oslc:oauthConfiguration ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:range oslc:OAuthConfiguration ;
   oslc:representation oslc:Inline .
 
@@ -87,7 +86,7 @@
   oslc:propertyDefinition oslc:oauthConfiguration ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:range oslc:OAuthConfiguration ;
   oslc:representation oslc:Inline .
 
@@ -96,7 +95,7 @@
   oslc:propertyDefinition oslc:service ;
   oslc:occurs oslc:One-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:range oslc:Service ;
   oslc:representation oslc:Inline .
 
@@ -105,7 +104,7 @@
   oslc:propertyDefinition oslc:details ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcPrefixDefinition
@@ -113,7 +112,7 @@
   oslc:propertyDefinition oslc:prefixDefinition ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:representation oslc:Inline .
 
 :oslcCreationFactory
@@ -121,7 +120,7 @@
   oslc:propertyDefinition oslc:creationFactory ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:range oslc:CreationFactory .
 
 :oslcQueryCapability
@@ -129,7 +128,7 @@
   oslc:propertyDefinition oslc:queryCapability ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:range oslc:QueryCapability .
 
 :oslcSelectionDialog
@@ -137,7 +136,7 @@
   oslc:propertyDefinition oslc:selectionDialog ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:range oslc:Dialog .
 
 :oslcCreationDialog
@@ -145,7 +144,7 @@
   oslc:propertyDefinition oslc:creationDialog ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:range oslc:Dialog .
 
 :oslcUsage
@@ -153,7 +152,7 @@
   oslc:propertyDefinition oslc:usage ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcLabel
@@ -168,7 +167,7 @@
   oslc:propertyDefinition oslc:creation ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcResourceShapeZM
@@ -176,7 +175,7 @@
   oslc:propertyDefinition oslc:resourceShape ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference ;
   oslc:range oslc:ResourceShape .
 
@@ -185,7 +184,7 @@
   oslc:propertyDefinition oslc:resourceShape ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference ;
   oslc:range oslc:ResourceShape .
 
@@ -194,7 +193,7 @@
   oslc:propertyDefinition oslc:resourceType ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcQueryBase
@@ -202,15 +201,15 @@
   oslc:propertyDefinition oslc:queryBase ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcDialog
   a oslc:Property ;
-  oslc:propertyDefinition oslc:Dialog ;
+  oslc:propertyDefinition oslc:dialog ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcHintWidth
@@ -239,7 +238,7 @@
   oslc:propertyDefinition oslc:icon ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcPrefix
@@ -254,7 +253,7 @@
   oslc:propertyDefinition oslc:prefixBase ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcOauthRequestTokenURI
@@ -262,7 +261,7 @@
   oslc:propertyDefinition oslc:oauthRequestTokenURI ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcAuthorizationURI
@@ -270,7 +269,7 @@
   oslc:propertyDefinition oslc:authorizationURI ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcOauthAccessTokenURI
@@ -278,7 +277,7 @@
   oslc:propertyDefinition oslc:oauthAccessTokenURI ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcStatusCode
@@ -300,7 +299,7 @@
   oslc:propertyDefinition oslc:extendedError ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:AnyResource ;
   oslc:representation oslc:Either ;
   oslc:range oslc:ExtendedError .
 
@@ -309,7 +308,7 @@
   oslc:propertyDefinition oslc:moreInfo ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
-  oslc:valueType rdfs:Resource ;
+  oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
 
 :oslcRel

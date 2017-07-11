@@ -7,205 +7,222 @@
 @base	<http://ontology.cf.ericsson.net/oslc_prolog> .
 
 
-:PrologPredicate
+:PrologResource
   a rdfs:Class .
 
-:prologName
+:prologPredicate
+  a rdf:Property .
+
+:prologModule
+  a rdf:Property .
+
+:prologOption
   a rdf:Property .
 
 # ======== Properties
 
 oslcs:dctermsTitleZO
-  :prologName "title"^^xsd:string .
+  :prologOption "title"^^xsd:string .
 
 oslcs:dctermsTitleEO
-  :prologName "title"^^xsd:string .
+  :prologOption "title"^^xsd:string .
 
 oslcs:dctermsDescription
-  :prologName "description"^^xsd:string .
+  :prologOption "description"^^xsd:string .
 
 oslcs:dctermsPublisher
-  :prologName "publisher"^^xsd:string .
+  :prologOption "publisher"^^xsd:string .
 
 oslcs:oslcDomainZM
-  :prologName "domain"^^xsd:string .
+  :prologOption "domain"^^xsd:string .
 
 oslcs:oslcDomainEO
-  :prologName "domain"^^xsd:string .
+  :prologOption "domain"^^xsd:string .
 
 oslcs:oslcServiceProvider
-  :prologName "service_provider"^^xsd:string .
+  :prologOption "service_provider"^^xsd:string .
 
 oslcs:oslcServiceProviderCatalog
-  :prologName "service_provider_catalog"^^xsd:string .
+  :prologOption "service_provider_catalog"^^xsd:string .
 
 oslcs:oslcOauthConfigurationZM
-  :prologName "oauth_configuration"^^xsd:string .
+  :prologOption "oauth_configuration"^^xsd:string .
 
 oslcs:oslcOauthConfigurationZO
-  :prologName "oauth_configuration"^^xsd:string .
+  :prologOption "oauth_configuration"^^xsd:string .
 
 oslcs:oslcService
-  :prologName "service"^^xsd:string .
+  :prologOption "service"^^xsd:string .
 
 oslcs:oslcDetails
-  :prologName "details"^^xsd:string .
+  :prologOption "details"^^xsd:string .
 
 oslcs:oslcPrefixDefinition
-  :prologName "prefix_definition"^^xsd:string .
+  :prologOption "prefix_definition"^^xsd:string .
 
 oslcs:oslcCreationFactory
-  :prologName "creation_factory"^^xsd:string .
+  :prologOption "creation_factory"^^xsd:string .
 
 oslcs:oslcQueryCapability
-  :prologName "query_capability"^^xsd:string .
+  :prologOption "query_capability"^^xsd:string .
 
 oslcs:oslcSelectionDialog
-  :prologName "selection_dialog"^^xsd:string .
+  :prologOption "selection_dialog"^^xsd:string .
 
 oslcs:oslcCreationDialog
-  :prologName "creation_dialog"^^xsd:string .
+  :prologOption "creation_dialog"^^xsd:string .
 
 oslcs:oslcUsage
-  :prologName "usage"^^xsd:string .
+  :prologOption "usage"^^xsd:string .
 
 oslcs:oslcLabel
-  :prologName "label"^^xsd:string .
+  :prologOption "label"^^xsd:string .
 
 oslcs:oslcCreation
-  :prologName "creation"^^xsd:string .
+  :prologOption "creation"^^xsd:string .
 
 oslcs:oslcResourceShapeZM
-  :prologName "resource_shape"^^xsd:string .
+  :prologOption "resource_shape"^^xsd:string .
 
 oslcs:oslcResourceShapeZO
-  :prologName "resource_shape"^^xsd:string .
+  :prologOption "resource_shape"^^xsd:string .
 
 oslcs:oslcResourceType
-  :prologName "resource_type"^^xsd:string .
+  :prologOption "resource_type"^^xsd:string .
 
 oslcs:oslcQueryBase
-  :prologName "query_base"^^xsd:string .
+  :prologOption "query_base"^^xsd:string .
 
 oslcs:oslcDialog
-  :prologName "dialog"^^xsd:string .
+  :prologOption "dialog"^^xsd:string .
 
 oslcs:oslcHintWidth
-  :prologName "hint_width"^^xsd:string .
+  :prologOption "hint_width"^^xsd:string .
 
 oslcs:oslcHintHeight
-  :prologName "hint_height"^^xsd:string .
+  :prologOption "hint_height"^^xsd:string .
 
 oslcs:dctermsIdentifier
-  :prologName "identifier"^^xsd:string .
+  :prologOption "identifier"^^xsd:string .
 
 oslcs:oslcIcon
-  :prologName "icon"^^xsd:string .
+  :prologOption "icon"^^xsd:string .
 
 oslcs:oslcPrefix
-  :prologName "prefix"^^xsd:string .
+  :prologOption "prefix"^^xsd:string .
 
 oslcs:oslcPrefixBase
-  :prologName "prefix_base"^^xsd:string .
+  :prologOption "prefix_base"^^xsd:string .
 
 oslcs:oslcOauthRequestTokenURI
-  :prologName "oauth_request_token_uri"^^xsd:string .
+  :prologOption "oauth_request_token_uri"^^xsd:string .
 
 oslcs:oslcAuthorizationURI
-  :prologName "authorization_uri"^^xsd:string .
+  :prologOption "authorization_uri"^^xsd:string .
 
 oslcs:oslcOauthAccessTokenURI
-  :prologName "oauth_access_token_uri"^^xsd:string .
+  :prologOption "oauth_access_token_uri"^^xsd:string .
 
 oslcs:oslcStatusCode
-  :prologName "status_code"^^xsd:string .
+  :prologOption "status_code"^^xsd:string .
 
 oslcs:oslcMessage
-  :prologName "message"^^xsd:string .
+  :prologOption "message"^^xsd:string .
 
 oslcs:oslcExtendedError
-  :prologName "extended_error"^^xsd:string .
+  :prologOption "extended_error"^^xsd:string .
 
 oslcs:oslcMoreInfo
-  :prologName "more_info"^^xsd:string .
+  :prologOption "more_info"^^xsd:string .
 
 oslcs:oslcRel
-  :prologName "rel"^^xsd:string .
+  :prologOption "rel"^^xsd:string .
 
 # ======== Service Provider Catalog
 
 :serviceProviderCatalog
-  a :PrologPredicate ;
-  :prologName "oslc_service_provider_catalog"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "service_provider_catalog"^^xsd:string ;
   oslc:resourceShape oslcs:serviceProviderCatalogShape .
 
 
 # ======== Service Provider
 
 :serviceProvider
-  a :PrologPredicate ;
-  :prologName "oslc_service_provider"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "service_provider"^^xsd:string ;
   oslc:resourceShape oslcs:serviceProviderShape .
 
 # ======== Service
 
 :service
-  a :PrologPredicate ;
-  :prologName "oslc_service"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "service"^^xsd:string ;
   oslc:resourceShape oslcs:serviceShape .
 
 # ======== Creation Factory
 
 :creationFactory
-  a :PrologPredicate ;
-  :prologName "creation_factory"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "creation_factory"^^xsd:string ;
   oslc:resourceShape oslcs:creationFactoryShape .
 
 # ======== Query Capability
 
 :queryCapability
-  a :PrologPredicate ;
-  :prologName "query_capability"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "query_capability"^^xsd:string ;
   oslc:resourceShape oslcs:queryCapabilityShape .
 
 # ======== Dialog
 
-:queryCapability
-  a :PrologPredicate ;
-  :prologName "query_capability"^^xsd:string ;
-  oslc:resourceShape oslcs:queryCapabilityShape .
+:dialog
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "dialog"^^xsd:string ;
+  oslc:resourceShape oslcs:dialogShape .
 
 # ======== Publisher
 
 :publisher
-  a :PrologPredicate ;
-  :prologName "publisher"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "publisher"^^xsd:string ;
   oslc:resourceShape oslcs:publisherShape .
 
 # ======== Prefix Definition
 
 :prefixDefinition
-  a :PrologPredicate ;
-  :prologName "prefix_definition"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "prefix_definition"^^xsd:string ;
   oslc:resourceShape oslcs:prefixDefinitionShape .
 
 # ======== OAuth Configuration
 
 :oauthConfiguration
-  a :PrologPredicate ;
-  :prologName "oauth_configuration"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "oauth_configuration"^^xsd:string ;
   oslc:resourceShape oslcs:oauthConfigurationShape .
 
 # ======== Error
 
 :error
-  a :PrologPredicate ;
-  :prologName "error"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "error"^^xsd:string ;
   oslc:resourceShape oslcs:errorShape .
 
 # ======== Extended Error
 
 :extendedError
-  a :PrologPredicate ;
-  :prologName "extended_error"^^xsd:string ;
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "extended_error"^^xsd:string ;
   oslc:resourceShape oslcs:extendedErrorShape .
