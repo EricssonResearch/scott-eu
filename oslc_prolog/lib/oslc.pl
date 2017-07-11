@@ -1,7 +1,6 @@
 :- module(oslc, [
-  register_resource/2,
-  oslc_resource/4,
-  oslc_properties/4
+  register_resource/1,
+  oslc_resource/4
 ]).
 
 :- use_module(library(semweb/rdf_library)).
@@ -15,60 +14,195 @@
 :- rdf_load_library(oslcs).
 :- rdf_load_library(oslcp).
 
-:- rdf_meta register_resource(r, -).
+:- rdf_meta register_resource(r).
 :- rdf_meta oslc_resource(r, r, t, -).
-:- rdf_meta oslc_properties(r, r, t, -).
 
 :- initialization init.
 
 init :-
   forall(
-    rdf(X, rdf:type, oslcp:'PrologPredicate', 'http://ontology.cf.ericsson.net/oslc_prolog'),
-    register_resource(X, oslc)
+    rdf(X, rdf:type, oslcp:'PrologResource'),
+    register_resource(X)
   ).
 
-register_resource(PredicateResource, Module) :-
-  rdf(PredicateResource, oslcp:prologName, literal(type(xsd:string, PredicateName))),
-  rdf(PredicateResource, oslc:resourceShape, ResourceShape),
+% ------------ RESOURCE
+
+register_resource(PrologResource) :-
+  rdf(PrologResource, oslcp:prologModule, literal(type(xsd:string, ModuleName))),
+  rdf(PrologResource, oslcp:prologPredicate, literal(type(xsd:string, PredicateName))),
+  rdf(PrologResource, oslc:resourceShape, ResourceShape),
   P =.. [PredicateName, Spec, Options, Graph],
-  retractall(Module:P),
+  retractall(ModuleName:P),
   assertz((
-    Module:P :-
+    ModuleName:P :-
       rdf_global_id(Spec, IRI),
       oslc_resource(IRI, ResourceShape, Options, Graph)
   )),
-  Module:export(PredicateName/3).
+  ModuleName:export(PredicateName/3).
 
 oslc_resource(IRI, ResourceShape, Options, Graph) :-
   rdf_transaction((
+    oslc_properties(IRI, ResourceShape, Options, Graph),
     rdf(ResourceShape, oslc:describes, Resource),
     rdf_assert(IRI, rdf:type, Resource, Graph),
-    oslc_properties(IRI, ResourceShape, Options, Graph)
+    check_resource(IRI, ResourceShape, Graph)
   )).
+
+% ------------ PROPERTIES
 
 oslc_properties(_, _, [], _).
 oslc_properties(IRI, ResourceShape, [H|T], Graph) :-
   once((
     H =.. [Property, Value]
-  ; H = (Property=Value)
+  ; H = (Property = Value)
   )),
   rdf(ResourceShape, oslc:property, PropertyResource),
-  rdf(PropertyResource, oslcp:prologName, literal(type(xsd:string, Property))),
-  rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-  rdf(PropertyResource, oslc:valueType, Type),
+  rdf(PropertyResource, oslcp:prologOption, literal(type(xsd:string, Property))),
   ( var(Value)
-  -> rdf(IRI, PropertyDefinition, ReadValue, Graph),
-     format_value(ReadValue, Type, Value)
-  ;  format_value(WriteValue, Type, Value),
-     rdf_assert(IRI, PropertyDefinition, WriteValue, Graph)
+  -> read_property(IRI, PropertyResource, Value, Graph)
+  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+    ( rdf(ResourceShape, oslc:describes, Resource),
+      rdf(IRI, rdf:type, Resource, Graph),
+      rdf(PropertyResource, oslc:readOnly, literal(type(xsd:boolean, true)))
+    -> error("Cannot modify read-only property ~w of resource ~w", [PropertyDefinition, IRI])
+    ; rdf_retractall(IRI, PropertyDefinition, _, Graph),
+      write_property(IRI, PropertyResource, Value, Graph)
+    )
   ),
   oslc_properties(IRI, ResourceShape, T, Graph).
 
-format_value(Value, 'http://www.w3.org/2000/01/rdf-schema#Resource', Value).
+% ------------ READ
 
-format_value(literal(type(Type, Value)), Type, Value).
+read_property(IRI, PropertyResource, Value, Graph) :-
+  rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+  ignore(rdf(IRI, PropertyDefinition, Value, Graph)).
+
+% ------------ WRITE
+
+write_property(IRI, PropertyResource, [], _) :- !,
+  ( rdf(PropertyResource, oslc:occurs, oslc:'Zero-or-many')
+  -> true
+  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+    error("Property ~w of resource ~w cannot be set to empty list", [PropertyDefinition, IRI])
+  ).
+
+write_property(IRI, PropertyResource, [H|T], Graph) :- !,
+  ( once((
+      rdf(PropertyResource, oslc:occurs, oslc:'Zero-or-many')
+    ; rdf(PropertyResource, oslc:occurs, oslc:'One-or-many')
+    ))
+  -> write_list(IRI, PropertyResource, [H|T], Graph)
+  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+    error("Property ~w of resource ~w cannot be set to a list", [PropertyDefinition, IRI])
+  ).
+
+write_property(IRI, PropertyResource, Value, Graph) :-
+  rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+  rdf(PropertyResource, oslc:valueType, Type),
+  rdf_global_id(oslc:'LocalResource', LR),
+  rdf_global_id(oslc:'Resource', RE),
+  rdf_global_id(oslc:'AnyResource', AR),
+  member(Type, [LR, RE, AR]), !,
+  ( once((
+      Type == LR,
+      rdf_is_bnode(Value)
+    ; ( Type == RE ; Type == AR ),
+      rdf_is_resource(Value)
+    ))
+  -> ( Value == ''
+     -> true
+     % TODO: check resource range if given
+     ; rdf_assert(IRI, PropertyDefinition, Value, Graph)
+     )
+  ; error("Property ~w of resource ~w must be of type ~w", [PropertyDefinition, IRI, Type])
+  ).
+
+write_property(IRI, PropertyResource, Value, Graph) :-
+  ( ( rdf(PropertyResource, oslc:occurs, oslc:'Exactly-one'),
+      Value == ''
+    )
+  -> rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+     error("Property ~w of resource ~w must occur exactly once", [PropertyDefinition, IRI])
+  ; ( Value == ''
+    -> true
+    ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+      rdf(PropertyResource, oslc:valueType, Type),
+      rdf_assert(IRI, PropertyDefinition, literal(type(Type, Value)), Graph)
+    )
+  ).
+
+% ------------ LIST
+
+write_list(_, _, [], _).
+write_list(IRI, PropertyResource, [H|T], Graph) :-
+  write_property(IRI, PropertyResource, H, Graph),
+  write_list(IRI, PropertyResource, T, Graph).
+
+% ------------ CHECK
+
+check_resource(IRI, ResourceShape, Graph) :-
+  forall(
+    rdf(ResourceShape, oslc:property, PropertyResource),
+    check_property(IRI, PropertyResource, Graph)
+  ).
+
+check_property(IRI, PropertyResource, Graph) :-
+  rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+  rdf(PropertyResource, oslc:occurs, Occurs),
+  rdf_global_id(oslc:'Zero-or-one', ZO),
+  rdf_global_id(oslc:'Zero-or-many', ZM),
+  rdf_global_id(oslc:'One-or-many', OM),
+  aggregate_all(count, rdf(IRI, PropertyDefinition, _, Graph), X),
+  ( X == 0
+  -> once((
+       ( Occurs == ZO ; Occurs == ZM )
+       ; error("Property ~w of resource ~w must be specified", [PropertyDefinition, IRI])
+     ))
+  ; ( X > 1
+    -> once((
+         ( Occurs == OM ; Occurs == ZM )
+       ; error("Property ~w of resource ~w must not occur more than once", [PropertyDefinition, IRI])
+       ))
+    ; true
+    )
+  ).
+
+% ------------ ERROR
+
+% FIXME: probably there is a better way to report errors...
+
+error(Message, Arguments) :-
+  error0(Message, Arguments, []).
+error0(Message, [], Accum):-
+  reverse(Accum, Arguments),
+  format(atom(Error), Message, Arguments),
+  throw(Error).
+error0(Message, [H|T], Accum) :-
+  ( rdf_is_resource(H)
+  -> rdf_global_id(H2, H)
+  ; H2 = H
+  ),
+  error0(Message, T, [H2|Accum]).
 
 
 %iri_xml_namespace(PropertyProperty, NS, Local),
 %rdf_current_prefix(Prefix, NS),
 %format(atom(PPK), '~w_~w', [Prefix, Local]),
+
+/*
+r_property(URI, Key, Value, Graph) :-
+  rdf(URI, Key, B, Graph),
+  rdf_is_bnode(B),
+  rdf(B, rdf:type, pl:'PredicateCall', Graph),
+  rdf(B, pl:prologModule, Module, Graph),
+  rdf(B, pl:prologTerm, Term, Graph),
+  T =.. [Term, URI, Key, Value, Graph],
+  call(Module:T).
+
+w_property(URI, Key, call(Module:Term), Graph) :-
+  rdf_create_bnode(B),
+  rdf_assert(B, rdf:type, pl:'PredicateCall', Graph),
+  rdf_assert(B, pl:prologModule, Module, Graph),
+  rdf_assert(B, pl:prologTerm, Term, Graph),
+  rdf_assert(URI, Key, B, Graph).
+*/
