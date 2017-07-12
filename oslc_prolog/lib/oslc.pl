@@ -42,34 +42,44 @@ register_resource(PrologResource) :-
 
 oslc_resource(IRI, ResourceShape, Options, Graph) :-
   rdf_transaction((
-    oslc_properties(IRI, ResourceShape, Options, Graph),
     rdf(ResourceShape, oslc:describes, Resource),
     rdf_assert(IRI, rdf:type, Resource, Graph),
-    check_shape(IRI, ResourceShape, Graph)
+    findall(P, rdf(ResourceShape, oslc:property, P), Properties),
+    oslc_properties(IRI, ResourceShape, Properties, Options, Graph)
   )).
 
 % ------------ PROPERTIES
 
-oslc_properties(_, _, [], _).
-oslc_properties(IRI, ResourceShape, [H|T], Graph) :-
+oslc_properties(IRI, _, [], Options, _) :-
   once((
-    H =.. [Property, Value]
-  ; H = (Property = Value)
-  )),
-  rdf(ResourceShape, oslc:property, PropertyResource),
-  rdf(PropertyResource, oslcp:prologOption, literal(type(xsd:string, Property))),
-  ( var(Value)
-  -> read_property(IRI, PropertyResource, Value, Graph)
-  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    ( rdf(ResourceShape, oslc:describes, Resource),
-      rdf(IRI, rdf:type, Resource, Graph),
-      rdf(PropertyResource, oslc:readOnly, literal(type(xsd:boolean, true)))
-    -> error("Cannot modify read-only property ~w of resource ~w", [PropertyDefinition, IRI])
-    ; rdf_retractall(IRI, PropertyDefinition, _, Graph),
-      write_property(IRI, PropertyResource, Value, Graph)
+    length(Options, L), L == 0
+  ; error("Unknown or duplicate properties ~w of resource ~w", [Options, IRI])
+  )).
+
+oslc_properties(IRI, ResourceShape, [PropertyResource|T], Options, Graph) :-
+  once((
+    rdf(PropertyResource, oslcp:prologOption, literal(type(xsd:string, Property))),
+    ( once((
+        H =.. [Property, Value], selectchk(H, Options, RemainingOptions)
+      ; H = (Property = Value), selectchk(H, Options, RemainingOptions)
+      ))
+    -> ( var(Value)
+       -> % read property
+          % TODO: call prologGetter if exists instead of read_property
+          read_property(IRI, PropertyResource, Value, Graph)
+       ; % write property
+         rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+         rdf_retractall(IRI, PropertyDefinition, _, Graph),
+         % TODO: call prologSetter if exists instead of write_property
+         write_property(IRI, PropertyResource, Value, Graph)
+       ),
+       oslc_properties(IRI, ResourceShape, T, RemainingOptions, Graph)
+    ; % check property
+      % TODO: check if current database is consistent with shape
+      oslc_properties(IRI, ResourceShape, T, Options, Graph)
     )
-  ),
-  oslc_properties(IRI, ResourceShape, T, Graph).
+  ; error("Resource ~w does not have prolog option defined for property ~w", [IRI, PropertyResource])
+  )).
 
 % ------------ READ
 

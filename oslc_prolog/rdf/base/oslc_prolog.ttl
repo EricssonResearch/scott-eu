@@ -19,10 +19,19 @@
 :prologOption
   a rdf:Property .
 
+:prologGetter
+  a rdf:Property .
+
+:prologSetter
+  a rdf:Property .
+
 # ======== Properties
 
 oslcs:dctermsTitleZO
-  :prologOption "title"^^xsd:string .
+  :prologOption "title"^^xsd:string ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologGetter "get_title"^^xsd:string ;
+  :prologSetter "set_title"^^xsd:string .
 
 oslcs:dctermsTitleEO
   :prologOption "title"^^xsd:string .
@@ -144,8 +153,9 @@ oslcs:oslcRel
   a :PrologResource ;
   :prologModule "oslc"^^xsd:string ;
   :prologPredicate "service_provider_catalog"^^xsd:string ;
+  :prologGetter "get_service_provider_catalog"^^xsd:string ;
+  :prologSetter "set_service_provider_catalog"^^xsd:string ;
   oslc:resourceShape oslcs:serviceProviderCatalogShape .
-
 
 # ======== Service Provider
 
