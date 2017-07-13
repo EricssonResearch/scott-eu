@@ -103,3 +103,43 @@
   :prologModule "oslc"^^xsd:string ;
   :prologPredicate "extended_error"^^xsd:string ;
   oslc:resourceShape oslcs:extendedErrorShape .
+
+# ======== Resource Shape
+
+:resourceShape
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "resource_shape"^^xsd:string ;
+  oslc:resourceShape oslcs:resourceShapeShape .
+
+# ======== Allowed Values
+
+:allowedValues
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "allowed_values"^^xsd:string ;
+  oslc:resourceShape oslcs:allowedValuesShape .
+
+# ======== Property
+
+:property
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "property"^^xsd:string ;
+  oslc:resourceShape oslcs:propertyShape .
+
+# ======== Comment
+
+:comment
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "comment"^^xsd:string ;
+  oslc:resourceShape oslcs:commentShape .
+
+# ======== Discussion
+
+:discussion
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "discussion"^^xsd:string ;
+  oslc:resourceShape oslcs:discussionShape .
