@@ -692,7 +692,7 @@
 
 # ======== Resource Shape
 
-:ResourceShapeShape
+:resourceShapeShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ResourceShape ;
   oslc:property :dctermsTitleZO ,
@@ -702,14 +702,14 @@
 
 # ======== Allowed Values
 
-:AllowedValuesShape
+:allowedValuesShape
   a oslc:ResourceShape ;
   oslc:describes oslc:AllowedValues ;
   oslc:property :oslcAllowedValueOM .
 
 # ======== Property
 
-:PropertyShape
+:propertyShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Property ;
   oslc:property :dctermsDescriptionZO ,
@@ -731,7 +731,7 @@
 
 # ======== Comment
 
-:CommentShape
+:commentShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Comment ;
   oslc:property :dctermsIdentifier ,
@@ -744,7 +744,7 @@
 
 # ======== Discussion
 
-:DiscussionShape
+:discussionShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Discussion ;
   oslc:property :oslcDiscussionAbout ,
