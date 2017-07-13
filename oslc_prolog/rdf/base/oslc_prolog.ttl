@@ -10,142 +10,11 @@
 :PrologResource
   a rdfs:Class .
 
-:prologPredicate
-  a rdf:Property .
-
 :prologModule
   a rdf:Property .
 
-:prologOption
+:prologPredicate
   a rdf:Property .
-
-:prologGetter
-  a rdf:Property .
-
-:prologSetter
-  a rdf:Property .
-
-# ======== Properties
-
-oslcs:dctermsTitleZO
-  :prologOption "title"^^xsd:string ;
-  :prologModule "oslc"^^xsd:string ;
-  :prologGetter "get_title"^^xsd:string ;
-  :prologSetter "set_title"^^xsd:string .
-
-oslcs:dctermsTitleEO
-  :prologOption "title"^^xsd:string .
-
-oslcs:dctermsDescription
-  :prologOption "description"^^xsd:string .
-
-oslcs:dctermsPublisher
-  :prologOption "publisher"^^xsd:string .
-
-oslcs:oslcDomainZM
-  :prologOption "domain"^^xsd:string .
-
-oslcs:oslcDomainEO
-  :prologOption "domain"^^xsd:string .
-
-oslcs:oslcServiceProvider
-  :prologOption "service_provider"^^xsd:string .
-
-oslcs:oslcServiceProviderCatalog
-  :prologOption "service_provider_catalog"^^xsd:string .
-
-oslcs:oslcOauthConfigurationZM
-  :prologOption "oauth_configuration"^^xsd:string .
-
-oslcs:oslcOauthConfigurationZO
-  :prologOption "oauth_configuration"^^xsd:string .
-
-oslcs:oslcService
-  :prologOption "service"^^xsd:string .
-
-oslcs:oslcDetails
-  :prologOption "details"^^xsd:string .
-
-oslcs:oslcPrefixDefinition
-  :prologOption "prefix_definition"^^xsd:string .
-
-oslcs:oslcCreationFactory
-  :prologOption "creation_factory"^^xsd:string .
-
-oslcs:oslcQueryCapability
-  :prologOption "query_capability"^^xsd:string .
-
-oslcs:oslcSelectionDialog
-  :prologOption "selection_dialog"^^xsd:string .
-
-oslcs:oslcCreationDialog
-  :prologOption "creation_dialog"^^xsd:string .
-
-oslcs:oslcUsage
-  :prologOption "usage"^^xsd:string .
-
-oslcs:oslcLabel
-  :prologOption "label"^^xsd:string .
-
-oslcs:oslcCreation
-  :prologOption "creation"^^xsd:string .
-
-oslcs:oslcResourceShapeZM
-  :prologOption "resource_shape"^^xsd:string .
-
-oslcs:oslcResourceShapeZO
-  :prologOption "resource_shape"^^xsd:string .
-
-oslcs:oslcResourceType
-  :prologOption "resource_type"^^xsd:string .
-
-oslcs:oslcQueryBase
-  :prologOption "query_base"^^xsd:string .
-
-oslcs:oslcDialog
-  :prologOption "dialog"^^xsd:string .
-
-oslcs:oslcHintWidth
-  :prologOption "hint_width"^^xsd:string .
-
-oslcs:oslcHintHeight
-  :prologOption "hint_height"^^xsd:string .
-
-oslcs:dctermsIdentifier
-  :prologOption "identifier"^^xsd:string .
-
-oslcs:oslcIcon
-  :prologOption "icon"^^xsd:string .
-
-oslcs:oslcPrefix
-  :prologOption "prefix"^^xsd:string .
-
-oslcs:oslcPrefixBase
-  :prologOption "prefix_base"^^xsd:string .
-
-oslcs:oslcOauthRequestTokenURI
-  :prologOption "oauth_request_token_uri"^^xsd:string .
-
-oslcs:oslcAuthorizationURI
-  :prologOption "authorization_uri"^^xsd:string .
-
-oslcs:oslcOauthAccessTokenURI
-  :prologOption "oauth_access_token_uri"^^xsd:string .
-
-oslcs:oslcStatusCode
-  :prologOption "status_code"^^xsd:string .
-
-oslcs:oslcMessage
-  :prologOption "message"^^xsd:string .
-
-oslcs:oslcExtendedError
-  :prologOption "extended_error"^^xsd:string .
-
-oslcs:oslcMoreInfo
-  :prologOption "more_info"^^xsd:string .
-
-oslcs:oslcRel
-  :prologOption "rel"^^xsd:string .
 
 # ======== Service Provider Catalog
 
@@ -153,8 +22,6 @@ oslcs:oslcRel
   a :PrologResource ;
   :prologModule "oslc"^^xsd:string ;
   :prologPredicate "service_provider_catalog"^^xsd:string ;
-  :prologGetter "get_service_provider_catalog"^^xsd:string ;
-  :prologSetter "set_service_provider_catalog"^^xsd:string ;
   oslc:resourceShape oslcs:serviceProviderCatalogShape .
 
 # ======== Service Provider

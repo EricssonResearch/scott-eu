@@ -4,6 +4,8 @@
 ]).
 
 :- use_module(library(semweb/rdf_library)).
+:- use_module(library(oslc_shape)).
+:- use_module(library(oslc_error)).
 
 :- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
 :- rdf_register_prefix(oslcs, 'http://ontology.cf.ericsson.net/oslc_shapes#').
@@ -53,12 +55,12 @@ oslc_resource(IRI, ResourceShape, Options, Graph) :-
 oslc_properties(IRI, _, [], Options, _) :-
   once((
     length(Options, L), L == 0
-  ; error("Unknown or duplicate properties ~w of resource ~w", [Options, IRI])
+  ; oslc_error("Unknown or duplicate properties ~w of resource ~w", [Options, IRI])
   )).
 
 oslc_properties(IRI, ResourceShape, [PropertyResource|T], Options, Graph) :-
   once((
-    rdf(PropertyResource, oslcp:prologOption, literal(type(xsd:string, Property))),
+    rdf(PropertyResource, oslc:name, literal(type(xsd:string, Property))),
     ( once((
         H =.. [Property, Value], selectchk(H, Options, RemainingOptions)
       ; H = (Property = Value), selectchk(H, Options, RemainingOptions)
@@ -76,27 +78,12 @@ oslc_properties(IRI, ResourceShape, [PropertyResource|T], Options, Graph) :-
        oslc_properties(IRI, ResourceShape, T, RemainingOptions, Graph)
     ; % check property
       % TODO: check if current database is consistent with shape
-      get_occurs(PropertyResource, Occurs, ZO, ZM, OM, _),
       rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-      aggregate_all(count, rdf(IRI, PropertyDefinition, _, Graph), X),
-      ( X == 0
-      -> once((
-           Occurs == ZO
-         ; Occurs == ZM
-         ; error("Property ~w of resource ~w must be specified", [PropertyDefinition, IRI])
-         ))
-      ; ( X > 1
-        -> once((
-             Occurs == OM
-           ; Occurs == ZM
-           ; error("Property ~w of resource ~w must not occur more than once", [PropertyDefinition, IRI])
-           ))
-        ; true
-        )
-      ),
+      findall(V, rdf(IRI, PropertyDefinition, V, Graph), Values),
+      check_property_occurs(IRI, PropertyResource, Values),
       oslc_properties(IRI, ResourceShape, T, Options, Graph)
     )
-  ; error("Resource ~w does not have prolog option defined for property ~w", [IRI, PropertyResource])
+  ; oslc_error("Resource ~w does not have prolog option defined for property ~w", [IRI, PropertyResource])
   )).
 
 % ------------ GET OCCURS
@@ -122,13 +109,13 @@ read_property(IRI, PropertyResource, Value, Graph) :-
      once((
        Occurs == ZO
      ; Occurs == ZM
-     ; error("Required property ~w of resource ~w is missing", [PropertyDefinition, IRI])
+     ; oslc_error("Required property ~w of resource ~w is missing", [PropertyDefinition, IRI])
      ))
   ; ( X > 1
     -> % Values is returned as a list
        ( ( Occurs == OM ; Occurs == ZM )
        -> read_list(IRI, PropertyResource, Values, Value)
-       ; error("Property ~w of resource ~w occurred more than once", [PropertyDefinition, IRI])
+       ; oslc_error("Property ~w of resource ~w occurred more than once", [PropertyDefinition, IRI])
        )
     ; ( % Values is returned as a list with a single element
         ( Occurs == OM ; Occurs == ZM )
@@ -151,7 +138,7 @@ read_value(IRI, PropertyResource, literal(type(Type, Value)), Value) :- !,
     check_literal(LType, Value)
   ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
     rdf(PropertyResource, oslc:valueType, T),
-    error("Property ~w of resource ~w is not of literal type ~w", [PropertyDefinition, IRI, T])
+    oslc_error("Property ~w of resource ~w is not of literal type ~w", [PropertyDefinition, IRI, T])
   )).
 
 read_value(IRI, PropertyResource, Value, Value) :-
@@ -160,7 +147,7 @@ read_value(IRI, PropertyResource, Value, Value) :-
 read_value(IRI, PropertyResource, _, _) :-
   rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
   rdf(PropertyResource, oslc:valueType, Type),
-  error("Failed to read property ~w of resource ~w (should be of type ~w)", [PropertyDefinition, IRI, Type]).
+  oslc_error("Failed to read property ~w of resource ~w (should be of type ~w)", [PropertyDefinition, IRI, Type]).
 
 % ------------ CHECK RESOURCE
 
@@ -177,7 +164,7 @@ check_resource(IRI, PropertyResource, Value) :-
     rdf_is_bnode(Value)
   ; ( Type == RE ; Type == AR ),
     rdf_is_resource(Value)
-  ; error("Property ~w of resource ~w must be of type ~w", [PropertyDefinition, IRI, Type])
+  ; oslc_error("Property ~w of resource ~w must be of type ~w", [PropertyDefinition, IRI, Type])
   )).
 
 % ------------ CHECK LITERALS
@@ -213,7 +200,7 @@ write_property(IRI, PropertyResource, [], _) :- !,
   once((
     rdf(PropertyResource, oslc:occurs, oslc:'Zero-or-many')
   ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    error("Property ~w of resource ~w cannot be set to empty list", [PropertyDefinition, IRI])
+    oslc_error("Property ~w of resource ~w cannot be set to empty list", [PropertyDefinition, IRI])
   )).
 
 % Value is a list
@@ -224,7 +211,7 @@ write_property(IRI, PropertyResource, [H|T], Graph) :- !,
     ))
   -> write_list(IRI, PropertyResource, [H|T], Graph)
   ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    error("Property ~w of resource ~w cannot be set to a list", [PropertyDefinition, IRI])
+    oslc_error("Property ~w of resource ~w cannot be set to a list", [PropertyDefinition, IRI])
   ).
 
 % Value is not a list, check if it is a resource
@@ -244,7 +231,7 @@ write_property(IRI, PropertyResource, Value, Graph) :-
   -> once((
        Occurs == ZO
      ; Occurs == ZM
-     ; error("Property ~w of resource ~w must be specified", [PropertyDefinition, IRI])
+     ; oslc_error("Property ~w of resource ~w must be specified", [PropertyDefinition, IRI])
      ))
   ; rdf(PropertyResource, oslc:valueType, Type),
     rdf_global_id(LType, Type),
@@ -252,10 +239,10 @@ write_property(IRI, PropertyResource, Value, Graph) :-
     ->  once((
           Occurs == EO
         ; Occurs == ZO
-        ; error("Property ~w of resource ~w must be set to a list", [PropertyDefinition, IRI])
+        ; oslc_error("Property ~w of resource ~w must be set to a list", [PropertyDefinition, IRI])
         )),
         rdf_assert(IRI, PropertyDefinition, literal(type(Type, Value)), Graph)
-    ; error("Property ~w of resource ~w must be of literal type ~w", [PropertyDefinition, IRI, Type])
+    ; oslc_error("Property ~w of resource ~w must be of literal type ~w", [PropertyDefinition, IRI, Type])
     )
   ).
 
@@ -265,23 +252,6 @@ write_list(_, _, [], _).
 write_list(IRI, PropertyResource, [H|T], Graph) :-
   write_property(IRI, PropertyResource, H, Graph),
   write_list(IRI, PropertyResource, T, Graph).
-
-% ------------ ERROR
-
-% FIXME: probably there is a better way to report errors...
-
-error(Message, Arguments) :-
-  error0(Message, Arguments, []).
-error0(Message, [], Accum):-
-  reverse(Accum, Arguments),
-  format(atom(Error), Message, Arguments),
-  throw(Error).
-error0(Message, [H|T], Accum) :-
-  ( rdf_is_resource(H)
-  -> rdf_global_id(H2, H)
-  ; H2 = H
-  ),
-  error0(Message, T, [H2|Accum]).
 
 
 %iri_xml_namespace(PropertyProperty, NS, Local),
