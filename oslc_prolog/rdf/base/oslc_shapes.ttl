@@ -10,6 +10,7 @@
 
 :dctermsTitleZO
   a oslc:Property ;
+  oslc:name "title"^^xsd:string ;
   oslc:propertyDefinition dcterms:title ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -17,20 +18,30 @@
 
 :dctermsTitleEO
   a oslc:Property ;
+  oslc:name "title"^^xsd:string ;
   oslc:propertyDefinition dcterms:title ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
   oslc:valueType rdf:XMLLiteral .
 
-:dctermsDescription
+:dctermsDescriptionZO
   a oslc:Property ;
+  oslc:name "description"^^xsd:string ;
   oslc:propertyDefinition dcterms:description ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
   oslc:valueType rdf:XMLLiteral .
 
+:dctermsDescriptionEOU
+  a oslc:Property ;
+  oslc:name "description"^^xsd:string ;
+  oslc:propertyDefinition dcterms:description ;
+  oslc:occurs oslc:Exactly-one ;
+  oslc:valueType rdf:XMLLiteral .
+
 :dctermsPublisher
   a oslc:Property ;
+  oslc:name "publisher"^^xsd:string ;
   oslc:propertyDefinition dcterms:publisher ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -40,6 +51,7 @@
 
 :oslcDomainZM
   a oslc:Property ;
+  oslc:name "domain"^^xsd:string ;
   oslc:propertyDefinition oslc:domain ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -48,6 +60,7 @@
 
 :oslcDomainEO
   a oslc:Property ;
+  oslc:name "domain"^^xsd:string ;
   oslc:propertyDefinition oslc:domain ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -56,6 +69,7 @@
 
 :oslcServiceProvider
   a oslc:Property ;
+  oslc:name "serviceProvider"^^xsd:string ;
   oslc:propertyDefinition oslc:serviceProvider ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -65,6 +79,7 @@
 
 :oslcServiceProviderCatalog
   a oslc:Property ;
+  oslc:name "serviceProviderCatalog"^^xsd:string ;
   oslc:propertyDefinition oslc:serviceProviderCatalog ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -74,6 +89,7 @@
 
 :oslcOauthConfigurationZM
   a oslc:Property ;
+  oslc:name "oauthConfiguration"^^xsd:string ;
   oslc:propertyDefinition oslc:oauthConfiguration ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -83,6 +99,7 @@
 
 :oslcOauthConfigurationZO
   a oslc:Property ;
+  oslc:name "oauthConfiguration"^^xsd:string ;
   oslc:propertyDefinition oslc:oauthConfiguration ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -92,6 +109,7 @@
 
 :oslcService
   a oslc:Property ;
+  oslc:name "service"^^xsd:string ;
   oslc:propertyDefinition oslc:service ;
   oslc:occurs oslc:One-or-many ;
   oslc:readOnly true ;
@@ -101,6 +119,7 @@
 
 :oslcDetails
   a oslc:Property ;
+  oslc:name "details"^^xsd:string ;
   oslc:propertyDefinition oslc:details ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -109,6 +128,7 @@
 
 :oslcPrefixDefinition
   a oslc:Property ;
+  oslc:name "prefixDefinition"^^xsd:string ;
   oslc:propertyDefinition oslc:prefixDefinition ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -117,6 +137,7 @@
 
 :oslcCreationFactory
   a oslc:Property ;
+  oslc:name "creationFactory"^^xsd:string ;
   oslc:propertyDefinition oslc:creationFactory ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -125,6 +146,7 @@
 
 :oslcQueryCapability
   a oslc:Property ;
+  oslc:name "queryCapability"^^xsd:string ;
   oslc:propertyDefinition oslc:queryCapability ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -133,6 +155,7 @@
 
 :oslcSelectionDialog
   a oslc:Property ;
+  oslc:name "selectionDialog"^^xsd:string ;
   oslc:propertyDefinition oslc:selectionDialog ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -141,6 +164,7 @@
 
 :oslcCreationDialog
   a oslc:Property ;
+  oslc:name "creationDialog"^^xsd:string ;
   oslc:propertyDefinition oslc:creationDialog ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -149,6 +173,7 @@
 
 :oslcUsage
   a oslc:Property ;
+  oslc:name "usage"^^xsd:string ;
   oslc:propertyDefinition oslc:usage ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -157,6 +182,7 @@
 
 :oslcLabel
   a oslc:Property ;
+  oslc:name "label"^^xsd:string ;
   oslc:propertyDefinition oslc:label ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -164,6 +190,7 @@
 
 :oslcCreation
   a oslc:Property ;
+  oslc:name "creation"^^xsd:string ;
   oslc:propertyDefinition oslc:creation ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -172,6 +199,7 @@
 
 :oslcResourceShapeZM
   a oslc:Property ;
+  oslc:name "resourceShape"^^xsd:string ;
   oslc:propertyDefinition oslc:resourceShape ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -181,6 +209,7 @@
 
 :oslcResourceShapeZO
   a oslc:Property ;
+  oslc:name "resourceShape"^^xsd:string ;
   oslc:propertyDefinition oslc:resourceShape ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -190,6 +219,7 @@
 
 :oslcResourceType
   a oslc:Property ;
+  oslc:name "resourceType"^^xsd:string ;
   oslc:propertyDefinition oslc:resourceType ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
@@ -198,6 +228,7 @@
 
 :oslcQueryBase
   a oslc:Property ;
+  oslc:name "queryBase"^^xsd:string ;
   oslc:propertyDefinition oslc:queryBase ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -206,6 +237,7 @@
 
 :oslcDialog
   a oslc:Property ;
+  oslc:name "dialog"^^xsd:string ;
   oslc:propertyDefinition oslc:dialog ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -214,6 +246,7 @@
 
 :oslcHintWidth
   a oslc:Property ;
+  oslc:name "hintWidth"^^xsd:string ;
   oslc:propertyDefinition oslc:hintWidth ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -221,6 +254,7 @@
 
 :oslcHintHeight
   a oslc:Property ;
+  oslc:name "hintHeight"^^xsd:string ;
   oslc:propertyDefinition oslc:hintHeight ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -228,6 +262,7 @@
 
 :dctermsIdentifier
   a oslc:Property ;
+  oslc:name "identifier"^^xsd:string ;
   oslc:propertyDefinition dcterms:identifier ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -235,6 +270,7 @@
 
 :oslcIcon
   a oslc:Property ;
+  oslc:name "icon"^^xsd:string ;
   oslc:propertyDefinition oslc:icon ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -243,6 +279,7 @@
 
 :oslcPrefix
   a oslc:Property ;
+  oslc:name "prefix"^^xsd:string ;
   oslc:propertyDefinition oslc:prefix ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -250,6 +287,7 @@
 
 :oslcPrefixBase
   a oslc:Property ;
+  oslc:name "prefixBase"^^xsd:string ;
   oslc:propertyDefinition oslc:prefixBase ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -258,6 +296,7 @@
 
 :oslcOauthRequestTokenURI
   a oslc:Property ;
+  oslc:name "oauthRequestTokenURI"^^xsd:string ;
   oslc:propertyDefinition oslc:oauthRequestTokenURI ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -266,6 +305,7 @@
 
 :oslcAuthorizationURI
   a oslc:Property ;
+  oslc:name "authorizationURI"^^xsd:string ;
   oslc:propertyDefinition oslc:authorizationURI ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -274,6 +314,7 @@
 
 :oslcOauthAccessTokenURI
   a oslc:Property ;
+  oslc:name "oauthAccessTokenURI"^^xsd:string ;
   oslc:propertyDefinition oslc:oauthAccessTokenURI ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -282,6 +323,7 @@
 
 :oslcStatusCode
   a oslc:Property ;
+  oslc:name "statusCode"^^xsd:string ;
   oslc:propertyDefinition oslc:statusCode ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -289,6 +331,7 @@
 
 :oslcMessage
   a oslc:Property ;
+  oslc:name "message"^^xsd:string ;
   oslc:propertyDefinition oslc:message ;
   oslc:occurs oslc:Exactly-one ;
   oslc:readOnly true ;
@@ -296,6 +339,7 @@
 
 :oslcExtendedError
   a oslc:Property ;
+  oslc:name "extendedError"^^xsd:string ;
   oslc:propertyDefinition oslc:extendedError ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -305,6 +349,7 @@
 
 :oslcMoreInfo
   a oslc:Property ;
+  oslc:name "moreInfo"^^xsd:string ;
   oslc:propertyDefinition oslc:moreInfo ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
@@ -313,10 +358,216 @@
 
 :oslcRel
   a oslc:Property ;
+  oslc:name "rel"^^xsd:string ;
   oslc:propertyDefinition oslc:rel ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
   oslc:valueType xsd:string .
+
+:oslcDescribes
+  a oslc:Property ;
+  oslc:name "describes"^^xsd:string ;
+  oslc:propertyDefinition oslc:describes ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcProperty
+  a oslc:Property ;
+  oslc:name "property"^^xsd:string ;
+  oslc:propertyDefinition oslc:property ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Inline ;
+  oslc:range oslc:Property .
+
+:oslcAllowedValueOM
+  a oslc:Property ;
+  oslc:name "allowedValue"^^xsd:string ;
+  oslc:propertyDefinition oslc:allowedValue ;
+  oslc:occurs oslc:One-or-many ;
+  oslc:readOnly true .
+
+:oslcAllowedValueZM
+  a oslc:Property ;
+  oslc:name "allowedValue"^^xsd:string ;
+  oslc:propertyDefinition oslc:allowedValue ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:readOnly true .
+
+:oslcAllowedValues
+  a oslc:Property ;
+  oslc:name "allowedValues"^^xsd:string ;
+  oslc:propertyDefinition oslc:allowedValues ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference ;
+  oslc:range oslc:AllowedValues .
+
+:oslcDefaultValue
+  a oslc:Property ;
+  oslc:name "defaultValue"^^xsd:string ;
+  oslc:propertyDefinition oslc:defaultValue ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true .
+
+:oslcHidden
+  a oslc:Property ;
+  oslc:name "hidden"^^xsd:string ;
+  oslc:propertyDefinition oslc:hidden ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType xsd:boolean .
+
+:oslcIsMemberProperty
+  a oslc:Property ;
+  oslc:name "isMemberProperty"^^xsd:string ;
+  oslc:propertyDefinition oslc:isMemberProperty ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType xsd:boolean .
+
+:oslcName
+  a oslc:Property ;
+  oslc:name "name"^^xsd:string ;
+  oslc:propertyDefinition oslc:name ;
+  oslc:occurs oslc:Exactly-one ;
+  oslc:readOnly true ;
+  oslc:valueType xsd:string .
+
+:oslcMaxSize
+  a oslc:Property ;
+  oslc:name "maxSize"^^xsd:string ;
+  oslc:propertyDefinition oslc:maxSize ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType xsd:integer .
+
+:oslcOccurs
+  a oslc:Property ;
+  oslc:name "occurs"^^xsd:string ;
+  oslc:propertyDefinition oslc:occurs ;
+  oslc:occurs oslc:Exactly-one ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcPropertyDefinition
+  a oslc:Property ;
+  oslc:name "propertyDefinition"^^xsd:string ;
+  oslc:propertyDefinition oslc:propertyDefinition ;
+  oslc:occurs oslc:Exactly-one ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcRange
+  a oslc:Property ;
+  oslc:name "range"^^xsd:string ;
+  oslc:propertyDefinition oslc:range ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcReadOnly
+  a oslc:Property ;
+  oslc:name "readOnly"^^xsd:string ;
+  oslc:propertyDefinition oslc:readOnly ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType xsd:boolean .
+
+:oslcRepresentation
+  a oslc:Property ;
+  oslc:name "representation"^^xsd:string ;
+  oslc:propertyDefinition oslc:representation ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcValueType
+  a oslc:Property ;
+  oslc:name "valueType"^^xsd:string ;
+  oslc:propertyDefinition oslc:valueType ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcValueShape
+  a oslc:Property ;
+  oslc:name "valueShape"^^xsd:string ;
+  oslc:propertyDefinition oslc:valueShape ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference ;
+  oslc:range oslc:ResourceShape .
+
+:dctermsCreator
+  a oslc:Property ;
+  oslc:name "creator"^^xsd:string ;
+  oslc:propertyDefinition dcterms:creator ;
+  oslc:occurs oslc:Exactly-one ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:AnyResource ;
+  oslc:representation oslc:Either .
+
+:dctermsTitleZOU
+  a oslc:Property ;
+  oslc:name "title"^^xsd:string ;
+  oslc:propertyDefinition dcterms:title ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:valueType rdf:XMLLiteral .
+
+:dctermsCreated
+  a oslc:Property ;
+  oslc:name "created"^^xsd:string ;
+  oslc:propertyDefinition dcterms:created ;
+  oslc:occurs oslc:Exactly-one ;
+  oslc:readOnly true ;
+  oslc:valueType xsd:dateTime .
+
+:oslcPartOfDiscussion
+  a oslc:Property ;
+  oslc:name "partOfDiscussion"^^xsd:string ;
+  oslc:propertyDefinition oslc:partOfDiscussion ;
+  oslc:occurs oslc:Exactly-one ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference ;
+  oslc:range oslc:Discussion .
+
+:oslcInReplyTo
+  a oslc:Property ;
+  oslc:name "inReplyTo"^^xsd:string ;
+  oslc:propertyDefinition oslc:inReplyTo ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference ;
+  oslc:range oslc:Comment .
+
+:oslcDiscussionAbout
+  a oslc:Property ;
+  oslc:name "discussionAbout"^^xsd:string ;
+  oslc:propertyDefinition oslc:discussionAbout ;
+  oslc:occurs oslc:Exactly-one ;
+  oslc:readOnly false ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcComment
+  a oslc:Property ;
+  oslc:name "comment"^^xsd:string ;
+  oslc:propertyDefinition oslc:comment ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:readOnly false ;
+  oslc:valueType oslc:AnyResource ;
+  oslc:representation oslc:Either .
 
 # ======== Service Provider Catalog
 
@@ -324,7 +575,7 @@
   a oslc:ResourceShape ;
   oslc:describes oslc:ServiceProviderCatalog ;
   oslc:property :dctermsTitleZO ,
-                :dctermsDescription ,
+                :dctermsDescriptionZO ,
                 :dctermsPublisher ,
                 :oslcDomainZM ,
                 :oslcServiceProvider ,
@@ -337,7 +588,7 @@
   a oslc:ResourceShape ;
   oslc:describes oslc:ServiceProvider ;
   oslc:property :dctermsTitleZO ,
-                :dctermsDescription ,
+                :dctermsDescriptionZO ,
                 :dctermsPublisher ,
                 :oslcService ,
                 :oslcDetails ,
@@ -438,3 +689,63 @@
                 :oslcRel ,
                 :oslcHintWidth ,
                 :oslcHintHeight .
+
+# ======== Resource Shape
+
+:ResourceShapeShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:ResourceShape ;
+  oslc:property :dctermsTitleZO ,
+                :oslcDescribes ,
+                :oslcProperty .
+
+
+# ======== Allowed Values
+
+:AllowedValuesShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:AllowedValues ;
+  oslc:property :oslcAllowedValueOM .
+
+# ======== Property
+
+:PropertyShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:Property ;
+  oslc:property :dctermsDescriptionZO ,
+                :dctermsTitleZO ,
+                :oslcAllowedValues ,
+                :oslcAllowedValueZM ,
+                :oslcDefaultValue ,
+                :oslcHidden ,
+                :oslcIsMemberProperty ,
+                :oslcName ,
+                :oslcMaxSize ,
+                :oslcOccurs ,
+                :oslcPropertyDefinition ,
+                :oslcRange ,
+                :oslcReadOnly ,
+                :oslcRepresentation ,
+                :oslcValueType ,
+                :oslcValueShape .
+
+# ======== Comment
+
+:CommentShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:Comment ;
+  oslc:property :dctermsIdentifier ,
+                :dctermsCreator ,
+                :dctermsTitleZOU ,
+                :dctermsCreated ,
+                :dctermsDescriptionEOU ,
+                :oslcPartOfDiscussion ,
+                :oslcInReplyTo .
+
+# ======== Discussion
+
+:DiscussionShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:Discussion ;
+  oslc:property :oslcDiscussionAbout ,
+                :oslcComment .
