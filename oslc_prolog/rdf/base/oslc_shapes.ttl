@@ -8,6 +8,16 @@
 
 # ======== Properties
 
+# TODO:
+#oslc:instanceShape
+#oslc:shortTitle
+#oslc:shortId
+#oslc:discussedBy
+#oslc:modifiedBy
+#oslc:results
+#oslc:futureAction
+#oslc:executes
+
 :dctermsTitleZO
   a oslc:Property ;
   oslc:name "title"^^xsd:string ;
@@ -569,6 +579,23 @@
   oslc:valueType oslc:AnyResource ;
   oslc:representation oslc:Either .
 
+:oslcNextPage
+  a oslc:Property ;
+  oslc:name "nextPage"^^xsd:string ;
+  oslc:propertyDefinition oslc:nextPage ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcTotalCount
+  a oslc:Property ;
+  oslc:name "totalCount"^^xsd:string ;
+  oslc:propertyDefinition oslc:totalCount ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:readOnly true ;
+  oslc:valueType xsd:integer .
+
 # ======== Service Provider Catalog
 
 :serviceProviderCatalogShape
@@ -749,3 +776,13 @@
   oslc:describes oslc:Discussion ;
   oslc:property :oslcDiscussionAbout ,
                 :oslcComment .
+
+# ======== Responce Info
+
+:responseInfoShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:ResponseInfo ;
+  oslc:property :dctermsTitleZO ,
+                :dctermsDescriptionZO ,
+                :oslcNextPage ,
+                :oslcTotalCount .
