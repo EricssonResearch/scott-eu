@@ -143,3 +143,11 @@
   :prologModule "oslc"^^xsd:string ;
   :prologPredicate "discussion"^^xsd:string ;
   oslc:resourceShape oslcs:discussionShape .
+
+# ======== Response Info
+
+:responseInfo
+  a :PrologResource ;
+  :prologModule "oslc"^^xsd:string ;
+  :prologPredicate "response_info"^^xsd:string ;
+  oslc:resourceShape oslcs:responseInfoShape .
