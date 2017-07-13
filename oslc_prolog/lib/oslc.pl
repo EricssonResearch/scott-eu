@@ -76,10 +76,39 @@ oslc_properties(IRI, ResourceShape, [PropertyResource|T], Options, Graph) :-
        oslc_properties(IRI, ResourceShape, T, RemainingOptions, Graph)
     ; % check property
       % TODO: check if current database is consistent with shape
+      get_occurs(PropertyResource, Occurs, ZO, ZM, OM, _),
+      rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+      aggregate_all(count, rdf(IRI, PropertyDefinition, _, Graph), X),
+      ( X == 0
+      -> once((
+           Occurs == ZO
+         ; Occurs == ZM
+         ; error("Property ~w of resource ~w must be specified", [PropertyDefinition, IRI])
+         ))
+      ; ( X > 1
+        -> once((
+             Occurs == OM
+           ; Occurs == ZM
+           ; error("Property ~w of resource ~w must not occur more than once", [PropertyDefinition, IRI])
+           ))
+        ; true
+        )
+      ),
       oslc_properties(IRI, ResourceShape, T, Options, Graph)
     )
   ; error("Resource ~w does not have prolog option defined for property ~w", [IRI, PropertyResource])
   )).
+
+% ------------ GET OCCURS
+
+get_occurs(PropertyResource, Occurs, ZO, ZM, OM, EO) :-
+  rdf(PropertyResource, oslc:occurs, Occurs),
+  rdf_global_term([oslc:'Zero-or-one',
+                   oslc:'Zero-or-many',
+                   oslc:'One-or-many',
+                   oslc:'Exactly-one'],
+                  [ZO, ZM, OM, EO]),
+  member(Occurs, [ZO, ZM, OM, EO]).
 
 % ------------ READ
 
@@ -96,15 +125,15 @@ read_property(IRI, PropertyResource, Value, Graph) :-
      ; error("Required property ~w of resource ~w is missing", [PropertyDefinition, IRI])
      ))
   ; ( X > 1
-    -> % Values should be a list
+    -> % Values is returned as a list
        ( ( Occurs == OM ; Occurs == ZM )
        -> read_list(IRI, PropertyResource, Values, Value)
        ; error("Property ~w of resource ~w occurred more than once", [PropertyDefinition, IRI])
        )
-    ; ( % Values should be a list with a single element
+    ; ( % Values is returned as a list with a single element
         ( Occurs == OM ; Occurs == ZM )
       -> read_list(IRI, PropertyResource, Values, Value)
-      ; % Values should not be a list
+      ; % Values is returned as an element
         [V] = Values,
         read_value(IRI, PropertyResource, V, Value)
       )
@@ -132,55 +161,6 @@ read_value(IRI, PropertyResource, _, _) :-
   rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
   rdf(PropertyResource, oslc:valueType, Type),
   error("Failed to read property ~w of resource ~w (should be of type ~w)", [PropertyDefinition, IRI, Type]).
-
-% ------------ WRITE
-
-% Value is an empty list
-write_property(IRI, PropertyResource, [], _) :- !,
-  ( rdf(PropertyResource, oslc:occurs, oslc:'Zero-or-many')
-  -> true
-  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    error("Property ~w of resource ~w cannot be set to empty list", [PropertyDefinition, IRI])
-  ).
-
-% Value is a list
-write_property(IRI, PropertyResource, [H|T], Graph) :- !,
-  ( once((
-      rdf(PropertyResource, oslc:occurs, oslc:'Zero-or-many')
-    ; rdf(PropertyResource, oslc:occurs, oslc:'One-or-many')
-    ))
-  -> write_list(IRI, PropertyResource, [H|T], Graph)
-  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    error("Property ~w of resource ~w cannot be set to a list", [PropertyDefinition, IRI])
-  ).
-
-% Value is not a list
-write_property(IRI, PropertyResource, Value, Graph) :-
-  check_resource(IRI, PropertyResource, Value), !,
-  once((
-    Value == ''
-  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    rdf_assert(IRI, PropertyDefinition, Value, Graph)
-  )).
-
-% Value is not a list and not a resource
-write_property(IRI, PropertyResource, Value, Graph) :-
-  ( ( rdf(PropertyResource, oslc:occurs, oslc:'Exactly-one'),
-      Value == ''
-    )
-  -> rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-     error("Property ~w of resource ~w must occur exactly once", [PropertyDefinition, IRI])
-  ; ( Value == ''
-    -> true
-    ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-      rdf(PropertyResource, oslc:valueType, Type),
-      ( rdf_global_id(LType, Type),
-        check_literal(LType, Value)
-      -> rdf_assert(IRI, PropertyDefinition, literal(type(Type, Value)), Graph)
-      ; error("Property ~w of resource ~w must be of literal type ~w", [PropertyDefinition, IRI, Type])
-      )
-    )
-  ).
 
 % ------------ CHECK RESOURCE
 
@@ -226,51 +206,65 @@ check_literal(xsd:string, Value) :-
 check_literal(rdf:'XMLLiteral', Value) :-
   string(Value).
 
+% ------------ WRITE
+
+% Value is an empty list
+write_property(IRI, PropertyResource, [], _) :- !,
+  once((
+    rdf(PropertyResource, oslc:occurs, oslc:'Zero-or-many')
+  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+    error("Property ~w of resource ~w cannot be set to empty list", [PropertyDefinition, IRI])
+  )).
+
+% Value is a list
+write_property(IRI, PropertyResource, [H|T], Graph) :- !,
+  ( once((
+      rdf(PropertyResource, oslc:occurs, oslc:'Zero-or-many')
+    ; rdf(PropertyResource, oslc:occurs, oslc:'One-or-many')
+    ))
+  -> write_list(IRI, PropertyResource, [H|T], Graph)
+  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+    error("Property ~w of resource ~w cannot be set to a list", [PropertyDefinition, IRI])
+  ).
+
+% Value is not a list, check if it is a resource
+write_property(IRI, PropertyResource, Value, Graph) :-
+  check_resource(IRI, PropertyResource, Value), !,
+  once((
+    Value == ''
+  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+    rdf_assert(IRI, PropertyDefinition, Value, Graph)
+  )).
+
+% Value is not a list and not a resource
+write_property(IRI, PropertyResource, Value, Graph) :-
+  rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+  get_occurs(PropertyResource, Occurs, ZO, ZM, _, EO),
+  ( Value == ''
+  -> once((
+       Occurs == ZO
+     ; Occurs == ZM
+     ; error("Property ~w of resource ~w must be specified", [PropertyDefinition, IRI])
+     ))
+  ; rdf(PropertyResource, oslc:valueType, Type),
+    rdf_global_id(LType, Type),
+    ( check_literal(LType, Value)
+    ->  once((
+          Occurs == EO
+        ; Occurs == ZO
+        ; error("Property ~w of resource ~w must be set to a list", [PropertyDefinition, IRI])
+        )),
+        rdf_assert(IRI, PropertyDefinition, literal(type(Type, Value)), Graph)
+    ; error("Property ~w of resource ~w must be of literal type ~w", [PropertyDefinition, IRI, Type])
+    )
+  ).
+
 % ------------ LIST
 
 write_list(_, _, [], _).
 write_list(IRI, PropertyResource, [H|T], Graph) :-
   write_property(IRI, PropertyResource, H, Graph),
   write_list(IRI, PropertyResource, T, Graph).
-
-% ------------ CHECK SHAPE
-
-check_shape(IRI, ResourceShape, Graph) :-
-  forall(
-    rdf(ResourceShape, oslc:property, PropertyResource),
-    check_property(IRI, PropertyResource, Graph)
-  ).
-
-check_property(IRI, PropertyResource, Graph) :-
-  get_occurs(PropertyResource, Occurs, ZO, ZM, OM, _),
-  rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-  aggregate_all(count, rdf(IRI, PropertyDefinition, _, Graph), X),
-  ( X == 0
-  -> once((
-       Occurs == ZO
-     ; Occurs == ZM
-     ; error("Property ~w of resource ~w must be specified", [PropertyDefinition, IRI])
-     ))
-  ; ( X > 1
-    -> once((
-         Occurs == OM
-       ; Occurs == ZM
-       ; error("Property ~w of resource ~w must not occur more than once", [PropertyDefinition, IRI])
-       ))
-    ; true
-    )
-  ).
-
-% ------------ OCCURS
-
-get_occurs(PropertyResource, Occurs, ZO, ZM, OM, EO) :-
-  rdf(PropertyResource, oslc:occurs, Occurs),
-  rdf_global_term([oslc:'Zero-or-one',
-                   oslc:'Zero-or-many',
-                   oslc:'One-or-many',
-                   oslc:'Exactly-one'],
-                  [ZO, ZM, OM, EO]),
-  member(Occurs, [ZO, ZM, OM, EO]).
 
 % ------------ ERROR
 
