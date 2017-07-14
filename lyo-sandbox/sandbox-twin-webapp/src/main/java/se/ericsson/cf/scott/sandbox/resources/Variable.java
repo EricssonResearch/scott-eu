@@ -324,7 +324,6 @@ public class Variable
         // Start of user code resourceTypetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"resourceType\"><strong>resourceType</strong>: &nbsp;</LABEL>";
     
         // Start of user code resourceTypetoHtml_mid
         // End of user code
@@ -353,7 +352,6 @@ public class Variable
         // Start of user code labeltoHtml_init
         // End of user code
     
-        s = s + "<label for=\"label\"><strong>label</strong>: &nbsp;</LABEL>";
     
         // Start of user code labeltoHtml_mid
         // End of user code
@@ -382,7 +380,6 @@ public class Variable
         // Start of user code ordertoHtml_init
         // End of user code
     
-        s = s + "<label for=\"order\"><strong>order</strong>: &nbsp;</LABEL>";
     
         // Start of user code ordertoHtml_mid
         // End of user code

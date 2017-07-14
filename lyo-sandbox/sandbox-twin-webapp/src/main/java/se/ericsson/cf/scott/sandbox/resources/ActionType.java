@@ -444,7 +444,6 @@ public class ActionType
         // Start of user code labeltoHtml_init
         // End of user code
     
-        s = s + "<label for=\"label\"><strong>label</strong>: &nbsp;</LABEL>";
     
         // Start of user code labeltoHtml_mid
         // End of user code
@@ -473,7 +472,6 @@ public class ActionType
         // Start of user code hasVariabletoHtml_init
         // End of user code
     
-        s = s + "<label for=\"hasVariable\"><strong>hasVariable</strong>: &nbsp;</LABEL>";
     
         // Start of user code hasVariabletoHtml_mid
         // End of user code
@@ -503,7 +501,6 @@ public class ActionType
         // Start of user code preconditiontoHtml_init
         // End of user code
     
-        s = s + "<label for=\"precondition\"><strong>precondition</strong>: &nbsp;</LABEL>";
     
         // Start of user code preconditiontoHtml_mid
         // End of user code
@@ -532,7 +529,6 @@ public class ActionType
         // Start of user code effecttoHtml_init
         // End of user code
     
-        s = s + "<label for=\"effect\"><strong>effect</strong>: &nbsp;</LABEL>";
     
         // Start of user code effecttoHtml_mid
         // End of user code
@@ -562,7 +558,6 @@ public class ActionType
         // Start of user code titletoHtml_init
         // End of user code
     
-        s = s + "<label for=\"title\"><strong>title</strong>: &nbsp;</LABEL>";
     
         // Start of user code titletoHtml_mid
         // End of user code

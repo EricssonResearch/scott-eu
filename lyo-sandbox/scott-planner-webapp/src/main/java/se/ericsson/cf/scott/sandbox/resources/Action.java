@@ -335,7 +335,6 @@ public class Action
         // Start of user code ofActionTypetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"ofActionType\"><strong>ofActionType</strong>: &nbsp;</LABEL>";
     
         // Start of user code ofActionTypetoHtml_mid
         // End of user code
@@ -364,7 +363,6 @@ public class Action
         // Start of user code withVariabletoHtml_init
         // End of user code
     
-        s = s + "<label for=\"withVariable\"><strong>withVariable</strong>: &nbsp;</LABEL>";
     
         // Start of user code withVariabletoHtml_mid
         // End of user code
@@ -394,7 +392,6 @@ public class Action
         // Start of user code ordertoHtml_init
         // End of user code
     
-        s = s + "<label for=\"order\"><strong>order</strong>: &nbsp;</LABEL>";
     
         // Start of user code ordertoHtml_mid
         // End of user code

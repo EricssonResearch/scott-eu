@@ -229,7 +229,6 @@ public class Predicate
         // Start of user code titletoHtml_init
         // End of user code
     
-        s = s + "<label for=\"title\"><strong>title</strong>: &nbsp;</LABEL>";
     
         // Start of user code titletoHtml_mid
         // End of user code

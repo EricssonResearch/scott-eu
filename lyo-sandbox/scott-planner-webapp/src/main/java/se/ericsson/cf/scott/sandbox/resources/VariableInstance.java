@@ -374,7 +374,6 @@ public class VariableInstance
         // Start of user code valuetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"value\"><strong>value</strong>: &nbsp;</LABEL>";
     
         // Start of user code valuetoHtml_mid
         // End of user code
@@ -403,7 +402,6 @@ public class VariableInstance
         // Start of user code labeltoHtml_init
         // End of user code
     
-        s = s + "<label for=\"label\"><strong>label</strong>: &nbsp;</LABEL>";
     
         // Start of user code labeltoHtml_mid
         // End of user code
@@ -432,7 +430,6 @@ public class VariableInstance
         // Start of user code ordertoHtml_init
         // End of user code
     
-        s = s + "<label for=\"order\"><strong>order</strong>: &nbsp;</LABEL>";
     
         // Start of user code ordertoHtml_mid
         // End of user code
@@ -461,7 +458,6 @@ public class VariableInstance
         // Start of user code ppInstanceOftoHtml_init
         // End of user code
     
-        s = s + "<label for=\"instanceOf\"><strong>instanceOf</strong>: &nbsp;</LABEL>";
     
         // Start of user code ppInstanceOftoHtml_mid
         // End of user code

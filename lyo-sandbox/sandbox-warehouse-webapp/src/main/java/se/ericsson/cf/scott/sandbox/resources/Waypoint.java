@@ -267,7 +267,6 @@ public class Waypoint
         // Start of user code canMovetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"canMove\"><strong>canMove</strong>: &nbsp;</LABEL>";
     
         // Start of user code canMovetoHtml_mid
         // End of user code

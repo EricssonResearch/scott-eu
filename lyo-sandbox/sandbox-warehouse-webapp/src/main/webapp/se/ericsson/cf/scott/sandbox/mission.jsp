@@ -98,9 +98,32 @@ Start of user code (RECOMMENDED) bodyStuff1
 End of user code
         --%>
 
-        <p>Summary: <%= aMission.toHtml() %></p>
-
         <h2>Properties</h2>
+
+        <div>
+          <dl class="dl-horizontal">
+            <dt>planningDeadline</dt>
+            <dd><%= aMission.planningDeadlineToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>label</dt>
+            <dd><%= aMission.labelToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>missionDeadline</dt>
+            <dd><%= aMission.missionDeadlineToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>goalPredicate</dt>
+            <dd><%= aMission.goalPredicateToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>initialState</dt>
+            <dd><%= aMission.initialStateToHtml()%></dd>
+          </dl>
+        </div>
+
+
         <table style="clear: both;">
           <tr>
             <td><%= aMission.planningDeadlineToHtml()%></td>

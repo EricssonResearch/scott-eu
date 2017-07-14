@@ -404,7 +404,6 @@ public class WhObject
         // Start of user code isOntoHtml_init
         // End of user code
     
-        s = s + "<label for=\"isOn\"><strong>isOn</strong>: &nbsp;</LABEL>";
     
         // Start of user code isOntoHtml_mid
         // End of user code
@@ -433,7 +432,6 @@ public class WhObject
         // Start of user code carriedBytoHtml_init
         // End of user code
     
-        s = s + "<label for=\"carriedBy\"><strong>carriedBy</strong>: &nbsp;</LABEL>";
     
         // Start of user code carriedBytoHtml_mid
         // End of user code
@@ -462,7 +460,6 @@ public class WhObject
         // Start of user code typetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"type\"><strong>type</strong>: &nbsp;</LABEL>";
     
         // Start of user code typetoHtml_mid
         // End of user code
@@ -491,7 +488,6 @@ public class WhObject
         // Start of user code capacitytoHtml_init
         // End of user code
     
-        s = s + "<label for=\"capacity\"><strong>capacity</strong>: &nbsp;</LABEL>";
     
         // Start of user code capacitytoHtml_mid
         // End of user code

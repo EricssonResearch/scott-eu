@@ -98,9 +98,20 @@ Start of user code (RECOMMENDED) bodyStuff1
 End of user code
         --%>
 
-        <p>Summary: <%= aPlan.toHtml() %></p>
-
         <h2>Properties</h2>
+
+        <div>
+          <dl class="dl-horizontal">
+            <dt>forMission</dt>
+            <dd><%= aPlan.forMissionToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>relatesToAction</dt>
+            <dd><%= aPlan.relatesToActionToHtml()%></dd>
+          </dl>
+        </div>
+
+
         <table style="clear: both;">
           <tr>
             <td><%= aPlan.forMissionToHtml()%></td>

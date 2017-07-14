@@ -98,9 +98,28 @@ Start of user code (RECOMMENDED) bodyStuff1
 End of user code
         --%>
 
-        <p>Summary: <%= aPlace.toHtml() %></p>
-
         <h2>Properties</h2>
+
+        <div>
+          <dl class="dl-horizontal">
+            <dt>situatedAt</dt>
+            <dd><%= aPlace.situatedAtToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>isChargingStation</dt>
+            <dd><%= aPlace.isChargingStationToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>type</dt>
+            <dd><%= aPlace.typeToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>capacity</dt>
+            <dd><%= aPlace.capacityToHtml()%></dd>
+          </dl>
+        </div>
+
+
         <table style="clear: both;">
           <tr>
             <td><%= aPlace.situatedAtToHtml()%></td>

@@ -88,7 +88,7 @@ Start of user code (RECOMMENDED) bodyStuff1
         <%--
 End of user code
       --%>
-      <h2>Service Provider</h2>
+      <h2><%= serviceProvider.getTitle() %></h2>
       <p><%= serviceProvider.getDescription() %></p>
 
 
@@ -143,9 +143,10 @@ End of user code
     <%}%>
     <%
         for (int queryCapabilityIndex = 0; queryCapabilityIndex < queryCapabilities.length; queryCapabilityIndex++) {
-            String queryCapability = queryCapabilities[queryCapabilityIndex].getQueryBase().toString();
+            QueryCapability qc = queryCapabilities[queryCapabilityIndex];
+            String queryCapability = qc.getQueryBase().toString();
     %>
-    <p><a href="<%= queryCapability %>"><%= queryCapability %></a></p>
+    <p><a href="<%= queryCapability %>"><%= qc.getTitle() %> (<code><%= qc.getQueryBase() %></code>)</a></p>
     <%}%>
     <% if(creationFactories.length > 0 || queryCapabilities.length > 0) {%>
     <h4>Resource Shape(s)</h4>

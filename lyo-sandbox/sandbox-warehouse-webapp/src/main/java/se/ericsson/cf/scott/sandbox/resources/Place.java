@@ -404,7 +404,6 @@ public class Place
         // Start of user code situatedAttoHtml_init
         // End of user code
     
-        s = s + "<label for=\"situatedAt\"><strong>situatedAt</strong>: &nbsp;</LABEL>";
     
         // Start of user code situatedAttoHtml_mid
         // End of user code
@@ -433,7 +432,6 @@ public class Place
         // Start of user code isChargingStationtoHtml_init
         // End of user code
     
-        s = s + "<label for=\"isChargingStation\"><strong>isChargingStation</strong>: &nbsp;</LABEL>";
     
         // Start of user code isChargingStationtoHtml_mid
         // End of user code
@@ -462,7 +460,6 @@ public class Place
         // Start of user code typetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"type\"><strong>type</strong>: &nbsp;</LABEL>";
     
         // Start of user code typetoHtml_mid
         // End of user code
@@ -491,7 +488,6 @@ public class Place
         // Start of user code capacitytoHtml_init
         // End of user code
     
-        s = s + "<label for=\"capacity\"><strong>capacity</strong>: &nbsp;</LABEL>";
     
         // Start of user code capacitytoHtml_mid
         // End of user code

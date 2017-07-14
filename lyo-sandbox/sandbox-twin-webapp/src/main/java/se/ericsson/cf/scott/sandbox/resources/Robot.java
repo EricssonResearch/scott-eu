@@ -547,7 +547,6 @@ public class Robot
         // Start of user code capacitytoHtml_init
         // End of user code
     
-        s = s + "<label for=\"capacity\"><strong>capacity</strong>: &nbsp;</LABEL>";
     
         // Start of user code capacitytoHtml_mid
         // End of user code
@@ -576,7 +575,6 @@ public class Robot
         // Start of user code chargeLeveltoHtml_init
         // End of user code
     
-        s = s + "<label for=\"chargeLevel\"><strong>chargeLevel</strong>: &nbsp;</LABEL>";
     
         // Start of user code chargeLeveltoHtml_mid
         // End of user code
@@ -605,7 +603,6 @@ public class Robot
         // Start of user code isAttoHtml_init
         // End of user code
     
-        s = s + "<label for=\"isAt\"><strong>isAt</strong>: &nbsp;</LABEL>";
     
         // Start of user code isAttoHtml_mid
         // End of user code
@@ -634,7 +631,6 @@ public class Robot
         // Start of user code isChargingtoHtml_init
         // End of user code
     
-        s = s + "<label for=\"isCharging\"><strong>isCharging</strong>: &nbsp;</LABEL>";
     
         // Start of user code isChargingtoHtml_mid
         // End of user code
@@ -663,7 +659,6 @@ public class Robot
         // Start of user code maxChargetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"maxCharge\"><strong>maxCharge</strong>: &nbsp;</LABEL>";
     
         // Start of user code maxChargetoHtml_mid
         // End of user code
@@ -692,7 +687,6 @@ public class Robot
         // Start of user code highChargetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"highCharge\"><strong>highCharge</strong>: &nbsp;</LABEL>";
     
         // Start of user code highChargetoHtml_mid
         // End of user code
@@ -721,7 +715,6 @@ public class Robot
         // Start of user code lowChargetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"lowCharge\"><strong>lowCharge</strong>: &nbsp;</LABEL>";
     
         // Start of user code lowChargetoHtml_mid
         // End of user code

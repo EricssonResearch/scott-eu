@@ -28,8 +28,6 @@ import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.resources.Mission;
@@ -42,6 +40,8 @@ import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 
 // Start of user code imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.resources.ResourceFactory;
 import com.google.common.collect.ImmutableList;
 import java.util.Optional;
@@ -230,10 +230,10 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromPlace(final Place aResource)
+    public static String getETagFromMission(final Mission aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromPlace
+        // Start of user code getETagFromMission
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
@@ -246,10 +246,10 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromMission(final Mission aResource)
+    public static String getETagFromPlace(final Place aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromMission
+        // Start of user code getETagFromPlace
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

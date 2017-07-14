@@ -413,7 +413,6 @@ public class ProblemState
         // Start of user code robotstoHtml_init
         // End of user code
     
-        s = s + "<label for=\"robots\"><strong>robots</strong>: &nbsp;</LABEL>";
     
         // Start of user code robotstoHtml_mid
         // End of user code
@@ -443,7 +442,6 @@ public class ProblemState
         // Start of user code placestoHtml_init
         // End of user code
     
-        s = s + "<label for=\"places\"><strong>places</strong>: &nbsp;</LABEL>";
     
         // Start of user code placestoHtml_mid
         // End of user code
@@ -473,7 +471,6 @@ public class ProblemState
         // Start of user code objectstoHtml_init
         // End of user code
     
-        s = s + "<label for=\"objects\"><strong>objects</strong>: &nbsp;</LABEL>";
     
         // Start of user code objectstoHtml_mid
         // End of user code
@@ -503,7 +500,6 @@ public class ProblemState
         // Start of user code waypointstoHtml_init
         // End of user code
     
-        s = s + "<label for=\"waypoints\"><strong>waypoints</strong>: &nbsp;</LABEL>";
     
         // Start of user code waypointstoHtml_mid
         // End of user code

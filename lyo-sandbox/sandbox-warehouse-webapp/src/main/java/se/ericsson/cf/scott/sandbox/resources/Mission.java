@@ -461,7 +461,6 @@ public class Mission
         // Start of user code planningDeadlinetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"planningDeadline\"><strong>planningDeadline</strong>: &nbsp;</LABEL>";
     
         // Start of user code planningDeadlinetoHtml_mid
         // End of user code
@@ -490,7 +489,6 @@ public class Mission
         // Start of user code labeltoHtml_init
         // End of user code
     
-        s = s + "<label for=\"label\"><strong>label</strong>: &nbsp;</LABEL>";
     
         // Start of user code labeltoHtml_mid
         // End of user code
@@ -519,7 +517,6 @@ public class Mission
         // Start of user code missionDeadlinetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"missionDeadline\"><strong>missionDeadline</strong>: &nbsp;</LABEL>";
     
         // Start of user code missionDeadlinetoHtml_mid
         // End of user code
@@ -548,7 +545,6 @@ public class Mission
         // Start of user code goalPredicatetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"goalPredicate\"><strong>goalPredicate</strong>: &nbsp;</LABEL>";
     
         // Start of user code goalPredicatetoHtml_mid
         // End of user code
@@ -578,7 +574,6 @@ public class Mission
         // Start of user code initialStatetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"initialState\"><strong>initialState</strong>: &nbsp;</LABEL>";
     
         // Start of user code initialStatetoHtml_mid
         // End of user code

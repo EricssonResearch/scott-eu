@@ -278,7 +278,6 @@ public class Plan
         // Start of user code forMissiontoHtml_init
         // End of user code
     
-        s = s + "<label for=\"forMission\"><strong>forMission</strong>: &nbsp;</LABEL>";
     
         // Start of user code forMissiontoHtml_mid
         // End of user code
@@ -307,7 +306,6 @@ public class Plan
         // Start of user code relatesToActiontoHtml_init
         // End of user code
     
-        s = s + "<label for=\"relatesToAction\"><strong>relatesToAction</strong>: &nbsp;</LABEL>";
     
         // Start of user code relatesToActiontoHtml_mid
         // End of user code

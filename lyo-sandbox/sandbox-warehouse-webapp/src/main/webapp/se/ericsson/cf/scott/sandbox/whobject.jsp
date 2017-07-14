@@ -98,9 +98,28 @@ Start of user code (RECOMMENDED) bodyStuff1
 End of user code
         --%>
 
-        <p>Summary: <%= aWhObject.toHtml() %></p>
-
         <h2>Properties</h2>
+
+        <div>
+          <dl class="dl-horizontal">
+            <dt>isOn</dt>
+            <dd><%= aWhObject.isOnToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>carriedBy</dt>
+            <dd><%= aWhObject.carriedByToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>type</dt>
+            <dd><%= aWhObject.typeToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>capacity</dt>
+            <dd><%= aWhObject.capacityToHtml()%></dd>
+          </dl>
+        </div>
+
+
         <table style="clear: both;">
           <tr>
             <td><%= aWhObject.isOnToHtml()%></td>

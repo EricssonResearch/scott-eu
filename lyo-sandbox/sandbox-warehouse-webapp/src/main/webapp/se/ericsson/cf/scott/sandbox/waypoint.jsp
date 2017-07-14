@@ -98,9 +98,16 @@ Start of user code (RECOMMENDED) bodyStuff1
 End of user code
         --%>
 
-        <p>Summary: <%= aWaypoint.toHtml() %></p>
-
         <h2>Properties</h2>
+
+        <div>
+          <dl class="dl-horizontal">
+            <dt>canMove</dt>
+            <dd><%= aWaypoint.canMoveToHtml()%></dd>
+          </dl>
+        </div>
+
+
         <table style="clear: both;">
           <tr>
             <td><%= aWaypoint.canMoveToHtml()%></td>

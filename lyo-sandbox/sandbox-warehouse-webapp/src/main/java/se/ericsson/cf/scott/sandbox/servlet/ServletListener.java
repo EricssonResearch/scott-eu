@@ -32,10 +32,10 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.ServletRegistration;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
-import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.WarehouseControllerManager;
 
 // Start of user code imports
+import org.slf4j.LoggerFactory;
 // End of user code
 
 public class ServletListener implements ServletContextListener  {

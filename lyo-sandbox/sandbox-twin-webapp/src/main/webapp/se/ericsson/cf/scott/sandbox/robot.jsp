@@ -98,9 +98,40 @@ Start of user code (RECOMMENDED) bodyStuff1
 End of user code
         --%>
 
-        <p>Summary: <%= aRobot.toHtml() %></p>
-
         <h2>Properties</h2>
+
+        <div>
+          <dl class="dl-horizontal">
+            <dt>capacity</dt>
+            <dd><%= aRobot.capacityToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>chargeLevel</dt>
+            <dd><%= aRobot.chargeLevelToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>isAt</dt>
+            <dd><%= aRobot.isAtToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>isCharging</dt>
+            <dd><%= aRobot.isChargingToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>maxCharge</dt>
+            <dd><%= aRobot.maxChargeToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>highCharge</dt>
+            <dd><%= aRobot.highChargeToHtml()%></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>lowCharge</dt>
+            <dd><%= aRobot.lowChargeToHtml()%></dd>
+          </dl>
+        </div>
+
+
         <table style="clear: both;">
           <tr>
             <td><%= aRobot.capacityToHtml()%></td>
