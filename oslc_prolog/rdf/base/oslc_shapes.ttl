@@ -6,6 +6,17 @@
 @base	<http://ontology.cf.ericsson.net/oslc_shapes> .
 
 
+# ======== Special Property
+
+:rdfType
+  a oslc:Property ;
+  oslc:name "type"^^xsd:string ;
+  oslc:propertyDefinition rdf:type ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:readOnly true ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
 # ======== Properties
 
 # TODO:
@@ -777,7 +788,7 @@
   oslc:property :oslcDiscussionAbout ,
                 :oslcComment .
 
-# ======== Responce Info
+# ======== Response Info
 
 :responseInfoShape
   a oslc:ResourceShape ;
