@@ -38,7 +38,7 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
 
 import se.ericsson.cf.scott.sandbox.PlannerReasonerConstants;
-import se.ericsson.cf.scott.sandbox.services.PlanService;
+import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
 // End of user code
@@ -47,7 +47,7 @@ public class ServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        PlanService.class
+        ServiceProviderService1.class
     };
 
     private ServiceProvidersFactory()

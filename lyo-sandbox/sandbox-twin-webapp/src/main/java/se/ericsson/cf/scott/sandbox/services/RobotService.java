@@ -114,6 +114,7 @@ public class RobotService
         if (aRobot != null) {
             // Start of user code getRobot
             // End of user code
+            httpServletResponse.addHeader(TwinConstants.HDR_OSLC_VERSION, TwinConstants.OSLC_VERSION_V2);
             return aRobot;
         }
 

@@ -62,7 +62,7 @@ import se.ericsson.cf.scott.sandbox.resources.Robot;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 import se.ericsson.cf.scott.sandbox.resources.WhObject;
 import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
-import se.ericsson.cf.scott.sandbox.services.MissionAndPlaceAndWaypointAndWhObjectService;
+import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
 // End of user code
@@ -87,7 +87,7 @@ public class Application extends OslcWinkApplication {
         {
             RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
             RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
-            RESOURCE_CLASSES.add(MissionAndPlaceAndWaypointAndWhObjectService.class);
+            RESOURCE_CLASSES.add(ServiceProviderService1.class);
             RESOURCE_CLASSES.add(Mission.class);
             RESOURCE_CLASSES.add(Place.class);
             RESOURCE_CLASSES.add(Predicate.class);

@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -116,7 +116,7 @@ public class Waypoint
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_WAYPOINT,  
+        TwinConstants.PATH_WAYPOINT,
         Waypoint.class);
     }
     
@@ -238,7 +238,7 @@ public class Waypoint
         // Start of user code canMovetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"canMove\"><strong>canMove</strong>: </LABEL>";
+        s = s + "<label for=\"canMove\"><strong>canMove</strong>: &nbsp;</LABEL>";
     
         // Start of user code canMovetoHtml_mid
         // End of user code

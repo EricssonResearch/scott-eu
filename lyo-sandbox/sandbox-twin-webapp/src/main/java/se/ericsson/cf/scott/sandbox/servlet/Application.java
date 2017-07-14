@@ -67,7 +67,7 @@ import se.ericsson.cf.scott.sandbox.resources.VariableInstance;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 import se.ericsson.cf.scott.sandbox.resources.WhObject;
 import se.ericsson.cf.scott.sandbox.TwinConstants;
-import se.ericsson.cf.scott.sandbox.services.RobotService;
+import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
 // End of user code
@@ -92,7 +92,7 @@ public class Application extends OslcWinkApplication {
         {
             RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
             RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
-            RESOURCE_CLASSES.add(RobotService.class);
+            RESOURCE_CLASSES.add(ServiceProviderService1.class);
             RESOURCE_CLASSES.add(Action.class);
             RESOURCE_CLASSES.add(ActionType.class);
             RESOURCE_CLASSES.add(Mission.class);
@@ -105,8 +105,8 @@ public class Application extends OslcWinkApplication {
             RESOURCE_CLASSES.add(VariableInstance.class);
             RESOURCE_CLASSES.add(Waypoint.class);
             RESOURCE_CLASSES.add(WhObject.class);
-//            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.ConsumersService"));
-//            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.OAuthService"));
+            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.ConsumersService"));
+            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.OAuthService"));
 
             // Catalog resources
             RESOURCE_CLASSES.add(ServiceProviderCatalogService.class);
@@ -132,7 +132,7 @@ public class Application extends OslcWinkApplication {
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE,                  Service.class);
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER,         ServiceProvider.class);
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER_CATALOG, ServiceProviderCatalog.class);
-        } catch (Exception e)
+        } catch (ClassNotFoundException e)
         {
             e.printStackTrace();
             System.err.println("Application failed to initialize");

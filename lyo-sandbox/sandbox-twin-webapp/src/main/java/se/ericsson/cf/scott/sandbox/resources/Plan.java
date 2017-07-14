@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -120,7 +120,7 @@ public class Plan
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_PLAN,  
+        TwinConstants.PATH_PLAN,
         Plan.class);
     }
     
@@ -278,7 +278,7 @@ public class Plan
         // Start of user code forMissiontoHtml_init
         // End of user code
     
-        s = s + "<label for=\"forMission\"><strong>forMission</strong>: </LABEL>";
+        s = s + "<label for=\"forMission\"><strong>forMission</strong>: &nbsp;</LABEL>";
     
         // Start of user code forMissiontoHtml_mid
         // End of user code
@@ -307,7 +307,7 @@ public class Plan
         // Start of user code relatesToActiontoHtml_init
         // End of user code
     
-        s = s + "<label for=\"relatesToAction\"><strong>relatesToAction</strong>: </LABEL>";
+        s = s + "<label for=\"relatesToAction\"><strong>relatesToAction</strong>: &nbsp;</LABEL>";
     
         // Start of user code relatesToActiontoHtml_mid
         // End of user code

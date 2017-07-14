@@ -22,16 +22,12 @@
 
 package se.ericsson.cf.scott.sandbox;
 
-import java.net.URISyntaxException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.clients.OslcClientException;
-import se.ericsson.cf.scott.sandbox.clients.WarehouseAdaptorClient;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.resources.Action;
@@ -49,16 +45,20 @@ import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 
 // Start of user code imports
+import se.ericsson.cf.scott.sandbox.clients.WarehouseAdaptorClient;
+import org.eclipse.lyo.oslc4j.core.model.Link;
+import se.ericsson.cf.scott.sandbox.clients.OslcClientException;
+import java.net.URISyntaxException;
 // End of user code
 
 // Start of user code pre_class_code
 // End of user code
 
 public class TwinManager {
-    private final static String spId = "robot_handcrafted";
-    private static WarehouseAdaptorClient warehouseAdaptorClient;
 
     // Start of user code class_attributes
+    private static WarehouseAdaptorClient warehouseAdaptorClient;
+    private static String spId = "dummy";
     // End of user code
     
     
@@ -97,21 +97,25 @@ public class TwinManager {
 
 
     public static Robot getRobot(HttpServletRequest httpServletRequest, final String serviceProviderId, final String robotId)
-            throws URISyntaxException, OslcClientException {
+    {
         Robot aResource = null;
         
         // Start of user code getRobot
         if ("1".equals(robotId)) {
-            final AbstractResource wp2 = warehouseAdaptorClient.fetchWaypoint("dummy", "wp2");
+            try {
+                final AbstractResource wp2 = warehouseAdaptorClient.fetchWaypoint("dummy", "wp2");
 
-            aResource = new Robot(spId, "1");
-            aResource.setIsAt(new Link(wp2.getAbout()));
-            aResource.setChargeLevel(7);
-            aResource.setCapacity(1);
-            aResource.setMaxCharge(10);
-            aResource.setHighCharge(6);
-            aResource.setLowCharge(3);
-            aResource.setIsCharging(false);
+                aResource = new Robot(spId, "1");
+                aResource.setIsAt(new Link(wp2.getAbout()));
+                aResource.setChargeLevel(7);
+                aResource.setCapacity(1);
+                aResource.setMaxCharge(10);
+                aResource.setHighCharge(6);
+                aResource.setLowCharge(3);
+                aResource.setIsCharging(false);
+            } catch (OslcClientException | URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
         // End of user code
         return aResource;

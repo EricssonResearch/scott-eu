@@ -347,6 +347,7 @@ public class MissionAndPlaceAndWaypointAndWhObjectService
         if (aMission != null) {
             // Start of user code getMission
             // End of user code
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
             return aMission;
         }
 
@@ -392,6 +393,7 @@ public class MissionAndPlaceAndWaypointAndWhObjectService
         if (aPlace != null) {
             // Start of user code getPlace
             // End of user code
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
             return aPlace;
         }
 
@@ -437,6 +439,7 @@ public class MissionAndPlaceAndWaypointAndWhObjectService
         if (aWaypoint != null) {
             // Start of user code getWaypoint
             // End of user code
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
             return aWaypoint;
         }
 
@@ -482,6 +485,7 @@ public class MissionAndPlaceAndWaypointAndWhObjectService
         if (aWhObject != null) {
             // Start of user code getWhObject
             // End of user code
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
             return aWhObject;
         }
 

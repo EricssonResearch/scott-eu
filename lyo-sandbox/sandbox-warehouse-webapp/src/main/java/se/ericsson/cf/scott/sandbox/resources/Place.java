@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -154,7 +154,7 @@ public class Place
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        WarehouseControllerConstants.PATH_PLACE,  
+        WarehouseControllerConstants.PATH_PLACE,
         Place.class);
     }
     
@@ -404,7 +404,7 @@ public class Place
         // Start of user code situatedAttoHtml_init
         // End of user code
     
-        s = s + "<label for=\"situatedAt\"><strong>situatedAt</strong>: </LABEL>";
+        s = s + "<label for=\"situatedAt\"><strong>situatedAt</strong>: &nbsp;</LABEL>";
     
         // Start of user code situatedAttoHtml_mid
         // End of user code
@@ -433,7 +433,7 @@ public class Place
         // Start of user code isChargingStationtoHtml_init
         // End of user code
     
-        s = s + "<label for=\"isChargingStation\"><strong>isChargingStation</strong>: </LABEL>";
+        s = s + "<label for=\"isChargingStation\"><strong>isChargingStation</strong>: &nbsp;</LABEL>";
     
         // Start of user code isChargingStationtoHtml_mid
         // End of user code
@@ -462,7 +462,7 @@ public class Place
         // Start of user code typetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"type\"><strong>type</strong>: </LABEL>";
+        s = s + "<label for=\"type\"><strong>type</strong>: &nbsp;</LABEL>";
     
         // Start of user code typetoHtml_mid
         // End of user code
@@ -491,7 +491,7 @@ public class Place
         // Start of user code capacitytoHtml_init
         // End of user code
     
-        s = s + "<label for=\"capacity\"><strong>capacity</strong>: </LABEL>";
+        s = s + "<label for=\"capacity\"><strong>capacity</strong>: &nbsp;</LABEL>";
     
         // Start of user code capacitytoHtml_mid
         // End of user code

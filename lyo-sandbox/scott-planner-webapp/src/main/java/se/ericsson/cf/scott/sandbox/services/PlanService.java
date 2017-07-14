@@ -124,6 +124,7 @@ public class PlanService
         if (aPlan != null) {
             // Start of user code getPlan
             // End of user code
+            httpServletResponse.addHeader(PlannerReasonerConstants.HDR_OSLC_VERSION, PlannerReasonerConstants.OSLC_VERSION_V2);
             return aPlan;
         }
 

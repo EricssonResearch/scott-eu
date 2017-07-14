@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -163,7 +163,7 @@ public class Robot
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_ROBOT,  
+        TwinConstants.PATH_ROBOT,
         Robot.class);
     }
     
@@ -547,7 +547,7 @@ public class Robot
         // Start of user code capacitytoHtml_init
         // End of user code
     
-        s = s + "<label for=\"capacity\"><strong>capacity</strong>: </LABEL>";
+        s = s + "<label for=\"capacity\"><strong>capacity</strong>: &nbsp;</LABEL>";
     
         // Start of user code capacitytoHtml_mid
         // End of user code
@@ -576,7 +576,7 @@ public class Robot
         // Start of user code chargeLeveltoHtml_init
         // End of user code
     
-        s = s + "<label for=\"chargeLevel\"><strong>chargeLevel</strong>: </LABEL>";
+        s = s + "<label for=\"chargeLevel\"><strong>chargeLevel</strong>: &nbsp;</LABEL>";
     
         // Start of user code chargeLeveltoHtml_mid
         // End of user code
@@ -605,7 +605,7 @@ public class Robot
         // Start of user code isAttoHtml_init
         // End of user code
     
-        s = s + "<label for=\"isAt\"><strong>isAt</strong>: </LABEL>";
+        s = s + "<label for=\"isAt\"><strong>isAt</strong>: &nbsp;</LABEL>";
     
         // Start of user code isAttoHtml_mid
         // End of user code
@@ -634,7 +634,7 @@ public class Robot
         // Start of user code isChargingtoHtml_init
         // End of user code
     
-        s = s + "<label for=\"isCharging\"><strong>isCharging</strong>: </LABEL>";
+        s = s + "<label for=\"isCharging\"><strong>isCharging</strong>: &nbsp;</LABEL>";
     
         // Start of user code isChargingtoHtml_mid
         // End of user code
@@ -663,7 +663,7 @@ public class Robot
         // Start of user code maxChargetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"maxCharge\"><strong>maxCharge</strong>: </LABEL>";
+        s = s + "<label for=\"maxCharge\"><strong>maxCharge</strong>: &nbsp;</LABEL>";
     
         // Start of user code maxChargetoHtml_mid
         // End of user code
@@ -692,7 +692,7 @@ public class Robot
         // Start of user code highChargetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"highCharge\"><strong>highCharge</strong>: </LABEL>";
+        s = s + "<label for=\"highCharge\"><strong>highCharge</strong>: &nbsp;</LABEL>";
     
         // Start of user code highChargetoHtml_mid
         // End of user code
@@ -721,7 +721,7 @@ public class Robot
         // Start of user code lowChargetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"lowCharge\"><strong>lowCharge</strong>: </LABEL>";
+        s = s + "<label for=\"lowCharge\"><strong>lowCharge</strong>: &nbsp;</LABEL>";
     
         // Start of user code lowChargetoHtml_mid
         // End of user code

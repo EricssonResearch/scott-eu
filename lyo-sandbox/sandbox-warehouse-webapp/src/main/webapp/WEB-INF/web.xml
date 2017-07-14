@@ -6,8 +6,8 @@
   <display-name>Warehouse Adaptor</display-name>
   <context-param>
     <description>Base URI for the adaptor.</description>
-    <param-name>com.sample.testing.servlet.baseurl</param-name>
-    <param-value>http://127.0.0.1:8080</param-value>
+    <param-name>se.ericsson.cf.scott.sandbox.servlet.baseurl</param-name>
+    <param-value>http://localhost:8080</param-value>
   </context-param>
   <listener>
     <description>Listener for ServletContext lifecycle changes</description>

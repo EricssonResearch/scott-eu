@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -123,7 +123,7 @@ public class Action
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_ACTION,  
+        TwinConstants.PATH_ACTION,
         Action.class);
     }
     
@@ -335,7 +335,7 @@ public class Action
         // Start of user code ofActionTypetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"ofActionType\"><strong>ofActionType</strong>: </LABEL>";
+        s = s + "<label for=\"ofActionType\"><strong>ofActionType</strong>: &nbsp;</LABEL>";
     
         // Start of user code ofActionTypetoHtml_mid
         // End of user code
@@ -364,7 +364,7 @@ public class Action
         // Start of user code withVariabletoHtml_init
         // End of user code
     
-        s = s + "<label for=\"withVariable\"><strong>withVariable</strong>: </LABEL>";
+        s = s + "<label for=\"withVariable\"><strong>withVariable</strong>: &nbsp;</LABEL>";
     
         // Start of user code withVariabletoHtml_mid
         // End of user code
@@ -394,7 +394,7 @@ public class Action
         // Start of user code ordertoHtml_init
         // End of user code
     
-        s = s + "<label for=\"order\"><strong>order</strong>: </LABEL>";
+        s = s + "<label for=\"order\"><strong>order</strong>: &nbsp;</LABEL>";
     
         // Start of user code ordertoHtml_mid
         // End of user code

@@ -67,7 +67,7 @@ import se.ericsson.cf.scott.sandbox.resources.VariableInstance;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 import se.ericsson.cf.scott.sandbox.resources.WhObject;
 import se.ericsson.cf.scott.sandbox.PlannerReasonerConstants;
-import se.ericsson.cf.scott.sandbox.services.PlanService;
+import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
 // End of user code
@@ -92,7 +92,7 @@ public class Application extends OslcWinkApplication {
         {
             RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
             RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
-            RESOURCE_CLASSES.add(PlanService.class);
+            RESOURCE_CLASSES.add(ServiceProviderService1.class);
             RESOURCE_CLASSES.add(Action.class);
             RESOURCE_CLASSES.add(ActionType.class);
             RESOURCE_CLASSES.add(Mission.class);

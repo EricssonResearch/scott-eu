@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -129,7 +129,7 @@ public class Mission
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_MISSION,  
+        TwinConstants.PATH_MISSION,
         Mission.class);
     }
     
@@ -432,7 +432,7 @@ public class Mission
         // Start of user code planningDeadlinetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"planningDeadline\"><strong>planningDeadline</strong>: </LABEL>";
+        s = s + "<label for=\"planningDeadline\"><strong>planningDeadline</strong>: &nbsp;</LABEL>";
     
         // Start of user code planningDeadlinetoHtml_mid
         // End of user code
@@ -461,7 +461,7 @@ public class Mission
         // Start of user code labeltoHtml_init
         // End of user code
     
-        s = s + "<label for=\"label\"><strong>label</strong>: </LABEL>";
+        s = s + "<label for=\"label\"><strong>label</strong>: &nbsp;</LABEL>";
     
         // Start of user code labeltoHtml_mid
         // End of user code
@@ -490,7 +490,7 @@ public class Mission
         // Start of user code missionDeadlinetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"missionDeadline\"><strong>missionDeadline</strong>: </LABEL>";
+        s = s + "<label for=\"missionDeadline\"><strong>missionDeadline</strong>: &nbsp;</LABEL>";
     
         // Start of user code missionDeadlinetoHtml_mid
         // End of user code
@@ -519,7 +519,7 @@ public class Mission
         // Start of user code goalPredicatetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"goalPredicate\"><strong>goalPredicate</strong>: </LABEL>";
+        s = s + "<label for=\"goalPredicate\"><strong>goalPredicate</strong>: &nbsp;</LABEL>";
     
         // Start of user code goalPredicatetoHtml_mid
         // End of user code
@@ -549,7 +549,7 @@ public class Mission
         // Start of user code initialStatetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"initialState\"><strong>initialState</strong>: </LABEL>";
+        s = s + "<label for=\"initialState\"><strong>initialState</strong>: &nbsp;</LABEL>";
     
         // Start of user code initialStatetoHtml_mid
         // End of user code

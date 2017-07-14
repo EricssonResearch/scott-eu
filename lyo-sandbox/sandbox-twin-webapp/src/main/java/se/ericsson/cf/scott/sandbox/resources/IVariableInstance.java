@@ -97,19 +97,19 @@ public interface IVariableInstance
     @OslcReadOnly(false)
     public Integer getOrder();
 
-    @OslcName("instanceOf")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "instanceOf")
+    @OslcName("ppInstanceOf")
+    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "ppInstanceOf")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({TwinConstants.TYPE_VARIABLE})
     @OslcReadOnly(false)
     @OslcTitle("")
-    public Link getInstanceOf();
+    public Link getPpInstanceOf();
 
 
     public void setValue(final Link value );
     public void setLabel(final String label );
     public void setOrder(final Integer order );
-    public void setInstanceOf(final Link instanceOf );
+    public void setPpInstanceOf(final Link ppInstanceOf );
 }
 

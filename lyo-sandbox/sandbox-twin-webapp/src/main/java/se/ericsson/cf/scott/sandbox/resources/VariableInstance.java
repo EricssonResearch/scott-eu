@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -95,9 +95,9 @@ public class VariableInstance
     // Start of user code attributeAnnotation:order
     // End of user code
     private Integer order;
-    // Start of user code attributeAnnotation:instanceOf
+    // Start of user code attributeAnnotation:ppInstanceOf
     // End of user code
-    private Link instanceOf = new Link();
+    private Link ppInstanceOf = new Link();
     
     // Start of user code classAttributes
     // End of user code
@@ -125,7 +125,7 @@ public class VariableInstance
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_VARIABLEINSTANCE,  
+        TwinConstants.PATH_VARIABLEINSTANCE,
         VariableInstance.class);
     }
     
@@ -226,20 +226,20 @@ public class VariableInstance
         return order;
     }
     
-    // Start of user code getterAnnotation:instanceOf
+    // Start of user code getterAnnotation:ppInstanceOf
     // End of user code
-    @OslcName("instanceOf")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "instanceOf")
+    @OslcName("ppInstanceOf")
+    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "ppInstanceOf")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({TwinConstants.TYPE_VARIABLE})
     @OslcReadOnly(false)
     @OslcTitle("")
-    public Link getInstanceOf()
+    public Link getPpInstanceOf()
     {
-        // Start of user code getterInit:instanceOf
+        // Start of user code getterInit:ppInstanceOf
         // End of user code
-        return instanceOf;
+        return ppInstanceOf;
     }
     
     
@@ -279,15 +279,15 @@ public class VariableInstance
         // End of user code
     }
     
-    // Start of user code setterAnnotation:instanceOf
+    // Start of user code setterAnnotation:ppInstanceOf
     // End of user code
-    public void setInstanceOf(final Link instanceOf )
+    public void setPpInstanceOf(final Link ppInstanceOf )
     {
-        // Start of user code setterInit:instanceOf
+        // Start of user code setterInit:ppInstanceOf
         // End of user code
-        this.instanceOf = instanceOf;
+        this.ppInstanceOf = ppInstanceOf;
     
-        // Start of user code setterFinalize:instanceOf
+        // Start of user code setterFinalize:ppInstanceOf
         // End of user code
     }
     
@@ -348,19 +348,19 @@ public class VariableInstance
         return s;
     }
     
-    static public String instanceOfToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    static public String ppInstanceOfToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
     
-        // Start of user code "Init:instanceOfToHtmlForCreation(...)"
+        // Start of user code "Init:ppInstanceOfToHtmlForCreation(...)"
         // End of user code
     
         s = s + "<label for=\"instanceOf\">instanceOf: </LABEL>";
     
-        // Start of user code "Mid:instanceOfToHtmlForCreation(...)"
+        // Start of user code "Mid:ppInstanceOfToHtmlForCreation(...)"
         // End of user code
     
-        // Start of user code "Finalize:instanceOfToHtmlForCreation(...)"
+        // Start of user code "Finalize:ppInstanceOfToHtmlForCreation(...)"
         // End of user code
     
         return s;
@@ -374,7 +374,7 @@ public class VariableInstance
         // Start of user code valuetoHtml_init
         // End of user code
     
-        s = s + "<label for=\"value\"><strong>value</strong>: </LABEL>";
+        s = s + "<label for=\"value\"><strong>value</strong>: &nbsp;</LABEL>";
     
         // Start of user code valuetoHtml_mid
         // End of user code
@@ -403,7 +403,7 @@ public class VariableInstance
         // Start of user code labeltoHtml_init
         // End of user code
     
-        s = s + "<label for=\"label\"><strong>label</strong>: </LABEL>";
+        s = s + "<label for=\"label\"><strong>label</strong>: &nbsp;</LABEL>";
     
         // Start of user code labeltoHtml_mid
         // End of user code
@@ -432,7 +432,7 @@ public class VariableInstance
         // Start of user code ordertoHtml_init
         // End of user code
     
-        s = s + "<label for=\"order\"><strong>order</strong>: </LABEL>";
+        s = s + "<label for=\"order\"><strong>order</strong>: &nbsp;</LABEL>";
     
         // Start of user code ordertoHtml_mid
         // End of user code
@@ -454,30 +454,30 @@ public class VariableInstance
         return s;
     }
     
-    public String instanceOfToHtml()
+    public String ppInstanceOfToHtml()
     {
         String s = "";
     
-        // Start of user code instanceOftoHtml_init
+        // Start of user code ppInstanceOftoHtml_init
         // End of user code
     
-        s = s + "<label for=\"instanceOf\"><strong>instanceOf</strong>: </LABEL>";
+        s = s + "<label for=\"instanceOf\"><strong>instanceOf</strong>: &nbsp;</LABEL>";
     
-        // Start of user code instanceOftoHtml_mid
+        // Start of user code ppInstanceOftoHtml_mid
         // End of user code
     
         try {
-            if ((instanceOf == null) || (instanceOf.getValue() == null)) {
+            if ((ppInstanceOf == null) || (ppInstanceOf.getValue() == null)) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + (new Variable (instanceOf.getValue())).toHtml(false);
+                s = s + (new Variable (ppInstanceOf.getValue())).toHtml(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     
-        // Start of user code instanceOftoHtml_finalize
+        // Start of user code ppInstanceOftoHtml_finalize
         // End of user code
     
         return s;

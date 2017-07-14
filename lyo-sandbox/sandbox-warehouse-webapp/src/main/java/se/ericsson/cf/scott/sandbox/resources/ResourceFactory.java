@@ -87,6 +87,7 @@ public class ResourceFactory {
     try {
       final Waypoint waypoint = new Waypoint(spId, id);
       waypoint.setCanMove(hashSetify(canMove));
+      log.info("Waypoint {} initialised", waypoint.getAbout());
       return waypoint;
     } catch (URISyntaxException e) {
       log.error("URI exception, check the spId string and parameters", e);
