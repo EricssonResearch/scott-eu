@@ -1,0 +1,13 @@
+Mission Goal:
+	[TYPE, any/blue/green/red, ALL/[num], CURRENT/shelf1/shelf2/.., cbOut1/cbOut2/.]
+PDDL Goal:
+
+Num:CURRENT
+	Exists x1, .. , xn. AND_i ((type(xi) = T)(posn(xi) = cbOut2))
+Num:Shelf
+	Exists x1, .. , xn. AND_i ((type(xi) = T)(orig_posn(xi) = Shelf)(posn(xi) = cbOut2))
+ALL:CURRENT
+	Forall x : (posn(x) = cbOut)
+ALL:Shelf
+	Forall x : ((orig_posn(x) = Shelf) => (posn(x) = cbOut))
+
