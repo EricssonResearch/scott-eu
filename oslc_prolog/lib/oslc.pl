@@ -43,13 +43,20 @@ register_resource(PrologResource) :-
   ModuleName:export(PredicateName/4).
 
 oslc_resource(IRI, ResourceShape, Options, Source, Sink) :-
-  rdf_transaction((
-    findall(V, rdf(ResourceShape, oslc:describes, V), Resources),
-    rdf_global_id(oslcs:rdfType, TypePropertyResource),
-    write_property(IRI, TypePropertyResource, Resources, Sink),
-    findall(P, rdf(ResourceShape, oslc:property, P), Properties),
-    oslc_properties(IRI, ResourceShape, Properties, Options, Source, Sink)
-  )).
+  rdf_transaction(
+    oslc_resource0(IRI, ResourceShape, Options, Source, Sink)
+  ).
+
+oslc_resource0(IRI, ResourceShape, Options, Source, Sink) :-
+  rdf_global_id(oslcs:rdfType, TypePropertyResource),
+  once((
+    read_property(IRI, TypePropertyResource, A, Source),
+    nonvar(A)
+  ; findall(V, rdf(ResourceShape, oslc:describes, V), Resources),
+    write_property(IRI, TypePropertyResource, Resources, Sink)
+  )),
+  findall(P, rdf(ResourceShape, oslc:property, P), Properties),
+  oslc_properties(IRI, ResourceShape, Properties, Options, Source, Sink).
 
 % ------------ PROPERTIES
 
@@ -64,19 +71,17 @@ oslc_properties(IRI, ResourceShape, [PropertyResource|T], Options, Source, Sink)
   ( once((
       H =.. [Property, Value], selectchk(H, Options, RemainingOptions)
     ; H = (Property = Value), selectchk(H, Options, RemainingOptions)
-    ))
+    )) % TODO: error if duplicates of Property(...) found in RemainingOptions
   -> ( var(Value)
-     -> % read property
-        % TODO: call prologGetter if exists instead of read_property
-        read_property(IRI, PropertyResource, Value, Source)
-     ; % write property
-       % TODO: call prologSetter if exists instead of write_property
-       write_property(IRI, PropertyResource, Value, Sink)
+     -> read_property(IRI, PropertyResource, Value, Source)
+     ; once((
+         is_list(Value),
+         write_property(IRI, PropertyResource, Value, Sink)
+       ; write_property(IRI, PropertyResource, [Value], Sink)
+       ))
      ),
      oslc_properties(IRI, ResourceShape, T, RemainingOptions, Source, Sink)
-  ; % check property
-    % TODO: check if current database is consistent with shape
-    read_property(IRI, PropertyResource, _, Source),
+  ; read_property(IRI, PropertyResource, _, Source),
     oslc_properties(IRI, ResourceShape, T, Options, Source, Sink)
   ).
 
@@ -96,7 +101,7 @@ format_value(oslc:'Zero-or-one', [V], V) :- !.
 format_value(oslc:'Exactly-one', [V], V) :- !.
 format_value(_, V, V).
 
-read_value_list(_, _, []) :- !.
+read_value_list(_, _, []).
 
 read_value_list(IRI, PropertyResource, [H|T]) :-
   read_property_value(IRI, PropertyResource, H),
@@ -130,7 +135,7 @@ write_property(IRI, PropertyResource, Value, Sink) :-
     ))
   ).
 
-write_list(_, _, [], _) :- !.
+write_list(_, _, [], _).
 
 write_list(IRI, PropertyResource, [H|T], Sink) :-
   write_property(IRI, PropertyResource, H, Sink),
