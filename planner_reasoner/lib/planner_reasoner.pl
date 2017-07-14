@@ -87,6 +87,13 @@ generate_precondition0([H1|T1], SubIndent, Out) :-
                                         SubSubIndent is SubIndent+10,
                                         format(Out, '~*|(~w', [SubSubIndent,PredName1]),
                                         generate_precondition0(SubPredicateList, SubIndent, Out));
+  (rdf(H1, rdf:type, pp:'And') ->
+                                        rdf(pp:'And', rdfs:label, ^^(PredName1, _)),
+                                        rdf(H1, pp:hasArguments, SubPredicates),
+                                        rdf_list(SubPredicates, SubPredicateList),
+                                        SubSubIndent is SubIndent+10,
+                                        format(Out, '~*|(~w', [SubSubIndent,PredName1]),
+                                        generate_precondition0(SubPredicateList, SubIndent, Out));
   (rdf(H1, rdf:type, pp:'Variable') ->
                                       rdf(H1, rdf:type, pp:'Variable'),
                                       rdf(H1, rdfs:label, ^^(VarName, _)),
@@ -98,9 +105,10 @@ generate_precondition0([H1|T1], SubIndent, Out) :-
                                       rdf_list(SubPredicates, SubPredicateList),
                                       SubSubIndent is SubIndent+10,
                                       format(Out, '~*|(~w', [SubSubIndent,PredName1]),
-                                      generate_precondition0(SubPredicateList, SubIndent, Out)),
+                                      generate_precondition0(SubPredicateList, SubIndent, Out));
   generate_precondition0(T1, SubIndent, Out),
   (T1=[]->true;format(Out, ' ~n', [])).
+
 
 
 /*generate_precondition1([], SubIndent, _) :- !.

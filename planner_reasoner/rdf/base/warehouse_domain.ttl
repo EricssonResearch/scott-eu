@@ -1,169 +1,116 @@
+# NOTE!!!: This file will be rewriten according to the OSLC SHAPES and resources specified in pp.ttl
+# OWL will be completly removed
+
 @prefix : <http://ontology.cf.ericsson.net/warehouse_domain#> .
-@prefix pp: <http://ontology.cf.ericsson.net/planning_problem#> .
+@prefix warehouse: <http://ontology.cf.ericsson.net/warehouse_ontology#> . #this should be later replaced by some ontology (ies) for robotics, or internal logistics
+@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology#> .
 @prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
 @base <http://ontology.cf.ericsson.net/warehouse_domain#> .
 
-# types
-
-_:t1 rdf:type owl:NamedIndividual ,
-              pp:VariableType ;
-     rdfs:label "Robot".
-
-_:t2 rdf:type owl:NamedIndividual ,
-              pp:VariableType ;
-     rdfs:label "Waypoint".
-
-_:t3 rdf:type owl:NamedIndividual ,
-              pp:VariableType ;
-     rdfs:label "Place".
-
-_:t4 rdf:type owl:NamedIndividual ,
-              pp:VariableType ;
-     rdfs:label "Object".
-
-_:t5 rdf:type owl:NamedIndividual ,
-              pp:VariableType ;
-     rdfs:label "Charge".
-
-# variables
-
-_:robot1 rdf:type owl:NamedIndividual ,
-                 pp:Variable ;
-    rdfs:label "robot";
-    pp:type _:t1 .
-
-_:from_waypoint1 rdf:type owl:NamedIndividual ,
-                pp:Variable ;
-    rdfs:label "from_waypoint";
-    pp:type _:t2 .
-
-_:to_waypoint1 rdf:type owl:NamedIndividual ,
-                    pp:Variable ;
-        rdfs:label "to_waypoint";
-        pp:type _:t2 .
-
-_:waypoint1 rdf:type owl:NamedIndividual ,
-                     pp:Variable ;
-                rdfs:label "waypoint";
-                pp:type _:t2 .
-
-_:waypoint2 rdf:type owl:NamedIndividual ,
-                     pp:Variable ;
-            rdfs:label "waypoint";
-            pp:type _:t2 .
-
-_:waypoint3 rdf:type owl:NamedIndividual ,
-                     pp:Variable ;
-            rdfs:label "waypoint";
-            pp:type _:t2 .
-
-_:object1 rdf:type owl:NamedIndividual ,
-                  pp:Variable ;
-        rdfs:label "object";
-        pp:type _:t4 .
-
-_:place1 rdf:type owl:NamedIndividual ,
-                  pp:Variable ;
-        rdfs:label "place";
-        pp:type _:t3 .
+# all the types used in the domain file
+warehouse:Robot rdf:type pp:VariableType .
+warehouse:Waypoint rdf:type pp:VariableType .
+warehouse:Place rdf:type pp:VariableType .
+warehouse:Charge rdf:type pp:VariableType .
+warehouse:Object rdf:type pp:VariableType .
 
 # fluent Types
+
+
 
 _:capacity rdf:type owl:NamedIndividual ,
                     pp:FluentType ;
            rdfs:label "capacity";
-           pp:hasVariables ("r") ;
-           pp:hasTypes (_:t1) .
+           pp:hasFluentVariable "r" ;
+           pp:hasFluentVariableType warehouse:Robot .
 
 _:charge_level rdf:type owl:NamedIndividual ,
                         pp:FluentType ;
                rdfs:label "charge-level";
-               pp:hasVariables ("r") ;
-               pp:hasTypes (_:t1) .
+               pp:hasFluentVariable "r" ;
+               pp:hasFluentVariableType warehouse:Robot .
 
  _:max_charge rdf:type owl:NamedIndividual ,
                        pp:FluentType ;
               rdfs:label "max-Charge";
-              pp:hasVariables ("r") ;
-              pp:hasTypes (_:t1) .
+              pp:hasFluentVariable "r" ;
+              pp:hasFluentVariableType warehouse:Robot .
 
 _:low_charge rdf:type owl:NamedIndividual ,
                       pp:FluentType;
              rdfs:label "low-Charge";
-             pp:hasVariables ("r") ;
-             pp:hasTypes (_:t1) .
+             pp:hasFluentVariable "r" ;
+             pp:hasFluentVariableType warehouse:Robot .
 
 _:high_charge rdf:type owl:NamedIndividual ,
                        pp:FluentType;
               rdfs:label "high-Charge";
-              pp:hasVariables ("r") ;
-              pp:hasTypes (_:t1) .
+              pp:hasFluentVariable "r" ;
+              pp:hasFluentVariableType warehouse:Robot .
 
-
-# fluents
-
+#fluents that are instances of fluent Types
 _:charge_level1 rdf:type owl:NamedIndividual ,
                          pp:Fluent ;
-               pp:hasVariables ( _:robot1) ;
-               pp:Type ( _:charge-level ) .
+                pp:hasFluentVariable  _:robot1 ;
+                pp:hasFluentType  _:charge-level  .
 
-_:low_charge1 rdf:type owl:NamedIndividual ,
-                      pp:Fluent ;
-              pp:hasVariables ( _:robot1) ;
-              pp:Type ( _:low_charge ) .
-
-# predicates
-
-_:and1 rdf:type owl:NamedIndividual ,
-                pp:And ;
-       pp:hasArguments (_:isat1 _:can_move1 _:not1).
-
-_:isat1 rdf:type owl:NamedIndividual ,
-                 pp:Predicate ;
-        pp:hasArguments (_:robot1 _:from_waypoint1) ;
-        rdfs:label "is-at".
-
-_:can_move1 rdf:type owl:NamedIndividual ,
-                     pp:Predicate ;
-            pp:hasArguments (_:from_waypoint1 _:to_waypoint1) ;
-            rdfs:label "can-move".
-
-_:not1 rdf:type owl:NamedIndividual ,
-                pp:Not ;
-       pp:hasArguments (_:isrecharging1) .
-
-_:not2 rdf:type owl:NamedIndividual ,
-                pp:Not ;
-       pp:hasArguments (_:isat1) .
-
-_:isrecharging1 rdf:type owl:NamedIndividual ,
-                         pp:Predicate ;
-                pp:hasArguments (_:robot1) ;
-                rdfs:label "is-recharging".
-
-_:isrechargingstation1 rdf:type owl:NamedIndividual ,
-                                pp:Predicate ;
-                       pp:hasArguments (_:place1) ;
-                       rdfs:label "is-recharging".
-
-_:gt1 rdf:type owl:NamedIndividual ,
-               pp:GT ;
-      pp:hasArguments (_:charge_level1 _:low_charge1) .
-
-
-_:eff1 rdf:type owl:NamedIndividual ,
-                       pp:And ;
-              pp:hasArguments (_:isat1 _:not1) .
-
-# actions
-
+#for the action moveToWaypoint
 :moveToWaypoint rdf:type owl:NamedIndividual ,
                          pp:Action ;
                 rdfs:label "moveToWaypoint";
-                pp:hasVariables (_:robot1 _:from_waypoint1 _:to_waypoint1) ;
-                pp:hasTypes (_:t1 _:t2 _:t2) ;
-                pp:hasPrecondition _:and1 ;
-                pp:hasEffect _:eff1 .
+                pp:hasVariable _:robot1 ;
+                pp:hasVariable _:from_waypoint1 ;
+                pp:hasVariable _:to_waypoint1 ;
+                pp:hasPrecondition _:pred1 ;
+                pp:hasEffect _:effect1 .
+
+_:robot1 rdf:type owl:NamedIndividual ;
+         pp:type pp:Variable ;
+         pp:hasVariableType warehouse:Robot ;
+         rdfs:label "robot" ;
+         sh:order "0".
+
+         #SHOULD WE HAVE AS WELL INSTANCES, VARIABLE INSTANCES??? robot11
+
+_:from_waypoint1 rdf:type owl:NamedIndividual ;
+         pp:type pp:Variable ;
+         pp:hasVariableType warehouse:Waypoint ;
+         rdfs:label "from-waypoint" ;
+         sh:order "1".
+
+_:to_waypoint1 rdf:type owl:NamedIndividual ;
+                  pp:type pp:Variable ;
+                  pp:hasVariableType warehouse:Waypoint ;
+                  rdfs:label "to-waypoint" ;
+                  sh:order "2".
+
+
+_:pred1 pp:hasPreconditionArguments _:and1 .
+
+_:and1  rdf:type owl:NamedIndividual ,
+                 pp:And ;
+        pp:hasNestedPredicates _:isat1 ,  #here it is important the order of the predicates
+                               _:not1 ,
+                               _:decrease1 .
+_:isat1 rdf:type owl:NamedIndividual ,
+                 pp:UserPredicate ;
+        pp:hasVariableArguments _:robot1 , #:_robot1 might have a different order position in predicate isat1 and another predicate, but to be the same variable used in the action
+
+                                _:from-waypoint ;
+        sh:order "0".   #isat1 has first position in and1. Sometimes positions might not be needed, but for BinaryComparison they are needed, and also for BinaryOperator
+
+_:not1 rdf:type owl:NamedIndividual ,
+                 pp:Not ;
+        pp:hasVariableArguments _:robot1 ,
+                                _:from-waypoint ;
+        sh:order "1".
+
+_:decrease1 rdf:type owl:NamedIndividual ,
+                     pp:AssignmentOperator ;
+            pp:hasFluents _:charge_level1 ;
+            sh:order "2".
