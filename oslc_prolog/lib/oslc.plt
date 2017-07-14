@@ -1,5 +1,5 @@
 :- begin_tests(oslc, [
-  %setup(rdf_unload_graph(oslc_test))
+  setup(rdf_unload_graph(oslc_test))
   %,cleanup(rdf_unload_graph(oslc_test))
 ]).
 
@@ -15,7 +15,7 @@ assertion(Actual, Expected) :-
   assertion(Actual == Expected).
 
 test(service_provider_catalog) :-
-  rdf_bnode(Publisher),
+  rdf_create_bnode(Publisher),
   service_provider_catalog(test:s1, [ title("service provider catalog"),
                                       description = "o3",
                                       publisher = Publisher

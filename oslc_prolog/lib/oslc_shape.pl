@@ -18,7 +18,7 @@ check_property_occurs(IRI, PropertyResource, Values) :-
                    oslc:'One-or-many',
                    oslc:'Exactly-one'],
                   [ZO, ZM, OM, EO]),
-  member(Occurs, [ZO, ZM, OM, EO]), !,
+  member(Occurs, [ZO, ZM, OM, EO]),
   length(Values, X),
   ( X == 0
   -> once((
@@ -44,7 +44,7 @@ check_resource_value(PropertyResource, Value, Type) :-
   findall(T, rdf(PropertyResource, oslc:valueType, T), Types),
   member(Type, Types),
   rdf_global_id(LType, Type),
-  check_resource(LType, Value), !.
+  check_resource(LType, Value).
 
 check_resource(oslc:'LocalResource', Value) :-
   rdf_is_bnode(Value).
@@ -62,7 +62,7 @@ check_literal_value(PropertyResource, Value, Type) :-
   findall(T, rdf(PropertyResource, oslc:valueType, T), Types),
   member(Type, Types),
   rdf_global_id(LType, Type),
-  check_literal(LType, Value), !.
+  check_literal(LType, Value).
 
 check_literal(xsd:boolean, Value) :-
   member(Value, [true, false]).
