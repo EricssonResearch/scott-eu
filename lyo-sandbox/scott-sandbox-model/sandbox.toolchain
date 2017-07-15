@@ -55,6 +55,7 @@
       <resourceProperties name="maxCharge" valueType="Integer"/>
       <resourceProperties name="highCharge" valueType="Integer"/>
       <resourceProperties name="lowCharge" valueType="Integer"/>
+      <generationSetting javaClassPackageName="scott.lyo.domain.warehouse" javaFilesPath="../sandbox-domain-warehouse/src/main/java/"/>
     </domainSpecifications>
     <domainSpecifications name="Planning" namespaceURI="http://ontology.cf.ericsson.net/planning_problem#" namespacePrefix="//@specification/@domainPrefixes.1">
       <resources name="Problem" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.5"/>
@@ -140,6 +141,7 @@
       <resourceProperties name="forMission" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.27"/>
       <resourceProperties name="ofActionType" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.3"/>
       <resourceProperties name="relatesToAction" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.29"/>
+      <generationSetting javaClassPackageName="scott.lyo.domain.planning" javaFilesPath="../sandbox-domain-planning/src/main/java"/>
     </domainSpecifications>
     <domainSpecifications name="Domain3" namespaceURI="http://your.organisation.domain/nsp3#" namespacePrefix="//@specification/@domainPrefixes.2"/>
     <domainPrefixes name="wh"/>

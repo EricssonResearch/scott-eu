@@ -54,13 +54,13 @@ import se.ericsson.cf.scott.sandbox.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.services.ResourceShapeService;
 
-import se.ericsson.cf.scott.sandbox.resources.Mission;
-import se.ericsson.cf.scott.sandbox.resources.Place;
-import se.ericsson.cf.scott.sandbox.resources.Predicate;
-import se.ericsson.cf.scott.sandbox.resources.ProblemState;
-import se.ericsson.cf.scott.sandbox.resources.Robot;
-import se.ericsson.cf.scott.sandbox.resources.Waypoint;
-import se.ericsson.cf.scott.sandbox.resources.WhObject;
+import scott.lyo.domain.planning.Mission;
+import scott.lyo.domain.warehouse.Place;
+import scott.lyo.domain.planning.Predicate;
+import scott.lyo.domain.planning.ProblemState;
+import scott.lyo.domain.warehouse.Robot;
+import scott.lyo.domain.warehouse.Waypoint;
+import scott.lyo.domain.warehouse.WhObject;
 import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 

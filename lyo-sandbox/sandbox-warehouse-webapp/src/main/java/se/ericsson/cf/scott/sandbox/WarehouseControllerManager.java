@@ -26,23 +26,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.resources.Mission;
-import se.ericsson.cf.scott.sandbox.resources.Place;
-import se.ericsson.cf.scott.sandbox.resources.Predicate;
-import se.ericsson.cf.scott.sandbox.resources.ProblemState;
-import se.ericsson.cf.scott.sandbox.resources.Robot;
-import se.ericsson.cf.scott.sandbox.resources.Waypoint;
-import se.ericsson.cf.scott.sandbox.resources.WhObject;
+import scott.lyo.domain.planning.Mission;
+import scott.lyo.domain.warehouse.Place;
+import scott.lyo.domain.warehouse.Waypoint;
+import scott.lyo.domain.warehouse.WhObject;
 
 
 // Start of user code imports
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.resources.ResourceFactory;
+import scott.lyo.domain.warehouse.ResourceFactory;
 import com.google.common.collect.ImmutableList;
 import java.util.Optional;
 import java.net.URI;
@@ -56,7 +51,8 @@ public class WarehouseControllerManager {
     // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
     public final static String spId = "dummy";
-    private final static ResourceFactory factory = new ResourceFactory();
+    private final static ResourceFactory factory = new ResourceFactory(OSLC4JUtils.getServletURI(),
+            spId);
     // End of user code
     
     
@@ -222,10 +218,10 @@ public class WarehouseControllerManager {
 
 
 
-    public static String getETagFromWhObject(final WhObject aResource)
+    public static String getETagFromPlace(final Place aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromWhObject
+        // Start of user code getETagFromPlace
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
@@ -246,10 +242,10 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromPlace(final Place aResource)
+    public static String getETagFromWhObject(final WhObject aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromPlace
+        // Start of user code getETagFromWhObject
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

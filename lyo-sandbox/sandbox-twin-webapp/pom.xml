@@ -1,6 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>se.ericsson.cf.scott.sandbox</groupId>
+		<artifactId>sandbox-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 	<groupId>se.ericsson.cf.scott.sandbox</groupId>
 	<artifactId>sandbox-twin-webapp</artifactId>
 	<packaging>war</packaging>
@@ -19,8 +24,18 @@
 			<name>lyo-releases repository</name>
 			<url>https://repo.eclipse.org/content/repositories/lyo-releases/</url>
 		</repository>
+		<repository>
+			<id>lyo-snapshots</id>
+			<name>lyo-shapshots repository</name>
+			<url>https://repo.eclipse.org/content/repositories/lyo-snapshots/</url>
+		</repository>
 	</repositories>
 	<dependencies>
+		<dependency>
+			<groupId>se.ericsson.cf.scott.sandbox</groupId>
+			<artifactId>sandbox-domain-planning</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>

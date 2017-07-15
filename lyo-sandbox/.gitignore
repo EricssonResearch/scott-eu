@@ -1,0 +1,15 @@
+# Maven
+/target/
+
+# Acceleo
+*.lost
+
+# Eclipse
+/.project
+/.classpath
+/.settings/
+
+# Intellij
+
+/.idea/
+/*.iml
