@@ -15,19 +15,22 @@ assertion(Actual, Expected) :-
   assertion(Actual == Expected).
 
 test(service_provider_catalog) :-
+  mytest.
+
+mytest :-
   rdf_create_bnode(Publisher),
 
   publisher(Publisher, [ title="publisher",
                          label="publabel",
                          identifier="id11",
                          icon=pubicon
-                       ], _, rdf(oslc_test)),
+                       ], rdf(oslc_test)),
 
   service_provider_catalog(test:s1, [ title("service provider catalog"),
                                       description = "o3",
                                       publisher = Publisher,
                                       serviceProvider = [sp1,sp2]
-                                    ], _, rdf(oslc_test)),
+                                    ], rdf(oslc_test)),
 
   rdf(test:s1, rdf:type, oslc:'ServiceProviderCatalog'),
 
@@ -35,7 +38,7 @@ test(service_provider_catalog) :-
                                       description(B),
                                       title = C,
                                       serviceProvider = D
-                                    ], rdf(oslc_test), _),
+                                    ], rdf(oslc_test)),
 
   assertion(C == "service provider catalog"),
   assertion(B == "o3"),

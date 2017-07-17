@@ -6,12 +6,18 @@
 
 % ------------ RDF SOURCE / SINK
 
-oslc:marshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
+oslc:marshal_property(_, _, [], _, rdf(_)).
+
+oslc:marshal_property(IRI, PropertyDefinition, [V|T], Type, rdf(Graph)) :-
+  atom(Graph),
+  must_be(atom, IRI),
+  must_be(atom, PropertyDefinition),
   literal_types(LiteralTypes),
   ( member(Type, LiteralTypes)
-  -> rdf_assert(IRI, PropertyDefinition, Value^^Type, Graph)
-  ; rdf_assert(IRI, PropertyDefinition, Value, Graph)
-  ).
+  -> rdf_assert(IRI, PropertyDefinition, V^^Type, Graph)
+  ; rdf_assert(IRI, PropertyDefinition, V, Graph)
+  ),
+  oslc:marshal_property(IRI, PropertyDefinition, T, Type, rdf(Graph)).
 
 literal_types([ rdf:'XMLLiteral',
                 xsd:string,
@@ -24,6 +30,8 @@ literal_types([ rdf:'XMLLiteral',
               ]).
 
 oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf) :-
+  must_be(atom, IRI),
+  must_be(atom, PropertyDefinition),
   findall(V, (
     rdf(IRI, PropertyDefinition, X),
     once((
@@ -34,6 +42,9 @@ oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf) :-
   ), Value).
 
 oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
+  atom(Graph),
+  must_be(atom, IRI),
+  must_be(atom, PropertyDefinition),
   findall(V, (
     rdf(IRI, PropertyDefinition, X, Graph),
     once((
@@ -43,8 +54,8 @@ oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
     ))
   ), Value).
 
-oslc:remove_property(IRI, PropertyDefinition, rdf) :-
-  rdf_retractall(IRI, PropertyDefinition, _).
-
-oslc:remove_property(IRI, PropertyDefinition, rdf(Graph)) :-
+oslc:delete_property(IRI, PropertyDefinition, rdf(Graph)) :-
+  atom(Graph),
+  must_be(atom, IRI),
+  must_be(atom, PropertyDefinition),
   rdf_retractall(IRI, PropertyDefinition, _, Graph).

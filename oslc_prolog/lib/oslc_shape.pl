@@ -8,9 +8,10 @@
 
 :- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
 
+:- rdf_meta check_occurs(r, r, -, -).
 :- rdf_meta format_value(r, -, -).
-:- rdf_meta check_resource(r, -).
-:- rdf_meta check_literal(r, -).
+:- rdf_meta check_value_type(r, r, -, r).
+:- rdf_meta check_value_type(r, -).
 
 % ------------ CHECK PROPERTY OCCURS
 
@@ -35,49 +36,46 @@ format_value(oslc:'One-or-many', [V|T], [V|T]).
 
 % ------------ CHECK VALUE TYPE
 
-check_value_type(IRI, PropertyResource, Value, Type) :-
+check_value_type(_, _, [], _).
+
+check_value_type(IRI, PropertyResource, [V|T], Type) :-
   once((
-    rdf(PropertyResource, oslc:valueType, Type),
-  ( check_resource(Type, Value)
-  ; check_literal(Type, Value)
+    check_value_type(Type, V)
   ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
     oslc_error("Property ~w of resource ~w must be of type ~w", [PropertyDefinition, IRI, Type])
-  ))).
+  )),
+  check_value_type(IRI, PropertyResource, T, Type).
 
-% ------------ CHECK RESOURCE VALUE
-
-check_resource(oslc:'LocalResource', Value) :-
+check_value_type(oslc:'LocalResource', Value) :-
   rdf_is_bnode(Value).
 
-check_resource(oslc:'Resource', Value) :-
+check_value_type(oslc:'Resource', Value) :-
   \+ rdf_is_bnode(Value),
   rdf_is_resource(Value).
 
-check_resource(oslc:'AnyResource', Value) :-
+check_value_type(oslc:'AnyResource', Value) :-
   rdf_is_resource(Value).
 
-% ------------ CHECK LITERAL VALUE
-
-check_literal(xsd:boolean, Value) :-
+check_value_type(xsd:boolean, Value) :-
   member(Value, [true, false]).
 
-check_literal(xsd:dateTime, Value) :-
+check_value_type(xsd:dateTime, Value) :-
   parse_time(Value, iso_8601, _).
 
-check_literal(xsd:decimal, Value) :-
+check_value_type(xsd:decimal, Value) :-
   float(Value).
 
-check_literal(xsd:double, Value) :-
+check_value_type(xsd:double, Value) :-
   float(Value).
 
-check_literal(xsd:float, Value) :-
+check_value_type(xsd:float, Value) :-
   float(Value).
 
-check_literal(xsd:integer, Value) :-
+check_value_type(xsd:integer, Value) :-
   integer(Value).
 
-check_literal(xsd:string, Value) :-
+check_value_type(xsd:string, Value) :-
   atomic(Value).
 
-check_literal(rdf:'XMLLiteral', Value) :-
+check_value_type(rdf:'XMLLiteral', Value) :-
   string(Value).
