@@ -515,7 +515,7 @@
   a oslc:Property ;
   oslc:name "valueType"^^xsd:string ;
   oslc:propertyDefinition oslc:valueType ;
-  oslc:occurs oslc:Zero-or-many ;
+  oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
   oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference .
@@ -524,7 +524,7 @@
   a oslc:Property ;
   oslc:name "valueShape"^^xsd:string ;
   oslc:propertyDefinition oslc:valueShape ;
-  oslc:occurs oslc:Zero-or-one ;
+  oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
   oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference ;

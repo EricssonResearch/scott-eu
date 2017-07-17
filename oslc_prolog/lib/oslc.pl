@@ -3,8 +3,14 @@
   oslc_resource/5
 ]).
 
+:- multifile marshal_property/5.
+:- multifile unmarshal_property/5.
+:- multifile remove_property/3.
+
+:- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc_shape)).
+:- use_module(library(oslc_rdf)).
 :- use_module(library(oslc_error)).
 
 :- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
@@ -18,6 +24,7 @@
 
 :- rdf_meta register_resource(r).
 :- rdf_meta oslc_resource(r, r, t, -, -).
+:- rdf_meta oslcs_rdf_type(r).
 
 :- initialization init.
 
@@ -27,28 +34,34 @@ init :-
     register_resource(X)
   ).
 
-% ------------ RESOURCE
+% ------------ REGISTER OSLC RESOURCE
 
 register_resource(PrologResource) :-
-  rdf(PrologResource, oslcp:prologModule, literal(type(xsd:string, ModuleName))),
-  rdf(PrologResource, oslcp:prologPredicate, literal(type(xsd:string, PredicateName))),
+  rdf(PrologResource, oslcp:prologModule, ModuleName^^xsd:string),
+  rdf(PrologResource, oslcp:prologPredicate, PredicateName^^xsd:string),
   rdf(PrologResource, oslc:resourceShape, ResourceShape),
-  P =.. [PredicateName, Spec, Options, Source, Sink],
-  retractall(ModuleName:P),
+  atom_string(AModuleName, ModuleName),
+  atom_string(APredicateName, PredicateName),
+  P =.. [APredicateName, Spec, Options, Source, Sink],
+  retractall(AModuleName:P),
   assertz((
-    ModuleName:P :-
+    AModuleName:P :-
       rdf_global_id(Spec, IRI),
       oslc_resource(IRI, ResourceShape, Options, Source, Sink)
   )),
-  ModuleName:export(PredicateName/4).
+  AModuleName:export(APredicateName/4).
+
+% ------------ OSLC RESOURCE
 
 oslc_resource(IRI, ResourceShape, Options, Source, Sink) :-
   rdf_transaction(
     oslc_resource0(IRI, ResourceShape, Options, Source, Sink)
   ).
 
+oslcs_rdf_type(oslcs:rdfType).
+
 oslc_resource0(IRI, ResourceShape, Options, Source, Sink) :-
-  rdf_global_id(oslcs:rdfType, TypePropertyResource),
+  oslcs_rdf_type(TypePropertyResource),
   once((
     read_property(IRI, TypePropertyResource, A, Source),
     nonvar(A)
@@ -58,106 +71,51 @@ oslc_resource0(IRI, ResourceShape, Options, Source, Sink) :-
   findall(P, rdf(ResourceShape, oslc:property, P), Properties),
   oslc_properties(IRI, ResourceShape, Properties, Options, Source, Sink).
 
-% ------------ PROPERTIES
+% ------------ TRAVERSE PROPERTIES
 
-oslc_properties(IRI, _, [], Options, _, _) :-
-  once((
-    length(Options, L), L == 0
-  ; oslc_error("Unknown or duplicate properties ~w of resource ~w", [Options, IRI])
-  )).
+oslc_properties(_, _, [], _, _, _).
 
 oslc_properties(IRI, ResourceShape, [PropertyResource|T], Options, Source, Sink) :-
-  rdf(PropertyResource, oslc:name, literal(type(xsd:string, Property))),
+  rdf(PropertyResource, oslc:name, Property^^xsd:string),
+  atom_string(AProperty, Property),
   ( once((
-      H =.. [Property, Value], selectchk(H, Options, RemainingOptions)
-    ; H = (Property = Value), selectchk(H, Options, RemainingOptions)
-    )) % TODO: error if duplicates of Property(...) found in RemainingOptions
+      H =.. [AProperty, Value], selectchk(H, Options, RemainingOptions)
+    ; H = (AProperty = Value), selectchk(H, Options, RemainingOptions)
+    ))
   -> ( var(Value)
      -> read_property(IRI, PropertyResource, Value, Source)
-     ; once((
-         is_list(Value),
-         write_property(IRI, PropertyResource, Value, Sink)
-       ; write_property(IRI, PropertyResource, [Value], Sink)
-       ))
+     ; write_property(IRI, PropertyResource, Value, Sink)
      ),
      oslc_properties(IRI, ResourceShape, T, RemainingOptions, Source, Sink)
   ; read_property(IRI, PropertyResource, _, Source),
     oslc_properties(IRI, ResourceShape, T, Options, Source, Sink)
   ).
 
-% ------------ READ
+% ------------ READ PROPERTY
 
 read_property(IRI, PropertyResource, Value, Source) :-
   rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-  read_resource_property(IRI, PropertyDefinition, Values, Source),
-  check_property_occurs(IRI, PropertyResource, Values),
-  read_value_list(IRI, PropertyResource, Values),
-  rdf(PropertyResource, oslc:occurs, Occurs),
-  rdf_global_id(LOccurs, Occurs),
-  format_value(LOccurs, Values, Value).
-
-format_value(_, [], _) :- !.
-format_value(oslc:'Zero-or-one', [V], V) :- !.
-format_value(oslc:'Exactly-one', [V], V) :- !.
-format_value(_, V, V).
+  unmarshal_property(IRI, PropertyDefinition, InternalValue, _, Source),
+  read_value_list(IRI, PropertyResource, InternalValue),
+  check_occurs(IRI, PropertyResource, InternalValue, Value).
 
 read_value_list(_, _, []).
 
 read_value_list(IRI, PropertyResource, [H|T]) :-
-  read_property_value(IRI, PropertyResource, H),
+  check_value_type(IRI, PropertyResource, H, _),
   read_value_list(IRI, PropertyResource, T).
 
-read_property_value(IRI, PropertyResource, Value) :-
-  once((
-    check_resource_value(PropertyResource, Value, _)
-  ; check_literal_value(PropertyResource, Value, _)
-  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    findall(T, rdf(PropertyResource, oslc:valueType, T), Types),
-    oslc_error("Property ~w of resource ~w is not one of ~w", [PropertyDefinition, IRI, Types])
-  )).
-
-% ------------ WRITE
+% ------------ WRITE PROPERTY
 
 write_property(IRI, PropertyResource, Value, Sink) :-
+  check_occurs(IRI, PropertyResource, InternalValue, Value),
   rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-  ( is_list(Value)
-  -> check_property_occurs(IRI, PropertyResource, Value),
-     remove_resource_property(IRI, PropertyDefinition, Sink),
-     write_list(IRI, PropertyResource, Value, Sink)
-  ; once((
-      check_resource_value(PropertyResource, Value, _),
-      % TODO: add resource inlining if representation is oslc:'Inline'
-      write_resource_property(IRI, PropertyDefinition, Value, Sink)
-    ; check_literal_value(PropertyResource, Value, Type),
-      write_literal_property(IRI, PropertyDefinition, Value, Type, Sink)
-    ; rdf(PropertyResource, oslc:valueType, Type),
-      oslc_error("Property ~w of resource ~w must be of type ~w", [PropertyDefinition, IRI, Type])
-    ))
-  ).
+  remove_property(IRI, PropertyDefinition, Sink),
+  write_list(IRI, PropertyResource, PropertyDefinition, InternalValue, Sink).
 
-write_list(_, _, [], _).
+write_list(_, _, _, [], _).
 
-write_list(IRI, PropertyResource, [H|T], Sink) :-
-  write_property(IRI, PropertyResource, H, Sink),
-  write_list(IRI, PropertyResource, T, Sink).
-
-% ------------ RDF SOURCE / SINK
-
-read_resource_property(IRI, PropertyDefinition, Value, rdf(Graph)) :-
-  findall(V, (
-    rdf(IRI, PropertyDefinition, X, Graph),
-    once((
-      rdf_is_literal(X),
-      X = literal(type(_, V))
-    ; V = X
-    ))
-  ), Value).
-
-remove_resource_property(IRI, PropertyDefinition, rdf(Graph)) :-
-  rdf_retractall(IRI, PropertyDefinition, _, Graph).
-
-write_resource_property(IRI, PropertyDefinition, Value, rdf(Graph)) :-
-  rdf_assert(IRI, PropertyDefinition, Value, Graph).
-
-write_literal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
-  rdf_assert(IRI, PropertyDefinition, literal(type(Type, Value)), Graph).
+write_list(IRI, PropertyResource, PropertyDefinition, [H|T], Sink) :-
+  check_value_type(IRI, PropertyResource, H, Type),
+  marshal_property(IRI, PropertyDefinition, H, Type, Sink),
+  write_list(IRI, PropertyResource, PropertyDefinition, T, Sink).
