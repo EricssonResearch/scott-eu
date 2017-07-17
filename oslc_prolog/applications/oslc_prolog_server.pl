@@ -5,9 +5,9 @@
 :- use_module(library(broadcast)).
 :- use_module(library(semweb/turtle)).
 :- use_module(library(semweb/rdf_persistency)).
+:- use_module(library(oslc)).
 
 :- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/oslc/', 'Base URI').
-:- setting(oslc_prolog_server:served_prefix, atom, '', 'Served Prefix').
 
 :- http_handler('/oslc/', dispatcher, [prefix]).
 
@@ -23,24 +23,28 @@
    )).
 
 dispatcher(Request) :-
-  ( (
+  once((
+    once((
       member(protocol(Protocol), Request),
       member(host(Host), Request),
       member(port(Port), Request),
-      member(path(Path), Request),
-      atomic_list_concat([Protocol, '://', Host, ':', Port,  Path], '', Uri), % determine URI called
-      setting(oslc_prolog_server:base_uri, Prefix),
-      atom_concat(Prefix, ServicePath, Uri), % check if URI called starts with the base URI
-      dispatch(Request, ServicePath) % call dispatch with computed suffix
-    )
-  ->  true
+      member(path(Path), Request)
+    )),
+    atomic_list_concat([Protocol, '://', Host, ':', Port,  Path], '', Uri), % determine URI called
+    setting(oslc_prolog_server:base_uri, Prefix),
+    atom_concat(Prefix, ServicePath, Uri), % check if URI called starts with the base URI
+    dispatch(Request, ServicePath) % call dispatch with computed suffix
   ; format('Status: 404~n~n')
-  ).
+  )).
 
 dispatch(Request, ServicePath) :-
   current_output(Out),
-  setting(oslc_prolog_server:served_prefix, Prefix), % fetch served RDF prefix from settings
-  atom_concat(Prefix, ServicePath, Resource), % compute served RDF resource URI
+  split_string(ServicePath, "/", "", Parts),
+  remove_blanks(Parts, [Prefix|RemainingParts]),
+  atom_string(APrefix, Prefix),
+  rdf_current_prefix(APrefix, Namespace),
+  atomics_to_string(RemainingParts, "/", ResourceName),
+  atom_concat(Namespace, ResourceName, Resource), % compute served RDF resource URI
   setup_call_cleanup(make_graph(Resource, Graph), ( % create and populate new temporary RDF graph
     rdf_graph_property(Graph, triples(Triples)),
     Triples > 0,
@@ -54,20 +58,18 @@ dispatch(Request, ServicePath) :-
     )
   ), rdf_unload_graph(Graph)). % regardless of the result remove temporary RDF graph
 
+remove_blanks([], []) :- !.
+remove_blanks([A|T], R) :-
+  (A == ""
+  -> remove_empty(T, R)
+  ; R = [A|T]
+  ).
+
 make_graph(Resource, Graph) :-
   uuid(Graph), % generate unique identifier for the temporary RDF graph
   rdf_create_graph(Graph),
   rdf_persistency(Graph, false), % do not persist (keep only in RAM)
-  traverse_resource(Resource, Graph).
-
-traverse_resource(Resource, Graph) :-
-  forall(rdf(Resource, P, O), (
-    rdf_assert(Resource, P, O, Graph),
-    ( rdf_is_bnode(O)
-    -> traverse_resource(O,Graph)
-    ;  true
-    )
-  )).
+  oslc_copy_resource(Resource, Resource, rdf, rdf(Graph)).
 
 uuid(Id) :-
   Max is 1<<128,
