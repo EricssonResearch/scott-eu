@@ -141,18 +141,18 @@ public class Application extends OslcWinkApplication {
             System.err.println("Application failed to initialize");
         }
 
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_ACTION, Action.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_ACTIONTYPE, ActionType.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_MISSION, Mission.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_PLACE, Place.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PLAN, Plan.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PREDICATE, Predicate.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PROBLEMSTATE, ProblemState.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_ACTION, Action.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_ACTIONTYPE, ActionType.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_MISSION, Mission.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_PLACE, Place.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PLAN, Plan.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PREDICATE, Predicate.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PROBLEMSTATE, ProblemState.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_ROBOT, Robot.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_VARIABLE, Variable.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_VARIABLEINSTANCE, VariableInstance.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WAYPOINT, Waypoint.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WHOBJECT, WhObject.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_VARIABLE, Variable.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_VARIABLEINSTANCE, VariableInstance.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WAYPOINT, Waypoint.class);
+//        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WHOBJECT, WhObject.class);
     }
 
     public Application()

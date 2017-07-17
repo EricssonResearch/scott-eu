@@ -42,6 +42,7 @@ import scott.lyo.domain.warehouse.WhObject;
 // Start of user code imports
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import scott.lyo.domain.warehouse.ResourceFactory;
 import com.google.common.collect.ImmutableList;
 import java.util.Optional;
@@ -223,18 +224,18 @@ public class WarehouseControllerManager {
 
 
 
-    public static String getETagFromPlace(final Place aResource)
+    public static String getETagFromMission(final Mission aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromPlace
+        // Start of user code getETagFromMission
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
     }
-    public static String getETagFromWaypoint(final Waypoint aResource)
+    public static String getETagFromPlace(final Place aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromWaypoint
+        // Start of user code getETagFromPlace
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
@@ -247,10 +248,10 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromMission(final Mission aResource)
+    public static String getETagFromWaypoint(final Waypoint aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromMission
+        // Start of user code getETagFromWaypoint
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
