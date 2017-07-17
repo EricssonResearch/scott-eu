@@ -34,12 +34,24 @@ init :-
     register_resource(X)
   ).
 
-% ------------ REGISTER OSLC RESOURCE
+%!  register_resource(:PrologResource) is det.
+%
+%   Creates and exports a predicate to operate PrologResource. The argument must
+%   point to a resource of type oslcp:PrologResource. The created predicate will
+%   have signature =|module:pred_name(IRI, Options, Source, Sink)|=. Where =module=
+%   is Prolog module (prologModule property of PrologResource), =pred_name= is the
+%   predicate name of arity 4 (prologPredicate property of PrologResource), IRI
+%   is the =IRI= of a resource managed by the API, =Options= is a list of properties
+%   having a form of =|Key(Value)|= or =|Key=Value|=, =Source= and =Sink= are the
+%   pointers to demarshaller and marshaller respectively (rdf(Graph), where =Graph=
+%   is a name of named graph, are standard triple store implementations).
 
 register_resource(PrologResource) :-
-  rdf(PrologResource, oslcp:prologModule, ModuleName^^xsd:string),
-  rdf(PrologResource, oslcp:prologPredicate, PredicateName^^xsd:string),
-  rdf(PrologResource, oslc:resourceShape, ResourceShape),
+  once((
+    rdf(PrologResource, oslcp:prologModule, ModuleName^^xsd:string),
+    rdf(PrologResource, oslcp:prologPredicate, PredicateName^^xsd:string),
+    rdf(PrologResource, oslc:resourceShape, ResourceShape)
+  )),
   atom_string(AModuleName, ModuleName),
   atom_string(APredicateName, PredicateName),
   P =.. [APredicateName, Spec, Options, Source, Sink],
@@ -51,7 +63,15 @@ register_resource(PrologResource) :-
   )),
   AModuleName:export(APredicateName/4).
 
-% ------------ OSLC RESOURCE
+%!  oslc_resource(:IRI, :ResourceShape, ?Options, ?Source, ?Sink) is det.
+%
+%   Reads and/or writes properties of an OSLC resource :IRI, from/to Source/Sink.
+%   The shape of the OSLC resource must be provided in :ResourceShape. The Options
+%   is a list of properties of the resource in form of =|Key(Value)|= or =|Key=Value|=.
+%   If =Value= is a variable, it will be unified with the value of the property =Key=
+%   unmashalled from the Source. If =Value= is grounded it will be set as a value of
+%   =Key= and marshalled to the Sink. If =Value= is an empty list, the value of
+%   property =Key= will be removed from the Sink.
 
 oslc_resource(IRI, ResourceShape, Options, Source, Sink) :-
   rdf_transaction(
@@ -76,7 +96,7 @@ oslc_resource0(IRI, ResourceShape, Options, Source, Sink) :-
 oslc_properties(_, _, [], _, _, _).
 
 oslc_properties(IRI, ResourceShape, [PropertyResource|T], Options, Source, Sink) :-
-  rdf(PropertyResource, oslc:name, Property^^xsd:string),
+  once(rdf(PropertyResource, oslc:name, Property^^xsd:string)),
   atom_string(AProperty, Property),
   ( once((
       H =.. [AProperty, Value], selectchk(H, Options, RemainingOptions)
@@ -94,7 +114,7 @@ oslc_properties(IRI, ResourceShape, [PropertyResource|T], Options, Source, Sink)
 % ------------ READ PROPERTY
 
 read_property(IRI, PropertyResource, Value, Source) :-
-  rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+  once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
   unmarshal_property(IRI, PropertyDefinition, InternalValue, _, Source),
   read_value_list(IRI, PropertyResource, InternalValue),
   check_occurs(IRI, PropertyResource, InternalValue, Value).
@@ -109,7 +129,7 @@ read_value_list(IRI, PropertyResource, [H|T]) :-
 
 write_property(IRI, PropertyResource, Value, Sink) :-
   check_occurs(IRI, PropertyResource, InternalValue, Value),
-  rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+  once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
   remove_property(IRI, PropertyDefinition, Sink),
   write_list(IRI, PropertyResource, PropertyDefinition, InternalValue, Sink).
 

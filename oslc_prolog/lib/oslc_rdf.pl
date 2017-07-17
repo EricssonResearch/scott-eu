@@ -43,5 +43,8 @@ oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
     ))
   ), Value).
 
+oslc:remove_property(IRI, PropertyDefinition, rdf) :-
+  rdf_retractall(IRI, PropertyDefinition, _).
+
 oslc:remove_property(IRI, PropertyDefinition, rdf(Graph)) :-
   rdf_retractall(IRI, PropertyDefinition, _, Graph).

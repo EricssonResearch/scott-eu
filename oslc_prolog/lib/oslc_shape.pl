@@ -15,12 +15,12 @@
 % ------------ CHECK PROPERTY OCCURS
 
 check_occurs(IRI, PropertyResource, InternalValue, ReadValue) :-
-  rdf(PropertyResource, oslc:occurs, Occurs),
   once((
-    format_value(Occurs, InternalValue, ReadValue)
+    rdf(PropertyResource, oslc:occurs, Occurs),
+  ( format_value(Occurs, InternalValue, ReadValue)
   ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
     oslc_error("Property ~w of resource ~w must have cardinality ~w", [PropertyDefinition, IRI, Occurs])
-  )).
+  ))).
 
 format_value(oslc:'Zero-or-one', [], V) :-
   var(V) ; V == [].
@@ -36,13 +36,13 @@ format_value(oslc:'One-or-many', [V|T], [V|T]).
 % ------------ CHECK VALUE TYPE
 
 check_value_type(IRI, PropertyResource, Value, Type) :-
-  rdf(PropertyResource, oslc:valueType, Type),
   once((
-    check_resource(Type, Value)
+    rdf(PropertyResource, oslc:valueType, Type),
+  ( check_resource(Type, Value)
   ; check_literal(Type, Value)
   ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
     oslc_error("Property ~w of resource ~w must be of type ~w", [PropertyDefinition, IRI, Type])
-  )).
+  ))).
 
 % ------------ CHECK RESOURCE VALUE
 
