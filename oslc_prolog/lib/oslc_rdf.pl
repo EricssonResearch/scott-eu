@@ -6,7 +6,7 @@
 
 % ------------ RDF SOURCE / SINK
 
-oslc:marshal_property(_, _, [], _, rdf(_)).
+oslc:marshal_property(_, _, [], _, rdf(_)) :- !.
 
 oslc:marshal_property(IRI, PropertyDefinition, [V|T], Type, rdf(Graph)) :-
   atom(Graph),
