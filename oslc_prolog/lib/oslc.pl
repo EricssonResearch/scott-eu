@@ -1,8 +1,11 @@
 :- module(oslc, [
   register_resource/1,
   oslc_resource/4,
+  oslc_properties/4,
   oslc_remove_resource/2,
-  oslc_copy_resource/4
+  oslc_remove_properties/3,
+  oslc_copy_resource/4,
+  oslc_copy_properties/5
 ]).
 
 :- multifile marshal_property/5.
@@ -26,8 +29,11 @@
 
 :- rdf_meta register_resource(r).
 :- rdf_meta oslc_resource(r, r, t, -).
+:- rdf_meta oslc_properties(r, t, t, -).
 :- rdf_meta oslc_remove_resource(r, -).
+:- rdf_meta oslc_remove_properties(r, t, -).
 :- rdf_meta oslc_copy_resource(r, r, -, -).
+:- rdf_meta oslc_copy_properties(r, r, t, -, -).
 
 :- rdf_meta oslcs_rdf_type(r).
 oslcs_rdf_type(oslcs:rdfType).
@@ -86,22 +92,28 @@ oslc_resource(IRI, ResourceShape, Options, SourceSink) :-
   must_be(atom, ResourceShape),
   rdf_transaction((
     oslcs_rdf_type(TypePropertyResource),
+    findall(R, rdf(ResourceShape, oslc:describes, R), ResourceList),
+    sort(ResourceList, ResourceSet),
     once((
-      read_property(IRI, TypePropertyResource, Resources, SourceSink),
-      nonvar(Resources)
-      % TODO: check if Resources is the list of correct resources
-    ; findall(R, rdf(ResourceShape, oslc:describes, R), Resources),
-      write_property(IRI, TypePropertyResource, Resources, SourceSink)
+      read_property(IRI, TypePropertyResource, ITypes, _, SourceSink),
+      sort(ITypes, ResourceSet)
+    ; oslc_remove_properties0(IRI, [TypePropertyResource], SourceSink),
+      write_property(IRI, TypePropertyResource, ResourceSet, _, SourceSink)
     )),
     findall(P, rdf(ResourceShape, oslc:property, P), Properties),
-    oslc_properties(IRI, Properties, Options, SourceSink)
+    oslc_properties0(IRI, Properties, Options, SourceSink)
   )).
 
 % ------------ TRAVERSE PROPERTIES
 
-oslc_properties(_, [], _, _).
+oslc_properties(IRI, PropertyResources, Options, SourceSink) :-
+  rdf_transaction((
+    oslc_properties0(IRI, PropertyResources, Options, SourceSink)
+  )).
 
-oslc_properties(IRI, [PropertyResource|T], Options, SourceSink) :-
+oslc_properties0(_, [], _, _) :- !.
+
+oslc_properties0(IRI, [PropertyResource|T], Options, SourceSink) :-
   once(rdf(PropertyResource, oslc:name, Property^^xsd:string)),
   atom_string(AProperty, Property),
   ( once((
@@ -109,18 +121,18 @@ oslc_properties(IRI, [PropertyResource|T], Options, SourceSink) :-
     ; H = (AProperty = Value), selectchk(H, Options, RemainingOptions)
     ))
   -> ( var(Value)
-     -> read_property(IRI, PropertyResource, Value, SourceSink)
-     ; oslc_remove_properties(IRI, [PropertyResource], SourceSink),
-       write_property(IRI, PropertyResource, Value, SourceSink)
+     -> read_property(IRI, PropertyResource, _, Value, SourceSink)
+     ; oslc_remove_properties0(IRI, [PropertyResource], SourceSink),
+       write_property(IRI, PropertyResource, _, Value, SourceSink)
      ),
-     oslc_properties(IRI, T, RemainingOptions, SourceSink)
-  ; read_property(IRI, PropertyResource, _, SourceSink),
-    oslc_properties(IRI, T, Options, SourceSink)
+     oslc_properties0(IRI, T, RemainingOptions, SourceSink)
+  ; read_property(IRI, PropertyResource, _, _, SourceSink),
+    oslc_properties0(IRI, T, Options, SourceSink)
   ).
 
 % ------------ READ PROPERTY
 
-read_property(IRI, PropertyResource, Value, Source) :-
+read_property(IRI, PropertyResource, InternalValue, Value, Source) :-
   once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
   unmarshal_property(IRI, PropertyDefinition, InternalValue, _, Source),
   once(rdf(PropertyResource, oslc:valueType, Type)),
@@ -129,7 +141,7 @@ read_property(IRI, PropertyResource, Value, Source) :-
 
 % ------------ WRITE PROPERTY
 
-write_property(IRI, PropertyResource, Value, Sink) :-
+write_property(IRI, PropertyResource, InternalValue, Value, Sink) :-
   check_occurs(IRI, PropertyResource, InternalValue, Value),
   once(rdf(PropertyResource, oslc:valueType, Type)),
   check_value_type(IRI, PropertyResource, InternalValue, Type),
@@ -143,15 +155,14 @@ oslc_remove_resource(IRI, SourceSink) :-
   must_be(ground, SourceSink),
   rdf_transaction((
     oslcs_rdf_type(TypePropertyResource),
-    read_property(IRI, TypePropertyResource, ReadTypes, SourceSink),
-    check_occurs(IRI, TypePropertyResource, Types, ReadTypes),
+    read_property(IRI, TypePropertyResource, ITypes, _, SourceSink),
     forall((
-      member(Type, Types),
+      member(Type, ITypes),
       rdf(ResourceShape, rdf:type, oslc:'ResourceShape'),
       rdf(ResourceShape, oslc:describes, Type)
     ), (
       findall(P, rdf(ResourceShape, oslc:property, P), Properties),
-      oslc_remove_properties(IRI, Properties, SourceSink)
+      oslc_remove_properties0(IRI, Properties, SourceSink)
     )),
     once(rdf(TypePropertyResource, oslc:propertyDefinition, PropertyDefinition)),
     delete_property(IRI, PropertyDefinition, SourceSink)
@@ -159,26 +170,27 @@ oslc_remove_resource(IRI, SourceSink) :-
 
 % ------------ REMOVE PROPERTIES RECURSIVELY
 
-oslc_remove_properties(_, [], _).
+oslc_remove_properties(IRI, PropertyResources, SourceSink) :-
+  rdf_transaction((
+    oslc_remove_properties0(IRI, PropertyResources, SourceSink)
+  )).
 
-oslc_remove_properties(IRI, [PropertyResource|T], SourceSink) :-
+oslc_remove_properties0(_, [], _) :- !.
+
+oslc_remove_properties0(IRI, [PropertyResource|T], SourceSink) :-
   ( once(rdf(PropertyResource, oslc:valueType, oslc:'LocalResource'))
-  -> read_property(IRI, PropertyResource, ReadValues, SourceSink),
-     ( ground(ReadValues)
-     -> check_occurs(IRI, PropertyResource, Values, ReadValues),
-        forall(
-          member(Bnode, Values),
-          oslc_remove_resource(Bnode, SourceSink)
-        )
-     ; true
+  -> read_property(IRI, PropertyResource, IValues, _, SourceSink),
+     forall(
+       member(Bnode, IValues),
+       oslc_remove_resource(Bnode, SourceSink)
      )
   ; true
   ),
   once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
   delete_property(IRI, PropertyDefinition, SourceSink),
-  oslc_remove_properties(IRI, T, SourceSink).
+  oslc_remove_properties0(IRI, T, SourceSink).
 
-% ------------ COPY OSCL RESOURCE RECURSIVELY
+% ------------ COPY RESOURCE RECURSIVELY
 
 oslc_copy_resource(IRIFrom, IRITo, Source, Sink) :-
   must_be(atom, IRIFrom),
@@ -187,38 +199,40 @@ oslc_copy_resource(IRIFrom, IRITo, Source, Sink) :-
   must_be(ground, Sink),
   rdf_transaction((
     oslcs_rdf_type(TypePropertyResource),
-    oslc_copy_properties(IRIFrom, IRITo, [TypePropertyResource], Source, Sink),
-    read_property(IRIFrom, TypePropertyResource, ReadTypes, Source),
-    check_occurs(IRIFrom, TypePropertyResource, Types, ReadTypes),
+    oslc_copy_properties0(IRIFrom, IRITo, [TypePropertyResource], Source, Sink),
+    read_property(IRIFrom, TypePropertyResource, ITypes, _, Source),
     forall((
-      member(Type, Types),
+      member(Type, ITypes),
       rdf(ResourceShape, rdf:type, oslc:'ResourceShape'),
       rdf(ResourceShape, oslc:describes, Type)
     ), (
       findall(P, rdf(ResourceShape, oslc:property, P), Properties),
-      oslc_copy_properties(IRIFrom, IRITo, Properties, Source, Sink)
+      oslc_copy_properties0(IRIFrom, IRITo, Properties, Source, Sink)
     ))
   )).
 
 % ------------ COPY PROPERTIES RECURSIVELY
 
-oslc_copy_properties(_, _, [], _, _).
+oslc_copy_properties(IRIFrom, IRITo, PropertyResources, Source, Sink) :-
+  rdf_transaction((
+    oslc_copy_properties0(IRIFrom, IRITo, PropertyResources, Source, Sink)
+  )).
 
-oslc_copy_properties(IRIFrom, IRITo, [PropertyResource|T], Source, Sink) :-
-  read_property(IRIFrom, PropertyResource, ReadValues, Source),
-  ( ground(ReadValues)
-  -> oslc_remove_properties(IRITo, [PropertyResource], Sink),
+oslc_copy_properties0(_, _, [], _, _) :- !.
+
+oslc_copy_properties0(IRIFrom, IRITo, [PropertyResource|T], Source, Sink) :-
+  read_property(IRIFrom, PropertyResource, IValues, Values, Source),
+  ( ground(Values)
+  -> oslc_remove_properties0(IRITo, [PropertyResource], Sink),
      ( once(rdf(PropertyResource, oslc:valueType, oslc:'LocalResource'))
-     -> check_occurs(IRIFrom, PropertyResource, Values, ReadValues),
-        findall(Bnode, (
-          member(Value, Values),
+     -> findall(Bnode, (
+          member(Value, IValues),
           rdf_create_bnode(Bnode),
           oslc_copy_resource(Value, Bnode, Source, Sink)
-        ), InternalResource),
-        check_occurs(IRITo, PropertyResource, InternalResource, Resource),
-        write_property(IRITo, PropertyResource, Resource, Sink)
-     ; write_property(IRITo, PropertyResource, ReadValues, Sink)
+        ), IResource),
+        write_property(IRITo, PropertyResource, IResource, _, Sink)
+     ; write_property(IRITo, PropertyResource, _, Values, Sink)
      )
   ; true
   ),
-  oslc_copy_properties(IRIFrom, IRITo, T, Source, Sink).
+  oslc_copy_properties0(IRIFrom, IRITo, T, Source, Sink).

@@ -36,7 +36,7 @@ format_value(oslc:'One-or-many', [V|T], [V|T]).
 
 % ------------ CHECK VALUE TYPE
 
-check_value_type(_, _, [], _).
+check_value_type(_, _, [], _) :- !.
 
 check_value_type(IRI, PropertyResource, [V|T], Type) :-
   once((
