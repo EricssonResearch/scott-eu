@@ -16,20 +16,30 @@ assertion(Actual, Expected) :-
 
 test(service_provider_catalog) :-
   rdf_create_bnode(Publisher),
+
+  publisher(Publisher, [ title="publisher",
+                         label="publabel",
+                         identifier="id11",
+                         icon=pubicon
+                       ], _, rdf(oslc_test)),
+
   service_provider_catalog(test:s1, [ title("service provider catalog"),
                                       description = "o3",
-                                      publisher = Publisher
-                                    ], rdf(oslc_test),
-                                       rdf(oslc_test)),
+                                      publisher = Publisher,
+                                      serviceProvider = [sp1,sp2]
+                                    ], _, rdf(oslc_test)),
 
   rdf(test:s1, rdf:type, oslc:'ServiceProviderCatalog'),
+
   service_provider_catalog(test:s1, [ publisher(A),
                                       description(B),
-                                      title = C
-                                    ], rdf(oslc_test),
-                                       rdf(oslc_test)),
+                                      title = C,
+                                      serviceProvider = D
+                                    ], rdf(oslc_test), _),
+
   assertion(C == "service provider catalog"),
   assertion(B == "o3"),
-  assertion(A, Publisher).
+  assertion(A, Publisher),
+  assertion(D, [sp1, sp2]).
 
 :- end_tests(oslc).
