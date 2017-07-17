@@ -9,6 +9,7 @@
 @prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain_and_problem#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms> . 
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix oslc: <http://open-services.net/ns/core#> . #oslc core
 @prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
@@ -16,36 +17,46 @@
 
 
 :ActionShape rdf:type oslc:ResourceShape ;
-            oslc:describes :Action ;
+            oslc:describes pp:Action ;
+            dcterms:title   "Shape of resources of type PDDL Action";
             oslc:property [a oslc:Property ;
-                             oslc:propertyDefinition :hasPrecondition ;
-                             oslc:range pp:Precondition ;
+                             oslc:propertyDefinition :hasPrecondition ; #URI of hasPrecondition property http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#hasprecondition
+                             # GoalDescription and Precondition can have the same arguments according to PDDL 2.1.
+                             oslc:name "hasPrecondition"^^xsd:string ;
+                             oslc:range pp:GoalDescription ;
                              oslc:occurs oslc:Exectly-one ;
                              oslc:valueType oslc:Resource ;
+                             dcterms:title    "details for hasPrecondition property of a PDDL action" ;
                             ] ,
                             [a oslc:Property ;
                              oslc:propertyDefinition :hasEffect ;
+                             oslc:name "hasEffect"^^xsd:string ;
                              oslc:range pp:Effect ;
                              oslc:occurs oslc:Exectly-one ;
                              oslc:valueType oslc:Resource ;
+                             dcterms:title    "details for hasEffect property of a PDDL action" ;
                             ] ,
                             [a oslc:Property ;
                              oslc:propertyDefinition :hasVariable ; #used for specifing the parameters in an action
+                             oslc:name "hasVariable"^^xsd:string ;
                              oslc:range pp:Variable ;
                              oslc:occurs oslc:One-or-many ;
                              oslc:valueType oslc:Resource;
+                             dcterms:title    "details for hasEffect property of a PDDL action" ;
                             ] .
 
 
 
-:PreconditionShape rdf:type oslc:ResourceShape ;
-              oslc:describes :Precondition ;
+:GoalDescriptionShape rdf:type oslc:ResourceShape ;
+              oslc:describes pp:GoalDescription ;
               oslc:property [a oslc:Property ;
-                             oslc:propertyDefinition :hasPreconditionArgument ; #used to model that a precondition can  be either empty ()  or have the top predicate resources (root predicate): logical operators, just a UserPredicate e.g. is_at or binary comparison operator >,< etc used for fluents
+              dcterms:title   "Shape of resources of type Goal Description (GD) in PDDL";
+                             oslc:propertyDefinition :hasGDArgument ; #used to model that a precondition can  be either empty ()  or have the top predicate resources (root predicate): logical operators, just a UserPredicate e.g. is_at or binary comparison operator >,< etc used for fluents
+                             oslc:name "hasGoalDescriptionArgument"^^xsd:string ;
                              oslc:range pp:UserPredicate ;
-                             oslc:range pp:AndPrecondition ;
+                             oslc:range pp:AndGD ;
                              oslc:range pp:Or ;
-                             oslc:range pp:Not ;
+                             oslc:range pp:NotGD ;
                              oslc:range pp:Imply ;
                              oslc:range pp:Exists ;
                              oslc:range pp:ForAll ;
@@ -56,58 +67,65 @@
 
 
 :EffectShape rdf:type oslc:ResourceShape ;
-            oslc:describes :Effect ;
+            oslc:describes pp:Effect ;
             oslc:property [a oslc:Property ;
-                             oslc:propertyDefinition :hasEffectArgument ; #used to model that an effect can be either empty ()  or have the top predicate resources (root predicate): and, forall, when,  just a UserPredicate e.g. is_at or binary comparison operator >,< etc used for fluents
+                             oslc:propertyDefinition :hasEffectArgument ; #used to model that an effect can be either empty ()  or have the top predicate resources (root predicate): and, forall, when,  just a UserPredicate e.g. is_at , negation of a UserPredicate, assignment operation over fluents
+                             oslc:name "hasEffectArgument"^^xsd:string ;
                              oslc:range pp:AndEffect ;
                              oslc:range pp:ForAll ;
                              oslc:range pp:When ;
                              oslc:range pp:AssignmentOperator ;  #TO BE CHECKED there can be two types page 116 from PDDL 2.1 BNF
-                             oslc:range pp:Not ;
+                             oslc:range pp:NotEffect ;
                              oslc:occurs oslc:Zero-or-one ;
                              oslc:valueType oslc:Resource ;
                             ] .
 
 #VariableType will come from another domain, e.g. Robotics, ITS, or combination of domains
 :VariableTypeShape rdf:type oslc:ResourceShape ;
-            oslc:describes :VariableType .
+            oslc:describes pp:VariableType .
 
 
 :VariableShape rdf:type oslc:ResourceShape ;
-            oslc:describes :Variable ;
+            oslc:describes pp:Variable ;
             oslc:property [a oslc:Property ;
                            oslc:propertyDefinition sh:order ;
+                           oslc:name "order"^^xsd:string ;
                            oslc:occurs oslc:Exactly-one ;
                            oslc:valueType xsd:integer ;
                             ] ,
                           [a oslc:Property ;
                           oslc:propertyDefinition :hasVariableType ; #a variable can have only one type
+                          oslc:name "hasVariableType"^^xsd:string ;
                           oslc:range pp:VariableType ;
                           oslc:occurs oslc:Exactly-one ;
                           oslc:valueType oslc:Resource ;
                           ].
 
 :FluentShape rdf:type oslc:ResourceShape ;
-            oslc:describes :Fluent ;
+            oslc:describes pp:Fluent ;
             oslc:property [a oslc:Property ;
                            oslc:propertyDefinition sh:order ;
+                           oslc:name "order"^^xsd:string ;
                            oslc:occurs oslc:Exactly-one ;
                            oslc:valueType xsd:integer ;
                             ] ,
                           [a oslc:Property ;
                           oslc:propertyDefinition :hasFluentType ; #a fluent can be only be fluent type
+                          oslc:name "hasFluentType"^^xsd:string ;
                           oslc:range pp:FluentType ;
                           oslc:occurs oslc:Exactly-one ;
                           oslc:valueType oslc:Resource ;
                           ],
                           [a oslc:Property ;
                           oslc:propertyDefinition :hasFluentVariable ; #a fluent can be only be fluent type
+                          oslc:name "hasFluentVariable"^^xsd:string ;
                           oslc:range pp:FluentVariable ;
                           oslc:occurs oslc:Exactly-one ;
                           oslc:valueType xsd:string ;
                           ],
                           [a oslc:Property ;
                           oslc:propertyDefinition :hasFluentVariableType ; #a fluent can be only be fluent type
+                          oslc:name "hasFluentVariableType"^^xsd:string ;
                           oslc:range pp:FluentVariableType ;
                           oslc:occurs oslc:Exactly-one ;
                           oslc:valueType xsd:string ;
@@ -115,53 +133,55 @@
 
 
 :PredicateShape rdf:type oslc:ResourceShape;
-            oslc:describes :Predicate ;
+            oslc:describes pp:Predicate ;
             oslc:property [a oslc:Property ;
                            oslc:propertyDefinition sh:order ;
+                           oslc:name "order"^^xsd:string ;
                            oslc:occurs oslc:Exactly-one ;
                            oslc:valueType xsd:integer ;
                             ] .
 
-:UserPredicateShape rdf:type oslc:ResourceShape;
+:UserPredicateShape rdf:type oslc:ResourceShape ;
                   oslc:describes :UserPredicate ;
+                  dcterms:title   "Shape of resources of special type of user defined predicates, used in the PDDL actions and goal description";
                   oslc:property [a oslc:Property ;
                                  oslc:propertyDefinition :hasVariableArguments  ; #used to specify that a userpredicate can have variables
+                                 oslc:name "hasVariableArguments"^^xsd:string ;
                                  oslc:range pp:Variable ;
                                  oslc:occurs oslc:One-or-many ;
                                  oslc:valueType oslc:Resource ;
                                   ] .
 
-#shapes AndPreconditionShape and AndEffectShape describe and that can have different properties depending whether they are used in a precondition or in an effect)
+:BinaryComparisonShape rdf:type oslc:ResourceShape ;
+                  oslc:describes pp:BinaryComparison ;
+                  dcterms:title   "Shape of resources of type Binary Comparison  used in the goal description together with PDDL fluents/functions";
+                  oslc:property [a oslc:Property ;
+                                 oslc:propertyDefinition :hasFluents  ; #used to specify that a userpredicate can have variables
+                                 oslc:name "hasFluents"^^xsd:string ;
+                                 oslc:range pp:Fluent ;
+                                 oslc:occurs oslc:One-or-many ; #EXECTLY TWO?
+                                 oslc:valueType oslc:Resource ;
+                                  ] .
 
-  # :AndShape rdf:type oslc:ResourceShape;  #describes And that can be used as a logical operator in precondition and effect)
-  #               oslc:describes :And ; #And may have different attributes in precondition and effect, hence the different properties
-  #               oslc:property [a oslc:Property ;
-  #                              oslc:propertyDefinition :hasArgumentsInPrecondition  ; #common predicates may have nested predicates
-  #                              oslc:range pp:And ,
-  #                                         pp:UserPredicate ,
-  #                                         pp:Or ,
-  #                                         pp:Not ,
-  #                                         pp:Imply ,
-  #                                         pp:Exists ,
-  #                                         pp:ForAll ;
-  #                              oslc:occurs oslc:Zero-or-many ;
-  #                              oslc:valueType oslc:Resource ;
-  #                               ] ,
-  #                               [a oslc:Property ;
-  #                                oslc:propertyDefinition :hasArgumentsInEffect  ; #common predicates may have nested predicates
-  #                                oslc:range pp:When ,
-  #                                           pp:ForAll ,
-  #                                           pp:AssignmentOperator ,
-  #                                           pp:Not ,
-  #                                           pp:UserPredicate ;
-  #                                oslc:occurs oslc:Zero-or-many ;
-  #                                oslc:valueType oslc:Resource ;
-  #                                 ] .
-
-:AndPreconditionShape rdf:type oslc:ResourceShape;  #describes And used in precondition
-                oslc:describes :AndPrecondition ; #attributes of And used in a precondition
+:AssignmentOperatorShape rdf:type oslc:ResourceShape ;
+                oslc:describes pp:AssignmentOperator ;
+                dcterms:title   "Shape of resources of type Assignment Operator that can be used in the root of an effect of a PDDL action together with fluents";
                 oslc:property [a oslc:Property ;
-                               oslc:propertyDefinition :hasArgumentsInPrecondition  ; #common predicates may have nested predicates
+                               oslc:propertyDefinition :hasFluent  ; #used to specify that a userpredicate can have variables
+                               oslc:name "hasFluents"^^xsd:string ;
+                               oslc:range pp:Fluent ;
+                               oslc:occurs oslc:One-or-many ; #EXECTLY TWO?
+                               oslc:valueType oslc:Resource ;
+                                ] .
+
+
+
+:AndGoalDescriptionShape rdf:type oslc:ResourceShape;  #describes And used in precondition
+                oslc:describes pp:AndGD ; #attributes of And used in a precondition
+                dcterms:title   "Shape of resources of type -and- predicate used in goal description/precondition of a PDDL action";
+                oslc:property [a oslc:Property ;
+                               oslc:propertyDefinition :hasArgumentsInGD  ; #common predicates may have nested predicates
+                               oslc:name "hasArgumentsInGD"^^xsd:string ;
                                oslc:range pp:And ,
                                           pp:UserPredicate ,
                                           pp:Or ,
@@ -175,9 +195,11 @@
 
 
 :AndEffectShape rdf:type oslc:ResourceShape;  #describes And used in effect
-                oslc:describes :AndEffect ; #attributes of And used in effect
+                oslc:describes pp:AndEffect ; #attributes of And used in effect
+                dcterms:title   "Shape of resources of type -and- predicate used in the effect of a PDDL action";
                 oslc:property [a oslc:Property ;
                                oslc:propertyDefinition :hasArgumentsInEffect  ; #common predicates may have nested predicates
+                               oslc:name "hasArgumentsInEffect"^^xsd:string ;
                                oslc:range pp:When ,
                                           pp:ForAll ,
                                           pp:AssignmentOperator ,
@@ -188,10 +210,12 @@
                                 ] .
 
 
-:NotShape rdf:type oslc:ResourceShape;  #describes Not that can be used as a logical operator in precondition and effect)
-                  oslc:describes :Not ;
+:NotGoalDescriptionShape rdf:type oslc:ResourceShape;  #describes Not that can be used as a logical operator in precondition and effect)
+                  oslc:describes pp:NotGD ;
+                  dcterms:title   "Shape of resources of type -not- predicate used in goal description/precondition of a PDDL action";
                   oslc:property [a oslc:Property ;
-                                 oslc:propertyDefinition :hasArgumentInPrecondition  ; #not can have only one argument of following types in precondition
+                                 oslc:propertyDefinition :hasArgumentInGD  ; #not can have only one argument of following types in precondition
+                                 oslc:name "hasArgumentInGD"^^xsd:string ;
                                  oslc:range pp:And ,
                                             pp:UserPredicate ,
                                             pp:Or ,
@@ -201,19 +225,24 @@
                                             pp:ForAll ;
                                  oslc:occurs oslc:Exectly-one ;
                                  oslc:valueType oslc:Resource ;
-                                  ] ;
+                                  ] .
+
+:NotEffectShape rdf:type oslc:ResourceShape;  #describes Not that can be used as a logical operator in precondition and effect)
+                  oslc:describes pp:NotEffect ;
+                  dcterms:title   "Shape of resources of type -not- predicate used in the effect of a PDDL action";
                   oslc:property [a oslc:Property ;
                                  oslc:propertyDefinition :hasArgumentInEffect  ; #not can have only one argument, which is a user defined predicate in the effect
+                                 oslc:name "hasArgumentInEffect"^^xsd:string ;
                                  oslc:range pp:UserPredicate ;
                                  oslc:occurs oslc:Exectly-one ;
                                  oslc:valueType oslc:Resource ;
                                   ] .
 
 :OrShape rdf:type oslc:ResourceShape;  #describes Or that can be used as a logical operator in precondition)
-                  oslc:describes pp:Or . #TO BE DEFINED
+                  oslc:describes pp:Or . #TO BE DEFINED, SEPARATED IN PRECONDITION AND EFFECT
 
 :WhenShape rdf:type oslc:ResourceShape;  #describes When used in effect
-                  oslc:describes pp:When . #TO BE DEFINED
+                  oslc:describes pp:When . #TO BE DEFINED, SEPARATED IN PRECONDITION AND EFFECT
 
 :ForAllShape rdf:type oslc:ResourceShape;  #describes ForAll that can be used in precondition anf effect with different properties). Will be divived into two shapes
-                    oslc:describes pp:ForAll . #TO BE DEFINED
+                    oslc:describes pp:ForAll . #TO BE DEFINED, SEPARATED IN PRECONDITION AND EFFECT
