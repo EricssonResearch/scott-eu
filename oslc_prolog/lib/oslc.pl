@@ -65,13 +65,16 @@ register_resource(PrologResource) :-
 
 %!  oslc_resource(:IRI, :ResourceShape, ?Options, ?Source, ?Sink) is det.
 %
-%   Reads and/or writes properties of an OSLC resource :IRI, from/to Source/Sink.
-%   The shape of the OSLC resource must be provided in :ResourceShape. The Options
+%   Reads and/or writes properties of an OSLC resource IRI, from/to Source/Sink.
+%   The shape of the OSLC resource must be provided in ResourceShape. The Options
 %   is a list of properties of the resource in form of =|Key(Value)|= or =|Key=Value|=.
+%   The =Key= must correspond to the =oslc:name= property of the property's shape.
 %   If =Value= is a variable, it will be unified with the value of the property =Key=
 %   unmashalled from the Source. If =Value= is grounded it will be set as a value of
 %   =Key= and marshalled to the Sink. If =Value= is an empty list, the value of
-%   property =Key= will be removed from the Sink.
+%   property =Key= will be removed from the Sink. It is allowed to combine marshalling
+%   and unmarshalling of properties in a single call, however, every property may
+%   appear only once in Options.
 
 oslc_resource(IRI, ResourceShape, Options, Source, Sink) :-
   rdf_transaction(
