@@ -37,14 +37,11 @@ init :-
 %!  register_resource(:PrologResource) is det.
 %
 %   Creates and exports a predicate to operate PrologResource. The argument must
-%   point to a resource of type oslcp:PrologResource. The created predicate will
+%   point to a resource of type =|oslcp:PrologResource|=. The created predicate will
 %   have signature =|module:pred_name(IRI, Options, Source, Sink)|=. Where =module=
-%   is Prolog module (prologModule property of PrologResource), =pred_name= is the
-%   predicate name of arity 4 (prologPredicate property of PrologResource), IRI
-%   is the =IRI= of a resource managed by the API, =Options= is a list of properties
-%   having a form of =|Key(Value)|= or =|Key=Value|=, =Source= and =Sink= are the
-%   pointers to demarshaller and marshaller respectively (rdf(Graph), where =Graph=
-%   is a name of named graph, are standard triple store implementations).
+%   is Prolog module (=prologModule= property of PrologResource), =pred_name= is the
+%   predicate name of arity 4 (=prologPredicate= property of PrologResource). See
+%   oslc_resource/5 for explanation of the arguments.
 
 register_resource(PrologResource) :-
   once((
@@ -71,10 +68,12 @@ register_resource(PrologResource) :-
 %   The =Key= must correspond to the =oslc:name= property of the property's shape.
 %   If =Value= is a variable, it will be unified with the value of the property =Key=
 %   unmashalled from the Source. If =Value= is grounded it will be set as a value of
-%   =Key= and marshalled to the Sink. If =Value= is an empty list, the value of
-%   property =Key= will be removed from the Sink. It is allowed to combine marshalling
-%   and unmarshalling of properties in a single call, however, every property may
-%   appear only once in Options.
+%   =Key= and marshalled to the Sink. If =Value= is an empty list, property =Key=
+%   will be removed from the Sink. It is allowed to combine read and write in a
+%   single call, however, every property may appear in Options only once. For
+%   triple store implementations of Source and Sink use _rdf(Graph)_, where =Graph=
+%   is a named graph in the triple store. It is possible to use _rdf_ for Source,
+%   which means read from the whole database, i.e. all named graphs.
 
 oslc_resource(IRI, ResourceShape, Options, Source, Sink) :-
   rdf_transaction(
