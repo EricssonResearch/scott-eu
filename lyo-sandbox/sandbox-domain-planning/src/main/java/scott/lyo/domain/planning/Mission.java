@@ -68,6 +68,9 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
 import scott.lyo.domain.planning.Predicate;
 import scott.lyo.domain.planning.ProblemState;
 
@@ -79,9 +82,9 @@ import scott.lyo.domain.planning.ProblemState;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.MISSION)
-@OslcResourceShape(title = "Mission Resource Shape", describes = TwinConstants.TYPE_MISSION)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.MISSION)
+@OslcResourceShape(title = "Mission Resource Shape", describes = PpConstants.TYPE_MISSION)
 public class Mission
     extends AbstractResource
     implements IMission
@@ -128,7 +131,7 @@ public class Mission
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_MISSION,  
+        PpConstants.PATH_MISSION,  
         Mission.class);
     }
     
@@ -194,7 +197,7 @@ public class Mission
     // Start of user code getterAnnotation:planningDeadline
     // End of user code
     @OslcName("planningDeadline")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "planningDeadline")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "planningDeadline")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.DateTime)
     @OslcReadOnly(false)
@@ -208,7 +211,7 @@ public class Mission
     // Start of user code getterAnnotation:label
     // End of user code
     @OslcName("label")
-    @OslcPropertyDefinition(TwinConstants.RDFS_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("May be used to provide a human-readable version of a resource's name.")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.XMLLiteral)
@@ -223,7 +226,7 @@ public class Mission
     // Start of user code getterAnnotation:missionDeadline
     // End of user code
     @OslcName("missionDeadline")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "missionDeadline")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "missionDeadline")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.DateTime)
     @OslcReadOnly(false)
@@ -237,10 +240,10 @@ public class Mission
     // Start of user code getterAnnotation:goalPredicate
     // End of user code
     @OslcName("goalPredicate")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "goalPredicate")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "goalPredicate")
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_PREDICATE})
+    @OslcRange({PpConstants.TYPE_PREDICATE})
     @OslcReadOnly(false)
     public HashSet<Link> getGoalPredicate()
     {
@@ -252,10 +255,10 @@ public class Mission
     // Start of user code getterAnnotation:initialState
     // End of user code
     @OslcName("initialState")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "initialState")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "initialState")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.LocalResource)
-    @OslcRange({TwinConstants.TYPE_PROBLEMSTATE})
+    @OslcRange({PpConstants.TYPE_PROBLEMSTATE})
     @OslcReadOnly(false)
     public ProblemState getInitialState()
     {

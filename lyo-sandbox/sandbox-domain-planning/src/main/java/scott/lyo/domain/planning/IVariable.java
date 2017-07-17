@@ -62,25 +62,29 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
+
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.VARIABLE)
-@OslcResourceShape(title = "Variable Resource Shape", describes = TwinConstants.TYPE_VARIABLE)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.VARIABLE)
+@OslcResourceShape(title = "Variable Resource Shape", describes = PpConstants.TYPE_VARIABLE)
 public interface IVariable
 {
 
 
     @OslcName("resourceType")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "resourceType")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "resourceType")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getResourceType();
 
     @OslcName("label")
-    @OslcPropertyDefinition(TwinConstants.RDFS_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("May be used to provide a human-readable version of a resource's name.")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.XMLLiteral)
@@ -88,7 +92,7 @@ public interface IVariable
     public String getLabel();
 
     @OslcName("order")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "order")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "order")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

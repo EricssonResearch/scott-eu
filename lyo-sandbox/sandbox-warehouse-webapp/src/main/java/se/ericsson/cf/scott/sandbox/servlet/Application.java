@@ -61,7 +61,10 @@ import scott.lyo.domain.planning.ProblemState;
 import scott.lyo.domain.warehouse.Robot;
 import scott.lyo.domain.warehouse.Waypoint;
 import scott.lyo.domain.warehouse.WhObject;
-import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
+import se.ericsson.cf.scott.sandbox.resources.DctermsConstants;
+import scott.lyo.domain.planning.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
@@ -128,13 +131,13 @@ public class Application extends OslcWinkApplication {
             System.err.println("Application failed to initialize");
         }
 
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_MISSION, Mission.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_PLACE, Place.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_PREDICATE, Predicate.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_PROBLEMSTATE, ProblemState.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_ROBOT, Robot.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_WAYPOINT, Waypoint.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_WHOBJECT, WhObject.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_MISSION, Mission.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_PLACE, Place.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PREDICATE, Predicate.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PROBLEMSTATE, ProblemState.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_ROBOT, Robot.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WAYPOINT, Waypoint.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WHOBJECT, WhObject.class);
     }
 
     public Application()

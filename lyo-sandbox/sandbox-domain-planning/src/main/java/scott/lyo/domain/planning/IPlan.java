@@ -62,32 +62,34 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
 import scott.lyo.domain.planning.IMission;
 import scott.lyo.domain.planning.IAction;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.PLAN)
-@OslcResourceShape(title = "Plan Resource Shape", describes = TwinConstants.TYPE_PLAN)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.PLAN)
+@OslcResourceShape(title = "Plan Resource Shape", describes = PpConstants.TYPE_PLAN)
 public interface IPlan
 {
 
 
     @OslcName("forMission")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "forMission")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "forMission")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_MISSION})
+    @OslcRange({PpConstants.TYPE_MISSION})
     @OslcReadOnly(false)
     public Link getForMission();
 
     @OslcName("relatesToAction")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "relatesToAction")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "relatesToAction")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.LocalResource)
-    @OslcRange({TwinConstants.TYPE_ACTION})
+    @OslcRange({PpConstants.TYPE_ACTION})
     @OslcReadOnly(false)
     public Action getRelatesToAction();
 

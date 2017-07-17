@@ -1728,8 +1728,8 @@
     </ownedAnnotationEntries>
     <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="__L2s4FW1EeeBtsIbe7E3uQ" name="Warehouse (wh)" width="40" height="30">
       <target xmi:type="oslc4j_ai:DomainSpecification" href="sandbox.toolchain#//@specification/@domainSpecifications.0"/>
-      <semanticElements xmi:type="oslc4j_ai:DomainSpecification" href="sandbox.toolchain#//@specification/@domainSpecifications.0"/>
       <semanticElements xmi:type="oslc4j_ai:GenerationSetting" href="sandbox.toolchain#//@specification/@domainSpecifications.0/@generationSetting"/>
+      <semanticElements xmi:type="oslc4j_ai:DomainSpecification" href="sandbox.toolchain#//@specification/@domainSpecifications.0"/>
       <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
       <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
       <arrangeConstraints>KEEP_RATIO</arrangeConstraints>

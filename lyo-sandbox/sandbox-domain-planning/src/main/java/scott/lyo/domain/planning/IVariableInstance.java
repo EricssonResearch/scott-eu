@@ -62,27 +62,30 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
 import scott.lyo.domain.planning.IVariable;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.VARIABLEINSTANCE)
-@OslcResourceShape(title = "VariableInstance Resource Shape", describes = TwinConstants.TYPE_VARIABLEINSTANCE)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.VARIABLEINSTANCE)
+@OslcResourceShape(title = "VariableInstance Resource Shape", describes = PpConstants.TYPE_VARIABLEINSTANCE)
 public interface IVariableInstance
 {
 
 
     @OslcName("value")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "value")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "value")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.LocalResource)
     @OslcReadOnly(false)
     public Link getValue();
 
     @OslcName("label")
-    @OslcPropertyDefinition(TwinConstants.RDFS_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("May be used to provide a human-readable version of a resource's name.")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.XMLLiteral)
@@ -90,17 +93,17 @@ public interface IVariableInstance
     public String getLabel();
 
     @OslcName("order")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "order")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "order")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
     public Integer getOrder();
 
     @OslcName("ppInstanceOf")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "ppInstanceOf")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "ppInstanceOf")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_VARIABLE})
+    @OslcRange({PpConstants.TYPE_VARIABLE})
     @OslcReadOnly(false)
     @OslcTitle("")
     public Link getPpInstanceOf();

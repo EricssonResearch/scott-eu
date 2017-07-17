@@ -68,6 +68,8 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.planning.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.DctermsConstants;
 
 // Start of user code imports
 // End of user code
@@ -77,9 +79,9 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.PREDICATE)
-@OslcResourceShape(title = "Predicate Resource Shape", describes = TwinConstants.TYPE_PREDICATE)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.PREDICATE)
+@OslcResourceShape(title = "Predicate Resource Shape", describes = PpConstants.TYPE_PREDICATE)
 public class Predicate
     extends AbstractResource
     implements IPredicate
@@ -114,7 +116,7 @@ public class Predicate
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_PREDICATE,  
+        PpConstants.PATH_PREDICATE,  
         Predicate.class);
     }
     
@@ -175,7 +177,7 @@ public class Predicate
     // Start of user code getterAnnotation:title
     // End of user code
     @OslcName("title")
-    @OslcPropertyDefinition(TwinConstants.DUBLIN_CORE_NAMSPACE + "title")
+    @OslcPropertyDefinition(DctermsConstants.DUBLIN_CORE_NAMSPACE + "title")
     @OslcDescription("Title of the resource represented as rich text in XHTML content. SHOULD include only content that is valid inside an XHTML <span> element.")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.XMLLiteral)

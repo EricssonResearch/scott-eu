@@ -62,38 +62,40 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
 import scott.lyo.domain.planning.IActionType;
 import scott.lyo.domain.planning.IVariableInstance;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.ACTION)
-@OslcResourceShape(title = "Action Resource Shape", describes = TwinConstants.TYPE_ACTION)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.ACTION)
+@OslcResourceShape(title = "Action Resource Shape", describes = PpConstants.TYPE_ACTION)
 public interface IAction
 {
 
     public void addWithVariable(final VariableInstance withVariable );
 
     @OslcName("ofActionType")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "ofActionType")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "ofActionType")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_ACTIONTYPE})
+    @OslcRange({PpConstants.TYPE_ACTIONTYPE})
     @OslcReadOnly(false)
     public Link getOfActionType();
 
     @OslcName("withVariable")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "withVariable")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "withVariable")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.LocalResource)
-    @OslcRange({TwinConstants.TYPE_VARIABLEINSTANCE})
+    @OslcRange({PpConstants.TYPE_VARIABLEINSTANCE})
     @OslcReadOnly(false)
     public HashSet<VariableInstance> getWithVariable();
 
     @OslcName("order")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "order")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "order")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

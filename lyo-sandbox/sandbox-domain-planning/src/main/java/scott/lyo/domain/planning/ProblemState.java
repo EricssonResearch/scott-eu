@@ -68,6 +68,9 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.WhObject;
 import scott.lyo.domain.warehouse.Place;
 import scott.lyo.domain.warehouse.Robot;
@@ -81,9 +84,9 @@ import scott.lyo.domain.warehouse.Waypoint;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.PROBLEMSTATE)
-@OslcResourceShape(title = "ProblemState Resource Shape", describes = TwinConstants.TYPE_PROBLEMSTATE)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.PROBLEMSTATE)
+@OslcResourceShape(title = "ProblemState Resource Shape", describes = PpConstants.TYPE_PROBLEMSTATE)
 public class ProblemState
     extends AbstractResource
     implements IProblemState
@@ -127,7 +130,7 @@ public class ProblemState
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_PROBLEMSTATE,  
+        PpConstants.PATH_PROBLEMSTATE,  
         ProblemState.class);
     }
     
@@ -208,11 +211,11 @@ public class ProblemState
     // Start of user code getterAnnotation:robots
     // End of user code
     @OslcName("robots")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "robots")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "robots")
     @OslcDescription("")
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_ROBOT})
+    @OslcRange({WhConstants.TYPE_ROBOT})
     @OslcReadOnly(false)
     public HashSet<Link> getRobots()
     {
@@ -224,10 +227,10 @@ public class ProblemState
     // Start of user code getterAnnotation:places
     // End of user code
     @OslcName("places")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "places")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "places")
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_PLACE})
+    @OslcRange({WhConstants.TYPE_PLACE})
     @OslcReadOnly(false)
     public HashSet<Link> getPlaces()
     {
@@ -239,10 +242,10 @@ public class ProblemState
     // Start of user code getterAnnotation:objects
     // End of user code
     @OslcName("objects")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "objects")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "objects")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WHOBJECT})
+    @OslcRange({WhConstants.TYPE_WHOBJECT})
     @OslcReadOnly(false)
     public HashSet<Link> getObjects()
     {
@@ -254,10 +257,10 @@ public class ProblemState
     // Start of user code getterAnnotation:waypoints
     // End of user code
     @OslcName("waypoints")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "waypoints")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "waypoints")
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WAYPOINT})
+    @OslcRange({WhConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public HashSet<Link> getWaypoints()
     {

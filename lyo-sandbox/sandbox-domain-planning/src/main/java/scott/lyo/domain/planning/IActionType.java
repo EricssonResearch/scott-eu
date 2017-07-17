@@ -62,6 +62,10 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.planning.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.DctermsConstants;
+import scott.lyo.domain.planning.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
 import scott.lyo.domain.planning.IPredicate;
 import scott.lyo.domain.planning.IVariable;
 import scott.lyo.domain.planning.IPredicate;
@@ -69,9 +73,9 @@ import scott.lyo.domain.planning.IPredicate;
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.ACTIONTYPE)
-@OslcResourceShape(title = "ActionType Resource Shape", describes = TwinConstants.TYPE_ACTIONTYPE)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.ACTIONTYPE)
+@OslcResourceShape(title = "ActionType Resource Shape", describes = PpConstants.TYPE_ACTIONTYPE)
 public interface IActionType
 {
 
@@ -79,7 +83,7 @@ public interface IActionType
     public void addEffect(final Link effect );
 
     @OslcName("label")
-    @OslcPropertyDefinition(TwinConstants.RDFS_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("May be used to provide a human-readable version of a resource's name.")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.XMLLiteral)
@@ -87,32 +91,32 @@ public interface IActionType
     public String getLabel();
 
     @OslcName("hasVariable")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "hasVariable")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "hasVariable")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_VARIABLE})
+    @OslcRange({PpConstants.TYPE_VARIABLE})
     @OslcReadOnly(false)
     @OslcTitle("")
     public HashSet<Link> getHasVariable();
 
     @OslcName("precondition")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "precondition")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "precondition")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_PREDICATE})
+    @OslcRange({PpConstants.TYPE_PREDICATE})
     @OslcReadOnly(false)
     public Link getPrecondition();
 
     @OslcName("effect")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "effect")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "effect")
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_PREDICATE})
+    @OslcRange({PpConstants.TYPE_PREDICATE})
     @OslcReadOnly(false)
     public HashSet<Link> getEffect();
 
     @OslcName("title")
-    @OslcPropertyDefinition(TwinConstants.DUBLIN_CORE_NAMSPACE + "title")
+    @OslcPropertyDefinition(DctermsConstants.DUBLIN_CORE_NAMSPACE + "title")
     @OslcDescription("Title of the resource represented as rich text in XHTML content. SHOULD include only content that is valid inside an XHTML <span> element.")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.XMLLiteral)

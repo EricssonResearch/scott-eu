@@ -68,6 +68,8 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.warehouse.WhConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.Robot;
 import scott.lyo.domain.warehouse.Place;
 
@@ -79,9 +81,9 @@ import scott.lyo.domain.warehouse.Place;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.WAREHOUSE_NAMSPACE)
-@OslcName(TwinConstants.WHOBJECT)
-@OslcResourceShape(title = "WhObject Resource Shape", describes = TwinConstants.TYPE_WHOBJECT)
+@OslcNamespace(WhConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WhConstants.WHOBJECT)
+@OslcResourceShape(title = "WhObject Resource Shape", describes = WhConstants.TYPE_WHOBJECT)
 public class WhObject
     extends AbstractResource
     implements IWhObject
@@ -136,7 +138,7 @@ public class WhObject
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_WHOBJECT,  
+        WhConstants.PATH_WHOBJECT,  
         WhObject.class);
     }
     
@@ -197,10 +199,10 @@ public class WhObject
     // Start of user code getterAnnotation:isOn
     // End of user code
     @OslcName("isOn")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "isOn")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "isOn")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_PLACE})
+    @OslcRange({WhConstants.TYPE_PLACE})
     @OslcReadOnly(false)
     public Link getIsOn()
     {
@@ -212,10 +214,10 @@ public class WhObject
     // Start of user code getterAnnotation:carriedBy
     // End of user code
     @OslcName("carriedBy")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "carriedBy")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "carriedBy")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_ROBOT})
+    @OslcRange({WhConstants.TYPE_ROBOT})
     @OslcReadOnly(false)
     public Link getCarriedBy()
     {
@@ -227,7 +229,7 @@ public class WhObject
     // Start of user code getterAnnotation:type
     // End of user code
     @OslcName("type")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "type")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "type")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)
     @OslcReadOnly(false)
@@ -241,7 +243,7 @@ public class WhObject
     // Start of user code getterAnnotation:capacity
     // End of user code
     @OslcName("capacity")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "capacity")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "capacity")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

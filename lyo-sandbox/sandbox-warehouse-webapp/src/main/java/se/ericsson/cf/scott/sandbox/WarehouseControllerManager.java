@@ -26,10 +26,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
 import scott.lyo.domain.planning.Mission;
 import scott.lyo.domain.warehouse.Place;
+import scott.lyo.domain.planning.Predicate;
+import scott.lyo.domain.planning.ProblemState;
+import scott.lyo.domain.warehouse.Robot;
 import scott.lyo.domain.warehouse.Waypoint;
 import scott.lyo.domain.warehouse.WhObject;
 
@@ -226,14 +231,6 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromMission(final Mission aResource)
-    {
-        String eTag = null;
-        // Start of user code getETagFromMission
-        // TODO Implement code to return an ETag for a particular resource
-        // End of user code
-        return eTag;
-    }
     public static String getETagFromWaypoint(final Waypoint aResource)
     {
         String eTag = null;
@@ -246,6 +243,14 @@ public class WarehouseControllerManager {
     {
         String eTag = null;
         // Start of user code getETagFromWhObject
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
+    public static String getETagFromMission(final Mission aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromMission
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

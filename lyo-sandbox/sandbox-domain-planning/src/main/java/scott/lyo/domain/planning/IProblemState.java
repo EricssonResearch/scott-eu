@@ -62,6 +62,9 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.IWhObject;
 import scott.lyo.domain.warehouse.IPlace;
 import scott.lyo.domain.warehouse.IRobot;
@@ -70,9 +73,9 @@ import scott.lyo.domain.warehouse.IWaypoint;
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.PROBLEMSTATE)
-@OslcResourceShape(title = "ProblemState Resource Shape", describes = TwinConstants.TYPE_PROBLEMSTATE)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.PROBLEMSTATE)
+@OslcResourceShape(title = "ProblemState Resource Shape", describes = PpConstants.TYPE_PROBLEMSTATE)
 public interface IProblemState
 {
 
@@ -82,35 +85,35 @@ public interface IProblemState
     public void addWaypoints(final Link waypoints );
 
     @OslcName("robots")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "robots")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "robots")
     @OslcDescription("")
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_ROBOT})
+    @OslcRange({WhConstants.TYPE_ROBOT})
     @OslcReadOnly(false)
     public HashSet<Link> getRobots();
 
     @OslcName("places")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "places")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "places")
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_PLACE})
+    @OslcRange({WhConstants.TYPE_PLACE})
     @OslcReadOnly(false)
     public HashSet<Link> getPlaces();
 
     @OslcName("objects")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "objects")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "objects")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WHOBJECT})
+    @OslcRange({WhConstants.TYPE_WHOBJECT})
     @OslcReadOnly(false)
     public HashSet<Link> getObjects();
 
     @OslcName("waypoints")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "waypoints")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "waypoints")
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WAYPOINT})
+    @OslcRange({WhConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public HashSet<Link> getWaypoints();
 

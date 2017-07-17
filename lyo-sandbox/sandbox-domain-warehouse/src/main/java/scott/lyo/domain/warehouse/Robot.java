@@ -68,6 +68,8 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.warehouse.WhConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.Waypoint;
 
 // Start of user code imports
@@ -78,9 +80,9 @@ import scott.lyo.domain.warehouse.Waypoint;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.WAREHOUSE_NAMSPACE)
-@OslcName(TwinConstants.ROBOT)
-@OslcResourceShape(title = "Robot Resource Shape", describes = TwinConstants.TYPE_ROBOT)
+@OslcNamespace(WhConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WhConstants.ROBOT)
+@OslcResourceShape(title = "Robot Resource Shape", describes = WhConstants.TYPE_ROBOT)
 public class Robot
     extends AbstractResource
     implements IRobot
@@ -162,7 +164,7 @@ public class Robot
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_ROBOT,  
+        WhConstants.PATH_ROBOT,  
         Robot.class);
     }
     
@@ -223,7 +225,7 @@ public class Robot
     // Start of user code getterAnnotation:capacity
     // End of user code
     @OslcName("capacity")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "capacity")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "capacity")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
@@ -238,7 +240,7 @@ public class Robot
     // Start of user code getterAnnotation:chargeLevel
     // End of user code
     @OslcName("chargeLevel")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "chargeLevel")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "chargeLevel")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
@@ -252,10 +254,10 @@ public class Robot
     // Start of user code getterAnnotation:isAt
     // End of user code
     @OslcName("isAt")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "isAt")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "isAt")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WAYPOINT})
+    @OslcRange({WhConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public Link getIsAt()
     {
@@ -267,7 +269,7 @@ public class Robot
     // Start of user code getterAnnotation:isCharging
     // End of user code
     @OslcName("isCharging")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "isCharging")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "isCharging")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
@@ -281,7 +283,7 @@ public class Robot
     // Start of user code getterAnnotation:maxCharge
     // End of user code
     @OslcName("maxCharge")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "maxCharge")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "maxCharge")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
@@ -295,7 +297,7 @@ public class Robot
     // Start of user code getterAnnotation:highCharge
     // End of user code
     @OslcName("highCharge")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "highCharge")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "highCharge")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
@@ -309,7 +311,7 @@ public class Robot
     // Start of user code getterAnnotation:lowCharge
     // End of user code
     @OslcName("lowCharge")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "lowCharge")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "lowCharge")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

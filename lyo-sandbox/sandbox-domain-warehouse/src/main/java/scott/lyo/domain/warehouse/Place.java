@@ -68,6 +68,8 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.warehouse.WhConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.Waypoint;
 
 // Start of user code imports
@@ -78,9 +80,9 @@ import scott.lyo.domain.warehouse.Waypoint;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.WAREHOUSE_NAMSPACE)
-@OslcName(TwinConstants.PLACE)
-@OslcResourceShape(title = "Place Resource Shape", describes = TwinConstants.TYPE_PLACE)
+@OslcNamespace(WhConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WhConstants.PLACE)
+@OslcResourceShape(title = "Place Resource Shape", describes = WhConstants.TYPE_PLACE)
 public class Place
     extends AbstractResource
     implements IPlace
@@ -135,7 +137,7 @@ public class Place
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_PLACE,  
+        WhConstants.PATH_PLACE,  
         Place.class);
     }
     
@@ -196,10 +198,10 @@ public class Place
     // Start of user code getterAnnotation:situatedAt
     // End of user code
     @OslcName("situatedAt")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "situatedAt")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "situatedAt")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WAYPOINT})
+    @OslcRange({WhConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public Link getSituatedAt()
     {
@@ -211,7 +213,7 @@ public class Place
     // Start of user code getterAnnotation:isChargingStation
     // End of user code
     @OslcName("isChargingStation")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "isChargingStation")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "isChargingStation")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
@@ -226,7 +228,7 @@ public class Place
     // Start of user code getterAnnotation:type
     // End of user code
     @OslcName("type")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "type")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "type")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)
     @OslcReadOnly(false)
@@ -240,7 +242,7 @@ public class Place
     // Start of user code getterAnnotation:capacity
     // End of user code
     @OslcName("capacity")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "capacity")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "capacity")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

@@ -68,6 +68,8 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.warehouse.WhConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.Waypoint;
 
 // Start of user code imports
@@ -78,9 +80,9 @@ import scott.lyo.domain.warehouse.Waypoint;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.WAREHOUSE_NAMSPACE)
-@OslcName(TwinConstants.WAYPOINT)
-@OslcResourceShape(title = "Waypoint Resource Shape", describes = TwinConstants.TYPE_WAYPOINT)
+@OslcNamespace(WhConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WhConstants.WAYPOINT)
+@OslcResourceShape(title = "Waypoint Resource Shape", describes = WhConstants.TYPE_WAYPOINT)
 public class Waypoint
     extends AbstractResource
     implements IWaypoint
@@ -126,7 +128,7 @@ public class Waypoint
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_WAYPOINT,  
+        WhConstants.PATH_WAYPOINT,  
         Waypoint.class);
     }
     
@@ -192,10 +194,10 @@ public class Waypoint
     // Start of user code getterAnnotation:canMove
     // End of user code
     @OslcName("canMove")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "canMove")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "canMove")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WAYPOINT})
+    @OslcRange({WhConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public HashSet<Link> getCanMove()
     {

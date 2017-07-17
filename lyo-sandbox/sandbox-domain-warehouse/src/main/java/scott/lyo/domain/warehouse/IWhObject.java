@@ -62,44 +62,46 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.warehouse.WhConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.IRobot;
 import scott.lyo.domain.warehouse.IPlace;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.WAREHOUSE_NAMSPACE)
-@OslcName(TwinConstants.WHOBJECT)
-@OslcResourceShape(title = "WhObject Resource Shape", describes = TwinConstants.TYPE_WHOBJECT)
+@OslcNamespace(WhConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WhConstants.WHOBJECT)
+@OslcResourceShape(title = "WhObject Resource Shape", describes = WhConstants.TYPE_WHOBJECT)
 public interface IWhObject
 {
 
 
     @OslcName("isOn")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "isOn")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "isOn")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_PLACE})
+    @OslcRange({WhConstants.TYPE_PLACE})
     @OslcReadOnly(false)
     public Link getIsOn();
 
     @OslcName("carriedBy")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "carriedBy")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "carriedBy")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_ROBOT})
+    @OslcRange({WhConstants.TYPE_ROBOT})
     @OslcReadOnly(false)
     public Link getCarriedBy();
 
     @OslcName("type")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "type")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "type")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)
     @OslcReadOnly(false)
     public String getType();
 
     @OslcName("capacity")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "capacity")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "capacity")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

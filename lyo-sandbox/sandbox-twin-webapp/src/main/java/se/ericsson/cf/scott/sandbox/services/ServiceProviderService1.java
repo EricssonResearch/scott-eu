@@ -71,6 +71,8 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
 import se.ericsson.cf.scott.sandbox.TwinManager;
 import se.ericsson.cf.scott.sandbox.TwinConstants;
+import scott.lyo.domain.warehouse.WhConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 import scott.lyo.domain.warehouse.Robot;
 import scott.lyo.domain.warehouse.Waypoint;
@@ -80,7 +82,7 @@ import scott.lyo.domain.warehouse.Waypoint;
 
 // Start of user code pre_class_code
 // End of user code
-@OslcService(TwinConstants.WAREHOUSE_DOMAIN)
+@OslcService(WhConstants.WAREHOUSE_DOMAIN)
 @Path("serviceProviders/{serviceProviderId}/robots")
 public class ServiceProviderService1
 {

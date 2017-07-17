@@ -62,28 +62,30 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.warehouse.WhConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.IWaypoint;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.WAREHOUSE_NAMSPACE)
-@OslcName(TwinConstants.PLACE)
-@OslcResourceShape(title = "Place Resource Shape", describes = TwinConstants.TYPE_PLACE)
+@OslcNamespace(WhConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WhConstants.PLACE)
+@OslcResourceShape(title = "Place Resource Shape", describes = WhConstants.TYPE_PLACE)
 public interface IPlace
 {
 
 
     @OslcName("situatedAt")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "situatedAt")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "situatedAt")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WAYPOINT})
+    @OslcRange({WhConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public Link getSituatedAt();
 
     @OslcName("isChargingStation")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "isChargingStation")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "isChargingStation")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
@@ -91,14 +93,14 @@ public interface IPlace
     public Boolean isIsChargingStation();
 
     @OslcName("type")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "type")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "type")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)
     @OslcReadOnly(false)
     public String getType();
 
     @OslcName("capacity")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "capacity")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "capacity")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

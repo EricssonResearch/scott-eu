@@ -68,6 +68,8 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
 import scott.lyo.domain.planning.ActionType;
 import scott.lyo.domain.planning.VariableInstance;
 
@@ -79,9 +81,9 @@ import scott.lyo.domain.planning.VariableInstance;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.ACTION)
-@OslcResourceShape(title = "Action Resource Shape", describes = TwinConstants.TYPE_ACTION)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.ACTION)
+@OslcResourceShape(title = "Action Resource Shape", describes = PpConstants.TYPE_ACTION)
 public class Action
     extends AbstractResource
     implements IAction
@@ -122,7 +124,7 @@ public class Action
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_ACTION,  
+        PpConstants.PATH_ACTION,  
         Action.class);
     }
     
@@ -188,10 +190,10 @@ public class Action
     // Start of user code getterAnnotation:ofActionType
     // End of user code
     @OslcName("ofActionType")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "ofActionType")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "ofActionType")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_ACTIONTYPE})
+    @OslcRange({PpConstants.TYPE_ACTIONTYPE})
     @OslcReadOnly(false)
     public Link getOfActionType()
     {
@@ -203,10 +205,10 @@ public class Action
     // Start of user code getterAnnotation:withVariable
     // End of user code
     @OslcName("withVariable")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "withVariable")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "withVariable")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.LocalResource)
-    @OslcRange({TwinConstants.TYPE_VARIABLEINSTANCE})
+    @OslcRange({PpConstants.TYPE_VARIABLEINSTANCE})
     @OslcReadOnly(false)
     public HashSet<VariableInstance> getWithVariable()
     {
@@ -218,7 +220,7 @@ public class Action
     // Start of user code getterAnnotation:order
     // End of user code
     @OslcName("order")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "order")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "order")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)

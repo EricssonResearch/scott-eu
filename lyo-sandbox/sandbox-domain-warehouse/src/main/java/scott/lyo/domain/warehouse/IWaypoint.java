@@ -62,24 +62,26 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
+import scott.lyo.domain.warehouse.WhConstants;
+import scott.lyo.domain.warehouse.WhConstants;
 import scott.lyo.domain.warehouse.IWaypoint;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(TwinConstants.WAREHOUSE_NAMSPACE)
-@OslcName(TwinConstants.WAYPOINT)
-@OslcResourceShape(title = "Waypoint Resource Shape", describes = TwinConstants.TYPE_WAYPOINT)
+@OslcNamespace(WhConstants.WAREHOUSE_NAMSPACE)
+@OslcName(WhConstants.WAYPOINT)
+@OslcResourceShape(title = "Waypoint Resource Shape", describes = WhConstants.TYPE_WAYPOINT)
 public interface IWaypoint
 {
 
     public void addCanMove(final Link canMove );
 
     @OslcName("canMove")
-    @OslcPropertyDefinition(TwinConstants.WAREHOUSE_NAMSPACE + "canMove")
+    @OslcPropertyDefinition(WhConstants.WAREHOUSE_NAMSPACE + "canMove")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_WAYPOINT})
+    @OslcRange({WhConstants.TYPE_WAYPOINT})
     @OslcReadOnly(false)
     public HashSet<Link> getCanMove();
 

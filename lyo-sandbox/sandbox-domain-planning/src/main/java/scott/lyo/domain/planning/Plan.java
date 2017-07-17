@@ -68,6 +68,8 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
 import scott.lyo.domain.planning.Mission;
 import scott.lyo.domain.planning.Action;
 
@@ -79,9 +81,9 @@ import scott.lyo.domain.planning.Action;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.PLAN)
-@OslcResourceShape(title = "Plan Resource Shape", describes = TwinConstants.TYPE_PLAN)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.PLAN)
+@OslcResourceShape(title = "Plan Resource Shape", describes = PpConstants.TYPE_PLAN)
 public class Plan
     extends AbstractResource
     implements IPlan
@@ -119,7 +121,7 @@ public class Plan
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_PLAN,  
+        PpConstants.PATH_PLAN,  
         Plan.class);
     }
     
@@ -180,10 +182,10 @@ public class Plan
     // Start of user code getterAnnotation:forMission
     // End of user code
     @OslcName("forMission")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "forMission")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "forMission")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({TwinConstants.TYPE_MISSION})
+    @OslcRange({PpConstants.TYPE_MISSION})
     @OslcReadOnly(false)
     public Link getForMission()
     {
@@ -195,10 +197,10 @@ public class Plan
     // Start of user code getterAnnotation:relatesToAction
     // End of user code
     @OslcName("relatesToAction")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "relatesToAction")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "relatesToAction")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.LocalResource)
-    @OslcRange({TwinConstants.TYPE_ACTION})
+    @OslcRange({PpConstants.TYPE_ACTION})
     @OslcReadOnly(false)
     public Action getRelatesToAction()
     {

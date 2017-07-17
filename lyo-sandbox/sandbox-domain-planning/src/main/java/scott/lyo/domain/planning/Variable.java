@@ -68,6 +68,9 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
+import scott.lyo.domain.planning.PpConstants;
+import scott.lyo.domain.planning.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
 
 // Start of user code imports
 // End of user code
@@ -77,9 +80,9 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(TwinConstants.PLANNING_NAMSPACE)
-@OslcName(TwinConstants.VARIABLE)
-@OslcResourceShape(title = "Variable Resource Shape", describes = TwinConstants.TYPE_VARIABLE)
+@OslcNamespace(PpConstants.PLANNING_NAMSPACE)
+@OslcName(PpConstants.VARIABLE)
+@OslcResourceShape(title = "Variable Resource Shape", describes = PpConstants.TYPE_VARIABLE)
 public class Variable
     extends AbstractResource
     implements IVariable
@@ -120,7 +123,7 @@ public class Variable
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_VARIABLE,  
+        PpConstants.PATH_VARIABLE,  
         Variable.class);
     }
     
@@ -181,7 +184,7 @@ public class Variable
     // Start of user code getterAnnotation:resourceType
     // End of user code
     @OslcName("resourceType")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "resourceType")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "resourceType")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
@@ -195,7 +198,7 @@ public class Variable
     // Start of user code getterAnnotation:label
     // End of user code
     @OslcName("label")
-    @OslcPropertyDefinition(TwinConstants.RDFS_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("May be used to provide a human-readable version of a resource's name.")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.XMLLiteral)
@@ -210,7 +213,7 @@ public class Variable
     // Start of user code getterAnnotation:order
     // End of user code
     @OslcName("order")
-    @OslcPropertyDefinition(TwinConstants.PLANNING_NAMSPACE + "order")
+    @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "order")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
