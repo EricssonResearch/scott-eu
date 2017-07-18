@@ -1,7 +1,7 @@
 @prefix : <http://ontology.cf.ericsson.net/planning_ontology#> .
 @prefix pp: <http://ontology.cf.ericsson.net/planning_ontology#> .
 @prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#> .
-@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain_and_problem#> .
+@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -15,45 +15,58 @@
                                                    rdf:versionIRI <http://ontology.cf.ericsson.net/planning_ontology/1.0.0> .
 
 :Action rdf:type rdf:class .
-:VariableType rdf:type rdf:class .
-:Variable rdf:type rdf:class   .
-:Fluent rdf:type rdf:class  .
-:FluentType rdf:type rdf:class  .
-:Predicate rdf:type rdf:class .  #all subclasses can have an order
-:AssignmentOperator rdf:subclass :Predicate .  #are possible in effects over fluents (decrease, increase, scaleup, assign, scaledown  #CHECK whether it is of type class or predicate
-:BinnaryOperator rdf:subclass :Predicate  .  #are possible in preconditions and effects over fluents (+, -, * and /)
+:TypedVariable rdf:type rdf:class . # do not need to be ordered
+:Precondition rdf:type rdf:class .
+:Effect  rdf:type rdf:class .
+:GoalDescription rdf:type rdf:class .
+:OrderedArgument rdf:type rdf:class .  #all subclasses of OrderedArgument will have an order property sh:order to show the relative position of that element in the parent
+:VariableType rdf:type :OrderedArgument .
+:Variable rdf:type :OrderedArgument .
+:Fluent rdf:type :OrderedArgument .
+:FluentArgument rdf:type :OrderedArgument .
+:FluentType rdf:type :OrderedArgument .
+:FluentTypeArgument rdf:type :OrderedArgument .
+:FExp rdf:type :OrderedArgument .
+:FHead rdf:type :OrderedArgument .
+:NumericLiteral rdf:type :OrderedArgument .
+
+:AssignmentOperator rdf:subclass :OrderedArgument .  #are possible in effects over fluents (decrease, increase, scaleup, assign, scaledown
+:BinnaryOperator rdf:subclass :OrderedArgument  .  #are possible in preconditions and effects over fluents (+, -, * and /)
+
+:OrderedArgument rdf:subclass :OrderedArgument .
+
+:BinaryComparison rdf:subclass :OrderedArgument . #e.g. binary comparision operators are only allowed in precondition
+
+:EffectOrderedArgument rdf:subclass :OrderedArgument .
 
 
-#Predicates defined by the user e.g. isat, carrying etc. Can appear in precondition and effect
-:UserPredicate rdf:subclass :Predicate .
-
-:BinaryComparison rdf:subclass :Predicate . #e.g. binary comparision operators are only allowed in precondition
-
-:EffectPredicate rdf:subclass :Predicate .
+:MinusFunction rdf:subclass rdf:OrderedArgument ;
+                 rdfs:label "-".
 
 
-
-#logical predicates
-:And rdf:subclass rdf:Predicate ;
+#logical operators
+:And rdf:subclass rdf:OrderedArgument ;
                  rdfs:label "and".
 
-:AndPrecondition rdf:subclass :And .
+:AndGD rdf:subclass :And .
 :AndEffect rdf:subclass :And .
 
 
-:Or rdf:subclass :Predicate ;
+:Or rdf:subclass :OrderedArgument ;
     rdfs:label "or".
 
-:Not rdf:subclass :Predicate ;
+:Not rdf:subclass :OrderedArgument ;
      rdfs:label "not".
+:NotGD rdf:subclass :Not .
+:NotEffect rdf:subclass :Not .
 
-:Imply rdf:subclass :Predicate ;
+:Imply rdf:subclass :OrderedArgument ;
        rdfs:label "imply".
 
-:Forall rdf:subclass :Predicate ;
+:Forall rdf:subclass :OrderedArgument ;
        rdfs:label "forall".
 
-:Exists rdf:subclass :Predicate ;
+:Exists rdf:subclass :OrderedArgument ;
        rdfs:exists "forall".
 
 
@@ -94,41 +107,4 @@
            rdfs:label "scale-down".
 
 #for conditional effect, allowed only in the effect
-:When rdf:type :EffectPredicate .
-
-
-
-
-
-
-# :hasPreconditionArguments rdf:type owl:ObjectProperty ;
-#                                             oslc:domain :Precondition ;
-#                                             oslc:range :UserPredicate ,  #this is the top predicate, and, forall, or just a UserPredicate e.g. is_at
-#                                                        :CommonPredicate ;
-#                                             oslc:occurs oslc:Exactly-one .
-# :hasNestedPredicates rdf:type owl:ObjectProperty ;
-#                                     oslc:domain :CommonPredicate ;
-#                                     oslc:range :CommonPredicate ,
-#                                                :UserPredicate ,
-#                                                :BinaryComparison .
-#
-#
-# :hasEffectArguments rdf:type owl:ObjectProperty ;
-#                   oslc:domain :Effect ;
-#                   oslc:range :EffectPredicate ,
-#                              :CommonPredicate ,
-#                              :AssignmentOperator ;
-#                   oslc:occurs oslc:Exectly-one .
-#
-#
-# :hasFluents rdf:type owl:ObjectProperty ; #used for operating over fluents using the assignment operators and binary comparison operators
-#           oslc:domain :AssignmentOperator ,
-#                       :BinaryComparison ,                                            :BinaryOperator ;
-#           oslc:range :Fluent ;
-#           oslc:occurs oslc:One-Or-Many .
-#
-#
-#
-#                                                                                                       #:hasPosition rdf:type owl:ObjectProperty ;
-#                                                                                                       #                    oslc:domain pp:Predicate ;
-#                                                                                                       #                    oslc:range xsd:integer .
+:When rdf:type :OrderedArgument .

@@ -5,6 +5,7 @@
 @prefix warehouse: <http://ontology.cf.ericsson.net/warehouse_ontology#> . #this should be later replaced by some ontology (ies) for robotics, or internal logistics
 @prefix pp: <http://ontology.cf.ericsson.net/planning_ontology#> .
 @prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
+@prefix wp: <http://ontology.cf.ericsson.net/warehouse_problem#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -26,7 +27,7 @@ warehouse:Object rdf:type pp:VariableType .
 _:capacity rdf:type owl:NamedIndividual ,
                     pp:FluentType ;
            rdfs:label "capacity";
-           pp:hasFluentVariable "r" ;
+           pp_oslc_shapes:hasFluentVariable "r" ;
            pp:hasFluentVariableType warehouse:Robot .
 
 _:charge_level rdf:type owl:NamedIndividual ,
