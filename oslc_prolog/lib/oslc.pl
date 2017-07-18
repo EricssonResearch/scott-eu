@@ -1,7 +1,6 @@
 :- module(oslc, [
-  register_resource/1,
-  oslc_resource/4,
-  oslc_properties/4,
+  oslc_create_resource/4,
+  oslc_resource/3,
   oslc_remove_resource/2,
   oslc_remove_properties/3,
   oslc_copy_resource/4,
@@ -27,57 +26,33 @@
 :- rdf_load_library(oslcs).
 :- rdf_load_library(oslcp).
 
-:- rdf_meta register_resource(r).
-:- rdf_meta oslc_resource(r, r, t, -).
-:- rdf_meta oslc_properties(r, t, t, -).
+:- rdf_meta oslc_create_resource(r, t, t, -).
+:- rdf_meta oslc_resource(r, t, -).
 :- rdf_meta oslc_remove_resource(r, -).
 :- rdf_meta oslc_remove_properties(r, t, -).
 :- rdf_meta oslc_copy_resource(r, r, -, -).
 :- rdf_meta oslc_copy_properties(r, r, t, -, -).
 
-:- rdf_meta oslcs_rdf_type(r).
-oslcs_rdf_type(oslcs:rdfType).
+:- rdf_meta rdf_type(r).
+rdf_type(rdf:type).
 
-:- initialization init.
+oslc_create_resource(IRI, Types, Options, Sink) :-
+  must_be(atom, IRI),
+  must_be(list(atom), Types),
+  must_be(list(ground), Options),
+  must_be(ground, Sink),
+  rdf_transaction((
+    delete_property(IRI, _, Sink),
+    rdf_type(RT),
+    marshal_property(IRI, RT, Types, _, Sink),
+    oslc_resource0(IRI, Options, Types, Sink)
+  )).
 
-init :-
-  forall(
-    rdf(X, rdf:type, oslcp:'PrologResource'),
-    register_resource(X)
-  ).
-
-%!  register_resource(:PrologResource) is det.
-%
-%   Creates and exports a predicate to operate PrologResource. The argument must
-%   point to a resource of type =|oslcp:PrologResource|=. The created predicate will
-%   have signature =|module:pred_name(IRI, Options, SourceSink)|=. Where =module=
-%   is Prolog module (=prologModule= property of PrologResource), =pred_name= is the
-%   predicate name of arity 3 (=prologPredicate= property of PrologResource). See
-%   oslc_resource/4 for explanation of the arguments.
-
-register_resource(PrologResource) :-
-  must_be(atom, PrologResource),
-  once((
-    rdf(PrologResource, oslcp:prologModule, ModuleName^^xsd:string),
-    rdf(PrologResource, oslcp:prologPredicate, PredicateName^^xsd:string),
-    rdf(PrologResource, oslc:resourceShape, ResourceShape)
-  )),
-  atom_string(AModuleName, ModuleName),
-  atom_string(APredicateName, PredicateName),
-  P =.. [APredicateName, Spec, Options, SourceSink],
-  retractall(AModuleName:P),
-  assertz((
-    AModuleName:P :-
-      rdf_global_id(Spec, IRI),
-      oslc_resource(IRI, ResourceShape, Options, SourceSink)
-  )),
-  AModuleName:export(APredicateName/3).
-
-%!  oslc_resource(:IRI, :ResourceShape, ?Options, ?SourceSink) is det.
+%!  oslc_resource(:IRI, ?Options, ?SourceSink) is det.
 %
 %   Reads and/or writes properties of an OSLC resource IRI, from/to Source/Sink.
 %   The shape of the OSLC resource must be provided in ResourceShape. The Options
-%   is a list of properties of the resource in form of =|Key(Value)|= or =|Key=Value|=.
+%   is a list of properties of the resource in form of =|Key=Value|=.
 %   The =Key= must correspond to the =oslc:name= property of the property's shape.
 %   If =Value= is a variable, it will be unified with the value of the property =Key=
 %   unmashalled from the SourceSink. If =Value= is grounded it will be set as a value of
@@ -87,52 +62,39 @@ register_resource(PrologResource) :-
 %   triple store implementations of SourceSink use _rdf(Graph)_, where =Graph=
 %   is a named graph in the triple store.
 
-oslc_resource(IRI, ResourceShape, Options, SourceSink) :-
+oslc_resource(IRI, Options, SourceSink) :-
   must_be(atom, IRI),
-  must_be(atom, ResourceShape),
+  must_be(list, Options),
   must_be(ground, SourceSink),
   rdf_transaction((
-    oslcs_rdf_type(TypePropertyResource),
-    findall(R, rdf(ResourceShape, oslc:describes, R), ResourceList),
-    sort(ResourceList, ResourceSet),
-    once((
-      read_property(IRI, TypePropertyResource, ITypes, _, SourceSink),
-      sort(ITypes, ResourceSet)
-    ; oslc_remove_properties0(IRI, [TypePropertyResource], SourceSink),
-      write_property(IRI, TypePropertyResource, ResourceSet, _, SourceSink)
-    )),
-    findall(P, rdf(ResourceShape, oslc:property, P), Properties),
-    oslc_properties0(IRI, Properties, Options, SourceSink)
+    rdf_type(RT),
+    unmarshal_property(IRI, RT, Types, _, SourceSink),
+    oslc_resource0(IRI, Options, Types, SourceSink)
   )).
 
-% ------------ TRAVERSE PROPERTIES
+oslc_resource0(_, [], _, _) :- !.
 
-oslc_properties(IRI, PropertyResources, Options, SourceSink) :-
-  must_be(atom, IRI),
-  must_be(ground, PropertyResources),
-  must_be(ground, SourceSink),
-  rdf_transaction((
-    oslc_properties0(IRI, PropertyResources, Options, SourceSink)
-  )).
-
-oslc_properties0(_, [], _, _) :- !.
-
-oslc_properties0(IRI, [PropertyResource|T], Options, SourceSink) :-
-  once(rdf(PropertyResource, oslc:name, Property^^xsd:string)),
-  atom_string(AProperty, Property),
-  ( once((
-      H =.. [AProperty, Value], selectchk(H, Options, RemainingOptions)
-    ; H = (AProperty = Value), selectchk(H, Options, RemainingOptions)
-    ))
-  -> ( var(Value)
-     -> read_property(IRI, PropertyResource, _, Value, SourceSink)
-     ; oslc_remove_properties0(IRI, [PropertyResource], SourceSink),
-       write_property(IRI, PropertyResource, _, Value, SourceSink)
-     ),
-     oslc_properties0(IRI, T, RemainingOptions, SourceSink)
-  ; read_property(IRI, PropertyResource, _, _, SourceSink),
-    oslc_properties0(IRI, T, Options, SourceSink)
-  ).
+oslc_resource0(IRI, [Property=Value|T], Types, SourceSink) :-
+  atom_string(Property, SProperty),
+  once((
+    member(Type, Types),
+    % TODO: optimize this search
+    rdf(ResourceShape, oslc:describes, Type),
+    rdf(ResourceShape, oslc:property, PropertyResource),
+    rdf(PropertyResource, oslc:name, SProperty^^xsd:string),
+    ( var(Value)
+    -> read_property(IRI, PropertyResource, _, Value, SourceSink)
+    ; oslc_remove_properties0(IRI, [PropertyResource], SourceSink),
+      write_property(IRI, PropertyResource, _, Value, SourceSink)
+    )
+  ) ; (
+    ( var(Value)
+    -> unmarshal_property(IRI, Property, Value, _, SourceSink)
+    ; delete_property(IRI, Property, SourceSink),
+      marshal_property(IRI, Property, Value, _, SourceSink)
+    )
+  )),
+  oslc_resource0(IRI, T, Types, SourceSink).
 
 % ------------ READ PROPERTY
 
@@ -162,18 +124,17 @@ oslc_remove_resource(IRI, SourceSink) :-
   )).
 
 oslc_remove_resource0(IRI, SourceSink) :-
-  oslcs_rdf_type(TypePropertyResource),
-  once(rdf(TypePropertyResource, oslc:propertyDefinition, PropertyDefinition)),
-  unmarshal_property(IRI, PropertyDefinition, ITypes, _, SourceSink),
+  rdf_type(RT),
+  unmarshal_property(IRI, RT, Types, _, SourceSink),
   forall((
-    member(Type, ITypes),
+    member(Type, Types),
     rdf(ResourceShape, rdf:type, oslc:'ResourceShape'),
     rdf(ResourceShape, oslc:describes, Type)
   ), (
     findall(P, rdf(ResourceShape, oslc:property, P), Properties),
     oslc_remove_properties0(IRI, Properties, SourceSink)
   )),
-  delete_property(IRI, PropertyDefinition, SourceSink).
+  delete_property(IRI, RT, SourceSink).
 
 % ------------ REMOVE PROPERTIES RECURSIVELY
 
@@ -212,11 +173,11 @@ oslc_copy_resource(IRIFrom, IRITo, Source, Sink) :-
   )).
 
 oslc_copy_resource0(IRIFrom, IRITo, Source, Sink) :-
-  oslcs_rdf_type(TypePropertyResource),
-  oslc_copy_properties0(IRIFrom, IRITo, [TypePropertyResource], Source, Sink),
-  read_property(IRIFrom, TypePropertyResource, ITypes, _, Source),
+  rdf_type(RT),
+  unmarshal_property(IRIFrom, RT, Types, _, Source),
+  marshal_property(IRITo, RT, Types, _, Sink),
   forall((
-    member(Type, ITypes),
+    member(Type, Types),
     rdf(ResourceShape, rdf:type, oslc:'ResourceShape'),
     rdf(ResourceShape, oslc:describes, Type)
   ), (
