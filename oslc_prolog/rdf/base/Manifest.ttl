@@ -3,6 +3,7 @@
 @prefix	oslc: <http://open-services.net/ns/core#> .
 @prefix	oslcs: <http://ontology.cf.ericsson.net/oslc_shapes#> .
 @prefix	oslcp: <http://ontology.cf.ericsson.net/oslc_prolog#> .
+@prefix	oslct: <http://ontology.cf.ericsson.net/oslc_test#> .
 
 <oslc>
 	a lib:Schema ;
@@ -24,3 +25,10 @@
 	dcterms:title "Prolog names of OSLC resources" ;
 	lib:source oslcp: ;
 	lib:schema <oslc_prolog.ttl> .
+
+<oslct>
+	a lib:Schema ;
+	a lib:Virtual ;
+	dcterms:title "OSLC Service Provider Test" ;
+	lib:source oslct: ;
+	lib:schema <oslc_test.ttl> .

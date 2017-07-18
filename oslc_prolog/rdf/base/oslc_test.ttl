@@ -1,0 +1,52 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix	dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix	oslc: <http://open-services.net/ns/core#> .
+@prefix	oslcs: <http://ontology.cf.ericsson.net/oslc_shapes#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix	: <http://ontology.cf.ericsson.net/oslc_test#> .
+@base	<http://ontology.cf.ericsson.net/oslc_test> .
+
+
+
+
+:leoSPC
+  a oslc:ServiceProviderCatalog ;
+  dcterms:title "Leo's Service Provider Catalog"^^rdf:XMLLiteral ;
+  dcterms:publisher [ a oslc:Publisher ;
+                      dcterms:title "Leo"^^rdf:XMLLiteral ;
+                      dcterms:identifier "1122-33"^^xsd:string ;
+                    ] ;
+  oslc:serviceProvider :leoSP.
+
+:leoSP
+  a oslc:ServiceProvider ;
+  dcterms:title "Leo's Service Provider"^^rdf:XMLLiteral ;
+  oslc:service [ a oslc:Service ;
+                 oslc:domain <http://leo.com/domain> ;
+               ] ;
+  oslc:action :leoSP .
+
+
+:clockServiceShape
+  a oslc:ResourceShape ;
+  dcterms:title "Service Provider Catalog Shape"^^rdf:XMLLiteral ;
+  oslc:describes oslc:ServiceProviderCatalog ;
+  oslc:property [ a oslc:Property ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral ;
+                  oslc:valueType xsd:boolean
+                ] ,
+                [ a oslc:Property ;
+                  oslc:name "domain"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:propertyDefinition oslc:domain ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ;
+  oslc:action :creationAction .
