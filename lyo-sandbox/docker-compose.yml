@@ -1,5 +1,13 @@
 version: '2'
 services:
+  warehouse-fuseki:
+    image: stain/jena-fuseki
+    ports:
+     - "3030:3030"
+    volumes_from:
+     - warehouse-fuseki-config
+  warehouse-fuseki-config:
+    build: ./fuseki
   sandbox-warehouse:
     build: ./sandbox-warehouse-webapp
     ports:
