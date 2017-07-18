@@ -163,7 +163,8 @@ oslc_remove_resource(IRI, SourceSink) :-
 
 oslc_remove_resource0(IRI, SourceSink) :-
   oslcs_rdf_type(TypePropertyResource),
-  read_property(IRI, TypePropertyResource, ITypes, _, SourceSink),
+  once(rdf(TypePropertyResource, oslc:propertyDefinition, PropertyDefinition)),
+  unmarshal_property(IRI, PropertyDefinition, ITypes, _, SourceSink),
   forall((
     member(Type, ITypes),
     rdf(ResourceShape, rdf:type, oslc:'ResourceShape'),
@@ -172,7 +173,6 @@ oslc_remove_resource0(IRI, SourceSink) :-
     findall(P, rdf(ResourceShape, oslc:property, P), Properties),
     oslc_remove_properties0(IRI, Properties, SourceSink)
   )),
-  once(rdf(TypePropertyResource, oslc:propertyDefinition, PropertyDefinition)),
   delete_property(IRI, PropertyDefinition, SourceSink).
 
 % ------------ REMOVE PROPERTIES RECURSIVELY
@@ -188,15 +188,15 @@ oslc_remove_properties(IRI, PropertyResources, SourceSink) :-
 oslc_remove_properties0(_, [], _) :- !.
 
 oslc_remove_properties0(IRI, [PropertyResource|T], SourceSink) :-
+  once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
   ( once(rdf(PropertyResource, oslc:valueType, oslc:'LocalResource'))
-  -> read_property(IRI, PropertyResource, IValues, _, SourceSink),
+  -> unmarshal_property(IRI, PropertyDefinition, IValues, _, SourceSink),
      forall(
        member(Bnode, IValues),
        oslc_remove_resource0(Bnode, SourceSink)
      )
   ; true
   ),
-  once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
   delete_property(IRI, PropertyDefinition, SourceSink),
   oslc_remove_properties0(IRI, T, SourceSink).
 

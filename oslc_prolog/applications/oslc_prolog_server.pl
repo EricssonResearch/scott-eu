@@ -45,7 +45,8 @@ dispatch(Request, ServicePath) :-
   rdf_current_prefix(APrefix, Namespace),
   atomics_to_string(RemainingParts, "/", ResourceName),
   atom_concat(Namespace, ResourceName, Resource), % compute served RDF resource URI
-  setup_call_cleanup(make_graph(Resource, Graph), ( % create and populate new temporary RDF graph
+  setup_call_cleanup(make_graph(Graph), ( % create a new temporary RDF graph
+    oslc_copy_resource(Resource, Resource, rdf, rdf(Graph)),
     rdf_graph_property(Graph, triples(Triples)),
     Triples > 0,
     select_content_type(Request, ContentType), % compute content-type to serve based on request
@@ -61,15 +62,14 @@ dispatch(Request, ServicePath) :-
 remove_blanks([], []) :- !.
 remove_blanks([A|T], R) :-
   (A == ""
-  -> remove_empty(T, R)
+  -> remove_blanks(T, R)
   ; R = [A|T]
   ).
 
-make_graph(Resource, Graph) :-
+make_graph(Graph) :-
   uuid(Graph), % generate unique identifier for the temporary RDF graph
   rdf_create_graph(Graph),
-  rdf_persistency(Graph, false), % do not persist (keep only in RAM)
-  oslc_copy_resource(Resource, Resource, rdf, rdf(Graph)).
+  rdf_persistency(Graph, false). % do not persist (keep only in RAM)
 
 uuid(Id) :-
   Max is 1<<128,
