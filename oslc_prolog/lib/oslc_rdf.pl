@@ -13,7 +13,7 @@ oslc:marshal_property(IRI, PropertyDefinition, [V|T], Type, rdf(Graph)) :-
   must_be(atom, IRI),
   must_be(atom, PropertyDefinition),
   literal_types(LiteralTypes),
-  ( member(Type, LiteralTypes)
+  ( nonvar(Type), member(Type, LiteralTypes)
   -> rdf_assert(IRI, PropertyDefinition, V^^Type, Graph)
   ; rdf_assert(IRI, PropertyDefinition, V, Graph)
   ),
@@ -57,5 +57,4 @@ oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
 oslc:delete_property(IRI, PropertyDefinition, rdf(Graph)) :-
   atom(Graph),
   must_be(atom, IRI),
-  must_be(atom, PropertyDefinition),
   rdf_retractall(IRI, PropertyDefinition, _, Graph).

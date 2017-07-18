@@ -18,28 +18,45 @@
                       dcterms:title "Leo"^^rdf:XMLLiteral ;
                       dcterms:identifier "1122-33"^^xsd:string ;
                     ] ;
-  oslc:serviceProvider :leoSP.
+  oslc:serviceProvider :leoSP .
 
 :leoSP
   a oslc:ServiceProvider ;
   dcterms:title "Leo's Service Provider"^^rdf:XMLLiteral ;
   oslc:service [ a oslc:Service ;
                  oslc:domain <http://leo.com/domain> ;
-               ] ;
-  oslc:action :leoSP .
+               ] .
+
+:leoQ
+  a :MyCatalog ;
+  a oslc:Resource ;
+  dcterms:title "Leo's Catalog"^^rdf:XMLLiteral ;
+  oslc:action <http://leo.com/action> .
+
+
+:actionShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:Resource ;
+  oslc:property [ a oslc:Property ;
+                  oslc:name "action"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:propertyDefinition oslc:action ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
 
 
 :clockServiceShape
   a oslc:ResourceShape ;
   dcterms:title "Service Provider Catalog Shape"^^rdf:XMLLiteral ;
-  oslc:describes oslc:ServiceProviderCatalog ;
+  oslc:describes :MyCatalog ;
   oslc:property [ a oslc:Property ;
                   oslc:name "title"^^xsd:string ;
-                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:occurs oslc:Exactly-one ;
                   oslc:propertyDefinition dcterms:title ;
                   oslc:readOnly true ;
                   oslc:valueType rdf:XMLLiteral ;
-                  oslc:valueType xsd:boolean
                 ] ,
                 [ a oslc:Property ;
                   oslc:name "domain"^^xsd:string ;
