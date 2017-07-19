@@ -43,7 +43,7 @@
                   oslc:propertyDefinition oslc:action ;
                   oslc:readOnly true ;
                   oslc:valueType oslc:Resource ;
-                  oslc:representation oslc:Reference
+                  oslc:representation oslc:Inline
                 ] .
 
 

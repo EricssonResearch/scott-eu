@@ -20,7 +20,6 @@
 # ======== Properties
 
 # TODO:
-#oslc:instanceShape
 #oslc:shortTitle
 #oslc:shortId
 #oslc:discussedBy
@@ -606,6 +605,15 @@
   oslc:occurs oslc:Zero-or-one ;
   oslc:readOnly true ;
   oslc:valueType xsd:integer .
+
+:oslcInstanceShape
+  a oslc:Property ;
+  oslc:name "instanceShape"^^xsd:string ;
+  oslc:propertyDefinition oslc:instanceShape ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference ;
+  oslc:range oslc:ResourceShape .
 
 # ======== Service Provider Catalog
 
