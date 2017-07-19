@@ -15,30 +15,31 @@ assertion(Actual, Expected) :-
   assertion(Actual == Expected).
 
 test(service_provider_catalog) :-
-  mytest.
-
-mytest :-
   rdf_create_bnode(Publisher),
 
-  publisher(Publisher, [ title="publisher",
-                         label="publabel",
-                         identifier="id11",
-                         icon=pubicon
-                       ], rdf(oslc_test)),
+  create_resource(Publisher, [oslc:'Publisher'],
+                  [ title = "publisher",
+                    label = "publabel",
+                    identifier = "id11",
+                    icon = pubicon
+                  ], rdf(oslc_test)),
 
-  service_provider_catalog(test:s1, [ title("service provider catalog"),
-                                      description = "o3",
-                                      publisher = Publisher,
-                                      serviceProvider = [sp1,sp2]
-                                    ], rdf(oslc_test)),
+  create_resource(test:s1, [oslc:'ServiceProviderCatalog'],
+                  [ title = "service provider catalog",
+                    description = "o3",
+                    publisher = Publisher,
+                    serviceProvider = [sp1,sp2]
+                  ], rdf(oslc_test)),
 
-  rdf(test:s1, rdf:type, oslc:'ServiceProviderCatalog'),
+  rdf(test:s1, rdf:type, SPC),
+  rdf_global_id(oslc:'ServiceProviderCatalog', OSPC),
+  assertion(SPC, OSPC),
 
-  service_provider_catalog(test:s1, [ publisher(A),
-                                      description(B),
-                                      title = C,
-                                      serviceProvider = D
-                                    ], rdf(oslc_test)),
+  oslc_resource(test:s1, [ publisher = A,
+                           description = B,
+                           title = C,
+                           serviceProvider = D
+                         ], rdf(oslc_test)),
 
   assertion(C == "service provider catalog"),
   assertion(B == "o3"),

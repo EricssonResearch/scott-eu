@@ -1,6 +1,8 @@
 :- module(oslc_shape, [
   check_occurs/4,
-  check_value_type/4
+  check_value_type/4,
+  literal_types/1,
+  is_literal_type/1
 ]).
 
 :- use_module(library(semweb/rdf_library)).
@@ -12,6 +14,8 @@
 :- rdf_meta format_value(r, -, -).
 :- rdf_meta check_value_type(r, r, -, r).
 :- rdf_meta check_value_type(r, -).
+:- rdf_meta literal_types(t).
+:- rdf_meta is_literal_type(r).
 
 % ------------ CHECK PROPERTY OCCURS
 
@@ -79,3 +83,19 @@ check_value_type(xsd:string, Value) :-
 
 check_value_type(rdf:'XMLLiteral', Value) :-
   string(Value).
+
+% ------------ LITERAL TYPES
+
+literal_types([ rdf:'XMLLiteral',
+                xsd:string,
+                xsd:integer,
+                xsd:float,
+                xsd:double,
+                xsd:decimal,
+                xsd:dateTime,
+                xsd:boolean
+              ]).
+
+is_literal_type(Type) :-
+  literal_types(LT),
+  member(Type, LT).
