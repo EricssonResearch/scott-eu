@@ -4,7 +4,6 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
 @prefix	oslcs: <http://ontology.cf.ericsson.net/oslc_shapes#> .
-@prefix	oslcp: <http://ontology.cf.ericsson.net/oslc_prolog#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix	: <http://ontology.cf.ericsson.net/oslc_test#> .
 @base	<http://ontology.cf.ericsson.net/oslc_test> .

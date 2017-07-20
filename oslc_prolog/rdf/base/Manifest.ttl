@@ -19,13 +19,6 @@
 	lib:source oslcs: ;
 	lib:schema <oslc_shapes.ttl> .
 
-<oslcp>
-	a lib:Schema ;
-	a lib:Virtual ;
-	dcterms:title "Prolog names of OSLC resources" ;
-	lib:source oslcp: ;
-	lib:schema <oslc_prolog.ttl> .
-
 <oslct>
 	a lib:Schema ;
 	a lib:Virtual ;

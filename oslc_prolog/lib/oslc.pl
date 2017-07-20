@@ -32,17 +32,14 @@
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc_shape)).
-:- use_module(library(oslc_rdf)).
 :- use_module(library(oslc_error)).
 
 :- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
 :- rdf_register_prefix(oslcs, 'http://ontology.cf.ericsson.net/oslc_shapes#').
-:- rdf_register_prefix(oslcp, 'http://ontology.cf.ericsson.net/oslc_prolog#').
 
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
 :- rdf_load_library(oslcs).
-:- rdf_load_library(oslcp).
 
 :- rdf_meta create_resource(r, t, t, -).
 :- rdf_meta applicable_shapes(t, -).
@@ -165,6 +162,13 @@ oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
   )),
   oslc_resource0(IRI, Shapes, RemainingProperties, SourceSink).
 
+% ------------ CHECK PROPERTY
+
+check_property(IRI, PropertyResource, Type, InternalValue, Value) :-
+  check_occurs(IRI, PropertyResource, InternalValue, Value),
+  once(rdf(PropertyResource, oslc:valueType, Type)),
+  check_value_type(IRI, PropertyResource, InternalValue, Type).
+
 % ------------ READ PROPERTY
 
 read_property(IRI, PropertyResource, InternalValue, Value, Source) :-
@@ -172,10 +176,11 @@ read_property(IRI, PropertyResource, InternalValue, Value, Source) :-
   unmarshal_list_property(IRI, PropertyDefinition, InternalValue, _, Source),
   check_property(IRI, PropertyResource, _, InternalValue, Value).
 
-check_property(IRI, PropertyResource, Type, InternalValue, Value) :-
-  check_occurs(IRI, PropertyResource, InternalValue, Value),
-  once(rdf(PropertyResource, oslc:valueType, Type)),
-  check_value_type(IRI, PropertyResource, InternalValue, Type).
+unmarshal_property(_, _, _, _, []) :- !.
+
+unmarshal_property(IRI, PropertyDefinition, V, Type, [Source|OtherSources]) :-
+  unmarshal_property(IRI, PropertyDefinition, V, Type, Source),
+  unmarshal_property(IRI, PropertyDefinition, V, Type, OtherSources).
 
 unmarshal_list_property(IRI, PropertyDefinition, Values, Type, Source) :-
   findall(V,
@@ -185,8 +190,8 @@ unmarshal_list_property(IRI, PropertyDefinition, Values, Type, Source) :-
 unmarshal_some_property(IRI, PropertyDefinition, Values, Type, Source) :-
   unmarshal_list_property(IRI, PropertyDefinition, Object, Type, Source),
   once((
-    Object == [Values]
-  ; Object == Values
+    Object = [Values]
+  ; Object = Values
   )).
 
 % ------------ WRITE PROPERTY
@@ -195,6 +200,12 @@ write_property(IRI, PropertyResource, InternalValue, Value, Sink) :-
   check_property(IRI, PropertyResource, Type, InternalValue, Value),
   once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
   marshal_list_property(IRI, PropertyDefinition, InternalValue, Type, Sink).
+
+marshal_property(_, _, _, _, []) :- !.
+
+marshal_property(IRI, PropertyDefinition, V, Type, [Sink|OtherSinks]) :-
+  marshal_property(IRI, PropertyDefinition, V, Type, Sink),
+  marshal_property(IRI, PropertyDefinition, V, Type, OtherSinks).
 
 marshal_list_property(_, _, [], _, _) :- !.
 
@@ -264,7 +275,7 @@ delete_resource(IRI, Sink) :-
   must_be(atom, IRI),
   must_be(ground, Sink),
   rdf_transaction((
-    delete_resource0(IRI, Sink)
+    ignore(delete_resource0(IRI, Sink))
   )).
 
 delete_resource0(IRI, Sink) :-
@@ -272,6 +283,6 @@ delete_resource0(IRI, Sink) :-
     unmarshal_property(IRI, _, Value, _, Sink),
     rdf_is_bnode(Value)
   ),
-    delete_resource(Value, Sink)
+    delete_resource0(Value, Sink)
   ),
   delete_property(IRI, _, Sink).
