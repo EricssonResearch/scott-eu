@@ -39,14 +39,14 @@ dispatcher(Request) :-
 
 dispatch(Request, ServicePath) :-
   current_output(Out),
-  split_string(ServicePath, "/", "", Parts),
+  split_string(ServicePath, ":", "", Parts),
   remove_blanks(Parts, [Prefix|RemainingParts]),
   atom_string(APrefix, Prefix),
   rdf_current_prefix(APrefix, Namespace),
-  atomics_to_string(RemainingParts, "/", ResourceName),
+  atomics_to_string(RemainingParts, ":", ResourceName),
   atom_concat(Namespace, ResourceName, Resource), % compute served RDF resource URI
   setup_call_cleanup(make_graph(Graph), ( % create a new temporary RDF graph
-    oslc_copy_resource(Resource, Resource, rdf, rdf(Graph)),
+    copy_resource(Resource, Resource, rdf, rdf(Graph), [inline(rdf)]),
     rdf_graph_property(Graph, triples(Triples)),
     Triples > 0,
     select_content_type(Request, ContentType), % compute content-type to serve based on request

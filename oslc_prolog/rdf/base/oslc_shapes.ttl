@@ -5,18 +5,6 @@
 @prefix	: <http://ontology.cf.ericsson.net/oslc_shapes#> .
 @base	<http://ontology.cf.ericsson.net/oslc_shapes> .
 
-
-# ======== Special Property
-
-:rdfType
-  a oslc:Property ;
-  oslc:name "type"^^xsd:string ;
-  oslc:propertyDefinition rdf:type ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
 # ======== Properties
 
 # TODO:
@@ -25,8 +13,6 @@
 #oslc:discussedBy
 #oslc:modifiedBy
 #oslc:results
-#oslc:futureAction
-#oslc:executes
 
 :dctermsTitleZO
   a oslc:Property ;
@@ -614,6 +600,22 @@
   oslc:valueType oslc:Resource ;
   oslc:representation oslc:Reference ;
   oslc:range oslc:ResourceShape .
+
+:oslcFutureAction
+  a oslc:Property ;
+  oslc:name "futureAction"^^xsd:string ;
+  oslc:propertyDefinition oslc:futureAction ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Reference .
+
+:oslcExecutes
+  a oslc:Property ;
+  oslc:name "executes"^^xsd:string ;
+  oslc:propertyDefinition oslc:executes ;
+  oslc:occurs oslc:Zero-or-one ;
+  oslc:valueType oslc:AnyResource ;
+  oslc:representation oslc:Either .
 
 # ======== Service Provider Catalog
 
