@@ -102,4 +102,4 @@ save_graph(Out, Graph, rdf) :-
   rdf_save(stream(Out), [graph(Graph)]).
 
 save_graph(Out, Graph, turtle) :-
-  rdf_save_turtle(Out, [graph(Graph)]).
+  rdf_save_turtle(Out, [graph(Graph), comment(false), silent(true), tab_distance(0)]).

@@ -8,8 +8,7 @@
 
 :- rdf_meta assertion(r,t).
 
-:- rdf_register_prefix(test, 'http://ontology.cf.ericsson.net/test#').
-:- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
+:- rdf_register_prefix(test, 'http://ontology.cf.ericsson.net/test/').
 
 assertion(Actual, Expected) :-
   assertion(Actual == Expected).

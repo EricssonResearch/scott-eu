@@ -2,7 +2,7 @@
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
-@prefix	: <http://ontology.cf.ericsson.net/oslc_shapes#> .
+@prefix	: <http://ontology.cf.ericsson.net/oslc_shapes/> .
 @base	<http://ontology.cf.ericsson.net/oslc_shapes> .
 
 # ======== Properties

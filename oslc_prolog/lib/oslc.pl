@@ -2,6 +2,7 @@
   create_resource/4,
   applicable_shapes/2,
   create_resource/5,
+  oslc_resource/2,
   oslc_resource/3,
   applicable_shapes/3,
   copy_resource/5,
@@ -34,26 +35,20 @@
 :- use_module(library(oslc_shape)).
 :- use_module(library(oslc_error)).
 
-:- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
-:- rdf_register_prefix(oslcs, 'http://ontology.cf.ericsson.net/oslc_shapes#').
-
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
-:- rdf_load_library(oslcs).
 
 :- rdf_meta create_resource(r, t, t, -).
 :- rdf_meta applicable_shapes(t, -).
 :- rdf_meta create_resource(r, t, t, t, -).
+:- rdf_meta oslc_resource(r, t).
 :- rdf_meta oslc_resource(r, t, -).
 :- rdf_meta applicable_shapes(r, -, -).
 :- rdf_meta copy_resource(r, r, -, -, -).
 :- rdf_meta delete_resource(r, -).
 
 :- rdf_meta rdfType(r).
-:- rdf_meta oslcInstanceShape(r).
-
 rdfType(rdf:type).
-oslcInstanceShape(oslcs:oslcInstanceShape).
 
 %!  create_resource(+IRI, +Types, +Properties, +Sink) is det.
 %
@@ -100,6 +95,27 @@ applicable_shapes(Types, Shapes) :-
     ; rdf(ResourceShape, oslc:describes, Type)
     ))
   ), Shapes).
+
+%!  oslc_resource(+IRI, +Properties) is det.
+%
+%   Similar to oslc_resource/3, but tries to autodetect named graph
+%   =Graph= where resource IRI is defined and use =|rdf(Graph)|=
+%   for _SourceSink_.
+
+oslc_resource(IRI, Properties) :-
+  autodetect_resource_graph(IRI, Graph),
+  oslc_resource(IRI, Properties, rdf(Graph)).
+
+autodetect_resource_graph(IRI, Graph) :-
+  once((
+    findall(G, rdf(IRI, rdf:type, _, G), Graphs),
+    sort(Graphs, SortedGraphs),
+    [Graph] = SortedGraphs
+  ; findall(G, rdf(IRI, _, _, G), Graphs),
+    sort(Graphs, SortedGraphs),
+    [Graph] = SortedGraphs
+  ; oslc_error("Could not reliably autodetect source of ~w", [IRI])
+  )).
 
 %!  oslc_resource(+IRI, +Properties, +SourceSink) is det.
 %

@@ -2,13 +2,15 @@
   check_occurs/4,
   check_value_type/4,
   literal_types/1,
-  is_literal_type/1
+  is_literal_type/1,
+  oslcInstanceShape/1
 ]).
 
 :- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc_error)).
 
-:- rdf_register_prefix(oslc, 'http://open-services.net/ns/core#').
+:- rdf_attach_library(oslc_prolog(rdf)).
+:- rdf_load_library(oslc_shapes).
 
 :- rdf_meta check_occurs(r, r, -, -).
 :- rdf_meta format_value(r, -, -).
@@ -16,6 +18,9 @@
 :- rdf_meta check_value_type(r, -).
 :- rdf_meta literal_types(t).
 :- rdf_meta is_literal_type(r).
+
+:- rdf_meta oslcInstanceShape(r).
+oslcInstanceShape(oslc_shapes:oslcInstanceShape).
 
 % ------------ CHECK PROPERTY OCCURS
 
