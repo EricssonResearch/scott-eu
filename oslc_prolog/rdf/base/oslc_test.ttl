@@ -3,10 +3,8 @@
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
-@prefix	oslcs: <http://ontology.cf.ericsson.net/oslc_shapes#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix	: <http://ontology.cf.ericsson.net/oslc_test#> .
-@base	<http://ontology.cf.ericsson.net/oslc_test> .
+@prefix	oslcs: <http://ontology.cf.ericsson.net/oslc_shapes/> .
+@prefix	: <http://ontology.cf.ericsson.net/oslc_test/> .
 
 
 :leoSPC
@@ -25,45 +23,33 @@
   dcterms:title "Leo's Service Provider"^^rdf:XMLLiteral ;
   oslc:service [ a oslc:Service ;
                  oslc:domain <http://leo.com/domain> ;
+                 oslc:creationFactory :leoCF
                ] .
 
-:leoQ
-  a :MyCatalog ;
-  oslc:instanceShape :clockServiceShape ;
-  dcterms:title "Leo's Catalog"^^rdf:XMLLiteral ;
-  oslc:action <http://leo.com/action> .
+:leoCF
+  a oslc:CreationFactory ;
+  oslc:instanceShape oslcs:creationFactoryShape ;
+  dcterms:title "Leo's Creation Factory"^^rdf:XMLLiteral ;
+  oslc:resourceShape :leoResourceShape .
+
+:leoQC
+  a oslc:QueryCapability ;
+  oslc:instanceShape oslcs:queryCapabilityShape ;
+  dcterms:title "Leo's Query Capability"^^rdf:XMLLiteral ;
+  oslc:resourceShape :leoResourceShape .
 
 
-:actionShape
+:leoResourceShape
   a oslc:ResourceShape ;
-  oslc:describes oslc:Resource ;
-  oslc:property [ a oslc:Property ;
-                  oslc:name "action"^^xsd:string ;
-                  oslc:occurs oslc:Exactly-one ;
-                  oslc:propertyDefinition oslc:action ;
-                  oslc:readOnly true ;
-                  oslc:valueType oslc:Resource ;
-                  oslc:representation oslc:Inline
-                ] .
-
-
-:clockServiceShape
-  a oslc:ResourceShape ;
-  dcterms:title "Service Provider Catalog Shape"^^rdf:XMLLiteral ;
-  oslc:describes :MyCatalog ;
+  oslc:instanceShape oslcs:resourceShapeShape ;
+  oslc:describes :leoResource ;
   oslc:property [ a oslc:Property ;
                   oslc:name "title"^^xsd:string ;
-                  oslc:occurs oslc:Exactly-one ;
                   oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Zero-or-one ;
                   oslc:readOnly true ;
-                  oslc:valueType rdf:XMLLiteral ;
-                ] ,
-                [ a oslc:Property ;
-                  oslc:name "domain"^^xsd:string ;
-                  oslc:occurs oslc:Zero-or-many ;
-                  oslc:propertyDefinition oslc:domain ;
-                  oslc:readOnly true ;
-                  oslc:valueType oslc:Resource ;
-                  oslc:representation oslc:Reference
-                ] ;
-  oslc:action :creationAction .
+                  oslc:valueType rdf:XMLLiteral
+                ] .
+
+:leoResource
+  a rdfs:Class .
