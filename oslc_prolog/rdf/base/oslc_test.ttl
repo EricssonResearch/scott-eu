@@ -4,15 +4,15 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
 @prefix	oslcs: <http://ontology.cf.ericsson.net/oslc_shapes#> .
+@prefix	oslcp: <http://ontology.cf.ericsson.net/oslc_prolog#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix	: <http://ontology.cf.ericsson.net/oslc_test#> .
 @base	<http://ontology.cf.ericsson.net/oslc_test> .
 
 
-
-
 :leoSPC
   a oslc:ServiceProviderCatalog ;
+  oslc:instanceShape oslcs:serviceProviderCatalogShape ;
   dcterms:title "Leo's Service Provider Catalog"^^rdf:XMLLiteral ;
   dcterms:publisher [ a oslc:Publisher ;
                       dcterms:title "Leo"^^rdf:XMLLiteral ;
@@ -22,6 +22,7 @@
 
 :leoSP
   a oslc:ServiceProvider ;
+  oslc:instanceShape oslcs:serviceProviderShape ;
   dcterms:title "Leo's Service Provider"^^rdf:XMLLiteral ;
   oslc:service [ a oslc:Service ;
                  oslc:domain <http://leo.com/domain> ;
@@ -29,7 +30,7 @@
 
 :leoQ
   a :MyCatalog ;
-  a oslc:Resource ;
+  oslc:instanceShape :clockServiceShape ;
   dcterms:title "Leo's Catalog"^^rdf:XMLLiteral ;
   oslc:action <http://leo.com/action> .
 

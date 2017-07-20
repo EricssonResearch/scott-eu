@@ -149,7 +149,7 @@ oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
   once((
     member(ResourceShape, Shapes),
     rdf(ResourceShape, oslc:property, PropertyResource),
-    rdf(PropertyResource, oslc:name, SProperty^^xsd:string),
+    once(rdf(PropertyResource, oslc:name, SProperty^^xsd:string)),
     ( var(Value)
     -> read_property(IRI, PropertyResource, _, Value, SourceSink)
     ; once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
