@@ -36,21 +36,25 @@ dispatcher(Request) :-
     -> split_string(ServicePath, "/", "/", Parts),
        strings_to_atoms(Parts, [Prefix|ResourceSegments]),
        rdf_current_prefix(Prefix, _),
-       setup_call_cleanup(make_graph(GraphOut), ( % create a new temporary RDF graph
-         dispatch(Prefix:ResourceSegments, Request, _GraphIn, GraphOut),
-         rdf_graph_property(GraphOut, triples(Triples)),
-         ( Triples > 0
-         -> format('Status: 200~n'),
-            format('Content-type: ~w; charset=utf-8~n~n', [ContentType]),
-            serializer(ContentType, Serializer), % select proper serializer
-            current_output(Out),
-            save_graph(Out, GraphOut, Serializer) % serialize temporary RDF graph to the response
-         ; true
-         )
-       ), rdf_unload_graph(GraphOut)) % regardless of the result remove temporary RDF graph
-    ; format('Status: 415~n~n') % requested content-type cannot be served
+       member(method(Method), Request),
+       ( member(Method, [get,post,put,delete])
+       -> setup_call_cleanup(make_graph(GraphOut), ( % create a new temporary RDF graph
+            dispatch(Prefix:ResourceSegments, Request, _GraphIn, GraphOut),
+            rdf_graph_property(GraphOut, triples(Triples)),
+            ( Triples > 0
+            -> format('Status: 200~n'),
+              format('Content-type: ~w; charset=utf-8~n~n', [ContentType]),
+              serializer(ContentType, Serializer), % select proper serializer
+              current_output(Out),
+              save_graph(Out, GraphOut, Serializer) % serialize temporary RDF graph to the response
+            ; true % dispather should form full response by itself
+            )
+          ), rdf_unload_graph(GraphOut)) % regardless of the result remove temporary RDF graph
+       ; format('Status: 405~n~n') % method not allowed
+       )
+    ; format('Status: 415~n~n') % unsupported media type
     )
-  ; format('Status: 404~n~n') % requested resource not found
+  ; format('Status: 404~n~n') % not found
   )).
 
 strings_to_atoms([], []) :- !.
@@ -81,8 +85,9 @@ select_content_type0([media(H,_,_,_)|T], ContentType) :- % go through all reques
   ).
 
 accept_compare(<, media(_,_,W1,_), media(_,_,W2,_)) :- % sort qualities in reverse order - biggest first
-  W1 > W2.
-accept_compare(<, _, _).
+  W1 >= W2.
+accept_compare(>, media(_,_,W1,_), media(_,_,W2,_)) :-
+  W1 < W2.
 
 serializer(application/'rdf+xml', rdf).
 serializer(text/'rdf+xml', rdf).

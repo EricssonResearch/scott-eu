@@ -114,7 +114,7 @@ autodetect_resource_graph(IRI, Graph) :-
   ; findall(G, rdf(IRI, _, _, G), Graphs),
     sort(Graphs, SortedGraphs),
     [Graph] = SortedGraphs
-  ; oslc_error("Could not reliably autodetect source of ~w", [IRI])
+  ; oslc_error("Could not reliably autodetect the source of resource [~w]", [IRI])
   )).
 
 %!  oslc_resource(+IRI, +Properties, +SourceSink) is det.
