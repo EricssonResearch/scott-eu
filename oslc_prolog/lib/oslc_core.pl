@@ -1,14 +1,9 @@
-:- module(oslc_core, [
-]).
+:- module(oslc_core, []).
 
-:- use_module(library(semweb/rdf11)).
-:- use_module(library(semweb/rdf_library)).
+:- use_module(library(oslc)).
+:- use_module(library(oslc_dispatch)).
 
-:- rdf_attach_library(oslc_prolog(rdf)).
-:- rdf_load_library(oslc_test).
+:- oslc_get(*:*, handle_get, 0).
 
-reload :-
-  rdf_reset_db,
-  rdf_load_library(oslc),
-  rdf_load_library(oslc_shapes),
-  rdf_load_library(oslc_test).
+handle_get(IRI, GraphOut) :-
+  copy_resource(IRI, IRI, rdf, rdf(GraphOut), [inline(rdf)]).

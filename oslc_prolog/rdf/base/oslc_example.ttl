@@ -3,13 +3,13 @@
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
-@prefix	oslcs: <http://ontology.cf.ericsson.net/oslc_shapes/> .
-@prefix	: <http://ontology.cf.ericsson.net/oslc_test/> .
+@prefix	shapes: <http://ontology.cf.ericsson.net/oslc_shapes/> .
+@prefix	: <http://ontology.cf.ericsson.net/oslc_example/> .
 
 
 :leoSPC
   a oslc:ServiceProviderCatalog ;
-  oslc:instanceShape oslcs:serviceProviderCatalogShape ;
+  oslc:instanceShape shapes:serviceProviderCatalogShape ;
   dcterms:title "Leo's Service Provider Catalog"^^rdf:XMLLiteral ;
   dcterms:publisher [ a oslc:Publisher ;
                       dcterms:title "Leo"^^rdf:XMLLiteral ;
@@ -19,7 +19,7 @@
 
 :leoSP
   a oslc:ServiceProvider ;
-  oslc:instanceShape oslcs:serviceProviderShape ;
+  oslc:instanceShape shapes:serviceProviderShape ;
   dcterms:title "Leo's Service Provider"^^rdf:XMLLiteral ;
   oslc:service [ a oslc:Service ;
                  oslc:domain <http://leo.com/domain> ;
@@ -28,21 +28,22 @@
 
 :leoCF
   a oslc:CreationFactory ;
-  oslc:instanceShape oslcs:creationFactoryShape ;
+  oslc:instanceShape shapes:creationFactoryShape ;
   dcterms:title "Leo's Creation Factory"^^rdf:XMLLiteral ;
   oslc:resourceShape :leoResourceShape .
 
 :leoQC
   a oslc:QueryCapability ;
-  oslc:instanceShape oslcs:queryCapabilityShape ;
+  oslc:instanceShape shapes:queryCapabilityShape ;
   dcterms:title "Leo's Query Capability"^^rdf:XMLLiteral ;
   oslc:resourceShape :leoResourceShape .
 
 
 :leoResourceShape
   a oslc:ResourceShape ;
-  oslc:instanceShape oslcs:resourceShapeShape ;
-  oslc:describes :leoResource ;
+  oslc:instanceShape shapes:resourceShapeShape ;
+  dcterms:title "Leo's Resource Shape"^^rdf:XMLLiteral ;
+  oslc:describes :leoResourceClass ;
   oslc:property [ a oslc:Property ;
                   oslc:name "title"^^xsd:string ;
                   oslc:propertyDefinition dcterms:title ;
@@ -51,5 +52,6 @@
                   oslc:valueType rdf:XMLLiteral
                 ] .
 
-:leoResource
-  a rdfs:Class .
+:leoResourceClass
+  a rdfs:Class ;
+  dcterms:title "Leo's Resource Class"^^rdf:XMLLiteral .
