@@ -5,7 +5,7 @@
 :- use_module(library(broadcast)).
 :- use_module(library(semweb/turtle)).
 :- use_module(library(semweb/rdf_persistency)).
-:- use_module(library(oslc)).
+:- use_module(library(oslc_dispatch)).
 
 :- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/oslc/', 'Base URI').
 
@@ -24,47 +24,39 @@
 
 dispatcher(Request) :-
   once((
-    once((
-      member(protocol(Protocol), Request),
-      member(host(Host), Request),
-      member(port(Port), Request),
-      member(path(Path), Request)
-    )),
+    member(protocol(Protocol), Request),
+    member(host(Host), Request),
+    member(port(Port), Request),
+    member(path(Path), Request),
     atomic_list_concat([Protocol, '://', Host, ':', Port,  Path], '', Uri), % determine URI called
-    setting(oslc_prolog_server:base_uri, Prefix),
-    atom_concat(Prefix, ServicePath, Uri), % check if URI called starts with the base URI
-    dispatch(Request, ServicePath) % call dispatch with computed suffix
-  ; format('Status: 404~n~n')
+    setting(oslc_prolog_server:base_uri, BaseUri),
+    atom_concat(BaseUri, ServicePath, Uri), % check if URI called starts with the base URI
+    select_content_type(Request, ContentType), % compute content-type to serve based on request
+    ( ContentType \== nil
+    -> split_string(ServicePath, "/", "/", Parts),
+       strings_to_atoms(Parts, [Prefix|ResourceSegments]),
+       rdf_current_prefix(Prefix, _),
+       setup_call_cleanup(make_graph(GraphOut), ( % create a new temporary RDF graph
+         dispatch(Prefix:ResourceSegments, Request, _GraphIn, GraphOut),
+         rdf_graph_property(GraphOut, triples(Triples)),
+         ( Triples > 0
+         -> format('Status: 200~n'),
+            format('Content-type: ~w; charset=utf-8~n~n', [ContentType]),
+            serializer(ContentType, Serializer), % select proper serializer
+            current_output(Out),
+            save_graph(Out, GraphOut, Serializer) % serialize temporary RDF graph to the response
+         ; true
+         )
+       ), rdf_unload_graph(GraphOut)) % regardless of the result remove temporary RDF graph
+    ; format('Status: 415~n~n') % requested content-type cannot be served
+    )
+  ; format('Status: 404~n~n') % requested resource not found
   )).
 
-dispatch(Request, ServicePath) :-
-  current_output(Out),
-  split_string(ServicePath, "/", "", Parts),
-  remove_blanks(Parts, [Prefix|RemainingParts]),
-  atom_string(APrefix, Prefix),
-  rdf_current_prefix(APrefix, Namespace),
-  atomics_to_string(RemainingParts, "/", ResourceName),
-  atom_concat(Namespace, ResourceName, Resource), % compute served RDF resource URI
-  setup_call_cleanup(make_graph(Graph), ( % create a new temporary RDF graph
-    copy_resource(Resource, Resource, rdf, rdf(Graph), [inline(rdf)]),
-    rdf_graph_property(Graph, triples(Triples)),
-    Triples > 0,
-    select_content_type(Request, ContentType), % compute content-type to serve based on request
-    ( ContentType == nil
-    -> format('Status: 415~n~n') % requested content-type cannot be served
-    ;  format('Status: 200~n'),
-       format('Content-type: ~w; charset=utf-8~n~n', [ContentType]),
-       serializer(ContentType, Serializer), % select proper serializer
-       save_graph(Out, Graph, Serializer) % serialize temporary RDF graph to the response
-    )
-  ), rdf_unload_graph(Graph)). % regardless of the result remove temporary RDF graph
-
-remove_blanks([], []) :- !.
-remove_blanks([A|T], R) :-
-  (A == ""
-  -> remove_blanks(T, R)
-  ; R = [A|T]
-  ).
+strings_to_atoms([], []) :- !.
+strings_to_atoms([S|T], [A|T2]) :-
+  atom_string(A, S),
+  strings_to_atoms(T, T2).
 
 make_graph(Graph) :-
   uuid(Graph), % generate unique identifier for the temporary RDF graph
