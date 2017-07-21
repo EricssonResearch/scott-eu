@@ -8,10 +8,10 @@
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc_example).
 
-:- oslc_get(oslc_example:leoResourceShape, handle_get).
-:- oslc_post(oslc_example:(*), handle_post_put).
-:- oslc_put(oslc_example:leoResourceShape, handle_post_put).
-:- oslc_delete(oslc_example:leoResourceShape, handle_delete).
+:- oslc_get(oslc_example:leoResource, handle_get).
+:- oslc_post(oslc_example:leoResource, handle_post_put).
+:- oslc_put(oslc_example:leoResource, handle_post_put).
+:- oslc_delete(oslc_example:leoResource, handle_delete).
 
 handle_get(_IRI, _GraphOut) :-
   format('Status: 416~n~n').
