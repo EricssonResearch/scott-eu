@@ -27,73 +27,77 @@ warehouse:Object rdf:type pp:VariableType .
 ##############################################################################
 
 
-#definition of fluent types
-_:capacity rdf:type pp:FluentType ;
+#definition of fluent types and fluent type arguments , Regular nodes to be accessed outside of this graph
+:capacity rdf:type pp:FluentType ;
            rdfs:label "capacity";
-           ppos:hasFluentTypeArgument _:fta1 .
+           ppos:hasFluentTypeArgument :fta1 .
 
-_:fta1 rdf:type pp:FluentTypeArgument ;
+:fta1 rdf:type pp:FluentTypeArgument ;
         ppos:hasVariableType warehouse:Robot ;
         sh:order 0 .
 
-_:charge_level rdf:type pp:FluentType;
+:charge_level rdf:type pp:FluentType;
                rdfs:label  "charge-level";
-               ppos:hasFluentTypeArgument _:fta1 .
+               ppos:hasFluentTypeArgument :fta1 .
 
-_:max_charge rdf:type pp:FluentType ;
+:max_charge rdf:type pp:FluentType ;
             rdfs:label  "max-charge";
-            ppos:hasFluentTypeArgument _:fta1 .
+            ppos:hasFluentTypeArgument :fta1 .
 
-_:low_charge rdf:type pp:FluentType ;
+:low_charge rdf:type pp:FluentType ;
             rdfs:label  "low-charge";
-            ppos:hasFluentTypeArgument _:fta1 .
+            ppos:hasFluentTypeArgument :fta1 .
 
-_:high_charge rdf:type pp:FluentType ;
+:high_charge rdf:type pp:FluentType ;
             rdfs:label  "high-charge";
-            ppos:hasFluentTypeArgument _:fta1 .
+            ppos:hasFluentTypeArgument :fta1 .
 
 #################################################################
 #Definition of predicate types and predicate type arguments
+#Regular nodes to be accessed outside of this graph
 ################################################################
 
 #is_at predicate type
-_:is_at rdf:type pp:PredicateType;
+:is_at rdf:type pp:PredicateType;
         rdfs:label "is-at";
-        ppos:hasPredicateTypeArgument _:pta1 ;
-        ppos:hasPredicateTypeArgument _:pta2 .
+        ppos:hasPredicateTypeArgument :pta1 ;
+        ppos:hasPredicateTypeArgument :pta2 .
 
-_:pta1 rdf:type pp:PredicateTypeArgument ;
+:pta1 rdf:type pp:PredicateTypeArgument ;
       ppos:hasVariableType warehouse:Robot ;
       sh:order 0.
 
-_:pta2 rdf:type pp:PredicateTypeArgument ;
+:pta2 rdf:type pp:PredicateTypeArgument ;
       ppos:hasVariableType warehouse:Waypoint ;
       sh:order 1.
 
 #can_move predicate type
-_:can_move rdf:type pp:PredicateType;
+:can_move rdf:type pp:PredicateType;
         rdfs:label "can-move";
-        ppos:hasPredicateTypeArgument _:pta3 ;
-        ppos:hasPredicateTypeArgument _:pta2 . #is the same predicate type argument, with same sh:order value as used in is_at predicate type
+        ppos:hasPredicateTypeArgument :pta3 ;
+        ppos:hasPredicateTypeArgument :pta2 . #is the same predicate type argument, with same sh:order value as used in is_at predicate type
 
-_:pta3 rdf:type pp:PredicateTypeArgument ;
+:pta3 rdf:type pp:PredicateTypeArgument ;
       ppos:hasVariableType warehouse:Waypoint ;
       sh:order 0.
 
 #is-recharging predicate type
-_:is-recharging rdf:type pp:PredicateType;
+:is-recharging rdf:type pp:PredicateType;
         rdfs:label "is-recharging";
-        ppos:hasPredicateTypeArgument _:pta1 .
+        ppos:hasPredicateTypeArgument :pta1 .
 
 ##################################################################################################################
 #Definition of actions, predicates used in actions, and variables used in fluents and predicates in the actions
+#Each action will have its own predicate, fluent definitions since it might come from different graphs
+#Predicates, fluents will be blank nodes, since they are annonymous resources, local to the action and needed for the specification of a particular action
 ##################################################################################################################
 
 #Definition of action : moveToWaypoint
-_:moveToWaypoint rdf:type pp:Action ;
+:moveToWaypoint rdf:type pp:Action ;  #Action is not a regular node!
                  rdfs:label "moveToWaypoint" ;
                  ppos:hasPrecondition _:gd1 ;
                  ppos:hasEffect _:effect1 .
+
 
 _:gd1 rdf:type pp:GoalDescription ;
       ppos:hasGDArgument _:and1 .
@@ -114,14 +118,14 @@ _:is_at1 rdf:type pp:Predicate ;
 _:pa1 rdf:type pp:PredicateArgument ;
       ppos:hasVariable [a pp:Variable ;
                         rdfs:label "robot";] ;
-      ppos:hasVariableType _:pta1 ;
+      ppos:hasVariableType :pta1 ;
       sh:order _:pta1.  #should get the same relative sh:order  in is_at1 as the relative order of _:pta1
 
 _:pa2 rdf:type pp:PredicateArgument ;
       ppos:hasVariable [a pp:Variable ;
                         rdfs:label "from-waypoint";] ;
-      ppos:hasVariableType _:pta2 ;
-      sh:order _:pta2 .
+      ppos:hasVariableType :pta2 ;
+      sh:order :pta2 .
 
 _:can_move1 rdf:type pp:Predicate ;
          ppos:hasPredicateType _:can_move ;
@@ -133,21 +137,21 @@ _:pa3 rdf:type pp:PredicateArgument ;
       ppos:hasVariable [a pp:Variable ;
                         rdfs:label "from-waypoint";
                        ] ;
-      ppos:hasVariableType _:pta3 ;
-      sh:order _:pta3 .
+      ppos:hasVariableType :pta3 ;
+      sh:order :pta3 .
 
 _:pa4 rdf:type pp:PredicateArgument ;
       ppos:hasVariable [a pp:Variable ;
                         rdfs:label "to-waypoint";] ;
-      ppos:hasVariableType _:pta2 ;
-      sh:order _:pta2 .
+      ppos:hasVariableType :pta2 ;
+      sh:order :pta2 .
 
 _:not1 rdf:type pp:NotGD ;
        ppos:hasArgumentInGD _:is_recharging1 ;
        sh:order 2.
 
 _:is_recharging1 rdf:type pp:Predicate ;
-                 ppos:hasPredicateType _:is_recharging ;
+                 ppos:hasPredicateType :is_recharging ;
                  ppos:hasPredicateArgument _:pa1 .
 
 _:gt1 rdf:type pp:GT ;
@@ -159,15 +163,15 @@ _:gt1 rdf:type pp:GT ;
 #definition of fluents and fluent arguments used in the actions (instances of fluent types)
 
 _:charge_level1 rdf:type pp:Fluent ;
-            ppos:hasFluentType _:charge_level ;
+            ppos:hasFluentType :charge_level ;
             ppos:hasFluentArgument _:fa1 ;
             sh:order 0.  #relative order in gt1
 
 _:low_charge1 rdf:type pp:Fluent ;
-            ppos:hasFluentType _:low_charge ;
+            ppos:hasFluentType :low_charge ;
             ppos:hasFluentArgument _:fa1 ;
             sh:order 1. #relative order in gt1
 
 _:fa1 a pp:FluentArgument;
         ppos:hasVariable _:robot1;
-        ppos:hasVariableType _:fta1 .  #in the PDDL generation process we should generate hasVariableType out of _:fta1
+        ppos:hasVariableType :fta1 .  #in the PDDL generation process we should generate hasVariableType out of _:fta1
