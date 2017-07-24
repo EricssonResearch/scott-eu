@@ -77,7 +77,8 @@ create_resource(IRI, Types, Shapes, Properties, Sink) :-
     marshal_list_property(IRI, RT, Types, _, Sink),
     oslcInstanceShape(OIS),
     write_property(IRI, OIS, Shapes, _, Sink),
-    oslc_resource0(IRI, Shapes, Properties, Sink)
+    oslc_resource0(IRI, Shapes, Properties, Sink),
+    check_resource(IRI, Shapes, Sink)
   )).
 
 %!  applicable_shapes(+Types, -Shapes) is det.
@@ -162,10 +163,17 @@ oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
   once((
     member(ResourceShape, Shapes),
     rdf(ResourceShape, oslc:property, PropertyResource),
-    once(rdf(PropertyResource, oslc:name, SProperty^^xsd:string)),
+    once((
+      rdf(PropertyResource, oslc:name, SProperty^^xsd:string)
+    ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+      rdf_equal(Property, PropertyDefinition)
+    )),
     ( var(Value)
     -> read_property(IRI, PropertyResource, _, Value, SourceSink)
-    ; once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
+    ; once((
+        nonvar(PropertyDefinition)
+      ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)
+      )),
       delete_property(IRI, PropertyDefinition, SourceSink),
       write_property(IRI, PropertyResource, _, Value, SourceSink)
     )
@@ -333,6 +341,8 @@ letter(L) --> [L], { \+ member(L, [':','*',',','{','}']) }.
 
 copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, Options) :-
   delete_resource(IRITo, Sink),
+  % TODO: probably we should combine copy with checking and make copy the default checking procedure for all purposes
+  check_resource(IRIFrom, Shapes, Source),
   ( selectchk(properties(PropertyList), Options, RestOptions)
   -> true
   ; RestOptions = Options
@@ -351,6 +361,26 @@ copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, Options) :-
       -> copy_bnode(Value, Source, InlineSource, Sink, Options, IRITo, Property, PropertyList, RestOptions)
       ; copy_property(Value, Sink, IRITo, Property, Type, PropertyList)
       )
+    )
+  )).
+
+check_resource(IRI, Shapes, Source) :-
+  forall((
+    member(ResourceShape, Shapes),
+    rdf(ResourceShape, oslc:property, PropertyResource),
+    rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)
+  ), (
+    unmarshal_list_property(IRI, PropertyDefinition, Values, Type, Source),
+    check_property(IRI, PropertyResource, Type, Values, _),
+    ( rdf(PropertyResource, oslc:representation, oslc:'Inline')
+    -> forall(
+         member(Value, Values),
+         (
+           applicable_shapes(Value, BnodeShapes, Source),
+           check_resource(Value, BnodeShapes, Source)
+         )
+       )
+    ; true
     )
   )).
 
