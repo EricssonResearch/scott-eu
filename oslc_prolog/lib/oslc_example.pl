@@ -13,11 +13,11 @@
 :- oslc_put(oslc_example:leoResource, handle_post_put).
 :- oslc_delete(oslc_example:leoResource, handle_delete).
 
-handle_get(_IRI, _GraphOut) :-
+handle_get(_Request, _IRI, _GraphOut) :-
   format('Status: 416~n~n').
 
-handle_post_put(_IRI, _GraphIn, _GraphOut) :-
+handle_post_put(_Request, _IRI, _GraphIn, _GraphOut) :-
   format('Status: 417~n~n').
 
-handle_delete(_IRI) :-
+handle_delete(_Request, _IRI) :-
   format('Status: 418~n~n').

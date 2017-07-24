@@ -48,6 +48,7 @@ format_value(oslc:'One-or-many', [V|T], [V|T]).
 check_value_type(_, _, [], _) :- !.
 
 check_value_type(IRI, PropertyResource, [V|T], Type) :-
+  once(rdf(PropertyResource, oslc:valueType, Type)),
   once((
     check_value_type(Type, V)
   ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),

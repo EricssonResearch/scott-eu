@@ -108,7 +108,7 @@ read_request_body(Request, GraphIn) :-
 
 generate_response(Request, Prefix, ResourceSegments, ContentType, GraphIn, GraphOut) :-
   once((
-    dispatch(Prefix:ResourceSegments, Request, GraphIn, GraphOut) % main dispatch method
+    dispatch(Request, Prefix:ResourceSegments, GraphIn, GraphOut) % main dispatch method
   ; throw(status_code(404)) % not found (failed to dispatch)
   )),
   rdf_graph_property(GraphOut, triples(Triples)),
