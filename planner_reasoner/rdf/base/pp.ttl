@@ -14,65 +14,72 @@
 <http://ontology.cf.ericsson.net/planning_ontology> rdf:type rdf:Ontology ;
                                                    rdf:versionIRI <http://ontology.cf.ericsson.net/planning_ontology/1.0.0> .
 
+
+
+
+
 :Action rdf:type rdf:class .
-:TypedVariable rdf:type rdf:class . # do not need to be ordered
 :Precondition rdf:type rdf:class .
 :Effect  rdf:type rdf:class .
 :GoalDescription rdf:type rdf:class .
 :OrderedArgument rdf:type rdf:class .  #all subclasses of OrderedArgument will have an order property sh:order to show the relative position of that element in the parent
 :VariableType rdf:type :OrderedArgument .
 :Variable rdf:type :OrderedArgument .
+:FluentType rdf:type :OrderedArgument . #no need to be ordered!
+:FluentTypeArgument rdf:type :OrderedArgument .
 :Fluent rdf:type :OrderedArgument .
 :FluentArgument rdf:type :OrderedArgument .
-:FluentType rdf:type :OrderedArgument .
-:FluentTypeArgument rdf:type :OrderedArgument .
+:PredicateType rdf:type rdf:class . #no need to be ordered
+:PredicateTypeArgument rdf:type :OrderedArgument .
+:Predicate rdf:type :OrderedArgument .
+:PredicateArgument rdf:type :OrderedArgument .
 :FExp rdf:type :OrderedArgument .
 :FHead rdf:type :OrderedArgument .
 :NumericLiteral rdf:type :OrderedArgument .
 
-:AssignmentOperator rdf:subclass :OrderedArgument .  #are possible in effects over fluents (decrease, increase, scaleup, assign, scaledown
-:BinnaryOperator rdf:subclass :OrderedArgument  .  #are possible in preconditions and effects over fluents (+, -, * and /)
+:AssignmentOperator rdf:type :OrderedArgument .  #are possible in effects over fluents (decrease, increase, scaleup, assign, scaledown
+:BinnaryOperator rdf:type :OrderedArgument  .  #are possible in preconditions and effects over fluents (+, -, * and /)
 
-:OrderedArgument rdf:subclass :OrderedArgument .
+:OrderedArgument rdf:type :OrderedArgument .
 
-:BinaryComparison rdf:subclass :OrderedArgument . #e.g. binary comparision operators are only allowed in precondition
+:BinaryComparison rdf:type :OrderedArgument . #e.g. binary comparision operators are only allowed in precondition
 
-:EffectOrderedArgument rdf:subclass :OrderedArgument .
+:EffectOrderedArgument rdf:type :OrderedArgument .
 
 
-:MinusFunction rdf:subclass rdf:OrderedArgument ;
+:MinusFunction rdf:type rdf:OrderedArgument ;
                  rdfs:label "-".
 
 
 #logical operators
-:And rdf:subclass rdf:OrderedArgument ;
+:And rdf:type rdf:OrderedArgument ;
                  rdfs:label "and".
 
-:AndGD rdf:subclass :And .
-:AndEffect rdf:subclass :And .
+:AndGD rdf:type :And .
+:AndEffect rdf:type :And .
 
 
-:Or rdf:subclass :OrderedArgument ;
+:Or rdf:type :OrderedArgument ;
     rdfs:label "or".
 
-:Not rdf:subclass :OrderedArgument ;
+:Not rdf:type :OrderedArgument ;
      rdfs:label "not".
-:NotGD rdf:subclass :Not .
-:NotEffect rdf:subclass :Not .
+:NotGD rdf:type :Not .
+:NotEffect rdf:type :Not .
 
-:Imply rdf:subclass :OrderedArgument ;
+:Imply rdf:type :OrderedArgument ;
        rdfs:label "imply".
 
-:Forall rdf:subclass :OrderedArgument ;
+:Forall rdf:type :OrderedArgument ;
        rdfs:label "forall".
 
-:Exists rdf:subclass :OrderedArgument ;
+:Exists rdf:type :OrderedArgument ;
        rdfs:exists "forall".
 
 
 
 #binary comparison only allowed in precondition
-:GT rdf:subclass :BinaryComparison ;
+:GT rdf:type :BinaryComparison ;
     rdfs:label ">".
 :LT rdf:type :BinaryComparison ;
     rdfs:label "<".

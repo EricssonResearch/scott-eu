@@ -8,14 +8,14 @@
 <ppos>
 		a lib:Schema ;
 		a lib:Virtual ;
-		dcterms:title "Vocabulary of OSLC shapes for PDDL planning" ;
+		dcterms:title "Vocabulary of OSLC shapes describing resources that can be used in PDDL" ;
 		lib:source ppos: ;
 		lib:schema <pp_oslc_shapes.ttl> .
 
 <pp>
 	a lib:Schema ;
 	a lib:Virtual ;
-	dcterms:title "Vocabulary of class relations between OSLC shapes of PDDL" ;
+	dcterms:title "Vocabulary of class relations between PDDL resources" ;
 	lib:source pp: ;
 	lib:schema <pp.ttl> .
 
