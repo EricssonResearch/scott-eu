@@ -256,6 +256,7 @@ marshal_some_property(IRI, PropertyDefinition, Value, Type, Sink) :-
 %      nested_prop  ::= (identifier | wildcard) "{" properties "}"
 %      wildcard     ::= "*"
 %      identifier   ::= prefix ":" name
+%      prefix, name ::= /* everything until one of :*,{} */
 %    ==
 %
 %    * prefix(Prefix)
@@ -265,7 +266,7 @@ marshal_some_property(IRI, PropertyDefinition, Value, Type, Sink) :-
 %    ==
 %      prefix_defs ::= prefix_def ("," prefix_def)*
 %      prefix_def  ::= prefix "=" uri_ref_esc
-%      prefix      ::= /* everything until '=' character */
+%      prefix      ::= /* everything until = */
 %      uri_ref_esc ::= /* an angle bracket-delimited URI reference
 %                      in which > and \ are \-escaped. */
 %    ==
@@ -277,22 +278,36 @@ copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   must_be(ground, Sink),
   applicable_shapes(IRIFrom, Shapes, Source),
   ( selectchk(prefix(Prefix), Options, RestOptions1)
-  -> ( parse_prefix(Prefix, PrefixList)
-     -> O1 = [prefix(PrefixList)|RestOptions1]
-     ; O1 = RestOptions1
-     )
+  -> parse_prefix(Prefix, PrefixList),
+     O1 = [prefix(PrefixList)|RestOptions1]
   ; O1 = Options
   ),
   ( selectchk(properties(Properties), O1, RestOptions2)
-  -> ( parse_properties(Properties, PropertyList, PrefixList)
-     -> O2 = [properties(PropertyList)|RestOptions2]
-     ; O2 = RestOptions2
-     )
+  -> parse_properties(Properties, PropertyList, PrefixList),
+     O2 = [properties(PropertyList)|RestOptions2]
   ; O2 = O1
   ),
   rdf_transaction((
     copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, O2)
   )).
+
+parse_prefix(Prefix, Structure) :-
+  atom_chars(Prefix, CPrefix),
+  prefixes(Structure, CPrefix, []).
+
+prefixes([P|Ps]) --> prefix_def(P), ( [','], prefixes(Ps) ; [], { Ps = [] } ).
+prefix_def([P,U]) --> prefix(P), ['='], uri(U).
+prefix(P) --> prefix_letters(Pl), { atom_chars(P, Pl), ! }.
+prefix_letters([L|Ls]) --> prefix_letter(L), prefix_letters(Ls).
+prefix_letters([]) --> [].
+prefix_letter(L) --> [L], { L \== '=' }.
+
+uri(U) --> ['<'], uri_letters(Ul), { atom_chars(U, Ul), ! }, ['>'].
+uri_letters([L|Ls]) --> uri_letter(L), uri_letters(Ls).
+uri_letters([]) --> [].
+uri_letter('>') --> ['\\'], ['>'].
+uri_letter('\\') --> ['\\'], ['\\'].
+uri_letter(L) --> [L], { L \== '>' }.
 
 parse_properties(Properties, Structure, Prefixes) :-
   atom_chars(Properties, CProperties),
@@ -316,27 +331,12 @@ word_letters([L|Ls]) --> letter(L), word_letters(Ls).
 word_letters([]) --> [].
 letter(L) --> [L], { \+ member(L, [':','*',',','{','}']) }.
 
-parse_prefix(Prefix, Structure) :-
-  atom_chars(Prefix, CPrefix),
-  prefixes(Structure, CPrefix, []).
-
-prefixes([P|Ps]) --> prefix_def(P), ( [','], prefixes(Ps) ; [], { Ps = [] } ).
-prefix_def([P,U]) --> prefix(P), ['='], uri(U).
-prefix(P) --> prefix_letters(Pl), { atom_chars(P, Pl), ! }.
-prefix_letters([L|Ls]) --> prefix_letter(L), prefix_letters(Ls).
-prefix_letters([]) --> [].
-prefix_letter(L) --> [L], { L \== '=' }.
-
-uri(U) --> ['<'], uri_letters(Ul), { atom_chars(U, Ul), ! }, ['>'].
-uri_letters([L|Ls]) --> uri_letter(L), uri_letters(Ls).
-uri_letters([]) --> [].
-uri_letter('>') --> ['\\'], ['>'].
-uri_letter('\\') --> ['\\'], ['\\'].
-uri_letter(L) --> [L], { L \== '>' }.
-
 copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, Options) :-
   delete_resource(IRITo, Sink),
-  selectchk(properties(PropertyList), Options, RestOptions),
+  ( selectchk(properties(PropertyList), Options, RestOptions)
+  -> true
+  ; RestOptions = Options
+  ),
   forall(
     unmarshal_property(IRIFrom, Property, Value, Type, Source)
   , (

@@ -16,7 +16,7 @@ handle_get(Request, IRI, GraphOut) :-
         Option =.. [OP, Value]
       ), Options
     )
-  ; true
+  ; Options = []
   )),
   once((
     copy_resource(IRI, IRI, rdf, rdf(GraphOut), [inline(rdf)|Options])
