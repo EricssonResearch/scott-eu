@@ -182,7 +182,6 @@ oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
 
 check_property(IRI, PropertyResource, Type, InternalValue, Value) :-
   check_occurs(IRI, PropertyResource, InternalValue, Value),
-  once(rdf(PropertyResource, oslc:valueType, Type)),
   check_value_type(IRI, PropertyResource, InternalValue, Type).
 
 % ------------ READ PROPERTY
@@ -246,6 +245,18 @@ marshal_some_property(IRI, PropertyDefinition, Value, Type, Sink) :-
 %    If specified, properties of resource IRIFrom described in a shape
 %    as having representaton =oslc:Inline= are dereferenced from
 %    InlineSource and inlined as blank nodes in resource IRITo.
+%
+%    * properties(Properties)
+%    Copy only properties specified in Properties. The format of the
+%    Properties structure is defined by properties term in the following
+%    BNF grammar:
+%    ==
+%      properties   ::= property ("," property)*
+%      property     ::= identifier | wildcard | nested_prop
+%      nested_prop  ::= (identifier | wildcard) "{" properties "}"
+%      wildcard     ::= "*"
+%      identifier   ::= prefix ":" name
+%    ==
 
 copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   must_be(atom, IRIFrom),
@@ -253,34 +264,84 @@ copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   must_be(ground, Source),
   must_be(ground, Sink),
   applicable_shapes(IRIFrom, Shapes, Source),
+  ( selectchk(properties(Properties), Options, RestOptions)
+  -> ( parse_properties(Properties, PropertyList)
+     -> NewOptions = [properties(PropertyList)|RestOptions]
+     ; NewOptions = RestOptions
+     )
+  ; NewOptions = Options
+  ),
   rdf_transaction((
-    copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, Options)
+    copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, NewOptions)
   )).
+
+parse_properties(Properties, Structure) :-
+  atom_chars(Properties, CProperties),
+  properties(Structure, CProperties, []).
+
+properties([P|Ps]) --> property(P), ( [','], properties(Ps) ; [], { Ps = [] } ).
+property(P) --> identifier(P) ; wildcard(P) ; nested_prop(P).
+nested_prop(NP) --> ( identifier(N) ; wildcard(N) ), ['{'], properties(Ps), ['}'],
+                    { NP =.. [N,Ps] }.
+wildcard('*') --> ['*'].
+identifier(I) --> word(Prefix), [':'], word(Name),
+                  { atomic_list_concat([Prefix, ':', Name], I) }.
+word(W) --> word_letters(Wl), { atom_chars(W, Wl), ! }.
+word_letters([L|Ls]) --> letter(L), word_letters(Ls).
+word_letters([]) --> [].
+letter(L) --> [L], { \+ member(L, [':','*',',','{','}']) }.
 
 copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, Options) :-
   delete_resource(IRITo, Sink),
+  selectchk(properties(PropertyList), Options, RestOptions),
   forall(
     unmarshal_property(IRIFrom, Property, Value, Type, Source)
   , (
     ( rdf_is_bnode(Value)
-    -> rdf_create_bnode(Bnode),
-       applicable_shapes(Value, BnodeShapes, Source),
-       copy_resource0(Value, Bnode, BnodeShapes, Source, Sink, Options),
-       marshal_property(IRITo, Property, Bnode, _, Sink)
+    -> copy_bnode(Value, Source, Source, Sink, Options, IRITo, Property, PropertyList, RestOptions)
     ; ( \+ is_literal_type(Type),
         member(inline(InlineSource), Options),
         member(ResourceShape, Shapes),
         rdf(ResourceShape, oslc:property, PropertyResource),
         rdf(PropertyResource, oslc:propertyDefinition, Property),
         rdf(PropertyResource, oslc:representation, oslc:'Inline')
-      -> rdf_create_bnode(Bnode),
-         applicable_shapes(Value, BnodeShapes, Source),
-         copy_resource0(Value, Bnode, BnodeShapes, InlineSource, Sink, Options),
-         marshal_property(IRITo, Property, Bnode, _, Sink)
-      ; marshal_property(IRITo, Property, Value, Type, Sink)
+      -> copy_bnode(Value, Source, InlineSource, Sink, Options, IRITo, Property, PropertyList, RestOptions)
+      ; copy_property(Value, Sink, IRITo, Property, Type, PropertyList)
       )
     )
   )).
+
+copy_bnode(Value, ShapeSource, Source, Sink, Options, IRITo, Property, PropertyList, RestOptions) :-
+  ( ( var(PropertyList),
+      NewOptions = Options
+    ; once((
+        member('*'(SubList), PropertyList)
+      ; rdf_global_id(LProperty, Property),
+        term_to_atom(LProperty, AProperty),
+        P =.. [AProperty, SubList],
+        member(P, PropertyList)
+      )),
+      NewOptions = [properties(SubList)|RestOptions]
+    )
+  -> rdf_create_bnode(Bnode),
+     applicable_shapes(Value, BnodeShapes, ShapeSource),
+     copy_resource0(Value, Bnode, BnodeShapes, Source, Sink, NewOptions),
+     marshal_property(IRITo, Property, Bnode, _, Sink)
+  ; true
+  ).
+
+copy_property(Value, Sink, IRITo, Property, Type, PropertyList) :-
+  ( ( var(PropertyList)
+    ; rdf_global_id(LProperty, Property),
+      term_to_atom(LProperty, AProperty),
+      once((
+        member('*', PropertyList)
+      ; member(AProperty, PropertyList)
+      ))
+    )
+  -> marshal_property(IRITo, Property, Value, Type, Sink)
+  ; true
+  ).
 
 %!  delete_resource(+IRI, +Sink) is det.
 %

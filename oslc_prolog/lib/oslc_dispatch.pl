@@ -14,14 +14,14 @@
 
 :- use_module(library(oslc_error)).
 
-:- meta_predicate(oslc_get(+, 2)).
-:- meta_predicate(oslc_get(+, 2, +)).
-:- meta_predicate(oslc_post(+, 3)).
-:- meta_predicate(oslc_post(+, 3, +)).
-:- meta_predicate(oslc_put(+, 3)).
-:- meta_predicate(oslc_put(+, 3, +)).
-:- meta_predicate(oslc_delete(+, 1)).
-:- meta_predicate(oslc_delete(+, 1, +)).
+:- meta_predicate(oslc_get(+, 3)).
+:- meta_predicate(oslc_get(+, 3, +)).
+:- meta_predicate(oslc_post(+, 4)).
+:- meta_predicate(oslc_post(+, 4, +)).
+:- meta_predicate(oslc_put(+, 4)).
+:- meta_predicate(oslc_put(+, 4, +)).
+:- meta_predicate(oslc_delete(+, 2)).
+:- meta_predicate(oslc_delete(+, 2, +)).
 
 :- dynamic handler/4.
 
@@ -54,11 +54,8 @@ add_handler(Method, IRISpec, Predicate, Priority) :-
   must_be(ground, IRISpec),
   must_be(ground, Predicate),
   must_be(integer, Priority),
-  ( handler(Method, IRISpec, _, Priority)
-  -> upcase_atom(Method, UMethod),
-     oslc_error('Cannot redefine [~w] handler for [~w] with priority [~w]', [UMethod, IRISpec, Priority])
-  ; assertz(handler(Method, IRISpec, Predicate, Priority))
-  ).
+  retractall(handler(Method, IRISpec, _, Priority)),
+  assertz(handler(Method, IRISpec, Predicate, Priority)).
 
 delete_handler(Method, IRISpec) :-
   forall(
@@ -66,7 +63,7 @@ delete_handler(Method, IRISpec) :-
     retractall(handler(Method, IRISpec, Predicate, Priority))
   ).
 
-dispatch(Prefix:ResourceSegments, Request, GraphIn, GraphOut) :-
+dispatch(Request, Prefix:ResourceSegments, GraphIn, GraphOut) :-
   member(method(Method), Request),
   atomic_list_concat(ResourceSegments, '/', Resource),
   findall(
@@ -78,7 +75,7 @@ dispatch(Prefix:ResourceSegments, Request, GraphIn, GraphOut) :-
     Handlers
   ),
   predsort(handler_compare, Handlers, [handler(Method, IRI, Predicate, _)|_]),
-  dispatch_to_handler(Method, Predicate, IRI, GraphIn, GraphOut).
+  dispatch_to_handler(Method, Predicate, Request, IRI, GraphIn, GraphOut).
 
 match_wildcard(ISPrefix, Prefix, ISResource, Resource) :-
   once((
@@ -95,18 +92,18 @@ handler_compare(<, handler(_,_,_,P1), handler(_,_,_,P2)) :-
 handler_compare(>, handler(_,_,_,P1), handler(_,_,_,P2)) :-
   P1 < P2.
 
-dispatch_to_handler(get, Module:Predicate, IRI, _, GraphOut) :-
-  T =.. [Predicate, IRI, GraphOut],
+dispatch_to_handler(get, Module:Predicate, Request, IRI, _, GraphOut) :-
+  T =.. [Predicate, Request, IRI, GraphOut],
   call(Module:T).
 
-dispatch_to_handler(post, Module:Predicate, IRI, GraphIn, GraphOut) :-
-  T =.. [Predicate, IRI, GraphIn, GraphOut],
+dispatch_to_handler(post, Module:Predicate, Request, IRI, GraphIn, GraphOut) :-
+  T =.. [Predicate, Request, IRI, GraphIn, GraphOut],
   call(Module:T).
 
-dispatch_to_handler(put, Module:Predicate, IRI, GraphIn, GraphOut) :-
-  T =.. [Predicate, IRI, GraphIn, GraphOut],
+dispatch_to_handler(put, Module:Predicate, Request, IRI, GraphIn, GraphOut) :-
+  T =.. [Predicate, Request, IRI, GraphIn, GraphOut],
   call(Module:T).
 
-dispatch_to_handler(delete, Module:Predicate, IRI, _, _) :-
-  T =.. [Predicate, IRI],
+dispatch_to_handler(delete, Module:Predicate, Request, IRI, _, _) :-
+  T =.. [Predicate, Request, IRI],
   call(Module:T).
