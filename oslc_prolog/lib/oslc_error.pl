@@ -9,7 +9,7 @@ oslc_error(Message, Arguments) :-
 error0(Message, [], Accum):-
   reverse(Accum, Arguments),
   format(atom(Error), Message, Arguments),
-  throw(Error).
+  throw(oslc_error(Error)).
 error0(Message, [H|T], Accum) :-
   ( rdf_is_resource(H)
   -> rdf_global_id(H2, H)

@@ -23,12 +23,10 @@ oslc:marshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
   ).
 
 oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf) :-
-  must_be(atom, IRI),
   rdf(IRI, PropertyDefinition, Object),
   unmarshal_type(Object, Value, Type).
 
 oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
-  must_be(atom, IRI),
   must_be(atom, Graph),
   rdf(IRI, PropertyDefinition, Object, Graph),
   unmarshal_type(Object, Value, Type).
@@ -42,6 +40,10 @@ unmarshal_type(Value, Value, Type) :-
   ; rdf_is_resource(Value),
     oslc_Resource(Type)
   ).
+
+oslc:delete_property(IRI, PropertyDefinition, rdf) :-
+  must_be(atom, IRI),
+  rdf_retractall(IRI, PropertyDefinition, _).
 
 oslc:delete_property(IRI, PropertyDefinition, rdf(Graph)) :-
   must_be(atom, IRI),
