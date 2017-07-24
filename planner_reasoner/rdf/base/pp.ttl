@@ -34,7 +34,7 @@
 :Predicate rdf:type :OrderedArgument .
 :PredicateArgument rdf:type :OrderedArgument .
 :FExp rdf:type :OrderedArgument .
-:FHead rdf:type :OrderedArgument .
+#:FHead rdf:type :OrderedArgument .
 :NumericLiteral rdf:type :OrderedArgument .
 
 :AssignmentOperator rdf:type :OrderedArgument .  #are possible in effects over fluents (decrease, increase, scaleup, assign, scaledown
@@ -62,6 +62,9 @@
 :Or rdf:type :OrderedArgument ;
     rdfs:label "or".
 
+:OrGD rdf:type :Or .
+:OrEffect rdf:type :Or .
+
 :Not rdf:type :OrderedArgument ;
      rdfs:label "not".
 :NotGD rdf:type :Not .
@@ -72,6 +75,9 @@
 
 :Forall rdf:type :OrderedArgument ;
        rdfs:label "forall".
+
+:ForallEffect rdf:type :Forall .
+:ForallGD rdf:type :Forall.
 
 :Exists rdf:type :OrderedArgument ;
        rdfs:exists "forall".
@@ -114,4 +120,5 @@
            rdfs:label "scale-down".
 
 #for conditional effect, allowed only in the effect
-:When rdf:type :OrderedArgument .
+:When rdf:type :OrderedArgument ;
+      rdfs:label "when".

@@ -128,6 +128,7 @@
 
 :PredicateShape rdf:type oslc:ResourceShape ;
             dcterms:title   "Shape of resources of type Predicate ";
+            dcterms:description   "Resources that describe predicates, instances of predicate types, used in the actions";
             oslc:property [a oslc:Property ;
                           oslc:propertyDefinition :hasPredicateType ;
                           oslc:range pp:PredicateType ;
@@ -147,26 +148,27 @@
 
 
 :GoalDescriptionShape rdf:type oslc:ResourceShape ;
-              oslc:describes pp:GoalDescription ;
-              oslc:property [a oslc:Property ;
-              dcterms:title   "Shape of resources of type Goal Description (GD) in PDDL";
-                             oslc:propertyDefinition :hasGDArgument ; #used to model that a goal description/precondition can  be either empty ()  or have the top resources (root): logical operators, just a predicate  e.g. is_at or binary comparison operator >,< etc used for fluents
-                             oslc:name "hasGoalDescriptionArgument"^^xsd:string ;
-                             oslc:range pp:Predicate ,
-                                        pp:AndGD ,
-                                        pp:Or ,
-                                        pp:NotGD ,
-                                        pp:Imply ,
-                                        pp:Exists ,
-                                        pp:ForAll ,
-                                        pp:BinaryComparison ;
-                             oslc:occurs oslc:Zero-or-one ;  #CHECK THIS FOR CASE <GD> :: = () . if there is no property hasGoalDescriptionArgument then only () should be generated in PDDL
-                             oslc:valueType oslc:Resource ;
-                            ] .
+                      oslc:describes pp:GoalDescription ;
+                      oslc:property [a oslc:Property ;
+                      dcterms:title   "Shape of resources of type Goal Description (GD) in PDDL";
+                      oslc:propertyDefinition :hasGDArgument ; #used to model that a goal description/precondition can  be either empty ()  or have the top resources (root): logical operators, just a predicate  e.g. is_at or binary comparison operator >,< etc used for fluents
+                      oslc:name "hasGoalDescriptionArgument"^^xsd:string ;
+                      oslc:range pp:Predicate ,
+                                  pp:AndGD ,
+                                  pp:Or ,
+                                  pp:NotGD ,
+                                  pp:Imply ,
+                                  pp:Exists ,
+                                  pp:ForAll ,
+                                  pp:BinaryComparison ;
+                      oslc:occurs oslc:Zero-or-one ;  #CHECK THIS FOR CASE <GD> :: = () . if there is no property hasGoalDescriptionArgument then only () should be generated in PDDL
+                      oslc:valueType oslc:Resource ;
+                      ] .
 
 
 :EffectShape rdf:type oslc:ResourceShape ;
             oslc:describes pp:Effect ;
+            dcterms:title   "Shape of resources of type Effect used in Actions";
             oslc:property [a oslc:Property ;
                              oslc:propertyDefinition :hasEffectArgument ; #used to model that an effect can be either empty ()  or have the top predicate resources (root predicate): and, forall, when,  just a Predicate e.g. is_at , negation of a Predicate, assignment operation over fluents
                              oslc:name "hasEffectArgument"^^xsd:string ;
@@ -181,10 +183,12 @@
 
 #VariableType will come from another domain, e.g. Robotics, ITS, or combination of domains
 :VariableTypeShape rdf:type oslc:ResourceShape ;
-            oslc:describes pp:VariableType .
+            oslc:describes pp:VariableType ;
+            dcterms:title   "Shape of resources of type VariableType".
 
 :VariableShape rdf:type oslc:ResourceShape ;
             oslc:describes pp:Variable ;
+            dcterms:title "Shape of resources of type Variable";
             oslc:property [a oslc:Property ;
                            oslc:propertyDefinition rdfs:label ;
                            oslc:name "hasLabel"^^xsd:string ;
@@ -248,7 +252,8 @@
 
 
 :FluentShape rdf:type oslc:ResourceShape ;
-            dcterms:title   "Shape of resources of fluents "; #will have in arguments variables and type
+            dcterms:title   "Shape of resources of Fluent "; #will have in arguments variables and type
+            dcterms:description "Shape of resources of type Fluent, used in the actions, instances of fluent types";
             oslc:describes pp:Fluent ;
             oslc:property [a oslc:Property ;
                           oslc:propertyDefinition :hasFluentType ; #a fluent can be only be fluent type
@@ -294,10 +299,12 @@
 
 :FExpShape rdf:type oslc:ResourceShape;
             oslc:describes pp:FExp ;
+            dcterms:title "Shape of resources of type FExp";
+            dcterms:description "Shape of resources of type FExp, used internally in the actions";
             oslc:property [a oslc:Property ;
                            oslc:propertyDefinition :hasArgument ; #a Fexp can contain a number (numeric literal that is an integer of float of form n.n), a negative fluent expression,  or an FHead
                            oslc:name "hasArgument"^^xsd:string ;
-                           oslc:range pp:FHead ;
+                           oslc:range pp:Fluent ;
                            oslc:range pp:MinusFunction ;
                            oslc:range pp:BinaryOperator ;
                            oslc:range pp:NumericLiteral ;
@@ -307,6 +314,8 @@
 
 :NumericLiteralShape rdf:type oslc:ResourceShape;
            oslc:describes pp:NumericLiteral ;
+           dcterms:title   "Shape of resource of type NumericLiteral ";
+           dcterms:description  "Used for defining numbers (PDDL supports integers and float, for now we support only integers). These are defined as resources, since they need to have a relative order property in FExp";
            oslc:property [a oslc:Property ;
                           oslc:propertyDefinition :hasValue ; #a Fexp can contain a number (numeric literal that is an integer of float of form n.n), a negative fluent expression,  or an FHead
                           oslc:name "hasValue"^^xsd:string ;
@@ -314,18 +323,20 @@
                           oslc:valueType xsd:integer ; #the value can be either integer or float n.n, however for now we support only integers
                           ].
 
-:FHeadShape rdf:type oslc:ResourceShape;
-            oslc:describes pp:FHead ;
-            oslc:property [a oslc:Property ;
-                           oslc:propertyDefinition :hasArgument ; #a Fexp can contain a number (numeric literal that is an integer of float of form n.n), a negative fluent expression,  or an FHead
-                           oslc:name "hasArgument"^^xsd:string ;
-                           oslc:range pp:Fluent ;
-                           oslc:occurs oslc:Exactly-one ;
-                           oslc:valueType xsd:string ;
-                           ].
+#FHead not needed it is equal to Fluent
+# :FHeadShape rdf:type oslc:ResourceShape;
+#             oslc:describes pp:FHead ;
+#             oslc:property [a oslc:Property ;
+#                            oslc:propertyDefinition :hasArgument ;
+#                            oslc:name "hasArgument"^^xsd:string ;
+#                            oslc:range pp:Fluent ;
+#                            oslc:occurs oslc:Exactly-one ;
+#                            oslc:valueType xsd:string ;
+#                            ].
 
 :MinusFunctionShape rdf:type oslc:ResourceShape;
            oslc:describes pp:MinusFunction ;
+           dcterms:title "Shape of resources of type MinusFunction";
            oslc:property [a oslc:Property ;
                           oslc:propertyDefinition :hasArgument ; #a Fexp can contain a number (numeric literal that is an integer of float of form n.n), a negative fluent expression,  or an FHead
                           oslc:name "hasArgument"^^xsd:string ;
@@ -336,6 +347,8 @@
 
 
 :OrderedArgumentShape rdf:type oslc:ResourceShape;
+            dcterms:title "Shape of resources of type OrderedArgument";
+            dcterms:description "Shape of resources of type OrderedArgument. Every argument of an action that needs a relative order will be subclass of OrderedArgument";
             oslc:describes pp:OrderedArgument ;
             oslc:property [a oslc:Property ;
                            oslc:propertyDefinition sh:order ;
@@ -369,11 +382,11 @@
 
 :AssignmentOperatorShape rdf:type oslc:ResourceShape ;
                 oslc:describes pp:AssignmentOperator ;
-                dcterms:title   "Shape of resources of type Assignment Operator that can be used in the root of an effect of a PDDL action together with FHead and FExp, note that FHead should be always the first argument, and FExp the second argument of Assignment Operator";
+                dcterms:title   "Shape of resources of type Assignment Operator that can be used in the root of an effect of a PDDL action together with Fluent and FExp, note that Fluent (in PDDL definition it is FHead) should be always the first argument, and FExp the second argument of Assignment Operator";
                 oslc:property [a oslc:Property ;
-                               oslc:propertyDefinition :hasFHeadArgument  ; #used to specify that a Predicate can have variables
-                               oslc:name "hasFHeadArgument"^^xsd:string ;
-                               oslc:range pp:FHead ;
+                               oslc:propertyDefinition :hasFluentArgument  ; #used to specify that a Predicate can have variables
+                               oslc:name "hasFluentArgument"^^xsd:string ;
+                               oslc:range pp:Fluent ;
                                oslc:occurs oslc:Exectly-one ; #The position of Fhead should be the first
                                oslc:valueType oslc:Resource ;
                                 ] ,
@@ -469,11 +482,28 @@
                                   ] .
 
 
-:OrShape rdf:type oslc:ResourceShape;  #describes Or that can be used as a logical operator in precondition)
-                  oslc:describes pp:Or . #TO BE DEFINED, SEPARATED IN PRECONDITION AND EFFECT
+:OrGDShape rdf:type oslc:ResourceShape;
+                  oslc:describes pp:OrGD ; #TO BE DEFINED WITH ARGUMENTS
+                  dcterms:title "Shape of resources of type OrGD";
+                  dcterms:description "Shape of resources of type OrGD. Or used in the GoalDescription".
+
+:OrEffectShape rdf:type oslc:ResourceShape;
+                  oslc:describes pp:OrEffect ; #TO BE DEFINED WITH ARGUMENTS
+                  dcterms:title "Shape of resources of type OrEffect";
+                  dcterms:description "Shape of resources of type OrEffect. Or used in the Effect".
 
 :WhenShape rdf:type oslc:ResourceShape;  #describes When used in effect
-                  oslc:describes pp:When . #TO BE DEFINED, SEPARATED IN PRECONDITION AND EFFECT
+                  oslc:describes pp:When ; #TO BE DEFINED WITH ARGUMENTS
+                  dcterms:title "Shape of resources of type When";
+                  dcterms:description "Shape of resources of type When that can be used only in the effect part of an action".
 
-:ForAllShape rdf:type oslc:ResourceShape;  #describes ForAll that can be used in precondition anf effect with different properties). Will be divived into two shapes
-                    oslc:describes pp:ForAll . #TO BE DEFINED, SEPARATED IN PRECONDITION AND EFFECT
+:ForallEffectShape rdf:type oslc:ResourceShape;
+             dcterms:title "Shape of resources of type ForallEffect";
+             dcterms:description "Shape of resources of type ForallEffect that can be used in the Effect.";
+             oslc:describes pp:ForallEffect . #TO BE DEFINED WITH ARGUMENTS
+
+
+:ForallGDShape rdf:type oslc:ResourceShape;
+            dcterms:title "Shape of resources of type ForallGD"; #TO BE DEFINED WITH ARGUMENTS
+            dcterms:description "Shape of resources of type ForallEffect that can be used in the GoalDescription.";
+            oslc:describes pp:ForallGD . #TO BE DEFINED

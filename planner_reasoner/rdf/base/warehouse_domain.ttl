@@ -92,7 +92,10 @@ warehouse:Object rdf:type pp:VariableType .
 #Predicates, fluents will be blank nodes, since they are annonymous resources, local to the action and needed for the specification of a particular action
 ##################################################################################################################
 
-#Definition of action : moveToWaypoint
+
+################################################################################
+#START OF DEFINITION OF ACTION :  moveToWaypoint
+################################################################################
 :moveToWaypoint rdf:type pp:Action ;  #Action is not a regular node!
                  rdfs:label "moveToWaypoint" ;
                  ppos:hasPrecondition _:gd1 ;
@@ -102,12 +105,22 @@ warehouse:Object rdf:type pp:VariableType .
 _:gd1 rdf:type pp:GoalDescription ;
       ppos:hasGDArgument _:and1 .
 
+_:effect1 rdf:type pp:Effect ;
+      ppos:hasEffectArgument _:and2 .
+
 _:and1 rdf:type pp:AndGD ;
        ppos:hasArgumentInGD _:is_at1 ,
                             _:can_move1 ,
                             _:not1 ,
                             _:gt1 ;
         sh:order 0.
+
+_:and2 rdf:type pp:AndEffect;
+       ppos:hasArgumentInEffect _:is_at2 ,
+                                _:not2 ,
+                                _:decrease1 ;
+       sh:ordrer 0.
+
 
 _:is_at1 rdf:type pp:Predicate ;
          ppos:hasPredicateType _:is_at ;
@@ -127,6 +140,20 @@ _:pa2 rdf:type pp:PredicateArgument ;
       ppos:hasVariableType :pta2 ;
       sh:order :pta2 .
 
+_:is_at2 rdf:type pp:Predicate ;
+         ppos:hasPredicateType _:is_at ;
+         ppos:hasPredicateArgument _:pa1 ;  #same as in is_at1, having variable robot
+         ppos:hasPredicateArgument _:pa4 ;
+         sh:order 0.
+
+
+_:pa4 rdf:type pp:PredicateArgument ;
+     ppos:hasVariable [a pp:Variable ;
+                       rdfs:label "to-waypoint";] ;
+     ppos:hasVariableType :pta2 ;
+     sh:order :pta2 .  # same variable type and order as pta2
+
+
 _:can_move1 rdf:type pp:Predicate ;
          ppos:hasPredicateType _:can_move ;
          ppos:hasPredicateArgument _:pa3 ,
@@ -140,15 +167,22 @@ _:pa3 rdf:type pp:PredicateArgument ;
       ppos:hasVariableType :pta3 ;
       sh:order :pta3 .
 
-_:pa4 rdf:type pp:PredicateArgument ;
-      ppos:hasVariable [a pp:Variable ;
-                        rdfs:label "to-waypoint";] ;
-      ppos:hasVariableType :pta2 ;
-      sh:order :pta2 .
 
 _:not1 rdf:type pp:NotGD ;
        ppos:hasArgumentInGD _:is_recharging1 ;
        sh:order 2.
+
+_:not2 rdf:type pp:NotEffect ;
+      ppos:hasArgumentInEffect _:is_at1 ; #reused is_at1 from _:and1 since it has the same arguments and the same relative position in _:and1 and _:not1 i.e. 0
+      sh:order 1. #relative order
+
+
+_:decrease1 rdf:type pp:Decrease ;
+            ppos:hasFluentArgument _:charge_level1 ;
+            ppos:hasFExpArgument _:nl1;
+            sh:order 3.
+
+
 
 _:is_recharging1 rdf:type pp:Predicate ;
                  ppos:hasPredicateType :is_recharging ;
@@ -160,12 +194,14 @@ _:gt1 rdf:type pp:GT ;
       ppos:hasFExp _:low_charge1 .
 
 
-#definition of fluents and fluent arguments used in the actions (instances of fluent types)
-
 _:charge_level1 rdf:type pp:Fluent ;
             ppos:hasFluentType :charge_level ;
             ppos:hasFluentArgument _:fa1 ;
-            sh:order 0.  #relative order in gt1
+            sh:order 0.  #relative order in gt1 and in descrease1
+
+_:nl1 rdf:type pp:NumericLiteral ;
+      ppos::hasValue 2;
+      sh:order 1.
 
 _:low_charge1 rdf:type pp:Fluent ;
             ppos:hasFluentType :low_charge ;
@@ -175,3 +211,17 @@ _:low_charge1 rdf:type pp:Fluent ;
 _:fa1 a pp:FluentArgument;
         ppos:hasVariable _:robot1;
         ppos:hasVariableType :fta1 .  #in the PDDL generation process we should generate hasVariableType out of _:fta1
+
+################################################################################
+#END OF DEFINITION OF ACTION :  moveToWaypoint
+################################################################################
+
+
+################################################################################
+#START OF DEFINITION OF ACTION :  pickupAtPlace
+################################################################################
+
+:moveToWaypoint rdf:type pp:Action ;  #Action is not a regular node!
+                 rdfs:label "pickupAtPlace" ;
+                 ppos:hasPrecondition _:gd1 ;
+                 ppos:hasEffect _:effect1 .
