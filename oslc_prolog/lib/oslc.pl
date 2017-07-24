@@ -248,14 +248,26 @@ marshal_some_property(IRI, PropertyDefinition, Value, Type, Sink) :-
 %
 %    * properties(Properties)
 %    Copy only properties specified in Properties. The format of the
-%    Properties structure is defined by properties term in the following
-%    BNF grammar:
+%    Properties structure is defined by the =properties= term in the
+%    following BNF grammar:
 %    ==
 %      properties   ::= property ("," property)*
 %      property     ::= identifier | wildcard | nested_prop
 %      nested_prop  ::= (identifier | wildcard) "{" properties "}"
 %      wildcard     ::= "*"
 %      identifier   ::= prefix ":" name
+%    ==
+%
+%    * prefix(Prefix)
+%    Define a set of prefixes to be used in _properties_ option. The
+%    syntax of Prefix is defined by the =prefix_defs= term in the
+%    following BNF grammar:
+%    ==
+%      prefix_defs ::= prefix_def ("," prefix_def)*
+%      prefix_def  ::= prefix "=" uri_ref_esc
+%      prefix      ::= /* everything until '=' character */
+%      uri_ref_esc ::= /* an angle bracket-delimited URI reference
+%                      in which > and \ are \-escaped. */
 %    ==
 
 copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
@@ -264,32 +276,63 @@ copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   must_be(ground, Source),
   must_be(ground, Sink),
   applicable_shapes(IRIFrom, Shapes, Source),
-  ( selectchk(properties(Properties), Options, RestOptions)
-  -> ( parse_properties(Properties, PropertyList)
-     -> NewOptions = [properties(PropertyList)|RestOptions]
-     ; NewOptions = RestOptions
+  ( selectchk(prefix(Prefix), Options, RestOptions1)
+  -> ( parse_prefix(Prefix, PrefixList)
+     -> O1 = [prefix(PrefixList)|RestOptions1]
+     ; O1 = RestOptions1
      )
-  ; NewOptions = Options
+  ; O1 = Options
+  ),
+  ( selectchk(properties(Properties), O1, RestOptions2)
+  -> ( parse_properties(Properties, PropertyList, PrefixList)
+     -> O2 = [properties(PropertyList)|RestOptions2]
+     ; O2 = RestOptions2
+     )
+  ; O2 = O1
   ),
   rdf_transaction((
-    copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, NewOptions)
+    copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, O2)
   )).
 
-parse_properties(Properties, Structure) :-
+parse_properties(Properties, Structure, Prefixes) :-
   atom_chars(Properties, CProperties),
-  properties(Structure, CProperties, []).
+  properties(Structure, Prefixes, CProperties, []).
 
-properties([P|Ps]) --> property(P), ( [','], properties(Ps) ; [], { Ps = [] } ).
-property(P) --> identifier(P) ; wildcard(P) ; nested_prop(P).
-nested_prop(NP) --> ( identifier(N) ; wildcard(N) ), ['{'], properties(Ps), ['}'],
+properties([P|Ps], Prefixes) --> property(P, Prefixes), ( [','], properties(Ps, Prefixes) ; [], { Ps = [] } ).
+property(P, Prefixes) --> identifier(P, Prefixes) ; wildcard(P) ; nested_prop(P, Prefixes).
+nested_prop(NP, Prefixes) --> ( identifier(N, Prefixes) ; wildcard(N) ), ['{'], properties(Ps, Prefixes), ['}'],
                     { NP =.. [N,Ps] }.
 wildcard('*') --> ['*'].
-identifier(I) --> word(Prefix), [':'], word(Name),
-                  { atomic_list_concat([Prefix, ':', Name], I) }.
+identifier(I, Prefixes) --> word(Prefix), [':'], word(Name),
+                            { once((
+                                nonvar(Prefixes),
+                                member([Prefix,Uri], Prefixes)
+                              ; rdf_current_prefix(Prefix, Uri)
+                              )),
+                              atom_concat(Uri, Name, I)
+                            }.
 word(W) --> word_letters(Wl), { atom_chars(W, Wl), ! }.
 word_letters([L|Ls]) --> letter(L), word_letters(Ls).
 word_letters([]) --> [].
 letter(L) --> [L], { \+ member(L, [':','*',',','{','}']) }.
+
+parse_prefix(Prefix, Structure) :-
+  atom_chars(Prefix, CPrefix),
+  prefixes(Structure, CPrefix, []).
+
+prefixes([P|Ps]) --> prefix_def(P), ( [','], prefixes(Ps) ; [], { Ps = [] } ).
+prefix_def([P,U]) --> prefix(P), ['='], uri(U).
+prefix(P) --> prefix_letters(Pl), { atom_chars(P, Pl), ! }.
+prefix_letters([L|Ls]) --> prefix_letter(L), prefix_letters(Ls).
+prefix_letters([]) --> [].
+prefix_letter(L) --> [L], { L \== '=' }.
+
+uri(U) --> ['<'], uri_letters(Ul), { atom_chars(U, Ul), ! }, ['>'].
+uri_letters([L|Ls]) --> uri_letter(L), uri_letters(Ls).
+uri_letters([]) --> [].
+uri_letter('>') --> ['\\'], ['>'].
+uri_letter('\\') --> ['\\'], ['\\'].
+uri_letter(L) --> [L], { L \== '>' }.
 
 copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, Options) :-
   delete_resource(IRITo, Sink),
@@ -316,9 +359,7 @@ copy_bnode(Value, ShapeSource, Source, Sink, Options, IRITo, Property, PropertyL
       NewOptions = Options
     ; once((
         member('*'(SubList), PropertyList)
-      ; rdf_global_id(LProperty, Property),
-        term_to_atom(LProperty, AProperty),
-        P =.. [AProperty, SubList],
+      ; P =.. [Property, SubList],
         member(P, PropertyList)
       )),
       NewOptions = [properties(SubList)|RestOptions]
@@ -332,11 +373,9 @@ copy_bnode(Value, ShapeSource, Source, Sink, Options, IRITo, Property, PropertyL
 
 copy_property(Value, Sink, IRITo, Property, Type, PropertyList) :-
   ( ( var(PropertyList)
-    ; rdf_global_id(LProperty, Property),
-      term_to_atom(LProperty, AProperty),
-      once((
+    ; once((
         member('*', PropertyList)
-      ; member(AProperty, PropertyList)
+      ; member(Property, PropertyList)
       ))
     )
   -> marshal_property(IRITo, Property, Value, Type, Sink)

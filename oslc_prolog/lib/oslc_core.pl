@@ -8,12 +8,20 @@
 
 handle_get(Request, IRI, GraphOut) :-
   once(rdf(IRI, _, _)),
-  ( member(search(Search), Request),
-    member(('oslc.properties'=Properties), Search)
-  -> Option = [properties(Properties)]
-  ; Option = []
-  ),
-  copy_resource(IRI, IRI, rdf, rdf(GraphOut), [inline(rdf)|Option]).
+  once((
+    member(search(Search), Request),
+    findall(Option, (
+        member(Key=Value, Search),
+        atom_concat('oslc.', OP, Key),
+        Option =.. [OP, Value]
+      ), Options
+    )
+  ; true
+  )),
+  once((
+    copy_resource(IRI, IRI, rdf, rdf(GraphOut), [inline(rdf)|Options])
+  ; format('Status: 400~n~n')
+  )).
 
 handle_post(_Request, _IRI, _GraphIn, _GraphOut) :-
   true.
