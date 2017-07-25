@@ -17,7 +17,12 @@
 	cpack:author [ a foaf:Person ;
 		       foaf:name "Leonid Mokrushin" ;
 		       foaf:mbox <leonid.mokrushin@ericsson.com> ;
-		     ] ;
+		     ] ,
+				 [ a foaf:Person ;
+			 		 foaf:name "Aneta Vulgarakis Feljan" ;
+			 		 foaf:mbox <aneta.vulgarakis@ericsson.com> ;
+			 	 ] .
+
 	cpack:primaryRepository
 	    [ a cpack:GitRepository ;
 	      cpack:gitURL <ssh://gitolite@openalm.lmera.ericsson.se/scott/scott.git>

@@ -1,59 +1,124 @@
-@prefix : <http://ontology.cf.ericsson.net/planning_problem#> .
+@prefix : <http://ontology.cf.ericsson.net/planning_ontology#> .
+@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology#> .
+@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#> .
+@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@base <http://ontology.cf.ericsson.net/planning_problem> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
+@base <http://ontology.cf.ericsson.net/planning_ontology> .
 
-<http://ontology.cf.ericsson.net/planning_problem> rdf:type owl:Ontology ;
-                                                   owl:versionIRI <http://ontology.cf.ericsson.net/planning_problem/1.0.0> .
+#studied from the bnf specification of PDDL 2.1. https://www.jair.org/media/1129/live-1129-2132-jair.pdf without durative actions
 
-:Action rdf:type owl:Class .
-:Variable rdf:type owl:Class .
-:VariableType rdf:type owl:Class .
-:Fluent rdf:type owl:Class .
-:FluentType rdf:type owl:Class .
-:Predicate rdf:type owl:Class .
+<http://ontology.cf.ericsson.net/planning_ontology> rdf:type rdf:Ontology ;
+                                                   rdf:versionIRI <http://ontology.cf.ericsson.net/planning_ontology/1.0.0> .
+
+
+
+
+
+:Action rdf:type rdf:class .
+:Precondition rdf:type rdf:class .
+:Effect  rdf:type rdf:class .
+:GoalDescription rdf:type rdf:class .
+:OrderedArgument rdf:type rdf:class .  #all subclasses of OrderedArgument will have an order property sh:order to show the relative position of that element in the parent
+:VariableType rdf:type :OrderedArgument .
+:Variable rdf:type :OrderedArgument .
+:FluentType rdf:type :OrderedArgument . #no need to be ordered!
+:FluentTypeArgument rdf:type :OrderedArgument .
+:Fluent rdf:type :OrderedArgument .
+:FluentArgument rdf:type :OrderedArgument .
+:PredicateType rdf:type rdf:class . #no need to be ordered
+:PredicateTypeArgument rdf:type :OrderedArgument .
+:Predicate rdf:type :OrderedArgument .
+:PredicateArgument rdf:type :OrderedArgument .
+:FExp rdf:type :OrderedArgument .
+#:FHead rdf:type :OrderedArgument .
+:NumericLiteral rdf:type :OrderedArgument .
+
+:AssignmentOperator rdf:type :OrderedArgument .  #are possible in effects over fluents (decrease, increase, scaleup, assign, scaledown
+:BinnaryOperator rdf:type :OrderedArgument  .  #are possible in preconditions and effects over fluents (+, -, * and /)
+
+:OrderedArgument rdf:type :OrderedArgument .
+
+:BinaryComparison rdf:type :OrderedArgument . #e.g. binary comparision operators are only allowed in precondition
+
+:EffectOrderedArgument rdf:type :OrderedArgument .
+
+
+:MinusFunction rdf:type rdf:OrderedArgument ;
+                 rdfs:label "-".
 
 
 #logical operators
-:And rdf:type owl:Class ;
-     rdfs:label "and".
+:And rdf:type rdf:OrderedArgument ;
+                 rdfs:label "and".
 
-:Or rdf:type owl:Class ;
+:AndGD rdf:type :And .
+:AndEffect rdf:type :And .
+
+
+:Or rdf:type :OrderedArgument ;
     rdfs:label "or".
 
-:Not rdf:type owl:Class ;
-     rdfs:label "not".
+:OrGD rdf:type :Or .
+:OrEffect rdf:type :Or .
 
-:Imply rdf:type owl:Class ;
+:Not rdf:type :OrderedArgument ;
+     rdfs:label "not".
+:NotGD rdf:type :Not .
+:NotEffect rdf:type :Not .
+
+:Imply rdf:type :OrderedArgument ;
        rdfs:label "imply".
 
+:Forall rdf:type :OrderedArgument ;
+       rdfs:label "forall".
+
+:ForallEffect rdf:type :Forall .
+:ForallGD rdf:type :Forall.
+
+:Exists rdf:type :OrderedArgument ;
+       rdfs:exists "forall".
 
 
-#aritmetic operators
-:GT rdf:type owl:Class ;
+
+#binary comparison only allowed in precondition
+:GT rdf:type :BinaryComparison ;
     rdfs:label ">".
-:LT rdf:type owl:Class ;
+:LT rdf:type :BinaryComparison ;
     rdfs:label "<".
-:EQ rdf:type owl:Class .
-:GE rdf:type owl:Class .
-:LE rdf:type owl:Class .
+:EQ rdf:type :BinaryComparison ;
+    rdfs:label "=".
+:GE rdf:type :BinaryComparison ;
+    rdfs:label ">=".
+:LE rdf:type :BinaryComparison ;
+    rdfs:label "<=".
 
-:Plus rdf:type owl:Class ;
-      rdfs:label "increase".
-:Minus rdf:type owl:Class ;
-      rdfs:label "decrease".
-:Multply rdf:type owl:Class .
-:Divide rdf:type owl:Class .
+#binary operations over fluents, allowed in precondition and effect
+:Plus rdf:type :BinaryOperator ;
+      rdfs:label "+".
+:Minus rdf:type :BinaryOperator ;
+      rdfs:label "-".
+:Multply rdf:type :BinaryOperator ;
+        rdfs:label "*".
+:Divide rdf:type :BinaryOperator ;
+        rdfs:label "/".
 
-:Forall rdf:type owl:Class .
-:Exists rdf:type owl:Class .
 
-:When rdf:type owl:Class .
+#assignment operators allowed in effect, they can be done only over fluent
+:Increase rdf:type :AssignmentOperator ;
+          rdfs:label "increase".
+:Decrease rdf:type :AssignmentOperator ;
+          rdfs:label "decrease".
+:Assign rdf:type :AssignmentOperator ;
+        rdfs:label "assign".
+:ScaleUp rdf:type :AssignmentOperator ;
+        rdfs:label "scale-up".
+:ScaleDown rdf:type :AssignmentOperator ;
+           rdfs:label "scale-down".
 
-:hasVariables rdf:type owl:ObjectProperty .
-:hasTypes rdf:type owl:ObjectProperty .
-:hasPrecondition rdf:type owl:ObjectProperty .
-:hasEffect rdf:type owl:ObjectProperty .
-:hasArguments rdf:type owl:ObjectProperty .
-:type rdf:type owl:ObjectProperty .
+#for conditional effect, allowed only in the effect
+:When rdf:type :OrderedArgument ;
+      rdfs:label "when".

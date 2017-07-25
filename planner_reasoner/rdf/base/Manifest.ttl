@@ -1,18 +1,34 @@
 @prefix	lib: <http://www.swi-prolog.org/rdf/library/> .
 @prefix	dcterms: <http://purl.org/dc/terms/> .
-@prefix	pp: <http://ontology.cf.ericsson.net/planning_problem#> .
+@prefix	pp: <http://ontology.cf.ericsson.net/planning_ontology#> .
 @prefix	wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
+@prefix	wp: <http://ontology.cf.ericsson.net/warehouse_problem#> .
+@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#> .
+
+<ppos>
+		a lib:Schema ;
+		a lib:Virtual ;
+		dcterms:title "Vocabulary of OSLC shapes describing resources that can be used in PDDL" ;
+		lib:source ppos: ;
+		lib:schema <pp_oslc_shapes.ttl> .
 
 <pp>
 	a lib:Schema ;
 	a lib:Virtual ;
-	dcterms:title "Vocabulary to define a planning problem" ;
+	dcterms:title "Vocabulary of class relations between PDDL resources" ;
 	lib:source pp: ;
 	lib:schema <pp.ttl> .
 
 <wd>
 	a lib:Instances ;
 	a lib:Virtual ;
-	dcterms:title "Sample planning problem" ;
+	dcterms:title "Sample planning PDDL domain" ;
 	lib:source wd: ;
 	lib:schema <warehouse_domain.ttl> .
+
+<wp>
+		a lib:Instances ;
+		a lib:Virtual ;
+		dcterms:title "Sample planning PDDL problem" ;
+		lib:source wp: ;
+		lib:schema <warehouse_problem.ttl> .

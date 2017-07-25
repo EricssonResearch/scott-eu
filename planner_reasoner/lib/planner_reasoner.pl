@@ -5,11 +5,16 @@
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_library)).
 
-:- rdf_register_prefix(pp, 'http://ontology.cf.ericsson.net/planning_problem#').
+:- rdf_register_prefix(pp, 'http://ontology.cf.ericsson.net/planning_ontology#').
+:- rdf_register_prefix(wd, 'http://ontology.cf.ericsson.net/warehouse_domain#').
+:- rdf_register_prefix(wp, 'http://ontology.cf.ericsson.net/warehouse_problem#').
+:- rdf_register_prefix(ppos, 'http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#').
 
 :- rdf_attach_library(planner_reasoner(rdf)).
 :- rdf_load_library(pp).
 :- rdf_load_library(wd).
+:- rdf_load_library(ppos).
+:- rdf_load_library(wp).
 
 :- rdf_meta generate_pddl(r, -).
 :- rdf_meta generate_pddl(r, r, -, -).
@@ -87,6 +92,13 @@ generate_precondition0([H1|T1], SubIndent, Out) :-
                                         SubSubIndent is SubIndent+10,
                                         format(Out, '~*|(~w', [SubSubIndent,PredName1]),
                                         generate_precondition0(SubPredicateList, SubIndent, Out));
+  (rdf(H1, rdf:type, pp:'And') ->
+                                        rdf(pp:'And', rdfs:label, ^^(PredName1, _)),
+                                        rdf(H1, pp:hasArguments, SubPredicates),
+                                        rdf_list(SubPredicates, SubPredicateList),
+                                        SubSubIndent is SubIndent+10,
+                                        format(Out, '~*|(~w', [SubSubIndent,PredName1]),
+                                        generate_precondition0(SubPredicateList, SubIndent, Out));
   (rdf(H1, rdf:type, pp:'Variable') ->
                                       rdf(H1, rdf:type, pp:'Variable'),
                                       rdf(H1, rdfs:label, ^^(VarName, _)),
@@ -98,9 +110,10 @@ generate_precondition0([H1|T1], SubIndent, Out) :-
                                       rdf_list(SubPredicates, SubPredicateList),
                                       SubSubIndent is SubIndent+10,
                                       format(Out, '~*|(~w', [SubSubIndent,PredName1]),
-                                      generate_precondition0(SubPredicateList, SubIndent, Out)),
+                                      generate_precondition0(SubPredicateList, SubIndent, Out));
   generate_precondition0(T1, SubIndent, Out),
   (T1=[]->true;format(Out, ' ~n', [])).
+
 
 
 /*generate_precondition1([], SubIndent, _) :- !.
