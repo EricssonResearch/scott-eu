@@ -29,7 +29,7 @@ dispatcher(Request) :-
   E, (
     ( E = status_code(StatusCode)
     -> format('Status: ~w~n~n', [StatusCode])
-    ; format('Status: 500~n~n~w~n', [E]) % internal server error
+    ; format('Status: 500~nContent-type: text/plain~n~n~w~n', [E]) % internal server error
     )
   )).
 
@@ -114,6 +114,8 @@ generate_response(Request, Prefix, ResourceSegments, ContentType, GraphIn, Graph
   rdf_graph_property(GraphOut, triples(Triples)),
   ( Triples > 0 % the output document is not empty
   -> format('Status: 200~n'),
+    graph_md5(GraphOut, Hash),
+    format('ETag: "~w"~n', [Hash]),
     format('Content-type: ~w; charset=utf-8~n~n', [ContentType]),
     serializer(ContentType, Serializer), % select proper serializer
     current_output(Out),

@@ -2,7 +2,6 @@
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
 @prefix	oslc_shapes: <http://ontology.cf.ericsson.net/oslc_shapes/> .
-@prefix	oslc_example: <http://ontology.cf.ericsson.net/oslc_example/> .
 
 <oslc>
 	a lib:Schema ;
@@ -26,16 +25,4 @@
 [ a lib:Namespace ;
 	lib:mnemonic "oslc_shapes" ;
 	lib:namespace oslc_shapes:
-] .
-
-<oslc_example>
-	a lib:Schema ;
-	a lib:Virtual ;
-	dcterms:title "An example OSLC Service Provider Catalog" ;
-	lib:source <http://ontology.cf.ericsson.net/oslc_example#> ;
-	lib:schema <oslc_example.ttl> .
-
-[ a lib:Namespace ;
-	lib:mnemonic "oslc_example" ;
-	lib:namespace oslc_example:
 ] .
