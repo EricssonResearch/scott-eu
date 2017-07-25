@@ -13,8 +13,12 @@
 :- oslc_put(oslc_example:leoResource, handle_post_put).
 :- oslc_delete(oslc_example:leoResource, handle_delete).
 
-handle_get(_Request, _IRI, _GraphOut) :-
-  format('Status: 416~n~n').
+handle_get(Request, _IRI, GraphOut) :-
+  get_time(T),
+  member(user_agent(A), Request),
+  atom_string(A, S),
+  create_resource(oslc_example:leoResource, [oslc_example:leoResourceClass],
+                 [title=S, created=T], rdf(GraphOut)).
 
 handle_post_put(_Request, _IRI, _GraphIn, _GraphOut) :-
   format('Status: 417~n~n').

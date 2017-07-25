@@ -50,6 +50,11 @@
 :- rdf_meta rdfType(r).
 rdfType(rdf:type).
 
+check_iri(NS:Local, IRI) :- !,
+  rdf_global_id(NS:Local, IRI).
+check_iri(IRI, IRI) :-
+  must_be(atom, IRI).
+
 %!  create_resource(+IRI, +Types, +Properties, +Sink) is det.
 %
 %   Create OSLC resource IRI of given Types with given Properties in Sink.
@@ -66,19 +71,19 @@ create_resource(IRI, Types, Properties, Sink) :-
 %   from given list of Shapes, which can be empty.
 
 create_resource(IRI, Types, Shapes, Properties, Sink) :-
-  must_be(atom, IRI),
+  check_iri(IRI, Id),
   must_be(list(atom), Types),
   must_be(list(atom), Shapes),
   must_be(list(ground), Properties),
   must_be(ground, Sink),
   rdf_transaction((
-    delete_property(IRI, _, Sink),
+    delete_property(Id, _, Sink),
     rdfType(RT),
-    marshal_list_property(IRI, RT, Types, _, Sink),
+    marshal_list_property(Id, RT, Types, _, Sink),
     oslcInstanceShape(OIS),
-    write_property(IRI, OIS, Shapes, _, Sink),
-    oslc_resource0(IRI, Shapes, Properties, Sink),
-    check_resource(IRI, Shapes, Sink)
+    write_property(Id, OIS, Shapes, _, Sink),
+    oslc_resource0(Id, Shapes, Properties, Sink),
+    check_resource(Id, Shapes, Sink)
   )).
 
 %!  applicable_shapes(+Types, -Shapes) is det.
@@ -104,8 +109,9 @@ applicable_shapes(Types, Shapes) :-
 %   for _SourceSink_.
 
 oslc_resource(IRI, Properties) :-
-  autodetect_resource_graph(IRI, Graph),
-  oslc_resource(IRI, Properties, rdf(Graph)).
+  check_iri(IRI, Id),
+  autodetect_resource_graph(Id, Graph),
+  oslc_resource(Id, Properties, rdf(Graph)).
 
 autodetect_resource_graph(IRI, Graph) :-
   once((
@@ -143,10 +149,11 @@ oslc_resource(IRI, Properties, SourceSink) :-
 %   resource IRI from Source.
 
 applicable_shapes(IRI, Shapes, Source) :-
+  check_iri(IRI, Id),
   oslcInstanceShape(OIS),
-  read_property(IRI, OIS, ReadShapes, _, Source),
+  read_property(Id, OIS, ReadShapes, _, Source),
   rdfType(RT),
-  unmarshal_list_property(IRI, RT, Types, _, Source),
+  unmarshal_list_property(Id, RT, Types, _, Source),
   findall(ResourceShape, (
     member(ResourceShape, ReadShapes),
     once((
@@ -159,6 +166,7 @@ applicable_shapes(IRI, Shapes, Source) :-
 oslc_resource0(_, _, [], _) :- !.
 
 oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
+  check_iri(IRI, Id),
   atom_string(Property, SProperty),
   once((
     member(ResourceShape, Shapes),
@@ -169,22 +177,22 @@ oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
       rdf_equal(Property, PropertyDefinition)
     )),
     ( var(Value)
-    -> read_property(IRI, PropertyResource, _, Value, SourceSink)
+    -> read_property(Id, PropertyResource, _, Value, SourceSink)
     ; once((
         nonvar(PropertyDefinition)
       ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)
       )),
-      delete_property(IRI, PropertyDefinition, SourceSink),
-      write_property(IRI, PropertyResource, _, Value, SourceSink)
+      delete_property(Id, PropertyDefinition, SourceSink),
+      write_property(Id, PropertyResource, _, Value, SourceSink)
     )
   ) ; (
     ( var(Value)
-    -> unmarshal_some_property(IRI, Property, Value, _, SourceSink)
-    ; delete_property(IRI, Property, SourceSink),
-      marshal_some_property(IRI, Property, Value, _, SourceSink)
+    -> unmarshal_some_property(Id, Property, Value, _, SourceSink)
+    ; delete_property(Id, Property, SourceSink),
+      marshal_some_property(Id, Property, Value, _, SourceSink)
     )
   )),
-  oslc_resource0(IRI, Shapes, RemainingProperties, SourceSink).
+  oslc_resource0(Id, Shapes, RemainingProperties, SourceSink).
 
 % ------------ CHECK PROPERTY
 
@@ -280,11 +288,11 @@ marshal_some_property(IRI, PropertyDefinition, Value, Type, Sink) :-
 %    ==
 
 copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
-  must_be(atom, IRIFrom),
-  must_be(atom, IRITo),
+  check_iri(IRIFrom, IdFrom),
+  check_iri(IRITo, IdTo),
   must_be(ground, Source),
   must_be(ground, Sink),
-  applicable_shapes(IRIFrom, Shapes, Source),
+  applicable_shapes(IdFrom, Shapes, Source),
   ( selectchk(prefix(Prefix), Options, RestOptions1)
   -> parse_prefix(Prefix, PrefixList),
      O1 = [prefix(PrefixList)|RestOptions1]
@@ -296,7 +304,7 @@ copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   ; O2 = O1
   ),
   rdf_transaction((
-    copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, O2)
+    copy_resource0(IdFrom, IdTo, Shapes, Source, Sink, O2)
   )).
 
 parse_prefix(Prefix, Structure) :-
@@ -418,10 +426,10 @@ copy_property(Value, Sink, IRITo, Property, Type, PropertyList) :-
 %   of its local resources (blank nodes).
 
 delete_resource(IRI, Sink) :-
-  must_be(atom, IRI),
+  check_iri(IRI, Id),
   must_be(ground, Sink),
   rdf_transaction((
-    ignore(delete_resource0(IRI, Sink))
+    ignore(delete_resource0(Id, Sink))
   )).
 
 delete_resource0(IRI, Sink) :-

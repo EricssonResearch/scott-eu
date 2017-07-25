@@ -69,8 +69,14 @@ check_value_type(oslc:'AnyResource', Value) :-
 check_value_type(xsd:boolean, Value) :-
   member(Value, [true, false]).
 
+check_value_type(xsd:float, Value) :-
+  float(Value).
+
 check_value_type(xsd:dateTime, Value) :-
-  parse_time(Value, iso_8601, _).
+  float(Value).
+
+check_value_type(xsd:dateTime, Value) :-
+  xsd_time_string(Value, 'http://www.w3.org/2001/XMLSchema#dateTime', _).
 
 check_value_type(xsd:decimal, Value) :-
   float(Value).
@@ -78,17 +84,15 @@ check_value_type(xsd:decimal, Value) :-
 check_value_type(xsd:double, Value) :-
   float(Value).
 
-check_value_type(xsd:float, Value) :-
-  float(Value).
-
 check_value_type(xsd:integer, Value) :-
   integer(Value).
+
+check_value_type(rdf:'XMLLiteral', Value) :-
+  string(Value).
 
 check_value_type(xsd:string, Value) :-
   atomic(Value).
 
-check_value_type(rdf:'XMLLiteral', Value) :-
-  string(Value).
 
 % ------------ LITERAL TYPES
 

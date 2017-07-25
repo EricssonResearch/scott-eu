@@ -52,6 +52,13 @@
                   oslc:valueType rdf:XMLLiteral
                 ] ,
                 [ a oslc:Property ;
+                  oslc:name "created"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:created ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:dateTime
+                ] ,
+                [ a oslc:Property ;
                   oslc:name "internal"^^xsd:string ;
                   oslc:propertyDefinition dcterms:publisher ;
                   oslc:occurs oslc:Zero-or-one ;
