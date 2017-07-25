@@ -33,7 +33,7 @@
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc_shape)).
-:- use_module(library(oslc_error)).
+:- use_module(library(oslc_rdf)).
 
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
@@ -112,17 +112,6 @@ oslc_resource(IRI, Properties) :-
   check_iri(IRI, Id),
   autodetect_resource_graph(Id, Graph),
   oslc_resource(Id, Properties, rdf(Graph)).
-
-autodetect_resource_graph(IRI, Graph) :-
-  once((
-    findall(G, rdf(IRI, rdf:type, _, G), Graphs),
-    sort(Graphs, SortedGraphs),
-    [Graph] = SortedGraphs
-  ; findall(G, rdf(IRI, _, _, G), Graphs),
-    sort(Graphs, SortedGraphs),
-    [Graph] = SortedGraphs
-  ; oslc_error("Could not reliably autodetect the source of resource [~w]", [IRI])
-  )).
 
 %!  oslc_resource(+IRI, +Properties, +SourceSink) is det.
 %

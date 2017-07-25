@@ -12,8 +12,6 @@
   dispatch/4
 ]).
 
-:- use_module(library(oslc_error)).
-
 :- meta_predicate(oslc_get(+, 3)).
 :- meta_predicate(oslc_get(+, 3, +)).
 :- meta_predicate(oslc_post(+, 4)).

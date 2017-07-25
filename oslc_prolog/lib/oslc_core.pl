@@ -3,12 +3,25 @@
 ]).
 
 :- use_module(library(oslc)).
+:- use_module(library(oslc_rdf)).
 :- use_module(library(oslc_dispatch)).
 :- use_module(library(oslc_error)).
 
 :- oslc_get((*):(*), handle_get, 0).
 :- oslc_post((*):(*), handle_post, 0).
+:- oslc_put((*):(*), handle_put, 0).
 :- oslc_delete((*):(*), handle_delete, 0).
+
+:- oslc_get(oslc:time, get_current_time).
+:- oslc_get(oslc:'Time', get_time_class).
+
+get_current_time(_Request, _IRI, GraphOut) :-
+  get_time(T),
+  create_resource(oslc:time, [oslc:'Time'],
+                 [dcterms:created='^^'(T, xsd:dateTime)], rdf(GraphOut)).
+
+get_time_class(_Request, _IRI, GraphOut) :-
+ create_resource(oslc:'Time', [rdfs:'Class'], [], rdf(GraphOut)).
 
 handle_get(Request, IRI, GraphOut) :-
   once(rdf(IRI, _, _)),
@@ -26,7 +39,7 @@ handle_get(Request, IRI, GraphOut) :-
     copy_resource(IRI, IRI, rdf, rdf(GraphOut), [inline(rdf)|Options])
   ),
     oslc_error(Message),
-    format('Status: 400~n~n~w~n', [Message])
+    format('Status: 400~nContent-type: text/plain~n~n~w~n', [Message])
   ).
 
 handle_post(_, IRI, GraphIn, _) :-
@@ -62,14 +75,34 @@ post_resource(IRI, Source, Sink) :-
     format('Status: 201~nLocation: ~w~n~n', [Location])
   ),
     oslc_error(Message),
-    format('Status: 400~n~n~w~n', [Message])
+    format('Status: 400~nContent-type: text/plain~n~n~w~n', [Message])
+  ).
+
+handle_put(Request, IRI, GraphIn, _) :-
+  catch((
+    once((
+      member(if_match(IfMatch), Request),
+      atomic_list_concat([_, ReceivedHash, _], '\"', IfMatch)
+    ; oslc_error('Missing or wrong header "If-Match" in PUT request to resource [~w]', [IRI])
+    )),
+    autodetect_resource_graph(IRI, Graph),
+    once((
+      resource_md5(IRI, Graph, ReceivedHash),
+      copy_resource(IRI, IRI, rdf(GraphIn), rdf(Graph), []),
+      format('Status: 204~n~n')
+    ; format('Status: 412~nContent-type: text/plain~n~nThe value of "If-Match" header does not match resource [~w]~n', [IRI])
+    ))
+  ),
+    oslc_error(Message),
+    format('Status: 400~nContent-type: text/plain~n~n~w~n', [Message])
   ).
 
 handle_delete(_, IRI) :-
   catch((
-    delete_resource(IRI, rdf),
+    autodetect_resource_graph(IRI, Graph),
+    delete_resource(IRI, rdf(Graph)),
     format('Status: 200~n~n')
   ),
     oslc_error(Message),
-    format('Status: 400~n~n~w~n', [Message])
+    format('Status: 400~nContent-type: text/plain~n~n~w~n', [Message])
   ).
