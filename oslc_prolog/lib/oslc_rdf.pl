@@ -1,6 +1,9 @@
-:- module(oslc_rdf, []).
+:- module(oslc_rdf, [
+  make_graph/1
+]).
 
 :- use_module(library(semweb/rdf11)).
+:- use_module(library(semweb/rdf_persistency)).
 :- use_module(library(oslc_shape)).
 
 :- rdf_meta oslc_LocalResource(r).
@@ -49,3 +52,17 @@ oslc:delete_property(IRI, PropertyDefinition, rdf(Graph)) :-
   must_be(atom, IRI),
   must_be(atom, Graph),
   rdf_retractall(IRI, PropertyDefinition, _, Graph).
+
+%!  make_graph(-Graph) is det.
+%
+%   Create a new non-persistent (RAM only) graph with unique name.
+
+make_graph(Graph) :-
+  uuid(Graph),
+  rdf_create_graph(Graph),
+  rdf_persistency(Graph, false).
+
+uuid(Id) :-
+  Max is 1<<128,
+  random_between(0, Max, Num),
+  atom_concat('$oslc_salt_', Num, Id).

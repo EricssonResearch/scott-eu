@@ -385,7 +385,7 @@
   oslc:propertyDefinition oslc:property ;
   oslc:occurs oslc:Zero-or-many ;
   oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
+  oslc:valueType oslc:LocalResource ;
   oslc:representation oslc:Inline ;
   oslc:range oslc:Property .
 

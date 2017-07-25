@@ -22,10 +22,12 @@ handle_get(Request, IRI, GraphOut) :-
     )
   ; Options = []
   )),
-  once((
+  catch((
     copy_resource(IRI, IRI, rdf, rdf(GraphOut), [inline(rdf)|Options])
-  ; format('Status: 400~n~n')
-  )).
+  ),
+    oslc_error(Message),
+    format('Status: 400~n~n~w~n', [Message])
+  ).
 
 handle_post(_, IRI, GraphIn, _) :-
   post_resource(IRI, rdf(GraphIn), rdf(user)).
@@ -36,10 +38,8 @@ post_resource(IRI, Source, Sink) :-
       rdf(IRI, rdf:type, oslc:'CreationFactory')
     ; oslc_error('Resource [~w] is not a creation factory', [IRI])
     )),
-    oslc_resource(IRI, [resourceShape=Shapes], rdf),
     once((
-      rdf_global_id(rdf:type, RT),
-      oslc:unmarshal_property(NewResource, RT, Class, _, Source),
+      oslc:unmarshal_property(NewResource, rdf:type, Class, _, Source),
       \+ rdf_is_bnode(NewResource)
     ; oslc_error('Resource type must be specified', [])
     )),
@@ -48,6 +48,7 @@ post_resource(IRI, Source, Sink) :-
     ; oslc_error('Resource [~w] already exists', [NewResource])
     )),
     once((
+      oslc_resource(IRI, [resourceShape=Shapes], rdf),
       member(Shape, Shapes),
       rdf(Shape, rdf:type, oslc:'ResourceShape'),
       oslc_resource(Shape, [describes=Classes], rdf),
@@ -61,12 +62,14 @@ post_resource(IRI, Source, Sink) :-
     format('Status: 201~nLocation: ~w~n~n', [Location])
   ),
     oslc_error(Message),
-    format('Status: 400~n~n~w', [Message])
+    format('Status: 400~n~n~w~n', [Message])
   ).
 
 handle_delete(_, IRI) :-
-  once((
-    delete_resource(IRI, rdf)
-  ; format('Status: 400~n~n')
-  )),
-  format('Status: 200~n~n').
+  catch((
+    delete_resource(IRI, rdf),
+    format('Status: 200~n~n')
+  ),
+    oslc_error(Message),
+    format('Status: 400~n~n~w~n', [Message])
+  ).

@@ -5,8 +5,8 @@
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(broadcast)).
 :- use_module(library(semweb/turtle)).
-:- use_module(library(semweb/rdf_persistency)).
 :- use_module(library(oslc_dispatch)).
+:- use_module(library(oslc_rdf)).
 
 :- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/oslc/', 'Base URI').
 
@@ -29,7 +29,7 @@ dispatcher(Request) :-
   E, (
     ( E = status_code(StatusCode)
     -> format('Status: ~w~n~n', [StatusCode])
-    ; format('Status: 500~n~n~w', [E]) % internal server error
+    ; format('Status: 500~n~n~w~n', [E]) % internal server error
     )
   )).
 
@@ -125,16 +125,6 @@ strings_to_atoms([], []) :- !.
 strings_to_atoms([S|T], [A|T2]) :-
   atom_string(A, S),
   strings_to_atoms(T, T2).
-
-make_graph(Graph) :-
-  uuid(Graph), % generate unique identifier for the temporary RDF graph
-  rdf_create_graph(Graph),
-  rdf_persistency(Graph, false). % do not persist (keep only in RAM)
-
-uuid(Id) :-
-  Max is 1<<128,
-  random_between(0, Max, Num),
-  atom_concat('$oslc_salt_', Num, Id).
 
 accept_compare(<, media(_,_,W1,_), media(_,_,W2,_)) :- % sort qualities in reverse order - biggest first
   W1 >= W2.
