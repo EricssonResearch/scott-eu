@@ -8,9 +8,9 @@
 :- use_module(library(oslc_dispatch)).
 :- use_module(library(oslc_rdf)).
 
-:- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/oslc/', 'Base URI').
+:- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/', 'Base URI').
 
-:- http_handler('/oslc/', dispatcher, [prefix]).
+:- http_handler('/', dispatcher, [prefix]).
 
 :- listen(settings(changed(oslc_prolog_server:base_uri, Old, New)), ( % listen on base URI setting changes
      uri_components(New, uri_components(Schema, Authority, NewPath, _, _)),
