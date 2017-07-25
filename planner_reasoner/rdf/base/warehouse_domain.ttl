@@ -58,7 +58,7 @@ warehouse:Object rdf:type pp:VariableType .
 ################################################################
 
 #is_at predicate type
-:is_at rdf:type pp:PredicateType;
+:is_at rdf:type pp:PredicateType ;
         rdfs:label "is-at";
         ppos:hasPredicateTypeArgument :pta1 ;
         ppos:hasPredicateTypeArgument :pta2 .
@@ -96,7 +96,7 @@ warehouse:Object rdf:type pp:VariableType .
 ################################################################################
 #START OF DEFINITION OF ACTION :  moveToWaypoint
 ################################################################################
-:moveToWaypoint rdf:type pp:Action ;  #Action is not a regular node!
+:moveToWaypoint rdf:type pp:Action ;  #Action is a regular node!
                  rdfs:label "moveToWaypoint" ;
                  ppos:hasPrecondition _:gd1 ;
                  ppos:hasEffect _:effect1 .
@@ -109,17 +109,29 @@ _:effect1 rdf:type pp:Effect ;
       ppos:hasEffectArgument _:and2 .
 
 _:and1 rdf:type pp:AndGD ;
-       ppos:hasArgumentInGD _:is_at1 ,
-                            _:can_move1 ,
-                            _:not1 ,
-                            _:gt1 ;
-        sh:order 0.
+     ppos:hasArgumentInGD [rdf:type pp:GoalDescription;
+                           ppos:hasGDArgument _:is_at1;
+                          ],
+                          [
+                          rdf:type pp:GoalDescription;
+                          ppos:hasGDArgument _:can_move1;
+                          ],
+                          [
+                          rdf:type pp:GoalDescription;
+                          ppos:hasGDArgument _:not1;
+                          ],
+                          [
+                          rdf:type pp:GoalDescription;
+                          ppos:hasGDArgument _:gt1;
+                          ];
+      sh:order 0.
+
 
 _:and2 rdf:type pp:AndEffect;
        ppos:hasArgumentInEffect _:is_at2 ,
                                 _:not2 ,
                                 _:decrease1 ;
-       sh:ordrer 0.
+       sh:order 0.
 
 
 _:is_at1 rdf:type pp:Predicate ;
@@ -221,7 +233,7 @@ _:fa1 a pp:FluentArgument;
 #START OF DEFINITION OF ACTION :  pickupAtPlace
 ################################################################################
 
-:moveToWaypoint rdf:type pp:Action ;  #Action is not a regular node!
+:pickupAtPlace rdf:type pp:Action ;  #Action is not a regular node!
                  rdfs:label "pickupAtPlace" ;
-                 ppos:hasPrecondition _:gd1 ;
-                 ppos:hasEffect _:effect1 .
+                 ppos:hasPrecondition _:gd2 ;
+                 ppos:hasEffect _:effect2 .
