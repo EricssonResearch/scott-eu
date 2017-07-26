@@ -68,13 +68,15 @@ Optic Docker (`/optic-docker`) is a project that packages an alternative [OPTIC 
 
 OSLC Prolog (`/oslc_prolog`) is a Prolog library designed to help developing OSLC-compliant REST services. Just ask Leo if you want to build one.
 
+> :point_right: Start by reading the [README](oslc_prolog/README.md).
+
 
 ## PDDL Examples
 
 PDDL Examples (`/pddl-examples`) �s a folder with example PDDL files (domain and problem files), just for learning and testing purposes of the planners.
 
 
-## PDDL Planner   - deprecated code that has been merged into Metric-FF Docker (`/ff-metric-docker`) 
+## PDDL Planner   - deprecated code that has been merged into Metric-FF Docker (`/ff-metric-docker`)
 
 PDDL Planner (`/planner`) exposes PDDL planners via a REST API (so does the [Metric-FF Docker](#metric-ff-docker), but using dockerised Metric-FF). Theoretically supports both OPTIC and Metric-FF, but only implements support for Metric-FF. Requires local installation of Metric-FF (see `ff_path` in [plannerService.py](planner/plannerService.py)).
 
