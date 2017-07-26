@@ -34,6 +34,7 @@
 :- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc_shape)).
 :- use_module(library(oslc_rdf)).
+:- use_module(library(oslc_error)).
 
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
@@ -101,6 +102,33 @@ applicable_shapes(Types, Shapes) :-
     ; rdf(ResourceShape, oslc:describes, Type)
     ))
   ), Shapes).
+
+create_shapes_dict(Shapes, Dict) :-
+  findall(ShapeData, (
+    member(Shape, Shapes),
+    (
+      findall(K=V, (
+        rdf(Shape, oslc:property, PropertyResource),
+        once((
+          rdf(PropertyResource, oslc:propertyDefinition, K),
+          rdf(PropertyResource, oslc:occurs, Occurs),
+          rdf(PropertyResource, oslc:name, Name^^xsd:string),
+          ignore(
+            rdf(PropertyResource, oslc:representation, Representation)
+          )
+        ; oslc_error('Error while processing resource shape [~w]', [Shape])
+        )),
+        V = _{name:Name, occurs:Occurs, representation:Representation}
+      ),
+      ShapeData)
+    )
+  ), ShapesData),
+  flatten(ShapesData, DictData),
+  catch(
+    dict_create(Dict, _, DictData),
+    error(duplicate_key(X), _),
+    oslc_error('Dulicate definition of property [~w] in resource shapes ~w', [X, Shapes])
+  ).
 
 %!  oslc_resource(+IRI, +Properties) is det.
 %
