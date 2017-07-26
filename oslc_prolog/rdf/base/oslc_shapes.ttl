@@ -1,599 +1,16 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
 @prefix	: <http://ontology.cf.ericsson.net/oslc_shapes/> .
 @base	<http://ontology.cf.ericsson.net/oslc_shapes> .
 
 # ======== Properties
 
-# TODO:
-#oslc:shortTitle
-#oslc:shortId
-#oslc:discussedBy
-#oslc:modifiedBy
-#oslc:results
-
-:dctermsTitleZO
-  a oslc:Property ;
-  oslc:name "title"^^xsd:string ;
-  oslc:propertyDefinition dcterms:title ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType rdf:XMLLiteral .
-
-:dctermsTitleEO
-  a oslc:Property ;
-  oslc:name "title"^^xsd:string ;
-  oslc:propertyDefinition dcterms:title ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType rdf:XMLLiteral .
-
-:dctermsDescriptionZO
-  a oslc:Property ;
-  oslc:name "description"^^xsd:string ;
-  oslc:propertyDefinition dcterms:description ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType rdf:XMLLiteral .
-
-:dctermsDescriptionEOU
-  a oslc:Property ;
-  oslc:name "description"^^xsd:string ;
-  oslc:propertyDefinition dcterms:description ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:valueType rdf:XMLLiteral .
-
-:dctermsPublisher
-  a oslc:Property ;
-  oslc:name "publisher"^^xsd:string ;
-  oslc:propertyDefinition dcterms:publisher ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:range oslc:Publisher ;
-  oslc:representation oslc:Inline .
-
-:oslcDomainZM
-  a oslc:Property ;
-  oslc:name "domain"^^xsd:string ;
-  oslc:propertyDefinition oslc:domain ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcDomainEO
-  a oslc:Property ;
-  oslc:name "domain"^^xsd:string ;
-  oslc:propertyDefinition oslc:domain ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcServiceProvider
-  a oslc:Property ;
-  oslc:name "serviceProvider"^^xsd:string ;
-  oslc:propertyDefinition oslc:serviceProvider ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:range oslc:ServiceProvider ;
-  oslc:representation oslc:Either .
-
-:oslcServiceProviderCatalog
-  a oslc:Property ;
-  oslc:name "serviceProviderCatalog"^^xsd:string ;
-  oslc:propertyDefinition oslc:serviceProviderCatalog ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:range oslc:ServiceProviderCatalog ;
-  oslc:representation oslc:Either .
-
-:oslcOauthConfigurationZM
-  a oslc:Property ;
-  oslc:name "oauthConfiguration"^^xsd:string ;
-  oslc:propertyDefinition oslc:oauthConfiguration ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:range oslc:OAuthConfiguration ;
-  oslc:representation oslc:Inline .
-
-:oslcOauthConfigurationZO
-  a oslc:Property ;
-  oslc:name "oauthConfiguration"^^xsd:string ;
-  oslc:propertyDefinition oslc:oauthConfiguration ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:range oslc:OAuthConfiguration ;
-  oslc:representation oslc:Inline .
-
-:oslcService
-  a oslc:Property ;
-  oslc:name "service"^^xsd:string ;
-  oslc:propertyDefinition oslc:service ;
-  oslc:occurs oslc:One-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:range oslc:Service ;
-  oslc:representation oslc:Inline .
-
-:oslcDetails
-  a oslc:Property ;
-  oslc:name "details"^^xsd:string ;
-  oslc:propertyDefinition oslc:details ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcPrefixDefinition
-  a oslc:Property ;
-  oslc:name "prefixDefinition"^^xsd:string ;
-  oslc:propertyDefinition oslc:prefixDefinition ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:representation oslc:Inline .
-
-:oslcCreationFactory
-  a oslc:Property ;
-  oslc:name "creationFactory"^^xsd:string ;
-  oslc:propertyDefinition oslc:creationFactory ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:range oslc:CreationFactory .
-
-:oslcQueryCapability
-  a oslc:Property ;
-  oslc:name "queryCapability"^^xsd:string ;
-  oslc:propertyDefinition oslc:queryCapability ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:range oslc:QueryCapability .
-
-:oslcSelectionDialog
-  a oslc:Property ;
-  oslc:name "selectionDialog"^^xsd:string ;
-  oslc:propertyDefinition oslc:selectionDialog ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:range oslc:Dialog .
-
-:oslcCreationDialog
-  a oslc:Property ;
-  oslc:name "creationDialog"^^xsd:string ;
-  oslc:propertyDefinition oslc:creationDialog ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:range oslc:Dialog .
-
-:oslcUsage
-  a oslc:Property ;
-  oslc:name "usage"^^xsd:string ;
-  oslc:propertyDefinition oslc:usage ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcLabel
-  a oslc:Property ;
-  oslc:name "label"^^xsd:string ;
-  oslc:propertyDefinition oslc:label ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:oslcCreation
-  a oslc:Property ;
-  oslc:name "creation"^^xsd:string ;
-  oslc:propertyDefinition oslc:creation ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcResourceShapeZM
-  a oslc:Property ;
-  oslc:name "resourceShape"^^xsd:string ;
-  oslc:propertyDefinition oslc:resourceShape ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference ;
-  oslc:range oslc:ResourceShape .
-
-:oslcResourceShapeZO
-  a oslc:Property ;
-  oslc:name "resourceShape"^^xsd:string ;
-  oslc:propertyDefinition oslc:resourceShape ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference ;
-  oslc:range oslc:ResourceShape .
-
-:oslcResourceType
-  a oslc:Property ;
-  oslc:name "resourceType"^^xsd:string ;
-  oslc:propertyDefinition oslc:resourceType ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcQueryBase
-  a oslc:Property ;
-  oslc:name "queryBase"^^xsd:string ;
-  oslc:propertyDefinition oslc:queryBase ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcDialog
-  a oslc:Property ;
-  oslc:name "dialog"^^xsd:string ;
-  oslc:propertyDefinition oslc:dialog ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcHintWidth
-  a oslc:Property ;
-  oslc:name "hintWidth"^^xsd:string ;
-  oslc:propertyDefinition oslc:hintWidth ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:oslcHintHeight
-  a oslc:Property ;
-  oslc:name "hintHeight"^^xsd:string ;
-  oslc:propertyDefinition oslc:hintHeight ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:dctermsIdentifier
-  a oslc:Property ;
-  oslc:name "identifier"^^xsd:string ;
-  oslc:propertyDefinition dcterms:identifier ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:oslcIcon
-  a oslc:Property ;
-  oslc:name "icon"^^xsd:string ;
-  oslc:propertyDefinition oslc:icon ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcPrefix
-  a oslc:Property ;
-  oslc:name "prefix"^^xsd:string ;
-  oslc:propertyDefinition oslc:prefix ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:oslcPrefixBase
-  a oslc:Property ;
-  oslc:name "prefixBase"^^xsd:string ;
-  oslc:propertyDefinition oslc:prefixBase ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcOauthRequestTokenURI
-  a oslc:Property ;
-  oslc:name "oauthRequestTokenURI"^^xsd:string ;
-  oslc:propertyDefinition oslc:oauthRequestTokenURI ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcAuthorizationURI
-  a oslc:Property ;
-  oslc:name "authorizationURI"^^xsd:string ;
-  oslc:propertyDefinition oslc:authorizationURI ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcOauthAccessTokenURI
-  a oslc:Property ;
-  oslc:name "oauthAccessTokenURI"^^xsd:string ;
-  oslc:propertyDefinition oslc:oauthAccessTokenURI ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcStatusCode
-  a oslc:Property ;
-  oslc:name "statusCode"^^xsd:string ;
-  oslc:propertyDefinition oslc:statusCode ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:oslcMessage
-  a oslc:Property ;
-  oslc:name "message"^^xsd:string ;
-  oslc:propertyDefinition oslc:message ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:oslcExtendedError
-  a oslc:Property ;
-  oslc:name "extendedError"^^xsd:string ;
-  oslc:propertyDefinition oslc:extendedError ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:AnyResource ;
-  oslc:representation oslc:Either ;
-  oslc:range oslc:ExtendedError .
-
-:oslcMoreInfo
-  a oslc:Property ;
-  oslc:name "moreInfo"^^xsd:string ;
-  oslc:propertyDefinition oslc:moreInfo ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcRel
-  a oslc:Property ;
-  oslc:name "rel"^^xsd:string ;
-  oslc:propertyDefinition oslc:rel ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:oslcDescribes
-  a oslc:Property ;
-  oslc:name "describes"^^xsd:string ;
-  oslc:propertyDefinition oslc:describes ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcProperty
-  a oslc:Property ;
-  oslc:name "property"^^xsd:string ;
-  oslc:propertyDefinition oslc:property ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:LocalResource ;
-  oslc:representation oslc:Inline ;
-  oslc:range oslc:Property .
-
-:oslcAllowedValueOM
-  a oslc:Property ;
-  oslc:name "allowedValue"^^xsd:string ;
-  oslc:propertyDefinition oslc:allowedValue ;
-  oslc:occurs oslc:One-or-many ;
-  oslc:readOnly true .
-
-:oslcAllowedValueZM
-  a oslc:Property ;
-  oslc:name "allowedValue"^^xsd:string ;
-  oslc:propertyDefinition oslc:allowedValue ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true .
-
-:oslcAllowedValues
-  a oslc:Property ;
-  oslc:name "allowedValues"^^xsd:string ;
-  oslc:propertyDefinition oslc:allowedValues ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference ;
-  oslc:range oslc:AllowedValues .
-
-:oslcDefaultValue
-  a oslc:Property ;
-  oslc:name "defaultValue"^^xsd:string ;
-  oslc:propertyDefinition oslc:defaultValue ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true .
-
-:oslcHidden
-  a oslc:Property ;
-  oslc:name "hidden"^^xsd:string ;
-  oslc:propertyDefinition oslc:hidden ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:boolean .
-
-:oslcIsMemberProperty
-  a oslc:Property ;
-  oslc:name "isMemberProperty"^^xsd:string ;
-  oslc:propertyDefinition oslc:isMemberProperty ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:boolean .
-
-:oslcName
-  a oslc:Property ;
-  oslc:name "name"^^xsd:string ;
-  oslc:propertyDefinition oslc:name ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:string .
-
-:oslcMaxSize
-  a oslc:Property ;
-  oslc:name "maxSize"^^xsd:string ;
-  oslc:propertyDefinition oslc:maxSize ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:integer .
-
-:oslcOccurs
-  a oslc:Property ;
-  oslc:name "occurs"^^xsd:string ;
-  oslc:propertyDefinition oslc:occurs ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcPropertyDefinition
-  a oslc:Property ;
-  oslc:name "propertyDefinition"^^xsd:string ;
-  oslc:propertyDefinition oslc:propertyDefinition ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcRange
-  a oslc:Property ;
-  oslc:name "range"^^xsd:string ;
-  oslc:propertyDefinition oslc:range ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcReadOnly
-  a oslc:Property ;
-  oslc:name "readOnly"^^xsd:string ;
-  oslc:propertyDefinition oslc:readOnly ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:boolean .
-
-:oslcRepresentation
-  a oslc:Property ;
-  oslc:name "representation"^^xsd:string ;
-  oslc:propertyDefinition oslc:representation ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcValueType
-  a oslc:Property ;
-  oslc:name "valueType"^^xsd:string ;
-  oslc:propertyDefinition oslc:valueType ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcValueShape
-  a oslc:Property ;
-  oslc:name "valueShape"^^xsd:string ;
-  oslc:propertyDefinition oslc:valueShape ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference ;
-  oslc:range oslc:ResourceShape .
-
-:dctermsCreator
-  a oslc:Property ;
-  oslc:name "creator"^^xsd:string ;
-  oslc:propertyDefinition dcterms:creator ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:AnyResource ;
-  oslc:representation oslc:Either .
-
-:dctermsTitleZOU
-  a oslc:Property ;
-  oslc:name "title"^^xsd:string ;
-  oslc:propertyDefinition dcterms:title ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:valueType rdf:XMLLiteral .
-
-:dctermsCreated
-  a oslc:Property ;
-  oslc:name "created"^^xsd:string ;
-  oslc:propertyDefinition dcterms:created ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:dateTime .
-
-:oslcPartOfDiscussion
-  a oslc:Property ;
-  oslc:name "partOfDiscussion"^^xsd:string ;
-  oslc:propertyDefinition oslc:partOfDiscussion ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference ;
-  oslc:range oslc:Discussion .
-
-:oslcInReplyTo
-  a oslc:Property ;
-  oslc:name "inReplyTo"^^xsd:string ;
-  oslc:propertyDefinition oslc:inReplyTo ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference ;
-  oslc:range oslc:Comment .
-
-:oslcDiscussionAbout
-  a oslc:Property ;
-  oslc:name "discussionAbout"^^xsd:string ;
-  oslc:propertyDefinition oslc:discussionAbout ;
-  oslc:occurs oslc:Exactly-one ;
-  oslc:readOnly false ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcComment
-  a oslc:Property ;
-  oslc:name "comment"^^xsd:string ;
-  oslc:propertyDefinition oslc:comment ;
-  oslc:occurs oslc:Zero-or-many ;
-  oslc:readOnly false ;
-  oslc:valueType oslc:AnyResource ;
-  oslc:representation oslc:Either .
-
-:oslcNextPage
-  a oslc:Property ;
-  oslc:name "nextPage"^^xsd:string ;
-  oslc:propertyDefinition oslc:nextPage ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType oslc:Resource ;
-  oslc:representation oslc:Reference .
-
-:oslcTotalCount
-  a oslc:Property ;
-  oslc:name "totalCount"^^xsd:string ;
-  oslc:propertyDefinition oslc:totalCount ;
-  oslc:occurs oslc:Zero-or-one ;
-  oslc:readOnly true ;
-  oslc:valueType xsd:integer .
-
 :oslcInstanceShape
   a oslc:Property ;
+  oslc:description "The URI of a Resource Shape that describes the possible properties, occurrence, value types, allowed values and labels. This shape information is useful in displaying the subject resource as well as guiding clients in performing modifications. Instance shapes may be specific to the authenticated user associated with the request that retrieved the resource, the current state of the resource and other factors and thus should not be cached."^^rdf:XMLLiteral ;
   oslc:name "instanceShape"^^xsd:string ;
   oslc:propertyDefinition oslc:instanceShape ;
   oslc:occurs oslc:Zero-or-many ;
@@ -603,6 +20,7 @@
 
 :oslcFutureAction
   a oslc:Property ;
+  oslc:description "Actions that are not available when the response is formed but that might become available at some point in the future, possibly on a related resource."^^rdf:XMLLiteral ;
   oslc:name "futureAction"^^xsd:string ;
   oslc:propertyDefinition oslc:futureAction ;
   oslc:occurs oslc:Zero-or-many ;
@@ -611,141 +29,643 @@
 
 :oslcExecutes
   a oslc:Property ;
+  oslc:description "A link from a currently available action to a corresponding future action."^^rdf:XMLLiteral ;
   oslc:name "executes"^^xsd:string ;
   oslc:propertyDefinition oslc:executes ;
   oslc:occurs oslc:Zero-or-one ;
   oslc:valueType oslc:AnyResource ;
   oslc:representation oslc:Either .
 
+:oslcShortTitle
+  a oslc:Property ;
+  oslc:description "Shorter form of dcterms:title for the resource represented as rich text in XHTML content."^^rdf:XMLLiteral ;
+  oslc:name "shortTitle"^^xsd:string ;
+  oslc:propertyDefinition oslc:shortTitle ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:valueType rdf:XMLLiteral .
+
+:oslcShortId
+  a oslc:Property ;
+  oslc:description "A short, human-readable, plain text value. This value should be unique in some context that is apparent to human users of a service."^^rdf:XMLLiteral ;
+  oslc:name "shortId"^^xsd:string ;
+  oslc:propertyDefinition oslc:shortId ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:valueType xsd:string .
+
+:oslcDiscussedBy
+  a oslc:Property ;
+  oslc:description "A series of notes and comments about this resource."^^rdf:XMLLiteral ;
+  oslc:name "discussedBy"^^xsd:string ;
+  oslc:propertyDefinition oslc:discussedBy ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Either ;
+  oslc:range oslc:Comment .
+
+:oslcModifiedBy
+  a oslc:Property ;
+  oslc:description "The URI of a resource describing the entity that most recently modified the subject resource. The link target is usually a foaf:Person or foaf:Agent, but could be any type. This is modeled after dcterms:creator, but Dublin Core currently has no equivalent property."^^rdf:XMLLiteral ;
+  oslc:name "modifiedBy"^^xsd:string ;
+  oslc:propertyDefinition oslc:modifiedBy ;
+  oslc:occurs oslc:Zero-or-many ;
+  oslc:valueType oslc:Resource ;
+  oslc:representation oslc:Either ;
+  oslc:range foaf:Person .
+
 # ======== Service Provider Catalog
 
 :serviceProviderCatalogShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ServiceProviderCatalog ;
-  oslc:property :dctermsTitleZO ,
-                :dctermsDescriptionZO ,
-                :dctermsPublisher ,
-                :oslcDomainZM ,
-                :oslcServiceProvider ,
-                :oslcServiceProviderCatalog ,
-                :oslcOauthConfigurationZM .
+  oslc:description "An OSLC implementation that offers one or more Service Provider resources, MAY also provide Service Provider Catalog to enable OSLC clients to find Service Providers offered. These catalogs may contain other nested catalogs as well as service providers."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Title of the service provider catalog."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Description of the service provider catalog."^^rdf:XMLLiteral ;
+                  oslc:name "description"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:description ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Describes the software product that provides the implementation."^^rdf:XMLLiteral ;
+                  oslc:name "publisher"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:publisher ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range oslc:Publisher
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Namespace URI of the specification that is implemented by this service. In most cases this namespace URI will be for an OSLC domain, but other URIs MAY be used."^^rdf:XMLLiteral ;
+                  oslc:name "domain"^^xsd:string ;
+                  oslc:propertyDefinition oslc:domain ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "A service offered by the service provider."^^rdf:XMLLiteral ;
+                  oslc:name "serviceProvider"^^xsd:string ;
+                  oslc:propertyDefinition oslc:serviceProvider ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Either ;
+                  oslc:range oslc:ServiceProvider
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Additional service provider catalog."^^rdf:XMLLiteral ;
+                  oslc:name "serviceProviderCatalog"^^xsd:string ;
+                  oslc:propertyDefinition oslc:serviceProviderCatalog ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Either ;
+                  oslc:range oslc:ServiceProviderCatalog
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Defines the three OAuth URIs required for a client to act as an OAuth consumer."^^rdf:XMLLiteral ;
+                  oslc:name "oauthConfiguration"^^xsd:string ;
+                  oslc:propertyDefinition oslc:oauthConfiguration ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range oslc:OAuthConfiguration
+                ] .
 
 # ======== Service Provider
 
 :serviceProviderShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ServiceProvider ;
-  oslc:property :dctermsTitleZO ,
-                :dctermsDescriptionZO ,
-                :dctermsPublisher ,
-                :oslcService ,
-                :oslcDetails ,
-                :oslcPrefixDefinition ,
-                :oslcOauthConfigurationZO .
+  oslc:description "A Service Provider describes a set of services offered by an OSLC implementation."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Title of the service provider."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Description of the service provider."^^rdf:XMLLiteral ;
+                  oslc:name "description"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:description ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Describes the software product that provides the implementation."^^rdf:XMLLiteral ;
+                  oslc:name "publisher"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:publisher ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range oslc:Publisher
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Describes a service offered by the service provider."^^rdf:XMLLiteral ;
+                  oslc:name "service"^^xsd:string ;
+                  oslc:propertyDefinition oslc:service ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range oslc:Service
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "A URL that may be used to retrieve a web page to determine additional details about the service provider."^^rdf:XMLLiteral ;
+                  oslc:name "details"^^xsd:string ;
+                  oslc:propertyDefinition oslc:details ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Defines a namespace prefix for use in JSON representations and in forming OSLC Query Syntax strings."^^rdf:XMLLiteral ;
+                  oslc:name "prefixDefinition"^^xsd:string ;
+                  oslc:propertyDefinition oslc:prefixDefinition ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Defines the three OAuth URIs required for a client to act as an OAuth consumer."^^rdf:XMLLiteral ;
+                  oslc:name "oauthConfiguration"^^xsd:string ;
+                  oslc:propertyDefinition oslc:oauthConfiguration ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range oslc:OAuthConfiguration
+                ] .
 
 # ======== Service
 
 :serviceShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Service ;
-  oslc:property :oslcDomainEO ,
-                :oslcCreationFactory ,
-                :oslcQueryCapability ,
-                :oslcSelectionDialog ,
-                :oslcCreationDialog ,
-                :oslcUsage .
+  oslc:description "A Service describes the specific services offered by an implementation of an OSLC specification."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Namespace URI of the specification that is implemented by this service. In most cases this namespace URI will be for an OSLC domain, but other URIs MAY be used."^^rdf:XMLLiteral ;
+                  oslc:name "domain"^^xsd:string ;
+                  oslc:propertyDefinition oslc:domain ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Enables clients to create new resources."^^rdf:XMLLiteral ;
+                  oslc:name "creationFactory"^^xsd:string ;
+                  oslc:propertyDefinition oslc:creationFactory ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:range oslc:CreationFactory
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Enables clients query across a collection of resources."^^rdf:XMLLiteral ;
+                  oslc:name "queryCapability"^^xsd:string ;
+                  oslc:propertyDefinition oslc:queryCapability ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:range oslc:QueryCapability
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Enables clients to select a resource via UI."^^rdf:XMLLiteral ;
+                  oslc:name "selectionDialog"^^xsd:string ;
+                  oslc:propertyDefinition oslc:selectionDialog ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:range oslc:Dialog
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Enables clients to create a resource via UI."^^rdf:XMLLiteral ;
+                  oslc:name "creationDialog"^^xsd:string ;
+                  oslc:propertyDefinition oslc:creationDialog ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:range oslc:Dialog
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "An identifier URI for the domain specified usage of this service. If a service provider has multiple services, it may designate the primary or default one that should be used with a property value of oslc:default."^^rdf:XMLLiteral ;
+                  oslc:name "usage"^^xsd:string ;
+                  oslc:propertyDefinition oslc:usage ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
 
 # ======== Creation Factory
 
 :creationFactoryShape
   a oslc:ResourceShape ;
   oslc:describes oslc:CreationFactory ;
-  oslc:property :dctermsTitleEO ,
-                :oslcLabel ,
-                :oslcCreation ,
-                :oslcResourceShapeZM ,
-                :oslcResourceType ,
-                :oslcUsage .
+  oslc:description "A Creation Factory describes a creation factory, capable of creating new resources via HTTP POST."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Title string that could be used for display."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Very short label for use in menu items."^^rdf:XMLLiteral ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:propertyDefinition oslc:label ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "To create a new resource via the factory, post it to this URI."^^rdf:XMLLiteral ;
+                  oslc:name "creation"^^xsd:string ;
+                  oslc:propertyDefinition oslc:creation ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "A Creation Factory MAY provide Resource Shapes that describe shapes of resources that may be created."^^rdf:XMLLiteral ;
+                  oslc:name "resourceShape"^^xsd:string ;
+                  oslc:propertyDefinition oslc:resourceShape ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference ;
+                  oslc:range oslc:ResourceShape
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The expected resource type URI of the resource that will be created using this creation factory. These would be the URIs found in the result resource's rdf:type property."^^rdf:XMLLiteral ;
+                  oslc:name "resourceType"^^xsd:string ;
+                  oslc:propertyDefinition oslc:resourceType ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "An identifier URI for the domain specified usage of this creation factory. If a service provides multiple creation factories, it may designate the primary or default one that should be used with a property value of oslc:default."^^rdf:XMLLiteral ;
+                  oslc:name "usage"^^xsd:string ;
+                  oslc:propertyDefinition oslc:usage ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
 
 # ======== Query Capability
 
 :queryCapabilityShape
   a oslc:ResourceShape ;
   oslc:describes oslc:QueryCapability ;
-  oslc:property :dctermsTitleEO ,
-                :oslcLabel ,
-                :oslcQueryBase ,
-                :oslcResourceShapeZO ,
-                :oslcResourceType ,
-                :oslcUsage .
+  oslc:description "A Query Capability describes a query capability, capable of querying resources via HTTP GET or POST."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Title string that could be used for display."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Very short label for use in menu items."^^rdf:XMLLiteral ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:propertyDefinition oslc:label ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The base URI to use for queries. Queries are invoked via HTTP GET on a query URI formed by appending a key=value pair to the base URI."^^rdf:XMLLiteral ;
+                  oslc:name "queryBase"^^xsd:string ;
+                  oslc:propertyDefinition oslc:queryBase ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The Query Capability SHOULD provide a Resource Shape that describes the query base URI."^^rdf:XMLLiteral ;
+                  oslc:name "resourceShape"^^xsd:string ;
+                  oslc:propertyDefinition oslc:resourceShape ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference ;
+                  oslc:range oslc:ResourceShape
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The expected resource type URI that will be returned with this query capability. These would be the URIs found in the result resource's rdf:type property."^^rdf:XMLLiteral ;
+                  oslc:name "resourceType"^^xsd:string ;
+                  oslc:propertyDefinition oslc:resourceType ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "An identifier URI for the domain specified usage of this query capability. If a service provides multiple query capabilities, it may designate the primary or default one that should be used with a property value of oslc:default."^^rdf:XMLLiteral ;
+                  oslc:name "usage"^^xsd:string ;
+                  oslc:propertyDefinition oslc:usage ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
 
 # ======== Dialog
 
 :dialogShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Dialog ;
-  oslc:property :dctermsTitleEO ,
-                :oslcLabel ,
-                :oslcDialog ,
-                :oslcHintWidth ,
-                :oslcHintHeight ,
-                :oslcResourceType ,
-                :oslcUsage .
+  oslc:description "A Dialog describes a delegated user interface (UI) which can be used to allow a user to interactively create a new resource or pick a resource."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Title string that could be used for display."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Very short label for use in menu items."^^rdf:XMLLiteral ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:propertyDefinition oslc:label ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The URI of the dialog."^^rdf:XMLLiteral ;
+                  oslc:name "dialog"^^xsd:string ;
+                  oslc:propertyDefinition oslc:dialog ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Values MUST be expressed in relative length units as defined in the W3C Cascading Style Sheets Specification (CSS 2.1) Em and ex units are interpreted relative to the default system font (at 100% size)."^^rdf:XMLLiteral ;
+                  oslc:name "hintWidth"^^xsd:string ;
+                  oslc:propertyDefinition oslc:hintWidth ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Values MUST be expressed in relative length units as defined in the W3C Cascading Style Sheets Specification (CSS 2.1) Em and ex units are interpreted relative to the default system font (at 100% size)."^^rdf:XMLLiteral ;
+                  oslc:name "hintHeight"^^xsd:string ;
+                  oslc:propertyDefinition oslc:hintHeight ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The expected resource type URI for the resources that will be returned when using this dialog. These would be the URIs found in the result resource's rdf:type property."^^rdf:XMLLiteral ;
+                  oslc:name "resourceType"^^xsd:string ;
+                  oslc:propertyDefinition oslc:resourceType ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "An identifier URI for the domain specified usage of this dialog. If a service provides multiple selection or creation dialogs, it may designate the primary or default one that should be used with a property value of oslc:core."^^rdf:XMLLiteral ;
+                  oslc:name "usage"^^xsd:string ;
+                  oslc:propertyDefinition oslc:usage ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
 
 # ======== Publisher
 
 :publisherShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Publisher ;
-  oslc:property :dctermsTitleEO ,
-                :oslcLabel ,
-                :dctermsIdentifier ,
-                :oslcIcon .
+  oslc:description "A Publisher identifies and describes the software product that provides the OSLC implementation."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Title string that could be used for display."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Very short label for use in menu items."^^rdf:XMLLiteral ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:propertyDefinition oslc:label ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "A URN that uniquely identifies the implementation."^^rdf:XMLLiteral ;
+                  oslc:name "identifier"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:identifier ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "URL to an icon file that represents the provider. This icon should be a favicon format and 16x16 pixels in size."^^rdf:XMLLiteral ;
+                  oslc:name "icon"^^xsd:string ;
+                  oslc:propertyDefinition oslc:icon ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
 
 # ======== Prefix Definition
 
 :prefixDefinitionShape
   a oslc:ResourceShape ;
   oslc:describes oslc:PrefixDefinition ;
-  oslc:property :oslcPrefix ,
-                :oslcPrefixBase .
+  oslc:description "Service Providers MUST provide a Prefix Definition for each prefix supported by the service. Each Prefix Definition defines a namespace prefix that clients MAY use in forming OSLC Query Syntax strings."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Namespace prefix to be used for this namespace."^^rdf:XMLLiteral ;
+                  oslc:name "prefix"^^xsd:string ;
+                  oslc:propertyDefinition oslc:prefix ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The base URI of the namespace."^^rdf:XMLLiteral ;
+                  oslc:name "prefixBase"^^xsd:string ;
+                  oslc:propertyDefinition oslc:prefixBase ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
 
 # ======== OAuth Configuration
 
 :oauthConfigurationShape
   a oslc:ResourceShape ;
   oslc:describes oslc:OAuthConfiguration ;
-  oslc:property :oslcOauthRequestTokenURI ,
-                :oslcAuthorizationURI ,
-                :oslcOauthAccessTokenURI .
+  oslc:description "Service Providers that support OAuth Authentication SHOULD provide a way for clients to automatically discover the three OAuth URIs necessary to act as an OAuth Consumer."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "URI for obtaining OAuth request token."^^rdf:XMLLiteral ;
+                  oslc:name "oauthRequestTokenURI"^^xsd:string ;
+                  oslc:propertyDefinition oslc:oauthRequestTokenURI ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "URI for obtaining OAuth authorization."^^rdf:XMLLiteral ;
+                  oslc:name "authorizationURI"^^xsd:string ;
+                  oslc:propertyDefinition oslc:authorizationURI ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "URI for obtaining OAuth access token."^^rdf:XMLLiteral ;
+                  oslc:name "oauthAccessTokenURI"^^xsd:string ;
+                  oslc:propertyDefinition oslc:oauthAccessTokenURI ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
 
 # ======== Error
 
 :errorShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Error ;
-  oslc:property :oslcStatusCode ,
-                :oslcMessage ,
-                :oslcExtendedError .
+  oslc:description "OSLC Services the standard mechanisms of HTTP to report status and error codes to clients. When an error occurs and useful information can be provided to clients OSLC Services SHOULD return error information in the body of the response."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "The HTTP status code reported with the error."^^rdf:XMLLiteral ;
+                  oslc:name "statusCode"^^xsd:string ;
+                  oslc:propertyDefinition oslc:statusCode ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "An informative message describing the error that occurred."^^rdf:XMLLiteral ;
+                  oslc:name "message"^^xsd:string ;
+                  oslc:propertyDefinition oslc:message ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Extended error information."^^rdf:XMLLiteral ;
+                  oslc:name "extendedError"^^xsd:string ;
+                  oslc:propertyDefinition oslc:extendedError ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:representation oslc:Either ;
+                  oslc:range oslc:ExtendedError
+                ] .
 
 # ======== Extended Error
 
 :extendedErrorShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ExtendedError ;
-  oslc:property :oslcMoreInfo ,
-                :oslcRel ,
-                :oslcHintWidth ,
-                :oslcHintHeight .
+  oslc:description "Resource to represent extended error information."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "A resource giving more information on the error SHOULD be of an HTML content-type."^^rdf:XMLLiteral ;
+                  oslc:name "moreInfo"^^xsd:string ;
+                  oslc:propertyDefinition oslc:moreInfo ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "If present and set to 'alternate' then indicates that work-around is provided, behavior for other values is undefined."^^rdf:XMLLiteral ;
+                  oslc:name "rel"^^xsd:string ;
+                  oslc:propertyDefinition oslc:rel ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Values MUST be expressed in relative length units as defined in the W3C Cascading Style Sheets Specification (CSS 2.1) Em and ex units are interpreted relative to the default system font (at 100% size)."^^rdf:XMLLiteral ;
+                  oslc:name "hintWidth"^^xsd:string ;
+                  oslc:propertyDefinition oslc:hintWidth ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Values MUST be expressed in relative length units as defined in the W3C Cascading Style Sheets Specification (CSS 2.1) Em and ex units are interpreted relative to the default system font (at 100% size)."^^rdf:XMLLiteral ;
+                  oslc:name "hintHeight"^^xsd:string ;
+                  oslc:propertyDefinition oslc:hintHeight ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] .
 
 # ======== Resource Shape
 
 :resourceShapeShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ResourceShape ;
-  oslc:property :dctermsTitleZO ,
-                :oslcDescribes ,
-                :oslcProperty .
+  oslc:description "A Resource Shape resource can have a title and a set of types."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Title of the resource shape. SHOULD include only content that is valid and suitable inside an XHTML span element."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "This shape describes resources that are of any of these types. Formally, a shape S applies to a resource R if there is a triple R rdf:type T and there is a triple S oslc:describes T."^^rdf:XMLLiteral ;
+                  oslc:name "describes"^^xsd:string ;
+                  oslc:propertyDefinition oslc:describes ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The properties that are allowed or required by this shape."^^rdf:XMLLiteral ;
+                  oslc:name "property"^^xsd:string ;
+                  oslc:propertyDefinition oslc:property ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range oslc:Property
+                ] .
 
 
 # ======== Allowed Values
@@ -753,57 +673,306 @@
 :allowedValuesShape
   a oslc:ResourceShape ;
   oslc:describes oslc:AllowedValues ;
-  oslc:property :oslcAllowedValueOM .
+  oslc:description "Allowed values for one property."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Value allowed for a property."^^rdf:XMLLiteral ;
+                  oslc:name "allowedValue"^^xsd:string ;
+                  oslc:propertyDefinition oslc:allowedValue ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:readOnly true
+                ] .
 
 # ======== Property
 
 :propertyShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Property ;
-  oslc:property :dctermsDescriptionZO ,
-                :dctermsTitleZO ,
-                :oslcAllowedValues ,
-                :oslcAllowedValueZM ,
-                :oslcDefaultValue ,
-                :oslcHidden ,
-                :oslcIsMemberProperty ,
-                :oslcName ,
-                :oslcMaxSize ,
-                :oslcOccurs ,
-                :oslcPropertyDefinition ,
-                :oslcRange ,
-                :oslcReadOnly ,
-                :oslcRepresentation ,
-                :oslcValueType ,
-                :oslcValueShape .
+  oslc:description "A Property resource describes one allowed or required property of a resource."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Description of the property. SHOULD include only content that is valid and suitable inside an XHTML div element."^^rdf:XMLLiteral ;
+                  oslc:name "description"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:description ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Title of the property. SHOULD include only content that is valid and suitable inside an XHTML span element."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Resource with allowed values for the property being defined."^^rdf:XMLLiteral ;
+                  oslc:name "allowedValues"^^xsd:string ;
+                  oslc:propertyDefinition oslc:allowedValues ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference ;
+                  oslc:range oslc:AllowedValues
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "A value allowed for property, inlined into property definition. If there are both oslc:allowedValue elements and an oslc:allowedValue resource, then the full-set of allowed values is the union of both."^^rdf:XMLLiteral ;
+                  oslc:name "allowedValue"^^xsd:string ;
+                  oslc:propertyDefinition oslc:allowedValue ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "A default value for property, inlined into property definition."^^rdf:XMLLiteral ;
+                  oslc:name "defaultValue"^^xsd:string ;
+                  oslc:propertyDefinition oslc:defaultValue ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "A hint that indicates that property MAY be hidden when presented in a user interface."^^rdf:XMLLiteral ;
+                  oslc:name "hidden"^^xsd:string ;
+                  oslc:propertyDefinition oslc:hidden ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:boolean
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "If set to true, this indicates that the property is a membership property, as described in the Query Syntax Specification: Member List Patterns. This is useful when the resource whose shape is being defined is viewed as a container of other resources."^^rdf:XMLLiteral ;
+                  oslc:name "isMemberProperty"^^xsd:string ;
+                  oslc:propertyDefinition oslc:isMemberProperty ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:boolean
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Name of property being defined, i.e. second part of property's Prefixed Name."^^rdf:XMLLiteral ;
+                  oslc:name "name"^^xsd:string ;
+                  oslc:propertyDefinition oslc:name ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "For String properties only, specifies maximum characters allowed. If not set, then there is no maximum or maximum is specified elsewhere."^^rdf:XMLLiteral ;
+                  oslc:name "maxSize"^^xsd:string ;
+                  oslc:propertyDefinition oslc:maxSize ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:integer
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "MUST be either oslc:Exactly-one (property is required), oslc:Zero-or-one (property is optional), oslc:Zero-or-many (property is optional), or oslc:One-or-many (property is required)"^^rdf:XMLLiteral ;
+                  oslc:name "occurs"^^xsd:string ;
+                  oslc:propertyDefinition oslc:occurs ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "URI of the property whose usage is being described."^^rdf:XMLLiteral ;
+                  oslc:name "propertyDefinition"^^xsd:string ;
+                  oslc:propertyDefinition oslc:propertyDefinition ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "For properties with a resource value-type, Providers MAY also specify the range of possible resource types allowed, each specified by URI. The default range is oslc:Any."^^rdf:XMLLiteral ;
+                  oslc:name "range"^^xsd:string ;
+                  oslc:propertyDefinition oslc:range ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "true if the property is read-only. If omitted, or set to false, then the property is writable. Providers SHOULD declare a property read-only when changes to the value of that property will not be accepted after the resource has been created, e.g. on PUT/PATCH requests. Consumers should note that the converse does not apply: Providers MAY reject a change to the value of a writable property."^^rdf:XMLLiteral ;
+                  oslc:name "readOnly"^^xsd:string ;
+                  oslc:propertyDefinition oslc:readOnly ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:boolean
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Should be oslc:Reference, oslc:Inline or oslc:Either"^^rdf:XMLLiteral ;
+                  oslc:name "representation"^^xsd:string ;
+                  oslc:propertyDefinition oslc:representation ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Type of property value. If this property is omitted, then the value type is unconstrained."^^rdf:XMLLiteral ;
+                  oslc:name "valueType"^^xsd:string ;
+                  oslc:propertyDefinition oslc:valueType ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "If the value-type is a resource type, then Property MAY provide a shape value to indicate the Resource Shape that applies to the resource."^^rdf:XMLLiteral ;
+                  oslc:name "valueShape"^^xsd:string ;
+                  oslc:propertyDefinition oslc:valueShape ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference ;
+                  oslc:range oslc:ResourceShape
+                ] .
 
 # ======== Comment
 
 :commentShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Comment ;
-  oslc:property :dctermsIdentifier ,
-                :dctermsCreator ,
-                :dctermsTitleZOU ,
-                :dctermsCreated ,
-                :dctermsDescriptionEOU ,
-                :oslcPartOfDiscussion ,
-                :oslcInReplyTo .
+  oslc:description "A Comment resource represents a single note, or comment, in a discussion thread."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "A service defined identifier."^^rdf:XMLLiteral ;
+                  oslc:name "identifier"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:identifier ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "The person who created the comment. It is likely that the target resource will be a foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral ;
+                  oslc:name "creator"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:creator ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:representation oslc:Either
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "A brief title for the comment. SHOULD include only content that is valid and suitable inside an XHTML span element."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "When the comment resource was created."^^rdf:XMLLiteral ;
+                  oslc:name "created"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:created ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:dateTime
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Details or body of the comment. SHOULD include only content that is valid and suitable inside an XHTML div element."^^rdf:XMLLiteral ;
+                  oslc:name "description"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:description ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Reference to owning Discussion resource."^^rdf:XMLLiteral ;
+                  oslc:name "partOfDiscussion"^^xsd:string ;
+                  oslc:propertyDefinition oslc:partOfDiscussion ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference ;
+                  oslc:range oslc:Discussion
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Reference to comment this comment is in reply to."^^rdf:XMLLiteral ;
+                  oslc:name "inReplyTo"^^xsd:string ;
+                  oslc:propertyDefinition oslc:inReplyTo ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference ;
+                  oslc:range oslc:Comment
+                ] .
 
 # ======== Discussion
 
 :discussionShape
   a oslc:ResourceShape ;
   oslc:describes oslc:Discussion ;
-  oslc:property :oslcDiscussionAbout ,
-                :oslcComment .
+  oslc:description "A Discussion resource is intended to represent a sequence of comments or notes regarding the associated resource."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Reference to associated resource."^^rdf:XMLLiteral ;
+                  oslc:name "discussionAbout"^^xsd:string ;
+                  oslc:propertyDefinition oslc:discussionAbout ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:readOnly false ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Comment about resource."^^rdf:XMLLiteral ;
+                  oslc:name "comment"^^xsd:string ;
+                  oslc:propertyDefinition oslc:comment ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:readOnly false ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:representation oslc:Either
+                ] .
 
 # ======== Response Info
 
 :responseInfoShape
   a oslc:ResourceShape ;
   oslc:describes oslc:ResponseInfo ;
-  oslc:property :dctermsTitleZO ,
-                :dctermsDescriptionZO ,
-                :oslcNextPage ,
-                :oslcTotalCount .
+  oslc:description "Resource representations returned via Resource Paging MUST include a resource of type oslc:ResponseInfo. A response info resource representation describes information about a paged HTTP response body in which it appears."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "Title of the response"^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Title of the response"^^rdf:XMLLiteral ;
+                  oslc:name "Description of response"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:description ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType rdf:XMLLiteral
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Link to next page of response"^^rdf:XMLLiteral ;
+                  oslc:name "nextPage"^^xsd:string ;
+                  oslc:propertyDefinition oslc:nextPage ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "This optional property indicates the total number of results across all pages, its value should be non-negative. In the context of a query resource, this value SHOULD be the total number of results, i.e. the number of resources that match the query. In the context of other resources, the value SHOULD be the total number of property values (i.e. RDF triples) of the resource. Unless Stable Paging is in effect, the total count MAY vary as a client retrieves subsequent pages."^^rdf:XMLLiteral ;
+                  oslc:name "totalCount"^^xsd:string ;
+                  oslc:propertyDefinition oslc:totalCount ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:integer
+                ] .
+
+# ======== results
+
+:resultsShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:results ;
+  oslc:description "Regardless of how the response from the UI Provider is conveyed to the UI Consumer, the response SHOULD be formatted as oslc:results."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:description "URI of the resource selected or created."^^rdf:XMLLiteral ;
+                  oslc:name "resource"^^xsd:string ;
+                  oslc:propertyDefinition rdf:resource ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] ,
+                [ a oslc:Property ;
+                  oslc:description "Short label describing the resource selected."^^rdf:XMLLiteral ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:propertyDefinition oslc:label ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:readOnly true ;
+                  oslc:valueType xsd:string
+                ] .
