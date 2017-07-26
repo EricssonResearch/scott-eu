@@ -9,6 +9,15 @@
     <param-name>se.ericsson.cf.scott.sandbox.servlet.baseurl</param-name>
     <param-value>http://localhost:8080</param-value>
   </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.store.query</param-name>
+    <param-value>http://fuseki.aide.md.kth.se/warehouse/query</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.store.update</param-name>
+    <param-value>http://fuseki.aide.md.kth.se/warehouse/update</param-value>
+  </context-param>
+
   <listener>
     <description>Listener for ServletContext lifecycle changes</description>
     <listener-class>se.ericsson.cf.scott.sandbox.servlet.ServletListener</listener-class>

@@ -22,12 +22,18 @@
 
 package se.ericsson.cf.scott.sandbox;
 
+import java.io.IOException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import org.eclipse.lyo.tools.store.Store;
+import org.eclipse.lyo.tools.store.StoreFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
 import scott.lyo.domain.planning.Action;
@@ -43,7 +49,6 @@ import scott.lyo.domain.planning.VariableInstance;
 import scott.lyo.domain.warehouse.Waypoint;
 import scott.lyo.domain.warehouse.WhObject;
 
-
 // Start of user code imports
 import se.ericsson.cf.scott.sandbox.clients.WarehouseAdaptorClient;
 import org.eclipse.lyo.oslc4j.core.model.Link;
@@ -57,8 +62,10 @@ import java.net.URISyntaxException;
 public class TwinManager {
 
     // Start of user code class_attributes
+    private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
     private static WarehouseAdaptorClient warehouseAdaptorClient;
     private static String spId = "dummy";
+    private static Store store;
     // End of user code
     
     
@@ -69,7 +76,21 @@ public class TwinManager {
     {
         
         // Start of user code contextInitializeServletListener
+        final ServletContext context = servletContextEvent.getServletContext();
+        final String queryUri = context.getInitParameter(
+                "se.ericsson.cf.scott.sandbox.store.query");
+        final String updateUri = context.getInitParameter(
+                "se.ericsson.cf.scott.sandbox.store.query");
         warehouseAdaptorClient = new WarehouseAdaptorClient("http://sandbox-warehouse:8080/sandbox-warehouse/services");
+//        try {
+//            store = StoreFactory.sparql(queryUri, updateUri);
+//            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
+//            store.removeAll();
+//            throw new IOException("test");
+//        } catch (IOException e) {
+//            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
+//                    new Object[]{queryUri, updateUri, e});
+//        }
         // End of user code
     }
 

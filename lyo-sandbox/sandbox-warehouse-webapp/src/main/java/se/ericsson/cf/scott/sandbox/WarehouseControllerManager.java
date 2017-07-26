@@ -22,6 +22,8 @@
 
 package se.ericsson.cf.scott.sandbox;
 
+import java.io.IOException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
@@ -38,7 +40,6 @@ import scott.lyo.domain.warehouse.Robot;
 import scott.lyo.domain.warehouse.Waypoint;
 import scott.lyo.domain.warehouse.WhObject;
 
-
 // Start of user code imports
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,9 @@ import scott.lyo.domain.warehouse.ResourceFactory;
 import com.google.common.collect.ImmutableList;
 import java.util.Optional;
 import java.net.URI;
+import org.eclipse.lyo.tools.store.Store;
+import org.eclipse.lyo.tools.store.StoreFactory;
+import com.hp.hpl.jena.sparql.ARQException;
 // End of user code
 
 // Start of user code pre_class_code
@@ -59,6 +63,7 @@ public class WarehouseControllerManager {
     public final static String spId = "dummy";
     private final static ResourceFactory factory = new ResourceFactory(OSLC4JUtils.getServletURI(),
             spId);
+    private static Store store;
     // End of user code
     
     
@@ -130,7 +135,19 @@ public class WarehouseControllerManager {
     {
         
         // Start of user code contextInitializeServletListener
-        // TODO Implement code to establish connection to data backbone etc ...
+        final ServletContext context = servletContextEvent.getServletContext();
+        final String queryUri = context.getInitParameter(
+                "se.ericsson.cf.scott.sandbox.store.query");
+        final String updateUri = context.getInitParameter(
+                "se.ericsson.cf.scott.sandbox.store.update");
+        try {
+            store = StoreFactory.sparql(queryUri, updateUri);
+            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
+            store.removeAll();
+        } catch (IOException|ARQException e) {
+            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
+                    queryUri, updateUri, e);
+        }
         // End of user code
     }
 
