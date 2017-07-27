@@ -9,6 +9,9 @@
 :- use_module(library(semweb/rdf_persistency)).
 :- use_module(library(oslc_shape)).
 
+:- rdf_meta autodetect_resource_graph(r, -).
+:- rdf_meta resource_md5(r, -, -).
+
 :- rdf_meta oslc_LocalResource(r).
 :- rdf_meta oslc_Resource(r).
 
@@ -61,6 +64,7 @@ oslc:delete_property(IRI, PropertyDefinition, rdf(Graph)) :-
 %   Create a new non-persistent (RAM only) graph with unique name.
 
 make_graph(Graph) :-
+  must_be(var, Graph),
   uuid(Graph),
   rdf_create_graph(Graph),
   rdf_persistency(Graph, false).
@@ -78,9 +82,10 @@ uuid(Id) :-
 %   Tries to automatically detect Graph, in which resource IRI is defined.
 %   Fails if resource has =|rdf:type|= property in more than one graph,
 %   or doesn't have =|rdf:type|= property but is referrred to as a subject
-%   in more that one graph. Ignores graphs created using make_graph/2.
+%   in more that one graph. Ignores graphs created using make_graph/1.
 
 autodetect_resource_graph(IRI, Graph) :-
+  must_be(ground, IRI),
   uuid_salt(Salt),
   once((
     findall(G, (
@@ -103,8 +108,11 @@ autodetect_resource_graph(IRI, Graph) :-
 %   blank nodes do not affect the hash.
 
 resource_md5(IRI, Graph, Hash) :-
-  resource_content(IRI, Graph, ContentList),
-  flatten([IRI, ContentList], FlatContentList),
+  must_be(ground, IRI),
+  must_be(atom, Graph),
+  rdf_global_id(IRI, Id),
+  resource_content(Id, Graph, ContentList),
+  flatten([Id, ContentList], FlatContentList),
   atomics_to_string(FlatContentList, String),
   md5_hash(String, Hash, []).
 
@@ -124,6 +132,7 @@ resource_content(IRI, Graph, ContentList) :-
 %   =R=, its hash is equal to =|resource_md5(R, Graph, Hash)|=.
 
 graph_md5(Graph, Hash) :-
+  must_be(atom, Graph),
   findall(Subject, (
     rdf(Subject, _, _, Graph),
     \+ rdf_is_bnode(Subject)

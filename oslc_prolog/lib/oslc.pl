@@ -52,7 +52,10 @@
 rdfType(rdf:type).
 
 check_iri(NS:Local, IRI) :- !,
+  must_be(atom, NS),
+  must_be(atom, Local),
   rdf_global_id(NS:Local, IRI).
+
 check_iri(IRI, IRI) :-
   must_be(atom, IRI).
 
@@ -78,7 +81,7 @@ create_resource(IRI, Types, Shapes, Properties, Sink) :-
   must_be(list(ground), Properties),
   must_be(ground, Sink),
   rdf_transaction((
-    delete_property(Id, _, Sink),
+    delete_resource(Id, Sink),
     rdfType(RT),
     marshal_list_property(Id, RT, Types, _, Sink),
     oslcInstanceShape(OIS),
@@ -118,7 +121,7 @@ create_shapes_dict(Shapes, Dict) :-
           )
         ; oslc_error('Error while processing resource shape [~w]', [Shape])
         )),
-        V = _{name:Name, occurs:Occurs, representation:Representation}
+        V = _{resource:PropertyResource, name:Name, occurs:Occurs, representation:Representation}
       ),
       ShapeData)
     )
@@ -155,10 +158,11 @@ oslc_resource(IRI, Properties) :-
 %   each property may appear in Properties only once.
 
 oslc_resource(IRI, Properties, SourceSink) :-
-  applicable_shapes(IRI, Shapes, SourceSink),
-  rdf_transaction(
-    oslc_resource0(IRI, Shapes, Properties, SourceSink)
-  ).
+  check_iri(IRI, Id),
+  rdf_transaction((
+    applicable_shapes(Id, Shapes, SourceSink),
+    oslc_resource0(Id, Shapes, Properties, SourceSink)
+  )).
 
 %!  applicable_shapes(+IRI, -Shapes, +Source) is det.
 %
@@ -182,25 +186,19 @@ applicable_shapes(IRI, Shapes, Source) :-
 
 oslc_resource0(_, _, [], _) :- !.
 
-oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
-  check_iri(IRI, Id),
-  atom_string(Property, SProperty),
+oslc_resource0(Id, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
+  must_be(list(atom), Shapes),
+  must_be(atom, Property),
+  create_shapes_dict(Shapes, Dict),
   once((
-    member(ResourceShape, Shapes),
-    rdf(ResourceShape, oslc:property, PropertyResource),
     once((
-      rdf(PropertyResource, oslc:name, SProperty^^xsd:string)
-    ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-      rdf_equal(Property, PropertyDefinition)
+      atom_string(Property, Dict.PropertyDefinition.name)
+    ; rdf_equal(Property, Dict.PropertyDefinition)
     )),
     ( var(Value)
-    -> read_property(Id, PropertyResource, _, Value, SourceSink)
-    ; once((
-        nonvar(PropertyDefinition)
-      ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)
-      )),
-      delete_property(Id, PropertyDefinition, SourceSink),
-      write_property(Id, PropertyResource, _, Value, SourceSink)
+    -> read_property(Id, Dict.PropertyDefinition.resource, _, Value, SourceSink)
+    ; delete_property(Id, PropertyDefinition, SourceSink),
+      write_property(Id, Dict.PropertyDefinition.resource, _, Value, SourceSink)
     )
   ) ; (
     ( var(Value)
@@ -309,7 +307,6 @@ copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   check_iri(IRITo, IdTo),
   must_be(ground, Source),
   must_be(ground, Sink),
-  applicable_shapes(IdFrom, Shapes, Source),
   ( selectchk(prefix(Prefix), Options, RestOptions1)
   -> parse_prefix(Prefix, PrefixList),
      O1 = [prefix(PrefixList)|RestOptions1]
@@ -321,6 +318,7 @@ copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   ; O2 = O1
   ),
   rdf_transaction((
+    applicable_shapes(IdFrom, Shapes, Source),
     copy_resource0(IdFrom, IdTo, Shapes, Source, Sink, O2)
   )).
 
