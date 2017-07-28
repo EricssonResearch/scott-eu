@@ -2,8 +2,7 @@
   check_occurs/4,
   check_value_type/4,
   literal_types/1,
-  is_literal_type/1,
-  oslcInstanceShape/1
+  is_literal_type/1
 ]).
 
 :- use_module(library(semweb/rdf_library)).
@@ -18,9 +17,6 @@
 :- rdf_meta check_value_type(r, -).
 :- rdf_meta literal_types(t).
 :- rdf_meta is_literal_type(r).
-
-:- rdf_meta oslcInstanceShape(r).
-oslcInstanceShape(oslc_shapes:oslcInstanceShape).
 
 % ------------ CHECK PROPERTY OCCURS
 

@@ -34,6 +34,7 @@
 :- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc_shape)).
 :- use_module(library(oslc_rdf)).
+:- use_module(library(oslc_error)).
 
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
@@ -48,10 +49,16 @@
 :- rdf_meta delete_resource(r, -).
 
 :- rdf_meta rdfType(r).
+:- rdf_meta oslcInstanceShape(r).
+
 rdfType(rdf:type).
+oslcInstanceShape(oslc:instanceShape).
 
 check_iri(NS:Local, IRI) :- !,
+  must_be(atom, NS),
+  must_be(atom, Local),
   rdf_global_id(NS:Local, IRI).
+
 check_iri(IRI, IRI) :-
   must_be(atom, IRI).
 
@@ -77,13 +84,14 @@ create_resource(IRI, Types, Shapes, Properties, Sink) :-
   must_be(list(ground), Properties),
   must_be(ground, Sink),
   rdf_transaction((
-    delete_property(Id, _, Sink),
+    delete_resource(Id, Sink),
     rdfType(RT),
     marshal_list_property(Id, RT, Types, _, Sink),
     oslcInstanceShape(OIS),
-    write_property(Id, OIS, Shapes, _, Sink),
-    oslc_resource0(Id, Shapes, Properties, Sink),
-    check_resource(Id, Shapes, Sink)
+    marshal_list_property(Id, OIS, Shapes, _, Sink),
+    create_shapes_dict(Shapes, Dict),
+    oslc_resource0(Id, Dict, Properties, Sink),
+    check_resource(Id, Dict, Sink)
   )).
 
 %!  applicable_shapes(+Types, -Shapes) is det.
@@ -101,6 +109,54 @@ applicable_shapes(Types, Shapes) :-
     ; rdf(ResourceShape, oslc:describes, Type)
     ))
   ), Shapes).
+
+create_shapes_dict(Shapes, Dict) :-
+  findall(ShapeData, (
+    member(Shape, Shapes),
+    (
+      findall(K=V, (
+        rdf(Shape, oslc:property, PropertyResource),
+        once((
+          rdf(PropertyResource, oslc:propertyDefinition, K),
+          rdf(PropertyResource, oslc:occurs, Occurs),
+          rdf(PropertyResource, oslc:name, Name^^xsd:string)
+        ; oslc_error('Error while processing resource shape [~w]', [Shape])
+        )),
+        Va = _{resource:PropertyResource, name:Name, occurs:Occurs},
+        once((
+          rdf(PropertyResource, oslc:representation, Representation),
+          V = Va.put(representation, Representation)
+        ; V = Va
+        ))
+      ),
+      ShapeData)
+    )
+  ), ShapesData),
+  flatten(ShapesData, DictData),
+  catch(
+    dict_create(Dict, _, DictData),
+    error(duplicate_key(X), _),
+    oslc_error('Dulicate definition of property [~w] in resource shapes ~w', [X, Shapes])
+  ).
+
+check_resource(IRI, Dict, Source) :-
+  forall((
+    Dict.PropertyDefinition.resource = PropertyResource
+  ), (
+    unmarshal_list_property(IRI, PropertyDefinition, Values, Type, Source),
+    check_property(IRI, PropertyResource, Type, Values, _),
+    ( rdf_equal(Dict.get(PropertyDefinition).get(representation), oslc:'Inline')
+    -> forall(
+         member(Value, Values),
+         (
+           applicable_shapes(Value, BnodeShapes, Source),
+           create_shapes_dict(BnodeShapes, BnodeDict),
+           check_resource(Value, BnodeDict, Source)
+         )
+       )
+    ; true
+    )
+  )).
 
 %!  oslc_resource(+IRI, +Properties) is det.
 %
@@ -127,10 +183,12 @@ oslc_resource(IRI, Properties) :-
 %   each property may appear in Properties only once.
 
 oslc_resource(IRI, Properties, SourceSink) :-
-  applicable_shapes(IRI, Shapes, SourceSink),
-  rdf_transaction(
-    oslc_resource0(IRI, Shapes, Properties, SourceSink)
-  ).
+  check_iri(IRI, Id),
+  rdf_transaction((
+    applicable_shapes(Id, Shapes, SourceSink),
+    create_shapes_dict(Shapes, Dict),
+    oslc_resource0(Id, Dict, Properties, SourceSink)
+  )).
 
 %!  applicable_shapes(+IRI, -Shapes, +Source) is det.
 %
@@ -140,7 +198,7 @@ oslc_resource(IRI, Properties, SourceSink) :-
 applicable_shapes(IRI, Shapes, Source) :-
   check_iri(IRI, Id),
   oslcInstanceShape(OIS),
-  read_property(Id, OIS, ReadShapes, _, Source),
+  unmarshal_list_property(Id, OIS, ReadShapes, _, Source),
   rdfType(RT),
   unmarshal_list_property(Id, RT, Types, _, Source),
   findall(ResourceShape, (
@@ -154,25 +212,19 @@ applicable_shapes(IRI, Shapes, Source) :-
 
 oslc_resource0(_, _, [], _) :- !.
 
-oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
-  check_iri(IRI, Id),
-  atom_string(Property, SProperty),
+oslc_resource0(Id, Dict, [Property=Value|RemainingProperties], SourceSink) :-
+  must_be(atom, Property),
   once((
-    member(ResourceShape, Shapes),
-    rdf(ResourceShape, oslc:property, PropertyResource),
     once((
-      rdf(PropertyResource, oslc:name, SProperty^^xsd:string)
-    ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-      rdf_equal(Property, PropertyDefinition)
+      atom_string(Property, Dict.PropertyDefinition.name)
+    ; rdf_equal(Property, Dict.PropertyDefinition)
     )),
     ( var(Value)
-    -> read_property(Id, PropertyResource, _, Value, SourceSink)
-    ; once((
-        nonvar(PropertyDefinition)
-      ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)
-      )),
-      delete_property(Id, PropertyDefinition, SourceSink),
-      write_property(Id, PropertyResource, _, Value, SourceSink)
+    -> unmarshal_list_property(Id, PropertyDefinition, InternalValue, _, SourceSink),
+       check_property(Id, Dict.PropertyDefinition.resource, _, InternalValue, Value)
+    ; delete_property(Id, PropertyDefinition, SourceSink),
+      check_property(Id, Dict.PropertyDefinition.resource, Type, InternalValue, Value),
+      marshal_list_property(Id, PropertyDefinition, InternalValue, Type, SourceSink)
     )
   ) ; (
     ( var(Value)
@@ -181,7 +233,7 @@ oslc_resource0(IRI, Shapes, [Property=Value|RemainingProperties], SourceSink) :-
       marshal_some_property(Id, Property, Value, _, SourceSink)
     )
   )),
-  oslc_resource0(Id, Shapes, RemainingProperties, SourceSink).
+  oslc_resource0(Id, Dict, RemainingProperties, SourceSink).
 
 % ------------ CHECK PROPERTY
 
@@ -190,11 +242,6 @@ check_property(IRI, PropertyResource, Type, InternalValue, Value) :-
   check_value_type(IRI, PropertyResource, InternalValue, Type).
 
 % ------------ READ PROPERTY
-
-read_property(IRI, PropertyResource, InternalValue, Value, Source) :-
-  once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
-  unmarshal_list_property(IRI, PropertyDefinition, InternalValue, _, Source),
-  check_property(IRI, PropertyResource, _, InternalValue, Value).
 
 unmarshal_property(_, _, _, _, []) :- !.
 
@@ -215,11 +262,6 @@ unmarshal_some_property(IRI, PropertyDefinition, Values, Type, Source) :-
   )).
 
 % ------------ WRITE PROPERTY
-
-write_property(IRI, PropertyResource, InternalValue, Value, Sink) :-
-  check_property(IRI, PropertyResource, Type, InternalValue, Value),
-  once(rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)),
-  marshal_list_property(IRI, PropertyDefinition, InternalValue, Type, Sink).
 
 marshal_property(_, _, _, _, []) :- !.
 
@@ -281,10 +323,8 @@ copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   check_iri(IRITo, IdTo),
   must_be(ground, Source),
   must_be(ground, Sink),
-  applicable_shapes(IdFrom, Shapes, Source),
-  ( selectchk(prefix(Prefix), Options, RestOptions1)
-  -> parse_prefix(Prefix, PrefixList),
-     O1 = [prefix(PrefixList)|RestOptions1]
+  ( selectchk(prefix(Prefix), Options, O1)
+  -> parse_prefix(Prefix, PrefixList)
   ; O1 = Options
   ),
   ( selectchk(properties(Properties), O1, RestOptions2)
@@ -293,7 +333,9 @@ copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   ; O2 = O1
   ),
   rdf_transaction((
-    copy_resource0(IdFrom, IdTo, Shapes, Source, Sink, O2)
+    applicable_shapes(IdFrom, Shapes, Source),
+    create_shapes_dict(Shapes, Dict),
+    copy_resource0(IdFrom, IdTo, Dict, Source, Sink, O2)
   )).
 
 parse_prefix(Prefix, Structure) :-
@@ -336,54 +378,30 @@ word_letters([L|Ls]) --> letter(L), word_letters(Ls).
 word_letters([]) --> [].
 letter(L) --> [L], { \+ member(L, [':','*',',','{','}']) }.
 
-copy_resource0(IRIFrom, IRITo, Shapes, Source, Sink, Options) :-
+copy_resource0(IRIFrom, IRITo, Dict, Source, Sink, Options) :-
   delete_resource(IRITo, Sink),
-  % TODO: probably we should combine copy with checking and make copy the default checking procedure for all purposes
-  check_resource(IRIFrom, Shapes, Source),
+  check_resource(IRIFrom, Dict, Source),
   ( selectchk(properties(PropertyList), Options, RestOptions)
   -> true
   ; RestOptions = Options
   ),
   forall(
-    unmarshal_property(IRIFrom, Property, Value, Type, Source)
+    unmarshal_property(IRIFrom, PropertyDefinition, Value, Type, Source)
   , (
     ( rdf_is_bnode(Value)
-    -> copy_bnode(Value, Source, Source, Sink, Options, IRITo, Property, PropertyList, RestOptions)
+    -> copy_bnode(Value, Source, Source, Sink, IRITo, PropertyDefinition, PropertyList, RestOptions)
     ; ( \+ is_literal_type(Type),
         member(inline(InlineSource), Options),
-        member(ResourceShape, Shapes),
-        rdf(ResourceShape, oslc:property, PropertyResource),
-        rdf(PropertyResource, oslc:propertyDefinition, Property),
-        rdf(PropertyResource, oslc:representation, oslc:'Inline')
-      -> copy_bnode(Value, Source, InlineSource, Sink, Options, IRITo, Property, PropertyList, RestOptions)
-      ; copy_property(Value, Sink, IRITo, Property, Type, PropertyList)
+        rdf_equal(Dict.get(PropertyDefinition).get(representation), oslc:'Inline')
+      -> copy_bnode(Value, Source, InlineSource, Sink, IRITo, PropertyDefinition, PropertyList, RestOptions)
+      ; copy_property(Value, Sink, IRITo, PropertyDefinition, Type, PropertyList)
       )
     )
   )).
 
-check_resource(IRI, Shapes, Source) :-
-  forall((
-    member(ResourceShape, Shapes),
-    rdf(ResourceShape, oslc:property, PropertyResource),
-    rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition)
-  ), (
-    unmarshal_list_property(IRI, PropertyDefinition, Values, Type, Source),
-    check_property(IRI, PropertyResource, Type, Values, _),
-    ( rdf(PropertyResource, oslc:representation, oslc:'Inline')
-    -> forall(
-         member(Value, Values),
-         (
-           applicable_shapes(Value, BnodeShapes, Source),
-           check_resource(Value, BnodeShapes, Source)
-         )
-       )
-    ; true
-    )
-  )).
-
-copy_bnode(Value, ShapeSource, Source, Sink, Options, IRITo, Property, PropertyList, RestOptions) :-
+copy_bnode(Value, ShapeSource, Source, Sink, IRITo, Property, PropertyList, RestOptions) :-
   ( ( var(PropertyList),
-      NewOptions = Options
+      NewOptions = RestOptions
     ; once((
         member('*'(SubList), PropertyList)
       ; P =.. [Property, SubList],
@@ -393,7 +411,8 @@ copy_bnode(Value, ShapeSource, Source, Sink, Options, IRITo, Property, PropertyL
     )
   -> rdf_create_bnode(Bnode),
      applicable_shapes(Value, BnodeShapes, ShapeSource),
-     copy_resource0(Value, Bnode, BnodeShapes, Source, Sink, NewOptions),
+     create_shapes_dict(BnodeShapes, BnodeDict),
+     copy_resource0(Value, Bnode, BnodeDict, Source, Sink, NewOptions),
      marshal_property(IRITo, Property, Bnode, _, Sink)
   ; true
   ).
