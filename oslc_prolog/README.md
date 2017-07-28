@@ -12,7 +12,7 @@ The library consists of the following directories:
 * `/rdf/base` contains data that will be preloaded with the cpack. Also contains a standard manifest ttl that defines how the preloading shall be done. In practice, this will load the `oslc` and `oslc_shape` graphs when this cpack is loaded.
 * `/config-available` declares libraries to be loaded at the startup. We load both the libraries here as well as the application server.
 * `/lib/` contains the library code itself.
-* `/application` contains an OSLC core server and dispatching mechanism to custom handlers of REST requests towards OSLC resources.
+* `/application` contains an OSLC core server and dispatching mechanism to custom handlers of REST requests towards OSLC resources. It also contains OSLC-specific extensions to ClioPatria UI.
 
 
 ## Library overview
