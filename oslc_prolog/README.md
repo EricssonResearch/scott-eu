@@ -7,11 +7,9 @@ This is a CPACK library for Cliopatria, follows the standard structure. It has s
 
 The library consists of the following directories:
 
-* `/snippets` is an extra folder with the examples.
 * `/rdf` contains the metadata.
 * `/rdf/cpack` contains the CPACK metadata.
 * `/rdf/base` contains data that will be preloaded with the cpack. Also contains a standard manifest ttl that defines how the preloading shall be done. In practice, this will load the `oslc` and `oslc_shape` graphs when this cpack is loaded.
-* `/config/` is needed for running in Clio.
 * `/config-available` declares libraries to be loaded at the startup. We load both the libraries here as well as the application server.
 * `/lib/` contains the library code itself.
 * `/application` contains a sample server that listens on a predefined path.
