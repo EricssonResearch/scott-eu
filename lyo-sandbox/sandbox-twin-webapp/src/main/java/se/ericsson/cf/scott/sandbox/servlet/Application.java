@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-import org.eclipse.lyo.oslc4j.application.OslcWinkApplication;
+//import org.eclipse.lyo.oslc4j.application.OslcWinkApplication;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.AllowedValues;
 import org.eclipse.lyo.oslc4j.core.model.Compact;
@@ -50,9 +50,10 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
 import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
+import org.glassfish.jersey.server.ResourceConfig;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService;
-import se.ericsson.cf.scott.sandbox.services.ResourceShapeService;
+//import se.ericsson.cf.scott.sandbox.services.ResourceShapeService;
 
 import scott.lyo.domain.planning.Action;
 import scott.lyo.domain.planning.ActionType;
@@ -78,7 +79,7 @@ import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 // Start of user code pre_class_code
 // End of user code
 
-public class Application extends OslcWinkApplication {
+public class Application extends ResourceConfig {
 
     private static final Set<Class<?>>         RESOURCE_CLASSES                          = new HashSet<Class<?>>();
     private static final Map<String, Class<?>> RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP = new HashMap<String, Class<?>>();
@@ -108,13 +109,13 @@ public class Application extends OslcWinkApplication {
             RESOURCE_CLASSES.add(VariableInstance.class);
             RESOURCE_CLASSES.add(Waypoint.class);
             RESOURCE_CLASSES.add(WhObject.class);
-            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.ConsumersService"));
-            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.OAuthService"));
+//            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.ConsumersService"));
+//            RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.OAuthService"));
 
             // Catalog resources
             RESOURCE_CLASSES.add(ServiceProviderCatalogService.class);
             RESOURCE_CLASSES.add(ServiceProviderService.class);
-            RESOURCE_CLASSES.add(ResourceShapeService.class);
+//            RESOURCE_CLASSES.add(ResourceShapeService.class);
 
             // Start of user code Custom Resource Classes
             // End of user code
@@ -135,7 +136,7 @@ public class Application extends OslcWinkApplication {
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE,                  Service.class);
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER,         ServiceProvider.class);
             RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER_CATALOG, ServiceProviderCatalog.class);
-        } catch (ClassNotFoundException e)
+        } catch (Exception e)
         {
             e.printStackTrace();
             System.err.println("Application failed to initialize");
@@ -159,9 +160,16 @@ public class Application extends OslcWinkApplication {
            throws OslcCoreApplicationException,
                   URISyntaxException
     {
-        super(RESOURCE_CLASSES,
-              OslcConstants.PATH_RESOURCE_SHAPES,
-              RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP);
+//        super(RESOURCE_CLASSES,
+//              OslcConstants.PATH_RESOURCE_SHAPES,
+//              RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP);
+
+        packages("se.ericsson.cf.scott.sandbox.services");
+        packages("se.ericsson.cf.scott.sandbox.resources");
+//        registerInstances(new OslcResourceShapeResource(resourceShapesPath,
+//                resourcePathToResourceClassMap);)
+        registerInstances(JenaProvidersRegistry.getProviders());
+        // TODO Andrew@2017-07-27: use https://jersey.github.io/documentation/latest/resource-builder.html for the ResourceShapeService 
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {

@@ -6,7 +6,6 @@
 		<artifactId>sandbox-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>se.ericsson.cf.scott.sandbox</groupId>
 	<artifactId>sandbox-twin-webapp</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
@@ -17,6 +16,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<version.lyo.core>2.2.0-SNAPSHOT</version.lyo.core>
 		<version.lyo.server>2.1.0</version.lyo.server>
+		<version.jersey>2.25.1</version.jersey>
 	</properties>
 	<repositories>
 		<repository>
@@ -47,6 +47,12 @@
 					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
 			</exclusions>-->
+			<exclusions>
+				<exclusion>
+					<groupId>javax.ws.rs</groupId>
+					<artifactId>jsr311-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.lyo.oslc4j.core</groupId>
@@ -61,16 +67,37 @@
 			</exclusions>
 -->
 		</dependency>
+		<!--		<dependency>
+          <groupId>org.eclipse.lyo.oslc4j.core</groupId>
+          <artifactId>oslc4j-wink</artifactId>
+          <version>${version.lyo.core}</version>
+        </dependency>-->
 		<dependency>
-			<groupId>org.eclipse.lyo.oslc4j.core</groupId>
-			<artifactId>oslc4j-wink</artifactId>
-			<version>${version.lyo.core}</version>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>${version.jersey}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${version.jersey}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-common</artifactId>
+			<version>${version.jersey}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.lyo.oslc4j.core</groupId>
 			<artifactId>oslc4j-json4j-provider</artifactId>
 			<version>${version.lyo.core}</version>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>org.eclipse.lyo.server</groupId>
 			<artifactId>oauth-core</artifactId>
@@ -87,6 +114,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+-->
 		<dependency>
 			<groupId>org.eclipse.lyo.tools</groupId>
 			<artifactId>lyo-store</artifactId>
@@ -123,7 +151,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
+<!--		<dependency>
 			<groupId>org.eclipse.lyo.server</groupId>
 			<artifactId>oauth-consumer-store</artifactId>
 			<version>${version.lyo.server}</version>
@@ -139,7 +167,7 @@
 			<artifactId>oauth-webapp</artifactId>
 			<version>${version.lyo.server}</version>
 			<type>war</type>
-		</dependency>
+		</dependency>-->
 	</dependencies>
 <!--	<dependencyManagement>
 		<dependencies>

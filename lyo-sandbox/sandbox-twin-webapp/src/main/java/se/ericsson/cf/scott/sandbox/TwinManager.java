@@ -63,7 +63,7 @@ public class TwinManager {
 
     // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
-    private static WarehouseAdaptorClient warehouseAdaptorClient;
+//    private static WarehouseAdaptorClient warehouseAdaptorClient;
     private static String spId = "dummy";
     private static Store store;
     // End of user code
@@ -81,16 +81,16 @@ public class TwinManager {
                 "se.ericsson.cf.scott.sandbox.store.query");
         final String updateUri = context.getInitParameter(
                 "se.ericsson.cf.scott.sandbox.store.query");
-        warehouseAdaptorClient = new WarehouseAdaptorClient("http://sandbox-warehouse:8080/sandbox-warehouse/services");
-//        try {
+//        warehouseAdaptorClient = new WarehouseAdaptorClient("http://sandbox-warehouse:8080/sandbox-warehouse/services");
+        try {
 //            store = StoreFactory.sparql(queryUri, updateUri);
 //            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
 //            store.removeAll();
 //            throw new IOException("test");
-//        } catch (IOException e) {
+        } catch (Exception e) {
 //            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
 //                    new Object[]{queryUri, updateUri, e});
-//        }
+        }
         // End of user code
     }
 
@@ -124,17 +124,17 @@ public class TwinManager {
         // Start of user code getRobot
         if ("1".equals(robotId)) {
             try {
-                final AbstractResource wp2 = warehouseAdaptorClient.fetchWaypoint("dummy", "wp2");
+//                final AbstractResource wp2 = warehouseAdaptorClient.fetchWaypoint("dummy", "wp2");
 
                 aResource = new Robot(spId, "1");
-                aResource.setIsAt(new Link(wp2.getAbout()));
+//                aResource.setIsAt(new Link(wp2.getAbout()));
                 aResource.setChargeLevel(7);
                 aResource.setCapacity(1);
                 aResource.setMaxCharge(10);
                 aResource.setHighCharge(6);
                 aResource.setLowCharge(3);
                 aResource.setIsCharging(false);
-            } catch (OslcClientException | URISyntaxException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

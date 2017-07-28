@@ -17,9 +17,9 @@
 
 package se.ericsson.cf.scott.sandbox.clients;
 
-import org.apache.wink.client.ClientResponse;
-import org.eclipse.lyo.client.oslc.OSLCConstants;
-import org.eclipse.lyo.client.oslc.OslcClient;
+//import org.apache.wink.client.ClientResponse;
+//import org.eclipse.lyo.client.oslc.OSLCConstants;
+//import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import scott.lyo.domain.planning.Plan;
 
@@ -32,46 +32,46 @@ import scott.lyo.domain.planning.Plan;
 
 public class GenericRequiredAdaptorClient
 {
-
-    // Start of user code class_attributes
-    // End of user code
-    
-    // Start of user code class_methods
-    // End of user code
-
-    static String serviceProviderCatalogURI = "http://your.host.com/adaptor/services/catalog/singleton";
-
-    public static ServiceProviderCatalog getServiceProviderCatalog() throws Exception {
-        OslcClient client = new OslcClient();
-        ClientResponse response = null;
-        ServiceProviderCatalog catalog = null;
-
-        // Start of user code getServiceProviderCatalog_init
-        // End of user code
-
-        response = client.getResource(serviceProviderCatalogURI,OSLCConstants.CT_RDF);
-        if (response != null) {
-            catalog = response.getEntity(ServiceProviderCatalog.class);
-        }
-        // Start of user code getServiceProviderCatalog_final
-        // End of user code
-        return catalog;
-    }
-
-    public static Plan getPlan(String resourceURI) throws Exception {
-        OslcClient client = new OslcClient();
-        ClientResponse response = null;
-        Plan resource = null;
-
-        // Start of user code getPlan_init
-        // End of user code
-
-        response = client.getResource(resourceURI, OSLCConstants.CT_RDF);
-        if (response != null) {
-            resource = response.getEntity(Plan.class);
-        }
-        // Start of user code getPlan_final
-        // End of user code
-        return resource;
-    }
+//
+//    // Start of user code class_attributes
+//    // End of user code
+//
+//    // Start of user code class_methods
+//    // End of user code
+//
+//    static String serviceProviderCatalogURI = "http://your.host.com/adaptor/services/catalog/singleton";
+//
+//    public static ServiceProviderCatalog getServiceProviderCatalog() throws Exception {
+//        OslcClient client = new OslcClient();
+//        ClientResponse response = null;
+//        ServiceProviderCatalog catalog = null;
+//
+//        // Start of user code getServiceProviderCatalog_init
+//        // End of user code
+//
+//        response = client.getResource(serviceProviderCatalogURI,OSLCConstants.CT_RDF);
+//        if (response != null) {
+//            catalog = response.getEntity(ServiceProviderCatalog.class);
+//        }
+//        // Start of user code getServiceProviderCatalog_final
+//        // End of user code
+//        return catalog;
+//    }
+//
+//    public static Plan getPlan(String resourceURI) throws Exception {
+//        OslcClient client = new OslcClient();
+//        ClientResponse response = null;
+//        Plan resource = null;
+//
+//        // Start of user code getPlan_init
+//        // End of user code
+//
+//        response = client.getResource(resourceURI, OSLCConstants.CT_RDF);
+//        if (response != null) {
+//            resource = response.getEntity(Plan.class);
+//        }
+//        // Start of user code getPlan_final
+//        // End of user code
+//        return resource;
+//    }
 }

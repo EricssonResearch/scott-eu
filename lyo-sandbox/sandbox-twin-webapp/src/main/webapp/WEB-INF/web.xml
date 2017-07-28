@@ -15,10 +15,15 @@
   </listener>
   <servlet>
     <servlet-name>oslc-servlet</servlet-name>
-    <servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
+    <!--<servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>-->
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>javax.ws.rs.Application</param-name>
       <param-value>se.ericsson.cf.scott.sandbox.servlet.Application</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+      <param-value>true</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
