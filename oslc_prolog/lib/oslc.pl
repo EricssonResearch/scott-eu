@@ -411,7 +411,8 @@ copy_bnode(Value, ShapeSource, Source, Sink, IRITo, Property, PropertyList, Rest
     )
   -> rdf_create_bnode(Bnode),
      applicable_shapes(Value, BnodeShapes, ShapeSource),
-     copy_resource0(Value, Bnode, BnodeShapes, Source, Sink, NewOptions),
+     create_shapes_dict(BnodeShapes, BnodeDict),
+     copy_resource0(Value, Bnode, BnodeDict, Source, Sink, NewOptions),
      marshal_property(IRITo, Property, Bnode, _, Sink)
   ; true
   ).
