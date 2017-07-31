@@ -63,7 +63,12 @@ check_path(Request, Prefix, ResourceSegments) :-
     atom_concat(BaseUri, ServicePath, Uri), % check if URI called starts with the base URI
     split_string(ServicePath, "/", "/", Parts),
     strings_to_atoms(Parts, [Prefix|ResourceSegments]),
-    rdf_current_prefix(Prefix, _)
+    rdf_current_prefix(Prefix, _),
+    setting(oslc_prolog_server:exposed_prefixes, ExposedPrefixes),
+    once((
+      member(Prefix, ExposedPrefixes) % check if prefix is in the list of exposed prefixes
+    ; member((*), ExposedPrefixes)    % ... or exposed list of prefixes contains wildcard (*)
+    ))
   ; throw(status_code(404)) % not found
   )).
 
