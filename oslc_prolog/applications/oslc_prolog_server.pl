@@ -9,6 +9,7 @@
 :- use_module(library(oslc_rdf)).
 
 :- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/', 'Base URI').
+:- setting(oslc_prolog_server:exposed_prefixes, list(atom), '[*]', 'Exposed Prefixes').
 
 :- http_handler('/', dispatcher, [prefix]).
 
