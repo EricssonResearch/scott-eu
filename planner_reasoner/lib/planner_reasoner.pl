@@ -5,11 +5,6 @@
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_library)).
 
-:- rdf_register_prefix(pp, 'http://ontology.cf.ericsson.net/planning_ontology#').
-:- rdf_register_prefix(wd, 'http://ontology.cf.ericsson.net/warehouse_domain#').
-:- rdf_register_prefix(wp, 'http://ontology.cf.ericsson.net/warehouse_problem#').
-:- rdf_register_prefix(ppos, 'http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#').
-
 :- rdf_attach_library(planner_reasoner(rdf)).
 :- rdf_load_library(pp).
 :- rdf_load_library(wd).
@@ -82,7 +77,7 @@ generate_precondition(TopPredPrecondition, SubIndent, Out):-
                                                      generate_precondition0(PredicateList, SubIndent, Out)).
 
 
-generate_precondition0([], SubIndent, _) :- !.
+generate_precondition0([], _, _) :- !.
 generate_precondition0([H1|T1], SubIndent, Out) :-
   %if it is a predicate
   (rdf(H1, rdf:type, pp:'Not') ->

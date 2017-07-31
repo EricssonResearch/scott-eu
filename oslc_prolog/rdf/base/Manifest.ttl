@@ -1,4 +1,5 @@
 @prefix	lib: <http://www.swi-prolog.org/rdf/library/> .
+@prefix	rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
 @prefix	oslc_shapes: <http://ontology.cf.ericsson.net/oslc_shapes/> .
@@ -6,7 +7,7 @@
 <oslc>
 	a lib:Schema ;
 	a lib:Virtual ;
-	dcterms:title "All vocabulary URIs defined in the OSLC Core namespace" ;
+	dcterms:title "All vocabulary URIs defined in the OSLC Core namespace"^^rdf:XMLLiteral ;
 	lib:source oslc: ;
 	lib:schema <oslc.rdf> .
 
@@ -18,7 +19,7 @@
 <oslc_shapes>
 	a lib:Schema ;
 	a lib:Virtual ;
-	dcterms:title "OSLC resource shapes" ;
+	dcterms:title "OSLC resource shapes"^^rdf:XMLLiteral ;
 	lib:source <http://ontology.cf.ericsson.net/oslc_shapes#> ;
 	lib:schema <oslc_shapes.ttl> .
 
