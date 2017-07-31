@@ -32,7 +32,7 @@ test(service_provider_catalog) :-
                     domain = 'http://mydomain.com'
                   ], rdf(oslc_test)),
 
-  create_resource(test:sp1, [oslc:'ServiceProvider'],
+  create_resource(tests:sp1, [oslc:'ServiceProvider'],
                   [
                     service = [ Service1 ]
                   ], rdf(oslc_test)),
@@ -43,23 +43,23 @@ test(service_provider_catalog) :-
                     domain = 'http://mydomain.com'
                   ], rdf(oslc_test)),
 
-  create_resource(test:sp2, [oslc:'ServiceProvider'],
+  create_resource(tests:sp2, [oslc:'ServiceProvider'],
                   [
                     service = [ Service2 ]
                   ], rdf(oslc_test)),
 
-  create_resource(test:s1, [oslc:'ServiceProviderCatalog'],
+  create_resource(tests:s1, [oslc:'ServiceProviderCatalog'],
                   [ title = "service provider catalog",
                     description = "o3",
                     publisher = Publisher,
-                    serviceProvider = [test:sp1, test:sp2]
+                    serviceProvider = [tests:sp1, tests:sp2]
                   ], rdf(oslc_test)),
 
-  rdf(test:s1, rdf:type, SPC),
+  rdf(tests:s1, rdf:type, SPC),
   rdf_global_id(oslc:'ServiceProviderCatalog', OSPC),
   assertion(SPC, OSPC),
 
-  oslc_resource(test:s1, [ publisher = A,
+  oslc_resource(tests:s1, [ publisher = A,
                            description = B,
                            title = C,
                            serviceProvider = D
@@ -68,6 +68,6 @@ test(service_provider_catalog) :-
   assertion(C == "service provider catalog"),
   assertion(B == "o3"),
   assertion(A, Publisher),
-  assertion(D, [test:sp1, test:sp2]).
+  assertion(D, [tests:sp1, tests:sp2]).
 
 :- end_tests(oslc).
