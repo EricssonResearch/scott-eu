@@ -1,24 +1,34 @@
-@prefix : <http://ontology.cf.ericsson.net/warehouse_domain#> .
-@prefix warehouse: <http://ontology.cf.ericsson.net/warehouse_ontology#> . #this should be later replaced by some ontology (ies) for robotics, or internal logistics
-@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology#> .
-@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#> .
-@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
-@prefix wp: <http://ontology.cf.ericsson.net/warehouse_problem#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix oslc: <http://open-services.net/ns/core#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
-@base <http://ontology.cf.ericsson.net/warehouse_domain#> .
+@prefix warehouse: <http://example.com/warehouse_ontology/> . #this should be later replaced by some ontology (ies) for robotics, or internal logistics
+@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
+@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes/> .
+@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain/> .
+@prefix wp: <http://ontology.cf.ericsson.net/warehouse_problem/> .
+@prefix : <http://ontology.cf.ericsson.net/warehouse_domain/> .
+@base <http://ontology.cf.ericsson.net/warehouse_domain> .
 
 ##############################################################################
 # all the types used in the domain file
 ##############################################################################
-warehouse:Robot rdf:type pp:VariableType .
-warehouse:Waypoint rdf:type pp:VariableType .
-warehouse:Place rdf:type pp:VariableType .
-warehouse:Charge rdf:type pp:VariableType .
-warehouse:Object rdf:type pp:VariableType .
+
+warehouse:Robot
+  a pp:VariableType .
+
+warehouse:Waypoint
+  a pp:VariableType .
+
+warehouse:Place
+  a pp:VariableType .
+
+warehouse:Charge
+  a pp:VariableType .
+
+warehouse:Object
+  a pp:VariableType .
 
 ##############################################################################
 # NOTE fluent types, and fluent type arguments,  and predicates and predicate
@@ -26,31 +36,36 @@ warehouse:Object rdf:type pp:VariableType .
 # So, these definitions can be moved to that ontology.
 ##############################################################################
 
-
 #definition of fluent types and fluent type arguments , Regular nodes to be accessed outside of this graph
-:capacity rdf:type pp:FluentType ;
-           rdfs:label "capacity";
-           ppos:hasFluentTypeArgument :fta1 .
+:capacity
+  a pp:FluentType ;
+  rdfs:label "capacity"^^xsd:string ;
+  ppos:hasFluentTypeArgument :fta1 .
 
-:fta1 rdf:type pp:FluentTypeArgument ;
-        ppos:hasVariableType warehouse:Robot ;
-        sh:order 0 .
+:fta1
+  a pp:FluentTypeArgument ;
+  ppos:hasVariableType warehouse:Robot ;
+  sh:order 0 .
 
-:charge_level rdf:type pp:FluentType;
-               rdfs:label  "charge-level";
-               ppos:hasFluentTypeArgument :fta1 .
+:charge_level
+  a pp:FluentType;
+  rdfs:label "charge-level"^^xsd:string ;
+  ppos:hasFluentTypeArgument :fta1 .
 
-:max_charge rdf:type pp:FluentType ;
-            rdfs:label  "max-charge";
-            ppos:hasFluentTypeArgument :fta1 .
+:max_charge
+  a pp:FluentType ;
+  rdfs:label "max-charge"^^xsd:string ;
+  ppos:hasFluentTypeArgument :fta1 .
 
-:low_charge rdf:type pp:FluentType ;
-            rdfs:label  "low-charge";
-            ppos:hasFluentTypeArgument :fta1 .
+:low_charge
+  a pp:FluentType ;
+  rdfs:label "low-charge"^^xsd:string ;
+  ppos:hasFluentTypeArgument :fta1 .
 
-:high_charge rdf:type pp:FluentType ;
-            rdfs:label  "high-charge";
-            ppos:hasFluentTypeArgument :fta1 .
+:high_charge
+  a pp:FluentType ;
+  rdfs:label "high-charge"^^xsd:string ;
+  ppos:hasFluentTypeArgument :fta1 .
 
 #################################################################
 #Definition of predicate types and predicate type arguments
@@ -58,33 +73,39 @@ warehouse:Object rdf:type pp:VariableType .
 ################################################################
 
 #is_at predicate type
-:is_at rdf:type pp:PredicateType;
-        rdfs:label "is-at";
-        ppos:hasPredicateTypeArgument :pta1 ;
-        ppos:hasPredicateTypeArgument :pta2 .
+:is_at
+  a pp:PredicateType ;
+  rdfs:label "is-at"^^xsd:string ;
+  ppos:hasPredicateTypeArgument :pta1 ;
+  ppos:hasPredicateTypeArgument :pta2 .
 
-:pta1 rdf:type pp:PredicateTypeArgument ;
-      ppos:hasVariableType warehouse:Robot ;
-      sh:order 0.
+:pta1
+  a pp:PredicateTypeArgument ;
+  ppos:hasVariableType warehouse:Robot ;
+  sh:order 0 .
 
-:pta2 rdf:type pp:PredicateTypeArgument ;
-      ppos:hasVariableType warehouse:Waypoint ;
-      sh:order 1.
+:pta2
+  a pp:PredicateTypeArgument ;
+  ppos:hasVariableType warehouse:Waypoint ;
+  sh:order 1 .
 
 #can_move predicate type
-:can_move rdf:type pp:PredicateType;
-        rdfs:label "can-move";
-        ppos:hasPredicateTypeArgument :pta3 ;
-        ppos:hasPredicateTypeArgument :pta2 . #is the same predicate type argument, with same sh:order value as used in is_at predicate type
+:can_move
+  a pp:PredicateType ;
+  rdfs:label "can-move"^^xsd:string ;
+  ppos:hasPredicateTypeArgument :pta3 ;
+  ppos:hasPredicateTypeArgument :pta2 . #is the same predicate type argument, with same sh:order value as used in is_at predicate type
 
-:pta3 rdf:type pp:PredicateTypeArgument ;
-      ppos:hasVariableType warehouse:Waypoint ;
-      sh:order 0.
+:pta3
+  a pp:PredicateTypeArgument ;
+  ppos:hasVariableType warehouse:Waypoint ;
+  sh:order 0 .
 
 #is-recharging predicate type
-:is-recharging rdf:type pp:PredicateType;
-        rdfs:label "is-recharging";
-        ppos:hasPredicateTypeArgument :pta1 .
+:is-recharging
+  a pp:PredicateType ;
+  rdfs:label "is-recharging"^^xsd:string ;
+  ppos:hasPredicateTypeArgument :pta1 .
 
 ##################################################################################################################
 #Definition of actions, predicates used in actions, and variables used in fluents and predicates in the actions
@@ -96,121 +117,145 @@ warehouse:Object rdf:type pp:VariableType .
 ################################################################################
 #START OF DEFINITION OF ACTION :  moveToWaypoint
 ################################################################################
-:moveToWaypoint rdf:type pp:Action ;  #Action is not a regular node!
-                 rdfs:label "moveToWaypoint" ;
-                 ppos:hasPrecondition _:gd1 ;
-                 ppos:hasEffect _:effect1 .
 
+:moveToWaypoint
+  a pp:Action ;  #Action is a regular node!
+  rdfs:label "moveToWaypoint"^^xsd:string ;
+  ppos:hasPrecondition _:gd1 ;
+  ppos:hasEffect _:effect1 .
 
-_:gd1 rdf:type pp:GoalDescription ;
-      ppos:hasGDArgument _:and1 .
+_:gd1
+  a pp:GoalDescription ;
+  ppos:hasGoalDescriptionArgument _:and1 .
 
-_:effect1 rdf:type pp:Effect ;
-      ppos:hasEffectArgument _:and2 .
+_:effect1
+  a pp:Effect ;
+  ppos:hasEffectArgument _:and2 .
 
-_:and1 rdf:type pp:AndGD ;
-       ppos:hasArgumentInGD _:is_at1 ,
-                            _:can_move1 ,
-                            _:not1 ,
-                            _:gt1 ;
-        sh:order 0.
+_:and1
+  a pp:AndGoalDescription ;
+  ppos:hasArgumentInGoalDescription [ a pp:GoalDescription ;
+                                      ppos:hasGoalDescriptionArgument _:is_at1
+                                    ] ,
+                                    [ a pp:GoalDescription ;
+                                      ppos:hasGoalDescriptionArgument _:can_move1
+                                    ] ,
+                                    [ a pp:GoalDescription ;
+                                      ppos:hasGoalDescriptionArgument _:not1
+                                    ] ,
+                                    [ a pp:GoalDescription ;
+                                      ppos:hasGoalDescriptionArgument _:gt1
+                                    ] ;
+  sh:order 0 .
 
-_:and2 rdf:type pp:AndEffect;
-       ppos:hasArgumentInEffect _:is_at2 ,
-                                _:not2 ,
-                                _:decrease1 ;
-       sh:ordrer 0.
+_:and2
+  a pp:AndEffect;
+  ppos:hasArgumentInEffect _:is_at2 ,
+                           _:not2 ,
+                           _:decrease1 ;
+  sh:order 0 .
 
+_:is_at1
+  a pp:Predicate ;
+  ppos:hasPredicateType _:is_at ;
+  ppos:hasPredicateArgument _:pa1 ,
+                            _:pa2 ;
+  sh:order 0 .
 
-_:is_at1 rdf:type pp:Predicate ;
-         ppos:hasPredicateType _:is_at ;
-         ppos:hasPredicateArgument _:pa1 ;
-         ppos:hasPredicateArgument _:pa2 ;
-         sh:order 0.
+_:pa1
+  a pp:PredicateArgument ;
+  ppos:hasVariable [ a pp:Variable ;
+                     rdfs:label "robot"^^xsd:string
+                   ] ;
+  ppos:hasVariableType :pta1 ;
+  sh:order _:pta1 .  #should get the same relative sh:order  in is_at1 as the relative order of _:pta1
 
-_:pa1 rdf:type pp:PredicateArgument ;
-      ppos:hasVariable [a pp:Variable ;
-                        rdfs:label "robot";] ;
-      ppos:hasVariableType :pta1 ;
-      sh:order _:pta1.  #should get the same relative sh:order  in is_at1 as the relative order of _:pta1
+_:pa2
+  a pp:PredicateArgument ;
+  ppos:hasVariable [ a pp:Variable ;
+                       rdfs:label "from-waypoint"^^xsd:string
+                   ] ;
+  ppos:hasVariableType :pta2 ;
+  sh:order :pta2 .
 
-_:pa2 rdf:type pp:PredicateArgument ;
-      ppos:hasVariable [a pp:Variable ;
-                        rdfs:label "from-waypoint";] ;
-      ppos:hasVariableType :pta2 ;
-      sh:order :pta2 .
+_:is_at2
+  a pp:Predicate ;
+  ppos:hasPredicateType _:is_at ;
+  ppos:hasPredicateArgument _:pa1 ,  #same as in is_at1, having variable robot
+                            _:pa4 ;
+  sh:order 0 .
 
-_:is_at2 rdf:type pp:Predicate ;
-         ppos:hasPredicateType _:is_at ;
-         ppos:hasPredicateArgument _:pa1 ;  #same as in is_at1, having variable robot
-         ppos:hasPredicateArgument _:pa4 ;
-         sh:order 0.
+_:pa4
+  a pp:PredicateArgument ;
+  ppos:hasVariable [ a pp:Variable ;
+                     rdfs:label "to-waypoint"^^xsd:string
+                   ] ;
+  ppos:hasVariableType :pta2 ;
+  sh:order :pta2 .  # same variable type and order as pta2
 
+_:can_move1
+  a pp:Predicate ;
+  ppos:hasPredicateType _:can_move ;
+  ppos:hasPredicateArgument _:pa3 ,
+                            _:pa4 ;
+  sh:order 1 .
 
-_:pa4 rdf:type pp:PredicateArgument ;
-     ppos:hasVariable [a pp:Variable ;
-                       rdfs:label "to-waypoint";] ;
-     ppos:hasVariableType :pta2 ;
-     sh:order :pta2 .  # same variable type and order as pta2
+_:pa3
+  a pp:PredicateArgument ;
+  ppos:hasVariable [ a pp:Variable ;
+                     rdfs:label "from-waypoint"^^xsd:string
+                   ] ;
+  ppos:hasVariableType :pta3 ;
+  sh:order :pta3 .
 
+_:not1
+  a pp:NotGoalDescription ;
+  ppos:hasArgumentInGoalDescription _:is_recharging1 ;
+  sh:order 2 .
 
-_:can_move1 rdf:type pp:Predicate ;
-         ppos:hasPredicateType _:can_move ;
-         ppos:hasPredicateArgument _:pa3 ,
-                                   _:pa4 ;
-         sh:order 1.
+_:not2
+  a pp:NotEffect ;
+  ppos:hasArgumentInEffect _:is_at1 ; #reused is_at1 from _:and1 since it has the same arguments and the same relative position in _:and1 and _:not1 i.e. 0
+  sh:order 1 . #relative order
 
-_:pa3 rdf:type pp:PredicateArgument ;
-      ppos:hasVariable [a pp:Variable ;
-                        rdfs:label "from-waypoint";
-                       ] ;
-      ppos:hasVariableType :pta3 ;
-      sh:order :pta3 .
+_:decrease1
+  a pp:Decrease ;
+  ppos:hasFluentArgument _:charge_level1 ;
+  ppos:hasFExpArgument _:nl1;
+  sh:order 3 .
 
+_:is_recharging1
+  a pp:Predicate ;
+  ppos:hasPredicateType :is_recharging ;
+  ppos:hasPredicateArgument _:pa1 .
 
-_:not1 rdf:type pp:NotGD ;
-       ppos:hasArgumentInGD _:is_recharging1 ;
-       sh:order 2.
+_:gt1
+  a pp:GT ;
+  sh:order 3 ;
+  ppos:hasFExp _:charge_level1 ,
+               _:low_charge1 .
 
-_:not2 rdf:type pp:NotEffect ;
-      ppos:hasArgumentInEffect _:is_at1 ; #reused is_at1 from _:and1 since it has the same arguments and the same relative position in _:and1 and _:not1 i.e. 0
-      sh:order 1. #relative order
+_:charge_level1
+  a pp:Fluent ;
+  ppos:hasFluentType :charge_level ;
+  ppos:hasFluentArgument _:fa1 ;
+  sh:order 0 .  #relative order in gt1 and in descrease1
 
+_:nl1
+  a pp:NumericLiteral ;
+  ppos::hasValue 2 ;
+  sh:order 1 .
 
-_:decrease1 rdf:type pp:Decrease ;
-            ppos:hasFluentArgument _:charge_level1 ;
-            ppos:hasFExpArgument _:nl1;
-            sh:order 3.
+_:low_charge1
+  a pp:Fluent ;
+  ppos:hasFluentType :low_charge ;
+  ppos:hasFluentArgument _:fa1 ;
+  sh:order 1 . #relative order in gt1
 
-
-
-_:is_recharging1 rdf:type pp:Predicate ;
-                 ppos:hasPredicateType :is_recharging ;
-                 ppos:hasPredicateArgument _:pa1 .
-
-_:gt1 rdf:type pp:GT ;
-      sh:order 3;
-      ppos:hasFExp _:charge_level1 ;
-      ppos:hasFExp _:low_charge1 .
-
-
-_:charge_level1 rdf:type pp:Fluent ;
-            ppos:hasFluentType :charge_level ;
-            ppos:hasFluentArgument _:fa1 ;
-            sh:order 0.  #relative order in gt1 and in descrease1
-
-_:nl1 rdf:type pp:NumericLiteral ;
-      ppos::hasValue 2;
-      sh:order 1.
-
-_:low_charge1 rdf:type pp:Fluent ;
-            ppos:hasFluentType :low_charge ;
-            ppos:hasFluentArgument _:fa1 ;
-            sh:order 1. #relative order in gt1
-
-_:fa1 a pp:FluentArgument;
-        ppos:hasVariable _:robot1;
-        ppos:hasVariableType :fta1 .  #in the PDDL generation process we should generate hasVariableType out of _:fta1
+_:fa1
+  a pp:FluentArgument ;
+  ppos:hasVariable _:robot1 ;
+  ppos:hasVariableType :fta1 .  #in the PDDL generation process we should generate hasVariableType out of _:fta1
 
 ################################################################################
 #END OF DEFINITION OF ACTION :  moveToWaypoint
@@ -221,7 +266,8 @@ _:fa1 a pp:FluentArgument;
 #START OF DEFINITION OF ACTION :  pickupAtPlace
 ################################################################################
 
-:moveToWaypoint rdf:type pp:Action ;  #Action is not a regular node!
-                 rdfs:label "pickupAtPlace" ;
-                 ppos:hasPrecondition _:gd1 ;
-                 ppos:hasEffect _:effect1 .
+:pickupAtPlace
+  a pp:Action ;  #Action is not a regular node!
+  rdfs:label "pickupAtPlace"^^xsd:string ;
+  ppos:hasPrecondition _:gd2 ;
+  ppos:hasEffect _:effect2 .

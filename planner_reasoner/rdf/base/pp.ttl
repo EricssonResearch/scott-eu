@@ -1,124 +1,152 @@
-@prefix : <http://ontology.cf.ericsson.net/planning_ontology#> .
-@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology#> .
-@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#> .
-@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix oslc: <http://open-services.net/ns/core#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
+@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
+@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes/> .
+@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain/> .
+@prefix : <http://ontology.cf.ericsson.net/planning_ontology/> .
 @base <http://ontology.cf.ericsson.net/planning_ontology> .
 
 #studied from the bnf specification of PDDL 2.1. https://www.jair.org/media/1129/live-1129-2132-jair.pdf without durative actions
 
-<http://ontology.cf.ericsson.net/planning_ontology> rdf:type rdf:Ontology ;
-                                                   rdf:versionIRI <http://ontology.cf.ericsson.net/planning_ontology/1.0.0> .
+:OrderedArgument a rdf:Class .  #all subclasses of OrderedArgument will have an order property sh:order to show the relative position of that element in the parent
 
+:Action a rdf:Class .
+:hasPrecondition a rdf:Property .
+:hasEffect a rdf:Property .
 
+:Precondition a rdf:Class .
 
+:Effect a rdf:Class .
+:hasEffectArgument a rdf:Property .
 
+:TypedVariable a rdf:Class .
+:hasVariable a rdf:Property .
+:hasVariableType a rdf:Property .
 
-:Action rdf:type rdf:class .
-:Precondition rdf:type rdf:class .
-:Effect  rdf:type rdf:class .
-:GoalDescription rdf:type rdf:class .
-:OrderedArgument rdf:type rdf:class .  #all subclasses of OrderedArgument will have an order property sh:order to show the relative position of that element in the parent
-:VariableType rdf:type :OrderedArgument .
-:Variable rdf:type :OrderedArgument .
-:FluentType rdf:type :OrderedArgument . #no need to be ordered!
-:FluentTypeArgument rdf:type :OrderedArgument .
-:Fluent rdf:type :OrderedArgument .
-:FluentArgument rdf:type :OrderedArgument .
-:PredicateType rdf:type rdf:class . #no need to be ordered
-:PredicateTypeArgument rdf:type :OrderedArgument .
-:Predicate rdf:type :OrderedArgument .
-:PredicateArgument rdf:type :OrderedArgument .
-:FExp rdf:type :OrderedArgument .
-#:FHead rdf:type :OrderedArgument .
-:NumericLiteral rdf:type :OrderedArgument .
+:Variable a :OrderedArgument .
+:VariableType a :OrderedArgument .
 
-:AssignmentOperator rdf:type :OrderedArgument .  #are possible in effects over fluents (decrease, increase, scaleup, assign, scaledown
-:BinnaryOperator rdf:type :OrderedArgument  .  #are possible in preconditions and effects over fluents (+, -, * and /)
+:PredicateType a rdf:Class . #no need to be ordered
+:hasPredicateTypeArgument a rdf:Property .
 
-:OrderedArgument rdf:type :OrderedArgument .
+:PredicateTypeArgument a :OrderedArgument .
 
-:BinaryComparison rdf:type :OrderedArgument . #e.g. binary comparision operators are only allowed in precondition
+:Predicate a :OrderedArgument .
+:hasPredicateType a rdf:Property .
+:hasPredicateArgument a rdf:Property .
 
-:EffectOrderedArgument rdf:type :OrderedArgument .
+:PredicateArgument a :OrderedArgument .
 
+:GoalDescription a rdf:Class .
+:hasGoalDescriptionArgument a rdf:Property .
 
-:MinusFunction rdf:type rdf:OrderedArgument ;
-                 rdfs:label "-".
+:FluentType a :OrderedArgument . #no need to be ordered!
 
+:FluentTypeArgument a :OrderedArgument .
+:hasFluentTypeArgument a rdf:Property .
+
+:Fluent a :OrderedArgument .
+:hasFluentType a rdf:Property .
+:hasFluentArgument a rdf:Property .
+
+:FluentArgument a :OrderedArgument .
+
+:FExp a :OrderedArgument .
+:hasArgument a rdf:Property .
+
+:NumericLiteral a :OrderedArgument .
+:hasValue a rdf:Property .
+
+:MinusFunction a rdf:OrderedArgument ;
+                 rdfs:label "-"^^xsd:string .
+
+:BinaryComparison a :OrderedArgument . #e.g. binary comparision operators are only allowed in precondition
+:hasFExp a rdf:Property .
+
+:AssignmentOperator a :OrderedArgument .  #are possible in effects over fluents (decrease, increase, scaleup, assign, scaledown
+:hasFExpArgument a rdf:Property .
 
 #logical operators
-:And rdf:type rdf:OrderedArgument ;
-                 rdfs:label "and".
 
-:AndGD rdf:type :And .
-:AndEffect rdf:type :And .
+:And a rdf:OrderedArgument ;
+     rdfs:label "and"^^xsd:string .
 
+:AndGoalDescription a :And .
+:hasArgumentInGoalDescription a rdf:Property .
 
-:Or rdf:type :OrderedArgument ;
-    rdfs:label "or".
+:AndEffect a :And .
+:hasArgumentInEffect a rdf:Property .
 
-:OrGD rdf:type :Or .
-:OrEffect rdf:type :Or .
+:Not a :OrderedArgument ;
+     rdfs:label "not"^^xsd:string .
 
-:Not rdf:type :OrderedArgument ;
-     rdfs:label "not".
-:NotGD rdf:type :Not .
-:NotEffect rdf:type :Not .
+:NotGoalDescription a :Not .
 
-:Imply rdf:type :OrderedArgument ;
-       rdfs:label "imply".
+:NotEffect a :Not .
 
-:Forall rdf:type :OrderedArgument ;
-       rdfs:label "forall".
+:Or a :OrderedArgument ;
+    rdfs:label "or"^^xsd:string .
 
-:ForallEffect rdf:type :Forall .
-:ForallGD rdf:type :Forall.
+:OrGoalDescription a :Or .
 
-:Exists rdf:type :OrderedArgument ;
-       rdfs:exists "forall".
+:OrEffect a :Or .
 
-
-
-#binary comparison only allowed in precondition
-:GT rdf:type :BinaryComparison ;
-    rdfs:label ">".
-:LT rdf:type :BinaryComparison ;
-    rdfs:label "<".
-:EQ rdf:type :BinaryComparison ;
-    rdfs:label "=".
-:GE rdf:type :BinaryComparison ;
-    rdfs:label ">=".
-:LE rdf:type :BinaryComparison ;
-    rdfs:label "<=".
-
-#binary operations over fluents, allowed in precondition and effect
-:Plus rdf:type :BinaryOperator ;
-      rdfs:label "+".
-:Minus rdf:type :BinaryOperator ;
-      rdfs:label "-".
-:Multply rdf:type :BinaryOperator ;
-        rdfs:label "*".
-:Divide rdf:type :BinaryOperator ;
-        rdfs:label "/".
-
-
-#assignment operators allowed in effect, they can be done only over fluent
-:Increase rdf:type :AssignmentOperator ;
-          rdfs:label "increase".
-:Decrease rdf:type :AssignmentOperator ;
-          rdfs:label "decrease".
-:Assign rdf:type :AssignmentOperator ;
-        rdfs:label "assign".
-:ScaleUp rdf:type :AssignmentOperator ;
-        rdfs:label "scale-up".
-:ScaleDown rdf:type :AssignmentOperator ;
-           rdfs:label "scale-down".
+:Imply a :OrderedArgument ;
+       rdfs:label "imply"^^xsd:string .
 
 #for conditional effect, allowed only in the effect
-:When rdf:type :OrderedArgument ;
-      rdfs:label "when".
+:When a :OrderedArgument ;
+     rdfs:label "when"^^xsd:string .
+
+#quantifiers
+
+:Exists a :OrderedArgument ;
+        rdfs:label "exists"^^xsd:string .
+:hasTypedVariable a rdf:Property .
+:hasGoalDescription a rdf:Property .
+
+:ForAll a :OrderedArgument ;
+        rdfs:label "forall"^^xsd:string .
+
+:ForallEffect a :ForAll .
+
+:ForallGoalDescription a :ForAll.
+
+#binary comparison only allowed in precondition
+:GT a :BinaryComparison ;
+    rdfs:label ">"^^xsd:string .
+:LT a :BinaryComparison ;
+    rdfs:label "<"^^xsd:string .
+:EQ a :BinaryComparison ;
+    rdfs:label "="^^xsd:string .
+:GE a :BinaryComparison ;
+    rdfs:label ">="^^xsd:string .
+:LE a :BinaryComparison ;
+    rdfs:label "<="^^xsd:string .
+
+#binary operations over fluents, allowed in precondition and effect
+:BinaryOperator a :OrderedArgument .  #are possible in preconditions and effects over fluents (+, -, * and /)
+
+:Plus a :BinaryOperator ;
+      rdfs:label "+"^^xsd:string .
+:Minus a :BinaryOperator ;
+       rdfs:label "-"^^xsd:string .
+:Multply a :BinaryOperator ;
+         rdfs:label "*"^^xsd:string .
+:Divide a :BinaryOperator ;
+        rdfs:label "/"^^xsd:string .
+
+#assignment operators allowed in effect, they can be done only over fluent
+:Increase a :AssignmentOperator ;
+          rdfs:label "increase"^^xsd:string .
+:Decrease a :AssignmentOperator ;
+          rdfs:label "decrease"^^xsd:string .
+:Assign a :AssignmentOperator ;
+        rdfs:label "assign"^^xsd:string .
+:ScaleUp rdf:type :AssignmentOperator ;
+         rdfs:label "scale-up"^^xsd:string .
+:ScaleDown a :AssignmentOperator ;
+           rdfs:label "scale-down"^^xsd:string .

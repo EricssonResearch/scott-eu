@@ -1,52 +1,68 @@
-@prefix : <http://ontology.cf.ericsson.net/warehouse_problem#> .
-@prefix warehouse: <http://ontology.cf.ericsson.net/warehouse_ontology#> . #this should be later replaced by some ontology (ies) for robotics, or internal logistics
-@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology#> .
-@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#> .
-@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain#> .
-@prefix wp: <http://ontology.cf.ericsson.net/warehouse_problem#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix oslc: <http://open-services.net/ns/core#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
-@base <http://ontology.cf.ericsson.net/warehouse_problem#> .
+@prefix warehouse: <http://example.com/warehouse_ontology/> . #this should be later replaced by some ontology (ies) for robotics, or internal logistics
+@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
+@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes/> .
+@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain/> .
+@prefix wp: <http://ontology.cf.ericsson.net/warehouse_problem/> .
+@prefix : <http://ontology.cf.ericsson.net/warehouse_problem/> .
+@base <http://ontology.cf.ericsson.net/warehouse_problem> .
 
 # all the types used in the domain file
-warehouse:Robot rdf:type pp:VariableType .
-warehouse:Waypoint rdf:type pp:VariableType .
-warehouse:Place rdf:type pp:VariableType .
-warehouse:Charge rdf:type pp:VariableType .
-warehouse:Object rdf:type pp:VariableType .
+warehouse:Robot
+  a pp:VariableType .
 
-_:goal1 rdf:type pp:GoalDescription ;
-        ppos:hasGDArgument _:exist1.
+warehouse:Waypoint
+  a pp:VariableType .
 
-_:exist1 rdf:type pp:Exists ;
-         ppos:hasGDArgument _:goal2 ;
-         ppos:hasTypedVariable _:pair1 ,
-                               _:pair2 .
+warehouse:Place
+  a pp:VariableType .
 
-_:pair1 rdf:type pp:TypedVariable;
-        ppos:hasVariable _:x;
-        ppos:hasVariableType warehouse:Object .
+warehouse:Charge
+  a pp:VariableType .
 
-_:x rdf:type pp:Variable .
+warehouse:Object
+  a pp:VariableType .
 
-_:pair2 rdf:type pp:TypedVariable;
-        ppos:hasVariable _:y;
-        ppos:hasVariableType warehouse:Object .
+_:goal1
+  a pp:GoalDescription ;
+  ppos:hasGoalDescriptionArgument _:exist1 .
 
-_:y rdf:type pp:Variable .
+_:exist1
+  a pp:Exists ;
+  ppos:hasGoalDescriptionArgument _:goal2 ;
+  ppos:hasTypedVariable _:pair1 ,
+                        _:pair2 .
 
+_:pair1
+  a pp:TypedVariable ;
+  ppos:hasVariable _:x ;
+  ppos:hasVariableType warehouse:Object .
 
-_:goal2 rdf:type pp:GoalDescription ;
-        ppos:hasGDArgument _:andgd1 .
+_:x
+  a pp:Variable .
 
-_:andgd1 rdf:type pp:AndGD ;
-         ppos:hasArgumentInGD _:not1 ,
-                              _:istype1 ,
-                              _:istype2 ,
-                              _:isoriginon1 ,
-                              _:isoriginon2 ,
-                              _:ison1 ,
-                              _:ison2 .
+_:pair2
+  a pp:TypedVariable ;
+  ppos:hasVariable _:y ;
+  ppos:hasVariableType warehouse:Object .
+
+_:y
+  a pp:Variable .
+
+_:goal2
+  a pp:GoalDescription ;
+  ppos:hasGoalDescriptionArgument _:andgd1 .
+
+_:andgd1
+  a pp:AndGoalDescription ;
+  ppos:hasArgumentInGoalDescription _:not1 ,
+                                    _:istype1 ,
+                                    _:istype2 ,
+                                    _:isoriginon1 ,
+                                    _:isoriginon2 ,
+                                    _:ison1 ,
+                                    _:ison2 .
