@@ -50,9 +50,11 @@
 
 :- rdf_meta rdfType(r).
 :- rdf_meta oslcInstanceShape(r).
+:- rdf_meta oslcInstanceShapeShape(r).
 
 rdfType(rdf:type).
 oslcInstanceShape(oslc:instanceShape).
+oslcInstanceShapeShape(oslc_shapes:oslcInstanceShape).
 
 check_iri(NS:Local, IRI) :- !,
   must_be(atom, NS),
@@ -87,6 +89,8 @@ create_resource(IRI, Types, Shapes, Properties, Sink) :-
     delete_resource(Id, Sink),
     rdfType(RT),
     marshal_list_property(Id, RT, Types, _, Sink),
+    oslcInstanceShapeShape(IOSS),
+    check_property(Id, IOSS, _, Shapes, _),
     oslcInstanceShape(OIS),
     marshal_list_property(Id, OIS, Shapes, _, Sink),
     create_shapes_dict(Shapes, Dict),

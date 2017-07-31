@@ -715,7 +715,7 @@
                   oslc:range oslc:AllowedValues
                 ] ,
                 [ a oslc:Property ;
-                  dcterms:description "A value allowed for property, inlined into property definition. If there are both oslc:allowedValue elements and an oslc:allowedValue resource, then the full-set of allowed values is the union of both."^^rdf:XMLLiteral ;
+                  dcterms:description "A value allowed for property, inlined into property definition. If there are both oslc:allowedValue elements and an oslc:allowedValues resource, then the full-set of allowed values is the union of both."^^rdf:XMLLiteral ;
                   oslc:name "allowedValue"^^xsd:string ;
                   oslc:propertyDefinition oslc:allowedValue ;
                   oslc:occurs oslc:Zero-or-many ;
