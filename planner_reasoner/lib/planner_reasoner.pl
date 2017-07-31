@@ -97,8 +97,7 @@ generate_precondition0([H1|T1], SubIndent, Out) :-
   (rdf(H1, rdf:type, pp:'Variable') ->
                                       rdf(H1, rdf:type, pp:'Variable'),
                                       rdf(H1, rdfs:label, ^^(VarName, _)),
-                                      format(Out, ' ?~w) ~n', [VarName]),
-                                      generate_precondition0(SubPredicateList, SubIndent, Out));
+                                      format(Out, ' ?~w) ~n', [VarName]));
   (rdf(H1, rdf:type, pp:'Predicate') ->
                                       rdf(H1, rdfs:label, ^^(PredName1, _)),
                                       rdf(H1, pp:hasArguments, SubPredicates),
