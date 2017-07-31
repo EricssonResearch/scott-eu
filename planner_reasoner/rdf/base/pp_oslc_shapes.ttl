@@ -100,7 +100,7 @@
                   oslc:name "hasPredicateTypeArgument"^^xsd:string ;
                   oslc:occurs oslc:One-or-many ;
                   oslc:valueType oslc:Resource ;
-                  oslc:range pp:PredicateTypeArgument
+                  oslc:range pp:Variable
                 ],
                 [ a oslc:Property ;
                   oslc:propertyDefinition rdfs:label ;
@@ -188,7 +188,7 @@
                     oslc:occurs oslc:Zero-or-one ;
                     oslc:valueType oslc:Resource ;
                     oslc:range pp:AndEffect ,
-                               pp:ForAll ,
+                               pp:ForallEffect ,
                                pp:When ,
                                pp:AssignmentOperator ,  #TO BE CHECKED there can be two types page 116 from PDDL 2.1 BNF
                                pp:NotEffect
@@ -322,7 +322,7 @@
 :AssignmentOperatorShape
   a oslc:ResourceShape ;
   oslc:describes pp:AssignmentOperator ;
-  dcterms:description "Shape of resources of type Assignment Operator that can be used in the root of an effect of a PDDL action together with Fluent and FExp, note that Fluent (in PDDL definition it is FHead) should be always the first argument, and FExp the second argument of Assignment Operator."^^rdf:XMLLiteral ;
+  dcterms:description "Shape of resources of type AssignmentOperator that can be used in the root of an effect of a PDDL action together with Fluent and FExp, note that Fluent (in PDDL definition it is FHead) should be always the first argument, and FExp the second argument of Assignment Operator."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   oslc:propertyDefinition pp:hasFluentArgument ; #used to specify that a Predicate can have variables
                   oslc:name "hasFluentArgument"^^xsd:string ;
@@ -339,36 +339,30 @@
                 ] .
 
 :AndGoalDescriptionShape
-  a oslc:ResourceShape ;  #describes And used in precondition
-  oslc:describes pp:AndGoalDescription ; #attributes of And used in a precondition
+  a oslc:ResourceShape ;  #describes And used in goal description
+  oslc:describes pp:AndGoalDescription ; #attributes of And used in a goal description
   dcterms:description "Shape of resources of type -and- predicate used in goal description/precondition of a PDDL action."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   oslc:propertyDefinition pp:hasArgumentInGoalDescription  ; #common predicates may have nested predicates
                   oslc:name "hasArgumentInGoalDescription"^^xsd:string ;
                   oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:Resource ;
-                  oslc:range pp:And ,
-                             pp:Predicate ,
-                             pp:Or ,
-                             pp:Not ,
-                             pp:Imply ,
-                             pp:Exists ,
-                             pp:ForAll
+                  oslc:range pp:GoalDescription
                 ] .
 
 :AndEffectShape
   a oslc:ResourceShape ;  #describes And used in effect
   oslc:describes pp:AndEffect ; #attributes of And used in effect
-  dcterms:description "Shape of resources of type -and- predicate used in the effect of a PDDL action."^^rdf:XMLLiteral ;
+  dcterms:description "Shape of resources of type AndEffect."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   oslc:propertyDefinition pp:hasArgumentInEffect ; #common predicates may have nested predicates
                   oslc:name "hasArgumentInEffect"^^xsd:string ;
                   oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:Resource ;
                   oslc:range pp:When ,
-                             pp:ForAll ,
+                             pp:ForallEffect ,
                              pp:AssignmentOperator ,
-                             pp:Not ,
+                             pp:NotEffect ,
                              pp:Predicate
                   ] .
 
@@ -381,13 +375,7 @@
                   oslc:name "hasArgumentInGoalDescription"^^xsd:string ;
                   oslc:occurs oslc:Exactly-one ;
                   oslc:valueType oslc:Resource ;
-                  oslc:range pp:And ,
-                             pp:Predicate ,
-                             pp:Or ,
-                             pp:Not ,
-                             pp:Imply ,
-                             pp:Exists ,
-                             pp:ForAll
+                  oslc:range pp:GoalDescription
                 ] .
 
 :NotEffectShape
@@ -405,17 +393,31 @@
 :OrGoalDescriptionShape
   a oslc:ResourceShape ;
   oslc:describes pp:OrGoalDescription ; #TO BE DEFINED WITH ARGUMENTS
-  dcterms:description "Shape of resources of type OrGD. Or used in the GoalDescription."^^rdf:XMLLiteral .
+  dcterms:description "Shape of resources of type -OR- predicate used in goal description/precondition of a PDDL action"^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasArgumentInGoalDescription  ; #common predicates may have nested predicates
+                  oslc:name "hasArgumentInGoalDescription"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:GoalDescription
+                ] .
 
 :OrEffectShape
   a oslc:ResourceShape ;
   oslc:describes pp:OrEffect ; #TO BE DEFINED WITH ARGUMENTS
-  dcterms:description "Shape of resources of type OrEffect. Or used in the Effect."^^rdf:XMLLiteral .
+  dcterms:description "Shape of resources of type -OR- predicate used in the effect of a PDDL action."^^rdf:XMLLiteral .
 
 :ImplyShape
   a oslc:ResourceShape ;
   oslc:describes pp:Imply ; #TO BE DEFINED WITH ARGUMENTS
-  dcterms:description "Shape of resources of type Imply."^^rdf:XMLLiteral .
+  dcterms:description "Shape of resources of type Imply that can be used in goal description together with two arguments of type GoalDescription"^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasGoalDescription ;
+                  oslc:name "hasGoalDescription"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;  #SHOULD BE EXECTLY TWO!
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:GoalDescription
+                ].
 
 :WhenShape
   a oslc:ResourceShape ;  #describes When used in effect

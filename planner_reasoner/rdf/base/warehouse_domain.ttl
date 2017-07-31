@@ -74,7 +74,7 @@ warehouse:Object
 
 #is_at predicate type
 :is_at
-  a pp:PredicateType;
+  a pp:PredicateType ;
   rdfs:label "is-at"^^xsd:string ;
   ppos:hasPredicateTypeArgument :pta1 ;
   ppos:hasPredicateTypeArgument :pta2 .
@@ -91,7 +91,7 @@ warehouse:Object
 
 #can_move predicate type
 :can_move
-  a pp:PredicateType;
+  a pp:PredicateType ;
   rdfs:label "can-move"^^xsd:string ;
   ppos:hasPredicateTypeArgument :pta3 ;
   ppos:hasPredicateTypeArgument :pta2 . #is the same predicate type argument, with same sh:order value as used in is_at predicate type
@@ -103,7 +103,7 @@ warehouse:Object
 
 #is-recharging predicate type
 :is-recharging
-  a pp:PredicateType;
+  a pp:PredicateType ;
   rdfs:label "is-recharging"^^xsd:string ;
   ppos:hasPredicateTypeArgument :pta1 .
 
@@ -119,7 +119,7 @@ warehouse:Object
 ################################################################################
 
 :moveToWaypoint
-  a pp:Action ;  #Action is not a regular node!
+  a pp:Action ;  #Action is a regular node!
   rdfs:label "moveToWaypoint"^^xsd:string ;
   ppos:hasPrecondition _:gd1 ;
   ppos:hasEffect _:effect1 .
@@ -134,10 +134,18 @@ _:effect1
 
 _:and1
   a pp:AndGoalDescription ;
-  ppos:hasArgumentInGoalDescription _:is_at1 ,
-                       _:can_move1 ,
-                       _:not1 ,
-                       _:gt1 ;
+  ppos:hasArgumentInGoalDescription [ a pp:GoalDescription ;
+                                      ppos:hasGoalDescriptionArgument _:is_at1
+                                    ] ,
+                                    [ a pp:GoalDescription ;
+                                      ppos:hasGoalDescriptionArgument _:can_move1
+                                    ] ,
+                                    [ a pp:GoalDescription ;
+                                      ppos:hasGoalDescriptionArgument _:not1
+                                    ] ,
+                                    [ a pp:GoalDescription ;
+                                      ppos:hasGoalDescriptionArgument _:gt1
+                                    ] ;
   sh:order 0 .
 
 _:and2
@@ -145,13 +153,13 @@ _:and2
   ppos:hasArgumentInEffect _:is_at2 ,
                            _:not2 ,
                            _:decrease1 ;
-  sh:ordrer 0 .
+  sh:order 0 .
 
 _:is_at1
   a pp:Predicate ;
   ppos:hasPredicateType _:is_at ;
-  ppos:hasPredicateArgument _:pa1 ;
-  ppos:hasPredicateArgument _:pa2 ;
+  ppos:hasPredicateArgument _:pa1 ,
+                            _:pa2 ;
   sh:order 0 .
 
 _:pa1
@@ -173,8 +181,8 @@ _:pa2
 _:is_at2
   a pp:Predicate ;
   ppos:hasPredicateType _:is_at ;
-  ppos:hasPredicateArgument _:pa1 ;  #same as in is_at1, having variable robot
-  ppos:hasPredicateArgument _:pa4 ;
+  ppos:hasPredicateArgument _:pa1 ,  #same as in is_at1, having variable robot
+                            _:pa4 ;
   sh:order 0 .
 
 _:pa4
@@ -224,8 +232,8 @@ _:is_recharging1
 _:gt1
   a pp:GT ;
   sh:order 3 ;
-  ppos:hasFExp _:charge_level1 ;
-  ppos:hasFExp _:low_charge1 .
+  ppos:hasFExp _:charge_level1 ,
+               _:low_charge1 .
 
 _:charge_level1
   a pp:Fluent ;
@@ -258,8 +266,8 @@ _:fa1
 #START OF DEFINITION OF ACTION :  pickupAtPlace
 ################################################################################
 
-:moveToWaypoint
+:pickupAtPlace
   a pp:Action ;  #Action is not a regular node!
   rdfs:label "pickupAtPlace"^^xsd:string ;
-  ppos:hasPrecondition _:gd1 ;
-  ppos:hasEffect _:effect1 .
+  ppos:hasPrecondition _:gd2 ;
+  ppos:hasEffect _:effect2 .
