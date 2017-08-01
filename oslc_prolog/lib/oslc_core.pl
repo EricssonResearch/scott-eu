@@ -7,6 +7,7 @@
 :- use_module(library(oslc_dispatch)).
 :- use_module(library(oslc_error)).
 
+:- oslc_get((*):'', handle_ontology, 1).
 :- oslc_get((*):(*), handle_get, 0).
 :- oslc_post((*):(*), handle_post, 0).
 :- oslc_put((*):(*), handle_put, 0).
@@ -22,6 +23,16 @@ get_current_time(_Request, _IRI, GraphOut) :-
 
 get_time_class(_Request, _IRI, GraphOut) :-
  create_resource(oslc:'Time', [rdfs:'Class'], [], rdf(GraphOut)).
+
+handle_ontology(_, IRI, GraphOut) :-
+  once((
+    rdf_graph(Graph),
+    atom_concat(Graph, _, IRI)
+  )),
+  forall(
+    rdf(S, P, O, Graph),
+    rdf_assert(S, P, O, GraphOut)
+  ).
 
 handle_get(Request, IRI, GraphOut) :-
   once(rdf(IRI, _, _)),
