@@ -6,6 +6,7 @@
   unmarshal_type/3
 ]).
 
+:- use_module(library(semweb/rdf_db), [rdf_is_resource/1]).
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdfs)).
 :- use_module(library(oslc_error)).
