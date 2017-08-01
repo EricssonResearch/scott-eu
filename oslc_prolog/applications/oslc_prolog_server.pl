@@ -110,7 +110,14 @@ read_request_body(Request, GraphIn) :-
   )),
   http_read_data(Request, Data, [to(atom)]),
   open_string(Data, Stream),
-  rdf_load(stream(Stream), [graph(GraphIn), format(Format), silent(true), cache(false)]).
+  catch(
+    rdf_load(stream(Stream), [graph(GraphIn), format(Format), silent(true), on_error(error), cache(false)]),
+    error(E, stream(Stream, Line, Column, _)), (
+      message_to_string(error(E, _), S),
+      format(atom(Error), 'Parsing error (line ~w, column ~w): ~w.', [Line, Column, S]),
+      throw(Error)
+    )
+  ).
 
 generate_response(Request, Prefix, ResourceSegments, ContentType, GraphIn, GraphOut) :-
   once((
