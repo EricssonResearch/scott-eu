@@ -3,6 +3,7 @@
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
 @prefix	oslc_shapes: <http://ontology.cf.ericsson.net/oslc_shapes/> .
+@prefix	tests: <http://ontology.cf.ericsson.net/tests/> .
 
 <oslc>
 	a lib:Schema ;
@@ -27,3 +28,10 @@
 	lib:mnemonic "oslc_shapes" ;
 	lib:namespace oslc_shapes:
 ] .
+
+<tests>
+	a lib:Schema ;
+	a lib:Virtual ;
+	dcterms:title "Resources used in unit tests"^^rdf:XMLLiteral ;
+	lib:source <http://ontology.cf.ericsson.net/tests#> ;
+	lib:schema <tests.ttl> .

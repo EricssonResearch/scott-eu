@@ -5,18 +5,13 @@
   graph_md5/2
 ]).
 
+:- use_module(library(semweb/rdf_db), [rdf_is_resource/1]).
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_persistency)).
 :- use_module(library(oslc_shape)).
 
 :- rdf_meta autodetect_resource_graph(r, -).
 :- rdf_meta resource_md5(r, -, -).
-
-:- rdf_meta oslc_LocalResource(r).
-:- rdf_meta oslc_Resource(r).
-
-oslc_LocalResource(oslc:'LocalResource').
-oslc_Resource(oslc:'Resource').
 
 % ------------ RDF SOURCE / SINK
 
@@ -39,16 +34,6 @@ oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)) :-
   must_be(atom, Graph),
   rdf(IRI, PropertyDefinition, Object, Graph),
   unmarshal_type(Object, Value, Type).
-
-unmarshal_type(Value^^Type, Value, Type) :- !,
-  is_literal_type(Type).
-
-unmarshal_type(Value, Value, Type) :-
-  ( rdf_is_bnode(Value)
-  -> oslc_LocalResource(Type)
-  ; rdf_is_resource(Value),
-    oslc_Resource(Type)
-  ).
 
 oslc:delete_property(IRI, PropertyDefinition, rdf) :-
   must_be(atom, IRI),

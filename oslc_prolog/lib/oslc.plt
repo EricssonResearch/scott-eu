@@ -4,11 +4,14 @@
 ]).
 
 :- use_module(library(semweb/rdf11)).
+:- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc)).
 
 :- rdf_meta assertion(r,t).
 
-:- rdf_register_prefix(test, 'http://ontology.cf.ericsson.net/test/').
+:- rdf_register_prefix(tests, 'http://ontology.cf.ericsson.net/tests/').
+:- rdf_attach_library(oslc_prolog(rdf)).
+:- rdf_load_library(tests).
 
 assertion(Actual, Expected) :-
   assertion(Actual == Expected).
@@ -23,18 +26,40 @@ test(service_provider_catalog) :-
                     icon = pubicon
                   ], rdf(oslc_test)),
 
-  create_resource(test:s1, [oslc:'ServiceProviderCatalog'],
+  rdf_create_bnode(Service1),
+  create_resource(Service1, [oslc:'Service'],
+                  [
+                    domain = 'http://mydomain.com'
+                  ], rdf(oslc_test)),
+
+  create_resource(tests:sp1, [oslc:'ServiceProvider'],
+                  [
+                    service = [ Service1 ]
+                  ], rdf(oslc_test)),
+
+  rdf_create_bnode(Service2),
+  create_resource(Service2, [oslc:'Service'],
+                  [
+                    domain = 'http://mydomain.com'
+                  ], rdf(oslc_test)),
+
+  create_resource(tests:sp2, [oslc:'ServiceProvider'],
+                  [
+                    service = [ Service2 ]
+                  ], rdf(oslc_test)),
+
+  create_resource(tests:s1, [oslc:'ServiceProviderCatalog'],
                   [ title = "service provider catalog",
                     description = "o3",
                     publisher = Publisher,
-                    serviceProvider = [sp1,sp2]
+                    serviceProvider = [tests:sp1, tests:sp2]
                   ], rdf(oslc_test)),
 
-  rdf(test:s1, rdf:type, SPC),
+  rdf(tests:s1, rdf:type, SPC),
   rdf_global_id(oslc:'ServiceProviderCatalog', OSPC),
   assertion(SPC, OSPC),
 
-  oslc_resource(test:s1, [ publisher = A,
+  oslc_resource(tests:s1, [ publisher = A,
                            description = B,
                            title = C,
                            serviceProvider = D
@@ -43,6 +68,6 @@ test(service_provider_catalog) :-
   assertion(C == "service provider catalog"),
   assertion(B == "o3"),
   assertion(A, Publisher),
-  assertion(D, [sp1, sp2]).
+  assertion(D, [tests:sp1, tests:sp2]).
 
 :- end_tests(oslc).

@@ -12,6 +12,8 @@
   dispatch/4
 ]).
 
+:- use_module(library(semweb/rdf11)).
+
 :- meta_predicate(oslc_get(+, 3)).
 :- meta_predicate(oslc_get(+, 3, +)).
 :- meta_predicate(oslc_post(+, 4)).

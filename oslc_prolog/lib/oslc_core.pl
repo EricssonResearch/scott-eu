@@ -2,6 +2,7 @@
   post_resource/3
 ]).
 
+:- use_module(library(semweb/rdf11)).
 :- use_module(library(oslc)).
 :- use_module(library(oslc_rdf)).
 :- use_module(library(oslc_dispatch)).

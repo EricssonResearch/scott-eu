@@ -1,0 +1,54 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix	dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix	oslc: <http://open-services.net/ns/core#> .
+@prefix	oslc_shapes: <http://ontology.cf.ericsson.net/oslc_shapes/> .
+@prefix	: <http://ontology.cf.ericsson.net/tests/> .
+@base	<http://ontology.cf.ericsson.net/tests> .
+
+:MyResource
+  a rdfs:Class.
+
+:myShape
+  a oslc:ResourceShape ;
+  oslc:describes oslc:MyResource ;
+  dcterms:description "MyResource is great!"^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Title of my resource."^^rdf:XMLLiteral ;
+                  oslc:name "title"^^xsd:string ;
+                  oslc:propertyDefinition dcterms:title ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:allowedValue :my_value1 ,
+                                    :my_value2 ;
+                  oslc:allowedValues :myAllowedValues2 ;
+                  oslc:readOnly true ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range rdf:Property
+                ] .
+
+:myAllowedValues
+  a oslc:AllowedValues ;
+  oslc:allowedValue :my_value3 ,
+                    :my_value4 .
+
+:myAllowedValues2
+  a oslc:AllowedValues ;
+  oslc:allowedValue "value7"^^xsd:string ,
+                    "value8"^^xsd:string .
+
+:my_value1
+  a rdf:Property .
+
+:my_value2
+  a rdf:Property .
+
+:my_value3
+  a rdf:Property .
+
+:my_value4
+  a rdf:Property .
+
+:my_value5
+  a rdf:Property .

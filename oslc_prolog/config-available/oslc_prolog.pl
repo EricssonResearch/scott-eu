@@ -3,6 +3,12 @@
 /** <module> OSLC Prolog
 */
 
+:- use_module(library(semweb/rdf_library)).
+
+:- rdf_attach_library(oslc_prolog(rdf)).
+:- rdf_load_library(oslc).
+:- rdf_load_library(oslc_shapes).
+
 :- use_module(library(oslc)).
 :- use_module(library(oslc_core)).
 
