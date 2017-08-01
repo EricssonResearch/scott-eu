@@ -30,7 +30,10 @@ dispatcher(Request) :-
   E, (
     ( E = status_code(StatusCode)
     -> format('Status: ~w~n~n', [StatusCode])
-    ; format('Status: 500~nContent-type: text/plain~n~n~w~n', [E]) % internal server error
+    ; ( E = status_code(StatusCode, Message)
+      -> format('Status: ~w~nContent-type: text/plain~n~n~w~n', [StatusCode, Message])
+      ; format('Status: 500~nContent-type: text/plain~n~n~w~n', [E]) % internal server error
+      )
     )
   )).
 
@@ -115,7 +118,7 @@ read_request_body(Request, GraphIn) :-
     error(E, stream(Stream, Line, Column, _)), (
       message_to_string(error(E, _), S),
       format(atom(Error), 'Parsing error (line ~w, column ~w): ~w.', [Line, Column, S]),
-      throw(Error)
+      throw(status_code(400, Error))
     )
   ).
 

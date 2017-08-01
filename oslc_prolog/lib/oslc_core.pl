@@ -51,7 +51,7 @@ handle_get(Request, IRI, GraphOut) :-
     copy_resource(IRI, IRI, rdf, rdf(GraphOut), [inline(rdf)|Options])
   ),
     oslc_error(Message),
-    format('Status: 400~nContent-type: text/plain~n~n~w~n', [Message])
+    throw(status_code(400, Message))
   ).
 
 handle_post(_, IRI, GraphIn, _) :-
@@ -87,7 +87,7 @@ post_resource(IRI, Source, Sink) :-
     format('Status: 201~nLocation: ~w~n~n', [Location])
   ),
     oslc_error(Message),
-    format('Status: 400~nContent-type: text/plain~n~n~w~n', [Message])
+    throw(status_code(400, Message))
   ).
 
 handle_put(Request, IRI, GraphIn, _) :-
@@ -101,20 +101,22 @@ handle_put(Request, IRI, GraphIn, _) :-
     once((
       resource_md5(IRI, Graph, ReceivedHash),
       copy_resource(IRI, IRI, rdf(GraphIn), rdf(Graph), []),
-      format('Status: 204~n~n')
-    ; format('Status: 412~nContent-type: text/plain~n~nThe value of "If-Match" header does not match resource [~w]~n', [IRI])
+      throw(status_code(204))
+    ; rdf_global_id(LIRI, IRI),
+      format(atom(Message), 'The value of "If-Match" header does not match resource [~w]', [LIRI]),
+      throw(status_code(412, Message))
     ))
   ),
     oslc_error(Message),
-    format('Status: 400~nContent-type: text/plain~n~n~w~n', [Message])
+    throw(status_code(400, Message))
   ).
 
 handle_delete(_, IRI) :-
   catch((
     autodetect_resource_graph(IRI, Graph),
     delete_resource(IRI, rdf(Graph)),
-    format('Status: 200~n~n')
+    throw(status_code(200))
   ),
     oslc_error(Message),
-    format('Status: 400~nContent-type: text/plain~n~n~w~n', [Message])
+    throw(status_code(400, Message))
   ).
