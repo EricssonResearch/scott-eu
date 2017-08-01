@@ -7,12 +7,8 @@
 ]).
 
 :- use_module(library(semweb/rdf11)).
-:- use_module(library(semweb/rdf_library)).
 :- use_module(library(semweb/rdfs)).
 :- use_module(library(oslc_error)).
-
-:- rdf_attach_library(oslc_prolog(rdf)).
-:- rdf_load_library(oslc_shapes).
 
 :- rdf_meta check_occurs(r, r, -, -).
 :- rdf_meta format_value(r, -, -).

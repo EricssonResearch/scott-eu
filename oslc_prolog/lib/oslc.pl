@@ -31,13 +31,9 @@
 :- multifile delete_property/3.
 
 :- use_module(library(semweb/rdf11)).
-:- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc_shape)).
 :- use_module(library(oslc_rdf)).
 :- use_module(library(oslc_error)).
-
-:- rdf_attach_library(oslc_prolog(rdf)).
-:- rdf_load_library(oslc).
 
 :- rdf_meta create_resource(r, t, t, -).
 :- rdf_meta applicable_shapes(t, -).

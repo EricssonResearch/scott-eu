@@ -5,6 +5,7 @@
   graph_md5/2
 ]).
 
+:- use_module(library(semweb/rdf_db), [rdf_is_resource/1]).
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_persistency)).
 :- use_module(library(oslc_shape)).
