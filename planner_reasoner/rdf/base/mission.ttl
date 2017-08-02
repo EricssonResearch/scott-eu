@@ -1,0 +1,178 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+# TODO @andrew
+@prefix : <http://ontology.cf.ericsson.net/mission_ontology/> .
+@base <http://ontology.cf.ericsson.net/mission_ontology> .
+
+:Goal a rdfs:Class .
+
+:MoveGoal a rdfs:Class ;
+    rdfs:subClassOf :Goal .
+:selector a rdf:Property .
+:destination a rdf:Property .
+
+:Selector a rdfs:Class .
+
+:DirectSelector a rdfs:Class ;
+    rdfs:subClassOf :Selector .
+# resource to be moved
+:item a rdf:Property .
+
+:TypeSelector a rdfs:Class ;
+    rdfs:subClassOf :Selector .
+:itemType a rdf:Property .
+:count a rdf:Property .
+
+:WildcardSelector a rdfs:Class ;
+    rdfs:subClassOf :Selector .
+
+:CompositeSelector a rdfs:Class ;
+    rdfs:subClassOf :Selector .
+:selector a rdf:Property .
+
+:LocationSelector a rdfs:Class ;
+    rdfs:subClassOf :Selector .
+:location a rdf:Property .
+
+
+:Location a rdfs:Class .
+
+
+:Mission a rdfs:Class .
+:responseTimeout a rdf:Property .
+:missionDeadline a rdf:Property .
+:goal a rdf:Property .
+
+
+############################################################
+# SHAPES
+############################################################
+
+
+:MoveGoalShape
+  a oslc:ResourceShape ;
+  oslc:describes :MoveGoal ;
+  dcterms:description "Goal to move the selected items to a destination in the warehouse."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition :selector ;
+                  oslc:name "selector"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  # we can either generate a selector on the fly or refer to a predefined selector (with a URI)
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:representation oslc:Either ;
+                  oslc:range :Selector
+                ],
+                [ a oslc:Property ;
+                  oslc:propertyDefinition :destination ;
+                  oslc:name "destination"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference ;
+                  oslc:range :Location
+                ] .
+
+:DirectSelectorShape
+  a oslc:ResourceShape ;
+  oslc:describes :DirectSelector ;
+  dcterms:description "Select a set of items according to their RDF URIs."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition :item ;
+                  oslc:name "item"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ] .
+
+:TypeSelectorShape
+  a oslc:ResourceShape ;
+  oslc:describes :TypeSelector ;
+  dcterms:description "Select a number of items of a given RDF type."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition :itemType ;
+                  oslc:name "itemType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ],
+                [ # TODO use standard ontology def if possible
+                  a oslc:Property ;
+                  oslc:propertyDefinition :count ;
+                  oslc:name "count"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:integer
+                ] .
+
+:WildcardSelectorShape
+  a oslc:ResourceShape ;
+  oslc:describes :WildcardSelector ;
+  dcterms:description "Select all items of a given RDF type."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition :itemType ;
+                  oslc:name "itemType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference
+                ].
+
+:CompositeSelectorShape
+  a oslc:ResourceShape ;
+  oslc:describes :CompositeSelector ;
+  dcterms:description "Select a set of items as a union of sets of items produced by given selectors."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition :selector ;
+                  oslc:name "selector"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range :Selector
+                ] .
+
+:LocationSelectorShape
+  a oslc:ResourceShape ;
+  oslc:describes :LocationSelector ;
+  dcterms:description "Select a set of items from a certain location using a given selector."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition :selector ;
+                  oslc:name "selector"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range :Selector
+                ] ,
+                [ a oslc:Property ;
+                  oslc:propertyDefinition :location ;
+                  oslc:name "location"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:representation oslc:Reference ;
+                  oslc:range :Location
+                ] .
+
+:MissionShape
+  a oslc:ResourceShape ;
+  oslc:describes :Mission ;
+  dcterms:description "A mission with a set of goals to be achieved using a single plan."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition :goal ;
+                  oslc:name "goal"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:representation oslc:Inline ;
+                  oslc:range :Goal
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Maximum duration that a planner can take for producing a plan."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :responseTimeout ;
+                  oslc:name "responseTimeout"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:valueType xsd:duration
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Maximum duration that a plan may take to execute."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :missionDeadline ;
+                  oslc:name "missionDeadline"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:valueType xsd:duration
+                ] .
