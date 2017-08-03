@@ -19,21 +19,20 @@
 
 get_current_time(_Request, _IRI, GraphOut) :-
   get_time(T),
+  make_temp_graph(GraphOut),
   create_resource(oslc:time, [oslc:'Time'],
                  [dcterms:created='^^'(T, xsd:dateTime)], rdf(GraphOut)).
 
 get_time_class(_Request, _IRI, GraphOut) :-
- create_resource(oslc:'Time', [rdfs:'Class'], [], rdf(GraphOut)).
+  make_temp_graph(GraphOut),
+  create_resource(oslc:'Time', [rdfs:'Class'], [], rdf(GraphOut)).
 
 handle_ontology(_, IRI, GraphOut) :-
   once((
     rdf_graph(Graph),
     atom_concat(Graph, _, IRI)
   )),
-  forall(
-    rdf(S, P, O, Graph),
-    rdf_assert(S, P, O, GraphOut)
-  ).
+  GraphOut = Graph.
 
 handle_get(Request, IRI, GraphOut) :-
   once(rdf(IRI, _, _)),
@@ -47,11 +46,12 @@ handle_get(Request, IRI, GraphOut) :-
     )
   ; Options = []
   )),
+  make_temp_graph(GraphOut),
   catch((
     copy_resource(IRI, IRI, rdf, rdf(GraphOut), [inline(rdf)|Options])
   ),
     oslc_error(Message),
-    throw(status_code(400, Message))
+    throw(response(400, Message)) % bad request (problem with Options)
   ).
 
 handle_post(_, IRI, GraphIn, _) :-
@@ -64,9 +64,13 @@ post_resource(IRI, Source, Sink) :-
     ; oslc_error('Resource [~w] is not a creation factory', [IRI])
     )),
     once((
+      ground(Source)
+    ; oslc_error('Missing resource in POST request to [~w]', [IRI])
+    )),
+    once((
       oslc:unmarshal_property(NewResource, rdf:type, Class, _, Source),
       \+ rdf_is_bnode(NewResource)
-    ; oslc_error('Resource type must be specified', [])
+    ; oslc_error('Missing resource type in POST request to [~w]', [IRI])
     )),
     once((
       \+ oslc:unmarshal_property(NewResource, _, _, _, Sink)
@@ -84,10 +88,10 @@ post_resource(IRI, Source, Sink) :-
     setting(oslc_prolog_server:base_uri, BaseUri),
     rdf_global_id(Prefix:Name, NewResource),
     atomic_list_concat([BaseUri, Prefix, '/', Name],  Location),
-    format('Status: 201~nLocation: ~w~n~n', [Location])
+    response(201, ['Location'(Location)]) % created
   ),
     oslc_error(Message),
-    throw(status_code(400, Message))
+    throw(response(400, Message)) % bad request
   ).
 
 handle_put(Request, IRI, GraphIn, _) :-
@@ -95,28 +99,28 @@ handle_put(Request, IRI, GraphIn, _) :-
     once((
       member(if_match(IfMatch), Request),
       atomic_list_concat([_, ReceivedHash, _], '\"', IfMatch)
-    ; oslc_error('Missing or wrong header "If-Match" in PUT request to resource [~w]', [IRI])
+    ; oslc_error('Missing or wrong header [If-Match] in PUT request to [~w]', [IRI])
     )),
     autodetect_resource_graph(IRI, Graph),
     once((
       resource_md5(IRI, Graph, ReceivedHash),
       copy_resource(IRI, IRI, rdf(GraphIn), rdf(Graph), []),
-      throw(status_code(204))
+      response(204) % no content
     ; rdf_global_id(LIRI, IRI),
-      format(atom(Message), 'The value of "If-Match" header does not match resource [~w]', [LIRI]),
-      throw(status_code(412, Message))
+      format(atom(Message), 'The value of [If-Match] header does not match [~w]', [LIRI]),
+      throw(response(412, Message)) % precondition failed
     ))
   ),
     oslc_error(Message),
-    throw(status_code(400, Message))
+    throw(response(400, Message)) % bad request
   ).
 
 handle_delete(_, IRI) :-
   catch((
     autodetect_resource_graph(IRI, Graph),
     delete_resource(IRI, rdf(Graph)),
-    throw(status_code(200))
+    response(204) % no content
   ),
     oslc_error(Message),
-    throw(status_code(400, Message))
+    throw(response(400, Message)) % bad request
   ).

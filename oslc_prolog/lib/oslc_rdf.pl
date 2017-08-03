@@ -1,5 +1,6 @@
 :- module(oslc_rdf, [
-  make_graph/1,
+  make_temp_graph/1,
+  kill_temp_graph/1,
   autodetect_resource_graph/2,
   resource_md5/3,
   graph_md5/2
@@ -44,15 +45,27 @@ oslc:delete_property(IRI, PropertyDefinition, rdf(Graph)) :-
   must_be(atom, Graph),
   rdf_retractall(IRI, PropertyDefinition, _, Graph).
 
-%!  make_graph(-Graph) is det.
+%!  make_temp_graph(-Graph) is det.
 %
 %   Create a new non-persistent (RAM only) graph with unique name.
 
-make_graph(Graph) :-
+make_temp_graph(Graph) :-
   must_be(var, Graph),
   uuid(Graph),
   rdf_create_graph(Graph),
   rdf_persistency(Graph, false).
+
+%!  kill_temp_graph(+Graph) is det.
+%
+%   Delete temporary graph created with make_temp_graph/1.
+
+kill_temp_graph(Graph) :-
+  ignore((
+    atom(Graph),
+    uuid_salt(Salt),
+    atom_concat(Salt, _, Graph),
+    rdf_unload_graph(Graph)
+  )).
 
 uuid_salt('$oslc_salt_').
 
@@ -67,7 +80,7 @@ uuid(Id) :-
 %   Tries to automatically detect Graph, in which resource IRI is defined.
 %   Fails if resource has =|rdf:type|= property in more than one graph,
 %   or doesn't have =|rdf:type|= property but is referrred to as a subject
-%   in more that one graph. Ignores graphs created using make_graph/1.
+%   in more that one graph. Ignores graphs created using make_temp_graph/1.
 
 autodetect_resource_graph(IRI, Graph) :-
   must_be(ground, IRI),

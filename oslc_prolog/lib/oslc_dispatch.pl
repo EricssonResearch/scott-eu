@@ -9,7 +9,9 @@
   oslc_delete/3,
   add_handler/4,
   delete_handler/2,
-  dispatch/4
+  dispatch/4,
+  response/1,
+  response/2
 ]).
 
 :- use_module(library(semweb/rdf11)).
@@ -107,3 +109,18 @@ dispatch_to_handler(put, Module:Predicate, Request, IRI, GraphIn, GraphOut) :-
 dispatch_to_handler(delete, Module:Predicate, Request, IRI, _, _) :-
   T =.. [Predicate, Request, IRI],
   call(Module:T).
+
+response(StatusCode) :-
+  format("Status: ~w~n~n", [StatusCode]).
+
+response(StatusCode, Headers) :-
+  format_headers(Headers, HeadersString),
+  format("Status: ~w~n~w~n", [StatusCode, HeadersString]).
+
+format_headers(Headers, Output) :-
+  maplist(format_header, Headers, O),
+  atomics_to_string(O, Output).
+
+format_header(H, H2) :-
+  H =.. [Header, Value],
+  format(atom(H2), '~w: ~w~n', [Header, Value]).
