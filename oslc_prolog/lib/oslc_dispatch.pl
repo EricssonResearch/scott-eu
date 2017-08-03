@@ -9,7 +9,9 @@
   oslc_delete/3,
   add_handler/4,
   delete_handler/2,
-  dispatch/4
+  dispatch/1,
+  response/1,
+  response/2
 ]).
 
 :- use_module(library(semweb/rdf11)).
@@ -59,23 +61,23 @@ add_handler(Method, IRISpec, Predicate, Priority) :-
 
 delete_handler(Method, IRISpec) :-
   forall(
-    handler(Method, IRISpec, Predicate, Priority),
-    retractall(handler(Method, IRISpec, Predicate, Priority))
+    handler(Method, IRISpec, Handler, Priority),
+    retractall(handler(Method, IRISpec, Handler, Priority))
   ).
 
-dispatch(Request, Prefix:ResourceSegments, GraphIn, GraphOut) :-
-  member(method(Method), Request),
+dispatch(Context) :-
+  _{ iri_spec: Prefix:ResourceSegments,
+       method: Method } :< Context,
   atomic_list_concat(ResourceSegments, '/', Resource),
-  findall(
-    handler(Method, IRI, Predicate, Priority), (
-      handler(Method, ISPrefix:ISResource, Predicate, Priority),
-      match_wildcard(ISPrefix, Prefix, ISResource, Resource),
-      rdf_global_id(Prefix:Resource, IRI)
-    ),
-    Handlers
-  ),
-  predsort(handler_compare, Handlers, [handler(Method, IRI, Predicate, _)|_]),
-  dispatch_to_handler(Method, Predicate, Request, IRI, GraphIn, GraphOut).
+  findall(handler(Method, IRI, Handler, Priority), (
+    handler(Method, ISPrefix:ISResource, Handler, Priority),
+    match_wildcard(ISPrefix, Prefix, ISResource, Resource),
+    rdf_global_id(Prefix:Resource, IRI)
+  ), Handlers),
+  predsort(handler_compare, Handlers, [handler(Method, IRI, Module:Predicate, _)|_]),
+  NewContext = Context.put(iri, IRI).put(iri_spec, Prefix:Resource),
+  T =.. [Predicate, NewContext],
+  call(Module:T).
 
 match_wildcard(ISPrefix, Prefix, ISResource, Resource) :-
   once((
@@ -92,18 +94,17 @@ handler_compare(<, handler(_,_,_,P1), handler(_,_,_,P2)) :-
 handler_compare(>, handler(_,_,_,P1), handler(_,_,_,P2)) :-
   P1 < P2.
 
-dispatch_to_handler(get, Module:Predicate, Request, IRI, _, GraphOut) :-
-  T =.. [Predicate, Request, IRI, GraphOut],
-  call(Module:T).
+response(StatusCode) :-
+  format("Status: ~w~n~n", [StatusCode]).
 
-dispatch_to_handler(post, Module:Predicate, Request, IRI, GraphIn, GraphOut) :-
-  T =.. [Predicate, Request, IRI, GraphIn, GraphOut],
-  call(Module:T).
+response(StatusCode, Headers) :-
+  format_headers(Headers, HeadersString),
+  format("Status: ~w~n~w~n", [StatusCode, HeadersString]).
 
-dispatch_to_handler(put, Module:Predicate, Request, IRI, GraphIn, GraphOut) :-
-  T =.. [Predicate, Request, IRI, GraphIn, GraphOut],
-  call(Module:T).
+format_headers(Headers, Output) :-
+  maplist(format_header, Headers, O),
+  atomics_to_string(O, Output).
 
-dispatch_to_handler(delete, Module:Predicate, Request, IRI, _, _) :-
-  T =.. [Predicate, Request, IRI],
-  call(Module:T).
+format_header(H, H2) :-
+  H =.. [Header, Value],
+  format(atom(H2), '~w: ~w~n', [Header, Value]).
