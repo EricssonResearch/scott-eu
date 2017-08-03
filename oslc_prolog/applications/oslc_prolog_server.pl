@@ -26,37 +26,40 @@
    )).
 
 dispatcher(Request) :-
-  catch((
-    check_path(Request, Prefix, ResourceSegments),
-    check_method(Request, Method),
-    check_accept(Request, ContentType),
-    setup_call_cleanup(true, (
+  setup_call_cleanup(true, (
+    catch((
+      check_path(Request, Prefix, ResourceSegments),
+      check_method(Request, Method),
+      check_accept(Request, ContentType),
       ( member(Method, [post,put]) % if POST or PUT request and there is a body, read it
       -> read_request_body(Request, GraphIn)
       ; true
       ),
       once((
-        dispatch(Request, Prefix:ResourceSegments, GraphIn, GraphOut), % main dispatch method
+        dispatch(_{ request: Request,
+                   iri_spec: Prefix:ResourceSegments,
+                     method: Method,
+               content_type: ContentType,
+                   graph_in: GraphIn,
+                  graph_out: GraphOut,
+                    headers: Headers }), % main dispatch method
         ( ground(GraphOut),
           rdf_graph_property(GraphOut, triples(Triples)),
           Triples > 0 % the output document is not empty
-        -> format_response_graph(200, GraphOut, [], ContentType)
+        -> format_response_graph(200, GraphOut, Headers, ContentType)
         ; true % custom dispatcher should form full response by itself
         )
       ; throw(response(404)) % not found (failed to dispatch)
       ))
-    ),(
-      kill_temp_graph(GraphOut),
-      kill_temp_graph(GraphIn)
+    ),
+    E,
+    ( E =.. [response|Args]
+    -> FR =.. [format_error_response|[Request|Args]],
+       call(FR)
+    ; message_to_string(error(E, _), S),
+      format_error_response(Request, 500, S) % internal server error
     ))
-  ),
-  E,
-  ( E =.. [response|Args]
-  -> FR =.. [format_error_response|[Request|Args]],
-     call(FR)
-  ; message_to_string(error(E, _), S),
-    format_error_response(Request, 500, S) % internal server error
-  )).
+  ), clean_temp_graphs).
 
 format_error_response(Request, StatusCode) :-
   format_error_response(Request, StatusCode, _, []).
@@ -65,19 +68,18 @@ format_error_response(Request, StatusCode, Message) :-
   format_error_response(Request, StatusCode, Message, []).
 
 format_error_response(Request, StatusCode, Message, Headers) :-
-  setup_call_cleanup(make_temp_graph(GraphErr), (
-    ( atomic(Message)
-    -> ErrorMessage = Message
-    ; once(error_message(StatusCode, ErrorMessage))
-    ),
-    create_resource('error', [oslc:'Error'], [oslc_shapes:errorShape], [statusCode = StatusCode, message = ErrorMessage], rdf(GraphErr)),
-    catch(
-      check_accept(Request, ContentType),
-      _,
-      serializer(ContentType, _)
-    ),
-    format_response_graph(StatusCode, GraphErr, Headers, ContentType)
-  ), kill_temp_graph(GraphErr)).
+  make_temp_graph(GraphErr),
+  ( atomic(Message)
+  -> ErrorMessage = Message
+  ; once(error_message(StatusCode, ErrorMessage))
+  ),
+  create_resource('error', [oslc:'Error'], [oslc_shapes:errorShape], [statusCode = StatusCode, message = ErrorMessage], rdf(GraphErr)),
+  catch(
+    check_accept(Request, ContentType),
+    _,
+    serializer(ContentType, _)
+  ),
+  format_response_graph(StatusCode, GraphErr, Headers, ContentType).
 
 error_message(400, 'Bad request').
 error_message(404, 'Not found').
@@ -91,12 +93,10 @@ error_message(_, 'No message').
 format_response_graph(StatusCode, Graph, Headers, ContentType) :-
   must_be(integer, StatusCode),
   must_be(ground, Graph),
-  must_be(list(ground), Headers),
   must_be(ground, ContentType),
   format(atom(ContentTypeValue), '~w; charset=utf-8', [ContentType]),
   graph_md5(Graph, Hash),
-  subtract(Headers, ['Content-type'(_), 'ETag'(_)], CleanHeaders),
-  append(CleanHeaders, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders),
+  append(Headers, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders),
   response(StatusCode, NewHeaders),
   serializer(ContentType, Serializer), % select proper serializer
   current_output(Out),

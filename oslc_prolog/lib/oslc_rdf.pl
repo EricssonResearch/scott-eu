@@ -1,6 +1,6 @@
 :- module(oslc_rdf, [
   make_temp_graph/1,
-  kill_temp_graph/1,
+  clean_temp_graphs/0,
   autodetect_resource_graph/2,
   resource_md5/3,
   graph_md5/2
@@ -13,6 +13,8 @@
 
 :- rdf_meta autodetect_resource_graph(r, -).
 :- rdf_meta resource_md5(r, -, -).
+
+:- thread_local temp_graph/1.
 
 % ------------ RDF SOURCE / SINK
 
@@ -53,19 +55,19 @@ make_temp_graph(Graph) :-
   must_be(var, Graph),
   uuid(Graph),
   rdf_create_graph(Graph),
-  rdf_persistency(Graph, false).
+  rdf_persistency(Graph, false),
+  assertz(temp_graph(Graph)).
 
-%!  kill_temp_graph(+Graph) is det.
+%!  clean_temp_graphs is det.
 %
-%   Delete temporary graph created with make_temp_graph/1.
+%   Delete temporary graphs created with make_temp_graph/1 in this thread.
 
-kill_temp_graph(Graph) :-
-  ignore((
-    atom(Graph),
-    uuid_salt(Salt),
-    atom_concat(Salt, _, Graph),
+clean_temp_graphs :-
+  forall(
+    temp_graph(Graph),
     rdf_unload_graph(Graph)
-  )).
+  ),
+  retractall(temp_graph(_)).
 
 uuid_salt('$oslc_salt_').
 
