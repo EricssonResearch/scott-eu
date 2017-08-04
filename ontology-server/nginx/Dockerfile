@@ -23,4 +23,4 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 EXPOSE 80
 
 # start ontology server
-CMD service nginx start
+CMD ["service","nginx","start"]

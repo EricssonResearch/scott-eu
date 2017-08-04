@@ -5,11 +5,18 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
       args:
-       - ONTOLOGY_HOSTNAME=localhost
+        - ONTOLOGY_HOSTNAME=ontology.cf.ericsson.net
     ports:
-     - "80:80"
+      - "80:80"
   cliopatria:
-    build: ./cliopatria
+    build:
+      context: ./cliopatria
+      dockerfile: Dockerfile
+      args:
+        - PUBLIC_HOST=ontology.cf.ericsson.net
+        - PUBLIC_PORT=80
+        - BASE_URI=http://ontology.cf.ericsson.net/
+        - EXPOSED_PREFIXES=oslc,oslc_shapes
     ports:
-     - "3020:3020"
+      - "3020:3020"
     stdin_open: true

@@ -131,6 +131,7 @@ check_path(Request, Prefix, ResourceSegments) :-
   once((
     member(protocol(Protocol), Request),
     member(host(Host), Request),
+    % TODO: Port may not exist!!!
     member(port(Port), Request),
     member(path(Path), Request),
     atomic_list_concat([Protocol, '://', Host, ':', Port,  Path], '', Uri), % determine URI called

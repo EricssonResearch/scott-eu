@@ -5,7 +5,7 @@ server {
     server_name %ONTOLOGY_HOSTNAME%;
 
     location / {
-      rewrite /(.*)      /api/export_graph?graph=http%3A%2F%2F%ONTOLOGY_HOSTNAME%%2F$1&mimetype=text%2Fplain&format=rdfxml break;
+      #rewrite /(.*)      /api/export_graph?graph=http%3A%2F%2F%ONTOLOGY_HOSTNAME%%2F$1&mimetype=text%2Fplain&format=rdfxml break;
       proxy_pass         http://cliopatria:3020;
       proxy_redirect     off;
       proxy_set_header   Host $host;
