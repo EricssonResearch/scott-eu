@@ -3,12 +3,10 @@
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
 
-<oslc>
-	a lib:Schema ;
-	a lib:Virtual ;
+<oslc.rdf>
+	a lib:Ontology ;
 	dcterms:title "All vocabulary URIs defined in the OSLC Core namespace"^^rdf:XMLLiteral ;
-	lib:source oslc: ;
-	lib:schema <oslc.rdf> .
+	lib:source oslc: .
 
 [ a lib:Namespace ;
 	lib:mnemonic "oslc" ;
@@ -17,9 +15,20 @@
 
 <oslc_shapes.ttl>
 	a lib:Ontology ;
-	dcterms:title "OSLC resource shapes"^^rdf:XMLLiteral .
+	dcterms:title "OSLC resource shapes"^^rdf:XMLLiteral ;
+	lib:source <http://ontology.cf.ericsson.net/oslc_shapes#> .
+
+[ a lib:Namespace ;
+	lib:mnemonic "oslc_shapes" ;
+	lib:namespace <http://ontology.cf.ericsson.net/oslc_shapes/>
+] .
 
 <tests.ttl>
 	a lib:Ontology ;
 	dcterms:title "Resources used in unit tests"^^rdf:XMLLiteral ;
 	lib:source <http://ontology.cf.ericsson.net/tests#> .
+
+[ a lib:Namespace ;
+	lib:mnemonic "tests" ;
+	lib:namespace <http://ontology.cf.ericsson.net/tests/>
+] .

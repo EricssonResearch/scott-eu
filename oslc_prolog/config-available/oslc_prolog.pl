@@ -11,9 +11,7 @@
 
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(oslc).
-
-:- use_module(library(oslc_ontology)).
-:- register_ontology(oslc_shapes).
+:- rdf_load_library(oslc_shapes).
 
 :- use_module(library(oslc)).
 :- use_module(library(oslc_core)).

@@ -20,15 +20,18 @@ register_ontology(Ontology) :-
 %   under NewBaseURI.
 
 reload_ontologies(OldBaseURI, NewBaseURI) :-
-  forall(oslc_ontology:ontology(Ontology), (
-    ( nonvar(OldBaseURI)
-    -> atom_concat(OldBaseURI, Ontology, OldBaseName),
-       rdf_unload_graph(OldBaseName)
-    ; true
-    ),
-    atom_concat(NewBaseURI, Ontology, BaseName),
-    atom_concat(BaseName, '#', Source), % the named graph will have name without #
-    rdf_load_library(Ontology, [claimed_source(Source)]),
-    atom_concat(BaseName, '/', PrefixURI), % newly registered prefix always ends with /
-    rdf_register_prefix(Ontology, PrefixURI, [force(true)])
-  )).
+  ( current_predicate(oslc_ontology:ontology/1)
+  -> forall(oslc_ontology:ontology(Ontology), (
+       ( nonvar(OldBaseURI)
+       -> atom_concat(OldBaseURI, Ontology, OldBaseName),
+          rdf_unload_graph(OldBaseName)
+       ; true
+       ),
+       atom_concat(NewBaseURI, Ontology, BaseName),
+       atom_concat(BaseName, '#', Source), % the named graph will have name without #
+       rdf_load_library(Ontology, [claimed_source(Source)]),
+       atom_concat(BaseName, '/', PrefixURI), % newly registered prefix always ends with /
+       rdf_register_prefix(Ontology, PrefixURI, [force(true)])
+     ))
+  ; true
+  ).
