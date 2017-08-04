@@ -30,7 +30,10 @@ get_time_class(Context) :-
 handle_ontology(Context) :-
   once((
     rdf_graph(Graph),
-    atom_concat(Graph, _, Context.iri)
+    once((
+      atom_concat(Graph, '/', Context.iri)
+    ; atom_concat(Graph, '#', Context.iri)
+    ))
   )),
   Context.graph_out = Graph.
 

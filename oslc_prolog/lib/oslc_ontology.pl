@@ -11,7 +11,7 @@
 %   managed by the OSLC server under URI having form of <BaseURI>/<Ontology>.
 
 register_ontology(Ontology) :-
-  assertz(oslc_ontology:ontology(Ontology)).
+  assertz(ontology(Ontology)).
 
 %!  reload_ontologies(+OldBaseURI, +NewBaseURI) is det.
 %
@@ -20,8 +20,8 @@ register_ontology(Ontology) :-
 %   under NewBaseURI.
 
 reload_ontologies(OldBaseURI, NewBaseURI) :-
-  ( current_predicate(oslc_ontology:ontology/1)
-  -> forall(oslc_ontology:ontology(Ontology), (
+  ( current_predicate(ontology/1)
+  -> forall(ontology(Ontology), (
        ( nonvar(OldBaseURI)
        -> atom_concat(OldBaseURI, Ontology, OldBaseName),
           rdf_unload_graph(OldBaseName)
