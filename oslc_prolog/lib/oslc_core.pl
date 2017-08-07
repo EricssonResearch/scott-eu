@@ -30,7 +30,10 @@ get_time_class(Context) :-
 handle_ontology(Context) :-
   once((
     rdf_graph(Graph),
-    atom_concat(Graph, _, Context.iri)
+    once((
+      atom_concat(Graph, '/', Context.iri)
+    ; atom_concat(Graph, '#', Context.iri)
+    ))
   )),
   Context.graph_out = Graph.
 
@@ -87,8 +90,12 @@ post_resource(IRI, Source, Sink) :-
     )),
     copy_resource(NewResource, NewResource, Source, Sink, []),
     setting(oslc_prolog_server:base_uri, BaseUri),
+    uri_components(BaseUri, uri_components(C1, C2, PrefixPath, C4, C5)),
+    split_string(PrefixPath, "/", "/", Parts),
     rdf_global_id(Prefix:Name, NewResource),
-    atomic_list_concat([BaseUri, Prefix, '/', Name],  Location),
+    append(Parts, [Prefix, Name], NewParts),
+    atomics_to_string(NewParts, '/', NewPath),
+    uri_components(Location, uri_components(C1, C2, NewPath, C4, C5)),
     response(201, ['Location'(Location)]) % created
   ),
     oslc_error(Message),

@@ -4,7 +4,6 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
 @prefix	: <http://ontology.cf.ericsson.net/oslc_shapes/> .
-@base	<http://ontology.cf.ericsson.net/oslc_shapes> .
 
 # ======== Properties
 

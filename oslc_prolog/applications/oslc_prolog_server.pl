@@ -5,6 +5,7 @@
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(broadcast)).
 :- use_module(library(semweb/turtle)).
+:- use_module(library(oslc_ontology)).
 :- use_module(library(oslc_dispatch)).
 :- use_module(library(oslc_rdf)).
 :- use_module(library(oslc)).
@@ -12,18 +13,41 @@
 :- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/', 'Base URI').
 :- setting(oslc_prolog_server:exposed_prefixes, list(atom), [*], 'Exposed Prefixes').
 
-:- http_handler('/', dispatcher, [prefix]).
+:- listen(
+     settings(changed(oslc_prolog_server:base_uri, Old, New)), % listen on base URI setting changes
+     base_uri_changed(Old, New)
+   ).
 
-:- listen(settings(changed(oslc_prolog_server:base_uri, Old, New)), ( % listen on base URI setting changes
-     uri_components(New, uri_components(Schema, Authority, NewPath, _, _)),
-     (  sub_atom(NewPath, _, 1, 0, '/') % if new base URI is ending with '/'
-     -> http_handler(NewPath, dispatcher, [prefix]), % set a handler for new base URI
-        uri_components(Old, uri_components(_, _, OldPath, _, _)),
-        http_delete_handler(path(OldPath)) % remove old handler
-     ;  atomic_list_concat([Schema, '://', Authority, NewPath, '/'], '', NewSetting), % append '/' to the new URI
-        set_setting(oslc_prolog_server:base_uri, NewSetting) % do set setting again, it will call this listener
-     )
+:- cp_after_load(( % after ClioPatria has been completely loaded
+     assertz(cp_after_loaded),
+     setting(oslc_prolog_server:base_uri, BaseUri),
+     base_uri_changed(_, BaseUri)
    )).
+
+base_uri_changed(OldBaseURI, NewBaseURI) :-
+  ( current_predicate(cp_after_loaded/0) % if ClioPatria is completely loaded
+  -> fix_trailing_slash(OldBaseURI, OldURI, OldPath),
+     fix_trailing_slash(NewBaseURI, NewURI, NewPath),
+     reload_ontologies(OldURI, NewURI),
+     ( nonvar(OldBaseURI)
+     -> http_delete_handler(path(OldPath)) % remove old handler
+     ; true
+     ),
+     http_handler(NewPath, dispatcher, [prefix]) % set a handler for new base URI
+  ; true
+  ).
+
+fix_trailing_slash(InURI, OutURI, OutPath) :-
+  ( nonvar(InURI)
+  -> uri_components(InURI, uri_components(C1, C2, InURIPath, C4, C5)),
+     (  atom_concat(_, '/', InURIPath)
+     -> OutURI = InURI,
+        OutPath = InURIPath
+     ; atom_concat(InURIPath, '/', OutPath),
+       uri_components(OutURI, uri_components(C1, C2, OutPath, C4, C5))
+     )
+  ; true
+  ).
 
 dispatcher(Request) :-
   setup_call_cleanup(true, (
@@ -73,7 +97,8 @@ format_error_response(Request, StatusCode, Message, Headers) :-
   -> ErrorMessage = Message
   ; once(error_message(StatusCode, ErrorMessage))
   ),
-  create_resource('error', [oslc:'Error'], [oslc_shapes:errorShape], [statusCode = StatusCode, message = ErrorMessage], rdf(GraphErr)),
+  rdf_global_id(oslc_shapes:errorShape, ES),
+  create_resource('error', [oslc:'Error'], [ES], [statusCode = StatusCode, message = ErrorMessage], rdf(GraphErr)),
   catch(
     check_accept(Request, ContentType),
     _,

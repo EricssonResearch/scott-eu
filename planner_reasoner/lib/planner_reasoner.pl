@@ -3,16 +3,21 @@
 ]).
 
 :- use_module(library(semweb/rdf11)).
-:- use_module(library(semweb/rdf_library)).
-
-:- rdf_attach_library(planner_reasoner(rdf)).
-:- rdf_load_library(pp).
-:- rdf_load_library(wd).
-:- rdf_load_library(ppos).
-:- rdf_load_library(wp).
+:- use_module(library(oslc_dispatch)).
+:- use_module(library(oslc_rdf)).
+:- use_module(library(oslc)).
 
 :- rdf_meta generate_pddl(r, -).
 :- rdf_meta generate_pddl(r, r, -, -).
+
+:- oslc_get(pp:'Action', handle_action).
+
+handle_action(Context) :-
+  make_temp_graph(Context.graph_out),
+  forall(
+    member(Obj, [pp:'Action', pp:'Precondition', pp:'Effect']),
+    copy_resource(Obj, Obj, rdf, rdf(Context.graph_out), [])
+  ).
 
 generate_pddl(Resource, Out) :-
   rdf(Resource, rdf:type, Type),

@@ -1,55 +1,35 @@
 @prefix	lib: <http://www.swi-prolog.org/rdf/library/> .
 @prefix	rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix	dcterms: <http://purl.org/dc/terms/> .
-@prefix	pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
-@prefix	wd: <http://ontology.cf.ericsson.net/warehouse_domain/> .
-@prefix	wp: <http://ontology.cf.ericsson.net/warehouse_problem/> .
-@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes/> .
 
-<ppos>
-	a lib:Schema ;
-	a lib:Virtual ;
-	dcterms:title "Vocabulary of OSLC shapes describing resources that can be used in PDDL"^^rdf:XMLLiteral ;
-	lib:source <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#> ;
-	lib:schema <pp_oslc_shapes.ttl> .
-
-[ a lib:Namespace ;
-	lib:mnemonic "ppos" ;
-	lib:namespace ppos:
-] .
-
-<pp>
-	a lib:Schema ;
-	a lib:Virtual ;
+<pp.ttl>
+	a lib:Ontology ;
 	dcterms:title "Vocabulary of class relations between PDDL resources"^^rdf:XMLLiteral ;
 	lib:source <http://ontology.cf.ericsson.net/planning_ontology#> ;
-	lib:schema <pp.ttl> .
-
-[ a lib:Namespace ;
+	a lib:Namespace ;
 	lib:mnemonic "pp" ;
-	lib:namespace pp:
-] .
+	lib:namespace <http://ontology.cf.ericsson.net/planning_ontology/> .
 
-<wd>
+<pp_shapes.ttl>
+	a lib:Ontology ;
+	dcterms:title "Vocabulary of OSLC shapes describing resources that can be used in PDDL"^^rdf:XMLLiteral ;
+	lib:source <http://ontology.cf.ericsson.net/planning_ontology_shapes#> ;
+	a lib:Namespace ;
+	lib:mnemonic "ppos" ;
+	lib:namespace <http://ontology.cf.ericsson.net/planning_ontology_shapes/> .
+
+<warehouse_domain.ttl>
 	a lib:Instances ;
-	a lib:Virtual ;
 	dcterms:title "Sample planning PDDL domain"^^rdf:XMLLiteral ;
 	lib:source <http://ontology.cf.ericsson.net/warehouse_domain#> ;
-	lib:schema <warehouse_domain.ttl> .
-
-[ a lib:Namespace ;
+	a lib:Namespace ;
 	lib:mnemonic "wd" ;
-	lib:namespace wd:
-] .
+	lib:namespace <http://ontology.cf.ericsson.net/warehouse_domain/> .
 
-<wp>
+<warehouse_problem.ttl>
 	a lib:Instances ;
-	a lib:Virtual ;
 	dcterms:title "Sample planning PDDL problem"^^rdf:XMLLiteral ;
 	lib:source <http://ontology.cf.ericsson.net/warehouse_problem#> ;
-	lib:schema <warehouse_problem.ttl> .
-
-[ a lib:Namespace ;
+  a lib:Namespace ;
 	lib:mnemonic "wp" ;
-	lib:namespace wp:
-] .
+	lib:namespace <http://ontology.cf.ericsson.net/warehouse_problem/> .

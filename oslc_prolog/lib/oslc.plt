@@ -7,11 +7,10 @@
 :- use_module(library(semweb/rdf_library)).
 :- use_module(library(oslc)).
 
-:- rdf_meta assertion(r,t).
-
-:- rdf_register_prefix(tests, 'http://ontology.cf.ericsson.net/tests/').
 :- rdf_attach_library(oslc_prolog(rdf)).
 :- rdf_load_library(tests).
+
+:- rdf_meta assertion(r,t).
 
 assertion(Actual, Expected) :-
   assertion(Actual == Expected).

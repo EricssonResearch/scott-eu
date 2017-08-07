@@ -3,6 +3,10 @@
 /** <module> OSLC Prolog
 */
 
+%:- debug(http(send_request)).
+%:- debug(http(open)).
+%:- debug(rdf(load)).
+
 :- use_module(library(semweb/rdf_library)).
 
 :- rdf_attach_library(oslc_prolog(rdf)).

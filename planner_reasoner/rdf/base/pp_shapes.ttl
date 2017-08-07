@@ -9,11 +9,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix oslc: <http://open-services.net/ns/core#> . #oslc core
 @prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
-@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes/> .
 @prefix pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
-@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain_and_problem/> .
-@prefix : <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes/> .
-@base <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes> .
+@prefix : <http://ontology.cf.ericsson.net/planning_ontology_shapes/> .
 
 :OrderedArgumentShape
   a oslc:ResourceShape ;

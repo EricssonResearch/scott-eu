@@ -1,15 +1,7 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix oslc: <http://open-services.net/ns/core#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
 @prefix warehouse: <http://example.com/warehouse_ontology/> . #this should be later replaced by some ontology (ies) for robotics, or internal logistics
 @prefix pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
-@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes/> .
-@prefix wd: <http://ontology.cf.ericsson.net/warehouse_domain/> .
-@prefix wp: <http://ontology.cf.ericsson.net/warehouse_problem/> .
+@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_shapes/> .
 @prefix : <http://ontology.cf.ericsson.net/warehouse_problem/> .
-@base <http://ontology.cf.ericsson.net/warehouse_problem> .
 
 # all the types used in the domain file
 warehouse:Robot

@@ -2,36 +2,33 @@
 @prefix	rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix	dcterms: <http://purl.org/dc/terms/> .
 @prefix	oslc: <http://open-services.net/ns/core#> .
-@prefix	oslc_shapes: <http://ontology.cf.ericsson.net/oslc_shapes/> .
-@prefix	tests: <http://ontology.cf.ericsson.net/tests/> .
 
-<oslc>
-	a lib:Schema ;
-	a lib:Virtual ;
+<oslc.rdf>
+	a lib:Ontology ;
 	dcterms:title "All vocabulary URIs defined in the OSLC Core namespace"^^rdf:XMLLiteral ;
-	lib:source oslc: ;
-	lib:schema <oslc.rdf> .
+	lib:source oslc: .
 
 [ a lib:Namespace ;
 	lib:mnemonic "oslc" ;
 	lib:namespace oslc:
 ] .
 
-<oslc_shapes>
-	a lib:Schema ;
-	a lib:Virtual ;
+<oslc_shapes.ttl>
+	a lib:Ontology ;
 	dcterms:title "OSLC resource shapes"^^rdf:XMLLiteral ;
-	lib:source <http://ontology.cf.ericsson.net/oslc_shapes#> ;
-	lib:schema <oslc_shapes.ttl> .
+	lib:source <http://ontology.cf.ericsson.net/oslc_shapes#> .
 
 [ a lib:Namespace ;
 	lib:mnemonic "oslc_shapes" ;
-	lib:namespace oslc_shapes:
+	lib:namespace <http://ontology.cf.ericsson.net/oslc_shapes/>
 ] .
 
-<tests>
-	a lib:Schema ;
-	a lib:Virtual ;
+<tests.ttl>
+	a lib:Ontology ;
 	dcterms:title "Resources used in unit tests"^^rdf:XMLLiteral ;
-	lib:source <http://ontology.cf.ericsson.net/tests#> ;
-	lib:schema <tests.ttl> .
+	lib:source <http://ontology.cf.ericsson.net/tests#> .
+
+[ a lib:Namespace ;
+	lib:mnemonic "tests" ;
+	lib:namespace <http://ontology.cf.ericsson.net/tests/>
+] .
