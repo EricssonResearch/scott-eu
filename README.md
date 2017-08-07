@@ -4,7 +4,7 @@
 
 This repository contains all projects that are part of the *SCOTT Warehouse Sandbox* as described in the [SCOTT WP10](https://projects.avl.com/16/0094/WP10/default.aspx).
 
-The repository consists of 10 projects that use Docker images individually and are orchestrated using Docker Compose (as of now). Below is a brief summary of each project.
+The repository consists of 9 projects that use Docker images individually and are orchestrated using Docker Compose (as of now). Below is a brief summary of each project.
 
 
 ## Warehouse Controller
@@ -15,13 +15,11 @@ Until the multi-objective optimisation (MOO) service is present, its implementat
 
 Until the [Ontology server](#ontology-server) is up and serving the warehouse state, the controller fetches it from the [kb.json](warehousecontroller/kb.json) file.
 
-> **NB!** The KB is not queried from the [Mock KB](#mock-kb) service!
-
 Until the [Planner Reasoner](#planner-reasoner) is able to serve the PDDL problem file, it is generated in the `generatePddlProblemFile` method of the [mission2plan.py](warehousecontroller/mission2plan.py) file. Until the [Planner Reasoner](#planner-reasoner) is able to serve the PDDL domain file, it is fetched from the [whdomain-2.pddl](warehousecontroller/whdomain-2.pddl) file.
 
 When the problem & domain PDDL files are ready, they are uploaded to the [Metric-FF Docker](#metric-ff-docker) service and *plan generation* is triggered.
 
-> :point_right: Start by running the Decker Compose as described in the [Deployment](#deployment) section and running a [cURL test script](warehousecontroller/curltest3) to trigger plan generation. Also see [README](warehousecontroller/Readme).
+> :point_right: Start by running the Docker Compose as described in the [Deployment](#deployment) section and running a [cURL test script](warehousecontroller/curltest3) to trigger plan generation. Also see [README](warehousecontroller/Readme).
 
 
 ## Deployment
@@ -39,13 +37,6 @@ Deployment project contains the Docker Compose [configuration](deployment/docker
 Metric-FF Docker (`/ff-metric-docker`) exposes Metric-FF-based planning via a RESTful service running on port 5000.
 
 > :point_right: Start by running the preconfigured [docker-compose environment](#deployment) and reading [project README](ff-metric-docker/README.md).
-
-
-## Mock KB
-
-Mock KB (`/mockkb`) exposes a mock knowledge base on port 5001.
-
-> :point_right: Start by running the service using Docker ([README](mockkb/README.md)) and doing a GET request to `/kb/api/v1.0/waypoint`.
 
 
 ## Ontology server
@@ -91,4 +82,3 @@ Planner Reasoner (`/planner_reasoner`) uses an [internal planning ontology](plan
 > :point_right: Start by reading about the [`generate_pddl/2` predicate](planner_reasoner/lib/planner_reasoner.pl).
 
 > **NB!** The project is called a *reasoner* because it is using Prolog reasoning facilities, it does not do any reasoning over the ontology and does not produce any inferred triples (as of now).
-
