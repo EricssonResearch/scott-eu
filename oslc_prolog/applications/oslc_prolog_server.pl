@@ -131,9 +131,12 @@ check_path(Request, Prefix, ResourceSegments) :-
   once((
     member(protocol(Protocol), Request),
     member(host(Host), Request),
-    member(port(Port), Request),
+    ( member(port(Port), Request)
+    -> atom_concat(':', Port, PortString)
+    ; PortString = ''
+    ),
     member(path(Path), Request),
-    atomic_list_concat([Protocol, '://', Host, ':', Port,  Path], '', Uri), % determine URI called
+    atomic_list_concat([Protocol, '://', Host, PortString,  Path], '', Uri), % determine URI called
     setting(oslc_prolog_server:base_uri, BaseUri),
     atom_concat(BaseUri, ServicePath, Uri), % check if URI called starts with the base URI
     split_string(ServicePath, "/", "/", Parts),

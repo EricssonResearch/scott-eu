@@ -5,11 +5,19 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
       args:
-       - ONTOLOGY_HOSTNAME=localhost
+        - PUBLIC_HOST=localhost
+        - PUBLIC_PORT=80
     ports:
-     - "80:80"
+      - "80:80"
   cliopatria:
-    build: ./cliopatria
+    build:
+      context: ./cliopatria
+      dockerfile: Dockerfile
+      args:
+        - PUBLIC_HOST=localhost
+        - PUBLIC_PORT=80
+        - BASE_URI=http://localhost/
+        - EXPOSED_PREFIXES=*
     ports:
-     - "3020:3020"
+      - "3020:3020"
     stdin_open: true

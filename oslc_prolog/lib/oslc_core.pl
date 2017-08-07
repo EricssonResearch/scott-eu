@@ -33,6 +33,7 @@ handle_ontology(Context) :-
     once((
       atom_concat(Graph, '/', Context.iri)
     ; atom_concat(Graph, '#', Context.iri)
+    ; iri_xml_namespace(Graph, Context.iri, _)
     ))
   )),
   Context.graph_out = Graph.
