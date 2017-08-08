@@ -54,7 +54,7 @@
 :ActionShape
   a oslc:ResourceShape ;
   oslc:describes pddl:Action ;
-  dcterms:description "An action has parameters, precondition and effect."^^rdf:XMLLiteral ;
+  dcterms:description "An action has parameter, precondition and effect."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   dcterms:description "Action name."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition rdfs:label ;
@@ -76,7 +76,7 @@
                   oslc:name "precondition"^^xsd:string ;
                   oslc:occurs oslc:Exactly-one ;
                   oslc:valueType oslc:AnyResource ;
-                  oslc:range pddl:Predicate
+                  oslc:range pddl:Precondition
                 ] ,
                 [ a oslc:Property ;
                   dcterms:description "Action effect describing state modification."^^rdf:XMLLiteral ;
@@ -84,10 +84,10 @@
                   oslc:name "effect"^^xsd:string ;
                   oslc:occurs oslc:Exactly-one ;
                   oslc:valueType oslc:AnyResource ;
-                  oslc:range pddl:Predicate
+                  oslc:range pddl:Effect
                 ] .
 
-:ParameterShape
+:parameterhape
   a oslc:ResourceShape ;
   oslc:describes pddl:Parameter ;
   dcterms:description "An orderable parameter of predicate, function or action."^^rdf:XMLLiteral ;
@@ -127,8 +127,8 @@
                 ] ,
                 [ a oslc:Property ;
                   dcterms:description "Predicate parameters."^^rdf:XMLLiteral ;
-                  oslc:propertyDefinition pddl:parameters ;
-                  oslc:name "parameters"^^xsd:string ;
+                  oslc:propertyDefinition pddl:parameter ;
+                  oslc:name "parameter"^^xsd:string ;
                   oslc:occurs oslc:One-or-many ;
                   oslc:valueType oslc:AnyResource ;
                   oslc:range pddl:Parameter
@@ -147,8 +147,8 @@
                 ] ,
                 [ a oslc:Property ;
                   dcterms:description "Function parameters."^^rdf:XMLLiteral ;
-                  oslc:propertyDefinition pddl:parameters ;
-                  oslc:name "parameters"^^xsd:string ;
+                  oslc:propertyDefinition pddl:parameter ;
+                  oslc:name "parameter"^^xsd:string ;
                   oslc:occurs oslc:One-or-many ;
                   oslc:valueType oslc:AnyResource ;
                   oslc:range pddl:Parameter
@@ -171,9 +171,9 @@
 :PreconditionAndShape
   a oslc:ResourceShape ;
   oslc:describes pddl:And ;
-  dcterms:description "Locical operator 'and' in precondition."^^rdf:XMLLiteral ;
+  dcterms:description "Locical operator (and) in precondition."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
-                  dcterms:description "Arguments."^^rdf:XMLLiteral ;
+                  dcterms:description "(And) operator arguments (same as precondition)."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition pddl:argument ;
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:Zero-or-many ;
@@ -184,41 +184,37 @@
 :EffectAndShape
   a oslc:ResourceShape ;
   oslc:describes pddl:And ;
-  dcterms:description "Locical operator 'and' in effect."^^rdf:XMLLiteral ;
+  dcterms:description "Locical operator (and) in effect."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
-                  dcterms:description "Arguments."^^rdf:XMLLiteral ;
+                  dcterms:description "Effect (and) operator arguments."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition pddl:argument ;
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:AnyResource ;
                   oslc:range pddl:ForAll ,
                              pddl:When ,
-                             pddl:AssignmentOperator ,
-                             pddl:Not ,
-                             pddl:Predicate
+                             pddl:PredicateEffect
                 ] .
 
-:EffectCondAndShape
+:ConditionalEffectAndShape
   a oslc:ResourceShape ;
   oslc:describes pddl:And ;
-  dcterms:description "Locical operator 'and' in effect's condition."^^rdf:XMLLiteral ;
+  dcterms:description "Locical operator (and) in conditional effect."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
-                  dcterms:description "Arguments."^^rdf:XMLLiteral ;
+                  dcterms:description "Conditional effect (and) operator arguments."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition pddl:argument ;
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:AnyResource ;
-                  oslc:range pddl:AssignmentOperator ,
-                             pddl:Not ,
-                             pddl:Predicate
+                  oslc:range pddl:PredicateEffect
                 ] .
 
-:PreconditionNotShape
+:NotShape
   a oslc:ResourceShape ;
   oslc:describes pddl:Not ;
-  dcterms:description "Locical operator 'not' in precondition."^^rdf:XMLLiteral ;
+  dcterms:description "Locical operator (not) in precondition and 'When' condition."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
-                  dcterms:description "Argument."^^rdf:XMLLiteral ;
+                  dcterms:description "(Not) operator argument (same as precondition)."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition pddl:argument ;
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:Exactly-one ;
@@ -226,15 +222,175 @@
                   oslc:range pddl:Precondition
                 ] .
 
-:PredicateNotShape
+:EffectNotShape
   a oslc:ResourceShape ;
   oslc:describes pddl:Not ;
-  dcterms:description "Locical operator 'not' as predicate negation."^^rdf:XMLLiteral ;
+  dcterms:description "Locical operator (not) as predicate negation in effect."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
-                  dcterms:description "Argument."^^rdf:XMLLiteral ;
+                  dcterms:description "(Not) operator argument (predicate)."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition pddl:argument ;
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:Exactly-one ;
                   oslc:valueType oslc:AnyResource ;
                   oslc:range pddl:Predicate
+                ] .
+
+:OrShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:Or ;
+  dcterms:description "Locical operator (or) in precondition."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "(Or) operator argument (same as precondition)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Precondition
+                ] .
+
+:ImplyShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:Imply ;
+  dcterms:description "Locical operator (imply) in precondition."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "(Imply) operator arguments (same as precondition)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Precondition
+                ] .
+
+# --- Binary Operators
+
+:BinaryOperatorShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:BinaryOperator ;
+  dcterms:description "Binary operators (+,-,/,*) in precondition."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Binary operators arguments (fluents)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Fluent
+                ] .
+
+:FluentMinusShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:Minus ;
+  dcterms:description "Unary operator (-) in fluent."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Unary operator argument (fluent)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Fluent
+                ] .
+
+# --- Binary Comparators
+
+:BinaryComparatorShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:BinaryComparator ;
+  dcterms:description "Binary comparators (=,>,<,<=,>=) in precondition."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Binary comparators arguments (fluents)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Fluent
+                ] .
+
+# --- Quantifiers
+
+:QuantifierShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:Quantifier ;
+  dcterms:description "Quantifiers (forall,exists) in precondition."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Quantifier parameters."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Parameter
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Quantifier arguments (same as precondition)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Precondition
+                ] .
+
+# --- Conditional Effects
+
+:ForAllShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:ForAll ;
+  dcterms:description "Universal quantifier (forall) in effect."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Quantified variables."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Parameter
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Conditional effect."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Effect
+                ] .
+
+:WhenShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:When ;
+  dcterms:description "Condition (when) in effect."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Condition (same as precondition)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Precondition
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Conditional effect."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:And ,
+                             pddl:PredicateEffect
+                ] .
+
+# --- Assignment Operators
+
+:AssignmentOperatorShape
+  a oslc:ResourceShape ;
+  oslc:describes pddl:AssignmentOperator ;
+  dcterms:description "Assignment operators (assign,scale-up,scale-down,increase,decrease) in effect."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Assignment operator parameter (function)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Function
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Assignment operator argument (fluent)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pddl:argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range pddl:Fluent
                 ] .

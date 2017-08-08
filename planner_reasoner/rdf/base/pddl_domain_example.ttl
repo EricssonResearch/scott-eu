@@ -107,8 +107,9 @@
   pddl:precondition [ a pddl:And ;
                       oslc:instanceShape pddls:PreconditionAndShape ;
                       pddl:argument [ a pddl:Not ;
-                                      oslc:instanceShape pddls:PreconditionNotShape ;
+                                      oslc:instanceShape pddls:NotShape ;
                                       pddl:argument [ a pddl:EQ ;
+                                                      oslc:instanceShape pddls:BinaryComparatorShape ;
                                                       pddl:argument :move-b ,
                                                                     :move-y
                                                     ]
@@ -131,7 +132,7 @@
                                 :on-y :move-y
                               ] ,
                               [ a pddl:Not ;
-                                oslc:instanceShape pddls:PredicateNotShape ;
+                                oslc:instanceShape pddls:EffectNotShape ;
                                 pddl:argument [ a :on ;
                                                 :on-x :move-b ;
                                                 :on-y :move-x
@@ -141,15 +142,17 @@
                                 :clear-x :move-x
                               ] ,
                               [ a pddl:When ;
-                                pddl:argument [ a pddl:Not ;
-                                                oslc:instanceShape pddls:PreconditionNotShape ;
+                                oslc:instanceShape pddls:WhenShape ;
+                                pddl:parameter [ a pddl:Not ;
+                                                oslc:instanceShape pddls:NotShape ;
                                                 pddl:argument [ a pddl:EQ ;
+                                                                oslc:instanceShape pddls:BinaryComparatorShape ;
                                                                 pddl:argument :move-y ,
                                                                               :table
                                                               ]
-                                              ] ,
-                                              [ a pddl:Not ;
-                                                oslc:instanceShape pddls:PreconditionNotShape ;
+                                              ] ;
+                                pddl:argument [ a pddl:Not ;
+                                                oslc:instanceShape pddls:NotShape ;
                                                 pddl:argument [ a :clear ;
                                                                 :clear-x :move-y
                                                               ]
