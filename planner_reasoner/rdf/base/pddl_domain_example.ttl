@@ -1,0 +1,179 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix pddl: <http://ontology.cf.ericsson.net/pddl/> .
+@prefix pddls: <http://ontology.cf.ericsson.net/pddl_shapes/> .
+@prefix : <http://ontology.cf.ericsson.net/pddl_domain_example/> .
+
+#    (define (domain adl-blocksworld)
+#      (:requirements :adl :equality)
+#      (:types block)
+#      (:predicates (on ?x ?y - (either block location))
+#                   (clear ?x - (either block location))
+#      )
+#      (:constants table)
+#      (:action move
+#         :parameters (?b - block ?x ?y - (either block location))
+#         :precondition
+#            (and
+#              (not(= ?b ?y))
+#    				  (clear ?b)
+#              (on ?b ?x)
+#              (clear ?y)
+#            )
+#         :effect
+#            (and
+#              (on ?b ?y)
+#         	    (not (on ?b ?x))
+#    		      (clear ?x)
+#    		      (when
+#                (not (= ?y table))
+#    		  	    (not (clear ?y))
+#              )
+#            )
+#      )
+#    )
+
+:adl-blocksworld
+  a pddl:Domain ;
+  oslc:instanceShape pddls:DomainShape ;
+  rdfs:label "adl-blocksworld" ;
+  rdfs:member :location ,
+              :block ,
+              :on ,
+              :clear ,
+              :move .
+
+:location
+  a pddl:PrimitiveType ;
+  oslc:instanceShape pddls:PrimitiveTypeShape ;
+  rdfs:label "location" .
+
+:block
+  a pddl:PrimitiveType ;
+  oslc:instanceShape pddls:PrimitiveTypeShape ;
+  rdfs:label "block" .
+
+:location-or-block
+  a pddl:EitherType ;
+  oslc:instanceShape pddls:EitherTypeShape ;
+  rdfs:member :location ,
+              :block .
+
+:on
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Predicate ;
+  oslc:instanceShape pddls:PredicateShape ;
+  rdfs:label "on" ;
+  pddl:parameter :on-x ,
+                 :on-y .
+
+:on-x
+  a pddl:Parameter ;
+  oslc:instanceShape pddls:ParameterShape ;
+  rdfs:label "x" ;
+  pddl:type :location-or-block ;
+  sh:order 1 .
+
+:on-y
+  a pddl:Parameter ;
+  oslc:instanceShape pddls:ParameterShape ;
+  rdfs:label "y" ;
+  pddl:type :location-or-block ;
+  sh:order 2 .
+
+:clear
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Predicate ;
+  oslc:instanceShape pddls:PredicateShape ;
+  rdfs:label "on" ;
+  pddl:parameter :on-x .
+
+:table
+  a pddl:Object ;
+  oslc:instanceShape pddls:ObjectShape ;
+  rdfs:label "table" .
+
+:move
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Action ;
+  oslc:instanceShape pddls:ActionShape ;
+  rdfs:label "move" ;
+  pddl:parameter :move-b ,
+                 :move-x ,
+                 :move-y ;
+  pddl:precondition [ a pddl:And ;
+                      oslc:instanceShape pddls:PreconditionAndShape ;
+                      pddl:argument [ a pddl:Not ;
+                                      oslc:instanceShape pddls:PreconditionNotShape ;
+                                      pddl:argument [ a pddl:EQ ;
+                                                      pddl:argument :move-b ,
+                                                                    :move-y
+                                                    ]
+                                    ] ,
+                                    [ a :clear ;
+                                      :clear-x :move-b
+                                    ] ,
+                                    [ a :on ;
+                                      :on-x :move-b ;
+                                      :on-y :move-x
+                                    ] ,
+                                    [ a :clear ;
+                                      :clear-x :move-y
+                                    ]
+                    ] ;
+  pddl:effect [ a pddl:And ;
+                oslc:instanceShape pddls:EffectAndShape ;
+                pddl:argument [ a :on ;
+                                :on-x :move-b ;
+                                :on-y :move-y
+                              ] ,
+                              [ a pddl:Not ;
+                                oslc:instanceShape pddls:PredicateNotShape ;
+                                pddl:argument [ a :on ;
+                                                :on-x :move-b ;
+                                                :on-y :move-x
+                                              ]
+                              ] ,
+                              [ a :clear ;
+                                :clear-x :move-x
+                              ] ,
+                              [ a pddl:When ;
+                                pddl:argument [ a pddl:Not ;
+                                                oslc:instanceShape pddls:PreconditionNotShape ;
+                                                pddl:argument [ a pddl:EQ ;
+                                                                pddl:argument :move-y ,
+                                                                              :table
+                                                              ]
+                                              ] ,
+                                              [ a pddl:Not ;
+                                                oslc:instanceShape pddls:PreconditionNotShape ;
+                                                pddl:argument [ a :clear ;
+                                                                :clear-x :move-y
+                                                              ]
+                                              ]
+                              ]
+                  ] .
+
+:move-b
+  a pddl:Parameter ;
+  oslc:instanceShape pddls:ParameterShape ;
+  rdfs:label "b" ;
+  pddl:type :block ;
+  sh:order 1 .
+
+:move-x
+  a pddl:Parameter ;
+  oslc:instanceShape pddls:ParameterShape ;
+  rdfs:label "x" ;
+  pddl:type :location-or-block ;
+  sh:order 2 .
+
+:move-y
+  a pddl:Parameter ;
+  oslc:instanceShape pddls:ParameterShape ;
+  rdfs:label "y" ;
+  pddl:type :location-or-block ;
+  sh:order 3 .

@@ -1,0 +1,175 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://ontology.cf.ericsson.net/pddl/> .
+
+:Domain
+  a rdfs:Class ;
+  rdfs:subClassOf rdf:Bag .
+
+:Type # abstract class
+  a rdfs:Class .
+:PrimitiveType
+  a rdfs:Class ;
+  rdfs:subClassOf :Type .
+:EitherType
+  a rdfs:Class ;
+  rdfs:subClassOf :Type ;
+  rdfs:subClassOf rdf:Bag .
+
+:Action
+  a rdfs:Class ;
+  rdfs:subClassOf :Parameterizable .
+:parameter
+  a rdf:Property .
+:precondition
+  a rdf:Property .
+:Precondition # abstract class
+  a rdfs:Class .
+:effect
+  a rdf:Property .
+:Effect # abstract class
+  a rdfs:Class .
+
+:Parameter
+  a rdfs:Class ;
+  rdfs:subClassOf rdf:Property ;
+  rdfs:subClassOf :Orderable .
+:type
+  a rdf:Property .
+
+:Orderable # abstract class
+  a rdfs:Class .
+
+:Parameterizable # abstract class
+  a rdfs:Class .
+
+:Predicate
+  a rdfs:Class ;
+  rdfs:subClassOf :Parameterizable ;
+  rdfs:subClassOf :Precondition .
+
+:Function
+  a rdfs:Class ;
+  rdfs:subClassOf :Parameterizable .
+
+:argument
+  a rdf:Property .
+
+:Object
+  a rdfs:Class .
+
+# --- Logical Operators
+
+:LogicalOperator # abstract class
+  a rdfs:Class ;
+  rdfs:subClassOf :Precondition .
+
+:And
+  a rdfs:Class ;
+  rdfs:subClassOf :LogicalOperator ;
+  rdfs:subClassOf :Effect ;
+  rdfs:label "and" .
+
+:Not
+  a rdfs:Class ;
+  rdfs:subClassOf :LogicalOperator ;
+  rdfs:label "not" .
+
+:Or
+  a rdfs:Class ;
+  rdfs:subClassOf :LogicalOperator ;
+  rdfs:label "or" .
+
+:Imply
+  a rdfs:Class ;
+  rdfs:subClassOf :LogicalOperator ;
+  rdfs:label "imply" .
+
+# --- Binary Comparators
+
+:BinaryComparator # abstract class
+  a rdfs:Class ;
+  rdfs:subClassOf :Precondition .
+
+:EQ
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label "=" .
+
+:GT
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label ">" .
+
+:LT
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label "<" .
+
+:LE
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label "<=" .
+
+:GE
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label ">=" .
+
+# --- Quantifiers
+
+:Quantifier # abstract class
+  a rdfs:Class ;
+  rdfs:subClassOf :Precondition .
+
+:ForAll
+  a rdfs:Class ;
+  rdfs:subClassOf :Quantifier ;
+  rdfs:subClassOf :Parameterizable ;
+  rdfs:subClassOf :Effect ;
+  rdfs:label "forall" .
+
+:Exists
+  a rdfs:Class ;
+  rdfs:subClassOf :Quantifier ;
+  rdfs:subClassOf :Parameterizable ;
+  rdfs:label "exists" .
+
+# --- Conditions
+
+:When
+  a rdfs:Class ;
+  rdfs:subClassOf :Effect ;
+  rdfs:label "when" .
+
+# --- Assignment Operators
+
+:AssignmentOperator # abstract class
+  a rdfs:Class ;
+  rdfs:subClassOf :Effect .
+
+:Assign
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "assign" .
+
+:ScaleUp
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "scale-up" .
+
+:ScaleDown
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "scale-down" .
+
+:Increase
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "increase" .
+
+:Decrease
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "decrease" .
