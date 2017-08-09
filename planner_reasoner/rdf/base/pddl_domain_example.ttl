@@ -13,24 +13,27 @@
 #      (:predicates (on ?x ?y - (either block location))
 #                   (clear ?x - (either block location))
 #      )
-#      (:constants table)
+#      (:functions (moved ?m - (either block location))
+#                  (total-moved))
 #      (:action move
 #         :parameters (?b - block ?x ?y - (either block location))
 #         :precondition
 #            (and
 #              (not(= ?b ?y))
-#    				  (clear ?b)
+#    				   (clear ?b)
 #              (on ?b ?x)
 #              (clear ?y)
 #            )
 #         :effect
 #            (and
 #              (on ?b ?y)
-#         	    (not (on ?b ?x))
-#    		      (clear ?x)
-#    		      (when
+#         	   (not (on ?b ?x))
+#    		       (clear ?x)
+#              (increase (moved ?b) 1)
+#              (increase (total-moved) 1)
+#    		       (when
 #                (not (= ?y table))
-#    		  	    (not (clear ?y))
+#    		  	     (not (clear ?y))
 #              )
 #            )
 #      )
@@ -42,8 +45,11 @@
   rdfs:label "adl-blocksworld" ;
   rdfs:member :location ,
               :block ,
+              :location-or-block ,
               :on ,
               :clear ,
+              :moved ,
+              :total-moved ,
               :move .
 
 :location
@@ -88,13 +94,33 @@
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
   oslc:instanceShape pddls:PredicateShape ;
-  rdfs:label "on" ;
-  pddl:parameter :on-x .
+  rdfs:label "clear" ;
+  pddl:parameter :clear-x .
 
-:table
-  a pddl:Object ;
-  oslc:instanceShape pddls:ObjectShape ;
-  rdfs:label "table" .
+:clear-x
+  a pddl:Parameter ;
+  oslc:instanceShape pddls:ParameterShape ;
+  rdfs:label "x" ;
+  pddl:type :location-or-block ;
+  sh:order 1 .
+
+:moved
+  a pddl:Function ;
+  oslc:instanceShape pddls:FunctionShape ;
+  rdfs:label "moved" ;
+  pddl:parameter :moved-m .
+
+:moved-m
+  a pddl:Parameter ;
+  oslc:instanceShape pddls:ParameterShape ;
+  rdfs:label "m" ;
+  pddl:type :location-or-block ;
+  sh:order 1 .
+
+:total-moved
+  a pddl:Function ;
+  oslc:instanceShape pddls:FunctionShape ;
+  rdfs:label "total-moved" .
 
 :move
   a rdfs:Class ;
@@ -141,6 +167,18 @@
                               [ a :clear ;
                                 :clear-x :move-x
                               ] ,
+                              [ a pddl:Increase ;
+                                oslc:instanceShape pddls:AssignmentOperatorShape ;
+                                pddl:parameter [ a :moved ;
+                                                 :moved-m :move-b
+                                               ] ;
+                                pddl:argument 1
+                              ] ,
+                              [ a pddl:Increase ;
+                                oslc:instanceShape pddls:AssignmentOperatorShape ;
+                                :parameter [ a :total-moved ] ;
+                                :argument 1
+                              ] ,
                               [ a pddl:When ;
                                 oslc:instanceShape pddls:WhenShape ;
                                 pddl:parameter [ a pddl:Not ;
@@ -180,3 +218,8 @@
   rdfs:label "y" ;
   pddl:type :location-or-block ;
   sh:order 3 .
+
+:table
+  a pddl:Object ;
+  oslc:instanceShape pddls:ObjectShape ;
+  rdfs:label "table" .

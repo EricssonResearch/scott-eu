@@ -7,12 +7,8 @@
   a rdfs:Class ;
   rdfs:subClassOf rdf:Bag .
 
-:AbstractClass
-  a rdfs:Class .
-
 :Type
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass .
+  a rdfs:Class . # abstract class
 :PrimitiveType
   a rdfs:Class ;
   rdfs:subClassOf :Type .
@@ -29,16 +25,13 @@
 :precondition
   a rdf:Property .
 :Precondition
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass .
+  a rdfs:Class . # abstract class
 :effect
   a rdf:Property .
 :Effect
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass .
+  a rdfs:Class . # abstract class
 :PredicateEffect
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass ;
+  a rdfs:Class ; # abstract class
   rdfs:subClassOf :Effect .
 
 :Parameter
@@ -49,12 +42,10 @@
   a rdf:Property .
 
 :Orderable
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass .
+  a rdfs:Class . # abstract class
 
 :Parameterizable
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass .
+  a rdfs:Class . # abstract class
 
 :Predicate
   a rdfs:Class ;
@@ -63,17 +54,12 @@
   rdfs:subClassOf :PredicateEffect .
 
 :Fluent
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass ;
+  a rdfs:Class ; # abstract class
   rdfs:subClassOf :Precondition .
 
 :Function
   a rdfs:Class ;
   rdfs:subClassOf :Parameterizable ;
-  rdfs:subClassOf :Fluent .
-
-:Number
-  a rdfs:Class ;
   rdfs:subClassOf :Fluent .
 
 :argument
@@ -85,8 +71,7 @@
 # --- Logical Operators
 
 :LogicalOperator
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass ;
+  a rdfs:Class ; # abstract class
   rdfs:subClassOf :Precondition .
 
 :And
@@ -114,8 +99,7 @@
 # --- Binary Operators
 
 :BinaryOperator
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass ;
+  a rdfs:Class ; # abstract class
   rdfs:subClassOf :Fluent .
 
 :Plus
@@ -141,8 +125,7 @@
 # --- Binary Comparators
 
 :BinaryComparator
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass ;
+  a rdfs:Class ; # abstract class
   rdfs:subClassOf :Precondition .
 
 :EQ
@@ -173,8 +156,7 @@
 # --- Quantifiers
 
 :Quantifier
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass ;
+  a rdfs:Class ; # abstract class
   rdfs:subClassOf :Precondition .
 
 :ForAll
@@ -200,8 +182,7 @@
 # --- Assignment Operators
 
 :AssignmentOperator
-  a rdfs:Class ;
-  rdfs:subClassOf :AbstractClass ;
+  a rdfs:Class ; # abstract class
   rdfs:subClassOf :PredicateEffect .
 
 :Assign

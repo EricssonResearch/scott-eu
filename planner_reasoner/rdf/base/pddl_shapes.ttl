@@ -43,9 +43,9 @@
   oslc:describes pddl:EitherType ;
   dcterms:description "Either type (list of allowed types)."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
-                  dcterms:description "Primitive type member."^^rdf:XMLLiteral ;
+                  dcterms:description "Type member (primitive type)."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition rdfs:member ;
-                  oslc:name "label"^^xsd:string ;
+                  oslc:name "member"^^xsd:string ;
                   oslc:occurs oslc:One-or-many ;
                   oslc:valueType oslc:AnyResource ;
                   oslc:range pddl:PrimitiveType
@@ -87,7 +87,7 @@
                   oslc:range pddl:Effect
                 ] .
 
-:parameterhape
+:ParameterShape
   a oslc:ResourceShape ;
   oslc:describes pddl:Parameter ;
   dcterms:description "An orderable parameter of predicate, function or action."^^rdf:XMLLiteral ;
@@ -129,7 +129,7 @@
                   dcterms:description "Predicate parameters."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition pddl:parameter ;
                   oslc:name "parameter"^^xsd:string ;
-                  oslc:occurs oslc:One-or-many ;
+                  oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:AnyResource ;
                   oslc:range pddl:Parameter
                 ] .
@@ -149,7 +149,7 @@
                   dcterms:description "Function parameters."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition pddl:parameter ;
                   oslc:name "parameter"^^xsd:string ;
-                  oslc:occurs oslc:One-or-many ;
+                  oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:AnyResource ;
                   oslc:range pddl:Parameter
                 ] .
@@ -157,7 +157,7 @@
 :ObjectShape
   a oslc:ResourceShape ;
   oslc:describes pddl:Object ;
-  dcterms:description "Object."^^rdf:XMLLiteral ;
+  dcterms:description "An object."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   dcterms:description "Object name."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition rdfs:label ;
@@ -273,7 +273,8 @@
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:One-or-many ;
                   oslc:valueType oslc:AnyResource ;
-                  oslc:range pddl:Fluent
+                  oslc:range pddl:Fluent ,
+                             xsd:integer
                 ] .
 
 :FluentMinusShape
@@ -286,7 +287,8 @@
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:Exactly-one ;
                   oslc:valueType oslc:AnyResource ;
-                  oslc:range pddl:Fluent
+                  oslc:range pddl:Fluent ,
+                             xsd:integer
                 ] .
 
 # --- Binary Comparators
@@ -301,7 +303,8 @@
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:One-or-many ;
                   oslc:valueType oslc:AnyResource ;
-                  oslc:range pddl:Fluent
+                  oslc:range pddl:Fluent ,
+                             xsd:integer
                 ] .
 
 # --- Quantifiers
@@ -392,5 +395,6 @@
                   oslc:name "argument"^^xsd:string ;
                   oslc:occurs oslc:Exactly-one ;
                   oslc:valueType oslc:AnyResource ;
-                  oslc:range pddl:Fluent
+                  oslc:range pddl:Fluent ,
+                             xsd:integer
                 ] .
