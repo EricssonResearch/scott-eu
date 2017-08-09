@@ -47,6 +47,25 @@ oslc:delete_property(IRI, PropertyDefinition, rdf(Graph)) :-
   must_be(atom, Graph),
   rdf_retractall(IRI, PropertyDefinition, _, Graph).
 
+oslc:marshal_property(IRI, PropertyDefinition, Value, Type, tmp(Graph)) :-
+  ( var(Graph)
+  -> make_temp_graph(Graph)
+  ; true
+  ),
+  oslc:marshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)).
+
+oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, tmp(Graph)) :-
+  ( var(Graph)
+  -> fail
+  ; oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph))
+  ).
+
+oslc:delete_property(IRI, PropertyDefinition, tmp(Graph)) :-
+  ( var(Graph)
+  -> make_temp_graph(Graph)
+  ; oslc:delete_property(IRI, PropertyDefinition, rdf(Graph))
+  ).
+
 %!  make_temp_graph(-Graph) is det.
 %
 %   Create a new non-persistent (RAM only) graph with unique name.

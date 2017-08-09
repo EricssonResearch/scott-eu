@@ -3,6 +3,7 @@
 ]).
 
 :- use_module(library(semweb/rdf11)).
+:- use_module(library(semweb/rdfs)).
 :- use_module(library(oslc)).
 :- use_module(library(oslc_rdf)).
 :- use_module(library(oslc_dispatch)).
@@ -19,13 +20,11 @@
 
 get_current_time(Context) :-
   get_time(T),
-  make_temp_graph(Context.graph_out),
   create_resource(oslc:time, [oslc:'Time'],
-                 [dcterms:created='^^'(T, xsd:dateTime)], rdf(Context.graph_out)).
+                 [dcterms:created='^^'(T, xsd:dateTime)], tmp(Context.graph_out)).
 
 get_time_class(Context) :-
-  make_temp_graph(Context.graph_out),
-  create_resource(oslc:'Time', [rdfs:'Class'], [], rdf(Context.graph_out)).
+  create_resource(oslc:'Time', [rdfs:'Class'], [], tmp(Context.graph_out)).
 
 handle_ontology(Context) :-
   once((
@@ -48,12 +47,27 @@ handle_get(Context) :-
         atom_concat('oslc.', OP, Key),
         Option =.. [OP, Value]
       ), Options
-    )
-  ; Options = []
+    ),
+    ( member(rdfs=super, Search)
+    -> findall(SuperClass, (
+         rdfs_subclass_of(IRI, SuperClass),
+         IRI \= SuperClass
+       ), SuperClasses)
+    ; SuperClasses = []
+    ),
+    ( member(rdfs=sub, Search)
+    -> findall(SubClass, (
+         rdfs_subclass_of(SubClass, IRI),
+         IRI \= SubClass
+       ), SubClasses)
+    ; SubClasses = []
+    ),
+    append(SuperClasses, SubClasses, Res)
+  ; Options = [],
+    Res = []
   )),
-  make_temp_graph(Context.graph_out),
   catch((
-    copy_resource(IRI, IRI, rdf, rdf(Context.graph_out), [inline(rdf)|Options])
+    copy_resource([IRI|Res], [IRI|Res], rdf, tmp(Context.graph_out), [inline(rdf)|Options])
   ),
     oslc_error(Message),
     throw(response(400, Message)) % bad request (problem with Options)

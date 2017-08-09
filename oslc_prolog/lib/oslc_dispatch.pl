@@ -69,15 +69,22 @@ dispatch(Context) :-
   _{ iri_spec: Prefix:ResourceSegments,
        method: Method } :< Context,
   atomic_list_concat(ResourceSegments, '/', Resource),
-  findall(handler(Method, IRI, Handler, Priority), (
+  findall(handler(Handler, Priority), (
     handler(Method, ISPrefix:ISResource, Handler, Priority),
-    match_wildcard(ISPrefix, Prefix, ISResource, Resource),
-    rdf_global_id(Prefix:Resource, IRI)
+    match_wildcard(ISPrefix, Prefix, ISResource, Resource)
   ), Handlers),
-  predsort(handler_compare, Handlers, [handler(Method, IRI, Module:Predicate, _)|_]),
+  predsort(handler_compare, Handlers, SortedHandlers),
+  rdf_global_id(Prefix:Resource, IRI),
   NewContext = Context.put(iri, IRI).put(iri_spec, Prefix:Resource),
-  T =.. [Predicate, NewContext],
-  call(Module:T).
+  dispatch_to_handlers(NewContext, SortedHandlers).
+
+dispatch_to_handlers(Context, [handler(Module:Predicate, _)|T]) :-
+  once((
+    Term =.. [Predicate, Context],
+    call(Module:Term)
+  ; NewContext = Context.put(graph_out, _),
+    dispatch_to_handlers(NewContext, T)
+  )).
 
 match_wildcard(ISPrefix, Prefix, ISResource, Resource) :-
   once((
@@ -89,9 +96,9 @@ match_wildcard(ISPrefix, Prefix, ISResource, Resource) :-
   ; ISResource == *
   )).
 
-handler_compare(<, handler(_,_,_,P1), handler(_,_,_,P2)) :-
+handler_compare(<, handler(_,P1), handler(_,P2)) :-
   P1 >= P2.
-handler_compare(>, handler(_,_,_,P1), handler(_,_,_,P2)) :-
+handler_compare(>, handler(_,P1), handler(_,P2)) :-
   P1 < P2.
 
 response(StatusCode) :-

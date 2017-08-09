@@ -78,7 +78,6 @@ create_resource(IRI, Types, Shapes, Properties, Sink) :-
   must_be(list(atom), Types),
   must_be(list(atom), Shapes),
   must_be(list(ground), Properties),
-  must_be(ground, Sink),
   rdf_transaction((
     delete_resource(Id, Sink),
     rdfType(RT),
@@ -283,8 +282,10 @@ marshal_some_property(IRI, PropertyDefinition, Value, Type, Sink) :-
 %
 %   Copy OSCL resource IRIFrom in Source to IRITo in Sink recursively,
 %   i.e. including all of its local resources (blank nodes). Resource
-%   IRITo existed in Sink before copying is deleted. A list of Options
-%   may contain:
+%   IRITo existed in Sink before copying is deleted. If IRIFrom and
+%   IRITo are lists of resources of equal sizes, all resources from
+%   IRIFrom are copied to corresponding resources from IRITo. A list
+%   of Options may contain:
 %
 %    * inline(InlineSource)
 %    If specified, properties of resource IRIFrom described in a shape
@@ -316,11 +317,16 @@ marshal_some_property(IRI, PropertyDefinition, Value, Type, Sink) :-
 %                      in which > and \ are \-escaped. */
 %    ==
 
+copy_resource([], [], _, _, _) :- !.
+
+copy_resource([H|T], [H|T], Source, Sink, Options) :- !,
+  copy_resource(H, H, Source, Sink, Options),
+  copy_resource(T, T, Source, Sink, Options).
+
 copy_resource(IRIFrom, IRITo, Source, Sink, Options) :-
   check_iri(IRIFrom, IdFrom),
   check_iri(IRITo, IdTo),
   must_be(ground, Source),
-  must_be(ground, Sink),
   ( selectchk(prefix(Prefix), Options, O1)
   -> parse_prefix(Prefix, PrefixList)
   ; O1 = Options
@@ -433,7 +439,6 @@ copy_property(Value, Sink, IRITo, Property, Type, PropertyList) :-
 
 delete_resource(IRI, Sink) :-
   check_iri(IRI, Id),
-  must_be(ground, Sink),
   rdf_transaction((
     ignore(delete_resource0(Id, Sink))
   )).

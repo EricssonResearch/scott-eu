@@ -92,13 +92,12 @@ format_error_response(Request, StatusCode, Message) :-
   format_error_response(Request, StatusCode, Message, []).
 
 format_error_response(Request, StatusCode, Message, Headers) :-
-  make_temp_graph(GraphErr),
   ( atomic(Message)
   -> ErrorMessage = Message
   ; once(error_message(StatusCode, ErrorMessage))
   ),
   rdf_global_id(oslc_shapes:errorShape, ES),
-  create_resource('error', [oslc:'Error'], [ES], [statusCode = StatusCode, message = ErrorMessage], rdf(GraphErr)),
+  create_resource('error', [oslc:'Error'], [ES], [statusCode = StatusCode, message = ErrorMessage], tmp(GraphErr)),
   catch(
     check_accept(Request, ContentType),
     _,
