@@ -11,9 +11,12 @@ Access to this scene (both reading and control) is currently implemented by usin
 
 Step 1:  Download and install v-rep simulator#
 
-Go to : http://www.coppeliarobotics.com/downloads.html
+Go to : [http://www.coppeliarobotics.com/downloads.html](http://www.coppeliarobotics.com/downloads.html)
 
-and download the V-REP Pro Edu version appropriate for your operational system, e.g. Linux 64 bits.
+If you intend to use this simulation for educational purposes or in academic research, you can download the V-REP Pro Edu version appropriate for your operational system, e.g. Linux 64 bits.
+
+If you are a company or intend to use it for commercial purposes you can either buy a V-REP Pro license or play the simulation using V-REP Player. The player allows you to run the simulation but does not allow you to alter it and save new versions. Please read V-REP's licensing conditions for more details.
+
 
 Extract it to any folder.
 
