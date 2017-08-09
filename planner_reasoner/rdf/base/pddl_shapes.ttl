@@ -117,7 +117,7 @@
 :PredicateShape
   a oslc:ResourceShape ;
   oslc:describes pddl:Predicate ;
-  dcterms:description "Predicate."^^rdf:XMLLiteral ;
+  dcterms:description "A predicate."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   dcterms:description "Predicate name."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition rdfs:label ;

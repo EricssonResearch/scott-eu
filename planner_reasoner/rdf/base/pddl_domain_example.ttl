@@ -105,7 +105,8 @@
   sh:order 1 .
 
 :moved
-  a pddl:Function ;
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Function ;
   oslc:instanceShape pddls:FunctionShape ;
   rdfs:label "moved" ;
   pddl:parameter :moved-m .
@@ -118,7 +119,8 @@
   sh:order 1 .
 
 :total-moved
-  a pddl:Function ;
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Function ;
   oslc:instanceShape pddls:FunctionShape ;
   rdfs:label "total-moved" .
 
