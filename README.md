@@ -22,6 +22,14 @@ When the problem & domain PDDL files are ready, they are uploaded to the [Metric
 > :point_right: Start by running the Docker Compose as described in the [Deployment](#deployment) section and running a [cURL test script](warehousecontroller/curltest3) to trigger plan generation. Also see [README](warehousecontroller/Readme).
 
 
+## Simulated Environment
+
+This contains simulations required by the sandbox. It currently consists of the automated warehouse simulated in [VREP](http://www.coppeliarobotics.com/downloads.html) with all its elements and robots. 
+Until the multi-objective optimisation (MOO) service is present, its results should be provided by the [mission.json](warehousecontroller/mission.json) file.
+Until it contains the discret event simulations for modeling the supply chain dynamics, all required information should be provided  by the [mission.json](warehousecontroller/mission.json) file.
+
+Access to this scene (both reading and control) is currently implemented by using VREP's remoteAPI in python. This is expected to change once [ROS](http://www.ros.org/) is deployed and used for controlling the robots in the scene.
+
 ## Deployment
 
 Deployment project contains the Docker Compose [configuration](deployment/docker-compose.yml) that allows you to start all the elements of the sandbox demo:
