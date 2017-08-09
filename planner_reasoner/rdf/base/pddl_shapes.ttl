@@ -173,14 +173,6 @@
                   oslc:valueType oslc:AnyResource ;
                 ] ,
                 [ a oslc:Property ;
-                  dcterms:description "Problem metric."^^rdf:XMLLiteral ;
-                  oslc:propertyDefinition pddl:metric ;
-                  oslc:name "metric"^^xsd:string ;
-                  oslc:occurs oslc:Zero-or-one ;
-                  oslc:valueType oslc:AnyResource ;
-                  oslc:range pddl:Metric
-                ] ,
-                [ a oslc:Property ;
                   dcterms:description "Minimization metric."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition pddl:minimize ;
                   oslc:name "minimize"^^xsd:string ;
