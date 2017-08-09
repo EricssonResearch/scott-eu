@@ -48,26 +48,45 @@ handle_get(Context) :-
         Option =.. [OP, Value]
       ), Options
     ),
-    ( member(rdfs=super, Search)
+    L1 = [],
+    ( member(rdfs=sup, Search)
     -> findall(SuperClass, (
          rdfs_subclass_of(IRI, SuperClass),
          IRI \= SuperClass
-       ), SuperClasses)
-    ; SuperClasses = []
+       ), SuperClasses),
+       append(L1, SuperClasses, L2)
+    ; L2 = L1
     ),
     ( member(rdfs=sub, Search)
     -> findall(SubClass, (
          rdfs_subclass_of(SubClass, IRI),
          IRI \= SubClass
-       ), SubClasses)
-    ; SubClasses = []
+       ), SubClasses),
+       append(L2, SubClasses, L3)
+    ; L3 = L2
     ),
-    append(SuperClasses, SubClasses, Res)
+    ( member(rdfs=ind, Search)
+    -> findall(Individual, (
+         rdfs_individual_of(Individual, IRI),
+         IRI \= Individual
+       ), Individuals),
+       append(L3, Individuals, L4)
+    ; L4 = L3
+    ),
+    ( member(rdfs=cls, Search)
+    -> findall(Class, (
+         rdfs_individual_of(IRI, Class),
+         IRI \= Class
+       ), Classes),
+       append(L4, Classes, L5)
+    ; L5 = L4
+    ),
+    list_to_set(L5, Set)
   ; Options = [],
-    Res = []
+    Set = []
   )),
   catch((
-    copy_resource([IRI|Res], [IRI|Res], rdf, tmp(Context.graph_out), [inline(rdf)|Options])
+    copy_resource([IRI|Set], [IRI|Set], rdf, tmp(Context.graph_out), [inline(rdf)|Options])
   ),
     oslc_error(Message),
     throw(response(400, Message)) % bad request (problem with Options)

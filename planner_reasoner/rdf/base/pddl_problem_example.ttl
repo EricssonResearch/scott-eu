@@ -3,20 +3,80 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix oslc: <http://open-services.net/ns/core#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix pddl: <http://ontology.cf.ericsson.net/pddl/> .
 @prefix pddls: <http://ontology.cf.ericsson.net/pddl_shapes/> .
+@prefix pddld: <http://ontology.cf.ericsson.net/pddl_domain_example/> .
 @prefix : <http://ontology.cf.ericsson.net/pddl_problem_example/> .
 
 #    (define (problem adl-blocksworld-problem)
 #      (:domain adl-blocksworld)
 #      (:objects a b c - block table - location)
-#
 #      (:init
 #         (on b table) (on a table) (on c a)
 #         (clear b) (clear c) (clear table)
 #      )
-#
 #      (:goal
-#         (or (on b c) (on c b)))
-#
+#         (or
+#           (on b c)
+#           (on c b)
+#         )
+#      )
 #    	(:metric minimize (total-time))
 #    )
+
+:adl-blocksworld-problem
+  a pddl:Problem ;
+  oslc:instanceShape pddls:ProblemShape ;
+  rdfs:label "adl-blocksworld-problem" ;
+  pddl:domain pddld:adl-blocksworld ;
+  pddl:object :a ,
+              :b ,
+              :c ,
+              pddld:table ;
+  pddl:init [ a pddld:on ;
+              pddld:on-x :b ;
+              pddld:on-y :table
+            ] ,
+            [ a pddld:on ;
+              pddld:on-x :a ;
+              pddld:on-y :table
+            ] ,
+            [ a pddld:on ;
+              pddld:on-x :c ;
+              pddld:on-y :a
+            ] ,
+            [ a pddld:clear ;
+              pddld:clear-x :b
+            ] ,
+            [ a pddld:clear ;
+              pddld:clear-x :c
+            ] ,
+            [ a pddld:clear ;
+              pddld:clear-x :table
+            ] ;
+  pddl:goal [ a pddl:Or ;
+              pddl:argument [ a pddld:on ;
+                              pddld:on-x :b ;
+                              pddld:on-y :c
+                            ] ,
+                            [ a pddld:on ;
+                              pddld:on-x :c ;
+                              pddld:on-y :b
+                            ]
+            ] ;
+  pddl:minimize pddl:total-time .
+
+:a
+  a pddl:Object ;
+  oslc:instanceShape pddls:ObjectShape ;
+  rdfs:label "a" .
+
+:b
+  a pddl:Object ;
+  oslc:instanceShape pddls:ObjectShape ;
+  rdfs:label "b" .
+
+:c
+  a pddl:Object ;
+  oslc:instanceShape pddls:ObjectShape ;
+  rdfs:label "c" .

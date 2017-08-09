@@ -43,14 +43,14 @@
   a pddl:Domain ;
   oslc:instanceShape pddls:DomainShape ;
   rdfs:label "adl-blocksworld" ;
-  rdfs:member :location ,
-              :block ,
-              :location-or-block ,
-              :on ,
-              :clear ,
-              :moved ,
-              :total-moved ,
-              :move .
+  pddl:type :location ,
+            :block ,
+            :location-or-block ;
+  pddl:predicate :on ,
+                 :clear ;
+  pddl:function :moved ,
+                :total-moved ;
+  pddl:action :move .
 
 :location
   a pddl:PrimitiveType ;
@@ -132,35 +132,31 @@
   pddl:parameter :move-b ,
                  :move-x ,
                  :move-y ;
-  pddl:precondition [ a pddl:And ;
-                      oslc:instanceShape pddls:PreconditionAndShape ;
-                      pddl:argument [ a pddl:Not ;
-                                      oslc:instanceShape pddls:NotShape ;
-                                      pddl:argument [ a pddl:EQ ;
-                                                      oslc:instanceShape pddls:BinaryComparatorShape ;
-                                                      pddl:argument :move-b ,
-                                                                    :move-y
-                                                    ]
-                                    ] ,
-                                    [ a :clear ;
-                                      :clear-x :move-b
-                                    ] ,
-                                    [ a :on ;
-                                      :on-x :move-b ;
-                                      :on-y :move-x
-                                    ] ,
-                                    [ a :clear ;
-                                      :clear-x :move-y
+  pddl:precondition
+    [ a pddl:And ;
+      pddl:argument [ a pddl:Not ;
+                      pddl:argument [ a pddl:EQ ;
+                                      pddl:argument :move-b ,
+                                                    :move-y
                                     ]
-                    ] ;
+                    ] ,
+                    [ a :clear ;
+                      :clear-x :move-b
+                    ] ,
+                    [ a :on ;
+                      :on-x :move-b ;
+                      :on-y :move-x
+                    ] ,
+                    [ a :clear ;
+                      :clear-x :move-y
+                    ]
+    ] ;
   pddl:effect [ a pddl:And ;
-                oslc:instanceShape pddls:EffectAndShape ;
                 pddl:argument [ a :on ;
                                 :on-x :move-b ;
                                 :on-y :move-y
                               ] ,
                               [ a pddl:Not ;
-                                oslc:instanceShape pddls:EffectNotShape ;
                                 pddl:argument [ a :on ;
                                                 :on-x :move-b ;
                                                 :on-y :move-x
@@ -170,35 +166,30 @@
                                 :clear-x :move-x
                               ] ,
                               [ a pddl:Increase ;
-                                oslc:instanceShape pddls:AssignmentOperatorShape ;
                                 pddl:parameter [ a :moved ;
                                                  :moved-m :move-b
                                                ] ;
                                 pddl:argument 1
                               ] ,
                               [ a pddl:Increase ;
-                                oslc:instanceShape pddls:AssignmentOperatorShape ;
                                 :parameter [ a :total-moved ] ;
                                 :argument 1
                               ] ,
                               [ a pddl:When ;
-                                oslc:instanceShape pddls:WhenShape ;
                                 pddl:parameter [ a pddl:Not ;
-                                                oslc:instanceShape pddls:NotShape ;
-                                                pddl:argument [ a pddl:EQ ;
-                                                                oslc:instanceShape pddls:BinaryComparatorShape ;
-                                                                pddl:argument :move-y ,
-                                                                              :table
-                                                              ]
-                                              ] ;
+                                                 pddl:argument
+                                                   [ a pddl:EQ ;
+                                                     pddl:argument :move-y ,
+                                                                   :table
+                                                   ]
+                                               ] ;
                                 pddl:argument [ a pddl:Not ;
-                                                oslc:instanceShape pddls:NotShape ;
                                                 pddl:argument [ a :clear ;
                                                                 :clear-x :move-y
                                                               ]
                                               ]
                               ]
-                  ] .
+              ] .
 
 :move-b
   a pddl:Parameter ;

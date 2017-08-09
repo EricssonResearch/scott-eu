@@ -3,87 +3,145 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <http://ontology.cf.ericsson.net/pddl/> .
 
-:Domain
-  a rdfs:Class ;
-  rdfs:subClassOf rdf:Bag .
+# --- Abstract Classes
+# These classes are never instantiated
+
+:MetaClass
+  a rdfs:Class .
 
 :Type
-  a rdfs:Class . # abstract class
+  a rdfs:Class .
+
+:Orderable
+  a rdfs:Class .
+
+:Parameterizable
+  a rdfs:Class .
+
+:LogicalOperator
+  a rdfs:Class .
+
+:BinaryOperator
+  a rdfs:Class .
+
+:BinaryComparator
+  a rdfs:Class .
+
+:Quantifier
+  a rdfs:Class .
+
+:AssignmentOperator
+  a rdfs:Class .
+
+# --- PDDL Meta Classes
+# Users create subclasses of these classes
+
+:Action
+  a rdfs:Class ;
+  rdfs:subClassOf :MetaClass ;
+  rdfs:subClassOf :Parameterizable .
+
+:Predicate
+  a rdfs:Class ;
+  rdfs:subClassOf :MetaClass ;
+  rdfs:subClassOf :Parameterizable .
+
+:Function
+  a rdfs:Class ;
+  rdfs:subClassOf :MetaClass ;
+  rdfs:subClassOf :Parameterizable .
+
+# --- PDDL Classes
+# Users create instances of these classes
+
+:Domain
+  a rdfs:Class .
+
+:Problem
+  a rdfs:Class .
+
 :PrimitiveType
   a rdfs:Class ;
   rdfs:subClassOf :Type .
+
 :EitherType
   a rdfs:Class ;
   rdfs:subClassOf :Type ;
   rdfs:subClassOf rdf:Bag .
 
-:Action
-  a rdfs:Class ;
-  rdfs:subClassOf :Parameterizable .
-:parameter
-  a rdf:Property .
-:precondition
-  a rdf:Property .
-:Precondition
-  a rdfs:Class . # abstract class
-:effect
-  a rdf:Property .
-:Effect
-  a rdfs:Class . # abstract class
-:PredicateEffect
-  a rdfs:Class ; # abstract class
-  rdfs:subClassOf :Effect .
-
 :Parameter
   a rdfs:Class ;
   rdfs:subClassOf rdf:Property ;
   rdfs:subClassOf :Orderable .
-:type
-  a rdf:Property .
-
-:Orderable
-  a rdfs:Class . # abstract class
-
-:Parameterizable
-  a rdfs:Class . # abstract class
-
-:Predicate
-  a rdfs:Class ;
-  rdfs:subClassOf :Parameterizable ;
-  rdfs:subClassOf :Precondition ;
-  rdfs:subClassOf :PredicateEffect .
-
-:Fluent
-  a rdfs:Class ; # abstract class
-  rdfs:subClassOf :Precondition .
-
-:Function
-  a rdfs:Class ;
-  rdfs:subClassOf :Parameterizable ;
-  rdfs:subClassOf :Fluent .
-
-:argument
-  a rdf:Property .
 
 :Object
   a rdfs:Class .
 
-# --- Logical Operators
+:Constant
+  a rdfs:Class .
 
-:LogicalOperator
-  a rdfs:Class ; # abstract class
-  rdfs:subClassOf :Precondition .
+# --- PDDL Instances
+
+:total-time
+  a :Function .
+
+# --- PDDL Properties
+
+:type
+  a rdf:Property .
+
+:constant
+  a rdf:Property .
+
+:predicate
+  a rdf:Property .
+
+:function
+  a rdf:Property .
+
+:action
+  a rdf:Property .
+
+:domain
+  a rdf:Property .
+
+:object
+  a rdf:Property .
+
+:init
+  a rdf:Property .
+
+:goal
+  a rdf:Property .
+
+:parameter
+  a rdf:Property .
+
+:precondition
+  a rdf:Property .
+
+:effect
+  a rdf:Property .
+
+:argument
+  a rdf:Property .
+
+:minimize
+  a rdf:Property .
+
+:maximize
+  a rdf:Property .
+
+# --- Logical Operators
 
 :And
   a rdfs:Class ;
   rdfs:subClassOf :LogicalOperator ;
-  rdfs:subClassOf :Effect ;
   rdfs:label "and" .
 
 :Not
   a rdfs:Class ;
   rdfs:subClassOf :LogicalOperator ;
-  rdfs:subClassOf :PredicateEffect ;
   rdfs:label "not" .
 
 :Or
@@ -97,10 +155,6 @@
   rdfs:label "imply" .
 
 # --- Binary Operators
-
-:BinaryOperator
-  a rdfs:Class ; # abstract class
-  rdfs:subClassOf :Fluent .
 
 :Plus
   a rdfs:Class ;
@@ -123,10 +177,6 @@
   rdfs:label "/" .
 
 # --- Binary Comparators
-
-:BinaryComparator
-  a rdfs:Class ; # abstract class
-  rdfs:subClassOf :Precondition .
 
 :EQ
   a rdfs:Class ;
@@ -155,15 +205,10 @@
 
 # --- Quantifiers
 
-:Quantifier
-  a rdfs:Class ; # abstract class
-  rdfs:subClassOf :Precondition .
-
 :ForAll
   a rdfs:Class ;
   rdfs:subClassOf :Quantifier ;
   rdfs:subClassOf :Parameterizable ;
-  rdfs:subClassOf :Effect ;
   rdfs:label "forall" .
 
 :Exists
@@ -176,14 +221,9 @@
 
 :When
   a rdfs:Class ;
-  rdfs:subClassOf :Effect ;
   rdfs:label "when" .
 
 # --- Assignment Operators
-
-:AssignmentOperator
-  a rdfs:Class ; # abstract class
-  rdfs:subClassOf :PredicateEffect .
 
 :Assign
   a rdfs:Class ;
