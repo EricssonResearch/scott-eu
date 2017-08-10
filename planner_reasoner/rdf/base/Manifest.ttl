@@ -33,3 +33,35 @@
   a lib:Namespace ;
 	lib:mnemonic "wp" ;
 	lib:namespace <http://ontology.cf.ericsson.net/warehouse_problem/> .
+
+<pddl.ttl>
+	a lib:Ontology ;
+	dcterms:title "PDDL vocabulary"^^rdf:XMLLiteral ;
+	lib:source <http://ontology.cf.ericsson.net/pddl#> ;
+  a lib:Namespace ;
+	lib:mnemonic "pddl" ;
+	lib:namespace <http://ontology.cf.ericsson.net/pddl/> .
+
+<pddl_shapes.ttl>
+	a lib:Ontology ;
+	dcterms:title "PDDL resource shapes"^^rdf:XMLLiteral ;
+	lib:source <http://ontology.cf.ericsson.net/pddl_shapes#> ;
+  a lib:Namespace ;
+	lib:mnemonic "pddls" ;
+	lib:namespace <http://ontology.cf.ericsson.net/pddl_shapes/> .
+
+<pddl_domain_example.ttl>
+	a lib:Ontology ;
+	dcterms:title "PDDL example domain"^^rdf:XMLLiteral ;
+	lib:source <http://ontology.cf.ericsson.net/pddl_domain_example#> ;
+  a lib:Namespace ;
+	lib:mnemonic "pddld" ;
+	lib:namespace <http://ontology.cf.ericsson.net/pddl_domain_example/> .
+
+<pddl_problem_example.ttl>
+	a lib:Ontology ;
+	dcterms:title "PDDL example problem"^^rdf:XMLLiteral ;
+	lib:source <http://ontology.cf.ericsson.net/pddl_problem_example#> ;
+  a lib:Namespace ;
+	lib:mnemonic "pddlp" ;
+	lib:namespace <http://ontology.cf.ericsson.net/pddl_problem_example/> .

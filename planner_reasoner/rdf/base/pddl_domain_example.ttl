@@ -9,7 +9,7 @@
 
 #    (define (domain adl-blocksworld)
 #      (:requirements :adl :equality)
-#      (:types block)
+#      (:types location block)
 #      (:predicates (on ?x ?y - (either block location))
 #                   (clear ?x - (either block location))
 #      )
@@ -44,8 +44,7 @@
   oslc:instanceShape pddls:DomainShape ;
   rdfs:label "adl-blocksworld" ;
   pddl:type :location ,
-            :block ,
-            :location-or-block ;
+            :block ;
   pddl:predicate :on ,
                  :clear ;
   pddl:function :moved ,
@@ -136,8 +135,8 @@
     [ a pddl:And ;
       pddl:argument [ a pddl:Not ;
                       pddl:argument [ a pddl:EQ ;
-                                      pddl:argument :move-b ,
-                                                    :move-y
+                                      pddl:left :move-b ;
+                                      pddl:right :move-y
                                     ]
                     ] ,
                     [ a :clear ;
@@ -172,16 +171,15 @@
                                 pddl:argument 1
                               ] ,
                               [ a pddl:Increase ;
-                                :parameter [ a :total-moved ] ;
-                                :argument 1
+                                pddl:parameter [ a :total-moved ] ;
+                                pddl:argument 1
                               ] ,
                               [ a pddl:When ;
                                 pddl:parameter [ a pddl:Not ;
-                                                 pddl:argument
-                                                   [ a pddl:EQ ;
-                                                     pddl:argument :move-y ,
-                                                                   :table
-                                                   ]
+                                                 pddl:argument [ a pddl:EQ ;
+                                                                 pddl:left :move-y ;
+                                                                 pddl:right :table
+                                                               ]
                                                ] ;
                                 pddl:argument [ a pddl:Not ;
                                                 pddl:argument [ a :clear ;

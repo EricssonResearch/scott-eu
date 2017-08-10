@@ -9,7 +9,6 @@
 
 :ActionShape
   a oslc:ResourceShape ;
-  oslc:describes pddl:Action ;
   dcterms:description "An action has parameter, precondition and effect."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   dcterms:description "Action name."^^rdf:XMLLiteral ;
@@ -43,7 +42,6 @@
 
 :PredicateShape
   a oslc:ResourceShape ;
-  oslc:describes pddl:Predicate ;
   dcterms:description "A predicate."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   dcterms:description "Predicate name."^^rdf:XMLLiteral ;
@@ -63,7 +61,6 @@
 
 :FunctionShape
   a oslc:ResourceShape ;
-  oslc:describes pddl:Function ;
   dcterms:description "Function."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   dcterms:description "Function name."^^rdf:XMLLiteral ;
