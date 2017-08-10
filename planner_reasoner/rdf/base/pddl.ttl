@@ -81,6 +81,13 @@
 :Constant
   a rdfs:Class .
 
+:Equality # requirement :equality
+  a rdfs:Class ;
+  rdfs:subClassOf :Predicate ;
+  rdfs:label "=" ;
+  :parameter :left ,
+             :right .
+
 # --- PDDL Instances
 
 :total-time

@@ -134,7 +134,7 @@
   pddl:precondition
     [ a pddl:And ;
       pddl:argument [ a pddl:Not ;
-                      pddl:argument [ a pddl:EQ ;
+                      pddl:argument [ a pddl:Equality ;
                                       pddl:left :move-b ;
                                       pddl:right :move-y
                                     ]
@@ -176,7 +176,7 @@
                               ] ,
                               [ a pddl:When ;
                                 pddl:parameter [ a pddl:Not ;
-                                                 pddl:argument [ a pddl:EQ ;
+                                                 pddl:argument [ a pddl:Equality ;
                                                                  pddl:left :move-y ;
                                                                  pddl:right :table
                                                                ]

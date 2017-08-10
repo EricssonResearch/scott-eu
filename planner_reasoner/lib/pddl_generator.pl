@@ -5,70 +5,79 @@
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdfs)).
 
-:- rdf_meta type(-, r, -).
+:- rdf_meta type(r, -).
+:- rdf_meta predicate_argument(r, -).
+:- rdf_meta fexp(t, -).
 
 :- rdf_register_prefix(sh, 'http://www.w3.org/ns/shacl#').
 
 generate_pddl(Resource, Stream) :-
-  domain(Resource, Stream, 0).
-  %generate_problem(Resource, Stream).
+  with_output_to(
+    Stream, (
+    domain(Resource, 0)
+  )).
+  %generate_problem(Resource, 0).
 
-domain(Resource, Stream, Indent) :-
+domain(Resource, Indent) :-
   rdf(Resource, rdf:type, pddl:'Domain'),
   rdf(Resource, rdfs:label, Label^^xsd:string),
-  format(Stream, '~*|(define (domain ~w)~n', [Indent, Label]),
+  format('~*|(define (domain ~w)~n', [Indent, Label]),
   NewIndent is Indent + 2,
-  types(Resource, Stream, NewIndent),
-  predicates(Resource, Stream, NewIndent),
-  functions(Resource, Stream, NewIndent),
-  actions(Resource, Stream, NewIndent),
-  format(Stream, '~*|)~n', [Indent]).
+  types(Resource, NewIndent),
+  predicates(Resource, NewIndent),
+  functions(Resource, NewIndent),
+  actions(Resource, NewIndent),
+  format('~*|)~n', [Indent]).
 
-types(Resource, Stream, Indent) :-
-  format(Stream, '~*|(:types', [Indent]),
+types(Resource, Indent) :-
+  format('~*|(:types', [Indent]),
   forall(
     rdf(Resource, pddl:type, Type), (
     rdf(Type, rdf:type, TypeType),
-    type(Type, TypeType, Stream)
+    type(TypeType, Type)
   )),
-  format(Stream, '~*|)~n', [Indent]).
+  format('~*|)~n', [Indent]).
 
-type(Type, pddl:'PrimitiveType', Stream) :- !,
+type(pddl:'PrimitiveType', Type) :-
   rdf(Type, rdfs:label, Label^^xsd:string),
-  format(Stream, ' ~w', [Label]).
+  format(' ~w', [Label]).
 
-type(Type, pddl:'EitherType', Stream) :- !,
-  format(Stream, ' (either', []),
+type(pddl:'EitherType', Type) :-
+  format(' (either', []),
   forall(
     rdf(Type, rdfs:member, Member), (
     rdf(Member, rdf:type, MemberType),
-    type(Member, MemberType, Stream)
+    type(MemberType, Member)
   )),
-  format(Stream, ')', []).
+  format(')').
 
-predicates(Resource, Stream, Indent) :-
-  format(Stream, '~*|(:predicates~n', [Indent]),
+predicates(Resource, Indent) :-
+  format('~*|(:predicates~n', [Indent]),
   NewIndent is Indent + 2,
   forall(
     rdf(Resource, pddl:predicate, Predicate),
-    predicate(Predicate, Stream, NewIndent)
+    predicate(Predicate, NewIndent)
   ),
-  format(Stream, '~*|)~n', [Indent]).
+  format('~*|)~n', [Indent]).
 
-predicate(Predicate, Stream, Indent) :-
+predicate(Predicate, Indent) :-
   rdf(Predicate, rdfs:label, Label^^xsd:string),
-  format(Stream, '~*|(~w', [Indent, Label]),
+  format('~*|(~w', [Indent, Label]),
   findall(Parameter,
     rdf(Predicate, pddl:parameter, Parameter),
     Parameters
   ),
-  parameters(Parameters, Stream),
-  format(Stream, ')~n', []).
+  ( Parameters \== []
+  -> format(' ')
+  ; true
+  ),
+  parameters(Parameters),
+  format(')~n').
 
-parameters(Parameters, Stream) :-
+parameters(Parameters) :-
   predsort(param_compare, Parameters, SortedParameters),
   group_parameters(SortedParameters, GrouppedParameters),
-  parameters0(GrouppedParameters, Stream).
+  groupped_parameters(GrouppedParameters).
 
 group_parameters(Parameters, GrouppedParameters) :-
   group_parameters0(_, Parameters, [], GrouppedParameters).
@@ -86,136 +95,282 @@ group_parameters1(Type, Type, [H|T], A, O) :- !,
 group_parameters1(_, Type, [H|T], A, [A|T2]) :-
   group_parameters0(Type, T, [H], T2).
 
-parameters0([], _) :- !.
-parameters0([Parameter|T], Stream) :-
-  parameter_group(Parameter, Stream),
-  parameters0(T, Stream).
-
 param_compare(Ineq, Param1, Param2) :-
   rdf(Param1, sh:order, P1^^xsd:integer),
   rdf(Param2, sh:order, P2^^xsd:integer),
-  ( P1 < P2
+  ( P1 =< P2
   -> Ineq = <
   ; Ineq = >
   ).
 
-parameter_group([], _) :- !.
+groupped_parameters([]) :- !.
+groupped_parameters([H|T]) :-
+  parameter_group(H),
+  ( T \== []
+  -> format(' ')
+  ; true
+  ),
+  groupped_parameters(T).
 
-parameter_group([Parameter], Stream) :- !,
-  parameter(Parameter, Stream),
+parameter_group([]) :- !.
+parameter_group([Parameter]) :- !,
+  parameter(Parameter),
   rdf(Parameter, pddl:type, Type),
   rdf(Type, rdf:type, TypeType),
-  format(Stream, ' -', []),
-  type(Type, TypeType, Stream).
+  format(' -'),
+  type(TypeType, Type).
 
-parameter_group([Parameter|T], Stream) :-
-  parameter(Parameter, Stream),
-  parameter_group(T, Stream).
+parameter_group([Parameter|T]) :-
+  parameter(Parameter),
+  ( T \== []
+  -> format(' ')
+  ; true
+  ),
+  parameter_group(T).
 
-parameter(Parameter, Stream) :-
+parameter(Parameter) :-
   rdf(Parameter, rdfs:label, Label^^xsd:string),
-  format(Stream, ' ?~w', [Label]).
+  format('?~w', [Label]).
 
-functions(Resource, Stream, Indent) :-
-  format(Stream, '~*|(:functions~n', [Indent]),
+functions(Resource, Indent) :-
+  format('~*|(:functions~n', [Indent]),
   NewIndent is Indent + 2,
   forall(
     rdf(Resource, pddl:function, Function),
-    function(Function, Stream, NewIndent)
+    function(Function, NewIndent)
   ),
-  format(Stream, '~*|)~n', [Indent]).
+  format('~*|)~n', [Indent]).
 
-function(Function, Stream, Indent) :-
+function(Function, Indent) :-
   rdf(Function, rdfs:label, Label^^xsd:string),
-  format(Stream, '~*|(~w', [Indent, Label]),
+  format('~*|(~w', [Indent, Label]),
   findall(Parameter,
     rdf(Function, pddl:parameter, Parameter),
     Parameters
   ),
-  parameters(Parameters, Stream),
-  format(Stream, ')~n', []).
+  ( Parameters \== []
+  -> format(' ')
+  ; true
+  ),
+  parameters(Parameters),
+  format(')~n').
 
-actions(Resource, Stream, Indent) :-
+actions(Resource, Indent) :-
   forall(
     rdf(Resource, pddl:action, Action),
-    action(Action, Stream, Indent)
+    action(Action, Indent)
   ).
 
-action(Action, Stream, Indent) :-
+action(Action, Indent) :-
   rdf(Action, rdfs:label, Label^^xsd:string),
-  format(Stream, '~*|(:action ~w~n', [Indent, Label]),
+  format('~*|(:action ~w~n', [Indent, Label]),
   NewIndent is Indent + 2,
-  format(Stream, '~*|:parameters (', [NewIndent, Label]),
+  format('~*|:parameters (', [NewIndent, Label]),
   findall(Parameter,
     rdf(Action, pddl:parameter, Parameter),
     Parameters
   ),
-  parameters(Parameters, Stream),
-  format(Stream, ')~n', []),
+  parameters(Parameters),
   NewIndent2 is NewIndent + 2,
-  format(Stream, '~*|:precondition~n', [NewIndent, Label]),
+  format(')~n~*|:precondition', [NewIndent, Label]),
   rdf(Action, pddl:precondition, Precondition),
-  precondition(Precondition, Stream, NewIndent2),
-  format(Stream, '~*|:effect~n', [NewIndent, Label]),
-  %rdf(Action, pddl:effect, Effect),
-  %exp(Effect, Stream, NewIndent2),
-  format(Stream, '~*|)~n', [Indent]).
+  precondition(Precondition, NewIndent2),
+  format('~n~*|:effect', [NewIndent, Label]),
+  rdf(Action, pddl:effect, Effect),
+  effect(Effect, NewIndent2),
+  format('~n~*|)~n', [Indent]).
 
-precondition(Precondition, Stream, Indent) :-
-  rdfs_individual_of(Precondition, pddl:'LogicalOperator'),
-  operator(Precondition, Stream, Indent, precondition).
+precondition(Operator, Indent) :-
+  rdfs_individual_of(Operator, pddl:'LogicalOperator'),
+  format('~n'),
+  operator(Operator, Indent, precondition).
 
-precondition(Precondition, Stream, Indent) :-
-  rdfs_individual_of(Precondition, pddl:'BinaryComparator'),
-  operator(Precondition, Stream, Indent, fexp).
+precondition(Comparator, Indent) :-
+  rdfs_individual_of(Comparator, pddl:'BinaryComparator'),
+  format('~n'),
+  operator(Comparator, Indent, fexp).
 
-precondition(Precondition, Stream, Indent) :-
-  rdfs_individual_of(Precondition, pddl:'Predicate'),
-  predicate_call(Precondition, Stream, Indent).
+precondition(Predicate, Indent) :-
+  rdfs_individual_of(Predicate, pddl:'Predicate'),
+  format('~n'),
+  predicate_call(Predicate, Indent).
 
-operator(Operator, Stream, Indent, Continuation) :-
+precondition(Quantifier, Indent) :-
+  rdfs_individual_of(Quantifier, pddl:'Quantifier'),
+  format('~n'),
+  precondition_quantifier(Quantifier, Indent).
+
+operator(Operator, Indent, Continuation) :-
   find_label(Operator, Label),
-  format(Stream, '~*|(~w~n', [Indent, Label]),
+  format('~*|(~w', [Indent, Label]),
   NewIndent is Indent + 2,
-  findall(Parameter, (
-    rdf(Operator, Parameter, _),
+  findall([Parameter,Argument], (
+    rdf(Operator, Parameter, Argument),
     rdf(Parameter, rdf:type, pddl:'Parameter')
-  ), Parameters),
-  predsort(param_compare, Parameters, SortedParameters),
-  operator0(Operator, SortedParameters, Stream, NewIndent, Continuation),
-  format(Stream, '~*|)~n', [Indent]).
+  ), ParamArgs),
+  predsort(arg_compare, ParamArgs, SortedParamArgs),
+  operator0(Operator, SortedParamArgs, NewIndent, Continuation),
+  format('~*|)', [Indent]).
 
-operator0(_, [], _, _, _) :- !.
-operator0(Operator, [Parameter|T], Stream, Indent, Continuation) :-
-  rdf(Operator, Parameter, Argument),
-  Term =.. [Continuation, Argument, Stream, Indent],
+operator0(_, [], _, _) :- !.
+operator0(Operator, [[_,Argument]|T], Indent, Continuation) :-
+  Term =.. [Continuation, Argument, Indent],
   call(Term),
-  operator0(Operator, T, Stream, Indent, Continuation).
+  operator0(Operator, T, Indent, Continuation).
 
-fexp(Fexp, Stream, Indent).
+arg_compare(Ineq, [Param1,_], [Param2,_]) :-
+  rdf(Param1, sh:order, P1^^xsd:integer),
+  rdf(Param2, sh:order, P2^^xsd:integer),
+  ( P1 =< P2
+  -> Ineq = <
+  ; Ineq = >
+  ).
 
-predicate_call(Predicate, Stream, Indent) :-
+fexp(Integer^^xsd:integer, _) :-
+  format(' ~w', [Integer]).
+
+fexp(Decimal^^xsd:decimal, _) :-
+  format(' ~w', [Decimal]).
+
+fexp(Operator, Indent) :-
+  rdfs_individual_of(Operator, pddl:'BinaryOperator'),
+  format(' '),
+  operator(Operator, Indent, fexp).
+
+fexp(Function, Indent) :-
+  rdfs_individual_of(Function, pddl:'Function'),
+  format(' '),
+  predicate_call(Function, Indent).
+
+predicate_call(Predicate, Indent) :-
   find_label(Predicate, Label),
-  format(Stream, '~*|(~w', [Indent, Label]),
+  format('~*|(~w', [Indent, Label]),
   rdf(Predicate, rdf:type, PredicateType),
   findall(Parameter, rdf(PredicateType, pddl:parameter, Parameter), Parameters),
   predsort(param_compare, Parameters, SortedParameters),
-  predicate_arguments(Predicate, SortedParameters, Stream),
-  format(Stream, '~*|)~n', [Indent]).
+  predicate_arguments(Predicate, SortedParameters),
+  format(')').
 
-predicate_arguments(_, [], _) :- !.
-predicate_arguments(Predicate, [Parameter|T], Stream) :-
+predicate_arguments(_, []) :- !.
+predicate_arguments(Predicate, [Parameter|T]) :-
   rdf(Predicate, Parameter, Argument),
   rdf(Argument, rdf:type, ArgumentType),
   find_label(Argument, Label),
-  predicate_argument(ArgumentType, Label, Stream),
-  predicate_arguments(Predicate, T, Stream).
+  predicate_argument(ArgumentType, Label),
+  predicate_arguments(Predicate, T).
 
-predicate_argument(pddl:'Parameter', Label, Stream) :-
-  format(Stream, ' ?~w', [Label]).
+predicate_argument(pddl:'Parameter', Label) :-
+  format(' ?~w', [Label]).
 
-predicate_argument(pddl:'Object', Label, Stream) :-
-  format(Stream, ' ~w', [Label]).
+predicate_argument(pddl:'Object', Label) :-
+  format(' ~w', [Label]).
+
+precondition_quantifier(Quantifier, Indent) :-
+  find_label(Quantifier, Label),
+  format('~*|(~w (', [Indent, Label]),
+  findall(Parameter,
+    rdf(Quantifier, pddl:parameter, Parameter),
+    Parameters
+  ),
+  parameters(Parameters),
+  format(')'),
+  NewIndent is Indent + 8,
+  rdf(Quantifier, pddl:argument, Argument),
+  precondition(Argument, NewIndent),
+  format('~*|)', [Indent]).
+
+effect(Effect, Indent) :-
+  rdfs_individual_of(Effect, pddl:'And'),
+  format('~n'),
+  operator(Effect, Indent, ceffect).
+
+effect(Effect, Indent) :-
+  ceffect(Effect, Indent).
+
+ceffect(CEffect, Indent) :-
+  rdfs_individual_of(CEffect, pddl:'ForAll'),
+  format('~n'),
+  forall_effect(CEffect, Indent).
+
+ceffect(CEffect, Indent) :-
+  rdfs_individual_of(CEffect, pddl:'When'),
+  format('~n'),
+  when_effect(CEffect, Indent).
+
+ceffect(CEffect, Indent) :-
+  peffect(CEffect, Indent).
+
+forall_effect(ForAllEffect, Indent) :-
+  find_label(ForAllEffect, Label),
+  format('~*|(~w (', [Indent, Label]),
+  findall(Parameter,
+    rdf(ForAllEffect, pddl:parameter, Parameter),
+    Parameters
+  ),
+  variables(Parameters),
+  format(')'),
+  NewIndent is Indent + 8,
+  rdf(ForAllEffect, pddl:argument, Argument),
+  effect(Argument, NewIndent),
+  format('~*|)', [Indent]).
+
+variables([]) :- !.
+variables([Variable|T]) :-
+  rdf(Variable, rdfs:label, Label^^xsd:string),
+  format('?~w', [Label]),
+  ( T \== []
+  -> format(' ')
+  ; true
+  ),
+  variables(T).
+
+when_effect(WhenEffect, Indent) :-
+  find_label(WhenEffect, Label),
+  format('~*|(~w ', [Indent, Label]),
+  rdf(WhenEffect, pddl:parameter, Parameter),
+  NewIndent is Indent + 6,
+  precondition(Parameter, NewIndent),
+  rdf(WhenEffect, pddl:argument, Argument),
+  cond_effect(Argument, NewIndent),
+  format('~*|)', [Indent]).
+
+cond_effect(CondEffect, Indent) :-
+  rdfs_individual_of(CondEffect, pddl:'And'),
+  format('~n'),
+  operator(CondEffect, Indent, peffect).
+
+cond_effect(CondEffect, Indent) :-
+  peffect(CondEffect, Indent).
+
+peffect(PEffect, Indent) :-
+  rdfs_individual_of(PEffect, pddl:'AssignmentOperator'),
+  format('~n'),
+  assignment_operator(PEffect, Indent).
+
+peffect(PEffect, Indent) :-
+  rdfs_individual_of(PEffect, pddl:'Predicate'),
+  format('~n'),
+  predicate_call(PEffect, Indent).
+
+peffect(PEffect, Indent) :-
+  rdfs_individual_of(PEffect, pddl:'Not'),
+  format('~n'),
+  operator(PEffect, Indent, not_predicate_call).
+
+not_predicate_call(Predicate, Indent) :-
+  format(' '),
+  predicate_call(Predicate, Indent).
+
+assignment_operator(AssignmentOperator, Indent) :-
+  find_label(AssignmentOperator, Label),
+  format('~*|(~w ', [Indent, Label]),
+  rdf(AssignmentOperator, pddl:parameter, Parameter),
+  rdfs_individual_of(Parameter, pddl:'Function'),
+  predicate_call(Parameter, Indent),
+  NewIndent is Indent + 8,
+  rdf(AssignmentOperator, pddl:argument, Argument),
+  fexp(Argument, NewIndent),
+  format('~*|)', [Indent]).
 
 find_label(Resource, Label) :-
   once((
