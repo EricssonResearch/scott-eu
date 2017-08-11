@@ -1,0 +1,35 @@
+#General Rules 
+
+sp {apply*operator*create-action-command
+(state <s> ^operator <o>
+^io.output-link <out>)
+(<o> ^actions <act>)
+(<act> ^<att> <value>)
+(<value> ^<att2> <value2>)
+-->
+(<out> ^<att> <value3>)
+(<value3> ^<att2> <value2>)
+(write (crlf)|Created WMEs under | <out> | at depth 3:|  (crlf) (cmd print --depth 5 <out>) (crlf) )
+}
+
+
+sp {apply*operator*remove-command
+(state <s> ^operator.actions
+^io.output-link <out>)
+(<out> ^<att> <value>)
+(<value> ^status complete)
+-->
+(write (crlf)| Removing: | <out> | ^|<att> | | <value> (crlf) )
+(<out> ^<att> <value> -)}
+
+
+sp {elaborate*state*io
+(state <s> ^superstate.io <io>)
+-->
+(<s> ^io <io>)}
+
+
+sp {elaborate*state*name
+(state <s> ^superstate.operator.name <name>)
+-->
+(<s> ^name <name>)}

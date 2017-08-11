@@ -1,0 +1,6 @@
+pushd warehouse-robot
+source initialize-warehouse-robot.soar
+source perception-warehouse-robot.soar
+source general-warehouse-robot.soar
+source actions-warehouse-robot.soar
+popd
