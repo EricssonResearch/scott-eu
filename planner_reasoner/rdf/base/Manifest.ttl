@@ -53,15 +53,22 @@
 <pddl_domain_example.ttl>
 	a lib:Ontology ;
 	dcterms:title "PDDL example domain"^^rdf:XMLLiteral ;
-	lib:source <http://ontology.cf.ericsson.net/pddl_domain_example#> ;
-  a lib:Namespace ;
-	lib:mnemonic "pddld" ;
-	lib:namespace <http://ontology.cf.ericsson.net/pddl_domain_example/> .
+	lib:source <http://ontology.cf.ericsson.net/pddl_example/domain#> .
 
 <pddl_problem_example.ttl>
 	a lib:Ontology ;
 	dcterms:title "PDDL example problem"^^rdf:XMLLiteral ;
-	lib:source <http://ontology.cf.ericsson.net/pddl_problem_example#> ;
+	lib:source <http://ontology.cf.ericsson.net/pddl_example/problem#> .
+
+[ a lib:Namespace ;
+  lib:mnemonic "pddle" ;
+  lib:namespace <http://ontology.cf.ericsson.net/pddl_example/>
+] .
+
+<planner.ttl>
+	a lib:Ontology ;
+	dcterms:title "Planner Services"^^rdf:XMLLiteral ;
+	lib:source <http://ontology.cf.ericsson.net/planner#> ;
   a lib:Namespace ;
-	lib:mnemonic "pddlp" ;
-	lib:namespace <http://ontology.cf.ericsson.net/pddl_problem_example/> .
+	lib:mnemonic "planner" ;
+	lib:namespace <http://ontology.cf.ericsson.net/planner/> .

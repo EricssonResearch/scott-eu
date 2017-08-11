@@ -6,22 +6,29 @@
   oslc_resource/3,
   applicable_shapes/3,
   copy_resource/5,
-  delete_resource/2
+  delete_resource/2,
+  unmarshal_property/5,
+  marshal_property/5,
+  unmarshal_list_property/5,
+  marshal_list_property/5
 ]).
 
+%!  unmarshal_property(+IRI, +PropertyDefinition, -Value, -Type, +Source) is nondet.
+%!  unmarshal_list_property(+IRI, +PropertyDefinition, -Value, -Type, +Source) is det.
+%
+%   Interface to define a procedure of reading Value and Type of property
+%   PropertyDefinition of resource IRI from Source.
+
+:- multifile unmarshal_property/5.
+
 %!  marshal_property(+IRI, +PropertyDefinition, +Value, +Type, +Sink) is det.
+%!  marshal_list_property(+IRI, +PropertyDefinition, +Value, +Type, +Sink) is det.
 %
 %   Interface to define a procedure of writing Value and Type of property
 %   PropertyDefinition of resource IRI to Sink.
 
 :- multifile marshal_property/5.
 
-%!  unmarshal_property(+IRI, +PropertyDefinition, -Value, -Type, +Source) is nondet.
-%
-%   Interface to define a procedure of reading Value and Type of property
-%   PropertyDefinition of resource IRI from Source.
-
-:- multifile unmarshal_property/5.
 
 %!  delete_property(+IRI, +PropertyDefinition, +Sink) is det.
 %

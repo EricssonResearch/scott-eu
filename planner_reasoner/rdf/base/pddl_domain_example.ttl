@@ -5,7 +5,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix pddl: <http://ontology.cf.ericsson.net/pddl/> .
 @prefix pddls: <http://ontology.cf.ericsson.net/pddl_shapes/> .
-@prefix : <http://ontology.cf.ericsson.net/pddl_domain_example/> .
+@prefix : <http://ontology.cf.ericsson.net/pddl_example/> .
 
 #    (define (domain adl-blocksworld)
 #      (:requirements :adl :equality)

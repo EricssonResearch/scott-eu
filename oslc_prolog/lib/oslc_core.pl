@@ -27,15 +27,31 @@ get_time_class(Context) :-
   create_resource(oslc:'Time', [rdfs:'Class'], [], tmp(Context.graph_out)).
 
 handle_ontology(Context) :-
-  once((
+  findall(Graph, (
     rdf_graph(Graph),
     once((
       atom_concat(Graph, '/', Context.iri)
     ; atom_concat(Graph, '#', Context.iri)
     ; iri_xml_namespace(Graph, Context.iri, _)
     ))
-  )),
-  Context.graph_out = Graph.
+  ), Graphs),
+  output_graph(Graphs, Context).
+
+output_graph([], _) :- !, fail.
+
+output_graph([One], Context) :- !,
+  Context.graph_out = One.
+
+output_graph(Many, Context) :-
+  GraphOut = Context.graph_out,
+  make_temp_graph(GraphOut),
+  forall(
+    member(Graph, Many),
+    forall(
+      rdf(S, P, O, Graph),
+      rdf_assert(S, P, O, GraphOut)
+    )
+  ).
 
 handle_get(Context) :-
   IRI = Context.iri,
@@ -96,66 +112,70 @@ handle_post(Context) :-
   post_resource(Context.iri, rdf(Context.graph_in), rdf(user)).
 
 post_resource(IRI, Source, Sink) :-
-  catch((
-    once((
-      rdf(IRI, rdf:type, oslc:'CreationFactory')
-    ; oslc_error('Resource [~w] is not a creation factory', [IRI])
-    )),
-    once((
-      ground(Source)
-    ; oslc_error('Missing resource in POST request to [~w]', [IRI])
-    )),
-    once((
-      oslc:unmarshal_property(NewResource, rdf:type, Class, _, Source),
-      \+ rdf_is_bnode(NewResource)
-    ; oslc_error('Missing resource type in POST request to [~w]', [IRI])
-    )),
-    once((
-      \+ oslc:unmarshal_property(NewResource, _, _, _, Sink)
-    ; oslc_error('Resource [~w] already exists', [NewResource])
-    )),
-    once((
-      oslc_resource(IRI, [resourceShape=Shapes], rdf),
-      member(Shape, Shapes),
-      rdf(Shape, rdf:type, oslc:'ResourceShape'),
-      oslc_resource(Shape, [describes=Classes], rdf),
-      member(Class, Classes)
-    ; oslc_error('Creation factory [~w] does not support type [~w]', [IRI, Class])
-    )),
-    copy_resource(NewResource, NewResource, Source, Sink, []),
-    setting(oslc_prolog_server:base_uri, BaseUri),
-    uri_components(BaseUri, uri_components(C1, C2, PrefixPath, C4, C5)),
-    split_string(PrefixPath, "/", "/", Parts),
-    rdf_global_id(Prefix:Name, NewResource),
-    append(Parts, [Prefix, Name], NewParts),
-    atomics_to_string(NewParts, '/', NewPath),
-    uri_components(Location, uri_components(C1, C2, NewPath, C4, C5)),
-    response(201, ['Location'(Location)]) % created
-  ),
+  catch(
+    post_resource0(IRI, Source, Sink),
     oslc_error(Message),
     throw(response(400, Message)) % bad request
   ).
 
+post_resource0(IRI, Source, Sink) :-
+  once((
+    rdf(IRI, rdf:type, oslc:'CreationFactory')
+  ; oslc_error('Resource [~w] is not a creation factory', [IRI])
+  )),
+  once((
+    ground(Source)
+  ; oslc_error('Missing resource in POST request to [~w]', [IRI])
+  )),
+  once((
+    unmarshal_property(NewResource, rdf:type, Class, _, Source),
+    \+ rdf_is_bnode(NewResource)
+  ; oslc_error('Missing resource type in POST request to [~w]', [IRI])
+  )),
+  once((
+    \+ unmarshal_property(NewResource, _, _, _, Sink)
+  ; oslc_error('Resource [~w] already exists', [NewResource])
+  )),
+  once((
+    unmarshal_list_property(IRI, oslc:resourceShape, Shapes, _, rdf),
+    member(Shape, Shapes),
+    rdf(Shape, rdf:type, oslc:'ResourceShape'),
+    unmarshal_list_property(Shape, oslc:describes, Classes, _, rdf),
+    member(Class, Classes)
+  ; oslc_error('Creation factory [~w] does not support type [~w]', [IRI, Class])
+  )),
+  copy_resource(NewResource, NewResource, Source, Sink, []),
+  setting(oslc_prolog_server:base_uri, BaseUri),
+  uri_components(BaseUri, uri_components(C1, C2, PrefixPath, C4, C5)),
+  split_string(PrefixPath, "/", "/", Parts),
+  rdf_global_id(Prefix:Name, NewResource),
+  append(Parts, [Prefix, Name], NewParts),
+  atomics_to_string(NewParts, '/', NewPath),
+  uri_components(Location, uri_components(C1, C2, NewPath, C4, C5)),
+  response(201, ['Location'(Location)]). % created
+
 handle_put(Context) :-
-  catch((
-    once((
-      member(if_match(IfMatch), Context.request),
-      atomic_list_concat([_, ReceivedHash, _], '\"', IfMatch)
-    ; oslc_error('Missing or wrong header [If-Match] in PUT request to [~w]', [Context.iri_spec])
-    )),
-    IRI = Context.iri,
-    autodetect_resource_graph(IRI, Graph),
-    once((
-      resource_md5(IRI, Graph, ReceivedHash),
-      copy_resource(IRI, IRI, rdf(Context.graph_in), rdf(Graph), []),
-      response(204) % no content
-    ; format(atom(Message), 'The value of [If-Match] header does not match [~w]', [Context.iri_spec]),
-      throw(response(412, Message)) % precondition failed
-    ))
-  ),
+  catch(
+    handle_put0(Context),
     oslc_error(Message),
     throw(response(400, Message)) % bad request
   ).
+
+handle_put0(Context) :-
+  once((
+    member(if_match(IfMatch), Context.request),
+    atomic_list_concat([_, ReceivedHash, _], '\"', IfMatch)
+  ; oslc_error('Missing or wrong header [If-Match] in PUT request to [~w]', [Context.iri_spec])
+  )),
+  IRI = Context.iri,
+  autodetect_resource_graph(IRI, Graph),
+  once((
+    resource_md5(IRI, Graph, ReceivedHash),
+    copy_resource(IRI, IRI, rdf(Context.graph_in), rdf(Graph), []),
+    response(204) % no content
+  ; format(atom(Message), 'The value of [If-Match] header does not match [~w]', [Context.iri_spec]),
+    throw(response(412, Message)) % precondition failed
+  )).
 
 handle_delete(Context) :-
   catch((

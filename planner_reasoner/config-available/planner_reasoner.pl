@@ -12,7 +12,8 @@
 :- rdf_load_library(pddl_shapes).
 :- rdf_load_library(pddl_domain_example).
 :- rdf_load_library(pddl_problem_example).
+:- rdf_load_library(planner).
 
 :- use_module(library(pddl_generator)).
 
-%:- use_module(planner_reasoner(applications/planner_reasoner_server), []).
+:- use_module(planner_reasoner(applications/planner_reasoner_server), []).

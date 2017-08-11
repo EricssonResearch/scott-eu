@@ -1,0 +1,41 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix	dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix	oslc: <http://open-services.net/ns/core#> .
+@prefix	shapes: <http://ontology.cf.ericsson.net/oslc_shapes/> .
+@prefix pddl: <http://ontology.cf.ericsson.net/pddl/> .
+@prefix pddls: <http://ontology.cf.ericsson.net/pddl_shapes/> .
+@prefix	: <http://ontology.cf.ericsson.net/planner/> .
+
+
+:serviceProviderCatalog
+  a oslc:ServiceProviderCatalog ;
+  oslc:instanceShape shapes:serviceProviderCatalogShape ;
+  dcterms:title "Planner Reasoner Service Provider Catalog"^^rdf:XMLLiteral ;
+  dcterms:publisher [ a oslc:Publisher ;
+                      dcterms:title "SCOTT: Secure COnnected Trustable Things"^^rdf:XMLLiteral ;
+                      dcterms:identifier "Ericsson Research"^^xsd:string ;
+                      rdfs:seeAlso <http://www.scottproject.eu>
+                    ] ;
+  oslc:serviceProvider :serviceProvider .
+
+:serviceProvider
+  a oslc:ServiceProvider ;
+  oslc:instanceShape shapes:serviceProviderShape ;
+  dcterms:title "Planner Reasoner Service Provider"^^rdf:XMLLiteral ;
+  oslc:service [ a oslc:Service ;
+                 dcterms:title "Planning Service"^^rdf:XMLLiteral ;
+                 oslc:domain pddl: ;
+                 oslc:creationFactory :planCreationFactory
+               ] .
+
+:planCreationFactory
+  a oslc:CreationFactory ;
+  oslc:instanceShape shapes:creationFactoryShape ;
+  dcterms:title "Plan Creation Factory"^^rdf:XMLLiteral ;
+  oslc:creation :planCreationFactory ;
+  oslc:resourceType pddl:Domain ,
+                    pddl:Problem ;
+  oslc:resourceShape pddls:DomainShape ,
+                     pddls:ProblemShape .
