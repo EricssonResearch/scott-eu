@@ -35,11 +35,11 @@
               pddld:table ;
   pddl:init [ a pddld:on ;
               pddld:on-x :b ;
-              pddld:on-y :table
+              pddld:on-y pddld:table
             ] ,
             [ a pddld:on ;
               pddld:on-x :a ;
-              pddld:on-y :table
+              pddld:on-y pddld:table
             ] ,
             [ a pddld:on ;
               pddld:on-x :c ;
@@ -52,7 +52,7 @@
               pddld:clear-x :c
             ] ,
             [ a pddld:clear ;
-              pddld:clear-x :table
+              pddld:clear-x pddld:table
             ] ;
   pddl:goal [ a pddl:Or ;
               pddl:argument [ a pddld:on ;
@@ -69,14 +69,17 @@
 :a
   a pddl:Object ;
   oslc:instanceShape pddls:ObjectShape ;
-  rdfs:label "a" .
+  rdfs:label "a" ;
+  pddl:type pddld:block .
 
 :b
   a pddl:Object ;
   oslc:instanceShape pddls:ObjectShape ;
-  rdfs:label "b" .
+  rdfs:label "b" ;
+  pddl:type pddld:block .
 
 :c
   a pddl:Object ;
   oslc:instanceShape pddls:ObjectShape ;
-  rdfs:label "c" .
+  rdfs:label "c" ;
+  pddl:type pddld:block .

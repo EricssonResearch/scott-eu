@@ -213,4 +213,5 @@
 :table
   a pddl:Object ;
   oslc:instanceShape pddls:ObjectShape ;
-  rdfs:label "table" .
+  rdfs:label "table" ;
+  pddl:type :location .

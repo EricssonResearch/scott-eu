@@ -5,22 +5,18 @@
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdfs)).
 
-:- rdf_meta type(r, -).
-:- rdf_meta predicate_argument(r, -).
-:- rdf_meta fexp(t, -).
-
-:- rdf_register_prefix(sh, 'http://www.w3.org/ns/shacl#').
-
 generate_pddl(Resource, Stream) :-
   with_output_to(
     Stream, (
-    domain(Resource, 0)
+    once((
+      domain(Resource, 0)
+    ; problem(Resource, 0)
+    ))
   )).
-  %generate_problem(Resource, 0).
 
 domain(Resource, Indent) :-
   rdf(Resource, rdf:type, pddl:'Domain'),
-  rdf(Resource, rdfs:label, Label^^xsd:string),
+  find_label(Resource, Label),
   format('~*|(define (domain ~w)~n', [Indent, Label]),
   NewIndent is Indent + 2,
   types(Resource, NewIndent),
@@ -33,22 +29,22 @@ types(Resource, Indent) :-
   format('~*|(:types', [Indent]),
   forall(
     rdf(Resource, pddl:type, Type), (
-    rdf(Type, rdf:type, TypeType),
-    type(TypeType, Type)
+    type(Type)
   )),
   format('~*|)~n', [Indent]).
 
-type(pddl:'PrimitiveType', Type) :-
-  rdf(Type, rdfs:label, Label^^xsd:string),
+type(Type) :-
+  rdf(Type, rdf:type, pddl:'PrimitiveType'),
+  find_label(Type, Label),
   format(' ~w', [Label]).
 
-type(pddl:'EitherType', Type) :-
+type(Type) :-
+  rdf(Type, rdf:type, pddl:'EitherType'),
   format(' (either', []),
   forall(
-    rdf(Type, rdfs:member, Member), (
-    rdf(Member, rdf:type, MemberType),
-    type(MemberType, Member)
-  )),
+    rdf(Type, rdfs:member, Member),
+    type(Member)
+  ),
   format(')').
 
 predicates(Resource, Indent) :-
@@ -61,7 +57,7 @@ predicates(Resource, Indent) :-
   format('~*|)~n', [Indent]).
 
 predicate(Predicate, Indent) :-
-  rdf(Predicate, rdfs:label, Label^^xsd:string),
+  find_label(Predicate, Label),
   format('~*|(~w', [Indent, Label]),
   findall(Parameter,
     rdf(Predicate, pddl:parameter, Parameter),
@@ -75,62 +71,67 @@ predicate(Predicate, Indent) :-
   format(')~n').
 
 parameters(Parameters) :-
-  predsort(param_compare, Parameters, SortedParameters),
-  group_parameters(SortedParameters, GrouppedParameters),
-  groupped_parameters(GrouppedParameters).
+  predsort(order_compare, Parameters, SortedParameters),
+  group_typed_things(SortedParameters, GrouppedParameters),
+  groupped_typed_things(GrouppedParameters).
 
-group_parameters(Parameters, GrouppedParameters) :-
-  group_parameters0(_, Parameters, [], GrouppedParameters).
+group_typed_things(Parameters, GrouppedParameters) :-
+  group_typed_things0(_, Parameters, [], GrouppedParameters).
 
-group_parameters0(_, [], A, [A]) :- !.
+group_typed_things0(_, [], A, [A]) :- !.
 
-group_parameters0(Type, [H|T], A, O) :-
+group_typed_things0(Type, [H|T], A, O) :-
   rdf(H, pddl:type, HType),
-  group_parameters1(Type, HType, [H|T], A, O).
+  group_typed_things1(Type, HType, [H|T], A, O).
 
-group_parameters1(Type, Type, [H|T], A, O) :- !,
+group_typed_things1(Type, Type, [H|T], A, O) :- !,
   append(A, [H], NA),
-  group_parameters0(Type, T, NA, O).
+  group_typed_things0(Type, T, NA, O).
 
-group_parameters1(_, Type, [H|T], A, [A|T2]) :-
-  group_parameters0(Type, T, [H], T2).
+group_typed_things1(_, Type, [H|T], A, [A|T2]) :-
+  group_typed_things0(Type, T, [H], T2).
 
-param_compare(Ineq, Param1, Param2) :-
-  rdf(Param1, sh:order, P1^^xsd:integer),
-  rdf(Param2, sh:order, P2^^xsd:integer),
-  ( P1 =< P2
+order_compare(Ineq, Thing1, Thing2) :-
+  rdf(Thing1, sh:order, Order1^^xsd:integer),
+  rdf(Thing2, sh:order, Order2^^xsd:integer),
+  ( Order1 =< Order2
   -> Ineq = <
   ; Ineq = >
   ).
 
-groupped_parameters([]) :- !.
-groupped_parameters([H|T]) :-
-  parameter_group(H),
+groupped_typed_things([]) :- !.
+groupped_typed_things([H|T]) :-
+  typed_thing_group(H),
   ( T \== []
   -> format(' ')
   ; true
   ),
-  groupped_parameters(T).
+  groupped_typed_things(T).
 
-parameter_group([]) :- !.
-parameter_group([Parameter]) :- !,
-  parameter(Parameter),
-  rdf(Parameter, pddl:type, Type),
-  rdf(Type, rdf:type, TypeType),
+typed_thing_group([]) :- !.
+typed_thing_group([Thing]) :- !,
+  typed_thing(Thing),
+  rdf(Thing, pddl:type, Type),
   format(' -'),
-  type(TypeType, Type).
+  type(Type).
 
-parameter_group([Parameter|T]) :-
-  parameter(Parameter),
+typed_thing_group([Thing|T]) :-
+  typed_thing(Thing),
   ( T \== []
   -> format(' ')
   ; true
   ),
-  parameter_group(T).
+  typed_thing_group(T).
 
-parameter(Parameter) :-
-  rdf(Parameter, rdfs:label, Label^^xsd:string),
-  format('?~w', [Label]).
+typed_thing(Thing) :-
+  find_label(Thing, Label),
+  ( rdf(Thing, rdf:type, pddl:'Parameter')
+  -> format('?~w', [Label])
+  ; ( rdf(Thing, rdf:type, pddl:'Object')
+    -> format('~w', [Label])
+    ; fail
+    )
+  ).
 
 functions(Resource, Indent) :-
   format('~*|(:functions~n', [Indent]),
@@ -142,7 +143,7 @@ functions(Resource, Indent) :-
   format('~*|)~n', [Indent]).
 
 function(Function, Indent) :-
-  rdf(Function, rdfs:label, Label^^xsd:string),
+  find_label(Function, Label),
   format('~*|(~w', [Indent, Label]),
   findall(Parameter,
     rdf(Function, pddl:parameter, Parameter),
@@ -162,7 +163,7 @@ actions(Resource, Indent) :-
   ).
 
 action(Action, Indent) :-
-  rdf(Action, rdfs:label, Label^^xsd:string),
+  find_label(Action, Label),
   format('~*|(:action ~w~n', [Indent, Label]),
   NewIndent is Indent + 2,
   format('~*|:parameters (', [NewIndent, Label]),
@@ -226,11 +227,15 @@ arg_compare(Ineq, [Param1,_], [Param2,_]) :-
   ; Ineq = >
   ).
 
-fexp(Integer^^xsd:integer, _) :-
-  format(' ~w', [Integer]).
+num(Number) :-
+  (
+    rdf_equal(^^(Value, xsd:integer), Number)
+  ; rdf_equal(^^(Value, xsd:decimal), Number)
+  ),
+  format(' ~w', [Value]).
 
-fexp(Decimal^^xsd:decimal, _) :-
-  format(' ~w', [Decimal]).
+fexp(Number, _) :-
+  num(Number).
 
 fexp(Operator, Indent) :-
   rdfs_individual_of(Operator, pddl:'BinaryOperator'),
@@ -247,23 +252,16 @@ predicate_call(Predicate, Indent) :-
   format('~*|(~w', [Indent, Label]),
   rdf(Predicate, rdf:type, PredicateType),
   findall(Parameter, rdf(PredicateType, pddl:parameter, Parameter), Parameters),
-  predsort(param_compare, Parameters, SortedParameters),
+  predsort(order_compare, Parameters, SortedParameters),
   predicate_arguments(Predicate, SortedParameters),
   format(')').
 
 predicate_arguments(_, []) :- !.
 predicate_arguments(Predicate, [Parameter|T]) :-
   rdf(Predicate, Parameter, Argument),
-  rdf(Argument, rdf:type, ArgumentType),
-  find_label(Argument, Label),
-  predicate_argument(ArgumentType, Label),
+  format(' '),
+  typed_thing(Argument),
   predicate_arguments(Predicate, T).
-
-predicate_argument(pddl:'Parameter', Label) :-
-  format(' ?~w', [Label]).
-
-predicate_argument(pddl:'Object', Label) :-
-  format(' ~w', [Label]).
 
 precondition_quantifier(Quantifier, Indent) :-
   find_label(Quantifier, Label),
@@ -316,7 +314,7 @@ forall_effect(ForAllEffect, Indent) :-
 
 variables([]) :- !.
 variables([Variable|T]) :-
-  rdf(Variable, rdfs:label, Label^^xsd:string),
+  find_label(Variable, Label),
   format('?~w', [Label]),
   ( T \== []
   -> format(' ')
@@ -372,6 +370,99 @@ assignment_operator(AssignmentOperator, Indent) :-
   fexp(Argument, NewIndent),
   format('~*|)', [Indent]).
 
+problem(Resource, Indent) :-
+  rdf(Resource, rdf:type, pddl:'Problem'),
+  find_label(Resource, Label),
+  format('~*|(define (problem ~w)~n', [Indent, Label]),
+  NewIndent is Indent + 2,
+  domain_call(Resource, NewIndent),
+  objects(Resource, NewIndent),
+  init(Resource, NewIndent),
+  goal(Resource, NewIndent),
+  metric(Resource, NewIndent),
+  format('~n~*|)~n', [Indent]).
+
+domain_call(Problem, Indent) :-
+  rdf(Problem, pddl:domain, Domain),
+  find_label(Domain, Label),
+  format('~*|(:domain ~w)~n', [Indent, Label]).
+
+objects(Problem, Indent) :-
+  findall(Object,
+    rdf(Problem, pddl:object, Object),
+  Objects),
+  group_typed_things(Objects, GrouppedObjects),
+  format('~*|(:objects ', [Indent]),
+  groupped_typed_things(GrouppedObjects),
+  format(')').
+
+init(Problem, Indent) :-
+  format('~n~*|(:init', [Indent]),
+  NewIndent is Indent + 2,
+  forall(
+    rdf(Problem, pddl:init, Init),
+    init_el(Init, NewIndent)
+  ),
+  format('~n~*|)', [Indent]).
+
+init_el(Init, Indent) :-
+  rdfs_individual_of(Init, pddl:'Predicate'),
+  format('~n'),
+  predicate_call(Init, Indent).
+
+init_el(Init, Indent) :-
+  rdfs_individual_of(Init, pddl:'Not'),
+  format('~n'),
+  operator(Init, Indent, not_predicate_call).
+
+init_el(Init, Indent) :-
+  rdfs_individual_of(Init, pddl:'EQ'),
+  find_label(Init, Label),
+  format('~n~*|(~w', [Indent, Label]),
+  rdf(Init, pddl:left, Function),
+  rdfs_individual_of(Function, pddl:'Function'),
+  format(' '),
+  predicate_call(Function, Indent),
+  rdf(Init, pddl:right, Number),
+  num(Number),
+  format(')').
+
+goal(Problem, Indent) :-
+  rdf(Problem, pddl:goal, Goal),
+  format('~n~*|(:goal', [Indent]),
+  NewIndent is Indent + 2,
+  precondition(Goal, NewIndent),
+  format('~n~*|)', [Indent]).
+
+metric(Problem, Indent) :-
+  format('~n~*|(:metric ', [Indent]),
+  once((
+    rdf(Problem, pddl:minimize, Criteria),
+    format('minimize')
+  ; rdf(Problem, pddl:maximize, Criteria),
+    format('maximize')
+  )),
+  NewIndent is Indent + 2,
+  ground_fexp(Criteria, NewIndent),
+  format(')').
+
+ground_fexp(Number, _) :-
+  num(Number).
+
+ground_fexp(TotalTime, _) :-
+  rdf_equal(pddl:'total-time', TotalTime),
+  format(' total-time').
+
+ground_fexp(Operator, Indent) :-
+  rdfs_individual_of(Operator, pddl:'BinaryOperator'),
+  format(' '),
+  operator(Operator, Indent, ground_fexp).
+
+ground_fexp(Function, Indent) :-
+  rdfs_individual_of(Function, pddl:'Function'),
+  format(' '),
+  predicate_call(Function, Indent).
+
 find_label(Resource, Label) :-
   once((
     rdf(Resource, rdfs:label, Label^^xsd:string)
@@ -381,5 +472,8 @@ find_label(Resource, Label) :-
 
 test :-
   current_output(Out),
-  rdf_global_id(pddld:'adl-blocksworld', Resource),
-  generate_pddl(Resource, Out).
+  rdf_global_id(pddld:'adl-blocksworld', Domain),
+  generate_pddl(Domain, Out),
+  nl,
+  rdf_global_id(pddlp:'adl-blocksworld-problem', Problem),
+  generate_pddl(Problem, Out).
