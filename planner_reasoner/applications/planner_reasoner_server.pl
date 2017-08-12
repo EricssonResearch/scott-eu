@@ -17,11 +17,7 @@ limitations under the License.
 :- module(planner_reasoner_server, []).
 
 :- use_module(library(semweb/rdf11)).
-:- use_module(library(semweb/rdfs)).
-:- use_module(library(oslc)).
-:- use_module(library(oslc_rdf)).
 :- use_module(library(oslc_dispatch)).
-:- use_module(library(oslc_error)).
 :- use_module(library(pddl_generator)).
 
 :- oslc_post(planner:planCreationFactory, plan_creation_factory).
