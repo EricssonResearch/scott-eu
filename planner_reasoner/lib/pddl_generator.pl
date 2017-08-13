@@ -488,8 +488,8 @@ find_label(Resource, Label) :-
 
 test :-
   current_output(Out),
-  rdf_global_id(pddld:'adl-blocksworld', Domain),
+  rdf_global_id(pddle:'adl-blocksworld', Domain),
   generate_pddl(Domain, Out),
   nl,
-  rdf_global_id(pddlp:'adl-blocksworld-problem', Problem),
+  rdf_global_id(pddle:'adl-blocksworld-problem', Problem),
   generate_pddl(Problem, Out).
