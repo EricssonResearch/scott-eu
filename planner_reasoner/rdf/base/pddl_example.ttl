@@ -289,7 +289,7 @@
                               :on-y :b
                             ]
             ] ;
-  pddl:minimize pddl:total-time .
+  pddl:minimize [ a pddl:total-time ].
 
 :a
   a pddl:Object ;

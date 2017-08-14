@@ -22,87 +22,106 @@ limitations under the License.
 :- use_module(library(semweb/rdfs)).
 :- use_module(library(indent_processor)).
 
-generate_pddl(Resource, Graph, String) :-
-  Context = _{r:Resource, g:Graph},
+:- thread_local graph/1.
+
+:- rdf_meta rdf0(r, r, t).
+:- rdf_meta rdf1(r, r, t).
+:- rdf_meta generate_pddl(r, -, -).
+
+% lookup only in local graph and fail if not found
+rdf0(S, P, O) :-
+  graph(G),
+  rdf(S, P, O, G).
+
+% lookup in local graph and then globally in all graphs
+rdf1(S, P, O) :-
+  graph(G),
   once((
-    phrase(domain, [Context], O1)
-  ; phrase(problem, [Context], O1)
-  )),
-  insert_indents(O1, O2),
-  atomics_to_string(O2, "", String).
+    rdf(S, P, O, G)
+  ; rdf(S, P, O)
+  )).
+
+generate_pddl(Resource, Graph, String) :-
+  setup_call_cleanup(assertz(graph(Graph)), (
+    once((
+      phrase(domain, [Resource], O1)
+    ; phrase(problem, [Resource], O1)
+    )),
+    insert_indents(O1, O2),
+    atomics_to_string(O2, "", String)
+  ), retractall(graph(Graph))).
 
 domain, ["(define (domain ", Label, ")",
             indent(2, Types),
             indent(2, Predicates),
             indent(2, Functions),
             indent(2, Actions),
-         ")"] --> [Context],
+         ")"] --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'Domain', Context.g),
-    label([Context], Label),
-    types([Context], Types),
-    predicates([Context], Predicates),
-    functions([Context], Functions),
-    actions([Context], Actions)
+    rdf0(Resource, rdf:type, pddl:'Domain'),
+    label([Resource], Label),
+    types([Resource], Types),
+    predicates([Resource], Predicates),
+    functions([Resource], Functions),
+    actions([Resource], Actions)
   }.
 
-label, [Label] --> [Context],
+label, [Label] --> [Resource],
   {
     once((
-      rdf(Context.r, rdfs:label, Label^^xsd:string, Context.g)
-    ; rdf(Context.r, rdfs:label, Label^^xsd:string)
-    ; rdfs_individual_of(Context.r, Class),
-      (
-        rdf(Class, rdfs:label, Label^^xsd:string, Context.g)
-      ; rdf(Class, rdfs:label, Label^^xsd:string)
-      )
+      rdf0(Resource, rdfs:label, Label^^xsd:string)
+    ; rdfs_individual_of(Resource, Class),
+      rdf0(Class, rdfs:label, Label^^xsd:string)
+    ; rdf(Resource, rdfs:label, Label^^xsd:string)
+    ; rdfs_individual_of(Resource, Class),
+      rdf(Class, rdfs:label, Label^^xsd:string)
     ))
   }.
 
-types, ["(:types", Types, ")"] --> [Context],
+types, ["(:types", Types, ")"] --> [Resource],
   {
-    collect([Context, pddl:type, type], Types)
+    collect([Resource, pddl:type, type], Types)
   }.
 
-collect, Collection --> [Context, Property, Rule],
+collect, Collection --> [Resource, Property, Rule],
   {
     findall(Element, (
-      rdf(Context.r, Property, ElementResource, Context.g),
-      T =.. [Rule, [Context.put(r, ElementResource)], Element],
+      rdf0(Resource, Property, ElementResource),
+      T =.. [Rule, [ElementResource], Element],
       T
     ), Collection)
   }.
 
-type, [" "|Label] --> [Context],
+type, [" "|Label] --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'PrimitiveType', Context.g),
-    label([Context], Label)
+    rdf0(Resource, rdf:type, pddl:'PrimitiveType'),
+    label([Resource], Label)
   }.
 
-type, [" (either", Types, ")"] --> [Context],
+type, [" (either", Types, ")"] --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'EitherType', Context.g),
-    collect([Context, rdfs:member, type], Types)
+    rdf0(Resource, rdf:type, pddl:'EitherType'),
+    collect([Resource, rdfs:member, type], Types)
   }.
 
 predicates, ["(:predicates ",
                 indent(2, Predicates),
-             ")"] --> [Context],
+             ")"] --> [Resource],
   {
-    collect([Context, pddl:predicate, predicate], Predicates)
+    collect([Resource, pddl:predicate, predicate], Predicates)
   }.
 
-predicate, ["(", Label, " ", Parameters, ")\n"] --> [Context],
+predicate, ["(", Label, " ", Parameters, ")\n"] --> [Resource],
   {
-    rdfs_subclass_of(Context.r, pddl:'Predicate'),
-    label([Context], Label),
-    parameters([Context], Parameters)
+    rdfs_subclass_of(Resource, pddl:'Predicate'),
+    label([Resource], Label),
+    parameters([Resource], Parameters)
   }.
 
-parameters, Parameters --> [Context],
+parameters, Parameters --> [Resource],
   {
-    findall(Context.put(r, ParamResource),
-      rdf(Context.r, pddl:parameter, ParamResource, Context.g),
+    findall(ParamResource,
+      rdf0(Resource, pddl:parameter, ParamResource),
     ParamResources),
     predsort(order_compare, ParamResources, SortedParameters),
     group_typed_things(SortedParameters, GrouppedParameters),
@@ -110,14 +129,8 @@ parameters, Parameters --> [Context],
   }.
 
 order_compare(Ineq, Thing1, Thing2) :-
-  once((
-    rdf(Thing1.r, sh:order, Order1^^xsd:integer, Thing1.g)
-  ; rdf(Thing1.r, sh:order, Order1^^xsd:integer)
-  )),
-  once((
-    rdf(Thing2.r, sh:order, Order2^^xsd:integer, Thing2.g)
-  ; rdf(Thing2.r, sh:order, Order2^^xsd:integer)
-  )),
+  rdf1(Thing1, sh:order, Order1^^xsd:integer),
+  rdf1(Thing2, sh:order, Order2^^xsd:integer),
   ( Order1 =< Order2
   -> Ineq = <
   ; Ineq = >
@@ -129,7 +142,7 @@ group_typed_things(Parameters, GrouppedParameters) :-
 group_typed_things0(_, [], A, [A]) :- !.
 
 group_typed_things0(Type, [H|T], A, O) :-
-  rdf(H.r, pddl:type, HType, H.g),
+  rdf0(H, pddl:type, HType),
   group_typed_things1(Type, HType, [H|T], A, O).
 
 group_typed_things1(Type, Type, [H|T], A, O) :- !,
@@ -155,8 +168,8 @@ typed_thing_group(Rule), [H2|T2] --> [[H|T]],
     Term =.. [Rule, [H], TypedThing],
     call(Term),
     ( T == []
-    -> rdf(H.r, pddl:type, TypeResource, H.g),
-       type([H.put(r, TypeResource)], Type),
+    -> rdf0(H, pddl:type, TypeResource),
+       type([TypeResource], Type),
        H2 = [TypedThing, " -", Type],
        T2 = []
     ; append(TypedThing, [" "], H2),
@@ -164,33 +177,33 @@ typed_thing_group(Rule), [H2|T2] --> [[H|T]],
     )
   }.
 
-parameter, ["?"|Label] --> [Context],
+parameter, ["?"|Label] --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'Parameter', Context.g),
-    label([Context], Label)
+    rdf0(Resource, rdf:type, pddl:'Parameter'),
+    label([Resource], Label)
   }.
 
 functions, ["(:functions ",
                 indent(2, Functions),
-             ")"] --> [Context],
+             ")"] --> [Resource],
   {
-    collect([Context, pddl:function, function], Functions)
+    collect([Resource, pddl:function, function], Functions)
   }.
 
-function, ["(", Label, Parameters, ")\n"] --> [Context],
+function, ["(", Label, Parameters, ")\n"] --> [Resource],
   {
-    rdfs_subclass_of(Context.r, pddl:'Function'),
-    label([Context], Label),
-    parameters([Context], Params),
+    rdfs_subclass_of(Resource, pddl:'Function'),
+    label([Resource], Label),
+    parameters([Resource], Params),
     ( flatten(Params, [])
     -> Parameters = []
     ; Parameters = [" "|Params]
     )
   }.
 
-actions, Actions --> [Context],
+actions, Actions --> [Resource],
   {
-    collect([Context, pddl:action, action], Actions)
+    collect([Resource, pddl:action, action], Actions)
   }.
 
 action, ["(:action ",
@@ -198,99 +211,92 @@ action, ["(:action ",
             indent(2, [":parameters", indent(2, ["(", Parameters, ")\n"]),
                        ":precondition", indent(2, Precondition),
                        ":effect", indent(2, Effect)]),
-         ")\n"] --> [Context],
+         ")\n"] --> [Resource],
   {
-    rdfs_subclass_of(Context.r, pddl:'Action'),
-    label([Context], Label),
-    parameters([Context], Parameters),
-    rdf(Context.r, pddl:precondition, PreconditionResource, Context.g),
-    goal_description([Context.put(r, PreconditionResource)], Precondition),
-    rdf(Context.r, pddl:effect, EffectResource, Context.g),
-    effect([Context.put(r, EffectResource)], Effect)
+    rdfs_subclass_of(Resource, pddl:'Action'),
+    label([Resource], Label),
+    parameters([Resource], Parameters),
+    rdf0(Resource, pddl:precondition, PreconditionResource),
+    goal_description([PreconditionResource], Precondition),
+    rdf0(Resource, pddl:effect, EffectResource),
+    effect([EffectResource], Effect)
   }.
 
-goal_description, GD --> [Context],
+goal_description, GD --> [Resource],
   {
     once((
-      literal([parameter, object], [Context], GD)
-    ; logical_operator([Context], GD)
-    ; quantifier([Context], GD)
-    ; binary_comparator([Context], GD)
+      literal([parameter, object], [Resource], GD)
+    ; logical_operator([Resource], GD)
+    ; quantifier([Resource], GD)
+    ; binary_comparator([Resource], GD)
     ))
   }.
 
-object, Label --> [Context],
+object, Label --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'Object', Context.g),
-    label([Context], Label)
+    rdf0(Resource, rdf:type, pddl:'Object'),
+    label([Resource], Label)
   }.
 
-literal(P), Literal --> [Context],
+literal(P), Literal --> [Resource],
   {
     once((
-      atomic_formula(P, [Context], Literal)
-    ; not(atomic_formula, P, [Context], Literal)
+      atomic_formula(P, [Resource], Literal)
+    ; not(atomic_formula, P, [Resource], Literal)
     ))
   }.
 
-not(Rule, P), ["(", Label, indent(2, Argument), ")\n"] --> [Context],
+not(Rule, P), ["(", Label, indent(2, Argument), ")\n"] --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'Not', Context.g),
-    label([Context], Label),
-    rdf(Context.r, Parameter, NotArgument),
-    rdf(Parameter, rdf:type, pddl:'Parameter'),
-    Term =.. [Rule, P, [Context.put(r, NotArgument)], Argument],
+    rdf0(Resource, rdf:type, pddl:'Not'),
+    label([Resource], Label),
+    rdf0(Resource, pddl:argument, NotArgument),
+    Term =.. [Rule, P, [NotArgument], Argument],
     call(Term)
   }.
 
-atomic_formula(P), ["(", Label, Arguments, ")\n"] --> [Context],
+atomic_formula(P), ["(", Label, Arguments, ")\n"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'Predicate'),
-    label([Context], Label),
-    rdf(Context.r, rdf:type, PredicateType, Context.g),
-    findall(Context.put(r, Parameter),
-      rdf(PredicateType, pddl:parameter, Parameter),
+    rdfs_individual_of(Resource, pddl:'Predicate'),
+    label([Resource], Label),
+    rdf0(Resource, rdf:type, PredicateType),
+    findall(Parameter,
+      rdf1(PredicateType, pddl:parameter, Parameter),
     Parameters),
     predsort(order_compare, Parameters, SortedParameters),
-    predicate_arguments(P, Context, [SortedParameters], Arguments)
+    predicate_arguments(P, Resource, [SortedParameters], Arguments)
   }.
 
 predicate_arguments(_, _) --> [[]].
-predicate_arguments(P, Context), [" ", H2|T2] --> [[Parameter|T]],
+predicate_arguments(P, Resource), [" ", H2|T2] --> [[Parameter|T]],
   {
-    rdf(Context.r, Parameter.r, Argument, Context.g),
+    rdf0(Resource, Parameter, Argument),
     member(Rule, P),
-    Term =.. [Rule, [Context.put(r, Argument)], H2],
+    Term =.. [Rule, [Argument], H2],
     call(Term),
-    predicate_arguments(P, Context, [T], T2)
+    predicate_arguments(P, Resource, [T], T2)
   }.
 
-logical_operator, ["(", Label, indent(2, Arguments), ")\n"] --> [Context],
+logical_operator, ["(", Label, indent(2, Arguments), ")\n"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'LogicalOperator'),
-    label([Context], Label),
-    operator_arguments(goal_description, [Context], Arguments)
+    rdfs_individual_of(Resource, pddl:'LogicalOperator'),
+    label([Resource], Label),
+    operator_arguments(goal_description, [Resource], Arguments)
   }.
 
-operator_arguments(Rule), Arguments --> [Context],
+operator_arguments(Rule), Arguments --> [Resource],
   {
-    findall([Context.put(r, Parameter), Context.put(r, Argument)], (
-      rdf(Context.r, Parameter, Argument, Context.g),
-      rdf(Parameter, rdf:type, pddl:'Parameter')
+    findall([Parameter, Argument], (
+      rdf0(Resource, Parameter, Argument),
+      rdf1(Parameter, rdf:type, pddl:'Parameter')
     ), ParamArgs),
     predsort(arg_compare, ParamArgs, SortedParamArgs),
     operator_arguments0(Rule, [SortedParamArgs], Arguments)
   }.
 
-arg_compare(Ineq, [Param1,_], [Param2,_]) :-
-  once((
-    rdf(Param1.r, sh:order, P1^^xsd:integer, Param1.g)
-  ; rdf(Param1.r, sh:order, P1^^xsd:integer)
-  )),
-  once((
-    rdf(Param2.r, sh:order, P2^^xsd:integer, Param2.g)
-  ; rdf(Param2.r, sh:order, P2^^xsd:integer)
-  )),
+arg_compare(Ineq, [Param1, _], [Param2, _]) :-
+  rdf1(Param1, sh:order, P1^^xsd:integer),
+  rdf1(Param2, sh:order, P2^^xsd:integer),
   ( P1 =< P2
   -> Ineq = <
   ; Ineq = >
@@ -304,95 +310,95 @@ operator_arguments0(Rule), [H2|T2] --> [[[_, Argument]|T]],
     operator_arguments0(Rule, [T], T2)
   }.
 
-quantifier, ["(", Label, " (", Parameters, ")", indent(2, Arguments), ")\n"] --> [Context],
+quantifier, ["(", Label, " (", Parameters, ")", indent(2, Arguments), ")\n"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'Quantifier'),
-    label([Context], Label),
-    parameters([Context], Parameters),
-    operator_arguments(goal_description, [Context], Arguments)
+    rdfs_individual_of(Resource, pddl:'Quantifier'),
+    label([Resource], Label),
+    parameters([Resource], Parameters),
+    operator_arguments(goal_description, [Resource], Arguments)
   }.
 
-binary_comparator, ["(", Label, Arguments, ")\n"] --> [Context],
+binary_comparator, ["(", Label, Arguments, ")\n"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'BinaryComparator'),
-    label([Context], Label),
-    operator_arguments(f_exp, [Context], Arguments)
+    rdfs_individual_of(Resource, pddl:'BinaryComparator'),
+    label([Resource], Label),
+    operator_arguments(f_exp, [Resource], Arguments)
   }.
 
-f_exp, [" "|FExp] --> [Context],
+f_exp, [" "|FExp] --> [Resource],
   {
     once((
-      number([Context], FExp)
-    ; binary_operator(f_exp, [Context], FExp)
-    ; f_head([Context], FExp)
+      number([Resource], FExp)
+    ; binary_operator(f_exp, [Resource], FExp)
+    ; f_head([Resource], FExp)
     ))
   }.
 
-number, [Number] --> [Context],
+number, [Number] --> [Resource],
   {
     once((
-      rdf_equal(^^(Number, xsd:integer), Context.r)
-    ; rdf_equal(^^(Number, xsd:decimal), Context.r)
+      rdf_equal(^^(Number, xsd:integer), Resource)
+    ; rdf_equal(^^(Number, xsd:decimal), Resource)
     ))
   }.
 
-binary_operator(Rule), ["(", Label, Arguments, ")"] --> [Context],
+binary_operator(Rule), ["(", Label, Arguments, ")"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'BinaryOperator'),
-    label([Context], Label),
-    operator_arguments(Rule, [Context], Arguments)
+    rdfs_individual_of(Resource, pddl:'BinaryOperator'),
+    label([Resource], Label),
+    operator_arguments(Rule, [Resource], Arguments)
   }.
 
-f_head, Label --> [Context],
+f_head, Label --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'Function'),
-    label([Context], Label),
-    rdf(Context.r, rdf:type, FunctionType, Context.g),
-    \+ rdf(FunctionType, pddl:parameter, _, Context.g), !
+    rdfs_individual_of(Resource, pddl:'Function'),
+    label([Resource], Label),
+    rdf1(Resource, rdf:type, FunctionType),
+    \+ rdf1(FunctionType, pddl:parameter, _), !
   }.
 
-f_head, ["(", Label, Arguments, ")"] --> [Context],
+f_head, ["(", Label, Arguments, ")"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'Function'),
-    label([Context], Label),
-    rdf(Context.r, rdf:type, FunctionType, Context.g),
-    findall(Context.put(r, Parameter),
-      rdf(FunctionType, pddl:parameter, Parameter, Context.g),
+    rdfs_individual_of(Resource, pddl:'Function'),
+    label([Resource], Label),
+    rdf1(Resource, rdf:type, FunctionType),
+    findall(Parameter,
+      rdf1(FunctionType, pddl:parameter, Parameter),
     Parameters),
     predsort(order_compare, Parameters, SortedParameters),
-    predicate_arguments([parameter, object], Context, [SortedParameters], Arguments)
+    predicate_arguments([parameter, object], Resource, [SortedParameters], Arguments)
   }.
 
-effect, Effect --> [Context],
+effect, Effect --> [Resource],
   {
     (
-      and(c_effect, [Context], Effect)
-    ; c_effect([Context], Effect)
+      and(c_effect, [Resource], Effect)
+    ; c_effect([Resource], Effect)
     )
   }.
 
-and(Rule), ["(", Label, indent(2, Arguments), ")\n"] --> [Context],
+and(Rule), ["(", Label, indent(2, Arguments), ")\n"] --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'And', Context.g),
-    label([Context], Label),
-    operator_arguments(Rule, [Context], Arguments)
+    rdf0(Resource, rdf:type, pddl:'And'),
+    label([Resource], Label),
+    operator_arguments(Rule, [Resource], Arguments)
   }.
 
-c_effect, CEffect --> [Context],
+c_effect, CEffect --> [Resource],
   {
     once((
-      for_all([Context], CEffect)
-    ; when_effect([Context], CEffect)
-    ; p_effect([Context], CEffect)
+      for_all([Resource], CEffect)
+    ; when_effect([Resource], CEffect)
+    ; p_effect([Resource], CEffect)
     ))
   }.
 
-for_all, ["(", Label, "(", Variables, ")", indent(2, Arguments), ")\n"] --> [Context],
+for_all, ["(", Label, "(", Variables, ")", indent(2, Arguments), ")\n"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'ForAll'),
-    label([Context], Label),
-    variables([Context], Variables),
-    rdf(Context.r, pddl:argument, Argument, Context.g),
+    rdfs_individual_of(Resource, pddl:'ForAll'),
+    label([Resource], Label),
+    variables([Resource], Variables),
+    rdf0(Resource, pddl:argument, Argument),
     effect([Argument], Arguments)
   }.
 
@@ -407,40 +413,40 @@ variables, [H2|T2] --> [[H|T]],
     variables([T], T2)
   }.
 
-when_effect, ["(", Label, " ", indent(2, [GD, CondEffect]), ")\n"] --> [Context],
+when_effect, ["(", Label, " ", indent(2, [GD, CondEffect]), ")\n"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'When'),
-    label([Context], Label),
-    rdf(Context.r, pddl:parameter, GDResource, Context.g),
-    goal_description([Context.put(r, GDResource)], GD),
-    rdf(Context.r, pddl:argument, CondEffectResource, Context.g),
-    cond_effect([Context.put(r, CondEffectResource)], CondEffect)
+    rdfs_individual_of(Resource, pddl:'When'),
+    label([Resource], Label),
+    rdf0(Resource, pddl:parameter, GDResource),
+    goal_description([GDResource], GD),
+    rdf0(Resource, pddl:argument, CondEffectResource),
+    cond_effect([CondEffectResource], CondEffect)
   }.
 
-cond_effect, CondEffect --> [Context],
+cond_effect, CondEffect --> [Resource],
   {
     once((
-      and(p_effect, [Context], CondEffect)
-    ; p_effect([Context], CondEffect)
+      and(p_effect, [Resource], CondEffect)
+    ; p_effect([Resource], CondEffect)
     ))
   }.
 
-p_effect, PEffect --> [Context],
+p_effect, PEffect --> [Resource],
   {
     once((
-      assignment_operator([Context], PEffect)
-    ; literal([parameter, object], [Context], PEffect)
+      assignment_operator([Resource], PEffect)
+    ; literal([parameter, object], [Resource], PEffect)
     ))
   }.
 
-assignment_operator, ["(", Label, " ", FHead, FExp, ")\n"] --> [Context],
+assignment_operator, ["(", Label, " ", FHead, FExp, ")\n"] --> [Resource],
   {
-    rdfs_individual_of(Context.r, pddl:'AssignmentOperator'),
-    label([Context], Label),
-    rdf(Context.r, pddl:parameter, FHeadResource, Context.g),
-    f_head([Context.put(r, FHeadResource)], FHead),
-    rdf(Context.r, pddl:argument, FExpResource, Context.g),
-    f_exp([Context.put(r, FExpResource)], FExp)
+    rdfs_individual_of(Resource, pddl:'AssignmentOperator'),
+    label([Resource], Label),
+    rdf0(Resource, pddl:parameter, FHeadResource),
+    f_head([FHeadResource], FHead),
+    rdf0(Resource, pddl:argument, FExpResource),
+    f_exp([FExpResource], FExp)
   }.
 
 problem, ["(define (problem ", Label, ")",
@@ -449,81 +455,79 @@ problem, ["(define (problem ", Label, ")",
             indent(2, Init),
             indent(2, Goal),
             indent(2, Metric),
-         "\n", ")"] --> [Context],
+         "\n", ")"] --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'Problem', Context.g),
-    label([Context], Label),
-    rdf(Context.r, pddl:domain, DomainResource, Context.g),
-    label([Context.put(r, DomainResource)], Domain),
-    objects([Context], Objects),
-    init([Context], Init),
-    goal([Context], Goal),
-    metric([Context], Metric)
+    rdf0(Resource, rdf:type, pddl:'Problem'),
+    label([Resource], Label),
+    rdf0(Resource, pddl:domain, DomainResource),
+    label([DomainResource], Domain),
+    objects([Resource], Objects),
+    init([Resource], Init),
+    goal([Resource], Goal),
+    metric([Resource], Metric)
   }.
 
-objects, ["(:objects ", Objects, ")"] --> [Context],
+objects, ["(:objects ", Objects, ")"] --> [Resource],
   {
-    findall(Context.put(r, ObjectResource),
-      rdf(Context.r, pddl:object, ObjectResource, Context.g),
+    findall(ObjectResource,
+      rdf0(Resource, pddl:object, ObjectResource),
     ObjectResources),
     group_typed_things(ObjectResources, GrouppedObjects),
     groupped_typed_things(object, [GrouppedObjects], Objects)
   }.
 
-init, ["(:init", indent(2, Init), ")"] --> [Context],
+init, ["(:init", indent(2, Init), ")"] --> [Resource],
   {
-    collect([Context, pddl:init, init_el], Init)
+    collect([Resource, pddl:init, init_el], Init)
   }.
 
-init_el, InitEl --> [Context],
+init_el, InitEl --> [Resource],
   {
     once((
-      literal([object], [Context], InitEl)
-    ; eq([Context], InitEl)
+      literal([object], [Resource], InitEl)
+    ; eq([Resource], InitEl)
     ))
   }.
 
-eq, ["(", Label, " ", FHead, " ", Number, ")\n"] --> [Context],
+eq, ["(", Label, " ", FHead, " ", Number, ")\n"] --> [Resource],
   {
-    rdf(Context.r, rdf:type, pddl:'EQ', Context.g),
-    label([Context], Label),
-    rdf(Context.r, pddl:left, FHeadResource, Context.g),
+    rdf0(Resource, rdf:type, pddl:'EQ'),
+    label([Resource], Label),
+    rdf0(Resource, pddl:left, FHeadResource),
     f_head([FHeadResource], FHead),
-    rdf(Context.r, pddl:right, NumberResource, Context.g),
+    rdf0(Resource, pddl:right, NumberResource),
     number([NumberResource], Number)
   }.
 
-goal, ["(:goal", indent(2, GD), ")"] --> [Context],
+goal, ["(:goal", indent(2, GD), ")"] --> [Resource],
   {
-    rdf(Context.r, pddl:goal, GoalResource, Context.g),
-    goal_description([Context.put(r, GoalResource)], GD)
+    rdf0(Resource, pddl:goal, GoalResource),
+    goal_description([GoalResource], GD)
   }.
 
-metric, ["(:metric ", Metric, " ", GroundFExp, ")"] --> [Context],
+metric, ["(:metric ", Metric, " ", GroundFExp, ")"] --> [Resource],
   {
     once((
-      rdf(Context.r, pddl:minimize, Criteria, Context.g),
+      rdf0(Resource, pddl:minimize, Criteria),
       Metric = "minimize"
-    ; rdf(Context.r, pddl:maximize, Criteria, Context.g),
+    ; rdf0(Resource, pddl:maximize, Criteria),
       Metric = "maximize"
     )),
-    ground_f_exp([Context.put(r, Criteria)], GroundFExp)
+    ground_f_exp([Criteria], GroundFExp)
   }.
 
-ground_f_exp, GroundFExp --> [Context],
+ground_f_exp, GroundFExp --> [Resource],
   {
     once((
-      number([Context], GroundFExp)
-    ; binary_operator(ground_f_exp, [Context], GroundFExp)
-    ; f_head([Context], GroundFExp)
+      number([Resource], GroundFExp)
+    ; binary_operator(ground_f_exp, [Resource], GroundFExp)
+    ; f_head([Resource], GroundFExp)
     ))
   }.
 
 test :-
-  rdf_global_id(pddle:'adl-blocksworld', Domain),
-  generate_pddl(Domain, 'http://ontology.cf.ericsson.net/pddl_example', String1),
+  generate_pddl(pddle:'adl-blocksworld', 'http://ontology.cf.ericsson.net/pddl_example', String1),
   writeln(String1),
   nl,
-  rdf_global_id(pddle:'adl-blocksworld-problem', Problem),
-  generate_pddl(Problem, 'http://ontology.cf.ericsson.net/pddl_example', String2),
+  generate_pddl(pddle:'adl-blocksworld-problem', 'http://ontology.cf.ericsson.net/pddl_example', String2),
   writeln(String2).

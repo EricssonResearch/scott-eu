@@ -101,6 +101,7 @@
 :Equality # requirement :equality
   a rdfs:Class ;
   rdfs:subClassOf :Predicate ;
+  oslc:instanceShape :PredicateShape ;
   rdfs:label "=" ;
   :parameter :left ,
              :right .
@@ -108,19 +109,24 @@
 # --- PDDL Instances
 
 :total-time
-  a :Function ;
+  a rdfs:Class ;
+  rdfs:subClassOf :Function ;
+  oslc:instanceShape :FunctionShape ;
   rdfs:label "total-time" .
 
 :argument
   a :Parameter ;
+  oslc:instanceShape :ParameterShape ;
   sh:order 1 .
 
 :left
   a :Parameter ;
+  oslc:instanceShape :ParameterShape ;
   sh:order 1 .
 
 :right
   a :Parameter ;
+  oslc:instanceShape :ParameterShape ;
   sh:order 2 .
 
 # --- PDDL Properties
