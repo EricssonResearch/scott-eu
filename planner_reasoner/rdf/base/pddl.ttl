@@ -108,7 +108,8 @@
 # --- PDDL Instances
 
 :total-time
-  a :Function .
+  a :Function ;
+  rdfs:label "total-time" .
 
 :argument
   a :Parameter ;

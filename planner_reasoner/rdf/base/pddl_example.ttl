@@ -36,7 +36,7 @@
 #         :precondition
 #            (and
 #              (not(= ?b ?y))
-#               (clear ?b)
+#              (clear ?b)
 #              (on ?b ?x)
 #              (clear ?y)
 #            )
@@ -44,12 +44,12 @@
 #            (and
 #              (on ?b ?y)
 #              (not (on ?b ?x))
-#               (clear ?x)
+#              (clear ?x)
 #              (increase (moved ?b) 1)
 #              (increase (total-moved) 1)
-#               (when
+#              (when
 #                (not (= ?y table))
-#                 (not (clear ?y))
+#                (not (clear ?y))
 #              )
 #            )
 #      )
@@ -147,25 +147,24 @@
   pddl:parameter :move-b ,
                  :move-x ,
                  :move-y ;
-  pddl:precondition
-    [ a pddl:And ;
-      pddl:argument [ a pddl:Not ;
-                      pddl:argument [ a pddl:Equality ;
-                                      pddl:left :move-b ;
-                                      pddl:right :move-y
+  pddl:precondition [ a pddl:And ;
+                      pddl:argument [ a pddl:Not ;
+                                      pddl:argument [ a pddl:Equality ;
+                                                      pddl:left :move-b ;
+                                                      pddl:right :move-y
+                                                    ]
+                                    ] ,
+                                    [ a :clear ;
+                                      :clear-x :move-b
+                                    ] ,
+                                    [ a :on ;
+                                      :on-x :move-b ;
+                                      :on-y :move-x
+                                    ] ,
+                                    [ a :clear ;
+                                      :clear-x :move-y
                                     ]
-                    ] ,
-                    [ a :clear ;
-                      :clear-x :move-b
-                    ] ,
-                    [ a :on ;
-                      :on-x :move-b ;
-                      :on-y :move-x
-                    ] ,
-                    [ a :clear ;
-                      :clear-x :move-y
-                    ]
-    ] ;
+                    ] ;
   pddl:effect [ a pddl:And ;
                 pddl:argument [ a :on ;
                                 :on-x :move-b ;
@@ -238,16 +237,16 @@
 #      (:domain adl-blocksworld)
 #      (:objects a b c - block table - location)
 #      (:init
-#         (on b table) (on a table) (on c a)
-#         (clear b) (clear c) (clear table)
+#        (on b table) (on a table) (on c a)
+#        (clear b) (clear c) (clear table)
 #      )
 #      (:goal
-#         (or
-#           (on b c)
-#           (on c b)
-#         )
+#        (or
+#          (on b c)
+#          (on c b)
+#        )
 #      )
-#      (:metric minimize (total-time))
+#      (:metric minimize total-time)
 #    )
 
 :adl-blocksworld-problem
