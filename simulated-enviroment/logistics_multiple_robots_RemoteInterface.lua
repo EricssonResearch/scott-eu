@@ -175,8 +175,9 @@ end
 getRobotPosition=function(inInts, inFloats, inStrings, inBuffer)
     robotPosition = simGetObjectPosition(vehicleReference, -1)
     robotOrientation = simGetObjectOrientation(vehicleReference, -1)[3]
-    return {1, robotPosition[1], robotPosition[2], robotOrientation}, {}, {}, ""
+    return {1}, {robotPosition[1], robotPosition[2], robotOrientation}, {}, ""
 end
+
 
 -- util - string split
 function mysplit(inString,sep)
