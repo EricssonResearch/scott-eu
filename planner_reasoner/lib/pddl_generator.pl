@@ -25,21 +25,11 @@ limitations under the License.
 :- thread_local graph/1.
 
 :- rdf_meta rdf0(r, r, t).
-:- rdf_meta rdf1(r, r, t).
 :- rdf_meta generate_pddl(r, -, -).
 
-% lookup only in local graph and fail if not found
 rdf0(S, P, O) :-
   graph(G),
   rdf(S, P, O, G).
-
-% lookup in local graph and then globally in all graphs
-rdf1(S, P, O) :-
-  graph(G),
-  once((
-    rdf(S, P, O, G)
-  ; rdf(S, P, O)
-  )).
 
 generate_pddl(Resource, Graph, String) :-
   setup_call_cleanup(assertz(graph(Graph)), (
@@ -129,8 +119,12 @@ parameters, Parameters --> [Resource],
   }.
 
 order_compare(Ineq, Thing1, Thing2) :-
-  rdf1(Thing1, sh:order, Order1^^xsd:integer),
-  rdf1(Thing2, sh:order, Order2^^xsd:integer),
+  once((
+    rdf0(Thing1, sh:order, Order1^^xsd:integer),
+    rdf0(Thing2, sh:order, Order2^^xsd:integer)
+  ; rdf(Thing1, sh:order, Order1^^xsd:integer),
+    rdf(Thing2, sh:order, Order2^^xsd:integer)
+  )),
   ( Order1 =< Order2
   -> Ineq = <
   ; Ineq = >
@@ -259,9 +253,9 @@ atomic_formula(P), ["(", Label, Arguments, ")\n"] --> [Resource],
   {
     rdfs_individual_of(Resource, pddl:'Predicate'),
     label([Resource], Label),
-    rdf0(Resource, rdf:type, PredicateType),
+    rdf(Resource, rdf:type, PredicateType),
     findall(Parameter,
-      rdf1(PredicateType, pddl:parameter, Parameter),
+      rdf(PredicateType, pddl:parameter, Parameter),
     Parameters),
     predsort(order_compare, Parameters, SortedParameters),
     predicate_arguments(P, Resource, [SortedParameters], Arguments)
@@ -288,15 +282,19 @@ operator_arguments(Rule), Arguments --> [Resource],
   {
     findall([Parameter, Argument], (
       rdf0(Resource, Parameter, Argument),
-      rdf1(Parameter, rdf:type, pddl:'Parameter')
+      rdf(Parameter, rdf:type, pddl:'Parameter')
     ), ParamArgs),
     predsort(arg_compare, ParamArgs, SortedParamArgs),
     operator_arguments0(Rule, [SortedParamArgs], Arguments)
   }.
 
 arg_compare(Ineq, [Param1, _], [Param2, _]) :-
-  rdf1(Param1, sh:order, P1^^xsd:integer),
-  rdf1(Param2, sh:order, P2^^xsd:integer),
+  once((
+    rdf0(Param1, sh:order, P1^^xsd:integer),
+    rdf0(Param2, sh:order, P2^^xsd:integer)
+  ; rdf(Param1, sh:order, P1^^xsd:integer),
+    rdf(Param2, sh:order, P2^^xsd:integer)
+  )),
   ( P1 =< P2
   -> Ineq = <
   ; Ineq = >
@@ -353,17 +351,17 @@ f_head, Label --> [Resource],
   {
     rdfs_individual_of(Resource, pddl:'Function'),
     label([Resource], Label),
-    rdf1(Resource, rdf:type, FunctionType),
-    \+ rdf1(FunctionType, pddl:parameter, _), !
+    rdf(Resource, rdf:type, FunctionType),
+    \+ rdf(FunctionType, pddl:parameter, _), !
   }.
 
 f_head, ["(", Label, Arguments, ")"] --> [Resource],
   {
     rdfs_individual_of(Resource, pddl:'Function'),
     label([Resource], Label),
-    rdf1(Resource, rdf:type, FunctionType),
+    rdf(Resource, rdf:type, FunctionType),
     findall(Parameter,
-      rdf1(FunctionType, pddl:parameter, Parameter),
+      rdf(FunctionType, pddl:parameter, Parameter),
     Parameters),
     predsort(order_compare, Parameters, SortedParameters),
     predicate_arguments([parameter, object], Resource, [SortedParameters], Arguments)
