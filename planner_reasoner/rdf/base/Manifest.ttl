@@ -17,22 +17,6 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
-<warehouse_domain.ttl>
-  a lib:Instances ;
-  dcterms:title "Sample planning PDDL domain"^^rdf:XMLLiteral ;
-  lib:source <http://ontology.cf.ericsson.net/warehouse_domain#> ;
-  a lib:Namespace ;
-  lib:mnemonic "wd" ;
-  lib:namespace <http://ontology.cf.ericsson.net/warehouse_domain/> .
-
-<warehouse_problem.ttl>
-  a lib:Instances ;
-  dcterms:title "Sample planning PDDL problem"^^rdf:XMLLiteral ;
-  lib:source <http://ontology.cf.ericsson.net/warehouse_problem#> ;
-  a lib:Namespace ;
-  lib:mnemonic "wp" ;
-  lib:namespace <http://ontology.cf.ericsson.net/warehouse_problem/> .
-
 <pddl.ttl>
   a lib:Ontology ;
   dcterms:title "PDDL Ontology and Resource Shapes"^^rdf:XMLLiteral ;
