@@ -61,6 +61,7 @@
   rdfs:label "adl-blocksworld" ;
   pddl:type :location ,
             :block ;
+  pddl:constant :table ;
   pddl:predicate :on ,
                  :clear ;
   pddl:function :moved ,
@@ -68,17 +69,20 @@
   pddl:action :move .
 
 :location
-  a pddl:PrimitiveType ;
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:PrimitiveType ;
   oslc:instanceShape pddl:PrimitiveTypeShape ;
   rdfs:label "location" .
 
 :block
-  a pddl:PrimitiveType ;
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:PrimitiveType ;
   oslc:instanceShape pddl:PrimitiveTypeShape ;
   rdfs:label "block" .
 
 :location-or-block
-  a pddl:EitherType ;
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:EitherType ;
   oslc:instanceShape pddl:EitherTypeShape ;
   rdfs:member :location ,
               :block .
@@ -226,10 +230,9 @@
   sh:order 3 .
 
 :table
-  a pddl:Object ;
-  oslc:instanceShape pddl:ObjectShape ;
-  rdfs:label "table" ;
-  pddl:type :location .
+  a :location ;
+  oslc:instanceShape pddl:ConstantShape ;
+  rdfs:label "table" .
 
 # --- Planning Problem
 
@@ -292,19 +295,16 @@
   pddl:minimize [ a pddl:total-time ].
 
 :a
-  a pddl:Object ;
+  a :block ;
   oslc:instanceShape pddl:ObjectShape ;
-  rdfs:label "a" ;
-  pddl:type :block .
+  rdfs:label "a" .
 
 :b
-  a pddl:Object ;
+  a :block ;
   oslc:instanceShape pddl:ObjectShape ;
-  rdfs:label "b" ;
-  pddl:type :block .
+  rdfs:label "b" .
 
 :c
-  a pddl:Object ;
+  a :block ;
   oslc:instanceShape pddl:ObjectShape ;
-  rdfs:label "c" ;
-  pddl:type :block .
+  rdfs:label "c" .

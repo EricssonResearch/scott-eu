@@ -28,7 +28,8 @@
   a rdfs:Class .
 
 :Type
-  a rdfs:Class .
+  a rdfs:Class ;
+  rdfs:subClassOf :MetaClass .
 
 :Orderable
   a rdfs:Class .
@@ -54,6 +55,15 @@
 # --- PDDL Meta Classes
 # Users create subclasses of these classes
 
+:PrimitiveType
+  a rdfs:Class ;
+  rdfs:subClassOf :Type .
+
+:EitherType
+  a rdfs:Class ;
+  rdfs:subClassOf :Type ;
+  rdfs:subClassOf rdf:Bag .
+
 :Action
   a rdfs:Class ;
   rdfs:subClassOf :MetaClass ;
@@ -78,25 +88,10 @@
 :Problem
   a rdfs:Class .
 
-:PrimitiveType
-  a rdfs:Class ;
-  rdfs:subClassOf :Type .
-
-:EitherType
-  a rdfs:Class ;
-  rdfs:subClassOf :Type ;
-  rdfs:subClassOf rdf:Bag .
-
 :Parameter
   a rdfs:Class ;
   rdfs:subClassOf rdf:Property ;
   rdfs:subClassOf :Orderable .
-
-:Object
-  a rdfs:Class .
-
-:Constant
-  a rdfs:Class .
 
 :Equality # requirement :equality
   a rdfs:Class ;
@@ -525,7 +520,6 @@
 
 :ObjectShape
   a oslc:ResourceShape ;
-  oslc:describes :Object ;
   dcterms:description "An object."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   dcterms:description "Object name."^^rdf:XMLLiteral ;

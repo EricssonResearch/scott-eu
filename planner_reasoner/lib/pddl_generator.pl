@@ -42,7 +42,9 @@ generate_pddl(Resource, Graph, String) :-
   ), retractall(graph(Graph))).
 
 domain, ["(define (domain ", Label, ")",
+            indent(2, "(:requirements :adl :equality)"),
             indent(2, Types),
+            indent(2, Constants),
             indent(2, Predicates),
             indent(2, Functions),
             indent(2, Actions),
@@ -51,6 +53,7 @@ domain, ["(define (domain ", Label, ")",
     rdf0(Resource, rdf:type, pddl:'Domain'),
     label([Resource], Label),
     types([Resource], Types),
+    constants([Resource], Constants),
     predicates([Resource], Predicates),
     functions([Resource], Functions),
     actions([Resource], Actions)
@@ -84,14 +87,23 @@ collect, Collection --> [Resource, Property, Rule],
 
 type, [" "|Label] --> [Resource],
   {
-    rdf0(Resource, rdf:type, pddl:'PrimitiveType'),
+    rdfs_subclass_of(Resource, pddl:'PrimitiveType'),
     label([Resource], Label)
   }.
 
 type, [" (either", Types, ")"] --> [Resource],
   {
-    rdf0(Resource, rdf:type, pddl:'EitherType'),
+    rdfs_subclass_of(Resource, pddl:'EitherType'),
     collect([Resource, rdfs:member, type], Types)
+  }.
+
+constants, ["(:constants ", Constants, ")"] --> [Resource],
+  {
+    findall(ConstantResource,
+      rdf0(Resource, pddl:constant, ConstantResource),
+    ConstantResources),
+    group_typed_things(ConstantResources, GrouppedConstants, rdf:type),
+    groupped_typed_things(object, rdf:type, [GrouppedConstants], Constants)
   }.
 
 predicates, ["(:predicates ",
@@ -114,8 +126,8 @@ parameters, Parameters --> [Resource],
       rdf0(Resource, pddl:parameter, ParamResource),
     ParamResources),
     predsort(order_compare, ParamResources, SortedParameters),
-    group_typed_things(SortedParameters, GrouppedParameters),
-    groupped_typed_things(parameter, [GrouppedParameters], Parameters)
+    group_typed_things(SortedParameters, GrouppedParameters, pddl:type),
+    groupped_typed_things(parameter, pddl:type, [GrouppedParameters], Parameters)
   }.
 
 order_compare(Ineq, Thing1, Thing2) :-
@@ -130,44 +142,44 @@ order_compare(Ineq, Thing1, Thing2) :-
   ; Ineq = >
   ).
 
-group_typed_things(Parameters, GrouppedParameters) :-
-  group_typed_things0(_, Parameters, [], GrouppedParameters).
+group_typed_things(Parameters, GrouppedParameters, TypeProperty) :-
+  group_typed_things0(_, Parameters, [], GrouppedParameters, TypeProperty).
 
-group_typed_things0(_, [], A, [A]) :- !.
+group_typed_things0(_, [], A, [A], _) :- !.
 
-group_typed_things0(Type, [H|T], A, O) :-
-  rdf0(H, pddl:type, HType),
-  group_typed_things1(Type, HType, [H|T], A, O).
+group_typed_things0(Type, [H|T], A, O, TypeProperty) :-
+  rdf0(H, TypeProperty, HType),
+  group_typed_things1(Type, HType, [H|T], A, O, TypeProperty).
 
-group_typed_things1(Type, Type, [H|T], A, O) :- !,
+group_typed_things1(Type, Type, [H|T], A, O, TypeProperty) :- !,
   append(A, [H], NA),
-  group_typed_things0(Type, T, NA, O).
+  group_typed_things0(Type, T, NA, O, TypeProperty).
 
-group_typed_things1(_, Type, [H|T], A, [A|T2]) :-
-  group_typed_things0(Type, T, [H], T2).
+group_typed_things1(_, Type, [H|T], A, [A|T2], TypeProperty) :-
+  group_typed_things0(Type, T, [H], T2, TypeProperty).
 
-groupped_typed_things(_) --> [[]].
-groupped_typed_things(Rule), [H2|T2] --> [[H|T]],
+groupped_typed_things(_,  _) --> [[]]. % TODO: test this and similar [[]]!
+groupped_typed_things(Rule, TypeProperty), [H2|T2] --> [[H|T]],
   {
-    typed_thing_group(Rule, [H], TTG),
+    typed_thing_group(Rule, TypeProperty, [H], TTG),
     ( T == []
     -> H2 = TTG
     ; append(TTG, [" "], H2)
     ),
-    groupped_typed_things(Rule, [T], T2)
+    groupped_typed_things(Rule, TypeProperty, [T], T2)
   }.
 
-typed_thing_group(Rule), [H2|T2] --> [[H|T]],
+typed_thing_group(Rule, TypeProperty), [H2|T2] --> [[H|T]],
   {
     Term =.. [Rule, [H], TypedThing],
     call(Term),
     ( T == []
-    -> rdf0(H, pddl:type, TypeResource),
+    -> rdf0(H, TypeProperty, TypeResource),
        type([TypeResource], Type),
        H2 = [TypedThing, " -", Type],
        T2 = []
     ; append(TypedThing, [" "], H2),
-      typed_thing_group(Rule, [T], T2)
+      typed_thing_group(Rule, TypeProperty, [T], T2)
     )
   }.
 
@@ -228,7 +240,7 @@ goal_description, GD --> [Resource],
 
 object, Label --> [Resource],
   {
-    rdf0(Resource, rdf:type, pddl:'Object'),
+    rdfs_individual_of(Resource, pddl:'PrimitiveType'),
     label([Resource], Label)
   }.
 
@@ -470,8 +482,8 @@ objects, ["(:objects ", Objects, ")"] --> [Resource],
     findall(ObjectResource,
       rdf0(Resource, pddl:object, ObjectResource),
     ObjectResources),
-    group_typed_things(ObjectResources, GrouppedObjects),
-    groupped_typed_things(object, [GrouppedObjects], Objects)
+    group_typed_things(ObjectResources, GrouppedObjects, rdf:type),
+    groupped_typed_things(object, rdf:type, [GrouppedObjects], Objects)
   }.
 
 init, ["(:init", indent(2, Init), ")"] --> [Resource],
