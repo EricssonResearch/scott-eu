@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 :- module(indent_processor, [
-  insert_indents/2
+  insert_indents/2,
+  nonempty/1
 ]).
 
 insert_indents(In, Out) :-
@@ -28,9 +29,13 @@ insert_indents(In, Out, Indent, ApplyIndent) :-
 
 insert_indents0([], [], _, _) :- !.
 
-insert_indents0([indent(N, H)|T], [["\n"|H2]|T2], Indent, _) :- !,
-  NewIndent is Indent + N,
-  insert_indents(H, H2, NewIndent, true),
+insert_indents0([indent(N, H)|T], Out, Indent, _) :- !,
+  ( nonempty(H)
+  -> NewIndent is Indent + N,
+     insert_indents(H, H3, NewIndent, true),
+     append(["\n"|H3], T2, Out)
+  ; Out = [T2]
+  ),
   insert_indents0(T, T2, Indent, true).
 
 insert_indents0([H|T], [H2|T2], Indent, ApplyIndent) :-
@@ -43,3 +48,7 @@ insert_indents0([H|T], [H2|T2], Indent, ApplyIndent) :-
   ; NewApplyIndent = false
   ),
   insert_indents0(T, T2, Indent, NewApplyIndent).
+
+nonempty(L) :-
+  length(L, N),
+  N > 0.
