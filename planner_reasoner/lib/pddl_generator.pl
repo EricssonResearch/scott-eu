@@ -30,8 +30,8 @@ limitations under the License.
 generate_pddl(Resource, Graph, String) :-
   setup_call_cleanup(rdf0_set_graph(Graph), (
     once((
-      phrase(domain(O1), [Resource], [Resource])
-    ; phrase(problem(O1), [Resource], [Resource])
+      domain(O1, [Resource], [Resource])
+    ; problem(O1, [Resource], [Resource])
     )),
     insert_indents(O1, O2),
     atomics_to_string(O2, "", String)
@@ -83,9 +83,9 @@ type([" (either", Types, ")"]) -->
 constants(["(:constants ", Constants, ")"]) -->
   all_properties(pddl:constant, ConstantResources),
   {
+    nonempty(ConstantResources), !,
     group_typed_things(ConstantResources, GrouppedConstants, rdf:type),
-    groupped_typed_things(object, rdf:type, GrouppedConstants, Constants),
-    nonempty(Constants), !
+    groupped_typed_things(object, rdf:type, GrouppedConstants, Constants)
   }.
 
 constants([]) --> [].
@@ -103,17 +103,17 @@ predicate(["(", Label, Parameters, ")\n"]) -->
 
 parameters_w_space([" ", Parameters]) -->
   parameters(Parameters),
-  { nonempty(Parameters), !}.
+  { nonempty(Parameters), ! }.
 
 parameters_w_space([]) --> [].
 
 parameters(Parameters) -->
   all_properties(pddl:parameter, ParameterResources),
   {
+    nonempty(ParameterResources), !,
     predsort(order_compare, ParameterResources, SortedParameters),
     group_typed_things(SortedParameters, GrouppedParameters, pddl:type),
-    groupped_typed_things(parameter, pddl:type, GrouppedParameters, Parameters),
-    nonempty(Parameters), !
+    groupped_typed_things(parameter, pddl:type, GrouppedParameters, Parameters)
   }.
 
 parameters([]) --> [].
@@ -169,7 +169,7 @@ typed_thing_group(Rule, TypeProperty, [H|T], [H2|T2]) :-
     typed_thing_group(Rule, TypeProperty, T, T2)
   ).
 
-parameter(["?",Label]) -->
+parameter(["?", Label]) -->
   of_type(pddl:'Parameter'),
   label(Label).
 
@@ -239,7 +239,7 @@ atomic_formula(P, ["(", Label, Arguments, ")\n"]) -->
   label(Label),
   lookup(Resource),
   {
-    rdf(Resource, rdf:type, PredicateType),
+    rdf0(Resource, rdf:type, PredicateType),
     findall(Parameter,
       rdf(PredicateType, pddl:parameter, Parameter),
     Parameters),
@@ -295,18 +295,18 @@ quantifier(["(", Label, " (", Parameters, ")", indent(2, Arguments), ")\n"]) -->
   parameters(Parameters),
   operator_arguments(goal_description, Arguments).
 
-binary_comparator(["(", Label, Arguments, ")\n"]) -->
+binary_comparator(["(", Label, " ", Arguments, ")\n"]) -->
   individual_of(pddl:'BinaryComparator'),
   label(Label),
   operator_arguments(f_exp, Arguments).
 
-f_exp([" "|FExp]) -->
+f_exp(FExp) -->
   number(FExp), !.
 
-f_exp([" "|FExp]) -->
+f_exp(FExp) -->
   binary_operator(f_exp, FExp), !.
 
-f_exp([" "|FExp]) -->
+f_exp(FExp) -->
   f_head(FExp).
 
 number(Number) -->
@@ -318,7 +318,7 @@ number(Number) -->
     ))
   }.
 
-binary_operator(Rule, ["(", Label, Arguments, ")"]) -->
+binary_operator(Rule, ["(", Label, " ", Arguments, ")"]) -->
   individual_of(pddl:'BinaryOperator'),
   label(Label),
   operator_arguments(Rule, Arguments).
@@ -328,7 +328,7 @@ f_head(Label) -->
   label(Label),
   lookup(Resource),
   {
-    rdf(Resource, rdf:type, FunctionType),
+    rdf0(Resource, rdf:type, FunctionType),
     \+ rdf(FunctionType, pddl:parameter, _), !
   }.
 
@@ -337,7 +337,7 @@ f_head(["(", Label, Arguments, ")"]) -->
   label(Label),
   lookup(Resource),
   {
-    rdf(Resource, rdf:type, FunctionType),
+    rdf0(Resource, rdf:type, FunctionType),
     findall(Parameter,
       rdf(FunctionType, pddl:parameter, Parameter),
     Parameters),
@@ -365,20 +365,20 @@ c_effect(CEffect) -->
 c_effect(CEffect) -->
   p_effect(CEffect).
 
-for_all(["(", Label, "(", Variables, ")", indent(2, Arguments), ")\n"]) -->
+for_all(["(", Label, " (", Variables, ")", indent(2, Arguments), ")\n"]) -->
   individual_of(pddl:'ForAll'),
   label(Label),
-  lookup(Resource),
-  { variables([Resource], Variables) },
+  apply_to_properties(pddl:parameter, variable, VariableList),
+  {
+    ( nonempty(VariableList)
+    -> flatten(VariableList, [_|Variables])
+    ; Variables = []
+    )
+  },
   apply_to_property(pddl:argument, effect, Arguments).
 
-variables([H|T], Out) :-
-  parameter(V, [H], [H]),
-  ( T == []
-  -> Out = [V]
-  ; Out = [V, " "|T2],
-    variables(T, T2)
-  ).
+variable([" "|Variable]) -->
+  parameter(Variable).
 
 when_effect(["(", Label, indent(2, [GD, CondEffect]), ")\n"]) -->
   individual_of(pddl:'When'),
@@ -398,7 +398,7 @@ p_effect(PEffect) -->
 p_effect(PEffect) -->
   literal([parameter, object], PEffect).
 
-assignment_operator(["(", Label, " ", FHead, FExp, ")\n"]) -->
+assignment_operator(["(", Label, " ", FHead, " ", FExp, ")\n"]) -->
   individual_of(pddl:'AssignmentOperator'),
   label(Label),
   apply_to_property(pddl:parameter, f_head, FHead),
