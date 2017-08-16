@@ -28,8 +28,7 @@
   a rdfs:Class .
 
 :Type
-  a rdfs:Class ;
-  rdfs:subClassOf :MetaClass .
+  a rdfs:Class .
 
 :Orderable
   a rdfs:Class .
@@ -57,12 +56,14 @@
 
 :PrimitiveType
   a rdfs:Class ;
-  rdfs:subClassOf :Type .
+  rdfs:subClassOf :Type ;
+  rdfs:subClassOf :MetaClass .
 
 :EitherType
   a rdfs:Class ;
   rdfs:subClassOf :Type ;
-  rdfs:subClassOf rdf:Bag .
+  rdfs:subClassOf rdf:Bag ;
+  rdfs:subClassOf :MetaClass .
 
 :Action
   a rdfs:Class ;
