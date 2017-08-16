@@ -26,13 +26,21 @@ oslc_dispatch:serializer(text/'x-pddl', turtle).
 
 plan_creation_factory(Context) :-
   once((
-    Context.content_type == text/'x-pddl',
+    Context.content_type == text/'x-pddl'
+  ; throw(response(406))
+  )),
+  Graph = Context.graph_in,
+  findall(String, (
+    ( rdf(Resource, rdf:type, pddl:'Domain', Graph)
+    ; rdf(Resource, rdf:type, pddl:'Problem', Graph)
+    ),
     once((
-      rdf(Resource, rdf:type, pddl:'Domain', Context.graph_in)
-    ; rdf(Resource, rdf:type, pddl:'Problem', Context.graph_in)
-    )),
-    generate_pddl(Resource, Context.graph_in, String),
-    response(200),
-    write(String)
-  ; throw(response(400))
-  )).
+      generate_pddl(Resource, Graph, String)
+    ; throw(response(400))
+    ))
+  ), Strings),
+  response(200),
+  forall(
+    member(String, Strings),
+    writeln(String)
+  ).

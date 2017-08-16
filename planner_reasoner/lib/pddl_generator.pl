@@ -28,14 +28,20 @@ limitations under the License.
 :- rdf_meta groupped_typed_things(-, r, -, -).
 
 generate_pddl(Resource, Graph, String) :-
-  setup_call_cleanup(rdf0_set_graph(Graph), (
-    once((
-      domain(O1, [Resource], [Resource])
-    ; problem(O1, [Resource], [Resource])
-    )),
-    insert_indents(O1, O2),
-    atomics_to_string(O2, "", String)
-  ), rdf0_unset_graph(Graph)).
+  setup_call_cleanup(
+    rdf0_set_graph(Graph), (
+      pddl(PDDL, [Resource], [Resource]),
+      insert_indents(PDDL, Indented),
+      atomics_to_string(Indented, "", String)
+    ),
+    rdf0_unset_graph(Graph)
+  ).
+
+pddl(PDDL) -->
+  domain(PDDL), !.
+
+pddl(PDDL) -->
+  problem(PDDL).
 
 domain(["(define (domain ", Label, ")",
           indent(2, ["(:requirements :adl :equality)"]),
@@ -44,7 +50,7 @@ domain(["(define (domain ", Label, ")",
           indent(2, Predicates),
           indent(2, Functions),
           indent(2, Actions),
-        "\n", ")"]) -->
+        "\n", ")\n"]) -->
   of_type(pddl:'Domain'),
   label(Label),
   types(Types),
@@ -410,7 +416,7 @@ problem(["(define (problem ", Label, ")",
            indent(2, Init),
            indent(2, Goal),
            indent(2, Metric),
-         "\n", ")"]) -->
+         "\n", ")\n"]) -->
   of_type(pddl:'Problem'),
   label(Label),
   apply_to_property(pddl:domain, label, Domain),
@@ -473,6 +479,5 @@ ground_f_exp(GroundFExp) -->
 test :-
   generate_pddl(pddle:'adl-blocksworld', 'http://ontology.cf.ericsson.net/pddl_example', String1),
   writeln(String1),
-  nl,
   generate_pddl(pddle:'adl-blocksworld-problem', 'http://ontology.cf.ericsson.net/pddl_example', String2),
   writeln(String2).
