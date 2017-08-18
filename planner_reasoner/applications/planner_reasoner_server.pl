@@ -55,5 +55,4 @@ plan_creation_factory(Context) :-
       ff(Domain, Graph, Problem, Graph, plan, Context.graph_out)
     ; throw(response(400))
     ))
-  )),
-  response(200).
+  )).

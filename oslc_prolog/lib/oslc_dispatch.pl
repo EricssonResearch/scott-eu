@@ -88,8 +88,11 @@ dispatch_to_handlers(Context, [handler(Module:Predicate, _)|T]) :-
   once((
     Term =.. [Predicate, Context],
     call(Module:Term)
-  ; NewContext = Context.put(graph_out, _),
-    dispatch_to_handlers(NewContext, T)
+  ; ( nonvar(Context.graph_out)
+    -> rdf_retractall(_, _, _, Context.graph_out)
+    ; true
+    ),
+    dispatch_to_handlers(Context, T)
   )).
 
 match_wildcard(ISPrefix, Prefix, ISResource, Resource) :-
