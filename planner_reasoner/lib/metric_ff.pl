@@ -92,7 +92,7 @@ action -->
       [pddl:action=ABN, sh:order='^^'(Order, xsd:integer)],
       rdf(Context.plan_graph)
     ),
-    oslc_resource(Context.plan, [pddl:step=SBN], rdf(Context.plan_graph))
+    rdf_assert(Context.plan, pddl:step, SBN, Context.plan_graph)
   }.
 
 find_action(ActionPattern, Arity, ActionResource) :-
