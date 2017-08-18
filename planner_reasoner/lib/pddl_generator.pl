@@ -44,7 +44,7 @@ pddl(PDDL) -->
   problem(PDDL).
 
 domain(["(define (domain ", Label, ")",
-          indent(2, ["(:requirements :adl :equality)"]),
+          indent(2, ["(:requirements :typing :equality :fluents)"]),
           indent(2, Types),
           indent(2, Constants),
           indent(2, Predicates),
@@ -154,7 +154,7 @@ group_typed_things1(Type, Type, [H|T], A, O, TypeProperty) :- !,
 group_typed_things1(_, Type, [H|T], A, [A|T2], TypeProperty) :-
   group_typed_things0(Type, T, [H], T2, TypeProperty).
 
-groupped_typed_things(_,  _, [], []).
+groupped_typed_things(_,  _, [], []) :- !.
 groupped_typed_things(Rule, TypeProperty, [H|T], [H2|T2]) :-
   typed_thing_group(Rule, TypeProperty, H, TTG),
   ( T == []
@@ -328,15 +328,6 @@ binary_operator(Rule, ["(", Label, " ", Arguments, ")"]) -->
   individual_of(pddl:'BinaryOperator'),
   label(Label),
   operator_arguments(Rule, Arguments).
-
-f_head(Label) -->
-  individual_of(pddl:'Function'),
-  label(Label),
-  lookup(Resource),
-  {
-    rdf0(Resource, rdf:type, FunctionType),
-    \+ rdf(FunctionType, pddl:parameter, _), !
-  }.
 
 f_head(["(", Label, Arguments, ")"]) -->
   individual_of(pddl:'Function'),

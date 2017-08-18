@@ -29,7 +29,7 @@
 #      (:predicates (on ?x ?y - (either block location))
 #                   (clear ?x - (either block location))
 #      )
-#      (:functions (moved ?m - (either block location))
+#      (:functions (moved ?m - block)
 #                  (total-moved))
 #      (:action move
 #         :parameters (?b - block ?x ?y - (either block location))
@@ -134,7 +134,7 @@
   a pddl:Parameter ;
   oslc:instanceShape pddl:ParameterShape ;
   rdfs:label "m" ;
-  pddl:type :location-or-block ;
+  pddl:type :block ;
   sh:order 1 .
 
 :total-moved
@@ -240,6 +240,10 @@
 #      (:domain adl-blocksworld)
 #      (:objects a b c - block table - location)
 #      (:init
+#        (= (total-moved) 0)
+#        (= (moved a) 0)
+#        (= (moved b) 0)
+#        (= (moved c) 0)
 #        (on b table) (on a table) (on c a)
 #        (clear b) (clear c) (clear table)
 #      )
@@ -261,7 +265,29 @@
               :b ,
               :c ,
               :table ;
-  pddl:init [ a :on ;
+  pddl:init [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :a
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :b
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :c
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :total-moved ] ;
+              pddl:right 0
+            ] ,
+            [ a :on ;
               :on-x :b ;
               :on-y :table
             ] ,

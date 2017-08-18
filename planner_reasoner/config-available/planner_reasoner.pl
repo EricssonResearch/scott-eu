@@ -27,5 +27,6 @@ limitations under the License.
 :- rdf_load_library(pddl_example).
 
 :- use_module(library(pddl_generator)).
+:- use_module(library(metric_ff)).
 
 :- use_module(planner_reasoner(applications/planner_reasoner_server), []).

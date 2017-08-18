@@ -18,17 +18,17 @@ limitations under the License.
 
 :- use_module(library(semweb/rdf11)).
 :- use_module(library(oslc_dispatch)).
+:- use_module(library(oslc_rdf)).
 :- use_module(library(pddl_generator)).
+:- use_module(library(metric_ff)).
 
-:- oslc_post(planner:planCreationFactory, plan_creation_factory).
+:- oslc_post(planner:planCreationFactory, pddl_creation_factory, 900).
+:- oslc_post(planner:planCreationFactory, plan_creation_factory, 899).
 
 oslc_dispatch:serializer(text/'x-pddl', turtle).
 
-plan_creation_factory(Context) :-
-  once((
-    Context.content_type == text/'x-pddl'
-  ; throw(response(406))
-  )),
+pddl_creation_factory(Context) :-
+  Context.content_type == text/'x-pddl',
   Graph = Context.graph_in,
   findall(String, (
     ( rdf(Resource, rdf:type, pddl:'Domain', Graph)
@@ -44,3 +44,16 @@ plan_creation_factory(Context) :-
     member(String, Strings),
     writeln(String)
   ).
+
+plan_creation_factory(Context) :-
+  Graph = Context.graph_in,
+  make_temp_graph(Context.graph_out),
+  once((
+    rdf(Domain, rdf:type, pddl:'Domain', Graph),
+    rdf(Problem, rdf:type, pddl:'Problem', Graph),
+    once((
+      ff(Domain, Graph, Problem, Graph, plan, Context.graph_out)
+    ; throw(response(400))
+    ))
+  )),
+  response(200).
