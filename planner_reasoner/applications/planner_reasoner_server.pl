@@ -52,7 +52,7 @@ plan_creation_factory(Context) :-
     rdf(Domain, rdf:type, pddl:'Domain', Graph),
     rdf(Problem, rdf:type, pddl:'Problem', Graph),
     once((
-      ff(Domain, Graph, Problem, Graph, plan, Context.graph_out)
+      generate_plan(Domain, Graph, Problem, Graph, plan, Context.graph_out)
     ; throw(response(400))
     ))
   )).

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 :- module(metric_ff, [
-  ff/6
+  generate_plan/6
 ]).
 
 :- use_module(library(semweb/rdf11)).
@@ -24,11 +24,11 @@ limitations under the License.
 :- use_module(library(oslc)).
 :- use_module(library(pddl_generator)).
 
-:- rdf_meta ff(r, -, r, -, r, -).
+:- rdf_meta generate_plan(r, -, r, -, r, -).
 
 :- thread_local context/1.
 
-ff(Domain, DomainGraph, Problem, ProblemGraph, Plan, PlanGraph) :-
+generate_plan(Domain, DomainGraph, Problem, ProblemGraph, Plan, PlanGraph) :-
   generate_pddl(Domain, DomainGraph, DomainString),
   generate_pddl(Problem, ProblemGraph, ProblemString),
   tmp_file_stream(text, DomainFile, DomainStream),
@@ -151,8 +151,3 @@ time -->
     context(Context),
     oslc_resource(Context.plan, [pddl:time='^^'(Time, xsd:decimal)], rdf(Context.plan_graph))
   }.
-
-ff :-
-  ff(pddle:'adl-blocksworld', 'http://ontology.cf.ericsson.net/pddl_example',
-     pddle:'adl-blocksworld-problem', 'http://ontology.cf.ericsson.net/pddl_example',
-     pddle:'adl-blocksworld-plan', user).
