@@ -54,17 +54,14 @@ import se.ericsson.cf.scott.sandbox.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.services.ResourceShapeService;
 
-import scott.lyo.domain.planning.Mission;
-import scott.lyo.domain.warehouse.Place;
-import scott.lyo.domain.planning.Predicate;
-import scott.lyo.domain.planning.ProblemState;
-import scott.lyo.domain.warehouse.Robot;
-import scott.lyo.domain.warehouse.Waypoint;
-import scott.lyo.domain.warehouse.WhObject;
-import se.ericsson.cf.scott.sandbox.resources.DctermsConstants;
-import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
-import scott.lyo.domain.warehouse.WhConstants;
+import se.ericsson.cf.scott.sandbox.resources.Mission;
+import se.ericsson.cf.scott.sandbox.resources.Place;
+import se.ericsson.cf.scott.sandbox.resources.Predicate;
+import se.ericsson.cf.scott.sandbox.resources.ProblemState;
+import se.ericsson.cf.scott.sandbox.resources.Robot;
+import se.ericsson.cf.scott.sandbox.resources.Waypoint;
+import se.ericsson.cf.scott.sandbox.resources.WhObject;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
@@ -91,13 +88,6 @@ public class Application extends OslcWinkApplication {
             RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
             RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
             RESOURCE_CLASSES.add(ServiceProviderService1.class);
-            RESOURCE_CLASSES.add(Mission.class);
-            RESOURCE_CLASSES.add(Place.class);
-            RESOURCE_CLASSES.add(Predicate.class);
-            RESOURCE_CLASSES.add(ProblemState.class);
-            RESOURCE_CLASSES.add(Robot.class);
-            RESOURCE_CLASSES.add(Waypoint.class);
-            RESOURCE_CLASSES.add(WhObject.class);
             RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.ConsumersService"));
             RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.OAuthService"));
 
@@ -131,13 +121,13 @@ public class Application extends OslcWinkApplication {
             System.err.println("Application failed to initialize");
         }
 
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_MISSION, Mission.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_PLACE, Place.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PREDICATE, Predicate.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PROBLEMSTATE, ProblemState.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_ROBOT, Robot.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WAYPOINT, Waypoint.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WHOBJECT, WhObject.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_MISSION, Mission.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_PLACE, Place.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_PREDICATE, Predicate.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_PROBLEMSTATE, ProblemState.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_ROBOT, Robot.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_WAYPOINT, Waypoint.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WarehouseControllerConstants.PATH_WHOBJECT, WhObject.class);
     }
 
     public Application()

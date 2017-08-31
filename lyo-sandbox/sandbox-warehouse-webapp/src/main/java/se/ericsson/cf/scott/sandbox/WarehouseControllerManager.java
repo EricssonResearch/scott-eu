@@ -22,8 +22,6 @@
 
 package se.ericsson.cf.scott.sandbox;
 
-import java.io.IOException;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
@@ -32,13 +30,14 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
-import scott.lyo.domain.planning.Mission;
-import scott.lyo.domain.warehouse.Place;
-import scott.lyo.domain.planning.Predicate;
-import scott.lyo.domain.planning.ProblemState;
-import scott.lyo.domain.warehouse.Robot;
-import scott.lyo.domain.warehouse.Waypoint;
-import scott.lyo.domain.warehouse.WhObject;
+import se.ericsson.cf.scott.sandbox.resources.Mission;
+import se.ericsson.cf.scott.sandbox.resources.Place;
+import se.ericsson.cf.scott.sandbox.resources.Predicate;
+import se.ericsson.cf.scott.sandbox.resources.ProblemState;
+import se.ericsson.cf.scott.sandbox.resources.Robot;
+import se.ericsson.cf.scott.sandbox.resources.Waypoint;
+import se.ericsson.cf.scott.sandbox.resources.WhObject;
+
 
 // Start of user code imports
 import org.slf4j.Logger;
@@ -241,10 +240,10 @@ public class WarehouseControllerManager {
 
 
 
-    public static String getETagFromMission(final Mission aResource)
+    public static String getETagFromWhObject(final WhObject aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromMission
+        // Start of user code getETagFromWhObject
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
@@ -257,10 +256,10 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromWhObject(final WhObject aResource)
+    public static String getETagFromMission(final Mission aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromWhObject
+        // Start of user code getETagFromMission
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

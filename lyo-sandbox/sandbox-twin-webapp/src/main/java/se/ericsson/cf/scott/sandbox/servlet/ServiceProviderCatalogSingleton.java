@@ -16,7 +16,7 @@
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
  *     Michael Fiedler      - adapted for Bugzilla service provider
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - initialize each service provider separately
  *     Anass Radouani       - initialize each service provider separately
  *
@@ -68,11 +68,10 @@ import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
  */
 public class ServiceProviderCatalogSingleton
 {
-    private static final ServiceProviderCatalog             serviceProviderCatalog;
+    private static final ServiceProviderCatalog serviceProviderCatalog;
     private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
 
-    static
-    {
+    static {
         serviceProviderCatalog = new ServiceProviderCatalog();
         URI catalogUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("/catalog/singleton").build();
         serviceProviderCatalog.setAbout(catalogUri);
@@ -207,7 +206,8 @@ public class ServiceProviderCatalogSingleton
     {
         synchronized(serviceProviders)
         {
-            final ServiceProvider deregisteredServiceProvider = serviceProviders.remove(serviceProviderIdentifier(serviceProviderId));
+            final ServiceProvider deregisteredServiceProvider =
+                serviceProviders.remove(serviceProviderIdentifier(serviceProviderId));
 
             if (deregisteredServiceProvider != null)
             {
@@ -268,10 +268,13 @@ public class ServiceProviderCatalogSingleton
             //Register each service provider
             for (ServiceProviderInfo serviceProviderInfo : serviceProviderInfos) {
                 String identifier = serviceProviderIdentifier(serviceProviderInfo.serviceProviderId);
-                if (! serviceProviders.containsKey(identifier)) {
+                if (!serviceProviders.containsKey(identifier)) {
                     String serviceProviderName = serviceProviderInfo.name;
-                    String title = "Service Provider: " + serviceProviderName + "(" + identifier + ")";
-                    String description = "Service Provider: " + serviceProviderName + "(" + identifier + ")";
+                    String title = String.format("Service Provider '%s'", serviceProviderName);
+                    String description = String.format("%s (id: %s; kind: %s)",
+                        "Service Provider",
+                        identifier,
+                        "Service Provider");
                     Publisher publisher = null;
                     Map<String, Object> parameterMap = new HashMap<String, Object>();
                     parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);

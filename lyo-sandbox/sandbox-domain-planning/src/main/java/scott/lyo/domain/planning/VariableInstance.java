@@ -69,9 +69,7 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import scott.lyo.domain.planning.PpConstants;
-import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
-import scott.lyo.domain.planning.Variable;
+
 
 // Start of user code imports
 // End of user code
@@ -91,9 +89,8 @@ public class VariableInstance
     // Start of user code attributeAnnotation:value
     // End of user code
     private Link value = new Link();
-    // Start of user code attributeAnnotation:label
-    // End of user code
-    private String label;
+    // 
+    private Boolean ;
     // Start of user code attributeAnnotation:order
     // End of user code
     private Integer order;
@@ -199,19 +196,16 @@ public class VariableInstance
         return value;
     }
     
-    // Start of user code getterAnnotation:label
-    // End of user code
-    @OslcName("label")
-    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
-    @OslcDescription("May be used to provide a human-readable version of a resource's name.")
-    @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.XMLLiteral)
+    // 
+    
+    
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
-    public String getLabel()
+    public Boolean isinvalid()
     {
-        // Start of user code getterInit:label
-        // End of user code
-        return label;
+        // 
+        return ;
     }
     
     // Start of user code getterAnnotation:order
@@ -257,16 +251,13 @@ public class VariableInstance
         // End of user code
     }
     
-    // Start of user code setterAnnotation:label
-    // End of user code
-    public void setLabel(final String label )
+    // 
+    public void setinvalid(final Boolean  )
     {
-        // Start of user code setterInit:label
-        // End of user code
-        this.label = label;
+        // 
+        this. = ;
     
-        // Start of user code setterFinalize:label
-        // End of user code
+        // 
     }
     
     // Start of user code setterAnnotation:order
@@ -312,21 +303,18 @@ public class VariableInstance
         return s;
     }
     
-    static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    static public String  (final HttpServletRequest httpServletRequest)
     {
         String s = "";
     
-        // Start of user code "Init:labelToHtmlForCreation(...)"
-        // End of user code
+        // 
     
-        s = s + "<label for=\"label\">label: </LABEL>";
+        s = s + "<label for=\"\">: </LABEL>";
     
-        // Start of user code "Mid:labelToHtmlForCreation(...)"
-        // End of user code
+        // 
     
-        s= s + "<input name=\"label\" type=\"text\" style=\"width: 400px\" id=\"label\" >";
-        // Start of user code "Finalize:labelToHtmlForCreation(...)"
-        // End of user code
+        s= s + "<input name=\"\" type=\"radio\" value=\"true\">True<input name=\"\" type=\"radio\" value=\"false\">False";
+        // 
     
         return s;
     }
@@ -398,31 +386,28 @@ public class VariableInstance
         return s;
     }
     
-    public String labelToHtml()
+    public String ToHtml()
     {
         String s = "";
     
-        // Start of user code labeltoHtml_init
-        // End of user code
+        // 
     
-        s = s + "<label for=\"label\"><strong>label</strong>: </LABEL>";
+        s = s + "<label for=\"\"><strong></strong>: </LABEL>";
     
-        // Start of user code labeltoHtml_mid
-        // End of user code
+        // 
     
         try {
-            if (label == null) {
+            if ( == null) {
                 s= s + "<em>null</em>";
             }
             else {
-                s= s + label.toString();
+                s= s + .toString();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     
-        // Start of user code labeltoHtml_finalize
-        // End of user code
+        // 
     
         return s;
     }

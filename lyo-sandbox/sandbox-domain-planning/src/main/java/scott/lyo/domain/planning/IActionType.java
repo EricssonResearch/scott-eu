@@ -63,12 +63,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.DctermsConstants;
-import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
-import scott.lyo.domain.planning.IPredicate;
-import scott.lyo.domain.planning.IVariable;
-import scott.lyo.domain.planning.IPredicate;
+
 
 // Start of user code imports
 // End of user code
@@ -82,13 +77,12 @@ public interface IActionType
     public void addHasVariable(final Link hasVariable );
     public void addEffect(final Link effect );
 
-    @OslcName("label")
-    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
-    @OslcDescription("May be used to provide a human-readable version of a resource's name.")
-    @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.XMLLiteral)
+    
+    
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
-    public String getLabel();
+    public Boolean isinvalid();
 
     @OslcName("hasVariable")
     @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "hasVariable")
@@ -115,19 +109,18 @@ public interface IActionType
     @OslcReadOnly(false)
     public HashSet<Link> getEffect();
 
-    @OslcName("title")
-    @OslcPropertyDefinition(DctermsConstants.DUBLIN_CORE_NAMSPACE + "title")
-    @OslcDescription("Title of the resource represented as rich text in XHTML content. SHOULD include only content that is valid inside an XHTML <span> element.")
+    
+    
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.XMLLiteral)
+    @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
-    public String getTitle();
+    public Boolean isinvalid();
 
 
-    public void setLabel(final String label );
+    public void setinvalid(final Boolean  );
     public void setHasVariable(final HashSet<Link> hasVariable );
     public void setPrecondition(final Link precondition );
     public void setEffect(final HashSet<Link> effect );
-    public void setTitle(final String title );
+    public void setinvalid(final Boolean  );
 }
 

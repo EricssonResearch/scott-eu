@@ -63,7 +63,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.DctermsConstants;
+
 
 // Start of user code imports
 // End of user code
@@ -75,15 +75,14 @@ public interface IPredicate
 {
 
 
-    @OslcName("title")
-    @OslcPropertyDefinition(DctermsConstants.DUBLIN_CORE_NAMSPACE + "title")
-    @OslcDescription("Title of the resource represented as rich text in XHTML content. SHOULD include only content that is valid inside an XHTML <span> element.")
+    
+    
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.XMLLiteral)
+    @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
-    public String getTitle();
+    public Boolean isinvalid();
 
 
-    public void setTitle(final String title );
+    public void setinvalid(final Boolean  );
 }
 

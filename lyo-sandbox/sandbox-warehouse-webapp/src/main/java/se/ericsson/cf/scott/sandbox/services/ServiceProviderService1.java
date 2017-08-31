@@ -71,26 +71,21 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
 import se.ericsson.cf.scott.sandbox.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
-import scott.lyo.domain.planning.PpConstants;
-import scott.lyo.domain.warehouse.WhConstants;
-import scott.lyo.domain.warehouse.WhConstants;
-import scott.lyo.domain.warehouse.WhConstants;
-import scott.lyo.domain.warehouse.WhConstants;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
-import scott.lyo.domain.planning.Mission;
-import scott.lyo.domain.warehouse.Place;
-import scott.lyo.domain.planning.Predicate;
-import scott.lyo.domain.planning.ProblemState;
-import scott.lyo.domain.warehouse.Robot;
-import scott.lyo.domain.warehouse.Waypoint;
-import scott.lyo.domain.warehouse.WhObject;
+import se.ericsson.cf.scott.sandbox.resources.Mission;
+import se.ericsson.cf.scott.sandbox.resources.Place;
+import se.ericsson.cf.scott.sandbox.resources.Predicate;
+import se.ericsson.cf.scott.sandbox.resources.ProblemState;
+import se.ericsson.cf.scott.sandbox.resources.Robot;
+import se.ericsson.cf.scott.sandbox.resources.Waypoint;
+import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 // Start of user code imports
 // End of user code
 
 // Start of user code pre_class_code
 // End of user code
-@OslcService(WhConstants.WAREHOUSE_DOMAIN)
+@OslcService(WarehouseControllerConstants.WAREHOUSE_DOMAIN)
 @Path("serviceProviders/{serviceProviderId}/resources")
 public class ServiceProviderService1
 {
@@ -113,8 +108,8 @@ public class ServiceProviderService1
     (
         title = "QueryCapabilityObjects",
         label = "",
-        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WhConstants.PATH_WHOBJECT,
-        resourceTypes = {WhConstants.TYPE_WHOBJECT},
+        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseControllerConstants.PATH_WHOBJECT,
+        resourceTypes = {WarehouseControllerConstants.TYPE_WHOBJECT},
         usages = {}
     )
     @GET
@@ -189,8 +184,8 @@ public class ServiceProviderService1
     (
         title = "QueryCapabilityPlaces",
         label = "",
-        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WhConstants.PATH_PLACE,
-        resourceTypes = {WhConstants.TYPE_PLACE},
+        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseControllerConstants.PATH_PLACE,
+        resourceTypes = {WarehouseControllerConstants.TYPE_PLACE},
         usages = {}
     )
     @GET
@@ -265,8 +260,8 @@ public class ServiceProviderService1
     (
         title = "QueryCapabilityWaypoints",
         label = "",
-        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WhConstants.PATH_WAYPOINT,
-        resourceTypes = {WhConstants.TYPE_WAYPOINT},
+        resourceShape = OslcConstants.PATH_RESOURCE_SHAPES + "/" + WarehouseControllerConstants.PATH_WAYPOINT,
+        resourceTypes = {WarehouseControllerConstants.TYPE_WAYPOINT},
         usages = {}
     )
     @GET

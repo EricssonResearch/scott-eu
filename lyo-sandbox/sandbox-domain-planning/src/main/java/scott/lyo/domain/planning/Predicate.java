@@ -69,7 +69,7 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.DctermsConstants;
+
 
 // Start of user code imports
 // End of user code
@@ -86,9 +86,8 @@ public class Predicate
     extends AbstractResource
     implements IPredicate
 {
-    // Start of user code attributeAnnotation:title
-    // End of user code
-    private String title;
+    // 
+    private Boolean ;
     
     // Start of user code classAttributes
     // End of user code
@@ -174,80 +173,68 @@ public class Predicate
     }
     
     
-    // Start of user code getterAnnotation:title
-    // End of user code
-    @OslcName("title")
-    @OslcPropertyDefinition(DctermsConstants.DUBLIN_CORE_NAMSPACE + "title")
-    @OslcDescription("Title of the resource represented as rich text in XHTML content. SHOULD include only content that is valid inside an XHTML <span> element.")
+    // 
+    
+    
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.XMLLiteral)
+    @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
-    public String getTitle()
+    public Boolean isinvalid()
     {
-        // Start of user code getterInit:title
-        // End of user code
-        return title;
+        // 
+        return ;
     }
     
     
-    // Start of user code setterAnnotation:title
-    // End of user code
-    public void setTitle(final String title )
+    // 
+    public void setinvalid(final Boolean  )
     {
-        // Start of user code setterInit:title
-        // End of user code
-        this.title = title;
+        // 
+        this. = ;
     
-        // Start of user code setterFinalize:title
-        // End of user code
+        // 
     }
     
     
-    static public String titleToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    static public String  (final HttpServletRequest httpServletRequest)
     {
         String s = "";
     
-        // Start of user code "Init:titleToHtmlForCreation(...)"
-        // End of user code
+        // 
     
-        s = s + "<label for=\"title\">title: </LABEL>";
+        s = s + "<label for=\"\">: </LABEL>";
     
-        // Start of user code "Mid:titleToHtmlForCreation(...)"
-        // End of user code
+        // 
     
-        s= s + "<input name=\"title\" type=\"text\" style=\"width: 400px\" id=\"title\" >";
-        // Start of user code "Finalize:titleToHtmlForCreation(...)"
-        // End of user code
+        s= s + "<input name=\"\" type=\"radio\" value=\"true\">True<input name=\"\" type=\"radio\" value=\"false\">False";
+        // 
     
         return s;
     }
     
     
-    public String titleToHtml()
+    public String ToHtml()
     {
         String s = "";
     
-        // Start of user code titletoHtml_init
-        // End of user code
+        // 
     
-        s = s + "<label for=\"title\"><strong>title</strong>: </LABEL>";
+        s = s + "<label for=\"\"><strong></strong>: </LABEL>";
     
-        // Start of user code titletoHtml_mid
-        // End of user code
+        // 
     
         try {
-            if (title == null) {
+            if ( == null) {
                 s= s + "<em>null</em>";
             }
             else {
-                s= s + title.toString();
+                s= s + .toString();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     
-        // Start of user code titletoHtml_finalize
-        // End of user code
+        // 
     
         return s;
     }

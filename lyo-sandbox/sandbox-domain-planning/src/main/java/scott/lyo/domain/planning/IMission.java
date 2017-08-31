@@ -63,10 +63,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import scott.lyo.domain.planning.PpConstants;
-import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
-import scott.lyo.domain.planning.IPredicate;
-import scott.lyo.domain.planning.IProblemState;
+
 
 // Start of user code imports
 // End of user code
@@ -86,13 +83,12 @@ public interface IMission
     @OslcReadOnly(false)
     public Date getPlanningDeadline();
 
-    @OslcName("label")
-    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
-    @OslcDescription("May be used to provide a human-readable version of a resource's name.")
-    @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.XMLLiteral)
+    
+    
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
-    public String getLabel();
+    public Boolean isinvalid();
 
     @OslcName("missionDeadline")
     @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "missionDeadline")
@@ -119,7 +115,7 @@ public interface IMission
 
 
     public void setPlanningDeadline(final Date planningDeadline );
-    public void setLabel(final String label );
+    public void setinvalid(final Boolean  );
     public void setMissionDeadline(final Date missionDeadline );
     public void setGoalPredicate(final HashSet<Link> goalPredicate );
     public void setInitialState(final ProblemState initialState );

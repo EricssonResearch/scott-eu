@@ -21,7 +21,7 @@ import org.apache.wink.client.ClientResponse;
 import org.eclipse.lyo.client.oslc.OSLCConstants;
 import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
-import scott.lyo.domain.planning.Plan;
+import se.ericsson.cf.scott.sandbox.resources.Plan;
 
 // Start of user code imports
 // End of user code

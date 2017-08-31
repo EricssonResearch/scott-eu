@@ -71,28 +71,26 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
 import se.ericsson.cf.scott.sandbox.PlannerReasonerManager;
 import se.ericsson.cf.scott.sandbox.PlannerReasonerConstants;
-import scott.lyo.domain.planning.PpConstants;
-import scott.lyo.domain.planning.PpConstants;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
-import scott.lyo.domain.planning.Action;
-import scott.lyo.domain.planning.ActionType;
-import scott.lyo.domain.planning.Mission;
-import scott.lyo.domain.warehouse.Place;
-import scott.lyo.domain.planning.Plan;
-import scott.lyo.domain.planning.Predicate;
-import scott.lyo.domain.planning.ProblemState;
-import scott.lyo.domain.warehouse.Robot;
-import scott.lyo.domain.planning.Variable;
-import scott.lyo.domain.planning.VariableInstance;
-import scott.lyo.domain.warehouse.Waypoint;
-import scott.lyo.domain.warehouse.WhObject;
+import se.ericsson.cf.scott.sandbox.resources.Action;
+import se.ericsson.cf.scott.sandbox.resources.ActionType;
+import se.ericsson.cf.scott.sandbox.resources.Mission;
+import se.ericsson.cf.scott.sandbox.resources.Place;
+import se.ericsson.cf.scott.sandbox.resources.Plan;
+import se.ericsson.cf.scott.sandbox.resources.Predicate;
+import se.ericsson.cf.scott.sandbox.resources.ProblemState;
+import se.ericsson.cf.scott.sandbox.resources.Robot;
+import se.ericsson.cf.scott.sandbox.resources.Variable;
+import se.ericsson.cf.scott.sandbox.resources.VariableInstance;
+import se.ericsson.cf.scott.sandbox.resources.Waypoint;
+import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 // Start of user code imports
 // End of user code
 
 // Start of user code pre_class_code
 // End of user code
-@OslcService(PpConstants.PLANNING_DOMAIN)
+@OslcService(PlannerReasonerConstants.PLANNING_DOMAIN)
 @Path("serviceProviders/{serviceProviderId}/plans")
 public class ServiceProviderService1
 {

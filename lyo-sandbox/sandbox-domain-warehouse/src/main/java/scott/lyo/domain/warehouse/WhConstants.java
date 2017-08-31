@@ -39,14 +39,14 @@ public interface WhConstants
 
     public static String PLACE = "Place";
     public static String PATH_PLACE = "place";
-    public static String TYPE_PLACE = WAREHOUSE_NAMSPACE + "place";
+    public static String TYPE_PLACE = WAREHOUSE_NAMSPACE + PLACE;
     public static String ROBOT = "Robot";
     public static String PATH_ROBOT = "robot";
-    public static String TYPE_ROBOT = WAREHOUSE_NAMSPACE + "robot";
+    public static String TYPE_ROBOT = WAREHOUSE_NAMSPACE + ROBOT;
     public static String WAYPOINT = "Waypoint";
     public static String PATH_WAYPOINT = "waypoint";
-    public static String TYPE_WAYPOINT = WAREHOUSE_NAMSPACE + "waypoint";
+    public static String TYPE_WAYPOINT = WAREHOUSE_NAMSPACE + WAYPOINT;
     public static String WHOBJECT = "WhObject";
     public static String PATH_WHOBJECT = "whObject";
-    public static String TYPE_WHOBJECT = WAREHOUSE_NAMSPACE + "whObject";
+    public static String TYPE_WHOBJECT = WAREHOUSE_NAMSPACE + WHOBJECT;
 }

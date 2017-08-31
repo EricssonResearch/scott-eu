@@ -26,10 +26,10 @@
     @OslcNamespaceDefinition(prefix = OslcConstants.OSLC_DATA_NAMESPACE_PREFIX,           namespaceURI = OslcConstants.OSLC_DATA_NAMESPACE),
     @OslcNamespaceDefinition(prefix = OslcConstants.RDF_NAMESPACE_PREFIX,                 namespaceURI = OslcConstants.RDF_NAMESPACE),
     @OslcNamespaceDefinition(prefix = OslcConstants.RDFS_NAMESPACE_PREFIX,                namespaceURI = OslcConstants.RDFS_NAMESPACE),
-    @OslcNamespaceDefinition(prefix = DctermsConstants.DUBLIN_CORE_NAMSPACE_PREFIX, namespaceURI = DctermsConstants.DUBLIN_CORE_NAMSPACE),
-    @OslcNamespaceDefinition(prefix = PpConstants.PLANNING_NAMSPACE_PREFIX, namespaceURI = PpConstants.PLANNING_NAMSPACE),
-    @OslcNamespaceDefinition(prefix = RdfsConstants.RDFS_NAMSPACE_PREFIX, namespaceURI = RdfsConstants.RDFS_NAMSPACE),
-    @OslcNamespaceDefinition(prefix = WhConstants.WAREHOUSE_NAMSPACE_PREFIX, namespaceURI = WhConstants.WAREHOUSE_NAMSPACE)
+    @OslcNamespaceDefinition(prefix = PlannerReasonerConstants.DUBLIN_CORE_NAMSPACE_PREFIX, namespaceURI = PlannerReasonerConstants.DUBLIN_CORE_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = PlannerReasonerConstants.PLANNING_NAMSPACE_PREFIX, namespaceURI = PlannerReasonerConstants.PLANNING_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = PlannerReasonerConstants.RDFS_NAMSPACE_PREFIX, namespaceURI = PlannerReasonerConstants.RDFS_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = PlannerReasonerConstants.WAREHOUSE_NAMSPACE_PREFIX, namespaceURI = PlannerReasonerConstants.WAREHOUSE_NAMSPACE)
 })
 package se.ericsson.cf.scott.sandbox.resources;
 
@@ -37,8 +37,5 @@ import org.eclipse.lyo.oslc4j.core.annotation.OslcNamespaceDefinition;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcSchema;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 
-import se.ericsson.cf.scott.sandbox.resources.DctermsConstants;
-import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
-import scott.lyo.domain.warehouse.WhConstants;
+import se.ericsson.cf.scott.sandbox.PlannerReasonerConstants;
 

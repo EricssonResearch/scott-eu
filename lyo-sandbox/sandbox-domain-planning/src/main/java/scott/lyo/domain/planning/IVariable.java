@@ -63,8 +63,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import scott.lyo.domain.planning.PpConstants;
-import scott.lyo.domain.planning.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.RdfsConstants;
+
 
 // Start of user code imports
 // End of user code
@@ -83,13 +82,12 @@ public interface IVariable
     @OslcReadOnly(false)
     public Link getResourceType();
 
-    @OslcName("label")
-    @OslcPropertyDefinition(RdfsConstants.RDFS_NAMSPACE + "label")
-    @OslcDescription("May be used to provide a human-readable version of a resource's name.")
-    @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.XMLLiteral)
+    
+    
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
-    public String getLabel();
+    public Boolean isinvalid();
 
     @OslcName("order")
     @OslcPropertyDefinition(PpConstants.PLANNING_NAMSPACE + "order")
@@ -100,7 +98,7 @@ public interface IVariable
 
 
     public void setResourceType(final Link resourceType );
-    public void setLabel(final String label );
+    public void setinvalid(final Boolean  );
     public void setOrder(final Integer order );
 }
 

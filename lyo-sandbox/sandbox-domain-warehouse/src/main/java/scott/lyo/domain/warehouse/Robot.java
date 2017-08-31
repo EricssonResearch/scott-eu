@@ -131,6 +131,10 @@ public class Robot
         // End of user code
     }
     
+    /** 
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.TwinResourcesFactory} instead.
+    */ 
+    @Deprecated 
     public Robot(final String serviceProviderId, final String robotId)
            throws URISyntaxException
     {
@@ -139,6 +143,10 @@ public class Robot
         // End of user code
     }
     
+    /** 
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.TwinResourcesFactory} instead.
+    */ 
+    @Deprecated
     public static URI constructURI(final String serviceProviderId, final String robotId)
     {
         String basePath = OSLC4JUtils.getServletURI();
@@ -151,11 +159,19 @@ public class Robot
         return builder.path(instanceURI).buildFromMap(pathParameters);
     }
     
+    /** 
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.TwinResourcesFactory} instead.
+    */ 
+    @Deprecated
     public static Link constructLink(final String serviceProviderId, final String robotId , final String label)
     {
         return new Link(constructURI(serviceProviderId, robotId), label);
     }
     
+    /** 
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.TwinResourcesFactory} instead.
+    */ 
+    @Deprecated
     public static Link constructLink(final String serviceProviderId, final String robotId)
     {
         return new Link(constructURI(serviceProviderId, robotId));
