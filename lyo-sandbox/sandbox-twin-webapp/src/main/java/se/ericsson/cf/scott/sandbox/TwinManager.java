@@ -30,8 +30,8 @@ import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import org.eclipse.lyo.tools.store.Store;
-import org.eclipse.lyo.tools.store.StoreFactory;
+import org.eclipse.lyo.store.Store;
+import org.eclipse.lyo.store.StoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;

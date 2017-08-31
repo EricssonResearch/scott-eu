@@ -48,8 +48,8 @@ import scott.lyo.domain.warehouse.ResourceFactory;
 import com.google.common.collect.ImmutableList;
 import java.util.Optional;
 import java.net.URI;
-import org.eclipse.lyo.tools.store.Store;
-import org.eclipse.lyo.tools.store.StoreFactory;
+import org.eclipse.lyo.store.Store;
+import org.eclipse.lyo.store.StoreFactory;
 import com.hp.hpl.jena.sparql.ARQException;
 // End of user code
 
