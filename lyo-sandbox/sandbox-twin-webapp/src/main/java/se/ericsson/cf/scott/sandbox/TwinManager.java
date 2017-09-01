@@ -45,6 +45,7 @@ import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 
 // Start of user code imports
+import javax.servlet.ServletContext;
 import org.eclipse.lyo.store.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +80,7 @@ public class TwinManager {
                 "se.ericsson.cf.scott.sandbox.store.query");
         final String updateUri = context.getInitParameter(
                 "se.ericsson.cf.scott.sandbox.store.query");
-        warehouseAdaptorClient = new WarehouseAdaptorClient("http://sandbox-warehouse:8080/sandbox-warehouse/services");
+//        warehouseAdaptorClient = new WarehouseAdaptorClient("http://sandbox-warehouse:8080/sandbox-warehouse/services");
 //        try {
 //            store = StoreFactory.sparql(queryUri, updateUri);
 //            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
@@ -122,6 +123,7 @@ public class TwinManager {
         // Start of user code getRobot
         if ("1".equals(robotId)) {
             try {
+                warehouseAdaptorClient = new WarehouseAdaptorClient("http://sandbox-warehouse:8080/sandbox-warehouse/services");
                 final AbstractResource wp2 = warehouseAdaptorClient.fetchWaypoint("dummy", "wp2");
 
                 aResource = new Robot(spId, "1");

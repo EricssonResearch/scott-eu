@@ -6,7 +6,6 @@
 		<artifactId>sandbox-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>se.ericsson.cf.scott.sandbox</groupId>
 	<artifactId>sandbox-twin-webapp</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
@@ -16,7 +15,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<version.lyo.core>2.2.0</version.lyo.core>
-		<version.lyo.server>2.1.0</version.lyo.server>
+		<version.lyo.server>2.2.0</version.lyo.server>
 	</properties>
 	<repositories>
 		<repository>
@@ -31,11 +30,11 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<dependency>
+<!--		<dependency>
 			<groupId>se.ericsson.cf.scott.sandbox</groupId>
 			<artifactId>sandbox-domain-planning</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.eclipse.lyo.oslc4j.core</groupId>

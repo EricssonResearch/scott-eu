@@ -12,7 +12,8 @@ import org.eclipse.lyo.client.oslc.OSLCConstants;
 import org.eclipse.lyo.client.oslc.OslcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scott.lyo.domain.warehouse.Waypoint;
+import se.ericsson.cf.scott.sandbox.resources.Waypoint;
+//import scott.lyo.domain.warehouse.Waypoint;
 
 /**
  * Created on 2017-07-10

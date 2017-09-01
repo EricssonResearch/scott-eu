@@ -112,24 +112,24 @@ public class ResourceFactory {
         return String.format("%x", random.nextInt());
     }
 
-    public Robot buildRobot(final String robotId, final Link location, final int chargeLevel,
-            final int capacity, final int maxCharge, final int highCharge, final int lowCharge,
-            final boolean isCharging) {
-        try {
-            final Robot robot = new Robot(spId, robotId);
-            robot.setIsAt(location);
-            robot.setCapacity(capacity);
-            robot.setChargeLevel(chargeLevel);
-            robot.setMaxCharge(maxCharge);
-            robot.setHighCharge(highCharge);
-            robot.setLowCharge(lowCharge);
-            robot.setIsCharging(isCharging);
-            return robot;
-        } catch (URISyntaxException e) {
-            log.error("URI exception, check the spId string and parameters", e);
-            return null;
-        }
-    }
+//    public Robot buildRobot(final String robotId, final Link location, final int chargeLevel,
+//            final int capacity, final int maxCharge, final int highCharge, final int lowCharge,
+//            final boolean isCharging) {
+//        try {
+//            final Robot robot = new Robot(spId, robotId);
+//            robot.setIsAt(location);
+//            robot.setCapacity(capacity);
+//            robot.setChargeLevel(chargeLevel);
+//            robot.setMaxCharge(maxCharge);
+//            robot.setHighCharge(highCharge);
+//            robot.setLowCharge(lowCharge);
+//            robot.setIsCharging(isCharging);
+//            return robot;
+//        } catch (URISyntaxException e) {
+//            log.error("URI exception, check the spId string and parameters", e);
+//            return null;
+//        }
+//    }
 
     private HashSet<Link> linkSet(final Collection<? extends AbstractResource> canMove) {
         final Collection<Link> collectionLinks = collectionLinks(canMove);
