@@ -1,0 +1,60 @@
+@prefix warehouse: <http://example.com/warehouse_ontology/> . #this should be later replaced by some ontology (ies) for robotics, or internal logistics
+@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
+@prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_shapes/> .
+@prefix : <http://ontology.cf.ericsson.net/warehouse_problem/> .
+
+# all the types used in the domain file
+warehouse:Robot
+  a pp:VariableType .
+
+warehouse:Waypoint
+  a pp:VariableType .
+
+warehouse:Place
+  a pp:VariableType .
+
+warehouse:Charge
+  a pp:VariableType .
+
+warehouse:Object
+  a pp:VariableType .
+
+_:goal1
+  a pp:GoalDescription ;
+  ppos:hasGoalDescriptionArgument _:exist1 .
+
+_:exist1
+  a pp:Exists ;
+  ppos:hasGoalDescriptionArgument _:goal2 ;
+  ppos:hasTypedVariable _:pair1 ,
+                        _:pair2 .
+
+_:pair1
+  a pp:TypedVariable ;
+  ppos:hasVariable _:x ;
+  ppos:hasVariableType warehouse:Object .
+
+_:x
+  a pp:Variable .
+
+_:pair2
+  a pp:TypedVariable ;
+  ppos:hasVariable _:y ;
+  ppos:hasVariableType warehouse:Object .
+
+_:y
+  a pp:Variable .
+
+_:goal2
+  a pp:GoalDescription ;
+  ppos:hasGoalDescriptionArgument _:andgd1 .
+
+_:andgd1
+  a pp:AndGoalDescription ;
+  ppos:hasArgumentInGoalDescription _:not1 ,
+                                    _:istype1 ,
+                                    _:istype2 ,
+                                    _:isoriginon1 ,
+                                    _:isoriginon2 ,
+                                    _:ison1 ,
+                                    _:ison2 .

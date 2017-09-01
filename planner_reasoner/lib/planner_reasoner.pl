@@ -3,16 +3,21 @@
 ]).
 
 :- use_module(library(semweb/rdf11)).
-:- use_module(library(semweb/rdf_library)).
-
-:- rdf_register_prefix(pp, 'http://ontology.cf.ericsson.net/planning_problem#').
-
-:- rdf_attach_library(planner_reasoner(rdf)).
-:- rdf_load_library(pp).
-:- rdf_load_library(wd).
+:- use_module(library(oslc_dispatch)).
+:- use_module(library(oslc_rdf)).
+:- use_module(library(oslc)).
 
 :- rdf_meta generate_pddl(r, -).
 :- rdf_meta generate_pddl(r, r, -, -).
+
+:- oslc_get(pp:'Action', handle_action).
+
+handle_action(Context) :-
+  make_temp_graph(Context.graph_out),
+  forall(
+    member(Obj, [pp:'Action', pp:'Precondition', pp:'Effect']),
+    copy_resource(Obj, Obj, rdf, rdf(Context.graph_out), [])
+  ).
 
 generate_pddl(Resource, Out) :-
   rdf(Resource, rdf:type, Type),
@@ -77,7 +82,7 @@ generate_precondition(TopPredPrecondition, SubIndent, Out):-
                                                      generate_precondition0(PredicateList, SubIndent, Out)).
 
 
-generate_precondition0([], SubIndent, _) :- !.
+generate_precondition0([], _, _) :- !.
 generate_precondition0([H1|T1], SubIndent, Out) :-
   %if it is a predicate
   (rdf(H1, rdf:type, pp:'Not') ->
@@ -87,20 +92,27 @@ generate_precondition0([H1|T1], SubIndent, Out) :-
                                         SubSubIndent is SubIndent+10,
                                         format(Out, '~*|(~w', [SubSubIndent,PredName1]),
                                         generate_precondition0(SubPredicateList, SubIndent, Out));
+  (rdf(H1, rdf:type, pp:'And') ->
+                                        rdf(pp:'And', rdfs:label, ^^(PredName1, _)),
+                                        rdf(H1, pp:hasArguments, SubPredicates),
+                                        rdf_list(SubPredicates, SubPredicateList),
+                                        SubSubIndent is SubIndent+10,
+                                        format(Out, '~*|(~w', [SubSubIndent,PredName1]),
+                                        generate_precondition0(SubPredicateList, SubIndent, Out));
   (rdf(H1, rdf:type, pp:'Variable') ->
                                       rdf(H1, rdf:type, pp:'Variable'),
                                       rdf(H1, rdfs:label, ^^(VarName, _)),
-                                      format(Out, ' ?~w) ~n', [VarName]),
-                                      generate_precondition0(SubPredicateList, SubIndent, Out));
+                                      format(Out, ' ?~w) ~n', [VarName]));
   (rdf(H1, rdf:type, pp:'Predicate') ->
                                       rdf(H1, rdfs:label, ^^(PredName1, _)),
                                       rdf(H1, pp:hasArguments, SubPredicates),
                                       rdf_list(SubPredicates, SubPredicateList),
                                       SubSubIndent is SubIndent+10,
                                       format(Out, '~*|(~w', [SubSubIndent,PredName1]),
-                                      generate_precondition0(SubPredicateList, SubIndent, Out)),
+                                      generate_precondition0(SubPredicateList, SubIndent, Out));
   generate_precondition0(T1, SubIndent, Out),
   (T1=[]->true;format(Out, ' ~n', [])).
+
 
 
 /*generate_precondition1([], SubIndent, _) :- !.

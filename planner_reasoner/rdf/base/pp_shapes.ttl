@@ -1,0 +1,451 @@
+##############################################################################
+# studied from the bnf specification of PDDL 2.1.
+# https://www.jair.org/media/1129/live-1129-2132-jair.pdf without durative actions
+##############################################################################
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix oslc: <http://open-services.net/ns/core#> . #oslc core
+@prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
+@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
+@prefix : <http://ontology.cf.ericsson.net/planning_ontology_shapes/> .
+
+:OrderedArgumentShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:OrderedArgument ;
+  dcterms:description "Shape of resources of type OrderedArgument. Every argument of an action that needs a relative order will be subclass of OrderedArgument."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition sh:order ;
+                  oslc:name "order"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:integer ;
+                ] .
+
+:ActionShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:Action ;
+  dcterms:description "An action will have a precondition and an effect with semantics as PDDL precondition and PDDL effect, accordingly."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Details for hasPrecondition property of a PDDL action."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pp:hasPrecondition ; #URI of hasPrecondition property http://ontology.cf.ericsson.net/planning_ontology_oslc_shapes#hasprecondition
+                  # GoalDescription and Precondition can have the same arguments according to PDDL 2.1.
+                  oslc:name "hasPrecondition"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:GoalDescription
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Details for hasEffect property of a PDDL action."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition pp:hasEffect ;
+                  oslc:name "hasEffect"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Effect
+                ] ,
+                [ a oslc:Property ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] .
+
+:TypedVariableShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:TypedVariable ;
+  dcterms:description "Used for modeling resources for describing pairs Variable and Variable type e.g. robot is of type Robot."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasVariable ;
+                  oslc:name "hasVariable"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Variable
+                ] ,
+                [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasVariableType ; #a fluent can be only be fluent type
+                  oslc:name "hasVariableType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:VariableType
+                ] .
+
+#VariableType will come from another domain, e.g. Robotics, ITS, or combination of domains
+:VariableTypeShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:VariableType ;
+  dcterms:description "Shape of resources of type VariableType."^^rdf:XMLLiteral .
+
+:VariableShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:Variable ;
+  dcterms:description "Shape of resources of type Variable."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                    oslc:propertyDefinition rdfs:label ;
+                    oslc:name "label"^^xsd:string ;
+                    oslc:occurs oslc:Exactly-one ;
+                    oslc:valueType xsd:string
+                ] .
+
+#PREDICATE TYPE, PREDICATE ARGUMENTS AND PREDICATES
+:PredicateTypeShape
+  a oslc:ResourceShape ;  #used in the PredicateType Definition
+  oslc:describes pp:PredicateType ;
+  dcterms:description "Shape of resources of type PredicateType. The predicate types are generic predicates that can come from the robotics domain and that developers or PDDL experts can use when building planning domains e.g. is_at (Robot Waypoint) is a predicate type, saying that defines a predicate that returns true if there is an object of type robot that located at a position of type waypoint."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasPredicateTypeArgument ;
+                  oslc:name "hasPredicateTypeArgument"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Variable
+                ],
+                [ a oslc:Property ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ].
+
+:PredicateTypeArgumentShape
+  a oslc:ResourceShape ;  #used for defining the arguments (variable types) in a predicate type
+  oslc:describes pp:PredicateTypeArgument ;
+  dcterms:description "Used for defining the arguments (variable types) in a predicate type, in case there will be more variables of same type, the type should be repeated as many times! i.e. there will be as many resources of PredicateTypeArgument as there should be variables."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasVariableType ;
+                  oslc:name "hasVariableType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:VariableType #to copy the vairabletype from Predicate Type
+                ].
+
+:PredicateArgumentShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:PredicateArgument ;
+  dcterms:description "Resources that describe arguments allowed in predicates i.e pair of variable and variable type e.g. r-Robot."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasVariable ;
+                  oslc:name "hasVariable"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Variable
+                ],
+                [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasVariableType ;
+                  oslc:name "hasVariableType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:PredicateTypeArgument #to copy the vairabletype from PredicateTypeArgument
+                ].
+
+:PredicateShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:Predicate ;
+  dcterms:description "Resources that describe predicates, instances of predicate types, used in the actions."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasPredicateType ;
+                  oslc:name "hasPredicateType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:PredicateType
+                ],
+                [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasPredicateArgument ;
+                  oslc:name "hasPredicateArgument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:PredicateArgument
+                ].
+
+:GoalDescriptionShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:GoalDescription ;
+  dcterms:description "Shape of resources of type Goal Description (GD) in PDDL."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasGoalDescriptionArgument ; #used to model that a goal description/precondition can  be either empty ()  or have the top resources (root): logical operators, just a predicate  e.g. is_at or binary comparison operator >,< etc used for fluents
+                  oslc:name "hasGoalDescriptionArgument"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-one ;  #CHECK THIS FOR CASE <GD> :: = () . if there is no property hasGoalDescriptionArgument then only () should be generated in PDDL
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Predicate ,
+                             pp:AndGD ,
+                             pp:Or ,
+                             pp:NotGD ,
+                             pp:Imply ,
+                             pp:Exists ,
+                             pp:ForAll ,
+                             pp:BinaryComparison
+                ] .
+
+:EffectShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:Effect ;
+  dcterms:description "Shape of resources of type Effect used in Actions."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                    oslc:propertyDefinition pp:hasEffectArgument ; #used to model that an effect can be either empty ()  or have the top predicate resources (root predicate): and, forall, when,  just a Predicate e.g. is_at , negation of a Predicate, assignment operation over fluents
+                    oslc:name "hasEffectArgument"^^xsd:string ;
+                    oslc:occurs oslc:Zero-or-one ;
+                    oslc:valueType oslc:Resource ;
+                    oslc:range pp:AndEffect ,
+                               pp:ForallEffect ,
+                               pp:When ,
+                               pp:AssignmentOperator ,  #TO BE CHECKED there can be two types page 116 from PDDL 2.1 BNF
+                               pp:NotEffect
+                ] .
+
+#FLUENT TYPES AND FLUENTS
+:FluentTypeShape
+  a oslc:ResourceShape ;  #used in the FluentType Definition, in every fluent type it should be given the list of Variable Type if there are more than one variable of the same variable type than a FluentType will have as many properties with the same VariableType
+  oslc:describes pp:FluentType ;  #Functions are over numeric fluents that model non-binary resources e.g. fuel level, energy etc.
+  dcterms:description "Used for specifying domain fluent types which model non-binary resources e.g. capacity of a robot, or fuel level, or energy. Fluent Types have properties Variable Type, a list with repetion specifying the types of variables in the fluent e.g. fuel-level waypoint1 waypoint2 will need to have two variable types Waypoint to specify that the fluent type needs to receive two variables of type Waypoint."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasFluentTypeArgument ;
+                  oslc:name "hasFluentTypeArgument"^^xsd:string ;
+                  oslc:occurs oslc:One-or-Many ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:FluentTypeArgument
+                ],
+                [ a oslc:Property ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ].
+
+:FluentTypeArgumentShape
+  a oslc:ResourceShape ;  #used for defining the arguments (variable types) in a fluent type
+  oslc:describes pp:FluentTypeArgument ;
+  dcterms:description  "Used for defining the arguments (variable types) in a fluent type, in case there will be more variables of same type, the type should be repeated as many times! e.g. fluenttype fuel_level might represent fuel needed for traveling between two points, therefore fuel_level should contain two Arguments for variable type pointing to the same VariableType e.g. Waypoint."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasVariableType ;
+                  oslc:name "hasVariableType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:VariableType #to copy the vairabletype from Fluent Type
+                ].
+
+:FluentShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:Fluent ;
+  dcterms:description "Shape of resources of type Fluent, used in the actions, instances of fluent types."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasFluentType ; #a fluent can be only be fluent type
+                  oslc:name "hasFluentType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:FluentType
+                ],
+                [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasFluentArgument ; #fluents are over variables
+                  oslc:name "hasFluentArgument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:FluentArgument
+                ].
+
+:FluentArgumentShape
+  a oslc:ResourceShape ;  #used for defining the arguments (variable types) in a fluent
+  oslc:describes pp:FluentArgument ;
+  dcterms:description "Used for defining the arguments (variable types) in a fluent, that is of type FluentType , e.g. capacity1 is of type capacity."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasVariable ;
+                  oslc:name "hasVariable"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Variable #variables will be local to the action, but have to be of type as specified in the fluent type argument definition!
+                ],
+                [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasVariableType ;
+                  oslc:name "hasVariableType"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:FluentTypeArgument #to copy the vairabletype from Fluent Type Argument
+                ],
+                [ a oslc:Property ;
+                  oslc:propertyDefinition sh:order ;
+                  oslc:name "order"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:integer
+                ].
+
+:FExpShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:FExp ;
+  dcterms:description "Shape of resources of type FExp, used internally in the actions."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasArgument ; #a Fexp can contain a number (numeric literal that is an integer of float of form n.n), a negative fluent expression,  or an FHead
+                  oslc:name "hasArgument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Fluent ,
+                             pp:MinusFunction ,
+                             pp:BinaryOperator ,
+                             pp:NumericLiteral
+                ].
+
+:NumericLiteralShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:NumericLiteral ;
+  dcterms:description "Used for defining numbers (PDDL supports integers and float, for now we support only integers). These are defined as resources, since they need to have a relative order property in FExp."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasValue ; #a Fexp can contain a number (numeric literal that is an integer of float of form n.n), a negative fluent expression,  or an FHead
+                  oslc:name "hasValue"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:integer ; #the value can be either integer or float n.n, however for now we support only integers
+                ].
+
+:MinusFunctionShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:MinusFunction ;
+  dcterms:description "Shape of resources of type MinusFunction."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition :hasArgument ; #a Fexp can contain a number (numeric literal that is an integer of float of form n.n), a negative fluent expression,  or an FHead
+                  oslc:name "hasArgument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:FExp
+                ].
+
+:BinaryComparisonShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:BinaryComparison ;
+  dcterms:description "Shape of resources of type Binary Comparison used in the goal description together with PDDL fluents/functions."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasFExp  ; #used to specify that Binary Comparison is made between FExp
+                  oslc:name "hasFExp"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ; #EXECTLY TWO?
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:FExp
+                ] .
+
+:AssignmentOperatorShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:AssignmentOperator ;
+  dcterms:description "Shape of resources of type AssignmentOperator that can be used in the root of an effect of a PDDL action together with Fluent and FExp, note that Fluent (in PDDL definition it is FHead) should be always the first argument, and FExp the second argument of Assignment Operator."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasFluentArgument ; #used to specify that a Predicate can have variables
+                  oslc:name "hasFluentArgument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ; #The position of Fhead should be the first
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Fluent
+                ] ,
+                [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasFExpArgument  ; #used to specify that a Predicate can have variables
+                  oslc:name "hasFExpArgument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ; #The position of Fhead should be second
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:FExp
+                ] .
+
+:AndGoalDescriptionShape
+  a oslc:ResourceShape ;  #describes And used in goal description
+  oslc:describes pp:AndGoalDescription ; #attributes of And used in a goal description
+  dcterms:description "Shape of resources of type -and- predicate used in goal description/precondition of a PDDL action."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasArgumentInGoalDescription  ; #common predicates may have nested predicates
+                  oslc:name "hasArgumentInGoalDescription"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:GoalDescription
+                ] .
+
+:AndEffectShape
+  a oslc:ResourceShape ;  #describes And used in effect
+  oslc:describes pp:AndEffect ; #attributes of And used in effect
+  dcterms:description "Shape of resources of type AndEffect."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasArgumentInEffect ; #common predicates may have nested predicates
+                  oslc:name "hasArgumentInEffect"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:When ,
+                             pp:ForallEffect ,
+                             pp:AssignmentOperator ,
+                             pp:NotEffect ,
+                             pp:Predicate
+                  ] .
+
+:NotGoalDescriptionShape
+  a oslc:ResourceShape ;  #describes Not that can be used as a logical operator in precondition and effect)
+  oslc:describes pp:NotGoalDescription ;
+  dcterms:description "Shape of resources of type -not- predicate used in goal description/precondition of a PDDL action."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasArgumentInGoalDescription  ; #not can have only one argument of following types in precondition
+                  oslc:name "hasArgumentInGoalDescription"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:GoalDescription
+                ] .
+
+:NotEffectShape
+  a oslc:ResourceShape ;  #describes Not that can be used as a logical operator in precondition and effect)
+  oslc:describes pp:NotEffect ;
+  dcterms:description "Shape of resources of type -not- predicate used in the effect of a PDDL action."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasArgumentInEffect  ; #not can have only one argument, which is a user defined predicate in the effect
+                  oslc:name "hasArgumentInEffect"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:Predicate
+                ] .
+
+:OrGoalDescriptionShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:OrGoalDescription ; #TO BE DEFINED WITH ARGUMENTS
+  dcterms:description "Shape of resources of type -OR- predicate used in goal description/precondition of a PDDL action"^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasArgumentInGoalDescription  ; #common predicates may have nested predicates
+                  oslc:name "hasArgumentInGoalDescription"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:GoalDescription
+                ] .
+
+:OrEffectShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:OrEffect ; #TO BE DEFINED WITH ARGUMENTS
+  dcterms:description "Shape of resources of type -OR- predicate used in the effect of a PDDL action."^^rdf:XMLLiteral .
+
+:ImplyShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:Imply ; #TO BE DEFINED WITH ARGUMENTS
+  dcterms:description "Shape of resources of type Imply that can be used in goal description together with two arguments of type GoalDescription"^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasGoalDescription ;
+                  oslc:name "hasGoalDescription"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;  #SHOULD BE EXECTLY TWO!
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:GoalDescription
+                ].
+
+:WhenShape
+  a oslc:ResourceShape ;  #describes When used in effect
+  oslc:describes pp:When ; #TO BE DEFINED WITH ARGUMENTS
+  dcterms:description "Shape of resources of type When that can be used only in the effect part of an action."^^rdf:XMLLiteral .
+
+:ExistsShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:Exists ;
+  dcterms:description "Shape of resources of type exist that can be used in goal description together with typed variable list, e.g. exists (o1:Object o2: Object)."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasTypedVariable ;
+                  oslc:name "hasTypedVariable"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:TypedVariable
+                ] ,
+                [ a oslc:Property ;
+                  oslc:propertyDefinition pp:hasGoalDescription ;
+                  oslc:name "hasGoalDescription"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:Resource ;
+                  oslc:range pp:GoalDescription
+                ] .
+
+:ForallEffectShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:ForallEffect ; #TO BE DEFINED WITH ARGUMENTS
+  dcterms:description "Shape of resources of type ForallEffect that can be used in the Effect."^^rdf:XMLLiteral .
+
+:ForallGoalDescriptionShape
+  a oslc:ResourceShape ;
+  oslc:describes pp:ForallGoalDescription ; #TO BE DEFINED
+  dcterms:description "Shape of resources of type ForallEffect that can be used in the GoalDescription."^^rdf:XMLLiteral .

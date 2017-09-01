@@ -1,8 +1,10 @@
 ﻿# SCOTT sandbox
 
+<a href="https://travis-ci.org/EricssonResearch/scott-eu"><img src="https://travis-ci.org/EricssonResearch/scott-eu.svg?branch=master"/></a>
+
 This repository contains all projects that are part of the *SCOTT Warehouse Sandbox* as described in the [SCOTT WP10](https://projects.avl.com/16/0094/WP10/default.aspx).
 
-The repository consists of 10 projects that use Docker images individually and are orchestrated using Docker Compose (as of now). Below is a brief summary of each project.
+The repository consists of 9 projects that use Docker images individually and are orchestrated using Docker Compose (as of now). Below is a brief summary of each project.
 
 
 ## Warehouse Controller
@@ -13,14 +15,20 @@ Until the multi-objective optimisation (MOO) service is present, its implementat
 
 Until the [Ontology server](#ontology-server) is up and serving the warehouse state, the controller fetches it from the [kb.json](warehousecontroller/kb.json) file.
 
-> **NB!** The KB is not queried from the [Mock KB](#mock-kb) service!
-
 Until the [Planner Reasoner](#planner-reasoner) is able to serve the PDDL problem file, it is generated in the `generatePddlProblemFile` method of the [mission2plan.py](warehousecontroller/mission2plan.py) file. Until the [Planner Reasoner](#planner-reasoner) is able to serve the PDDL domain file, it is fetched from the [whdomain-2.pddl](warehousecontroller/whdomain-2.pddl) file.
 
 When the problem & domain PDDL files are ready, they are uploaded to the [Metric-FF Docker](#metric-ff-docker) service and *plan generation* is triggered.
 
-> :point_right: Start by running the Decker Compose as described in the [Deployment](#deployment) section and running a [cURL test script](warehousecontroller/curltest3) to trigger plan generation. Also see [README](warehousecontroller/Readme).
+> :point_right: Start by running the Docker Compose as described in the [Deployment](#deployment) section and running a [cURL test script](warehousecontroller/curltest3) to trigger plan generation. Also see [README](warehousecontroller/Readme).
 
+
+## Simulated Environment
+
+This contains simulations required by the sandbox. It currently consists of the automated warehouse simulated in [VREP](http://www.coppeliarobotics.com/downloads.html) with all its elements and robots. 
+Until the multi-objective optimisation (MOO) service is present, its results should be provided by the [mission.json](warehousecontroller/mission.json) file.
+Until it contains the discret event simulations for modeling the supply chain dynamics, all required information should be provided  by the [mission.json](warehousecontroller/mission.json) file.
+
+Access to this scene (both reading and control) is currently implemented by using VREP's remoteAPI in python. This is expected to change once [ROS](http://www.ros.org/) is deployed and used for controlling the robots in the scene.
 
 ## Deployment
 
@@ -39,26 +47,11 @@ Metric-FF Docker (`/ff-metric-docker`) exposes Metric-FF-based planning via a RE
 > :point_right: Start by running the preconfigured [docker-compose environment](#deployment) and reading [project README](ff-metric-docker/README.md).
 
 
-## Mock KB
+## Ontology server
 
-Mock KB (`/mockkb`) exposes a mock knowledge base on port 5001.
+Ontology server (`/ontology-server`) exposes named graphs in the [Cliopatria](http://cliopatria.swi-prolog.org/home) installation over HTTP in RDF format via an Nginx server.
 
-> :point_right: Start by running the service using Docker ([README](mockkb/README.md)) and doing a GET request to `/kb/api/v1.0/waypoint`.
-
-
-# Ontology server
-
-Ontology server (`/ontology-server`) exposes named graphs in the [Cliopatria](http://cliopatria.swi-prolog.org/home) installation over HTTP in RDF format via Nginx server.
-
-> :point_right: Start by:
->
-> * running the project using `docker-compose up` command
-> * logging into the Cliopatria instance via http://localhost:3020 using `admin` login and password that you got from Leo via Slack.
-> * Upload [pp.ttl](planner_reasoner/rdf/base/pp.ttl) into named graph `http://ontology.cf.ericsson.net/planning_problem` via the http://localhost:3020/user/loadFile
-> * Upload [warehouse_domain.ttl](planner_reasoner/rdf/base/warehouse_domain.ttl) into named graph `http://ontology.cf.ericsson.net/warehouse_domain` via the http://localhost:3020/user/loadFile
-> * Open http://localhost:80/warehouse_domain. Nginx should return the named graph with the URI `http://ontology.cf.ericsson.net/` (URI base) *plus* `warehouse_domain` (URI fragment from your request).
-
-> :fire: **Leo**, the last step is not working, I am getting *404 not found* (Andrew).
+> :point_right: Start by following the [Getting Started section](ontology-server/README.md#getting-started) in the README.
 
 
 ## Optic Docker
@@ -74,13 +67,15 @@ Optic Docker (`/optic-docker`) is a project that packages an alternative [OPTIC 
 
 OSLC Prolog (`/oslc_prolog`) is a Prolog library designed to help developing OSLC-compliant REST services. Just ask Leo if you want to build one.
 
+> :point_right: Start by reading the [README](oslc_prolog/README.md).
+
 
 ## PDDL Examples
 
 PDDL Examples (`/pddl-examples`) �s a folder with example PDDL files (domain and problem files), just for learning and testing purposes of the planners.
 
 
-## PDDL Planner   - deprecated code that has been merged into Metric-FF Docker (`/ff-metric-docker`) 
+## PDDL Planner   - deprecated code that has been merged into Metric-FF Docker (`/ff-metric-docker`)
 
 PDDL Planner (`/planner`) exposes PDDL planners via a REST API (so does the [Metric-FF Docker](#metric-ff-docker), but using dockerised Metric-FF). Theoretically supports both OPTIC and Metric-FF, but only implements support for Metric-FF. Requires local installation of Metric-FF (see `ff_path` in [plannerService.py](planner/plannerService.py)).
 
@@ -95,4 +90,3 @@ Planner Reasoner (`/planner_reasoner`) uses an [internal planning ontology](plan
 > :point_right: Start by reading about the [`generate_pddl/2` predicate](planner_reasoner/lib/planner_reasoner.pl).
 
 > **NB!** The project is called a *reasoner* because it is using Prolog reasoning facilities, it does not do any reasoning over the ontology and does not produce any inferred triples (as of now).
-

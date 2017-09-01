@@ -1,0 +1,103 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> . # shapes constraint languge SHACL
+@prefix pp: <http://ontology.cf.ericsson.net/planning_ontology/> .
+
+##############################################################################
+# We assume the following:
+# * the IEEE/Warehouse ontology cannot be modified (the latter we make up
+#      ourselves, but still we should keep it separate from the rest)
+# * we have defined the PDDL-specific classes and properties in the 'pp' domain
+# * we use RDF classes to model PDDL-specific elements that apply directly
+#      on the domain in a warehouse_planning domain, e.g. robot-grip-action.
+#      Actions are PDDL specific concepts, but robot gripper is a domain specific
+#      concept and we want to keep planner generic but have tight control over the
+#      definition of the robot-grip-action etc. (for MBSE purposes etc.)
+#
+# We actually model both action prototypes (definitions, e.g. "robot can grip a box")
+# and action invocations ("r1 grip b1") as instances, but then more modelling
+# and checks will move to the runtime.
+#
+##############################################################################
+
+##########################################################
+# This is defined at the design time and can be modified
+# at runtime if the warehouse configuration changes
+##########################################################
+
+warehouse_planning:robotMoveAction
+  a rdfs:Class ;
+  rdf:subClassOf pp:ActionDefinition ;
+  rdfs:label "robot-moveto-waypoint"^^xsd:string ;
+  pp:hasArgument _:robotMoveAction-a ;
+  pp:hasArgument _:robotMoveAction-b ;
+  pp:hasArgument _:robotMoveAction-c ;
+  pp:hasArgument _:robotMoveAction-d .
+
+# these are blank nodes below
+
+_:robotMoveAction-a
+  a pp:VariableDefinition ;
+  rdfs:label "waypoint-src"^^xsd:string ;
+  pp:variableType warehouse:Waypoint ;
+  # this is what gives order in the action definition
+  sh:order 0 .
+
+_:robotMoveAction-b
+  a pp:VariableDefinition ;
+  rdfs:label "waypoint-dst"^^xsd:string ;
+  pp:variableType warehouse:Waypoint ;
+  # this is what gives order in the action definition
+  sh:order 1 .
+
+_:robotMoveAction-c
+  a pp:VariableDefinition ;
+  rdfs:label "robot"^^xsd:string ;
+  pp:variableType ieee:Robot ;
+  # this is what gives order in the action definition
+  sh:order 2 .
+
+_:robotMoveAction-d
+  a pp:VariableDefinition ;
+  rdfs:label "speed"^^xsd:string ;
+  pp:variableType xsd:float ;
+  # this is what gives order in the action definition
+  sh:order 3 .
+
+
+##########################################################
+# This is how the actually those definitions are used at runtime
+##########################################################
+
+# this is an RDF instance of the warehouse_planning:robotMoveAction class
+warehouse_planning:robotMoveAction1234
+  a warehouse_planning:robotMoveAction ;
+  pp:withArgument _:robotMoveAction1234-a ;
+  pp:withArgument _:robotMoveAction1234-b ;
+  pp:withArgument _:robotMoveAction1234-c ;
+  pp:withArgument _:robotMoveAction1234-d .
+
+_:robotMoveAction1234-a
+  a pp:VariableInstance ;
+  rdfs:label "wp1"^^xsd:string ;
+  pp:variable warehouse_planning:wpA01 ;
+  sh:order 0 .
+
+_:robotMoveAction1234-b
+  a pp:VariableInstance ;
+  rdfs:label "wp2"^^xsd:string ;
+  pp:variable warehouse_planning:wpC42 ;
+  sh:order 1 .
+
+_:robotMoveAction1234-c
+  a pp:VariableInstance ;
+  rdfs:label "r1"^^xsd:string ;
+  pp:variable warehouse_planning:robot123135 ;
+  sh:order 2 .
+
+_:robotMoveAction1234-c
+  a pp:VariableInstance ;
+  rdfs:label "speed-r1"^^xsd:string ;
+  pp:variable "12.45";
+  sh:order 3 .
