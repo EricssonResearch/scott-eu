@@ -26,12 +26,12 @@ import javax.ws.rs.core.UriBuilder;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import se.ericsson.cf.scott.sandbox.resources.Mission;
+import se.ericsson.cf.scott.sandbox.resources.ProblemState;
+import se.ericsson.cf.scott.sandbox.resources.Robot;
 import se.ericsson.cf.scott.sandbox.resources.Place;
 import se.ericsson.cf.scott.sandbox.resources.Predicate;
-import se.ericsson.cf.scott.sandbox.resources.WhObject;
-import se.ericsson.cf.scott.sandbox.resources.ProblemState;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
-import se.ericsson.cf.scott.sandbox.resources.Robot;
+import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 // Start of user code imports
 // End of user code
@@ -107,36 +107,6 @@ public class WarehouseControllerResourcesFactory {
     }
     
 
-    //methods for WhObject resource
-    public static WhObject createWhObject(final String serviceProviderId, final String whObjectId)
-           throws URISyntaxException
-    {
-        return new WhObject(constructURIForWhObject(serviceProviderId, whObjectId));
-    }
-    
-    public static URI constructURIForWhObject(final String serviceProviderId, final String whObjectId)
-    {
-        String basePath = OSLC4JUtils.getServletURI();
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("serviceProviderId", serviceProviderId);
-        pathParameters.put("whObjectId", whObjectId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/resources/whObjects/{whObjectId}";
-    
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
-    }
-    
-    public static Link constructLinkForWhObject(final String serviceProviderId, final String whObjectId , final String label)
-    {
-        return new Link(constructURIForWhObject(serviceProviderId, whObjectId), label);
-    }
-    
-    public static Link constructLinkForWhObject(final String serviceProviderId, final String whObjectId)
-    {
-        return new Link(constructURIForWhObject(serviceProviderId, whObjectId));
-    }
-    
-
     //methods for Waypoint resource
     public static Waypoint createWaypoint(final String serviceProviderId, final String waypointId)
            throws URISyntaxException
@@ -164,6 +134,36 @@ public class WarehouseControllerResourcesFactory {
     public static Link constructLinkForWaypoint(final String serviceProviderId, final String waypointId)
     {
         return new Link(constructURIForWaypoint(serviceProviderId, waypointId));
+    }
+    
+
+    //methods for WhObject resource
+    public static WhObject createWhObject(final String serviceProviderId, final String whObjectId)
+           throws URISyntaxException
+    {
+        return new WhObject(constructURIForWhObject(serviceProviderId, whObjectId));
+    }
+    
+    public static URI constructURIForWhObject(final String serviceProviderId, final String whObjectId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("serviceProviderId", serviceProviderId);
+        pathParameters.put("whObjectId", whObjectId);
+        String instanceURI = "serviceProviders/{serviceProviderId}/resources/whObjects/{whObjectId}";
+    
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+    
+    public static Link constructLinkForWhObject(final String serviceProviderId, final String whObjectId , final String label)
+    {
+        return new Link(constructURIForWhObject(serviceProviderId, whObjectId), label);
+    }
+    
+    public static Link constructLinkForWhObject(final String serviceProviderId, final String whObjectId)
+    {
+        return new Link(constructURIForWhObject(serviceProviderId, whObjectId));
     }
     
 

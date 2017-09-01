@@ -11,7 +11,7 @@
     <modules>
         <module>sandbox-twin-webapp</module>
         <module>sandbox-warehouse-webapp</module>
-        <!--<module>scott-planner-webapp</module>-->
+        <module>scott-planner-webapp</module>
         <module>sandbox-domains</module>
     </modules>
 </project>

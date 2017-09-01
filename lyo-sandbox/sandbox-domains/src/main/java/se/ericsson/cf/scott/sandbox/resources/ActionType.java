@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -133,7 +133,7 @@ public class ActionType
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        PpConstants.PATH_ACTIONTYPE,  
+        PpConstants.PATH_ACTIONTYPE,
         ActionType.class);
     }
     
@@ -444,20 +444,15 @@ public class ActionType
     {
         String s = "";
     
-        // Start of user code labeltoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"label\"><strong>label</strong>: </LABEL>";
-    
         // Start of user code labeltoHtml_mid
         // End of user code
     
         try {
             if (label == null) {
-                s= s + "<em>null</em>";
+                s = s + "<em>null</em>";
             }
             else {
-                s= s + label.toString();
+                s = s + label.toString();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -472,11 +467,6 @@ public class ActionType
     public String hasVariableToHtml()
     {
         String s = "";
-    
-        // Start of user code hasVariabletoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"hasVariable\"><strong>hasVariable</strong>: </LABEL>";
     
         // Start of user code hasVariabletoHtml_mid
         // End of user code
@@ -503,11 +493,6 @@ public class ActionType
     {
         String s = "";
     
-        // Start of user code preconditiontoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"precondition\"><strong>precondition</strong>: </LABEL>";
-    
         // Start of user code preconditiontoHtml_mid
         // End of user code
     
@@ -531,11 +516,6 @@ public class ActionType
     public String effectToHtml()
     {
         String s = "";
-    
-        // Start of user code effecttoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"effect\"><strong>effect</strong>: </LABEL>";
     
         // Start of user code effecttoHtml_mid
         // End of user code
@@ -562,20 +542,15 @@ public class ActionType
     {
         String s = "";
     
-        // Start of user code titletoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"title\"><strong>title</strong>: </LABEL>";
-    
         // Start of user code titletoHtml_mid
         // End of user code
     
         try {
             if (title == null) {
-                s= s + "<em>null</em>";
+                s = s + "<em>null</em>";
             }
             else {
-                s= s + title.toString();
+                s = s + title.toString();
             }
         } catch (Exception e) {
             e.printStackTrace();

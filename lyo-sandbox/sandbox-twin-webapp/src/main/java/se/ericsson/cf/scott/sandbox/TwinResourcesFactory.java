@@ -25,18 +25,18 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
-import se.ericsson.cf.scott.sandbox.resources.Plan;
 import se.ericsson.cf.scott.sandbox.resources.Mission;
-import se.ericsson.cf.scott.sandbox.resources.VariableInstance;
-import se.ericsson.cf.scott.sandbox.resources.Place;
-import se.ericsson.cf.scott.sandbox.resources.ActionType;
-import se.ericsson.cf.scott.sandbox.resources.Predicate;
-import se.ericsson.cf.scott.sandbox.resources.WhObject;
-import se.ericsson.cf.scott.sandbox.resources.Action;
-import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 import se.ericsson.cf.scott.sandbox.resources.ProblemState;
 import se.ericsson.cf.scott.sandbox.resources.Robot;
+import se.ericsson.cf.scott.sandbox.resources.Action;
+import se.ericsson.cf.scott.sandbox.resources.ActionType;
+import se.ericsson.cf.scott.sandbox.resources.Place;
+import se.ericsson.cf.scott.sandbox.resources.Predicate;
+import se.ericsson.cf.scott.sandbox.resources.VariableInstance;
+import se.ericsson.cf.scott.sandbox.resources.Plan;
 import se.ericsson.cf.scott.sandbox.resources.Variable;
+import se.ericsson.cf.scott.sandbox.resources.Waypoint;
+import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 // Start of user code imports
 // End of user code

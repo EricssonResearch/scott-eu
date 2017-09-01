@@ -25,11 +25,11 @@
 	</repositories>
 	<dependencies>
 
-<!--		<dependency>
+		<dependency>
 			<groupId>se.ericsson.cf.scott.sandbox</groupId>
 			<artifactId>sandbox-domains</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>-->
+		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.lyo.oslc4j.core</groupId>
