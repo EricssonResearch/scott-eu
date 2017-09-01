@@ -37,10 +37,7 @@ import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
 
-import se.ericsson.cf.scott.sandbox.resources.base.DctermsConstants;
-import se.ericsson.cf.scott.sandbox.resources.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.base.RdfsConstants;
-import se.ericsson.cf.scott.sandbox.resources.WhConstants;
+import se.ericsson.cf.scott.sandbox.TwinConstants;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
@@ -78,7 +75,7 @@ public class ServiceProvidersFactory
             new PrefixDefinition(OslcConstants.OSLC_DATA_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_DATA_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDF_NAMESPACE_PREFIX, new URI(OslcConstants.RDF_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
-            new PrefixDefinition(WhConstants.WAREHOUSE_NAMSPACE_PREFIX, new URI(WhConstants.WAREHOUSE_NAMSPACE))
+            new PrefixDefinition(TwinConstants.WAREHOUSE_NAMSPACE_PREFIX, new URI(TwinConstants.WAREHOUSE_NAMSPACE))
         };
 
         serviceProvider.setPrefixDefinitions(prefixDefinitions);

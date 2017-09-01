@@ -15,9 +15,9 @@
  *     Alberto Giammaria    - initial API and implementation
  *     Chris Peters         - initial API and implementation
  *     Gianluca Bernardini  - initial API and implementation
- *	   Sam Padgett          - initial API and implementation
+ *       Sam Padgett          - initial API and implementation
  *     Michael Fiedler      - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -125,7 +125,7 @@ public class VariableInstance
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        TwinConstants.PATH_VARIABLEINSTANCE,  
+        TwinConstants.PATH_VARIABLEINSTANCE,
         VariableInstance.class);
     }
     
@@ -371,11 +371,6 @@ public class VariableInstance
     {
         String s = "";
     
-        // Start of user code valuetoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"value\"><strong>value</strong>: </LABEL>";
-    
         // Start of user code valuetoHtml_mid
         // End of user code
     
@@ -400,20 +395,15 @@ public class VariableInstance
     {
         String s = "";
     
-        // Start of user code labeltoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"label\"><strong>label</strong>: </LABEL>";
-    
         // Start of user code labeltoHtml_mid
         // End of user code
     
         try {
             if (label == null) {
-                s= s + "<em>null</em>";
+                s = s + "<em>null</em>";
             }
             else {
-                s= s + label.toString();
+                s = s + label.toString();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -429,20 +419,15 @@ public class VariableInstance
     {
         String s = "";
     
-        // Start of user code ordertoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"order\"><strong>order</strong>: </LABEL>";
-    
         // Start of user code ordertoHtml_mid
         // End of user code
     
         try {
             if (order == null) {
-                s= s + "<em>null</em>";
+                s = s + "<em>null</em>";
             }
             else {
-                s= s + order.toString();
+                s = s + order.toString();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -457,11 +442,6 @@ public class VariableInstance
     public String ppInstanceOfToHtml()
     {
         String s = "";
-    
-        // Start of user code ppInstanceOftoHtml_init
-        // End of user code
-    
-        s = s + "<label for=\"instanceOf\"><strong>instanceOf</strong>: </LABEL>";
     
         // Start of user code ppInstanceOftoHtml_mid
         // End of user code
