@@ -45,6 +45,9 @@ import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 
 // Start of user code imports
+import org.eclipse.lyo.store.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.clients.WarehouseAdaptorClient;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import se.ericsson.cf.scott.sandbox.clients.OslcClientException;

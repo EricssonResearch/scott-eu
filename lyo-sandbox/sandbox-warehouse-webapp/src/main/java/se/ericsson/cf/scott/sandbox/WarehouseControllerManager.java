@@ -40,10 +40,11 @@ import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 
 // Start of user code imports
+import java.io.IOException;
+import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
-import scott.lyo.domain.warehouse.ResourceFactory;
 import com.google.common.collect.ImmutableList;
 import java.util.Optional;
 import java.net.URI;
@@ -69,6 +70,7 @@ public class WarehouseControllerManager {
     // Start of user code class_methods
     private static List<Waypoint> getWaypoints() {
         final List<Waypoint> resources;
+
         resources = ImmutableList.of(factory.buildWaypoint("wp1",
             ImmutableList.of(factory.wayPointLink("wp2"), factory.wayPointLink("wp2"))),
             factory.buildWaypoint("wp2",
@@ -143,7 +145,7 @@ public class WarehouseControllerManager {
             store = StoreFactory.sparql(queryUri, updateUri);
             // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
             store.removeAll();
-        } catch (IOException|ARQException e) {
+        } catch (IOException |ARQException e) {
             log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
                     queryUri, updateUri, e);
         }
@@ -240,10 +242,10 @@ public class WarehouseControllerManager {
 
 
 
-    public static String getETagFromWhObject(final WhObject aResource)
+    public static String getETagFromMission(final Mission aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromWhObject
+        // Start of user code getETagFromMission
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
@@ -256,10 +258,10 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromMission(final Mission aResource)
+    public static String getETagFromWhObject(final WhObject aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromMission
+        // Start of user code getETagFromWhObject
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

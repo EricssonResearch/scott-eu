@@ -27,12 +27,7 @@
 
 		<dependency>
 			<groupId>se.ericsson.cf.scott.sandbox</groupId>
-			<artifactId>sandbox-domain-planning</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>se.ericsson.cf.scott.sandbox</groupId>
-			<artifactId>sandbox-domain-warehouse</artifactId>
+			<artifactId>sandbox-domains</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

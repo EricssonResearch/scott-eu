@@ -61,28 +61,28 @@
       <resources name="ProblemState" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.1 //@specification/@domainSpecifications.1/@resourceProperties.2 //@specification/@domainSpecifications.1/@resourceProperties.3 //@specification/@domainSpecifications.1/@resourceProperties.4"/>
       <resources name="ProblemFile" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.0"/>
       <resources name="ActionType">
-        <resourceProperties href="platform:/resource/org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.6"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.16"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.17"/>
-        <resourceProperties href="platform:/resource/org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
       </resources>
       <resources name="VariableInstance">
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.8"/>
-        <resourceProperties href="platform:/resource/org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.10"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.18"/>
       </resources>
       <resources name="Variable">
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.7"/>
-        <resourceProperties href="platform:/resource/org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.10"/>
       </resources>
       <resources name="FluentInstance" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.11 //@specification/@domainSpecifications.1/@resourceProperties.9"/>
       <resources name="Fluent">
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.6"/>
-        <resourceProperties href="platform:/resource/org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
-        <resourceProperties href="platform:/resource/org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
       </resources>
       <resources name="GreaterThan" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
       <resources name="And" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
@@ -101,13 +101,13 @@
       <resources name="Exists"/>
       <resources name="When"/>
       <resources name="Predicate">
-        <resourceProperties href="platform:/resource/org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
       </resources>
       <resources name="DomainPredicate" extends="//@specification/@domainSpecifications.1/@resources.24" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.15"/>
       <resources name="PredicateArgument" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.14 //@specification/@domainSpecifications.1/@resourceProperties.10"/>
       <resources name="Mission">
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.19"/>
-        <resourceProperties href="platform:/resource/org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
+        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.20"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.21"/>
         <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.22"/>
@@ -145,5 +145,6 @@
     <domainPrefixes name="wh"/>
     <domainPrefixes name="pp"/>
     <domainPrefixes name="nsp3"/>
+    <generationSetting javaClassPackageName="se.ericsson.cf.scott.sandbox.resources" javaFilesPath="../sandbox-domains/src/main/java/"/>
   </specification>
 </oslc4j_tc:Toolchain>

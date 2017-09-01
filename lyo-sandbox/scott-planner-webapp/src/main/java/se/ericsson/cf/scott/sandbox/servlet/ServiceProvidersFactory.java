@@ -37,7 +37,10 @@ import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
 
-import se.ericsson.cf.scott.sandbox.PlannerReasonerConstants;
+import se.ericsson.cf.scott.sandbox.resources.base.DctermsConstants;
+import se.ericsson.cf.scott.sandbox.resources.PpConstants;
+import se.ericsson.cf.scott.sandbox.resources.base.RdfsConstants;
+import se.ericsson.cf.scott.sandbox.resources.WhConstants;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
@@ -75,13 +78,13 @@ public class ServiceProvidersFactory
             new PrefixDefinition(OslcConstants.OSLC_DATA_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_DATA_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDF_NAMESPACE_PREFIX, new URI(OslcConstants.RDF_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
-            new PrefixDefinition(PlannerReasonerConstants.DUBLIN_CORE_NAMSPACE_PREFIX, new URI(PlannerReasonerConstants.DUBLIN_CORE_NAMSPACE))
+            new PrefixDefinition(DctermsConstants.DUBLIN_CORE_NAMSPACE_PREFIX, new URI(DctermsConstants.DUBLIN_CORE_NAMSPACE))
 ,
-            new PrefixDefinition(PlannerReasonerConstants.PLANNING_NAMSPACE_PREFIX, new URI(PlannerReasonerConstants.PLANNING_NAMSPACE))
+            new PrefixDefinition(PpConstants.PLANNING_NAMSPACE_PREFIX, new URI(PpConstants.PLANNING_NAMSPACE))
 ,
-            new PrefixDefinition(PlannerReasonerConstants.RDFS_NAMSPACE_PREFIX, new URI(PlannerReasonerConstants.RDFS_NAMSPACE))
+            new PrefixDefinition(RdfsConstants.RDFS_NAMSPACE_PREFIX, new URI(RdfsConstants.RDFS_NAMSPACE))
 ,
-            new PrefixDefinition(PlannerReasonerConstants.WAREHOUSE_NAMSPACE_PREFIX, new URI(PlannerReasonerConstants.WAREHOUSE_NAMSPACE))
+            new PrefixDefinition(WhConstants.WAREHOUSE_NAMSPACE_PREFIX, new URI(WhConstants.WAREHOUSE_NAMSPACE))
         };
 
         serviceProvider.setPrefixDefinitions(prefixDefinitions);
