@@ -71,8 +71,6 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
 import se.ericsson.cf.scott.sandbox.PlannerReasonerManager;
 import se.ericsson.cf.scott.sandbox.PlannerReasonerConstants;
-import se.ericsson.cf.scott.sandbox.resources.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.PpConstants;
 import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.resources.Action;
 import se.ericsson.cf.scott.sandbox.resources.ActionType;
@@ -92,7 +90,7 @@ import se.ericsson.cf.scott.sandbox.resources.WhObject;
 
 // Start of user code pre_class_code
 // End of user code
-@OslcService(PpConstants.PLANNING_DOMAIN)
+@OslcService(PlannerReasonerConstants.PLANNING_DOMAIN)
 @Path("serviceProviders/{serviceProviderId}/plans")
 public class ServiceProviderService1
 {

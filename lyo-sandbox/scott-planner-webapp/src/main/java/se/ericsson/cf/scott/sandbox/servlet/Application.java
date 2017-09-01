@@ -66,10 +66,7 @@ import se.ericsson.cf.scott.sandbox.resources.Variable;
 import se.ericsson.cf.scott.sandbox.resources.VariableInstance;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
 import se.ericsson.cf.scott.sandbox.resources.WhObject;
-import se.ericsson.cf.scott.sandbox.resources.base.DctermsConstants;
-import se.ericsson.cf.scott.sandbox.resources.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.base.RdfsConstants;
-import se.ericsson.cf.scott.sandbox.resources.WhConstants;
+import se.ericsson.cf.scott.sandbox.PlannerReasonerConstants;
 import se.ericsson.cf.scott.sandbox.services.ServiceProviderService1;
 
 // Start of user code imports
@@ -96,18 +93,6 @@ public class Application extends OslcWinkApplication {
             RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
             RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
             RESOURCE_CLASSES.add(ServiceProviderService1.class);
-            RESOURCE_CLASSES.add(Action.class);
-            RESOURCE_CLASSES.add(ActionType.class);
-            RESOURCE_CLASSES.add(Mission.class);
-            RESOURCE_CLASSES.add(Place.class);
-            RESOURCE_CLASSES.add(Plan.class);
-            RESOURCE_CLASSES.add(Predicate.class);
-            RESOURCE_CLASSES.add(ProblemState.class);
-            RESOURCE_CLASSES.add(Robot.class);
-            RESOURCE_CLASSES.add(Variable.class);
-            RESOURCE_CLASSES.add(VariableInstance.class);
-            RESOURCE_CLASSES.add(Waypoint.class);
-            RESOURCE_CLASSES.add(WhObject.class);
             RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.ConsumersService"));
             RESOURCE_CLASSES.add(Class.forName("org.eclipse.lyo.server.oauth.webapp.services.OAuthService"));
 
@@ -141,18 +126,18 @@ public class Application extends OslcWinkApplication {
             System.err.println("Application failed to initialize");
         }
 
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_ACTION, Action.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_ACTIONTYPE, ActionType.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_MISSION, Mission.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_PLACE, Place.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PLAN, Plan.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PREDICATE, Predicate.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_PROBLEMSTATE, ProblemState.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_ROBOT, Robot.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_VARIABLE, Variable.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PpConstants.PATH_VARIABLEINSTANCE, VariableInstance.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WAYPOINT, Waypoint.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(WhConstants.PATH_WHOBJECT, WhObject.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_ACTION, Action.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_ACTIONTYPE, ActionType.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_MISSION, Mission.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_PLACE, Place.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_PLAN, Plan.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_PREDICATE, Predicate.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_PROBLEMSTATE, ProblemState.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_ROBOT, Robot.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_VARIABLE, Variable.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_VARIABLEINSTANCE, VariableInstance.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_WAYPOINT, Waypoint.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PlannerReasonerConstants.PATH_WHOBJECT, WhObject.class);
     }
 
     public Application()
