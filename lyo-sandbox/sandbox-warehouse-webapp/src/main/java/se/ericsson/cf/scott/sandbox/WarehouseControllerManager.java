@@ -250,18 +250,18 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromPlace(final Place aResource)
-    {
-        String eTag = null;
-        // Start of user code getETagFromPlace
-        // TODO Implement code to return an ETag for a particular resource
-        // End of user code
-        return eTag;
-    }
     public static String getETagFromWhObject(final WhObject aResource)
     {
         String eTag = null;
         // Start of user code getETagFromWhObject
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
+    public static String getETagFromPlace(final Place aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromPlace
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

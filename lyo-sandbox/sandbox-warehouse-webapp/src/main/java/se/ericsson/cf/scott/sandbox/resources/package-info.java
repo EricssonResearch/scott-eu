@@ -26,10 +26,10 @@
     @OslcNamespaceDefinition(prefix = OslcConstants.OSLC_DATA_NAMESPACE_PREFIX,           namespaceURI = OslcConstants.OSLC_DATA_NAMESPACE),
     @OslcNamespaceDefinition(prefix = OslcConstants.RDF_NAMESPACE_PREFIX,                 namespaceURI = OslcConstants.RDF_NAMESPACE),
     @OslcNamespaceDefinition(prefix = OslcConstants.RDFS_NAMESPACE_PREFIX,                namespaceURI = OslcConstants.RDFS_NAMESPACE),
-    @OslcNamespaceDefinition(prefix = DctermsConstants.DUBLIN_CORE_NAMSPACE_PREFIX, namespaceURI = DctermsConstants.DUBLIN_CORE_NAMSPACE),
-    @OslcNamespaceDefinition(prefix = PpConstants.PLANNING_NAMSPACE_PREFIX, namespaceURI = PpConstants.PLANNING_NAMSPACE),
-    @OslcNamespaceDefinition(prefix = RdfsConstants.RDFS_NAMSPACE_PREFIX, namespaceURI = RdfsConstants.RDFS_NAMSPACE),
-    @OslcNamespaceDefinition(prefix = WhConstants.WAREHOUSE_NAMSPACE_PREFIX, namespaceURI = WhConstants.WAREHOUSE_NAMSPACE)
+    @OslcNamespaceDefinition(prefix = WarehouseControllerConstants.DUBLIN_CORE_NAMSPACE_PREFIX, namespaceURI = WarehouseControllerConstants.DUBLIN_CORE_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = WarehouseControllerConstants.PLANNING_NAMSPACE_PREFIX, namespaceURI = WarehouseControllerConstants.PLANNING_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = WarehouseControllerConstants.RDFS_NAMSPACE_PREFIX, namespaceURI = WarehouseControllerConstants.RDFS_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = WarehouseControllerConstants.WAREHOUSE_NAMSPACE_PREFIX, namespaceURI = WarehouseControllerConstants.WAREHOUSE_NAMSPACE)
 })
 package se.ericsson.cf.scott.sandbox.resources;
 
@@ -37,8 +37,5 @@ import org.eclipse.lyo.oslc4j.core.annotation.OslcNamespaceDefinition;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcSchema;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 
-import se.ericsson.cf.scott.sandbox.resources.base.DctermsConstants;
-import se.ericsson.cf.scott.sandbox.resources.PpConstants;
-import se.ericsson.cf.scott.sandbox.resources.base.RdfsConstants;
-import se.ericsson.cf.scott.sandbox.resources.WhConstants;
+import se.ericsson.cf.scott.sandbox.WarehouseControllerConstants;
 
