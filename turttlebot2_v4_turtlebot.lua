@@ -1,8 +1,7 @@
 function setVels_cb(msg)
-   -- not sure if a scale factor is must be applied
-   local wheelAxis = 0.22  -- check this value
+   -- not sure if a scale factor must be applied
    local linVel = msg.linear.x/2 -- in m/s
-   local rotVel = msg.angular.z*wheelAxis/2 -- in rad/s
+   local rotVel = msg.angular.z*interWheelDistance/2 -- in rad/s
    velocityRight = linVel+rotVel
    velocityLeft = linVel-rotVel
    if simulationIsKinematic then
@@ -28,18 +27,18 @@ function setVels_cb(msg)
         -- Simulation is dynamic
         p=sim.boolOr32(sim.getModelProperty(objHandle),sim.modelproperty_not_dynamic)-sim.modelproperty_not_dynamic
         sim.setModelProperty(objHandle,p)
-        --velocityRight = linVel + math.Rad2Deg(rotVel)
-        --velocityLeft = linVel - math.Rad2Deg(rotVel)
-        velocityRight = linVel + math.deg(rotVel)
-        velocityLeft = linVel - math.deg(rotVel)
-        sim.setJointTargetVelocity(leftJoint,velocityLeft*2/wheelDiameter)
-        sim.setJointTargetVelocity(rightJoint,velocityRight*2/wheelDiameter)
+        velocityRight = linVel + rotVel
+        velocityLeft = linVel - rotVel
+        sim.setJointTargetVelocity(leftJoint,velocityLeft*2/wheelDiameter*180/math.pi)
+        sim.setJointTargetVelocity(rightJoint,velocityRight*2/wheelDiameter*180/math.pi)
     end
 end
 
 if (sim_call_type==sim.childscriptcall_initialization) then 
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
     modelBaseName = sim.getObjectName(objHandle)
+
+    mainBodyHandle = sim.getObjectHandle("turtlebot_body_visual")
     
     leftJoint=sim.getObjectHandle("turtlebot_leftWheelJoint_")
     rightJoint=sim.getObjectHandle("turtlebot_rightWheelJoint_")
@@ -52,7 +51,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     t_rightBumper = sim.getObjectHandle('bumper_right_joint')
     t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
 
-    originMatrix = sim.getObjectMatrix(objHandle,-1)
+    originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)
     invOriginMatrix = simGetInvertedMatrix(originMatrix)
 
     ----------------------------- ROS STUFF --------------------------------
@@ -60,11 +59,11 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 	pubBumper = simROS.advertise(modelBaseName..'/events/bumper','kobuki_msgs/BumperEvent')
 	--simROS.publisherTreatUInt8ArrayAsString(pubBumper)
     -- Odometry
-	pubPose = simROS.advertise(modelBaseName..'/pose','nav_msgs/Odometry')
-	simROS.publisherTreatUInt8ArrayAsString(pubPose)
+    pubPose = simROS.advertise(modelBaseName..'/pose','nav_msgs/Odometry')
+    simROS.publisherTreatUInt8ArrayAsString(pubPose)
 
-	-- Commands
-	subCmdVel = simROS.subscribe(modelBaseName..'/cmd_vel','geometry_msgs/Twist','setVels_cb')
+    -- Commands
+    subCmdVel = simROS.subscribe(modelBaseName..'/cmd_vel','geometry_msgs/Twist','setVels_cb')
 end 
 
 
@@ -120,38 +119,39 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         
 
         -- Odometry
-        local transformNow = sim.getObjectMatrix(objHandle,-1)
-        pose_orientationNow = sim.multiplyMatrices(invOriginMatrix, transformNow)
-        r_quaternion = simGetQuaternionFromMatrix(pose_orientationNow)
-        r_position = {pose_orientationNow[3], pose_orientationNow[7], pose_orientationNow[11]}
-        r_linear_velocity, r_angular_velocity = simGetObjectVelocity(objHandle)
+        local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
+        local pose_orientationNow = sim.multiplyMatrices(invOriginMatrix, transformNow)
+        local r_quaternion = simGetQuaternionFromMatrix(pose_orientationNow)
+        local r_position = {pose_orientationNow[4], pose_orientationNow[8], pose_orientationNow[12]}
+        local r_linear_velocity, r_angular_velocity = 0,0
+        r_linear_velocity, r_angular_velocity = simGetObjectVelocity(mainBodyHandle)
 
         -- ROSing
-        ros_pose = {}
-	    ros_pose['header'] = {seq=0,stamp=simROS.getTime(), frame_id="/robot"..modelBaseName}
-	    cov = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-	    quaternion_ros = {}
-	    quaternion_ros["x"] = r_quaternion[1]
-	    quaternion_ros["y"] = r_quaternion[2]
-	    quaternion_ros["z"] = r_quaternion[3]
-	    quaternion_ros["w"] = r_quaternion[4]
-        position_ros = {}
+        local ros_pose = {}
+	ros_pose['header'] = {seq=0,stamp=simROS.getTime(), frame_id="/robot"..modelBaseName}
+	local cov = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+	local quaternion_ros = {}
+        quaternion_ros["x"] = r_quaternion[1]
+        quaternion_ros["y"] = r_quaternion[2]
+        quaternion_ros["z"] = r_quaternion[3]
+        quaternion_ros["w"] = r_quaternion[4]
+        local position_ros = {}
         position_ros["x"] = r_position[1]
         position_ros["y"] = r_position[2]
         position_ros["z"] = r_position[3]
-	    pose_r = {position=position_ros, orientation=quaternion_ros}
-	    ros_pose['pose'] = {pose=pose_r, covariance = cov}
-	    linear_speed = {}
-	    linear_speed["x"] = r_linear_velocity[1]
-	    linear_speed["y"] = r_linear_velocity[2]
-	    linear_speed["z"] = r_linear_velocity[3]
-	    angular_speed = {}
-	    angular_speed["x"] = r_angular_velocity[1]
-	    angular_speed["y"] = r_angular_velocity[2]
-	    angular_speed["z"] = r_angular_velocity[3]
-	    ros_pose['twist'] = {twist={linear=linear_speed, angular=angular_speed}, covariance=cov}
-	    ros_pose['child_frame_id'] = "kinect"
-	    simROS.publish(pubPose, ros_pose)     
+	local pose_r = {position=position_ros, orientation=quaternion_ros}
+	ros_pose['pose'] = {pose=pose_r, covariance = cov}
+	local linear_speed = {}
+	linear_speed["x"] = r_linear_velocity[1]
+	linear_speed["y"] = r_linear_velocity[2]
+	linear_speed["z"] = r_linear_velocity[3]
+	local angular_speed = {}
+	angular_speed["x"] = r_angular_velocity[1]
+	angular_speed["y"] = r_angular_velocity[2]
+	angular_speed["z"] = r_angular_velocity[3]
+	ros_pose['twist'] = {twist={linear=linear_speed, angular=angular_speed}, covariance=cov}
+	ros_pose['child_frame_id'] = "kinect"
+	simROS.publish(pubPose, ros_pose)     
 end 
 
 if (sim_call_type==sim.childscriptcall_cleanup) then 
