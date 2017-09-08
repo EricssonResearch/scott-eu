@@ -4,7 +4,6 @@
 :- use_module(library(http/http_client)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(broadcast)).
-:- use_module(library(semweb/turtle)).
 :- use_module(library(oslc_ontology)).
 :- use_module(library(oslc_dispatch)).
 :- use_module(library(oslc_rdf)).
@@ -51,39 +50,42 @@ fix_trailing_slash(InURI, OutURI, OutPath) :-
 
 dispatcher(Request) :-
   setup_call_cleanup(true, (
-    catch((
-      check_path(Request, Prefix, ResourceSegments),
-      check_method(Request, Method),
-      check_accept(Request, ContentType),
-      ( member(Method, [post,put]) % if POST or PUT request and there is a body, read it
-      -> read_request_body(Request, GraphIn)
-      ; true
-      ),
-      once((
-        dispatch(_{ request: Request,
-                   iri_spec: Prefix:ResourceSegments,
-                     method: Method,
-               content_type: ContentType,
-                   graph_in: GraphIn,
-                  graph_out: GraphOut,
-                    headers: Headers }), % main dispatch method
-        ( ground(GraphOut),
-          rdf_graph_property(GraphOut, triples(Triples)),
-          Triples > 0 % the output document is not empty
-        -> format_response_graph(200, GraphOut, Headers, ContentType)
-        ; true % custom dispatcher should form full response by itself
-        )
-      ; throw(response(404)) % not found (failed to dispatch)
-      ))
-    ),
-    E,
-    ( E =.. [response|Args]
-    -> FR =.. [format_error_response|[Request|Args]],
-       call(FR)
-    ; message_to_string(error(E, _), S),
-      format_error_response(Request, 500, S) % internal server error
-    ))
+    catch(
+      dispatcher0(Request),
+      E,
+      ( E =.. [response|Args]
+      -> FR =.. [format_error_response|[Request|Args]],
+         call(FR)
+      ; message_to_string(error(E, _), S),
+        format_error_response(Request, 500, S) % internal server error
+      )
+    )
   ), clean_temp_graphs).
+
+dispatcher0(Request) :-
+  check_path(Request, Prefix, ResourceSegments),
+  check_method(Request, Method),
+  check_accept(Request, ContentType),
+  ( member(Method, [post,put]) % if POST or PUT request and there is a body, read it
+  -> read_request_body(Request, GraphIn)
+  ; true
+  ),
+  once((
+    dispatch(_{ request: Request,
+               iri_spec: Prefix:ResourceSegments,
+                 method: Method,
+           content_type: ContentType,
+               graph_in: GraphIn,
+              graph_out: GraphOut,
+                headers: Headers }), % main dispatch method
+    ( ground(GraphOut),
+      rdf_graph_property(GraphOut, triples(Triples)),
+      Triples > 0 % the output document is not empty
+    -> format_response_graph(200, GraphOut, Headers, ContentType)
+    ; true % custom dispatcher should form full response by itself
+    )
+  ; throw(response(404)) % not found (failed to dispatch)
+  )).
 
 format_error_response(Request, StatusCode) :-
   format_error_response(Request, StatusCode, _, []).
@@ -92,28 +94,18 @@ format_error_response(Request, StatusCode, Message) :-
   format_error_response(Request, StatusCode, Message, []).
 
 format_error_response(Request, StatusCode, Message, Headers) :-
-  make_temp_graph(GraphErr),
   ( atomic(Message)
   -> ErrorMessage = Message
-  ; once(error_message(StatusCode, ErrorMessage))
+  ; once(oslc_dispatch:error_message(StatusCode, ErrorMessage))
   ),
   rdf_global_id(oslc_shapes:errorShape, ES),
-  create_resource('error', [oslc:'Error'], [ES], [statusCode = StatusCode, message = ErrorMessage], rdf(GraphErr)),
+  create_resource('error', [oslc:'Error'], [ES], [statusCode = StatusCode, message = ErrorMessage], tmp(GraphErr)),
   catch(
     check_accept(Request, ContentType),
     _,
-    serializer(ContentType, _)
+    oslc_dispatch:serializer(ContentType, _)
   ),
   format_response_graph(StatusCode, GraphErr, Headers, ContentType).
-
-error_message(400, 'Bad request').
-error_message(404, 'Not found').
-error_message(405, 'Method not allowed').
-error_message(406, 'Not acceptable').
-error_message(411, 'Content length required').
-error_message(412, 'Precondition failed').
-error_message(415, 'Unsupported media type').
-error_message(_, 'No message').
 
 format_response_graph(StatusCode, Graph, Headers, ContentType) :-
   must_be(integer, StatusCode),
@@ -123,9 +115,9 @@ format_response_graph(StatusCode, Graph, Headers, ContentType) :-
   graph_md5(Graph, Hash),
   append(Headers, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders),
   response(StatusCode, NewHeaders),
-  serializer(ContentType, Serializer), % select proper serializer
+  oslc_dispatch:serializer(ContentType, Serializer), % select proper serializer
   current_output(Out),
-  save_graph(Out, Graph, Serializer). % serialize temporary RDF graph to the response
+  oslc_dispatch:serialize_response(Out, Graph, Serializer). % serialize temporary RDF graph to the response
 
 check_path(Request, Prefix, ResourceSegments) :-
   once((
@@ -150,6 +142,11 @@ check_path(Request, Prefix, ResourceSegments) :-
   ; throw(response(404)) % not found
   )).
 
+strings_to_atoms([], []) :- !.
+strings_to_atoms([S|T], [A|T2]) :-
+  atom_string(A, S),
+  strings_to_atoms(T, T2).
+
 check_method(Request, Method) :-
   once((
     member(method(Method), Request),
@@ -159,18 +156,9 @@ check_method(Request, Method) :-
 
 check_accept(Request, ContentType) :-
   once((
-    member(accept(Accept), Request), % fetch accept header
-    predsort(accept_compare, Accept, AcceptSorted), % sort requested content types according to qualities
-    select_content_type(AcceptSorted, ContentType) % select the best matching content type
+    select_acceptable_content_type(Request, ContentType)
   ; throw(response(406)) % not acceptable
   )).
-
-select_content_type([], _) :- fail.
-select_content_type([media(H,_,_,_)|T], ContentType) :- % go through all requested content types
-  ( serializer(H, _)
-  -> !, ContentType = H % if content type is */* then H becomes _VAR/_VAR and matches application/'rdf+xml'
-  ; select_content_type(T, ContentType)
-  ).
 
 read_request_body(Request, GraphIn) :-
   once((
@@ -181,7 +169,7 @@ read_request_body(Request, GraphIn) :-
   once((
     member(content_type(InContentType), Request),
     once((
-      serializer(Type, Format),
+      oslc_dispatch:serializer(Type, Format),
       format(atom(InContentType), '~w', Type)
     ))
   ; throw(response(415)) % unsupported media type
@@ -198,25 +186,3 @@ read_request_body(Request, GraphIn) :-
     format(atom(Message), 'Parsing error (line ~w, column ~w): ~w.', [Line, Column, S]),
     throw(response(400, Message)) % bad request
   )).
-
-strings_to_atoms([], []) :- !.
-strings_to_atoms([S|T], [A|T2]) :-
-  atom_string(A, S),
-  strings_to_atoms(T, T2).
-
-accept_compare(<, media(_,_,W1,_), media(_,_,W2,_)) :- % sort qualities in reverse order - biggest first
-  W1 >= W2.
-accept_compare(>, media(_,_,W1,_), media(_,_,W2,_)) :-
-  W1 < W2.
-
-serializer(application/'rdf+xml', rdf).
-serializer(application/'turtle', turtle).
-serializer(text/'rdf+xml', rdf).
-serializer(application/'x-turtle', turtle).
-serializer(text/'turtle', turtle).
-
-save_graph(Out, Graph, rdf) :-
-  rdf_save(stream(Out), [graph(Graph)]).
-
-save_graph(Out, Graph, turtle) :-
-  rdf_save_turtle(Out, [graph(Graph), comment(false), silent(true), tab_distance(0)]).

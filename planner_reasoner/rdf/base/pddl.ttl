@@ -1,0 +1,754 @@
+#
+# Copyright 2017 Ericsson AB
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix : <http://ontology.cf.ericsson.net/pddl/> .
+
+# --- Abstract Classes
+# These classes are never instantiated
+
+:MetaClass
+  a rdfs:Class .
+
+:Type
+  a rdfs:Class .
+
+:Orderable
+  a rdfs:Class .
+
+:Parameterizable
+  a rdfs:Class .
+
+:LogicalOperator
+  a rdfs:Class .
+
+:BinaryOperator
+  a rdfs:Class .
+
+:BinaryComparator
+  a rdfs:Class .
+
+:Quantifier
+  a rdfs:Class .
+
+:AssignmentOperator
+  a rdfs:Class .
+
+# --- PDDL Meta Classes
+# Users create subclasses of these classes
+
+:PrimitiveType
+  a rdfs:Class ;
+  rdfs:subClassOf :Type ;
+  rdfs:subClassOf :MetaClass .
+
+:EitherType
+  a rdfs:Class ;
+  rdfs:subClassOf :Type ;
+  rdfs:subClassOf rdf:Bag ;
+  rdfs:subClassOf :MetaClass .
+
+:Action
+  a rdfs:Class ;
+  rdfs:subClassOf :MetaClass ;
+  rdfs:subClassOf :Parameterizable .
+
+:Predicate
+  a rdfs:Class ;
+  rdfs:subClassOf :MetaClass ;
+  rdfs:subClassOf :Parameterizable .
+
+:Function
+  a rdfs:Class ;
+  rdfs:subClassOf :MetaClass ;
+  rdfs:subClassOf :Parameterizable .
+
+# --- PDDL Classes
+# Users create instances of these classes
+
+:Domain
+  a rdfs:Class .
+
+:Problem
+  a rdfs:Class .
+
+:Parameter
+  a rdfs:Class ;
+  rdfs:subClassOf rdf:Property ;
+  rdfs:subClassOf :Orderable .
+
+:Equality # requirement :equality
+  a rdfs:Class ;
+  rdfs:subClassOf :Predicate ;
+  oslc:instanceShape :PredicateShape ;
+  rdfs:label "=" ;
+  :parameter :left ,
+             :right .
+
+:Plan
+  a rdfs:Class .
+
+:Step
+  a rdfs:Class .
+
+# --- PDDL Instances
+
+:total-time
+  a rdfs:Class ;
+  rdfs:subClassOf :Function ;
+  oslc:instanceShape :FunctionShape ;
+  rdfs:label "total-time" .
+
+:argument
+  a :Parameter ;
+  oslc:instanceShape :ParameterShape ;
+  sh:order 1 .
+
+:left
+  a :Parameter ;
+  oslc:instanceShape :ParameterShape ;
+  sh:order 1 .
+
+:right
+  a :Parameter ;
+  oslc:instanceShape :ParameterShape ;
+  sh:order 2 .
+
+# --- PDDL Properties
+
+:type
+  a rdf:Property .
+
+:constant
+  a rdf:Property .
+
+:predicate
+  a rdf:Property .
+
+:function
+  a rdf:Property .
+
+:action
+  a rdf:Property .
+
+:domain
+  a rdf:Property .
+
+:object
+  a rdf:Property .
+
+:init
+  a rdf:Property .
+
+:goal
+  a rdf:Property .
+
+:parameter
+  a rdf:Property .
+
+:precondition
+  a rdf:Property .
+
+:effect
+  a rdf:Property .
+
+:minimize
+  a rdf:Property .
+
+:maximize
+  a rdf:Property .
+
+:step
+  a rdf:Property .
+
+:cost
+  a rdf:Property .
+
+:time
+  a rdf:Property .
+
+# --- Logical Operators
+
+:And
+  a rdfs:Class ;
+  rdfs:subClassOf :LogicalOperator ;
+  rdfs:label "and" .
+
+:Not
+  a rdfs:Class ;
+  rdfs:subClassOf :LogicalOperator ;
+  rdfs:label "not" .
+
+:Or
+  a rdfs:Class ;
+  rdfs:subClassOf :LogicalOperator ;
+  rdfs:label "or" .
+
+:Imply
+  a rdfs:Class ;
+  rdfs:subClassOf :LogicalOperator ;
+  rdfs:label "imply" .
+
+# --- Binary Operators
+
+:Plus
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryOperator ;
+  rdfs:label "+" .
+
+:Minus
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryOperator ;
+  rdfs:label "-" .
+
+:Multiply
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryOperator ;
+  rdfs:label "*" .
+
+:Divide
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryOperator ;
+  rdfs:label "/" .
+
+# --- Binary Comparators
+
+:EQ
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label "=" .
+
+:GT
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label ">" .
+
+:LT
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label "<" .
+
+:LE
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label "<=" .
+
+:GE
+  a rdfs:Class ;
+  rdfs:subClassOf :BinaryComparator ;
+  rdfs:label ">=" .
+
+# --- Quantifiers
+
+:ForAll
+  a rdfs:Class ;
+  rdfs:subClassOf :Quantifier ;
+  rdfs:subClassOf :Parameterizable ;
+  rdfs:label "forall" .
+
+:Exists
+  a rdfs:Class ;
+  rdfs:subClassOf :Quantifier ;
+  rdfs:subClassOf :Parameterizable ;
+  rdfs:label "exists" .
+
+# --- Conditional Effect
+
+:When
+  a rdfs:Class ;
+  rdfs:label "when" .
+
+# --- Assignment Operators
+
+:Assign
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "assign" .
+
+:ScaleUp
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "scale-up" .
+
+:ScaleDown
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "scale-down" .
+
+:Increase
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "increase" .
+
+:Decrease
+  a rdfs:Class ;
+  rdfs:subClassOf :AssignmentOperator ;
+  rdfs:label "decrease" .
+
+# --- Resource Shapes
+
+:ActionShape
+  a oslc:ResourceShape ;
+  dcterms:description "An action has parameter, precondition and effect."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Action name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Action parameters."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :Parameter
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Action precondition that must be fulfilled to enable it."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :precondition ;
+                  oslc:name "precondition"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Action effect describing state modification."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :effect ;
+                  oslc:name "effect"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+:PredicateShape
+  a oslc:ResourceShape ;
+  dcterms:description "A predicate."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Predicate name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Predicate parameters."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :Parameter
+                ] .
+
+:FunctionShape
+  a oslc:ResourceShape ;
+  dcterms:description "Function."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Function name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Function parameters."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :Parameter
+                ] .
+
+:DomainShape
+  a oslc:ResourceShape ;
+  oslc:describes :Domain ;
+  dcterms:description "A planning domain."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Domain name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Domain types."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :type ;
+                  oslc:name "type"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :PrimitiveType ,
+                             :EitherType
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Domain constants."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :constant ;
+                  oslc:name "constant"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :Constant
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Domain predicates."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :predicate ;
+                  oslc:name "predicate"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Domain functions."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :function ;
+                  oslc:name "function"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Domain actions."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :action ;
+                  oslc:name "action"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+:ProblemShape
+  a oslc:ResourceShape ;
+  oslc:describes :Problem ;
+  dcterms:description "A planning problem."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Problem name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Problem planning domain."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :domain ;
+                  oslc:name "domain"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :Domain
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Problem objects."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :object ;
+                  oslc:name "object"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :Object
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Problem init."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :init ;
+                  oslc:name "init"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Problem goal."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :goal ;
+                  oslc:name "goal"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Minimization metric."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :minimize ;
+                  oslc:name "minimize"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:valueType oslc:AnyResource
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Maximization metric."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :maximize ;
+                  oslc:name "maximize"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+:PrimitiveTypeShape
+  a oslc:ResourceShape ;
+  oslc:describes :PrimitiveType ;
+  dcterms:description "A primitive type."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Primitive type name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] .
+
+:EitherTypeShape
+  a oslc:ResourceShape ;
+  oslc:describes :EitherType ;
+  dcterms:description "Either type (list of allowed types)."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Type member (primitive type)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:member ;
+                  oslc:name "member"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :PrimitiveType
+                ] .
+
+:ParameterShape
+  a oslc:ResourceShape ;
+  oslc:describes :Parameter ;
+  dcterms:description "An orderable parameter of predicate, function or action."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Parameter name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Parameter type."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :type ;
+                  oslc:name "type"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :PrimitiveType ,
+                             :EitherType
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Parameter order."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition sh:order ;
+                  oslc:name "order"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:integer ;
+                ] .
+
+:ObjectShape
+  a oslc:ResourceShape ;
+  dcterms:description "An object."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Object name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] .
+
+:ConstantShape
+  a oslc:ResourceShape ;
+  oslc:describes :Constant ;
+  dcterms:description "A constant."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Constant name."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition rdfs:label ;
+                  oslc:name "label"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:string
+                ] .
+
+:PlanShape
+  a oslc:ResourceShape ;
+  oslc:describes :Plan ;
+  dcterms:description "A plan computed by a PDDL planner."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Step of the plan containing an action."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :step ;
+                  oslc:name "step"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:LocalResource ;
+                  oslc:range :Step
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Cost of the plan according to metric."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :cost ;
+                  oslc:name "cost"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:valueType xsd:decimal
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Time in seconds it took to produce the plan."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :time ;
+                  oslc:name "time"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-one ;
+                  oslc:valueType xsd:decimal
+                ] .
+
+:StepShape
+  a oslc:ResourceShape ;
+  oslc:describes :Step ;
+  dcterms:description "A step of a plan containing an action."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Action of the plan step."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :action ;
+                  oslc:name "action"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:LocalResource
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Step order."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition sh:order ;
+                  oslc:name "order"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType xsd:integer ;
+                ] .
+
+# --- Logical Operators
+
+:NotShape
+  a oslc:ResourceShape ;
+  oslc:describes :Not ;
+  dcterms:description "Locical operator (not)."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "(Not) operator argument."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+:ImplyShape
+  a oslc:ResourceShape ;
+  oslc:describes :Imply ;
+  dcterms:description "Locical operator (imply)."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "(Imply) operator arguments."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+# --- Binary Operators
+
+:BinaryOperatorShape
+  a oslc:ResourceShape ;
+  oslc:describes :BinaryOperator ;
+  dcterms:description "Binary operators (+,-,/,*) in precondition."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Binary operators arguments (fluents)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+:FluentMinusShape
+  a oslc:ResourceShape ;
+  oslc:describes :Minus ;
+  dcterms:description "Unary operator (-) in fluent."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Unary operator argument (fluent)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+# --- Binary Comparators
+
+:BinaryComparatorShape
+  a oslc:ResourceShape ;
+  oslc:describes :BinaryComparator ;
+  dcterms:description "Binary comparators (=,>,<,<=,>=) in precondition."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Binary comparators arguments (fluents)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:One-or-many ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+# --- Quantifiers
+
+:QuantifierShape
+  a oslc:ResourceShape ;
+  oslc:describes :Quantifier ;
+  dcterms:description "Quantifiers (forall,exists) in precondition."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Quantifier parameters."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :Parameter
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Quantifier arguments (same as precondition)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+# --- Conditional Effects
+
+:ForAllShape
+  a oslc:ResourceShape ;
+  oslc:describes :ForAll ;
+  dcterms:description "Universal quantifier (forall) in effect."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Quantified variables."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Zero-or-many ;
+                  oslc:valueType oslc:AnyResource ;
+                  oslc:range :Parameter
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Conditional effect."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+:WhenShape
+  a oslc:ResourceShape ;
+  oslc:describes :When ;
+  dcterms:description "Condition (when) in effect."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Condition (same as precondition)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Conditional effect."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] .
+
+# --- Assignment Operators
+
+:AssignmentOperatorShape
+  a oslc:ResourceShape ;
+  oslc:describes :AssignmentOperator ;
+  dcterms:description "Assignment operators (assign,scale-up,scale-down,increase,decrease) in effect."^^rdf:XMLLiteral ;
+  oslc:property [ a oslc:Property ;
+                  dcterms:description "Assignment operator parameter (function)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :parameter ;
+                  oslc:name "parameter"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] ,
+                [ a oslc:Property ;
+                  dcterms:description "Assignment operator argument (fluent)."^^rdf:XMLLiteral ;
+                  oslc:propertyDefinition :argument ;
+                  oslc:name "argument"^^xsd:string ;
+                  oslc:occurs oslc:Exactly-one ;
+                  oslc:valueType oslc:AnyResource
+                ] .

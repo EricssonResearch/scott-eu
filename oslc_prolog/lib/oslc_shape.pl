@@ -119,7 +119,13 @@ check_range(IRI, PropertyResource, Value) :-
   -> once((
        once((
          member(Class, Ranges),
-         rdfs_individual_of(Value, Class)
+         once((
+           rdf_equal(oslc:'Any', Class)
+         ; rdf(Value, rdf:type, Class)
+         % According to https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-shape.html#range
+         % oslc:range can only refer to rdf:type(s), not do inferencing through rdfs:subClassOf
+         % this is why rdfs_individual_of(Value, Class) would be too relaxed here.
+         ))
        ))
      ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
        oslc_error("Property [~w] of resource [~w] must be of one of the following types: ~w", [PropertyDefinition, IRI, Ranges])
