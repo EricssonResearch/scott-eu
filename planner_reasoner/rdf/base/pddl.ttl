@@ -616,21 +616,21 @@
                 ] ,
                 [ a oslc:Property ;
                   dcterms:description "Step additions."^^rdf:XMLLiteral ;
-                  oslc:propertyDefinition pddl:adding ;
+                  oslc:propertyDefinition :adding ;
                   oslc:name "adding"^^xsd:string ;
                   oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:LocalResource ;
                 ] ,
                 [ a oslc:Property ;
                   dcterms:description "Step deletions."^^rdf:XMLLiteral ;
-                  oslc:propertyDefinition pddl:deleting ;
+                  oslc:propertyDefinition :deleting ;
                   oslc:name "deleting"^^xsd:string ;
                   oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:LocalResource ;
                 ] ,
                 [ a oslc:Property ;
                   dcterms:description "Step updates."^^rdf:XMLLiteral ;
-                  oslc:propertyDefinition pddl:updating ;
+                  oslc:propertyDefinition :updating ;
                   oslc:name "updating"^^xsd:string ;
                   oslc:occurs oslc:Zero-or-many ;
                   oslc:valueType oslc:LocalResource ;
