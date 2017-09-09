@@ -24,7 +24,7 @@
 # --- Planning Domain
 
 #    (define (domain adl-blocksworld)
-#      (:requirements :adl :equality)
+#      (:requirements :typing :equality :fluents)
 #      (:types location block)
 #      (:predicates (on ?x ?y - (either block location))
 #                   (clear ?x - (either block location))
@@ -249,11 +249,11 @@
 #      )
 #      (:goal
 #        (or
-#          (on b c)
-#          (on c b)
+#          (on a c)
+#          (on b a)
 #        )
 #      )
-#      (:metric minimize total-time)
+#      (:metric minimize (total-time))
 #    )
 
 :adl-blocksworld-problem

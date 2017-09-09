@@ -33,6 +33,7 @@ pddl_creation_factory(Context) :-
   findall(String, (
     ( rdf(Resource, rdf:type, pddl:'Domain', Graph)
     ; rdf(Resource, rdf:type, pddl:'Problem', Graph)
+    ; rdf(Resource, rdf:type, pddl:'Plan', Graph)
     ),
     once((
       generate_pddl(Resource, Graph, String)
@@ -42,7 +43,7 @@ pddl_creation_factory(Context) :-
   response(200),
   forall(
     member(String, Strings),
-    writeln(String)
+    write(String)
   ).
 
 plan_creation_factory(Context) :-

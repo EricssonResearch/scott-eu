@@ -10,6 +10,8 @@
 %   Register Ontology (using Ontology as identifier from in Manifest.ttl) to be
 %   managed by the OSLC server under URI having form of <BaseURI>/<Ontology>.
 
+ontology(_) :- fail.
+
 register_ontology(Ontology) :-
   assertz(ontology(Ontology)).
 
