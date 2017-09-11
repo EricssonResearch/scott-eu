@@ -40,15 +40,39 @@
   oslc:service [ a oslc:Service ;
                  dcterms:title "Planning Service"^^rdf:XMLLiteral ;
                  oslc:domain pddl: ;
-                 oslc:creationFactory :planCreationFactory
+                 oslc:creationFactory :pddlCreationFactory ,
+                                      :planCreationFactory ,
+                                      :validatedPlanCreationFactory
                ] .
 
-:planCreationFactory
+:pddlCreationFactory
   a oslc:CreationFactory ;
   oslc:instanceShape shapes:creationFactoryShape ;
-  dcterms:title "Plan Creation Factory"^^rdf:XMLLiteral ;
+  dcterms:title "PDDL Creation Factory"^^rdf:XMLLiteral ;
   oslc:creation :planCreationFactory ;
   oslc:resourceType pddl:Domain ,
-                    pddl:Problem ;
+                    pddl:Problem ,
+                    pddl:Plan ;
   oslc:resourceShape pddl:DomainShape ,
-                     pddl:ProblemShape .
+                     pddl:ProblemShape ,
+                     pddl:PlanShape .
+
+:planCreationFactory
+ a oslc:CreationFactory ;
+ oslc:instanceShape shapes:creationFactoryShape ;
+ dcterms:title "Plan Creation Factory"^^rdf:XMLLiteral ;
+ oslc:creation :planCreationFactory ;
+ oslc:resourceType pddl:Domain ,
+                   pddl:Problem ;
+ oslc:resourceShape pddl:DomainShape ,
+                    pddl:ProblemShape .
+
+:planCreationFactory
+ a oslc:CreationFactory ;
+ oslc:instanceShape shapes:creationFactoryShape ;
+ dcterms:title "Validated Plan Creation Factory"^^rdf:XMLLiteral ;
+ oslc:creation :planCreationFactory ;
+ oslc:resourceType pddl:Domain ,
+                   pddl:Problem ;
+ oslc:resourceShape pddl:DomainShape ,
+                    pddl:ProblemShape .
