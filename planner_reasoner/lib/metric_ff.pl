@@ -47,9 +47,7 @@ generate_plan(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFil
         create_resource(Plan, [pddl:'Plan'], [pddl:'PlanShape'], [], rdf(PlanGraph)),
         Context = _{ plan : Plan,
                plan_graph : PlanGraph,
-                   domain : Domain,
              domain_graph : DomainGraph,
-                  problem : Problem,
             problem_graph : ProblemGraph },
         assertz(context(Context)),
         read_lines(PlanStream)
@@ -124,8 +122,9 @@ action_parameters([SortedParameter|T], [Parameter|T2], ABN, Context) :-
 find_object(ObjectPattern, ObjectResource) :-
   context(Context),
   { icase(ObjectLabel, ObjectPattern) },
-  %TODO: in general objects may appear in either of domain or problem graphs
-  rdf(ObjectResource, rdfs:label, ObjectLabel^^xsd:string, Context.domain_graph),
+  ( rdf(ObjectResource, rdfs:label, ObjectLabel^^xsd:string, Context.domain_graph)
+  ; rdf(ObjectResource, rdfs:label, ObjectLabel^^xsd:string, Context.problem_graph)
+  ),
   rdfs_individual_of(ObjectResource, pddl:'PrimitiveType').
 
 step(Action, Parameters, Order) -->
