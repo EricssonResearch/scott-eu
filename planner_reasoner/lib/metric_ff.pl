@@ -16,7 +16,7 @@ limitations under the License.
 
 :- module(metric_ff, [
   generate_plan/6,
-  generate_plan/9
+  generate_plan/8
 ]).
 
 :- use_module(library(semweb/rdf11)).
@@ -26,14 +26,17 @@ limitations under the License.
 :- use_module(library(pddl_generator)).
 
 :- rdf_meta generate_plan(r, -, r, -, r, -).
-:- rdf_meta generate_plan(r, -, -, r, -, -, r, -, -).
+:- rdf_meta generate_plan(r, -, -, r, -, -, r, -).
 
 :- thread_local context/1.
 
 generate_plan(Domain, DomainGraph, Problem, ProblemGraph, Plan, PlanGraph) :-
-  generate_plan(Domain, DomainGraph, _, Problem, ProblemGraph, _, Plan, PlanGraph, false).
+  generate_plan0(Domain, DomainGraph, _, Problem, ProblemGraph, _, Plan, PlanGraph, false).
 
-generate_plan(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, Plan, PlanGraph, KeepFiles) :-
+generate_plan(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, Plan, PlanGraph) :-
+  generate_plan0(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, Plan, PlanGraph, true).
+
+generate_plan0(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, Plan, PlanGraph, KeepFiles) :-
   generate_pddl(Domain, DomainGraph, DomainString),
   generate_pddl(Problem, ProblemGraph, ProblemString),
   setup_call_cleanup(tmp_file_stream(text, DomainFile, DomainStream), (

@@ -67,8 +67,8 @@ validated_plan_creation_factory(Context) :-
     rdf(Domain, rdf:type, pddl:'Domain', Graph),
     rdf(Problem, rdf:type, pddl:'Problem', Graph),
     once((
-      generate_plan(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, plan, Context.graph_out, true),
-      validate_plan(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, plan, Context.graph_out)
+      generate_plan(Domain, Graph, DomainFile, Problem, Graph, ProblemFile, pddl:plan, Context.graph_out),
+      validate_plan(Domain, Graph, DomainFile, Problem, Graph, ProblemFile, pddl:plan, Context.graph_out)
     ; throw(response(400))
     ))
   )).
