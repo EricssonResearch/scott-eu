@@ -1,4 +1,4 @@
-# Repository for V-REP model of Turttlebot2i
+# Repository for V-REP model of Turtlebot2i
 
 ## Pre-requisites
 

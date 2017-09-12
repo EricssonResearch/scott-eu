@@ -34,6 +34,18 @@ function setVels_cb(msg)
     end
 end
 
+-- TODO
+function setMotor_cb(msg)
+    -- Disable motor
+    if msg.state == 0 then
+        sim.setJointTargetVelocity(leftJoint, 0)
+        sim.setJointTargetVelocity(rightJoint, 0)
+    -- Enable motor
+    --else
+
+    end
+end
+
 if (sim_call_type==sim.childscriptcall_initialization) then 
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
     modelBaseName = sim.getObjectName(objHandle)
@@ -51,6 +63,10 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     t_rightBumper = sim.getObjectHandle('bumper_right_joint')
     t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
 
+    f_cliff_handle = sim.getObjectHandle('cliff_sensor_front')
+    r_cliff_handle = sim.getObjectHandle('cliff_sensor_right')
+    l_cliff_handle = sim.getObjectHandle('cliff_sensor_left')
+
     originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)
     invOriginMatrix = simGetInvertedMatrix(originMatrix)
 
@@ -64,81 +80,99 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 
     -- Commands
     subCmdVel = simROS.subscribe(modelBaseName..'/cmd_vel','geometry_msgs/Twist','setVels_cb')
+    subCmdMotor = simROS.subscribe(modelBaseName..'/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
 end 
 
 
 if (sim_call_type == sim.childscriptcall_sensing) then 
-        
-        local bumper_id = 255
-        local bumper_pressed = 0
-        -- Front Bumper
-            front_bumper_pos = sim.getJointPosition(t_frontBumper)
-            if(front_bumper_pos < -0.001) then
-               -- print("F. COLLISION!")
-                front_collision=true
-                bumperCenterState = 1
-                bumper_id = 1
-                bumper_pressed = 1
-            else
-               -- print("F. No Collision")
-                front_collision=false
-                bumperCenterState = 0
-            end
-        -- Right Bumper
-            right_bumper_pos = sim.getJointPosition(t_rightBumper)
-            if(right_bumper_pos < -0.001) then
-               -- print("R. COLLISION!")
-                right_collision=true
-                bumperRightState = 1
-                bumper_id = 2
-                bumper_pressed = 1
-            else
-                --print("R. No Collision")
-                right_collision=false
-                bumperRightState = 0
-            end
-        -- Left Bumper
-            left_bumper_pos = sim.getJointPosition(t_leftBumper)
-            if(left_bumper_pos < -0.001) then
-              --  print("L. COLLISION!")
-                left_collision=true
-                bumperLeftState = 1
-                bumper_id = 1
-                bumper_pressed = 1
-            else
-                --print("L. No Collision")
-                left_collision=false
-                bumperLeftState = 0
-            end
+    
+    -- Bumper
+    local bumper_id = 255
+    local bumper_pressed = 0
+    -- Cliff
+    local cliff_sensor = 255
+    local cliff_sensor_activated = 0
 
-        -- Bumper ROS message 
-        ros_kobuki_bumper_event = {}
-        ros_kobuki_bumper_event["bumper"] = bumper_id 
-        ros_kobuki_bumper_event["state"] = bumper_pressed
-	    simROS.publish(pubBumper, ros_kobuki_bumper_event)
-        
+    --[[ BUMPER SENSING ]]--
+    -- Front Bumper
+    front_bumper_pos = sim.getJointPosition(t_frontBumper)
+    if(front_bumper_pos < -0.001) then
+       -- print("F. COLLISION!")
+        front_collision=true
+        bumperCenterState = 1
+        bumper_id = 1
+        bumper_pressed = 1
+    else
+       -- print("F. No Collision")
+        front_collision=false
+        bumperCenterState = 0
+    end
+    
+    -- Right Bumper
+    right_bumper_pos = sim.getJointPosition(t_rightBumper)
+    if(right_bumper_pos < -0.001) then
+       -- print("R. COLLISION!")
+        right_collision=true
+        bumperRightState = 1
+        bumper_id = 2
+        bumper_pressed = 1
+    else
+        --print("R. No Collision")
+        right_collision=false
+        bumperRightState = 0
+    end
+    
+    -- Left Bumper
+    left_bumper_pos = sim.getJointPosition(t_leftBumper)
+    if(left_bumper_pos < -0.001) then
+      --  print("L. COLLISION!")
+        left_collision=true
+        bumperLeftState = 1
+        bumper_id = 1
+        bumper_pressed = 1
+    else
+        --print("L. No Collision")
+        left_collision=false
+        bumperLeftState = 0
+    end
 
-        -- Odometry
-        local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
-        local pose_orientationNow = sim.multiplyMatrices(invOriginMatrix, transformNow)
-        local r_quaternion = simGetQuaternionFromMatrix(pose_orientationNow)
-        local r_position = {pose_orientationNow[4], pose_orientationNow[8], pose_orientationNow[12]}
-        local r_linear_velocity, r_angular_velocity = 0,0
-        r_linear_velocity, r_angular_velocity = simGetObjectVelocity(mainBodyHandle)
+    -- Bumper ROS message 
+    ros_kobuki_bumper_event = {}
+    ros_kobuki_bumper_event["bumper"] = bumper_id 
+    ros_kobuki_bumper_event["state"] = bumper_pressed
+	simROS.publish(pubBumper, ros_kobuki_bumper_event)
+    
+    --[[ CLIFF SENSING ]]--
+    -- Front Cliff
+    res, front_cliff_dist = simCheckProximitySensor(f_cliff_handle, sim_handle_all)
+    print(front_cliff_dist)
+    -- Left Cliff
+    res, left_cliff_dist = simCheckProximitySensor(l_cliff_handle, sim_handle_all)
+    -- Right Cliff
+    res, right_cliff_dist = simCheckProximitySensor(r_cliff_handle, sim_handle_all)
+    
 
-        -- ROSing
-        local ros_pose = {}
+    -- Odometry
+    local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
+    local pose_orientationNow = sim.multiplyMatrices(invOriginMatrix, transformNow)
+    local r_quaternion = simGetQuaternionFromMatrix(pose_orientationNow)
+    local r_position = {pose_orientationNow[4], pose_orientationNow[8], pose_orientationNow[12]}
+    local r_linear_velocity, r_angular_velocity = 0,0
+    r_linear_velocity, r_angular_velocity = simGetObjectVelocity(mainBodyHandle)
+
+    -- ROSing
+    local ros_pose = {}
 	ros_pose['header'] = {seq=0,stamp=simROS.getTime(), frame_id="/robot"..modelBaseName}
 	local cov = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 	local quaternion_ros = {}
-        quaternion_ros["x"] = r_quaternion[1]
-        quaternion_ros["y"] = r_quaternion[2]
-        quaternion_ros["z"] = r_quaternion[3]
-        quaternion_ros["w"] = r_quaternion[4]
-        local position_ros = {}
-        position_ros["x"] = r_position[1]
-        position_ros["y"] = r_position[2]
-        position_ros["z"] = r_position[3]
+    quaternion_ros["x"] = r_quaternion[1]
+    quaternion_ros["y"] = r_quaternion[2]
+    quaternion_ros["z"] = r_quaternion[3]
+    quaternion_ros["w"] = r_quaternion[4]
+    local position_ros = {}
+    position_ros["x"] = r_position[1]
+    position_ros["y"] = r_position[2]
+    position_ros["z"] = r_position[3]
 	local pose_r = {position=position_ros, orientation=quaternion_ros}
 	ros_pose['pose'] = {pose=pose_r, covariance = cov}
 	local linear_speed = {}
