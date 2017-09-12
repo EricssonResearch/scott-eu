@@ -20,12 +20,11 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     linVel = 0
     rotVel = 0
 
-    -- Braitenberg weights:
-    brait_left={0,-0.5,-1.25,-1,-0.2}
-
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')
     t_rightBumper = sim.getObjectHandle('bumper_right_joint')
     t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
+    
+    -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
     originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)
     invOriginMatrix = simGetInvertedMatrix(originMatrix)
@@ -92,7 +91,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         ros_kobuki_bumper_event = {}
         ros_kobuki_bumper_event["bumper"] = bumper_id 
         ros_kobuki_bumper_event["state"] = bumper_pressed
-	    simROS.publish(pubBumper, ros_kobuki_bumper_event)
+	simROS.publish(pubBumper, ros_kobuki_bumper_event)
         
 
         -- Odometry
@@ -102,6 +101,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         r_quaternion = simGetQuaternionFromMatrix(pose_orientationNow)
         r_position = {pose_orientationNow[4], pose_orientationNow[8], pose_orientationNow[12]}
 
+        -- TODO: odometry calculus can be more elegant
         dt = (timeNow - lastTime)
 	if dt>0.1 then
             r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
@@ -126,7 +126,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 	ros_pose['header'] = {seq=0,stamp=simROS.getTime(), frame_id="/robot"..modelBaseName}
 	local cov = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 	local quaternion_ros = {}
-        quaternion_ros["x"] = r_quaternion[1]
+        quaternion_ros["x"] = r_quaternion[1] --TODO: more compact syntax
         quaternion_ros["y"] = r_quaternion[2]
         quaternion_ros["z"] = r_quaternion[3]
         quaternion_ros["w"] = r_quaternion[4]
@@ -190,6 +190,5 @@ if (sim_call_type==sim.childscriptcall_actuation) then
         sim.setJointTargetVelocity(leftJoint,velocityLeft*2/wheelDiameter)
         sim.setJointTargetVelocity(rightJoint,velocityRight*2/wheelDiameter)
     end 
-    print(velocityLeft*2/wheelDiameter)
 end 
 
