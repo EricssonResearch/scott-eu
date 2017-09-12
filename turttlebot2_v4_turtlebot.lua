@@ -32,6 +32,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     oldTransformation = originMatrix
     lastTime = simGetSimulationTime()
     ----------------------------- ROS STUFF --------------------------------
+    -- Bumper
+	pubBumper = simROS.advertise(modelBaseName..'/events/bumper','kobuki_msgs/BumperEvent')
+	--simROS.publisherTreatUInt8ArrayAsString(pubBumper)
     -- Odometry
     pubPose = simROS.advertise(modelBaseName..'/pose','nav_msgs/Odometry')
     simROS.publisherTreatUInt8ArrayAsString(pubPose)
@@ -42,12 +45,17 @@ end
 
 
 if (sim_call_type == sim.childscriptcall_sensing) then 
+        
+        local bumper_id = 255
+        local bumper_pressed = 0
         -- Front Bumper
             front_bumper_pos = sim.getJointPosition(t_frontBumper)
             if(front_bumper_pos < -0.001) then
                -- print("F. COLLISION!")
                 front_collision=true
                 bumperCenterState = 1
+                bumper_id = 1
+                bumper_pressed = 1
             else
                -- print("F. No Collision")
                 front_collision=false
@@ -59,6 +67,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
                -- print("R. COLLISION!")
                 right_collision=true
                 bumperRightState = 1
+                bumper_id = 2
+                bumper_pressed = 1
             else
                 --print("R. No Collision")
                 right_collision=false
@@ -70,11 +80,20 @@ if (sim_call_type == sim.childscriptcall_sensing) then
               --  print("L. COLLISION!")
                 left_collision=true
                 bumperLeftState = 1
+                bumper_id = 1
+                bumper_pressed = 1
             else
                 --print("L. No Collision")
                 left_collision=false
                 bumperLeftState = 0
             end
+
+        -- Bumper ROS message 
+        ros_kobuki_bumper_event = {}
+        ros_kobuki_bumper_event["bumper"] = bumper_id 
+        ros_kobuki_bumper_event["state"] = bumper_pressed
+	    simROS.publish(pubBumper, ros_kobuki_bumper_event)
+        
 
         -- Odometry
         timeNow = simGetSimulationTime()
@@ -133,6 +152,7 @@ end
 if (sim_call_type==sim.childscriptcall_cleanup) then 
     -- ROS Shutdown
     simROS.shutdownPublisher(pubPose)
+    simROS.shutdownPublisher(pubBumper)
     simROS.shutdownSubscriber(subCmdVel)
 end 
 
