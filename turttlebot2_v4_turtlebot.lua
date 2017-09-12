@@ -52,6 +52,8 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     -- Bumper
 	pubBumper = simROS.advertise(modelBaseName..'/events/bumper','kobuki_msgs/BumperEvent')
 	--simROS.publisherTreatUInt8ArrayAsString(pubBumper)
+    -- Cliff
+	pubCliff = simROS.advertise(modelBaseName..'/events/cliff','kobuki_msgs/CliffEvent')
     -- Odometry
     pubPose = simROS.advertise(modelBaseName..'/pose','nav_msgs/Odometry')
     simROS.publisherTreatUInt8ArrayAsString(pubPose)
@@ -123,12 +125,31 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     --[[ CLIFF SENSING ]]--
     -- Front Cliff
     res, front_cliff_dist = simCheckProximitySensor(f_cliff_handle, sim_handle_all)
-    print(front_cliff_dist)
     -- Left Cliff
     res, left_cliff_dist = simCheckProximitySensor(l_cliff_handle, sim_handle_all)
     -- Right Cliff
     res, right_cliff_dist = simCheckProximitySensor(r_cliff_handle, sim_handle_all)
+   
+    if (front_cliff_dist == nil) then
+        cliff_sensor = 1
+        cliff_sensor_activated = 1
+    end
+
+    if (left_cliff_dist == nil) then
+        cliff_sensor = 2
+        cliff_sensor_activated = 1
+    end
     
+    if (right_cliff_dist == nil) then
+        cliff_sensor = 3
+        cliff_sensor_activated = 1
+    end
+
+    local ros_cliff_event = {}
+    ros_cliff_event["sensor"] = cliff_sensor
+    ros_cliff_event["state"] = cliff_sensor_activated
+    ros_cliff_event["bottom"] = left_bumper_pos
+	simROS.publish(pubCliff, ros_cliff_event)
 
     -- Odometry
     local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
