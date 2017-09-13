@@ -139,12 +139,12 @@ step(Action, Parameters, Order) -->
   parameters(Parameters).
 
 parameters([H|T]) -->
-  (" " ; "\n"),
+  " ",
   string_without(" \n", Codes),
   { atom_codes(H, Codes) },
   parameters(T).
 
-parameters([]) --> [].
+parameters([]) --> [], !.
 
 cost -->
   "plan cost:", whites, float(Cost),
