@@ -18,7 +18,7 @@ This project contains a PDDL generator, a Planner OSLC Service (based on Metric-
 * OSCL shapes, unfortunately, do not allow to completely validate PDDL documents, however partial validation is possible by using `oslc:occurs` and `oslc:range` checks (it is not always possible to specify precise `oslc:range` types as some of them are user-defined, and inferencing over `rdfs:subClassOf` is not allowed in OSLC).
 
 Here is the current PDDL ontology (see pddl.ttl):
-![diagram-2](https://user-images.githubusercontent.com/3233957/29380585-815979e2-82c6-11e7-9daf-3efde6d72fe2.png)
+![diagram-3](https://user-images.githubusercontent.com/3233957/30367188-db806ef0-986d-11e7-9b20-341fa28da619.png)
 
 ## Usage:
 
