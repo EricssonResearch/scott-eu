@@ -32,11 +32,11 @@ Base URI:  `http://<host>/planner/planCreationFactory`
 
 Do `POST` with `Accept: application/turtle` or `application/rdf+xml` header and body containing both `pddl:Domain` and `pddl:Problem` resources. The returned resource is of type `pddl:Plan` containing steps as resources of type `pddl:Step` ordered using `sh:order` property.
 
-For plan generation Metric-FF planner binary `ff` should be where `run.pl` or in `$PATH`.
+For plan generation Metric-FF planner binary `ff` should be where `run.pl` is or in `$PATH`.
 
 ### Generate validated plan:
 Base URI:  `http://<host>/planner/validatedPlanCreationFactory`
 
 Do `POST` with `Accept: application/turtle` or `application/rdf+xml` header and body containing both `pddl:Domain` and `pddl:Problem` resources. The returned resource is of type `pddl:Plan` (as in the above case), each `pddl:Step` of which is annotated with `pddl:adding`, `pddl:removing`, `pddl:updating` properties.
 
-For validated plan generation both Metric-FF planner binary `ff` and VAL binary `validate` should be where `run.pl` or in `$PATH`.
+For validated plan generation both Metric-FF planner binary `ff` and VAL binary `validate` should be where `run.pl` is or in `$PATH`.
