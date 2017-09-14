@@ -35,12 +35,15 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     motor_power = 1 --Enable motors by default
 
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')
-    t_rightBumper = sim.getObjectHandle('bumper_right_joint')
     t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
+    t_rightBumper = sim.getObjectHandle('bumper_right_joint')
     
     f_cliff_handle = sim.getObjectHandle('cliff_sensor_front')
-    r_cliff_handle = sim.getObjectHandle('cliff_sensor_right')
     l_cliff_handle = sim.getObjectHandle('cliff_sensor_left')
+    r_cliff_handle = sim.getObjectHandle('cliff_sensor_right')
+
+    l_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_left')
+    r_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_right')
 
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
@@ -54,6 +57,8 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 	--simROS.publisherTreatUInt8ArrayAsString(pubBumper)
     -- Cliff
 	pubCliff = simROS.advertise(modelBaseName..'/events/cliff','kobuki_msgs/CliffEvent')
+    -- Wheel Drop
+	pubWheelDrop = simROS.advertise(modelBaseName..'/events/wheel_drop','kobuki_msgs/WheelDropEvent')
     -- Odometry
     pubPose = simROS.advertise(modelBaseName..'/pose','nav_msgs/Odometry')
     simROS.publisherTreatUInt8ArrayAsString(pubPose)
@@ -71,18 +76,19 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     -- Cliff
     local cliff_sensor = 255
     local cliff_sensor_activated = 0
+    -- Wheel Drop
+    local wheel_drop_sensor = 255
+    local wheel_drop_sensor_activated = 0
 
-    --[[ BUMPER SENSING ]]--
+    ---- BUMPER SENSING ----
     -- Front Bumper
     front_bumper_pos = sim.getJointPosition(t_frontBumper)
     if(front_bumper_pos < -0.001) then
-       -- print("F. COLLISION!")
         front_collision=true
         bumperCenterState = 1
         bumper_id = 1
         bumper_pressed = 1
     else
-       -- print("F. No Collision")
         front_collision=false
         bumperCenterState = 0
     end
@@ -90,13 +96,11 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     -- Right Bumper
     right_bumper_pos = sim.getJointPosition(t_rightBumper)
     if(right_bumper_pos < -0.001) then
-       -- print("R. COLLISION!")
         right_collision=true
         bumperRightState = 1
         bumper_id = 2
         bumper_pressed = 1
     else
-        --print("R. No Collision")
         right_collision=false
         bumperRightState = 0
     end
@@ -104,13 +108,11 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     -- Left Bumper
     left_bumper_pos = sim.getJointPosition(t_leftBumper)
     if(left_bumper_pos < -0.001) then
-      --  print("L. COLLISION!")
         left_collision=true
         bumperLeftState = 1
-        bumper_id = 1
+        bumper_id = 0
         bumper_pressed = 1
     else
-        --print("L. No Collision")
         left_collision=false
         bumperLeftState = 0
     end
@@ -121,26 +123,26 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     ros_kobuki_bumper_event["state"] = bumper_pressed
 	simROS.publish(pubBumper, ros_kobuki_bumper_event)
     
-    --[[ CLIFF SENSING ]]--
-    -- Front Cliff
-    res, front_cliff_dist = simCheckProximitySensor(f_cliff_handle, sim_handle_all)
+    ---- CLIFF SENSING ----
     -- Left Cliff
     res, left_cliff_dist = simCheckProximitySensor(l_cliff_handle, sim_handle_all)
+    -- Front Cliff
+    res, front_cliff_dist = simCheckProximitySensor(f_cliff_handle, sim_handle_all)
     -- Right Cliff
     res, right_cliff_dist = simCheckProximitySensor(r_cliff_handle, sim_handle_all)
+
+    if (left_cliff_dist == nil) then
+        cliff_sensor = 0
+        cliff_sensor_activated = 1
+    end
    
     if (front_cliff_dist == nil) then
         cliff_sensor = 1
         cliff_sensor_activated = 1
     end
-
-    if (left_cliff_dist == nil) then
-        cliff_sensor = 2
-        cliff_sensor_activated = 1
-    end
     
     if (right_cliff_dist == nil) then
-        cliff_sensor = 3
+        cliff_sensor = 2
         cliff_sensor_activated = 1
     end
 
@@ -149,6 +151,25 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     ros_cliff_event["state"] = cliff_sensor_activated
     ros_cliff_event["bottom"] = left_bumper_pos
 	simROS.publish(pubCliff, ros_cliff_event)
+
+    ---- WHEEL DROP ----
+    res, left_wheel_drop  = simCheckProximitySensor(l_wheel_drop_handle, sim_handle_all)
+    res, right_wheel_drop = simCheckProximitySensor(r_wheel_drop_handle, sim_handle_all)
+
+    if (left_wheel_drop == nil) then
+        wheel_drop_sensor = 0
+        wheel_drop_sensor_activated = 1
+    end
+    
+    if (right_wheel_drop == nil) then
+        wheel_drop_sensor = 1
+        wheel_drop_sensor_activated = 1
+    end
+
+    local ros_wheel_drop_event = {}
+    ros_wheel_drop_event["wheel"] = wheel_drop_sensor
+    ros_wheel_drop_event["state"] = wheel_drop_sensor_activated
+    simROS.publish(pubWheelDrop, ros_wheel_drop_event)
 
     -- Odometry
     local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
@@ -190,6 +211,8 @@ if (sim_call_type==sim.childscriptcall_cleanup) then
     -- ROS Shutdown
     simROS.shutdownPublisher(pubPose)
     simROS.shutdownPublisher(pubBumper)
+    simROS.shutdownPublisher(pubCliff)
+    simROS.shutdownPublisher(pubWheelDrop)
     simROS.shutdownSubscriber(subCmdVel)
 end 
 
