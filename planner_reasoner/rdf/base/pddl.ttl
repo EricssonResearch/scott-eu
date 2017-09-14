@@ -782,6 +782,5 @@
                   dcterms:description "Assignment operator argument (fluent)."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition :argument ;
                   oslc:name "argument"^^xsd:string ;
-                  oslc:occurs oslc:Exactly-one ;
-                  oslc:valueType oslc:AnyResource
+                  oslc:occurs oslc:Exactly-one
                 ] .

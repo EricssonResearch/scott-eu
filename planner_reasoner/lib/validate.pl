@@ -102,13 +102,13 @@ deleting(Step) -->
   }.
 
 updating(Step) -->
-  "Updating (", callable_bnode(FBN, pddl:'Function'), ") (", integer(Current), ") by ", integer(Argument), " ", label(Assignment),
+  "Updating (", callable_bnode(FBN, pddl:'Function'), ") (",
+  integer(Current), ") by ", integer(Argument), " ", label(AssignmentOperator),
   {
     context(Context),
     rdf_create_bnode(UBN),
-    % TODO: pddl:'AssignmentOperatorShape' shape does not work as xsd:integer is not oslc:AnyResource,
-    % redesign is needed to properly validate f-exp in pddl:argument
-    create_resource(UBN, [pddl:'Increase'], [], [ % TODO: do proper assignment operator search
+    find_assignment_operator(AssignmentOperator, AssignmentOperatorType),
+    create_resource(UBN, [AssignmentOperatorType], [pddl:'AssignmentOperatorShape'], [
       pddl:current = '^^'(Current, xsd:integer),
       pddl:parameter = FBN,
       pddl:argument = '^^'(Argument, xsd:integer)
@@ -133,7 +133,7 @@ callable_bnode(CBN, Class) -->
   }.
 
 label(Label) -->
-  string_without(" \n", Codes),
+  string_without(" )\n", Codes),
   { atom_codes(Label, Codes) }.
 
 arguments([H|T]) -->
@@ -164,3 +164,8 @@ find_object(ObjectPattern, ObjectResource) :-
   ; rdf(ObjectResource, rdfs:label, ObjectLabel^^xsd:string, Context.problem_graph)
   ),
   rdfs_individual_of(ObjectResource, pddl:'PrimitiveType').
+
+find_assignment_operator(AssignmentOperatorPattern, AssignmentOperatorType) :-
+  { icase(ObjectLabel, AssignmentOperatorPattern) },
+  rdf(AssignmentOperatorType, rdfs:label, ObjectLabel^^xsd:string),
+  rdfs_subclass_of(AssignmentOperatorType, pddl:'AssignmentOperator').
