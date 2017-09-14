@@ -2,20 +2,20 @@ function setVels_cb(msg)
    -- not sure if a scale factor must be applied
    local linVel = msg.linear.x/2 -- in m/s
    local rotVel = msg.angular.z*interWheelDistance/2 -- in rad/s
-   velocityRight = linVel+rotVel
-   velocityLeft = linVel-rotVel
+   
+   --  Check if motor is enabled 
+   if (motor_power == 1) then
+       velocityRight = linVel+rotVel
+       velocityLeft  = linVel-rotVel
+   else
+       velocityRight = 0 
+       velocityLeft  = 0 
+   end
 end
 
--- TODO
+-- Enable/disable motors
 function setMotor_cb(msg)
-    -- Disable motor
-    if msg.state == 0 then
-        sim.setJointTargetVelocity(leftJoint, 0)
-        sim.setJointTargetVelocity(rightJoint, 0)
-    -- Enable motor
-    --else
-
-    end
+    motor_power = msg.state
 end
 
 if (sim_call_type==sim.childscriptcall_initialization) then 
@@ -31,6 +31,8 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     velocityRight = 0
     linVel = 0
     rotVel = 0
+
+    motor_power = 1 --Enable motors by default
 
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')
     t_rightBumper = sim.getObjectHandle('bumper_right_joint')
@@ -197,6 +199,7 @@ if (sim_call_type==sim.childscriptcall_actuation) then
     wheelDiameter=0.085*s
     interWheelDistance=0.137*s
     noDetectionDistance=0.4*s
+
     if simulationIsKinematic then
         -- Simulation is kinematic
         p=sim.boolOr32(sim.getModelProperty(objHandle),sim.modelproperty_not_dynamic)
@@ -224,6 +227,6 @@ if (sim_call_type==sim.childscriptcall_actuation) then
         --velocityLeft = linVel - rotVel
         sim.setJointTargetVelocity(leftJoint,velocityLeft*2/wheelDiameter)
         sim.setJointTargetVelocity(rightJoint,velocityRight*2/wheelDiameter)
-    end 
+    end
 end 
 

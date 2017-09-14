@@ -52,6 +52,6 @@
         kobuki_msgs/Sound
         kobuki_msgs/VersionInfo
         kobuki_msgs/WheelDropEvent
-    5. Recompile vrep_ros_package
+    5. Recompile vrep_ros_interface
     6. Install the updated vrep_ros_interface library in the V-REP
       rosrun vrep_ros_interface install.sh
