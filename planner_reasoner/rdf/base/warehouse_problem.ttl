@@ -3,58 +3,436 @@
 @prefix ppos: <http://ontology.cf.ericsson.net/planning_ontology_shapes/> .
 @prefix : <http://ontology.cf.ericsson.net/warehouse_problem/> .
 
-# all the types used in the domain file
-warehouse:Robot
-  a pp:VariableType .
+# --- Planning Problem
+#warehouseProblemGen-5.pddl
+:warehouseProblem
+  a pddl:Problem ;
+  oslc:instanceShape pddl:ProblemShape ;
+  rdfs:label "warehouseProblem" ;
+  pddl:domain 	:warehouseDomain ;
+  pddl:object 	:robot1 ,
+				:robot2 ,
+				:shelf1 ,
+				:shelf2 ,
+				:shelf3 ,
+				:chargingStation1 ,
+				:cbin1 ,
+				:cbOut2 ,
+				:o1 ,
+				:o2 ,
+				:o3 ,
+				:o4 ,
+				:o5 ,
+				:o6 ,
+				:o7 ,
+				:o8 ,
+				:Red ,
+				:Blue ,
+				:Green ,
+				:wp4 ,
+				:wp1 ,
+				:wp2 ,
+				:wp3 ;
+    pddl:init
+			#(is-at robot2 wp3)
+			[ a :is-at ;
+			  :is-at-x :robot2 ;
+			  :is-at-y :wp3
+			] ,
+			# (= (charge-level robot2) 20)
+			[ a pddl:EQ ;
+              pddl:left [ a :charge-level ;
+                          :charge-level-x :robot2
+                        ] ;
+              pddl:right 20
+            ] ,
+			# (= (capacity robot2) 1)
+			[ a pddl:EQ ;
+              pddl:left [ a :capacity ;
+                          :capacity-x :robot2
+                        ] ;
+              pddl:right 1
+            ] ,
+			# (= (max-charge robot2) 10)
+			[ a pddl:EQ ;
+              pddl:left [ a :max-Charge ;
+                          :max-Charge-x :robot2
+                        ] ;
+              pddl:right 10
+            ] ,
+			# (= (high-charge robot2) 6)
+			[ a pddl:EQ ;
+              pddl:left [ a :high-Charge ;
+                          :high-Charge-x :robot2
+                        ] ;
+              pddl:right 6
+            ] ,
+			# (= (low-charge robot2) 3)
+			[ a pddl:EQ ;
+              pddl:left [ a :low-Charge ;
+                          :low-Charge-x :robot2
+                        ] ;
+              pddl:right 3
+            ] ,
+			# (not (is-recharging robot2))
+			[ a pddl:Not ;
+			  pddl:argument [ a :is-recharging ;
+							  :is-recharging-x :robot2
+							]
+			] ,
+			#(is-at robot1 wp2)
+			[ a :is-at ;
+			  :is-at-x :robot1 ;
+			  :is-at-y :wp2
+			] ,
+			# (= (charge-level robot1) 7)
+			[ a pddl:EQ ;
+              pddl:left [ a :charge-level ;
+                          :charge-level-x :robot1
+                        ] ;
+              pddl:right 7
+            ] ,
+			# (= (capacity robot1) 1)
+			[ a pddl:EQ ;
+              pddl:left [ a :capacity ;
+                          :capacity-x :robot1
+                        ] ;
+              pddl:right 1
+            ] ,
+			# (= (max-charge robot1) 10)
+			[ a pddl:EQ ;
+              pddl:left [ a :max-Charge ;
+                          :max-Charge-x :robot1
+                        ] ;
+              pddl:right 10
+            ] ,
+			# (= (high-charge robot1) 6)
+			[ a pddl:EQ ;
+              pddl:left [ a :high-Charge ;
+                          :high-Charge-x :robot1
+                        ] ;
+              pddl:right 6
+            ] ,
+			# (= (low-charge robot1) 3)
+			[ a pddl:EQ ;
+              pddl:left [ a :low-Charge ;
+                          :low-Charge-x :robot1
+                        ] ;
+              pddl:right 3
+            ] ,
+			# (not (is-recharging robot1))
+			[ a pddl:Not ;
+			  pddl:argument [ a :is-recharging ;
+							  :is-recharging-x :robot1
+							]
+			] ,
+			# (situated-at shelf1 wp2)
+			[ a :situated-at ;
+			  :situated-at-x :shelf1 ;
+			  :situated-at-y :wp2
+			] ,
+			# (situated-at shelf2 wp2)
+			[ a :situated-at ;
+			  :situated-at-x :shelf2 ;
+			  :situated-at-y :wp2
+			] ,
+			# (situated-at shelf3 wp3)
+			[ a :situated-at ;
+			  :situated-at-x :shelf3 ;
+			  :situated-at-y :wp3
+			] ,
+			# (situated-at chargingStation1 wp4)
+			[ a :situated-at ;
+			  :situated-at-x :chargingStation1 ;
+			  :situated-at-y :wp4
+			] ,
+			# (situated-at cbIn1 wp1)
+			[ a :situated-at ;
+			  :situated-at-x :cbIn1 ;
+			  :situated-at-y :wp1
+			] ,
+			# (situated-at cbOut2 wp3)
+			[ a :situated-at ;
+			  :situated-at-x :cbOut2 ;
+			  :situated-at-y :wp3
+			] ,
+			# (is-type o1 Red)
+			[ a :is-type ;
+			  :is-type-x :o1 ;
+			  :is-type-y :Red
+			] ,
+			# (is-on o1 shelf1)
+			[ a :is-on ;
+			  :is-on-x :o1 ;
+			  :is-on-y :shelf1
+			] ,
+			# (is-origin-on o1 shelf1)
+			[ a :is-origin-on ;
+			  :is-origin-on-x :o1 ;
+			  :is-origin-on-y :shelf1
+			] ,
+			# (is-type o2 Red)
+			[ a :is-type ;
+			  :is-type-x :o2 ;
+			  :is-type-y :Red
+			] ,
+			# (is-on o2 shelf1)
+			[ a :is-on ;
+			  :is-on-x :o2 ;
+			  :is-on-y :shelf1
+			] ,
+			# (is-origin-on o2 shelf1)
+			[ a :is-origin-on ;
+			  :is-origin-on-x :o2 ;
+			  :is-origin-on-y :shelf1
+			] ,
+			# (is-type o3 Red)
+			[ a :is-type ;
+			  :is-type-x :o3 ;
+			  :is-type-y :Red
+			] ,
+			# (is-on o3 shelf1)
+			[ a :is-on ;
+			  :is-on-x :o3 ;
+			  :is-on-y :shelf1
+			] ,
+			# (is-origin-on o3 shelf1)
+			[ a :is-origin-on ;
+			  :is-origin-on-x :o3 ;
+			  :is-origin-on-y :shelf1
+			] ,
+			# (is-type o4 Blue)
+			[ a :is-type ;
+			  :is-type-x :o4 ;
+			  :is-type-y :Blue
+			] ,
+			# (is-on o4 shelf1)
+			[ a :is-on ;
+			  :is-on-x :o4 ;
+			  :is-on-y :shelf1
+			] ,
+			# (is-origin-on o4 shelf1)
+			[ a :is-origin-on ;
+			  :is-origin-on-x :o4 ;
+			  :is-origin-on-y :shelf1
+			] ,
+			# (is-type o5 Blue)
+			[ a :is-type ;
+			  :is-type-x :o5 ;
+			  :is-type-y :Blue
+			] ,
+			# (is-on o5 shelf2)
+			[ a :is-on ;
+			  :is-on-x :o5 ;
+			  :is-on-y :shelf2
+			] ,
+			# (is-origin-on o5 shelf2)
+			[ a :is-origin-on ;
+			  :is-origin-on-x :o5 ;
+			  :is-origin-on-y :shelf2
+			] ,
+			# (is-type o6 Blue)
+			[ a :is-type ;
+			  :is-type-x :o6 ;
+			  :is-type-y :Blue
+			] ,
+			# (is-on o6 shelf2)
+			[ a :is-on ;
+			  :is-on-x :o6 ;
+			  :is-on-y :shelf2
+			] ,
+			# (is-origin-on o6 shelf2)
+			[ a :is-origin-on ;
+			  :is-origin-on-x :o6 ;
+			  :is-origin-on-y :shelf2
+			] ,
+			# (is-type o7 Green)
+			[ a :is-type ;
+			  :is-type-x :o7 ;
+			  :is-type-y :Green
+			] ,
+			# (is-on o7 shelf3)
+			[ a :is-on ;
+			  :is-on-x :o7 ;
+			  :is-on-y :shelf3
+			] ,
+			# (is-origin-on o7 shelf3)
+			[ a :is-origin-on ;
+			  :is-origin-on-x :o7 ;
+			  :is-origin-on-y :shelf3
+			] ,
+			# (is-type o8 Green)
+			[ a :is-type ;
+			  :is-type-x :o8 ;
+			  :is-type-y :Green
+			] ,
+			# (is-on o8 shelf3)
+			[ a :is-on ;
+			  :is-on-x :o8 ;
+			  :is-on-y :shelf3
+			] ,
+			# (is-origin-on o8 shelf3)
+			[ a :is-origin-on ;
+			  :is-origin-on-x :o8 ;
+			  :is-origin-on-y :shelf3
+			] ,
+			# (can-move wp1 wp2)
+			[ a :can-move ;
+			  :can-move-x :wp1 ;
+			  :can-move-y :wp2
+			] ,
+			# (can-move wp1 wp3)
+			[ a :can-move ;
+			  :can-move-x :wp1 ;
+			  :can-move-y :wp3
+			] ,
+			# (can-move wp2 wp3)
+			[ a :can-move ;
+			  :can-move-x :wp2 ;
+			  :can-move-y :wp3
+			] ,
+			# (can-move wp2 wp4)
+			[ a :can-move ;
+			  :can-move-x :wp2 ;
+			  :can-move-y :wp4
+			] ,
+			# (can-move wp3 wp1)
+			[ a :can-move ;
+			  :can-move-x :wp3 ;
+			  :can-move-y :wp1
+			] ,
+			# (can-move wp3 wp4)
+			[ a :can-move ;
+			  :can-move-x :wp3 ;
+			  :can-move-y :wp4
+			] ;
 
-warehouse:Waypoint
-  a pp:VariableType .
+	pddl:goal [ a pddl:ForAll ;
+                pddl:parameter :forall-x1 ;
+                pddl:argument
+                    [ a pddl:Imply ;
+           							  pddl:left
+           									[ a pddl:And ;
+           									  pddl:argument [ a :is-type ;
+           													  :is-type-x :forall-x1 ;
+           													  :is-type-y :Red
+           													]
+           									] ;
+           							  pddl:right
+           									[ a pddl:And ;
+           									  pddl:argument [ a :is-on ;
+           													  :is-on-x :forall-x1 ;
+           													  :is-on-y :shelf3
+           													]
+           									]
+           			]
+    ] ;
 
-warehouse:Place
-  a pp:VariableType .
+	#pddl:goal [  a pddl:And ;
+	#			pddl:argument [ a :is-on ;
+	#							:is-on-x :o1 ;
+	#							:is-on-y :shelf3
+	#						]
+	#		] ;
 
-warehouse:Charge
-  a pp:VariableType .
+	pddl:minimize [ a pddl:total-time
+				].
 
-warehouse:Object
-  a pp:VariableType .
-
-_:goal1
-  a pp:GoalDescription ;
-  ppos:hasGoalDescriptionArgument _:exist1 .
-
-_:exist1
-  a pp:Exists ;
-  ppos:hasGoalDescriptionArgument _:goal2 ;
-  ppos:hasTypedVariable _:pair1 ,
-                        _:pair2 .
-
-_:pair1
-  a pp:TypedVariable ;
-  ppos:hasVariable _:x ;
-  ppos:hasVariableType warehouse:Object .
-
-_:x
-  a pp:Variable .
-
-_:pair2
-  a pp:TypedVariable ;
-  ppos:hasVariable _:y ;
-  ppos:hasVariableType warehouse:Object .
-
-_:y
-  a pp:Variable .
-
-_:goal2
-  a pp:GoalDescription ;
-  ppos:hasGoalDescriptionArgument _:andgd1 .
-
-_:andgd1
-  a pp:AndGoalDescription ;
-  ppos:hasArgumentInGoalDescription _:not1 ,
-                                    _:istype1 ,
-                                    _:istype2 ,
-                                    _:isoriginon1 ,
-                                    _:isoriginon2 ,
-                                    _:ison1 ,
-                                    _:ison2 .
+:forall-x1
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  pddl:type :Object;
+  rdfs:label "x" ;
+  sh:order 1.
+:robot1
+  a :Robot ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "robot1" .
+:robot2
+  a :Robot ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "robot2" .
+:shelf1
+  a :Place ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "shelf1" .
+:shelf2
+  a :Place ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "shelf2" .
+:shelf3
+  a :Place ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "shelf3" .
+:chargingStation1
+  a :Place ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "chargingStation1" .
+:cbin1
+  a :Place ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "cbin1" .
+:cbOut2
+  a :Place ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "cbOut2" .
+:o1
+  a :Object ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "o1" .
+:o2
+  a :Object ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "o2" .
+:o3
+  a :Object ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "o3" .
+:o4
+  a :Object ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "o4" .
+:o5
+  a :Object ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "o5" .
+:o6
+  a :Object ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "o6" .
+:o7
+  a :Object ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "o7" .
+:o8
+  a :Object ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "o8" .
+:Red
+  a :ObjType ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "Red" .
+:Blue
+  a :ObjType ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "Blue" .
+:Green
+  a :ObjType ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "Green" .
+:wp1
+  a :Waypoint ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "wp1" .
+:wp2
+  a :Waypoint ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "wp2" .
+:wp3
+  a :Waypoint ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "wp3" .
+:wp4
+  a :Waypoint ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "wp4" .
