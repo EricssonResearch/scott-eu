@@ -53,7 +53,7 @@ domain(["(define (domain ", Label, ")",
           indent(2, Predicates),
           indent(2, Functions),
           indent(2, Actions),
-        "\n", ")\n"]) -->
+        ")\n"]) -->
   of_type(pddl:'Domain'),
   label(Label),
   types(Types),
@@ -204,7 +204,7 @@ action(["(:action ", Label,
                     ":precondition", indent(2, Precondition),
                     ":effect", indent(2, Effect)
                   ]),
-        ")"]) -->
+        ")\n"]) -->
   subclass_of(pddl:'Action'),
   label(Label),
   parameters(Parameters),
