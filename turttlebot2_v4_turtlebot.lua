@@ -45,6 +45,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     l_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_left')
     r_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_right')
 
+    docking_station_ir_handle = sim.getObjectHandle('docking_station_ir_sensor')
+    docking_station_handle = sim.getObjectHandle('DockStation')
+
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
     originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)
@@ -53,14 +56,17 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     lastTime = simGetSimulationTime()
     ----------------------------- ROS STUFF --------------------------------
     -- Bumper
-	pubBumper = simROS.advertise(modelBaseName..'/events/bumper','kobuki_msgs/BumperEvent')
+	pubBumper = simROS.advertise(modelBaseName..'/events/bumper', 'kobuki_msgs/BumperEvent')
 	--simROS.publisherTreatUInt8ArrayAsString(pubBumper)
     -- Cliff
-	pubCliff = simROS.advertise(modelBaseName..'/events/cliff','kobuki_msgs/CliffEvent')
+	pubCliff = simROS.advertise(modelBaseName..'/events/cliff', 'kobuki_msgs/CliffEvent')
     -- Wheel Drop
-	pubWheelDrop = simROS.advertise(modelBaseName..'/events/wheel_drop','kobuki_msgs/WheelDropEvent')
+	pubWheelDrop = simROS.advertise(modelBaseName..'/events/wheel_drop', 'kobuki_msgs/WheelDropEvent')
+	--  Docking IR
+    pubDockIR = simROS.advertise(modelBaseName..'/events/dock_ir', 'kobuki_msgs/DockInfraRed')
+	simROS.publisherTreatUInt8ArrayAsString(pubDockIR)
     -- Odometry
-    pubPose = simROS.advertise(modelBaseName..'/pose','nav_msgs/Odometry')
+    pubPose = simROS.advertise(modelBaseName..'/pose', 'nav_msgs/Odometry')
     simROS.publisherTreatUInt8ArrayAsString(pubPose)
 
     -- Commands
@@ -79,6 +85,9 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     -- Wheel Drop
     local wheel_drop_sensor = 255
     local wheel_drop_sensor_activated = 0
+    -- Docking IR
+    local dock_ir_proximity = 255
+    local dock_ir_orientation = 255
 
     ---- BUMPER SENSING ----
     -- Front Bumper
@@ -155,7 +164,6 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     ---- WHEEL DROP ----
     res, left_wheel_drop  = simCheckProximitySensor(l_wheel_drop_handle, sim_handle_all)
     res, right_wheel_drop = simCheckProximitySensor(r_wheel_drop_handle, sim_handle_all)
-
     if (left_wheel_drop == nil) then
         wheel_drop_sensor = 0
         wheel_drop_sensor_activated = 1
@@ -171,6 +179,49 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     ros_wheel_drop_event["state"] = wheel_drop_sensor_activated
     simROS.publish(pubWheelDrop, ros_wheel_drop_event)
 
+    ---- DOCK IR ----
+    local max_range = 0.8 -- check a way to get this value from VREP
+    local detect_angle = 0
+    local detect_proximity = 0
+    local res, detect_dist, detect_point = simCheckProximitySensor(docking_station_ir_handle, docking_station_handle)
+    --res, detect_dist, detect_point = simCheckProximitySensor(docking_station_ir_handle, sim_handle_all)
+
+    if (detect_dist ~= nil) then
+        detect_angle = math.atan2(detect_point[3], detect_point[1]) * 180/3.14
+        detect_proximity = detect_dist/max_range
+
+        -- dock is near
+        if (detect_proximity < 0.5) then
+            dock_ir_proximity = 0
+        -- dock is far
+        else
+            dock_ir_proximity = 1
+        end
+
+        -- dock is left
+        if (detect_angle < 75) then
+            dock_ir_orientation = 1
+        -- dock is front
+        elseif (detect_angle >= 75 and detect_angle < 105) then
+            dock_ir_orientation = 2
+        -- dock is right
+        else
+            dock_ir_orientation = 4
+        end
+    end
+
+    local ros_dock_ir = {}
+    ros_dock_ir["header"] = {seq=0,stamp=simROS.getTime(), frame_id="/robot"..modelBaseName}
+    ros_dock_ir["data"] = string.char(dock_ir_orientation)
+
+    if (dock_ir_proximity == 1) then
+        ros_dock_ir["data"] = string.char(8 * dock_ir_orientation)
+    end
+
+    -- print(string.byte(ros_dock_ir["data"]))
+
+    simROS.publish(pubDockIR, ros_dock_ir)     
+    
     -- Odometry
     local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
     local pose_orientationNow = sim.multiplyMatrices(invOriginMatrix, transformNow)
@@ -213,6 +264,7 @@ if (sim_call_type==sim.childscriptcall_cleanup) then
     simROS.shutdownPublisher(pubBumper)
     simROS.shutdownPublisher(pubCliff)
     simROS.shutdownPublisher(pubWheelDrop)
+    simROS.shutdownPublisher(pubDockIR)
     simROS.shutdownSubscriber(subCmdVel)
 end 
 
