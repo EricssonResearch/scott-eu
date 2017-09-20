@@ -63,15 +63,15 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     -- Wheel Drop
 	pubWheelDrop = simROS.advertise(modelBaseName..'/events/wheel_drop', 'kobuki_msgs/WheelDropEvent')
 	--  Docking IR
-    pubDockIR = simROS.advertise(modelBaseName..'/events/dock_ir', 'kobuki_msgs/DockInfraRed')
+    pubDockIR = simROS.advertise(modelBaseName..'/sensors/dock_ir', 'kobuki_msgs/DockInfraRed')
 	simROS.publisherTreatUInt8ArrayAsString(pubDockIR)
     -- Odometry
-    pubPose = simROS.advertise(modelBaseName..'/pose', 'nav_msgs/Odometry')
+    pubPose = simROS.advertise(modelBaseName..'/odom', 'nav_msgs/Odometry')
     simROS.publisherTreatUInt8ArrayAsString(pubPose)
 
     -- Commands
-    subCmdVel = simROS.subscribe(modelBaseName..'/cmd_vel','geometry_msgs/Twist','setVels_cb')
-    subCmdMotor = simROS.subscribe(modelBaseName..'/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
+    subCmdVel = simROS.subscribe(modelBaseName..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
+    subCmdMotor = simROS.subscribe(modelBaseName..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
 end 
 
 
@@ -183,8 +183,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     local max_range = 0.8 -- check a way to get this value from VREP
     local detect_angle = 0
     local detect_proximity = 0
-    local res, detect_dist, detect_point = simCheckProximitySensor(docking_station_ir_handle, docking_station_handle)
-    --res, detect_dist, detect_point = simCheckProximitySensor(docking_station_ir_handle, sim_handle_all)
+    --local res, detect_dist, detect_point = simCheckProximitySensor(docking_station_ir_handle, docking_station_handle)
+    res, detect_dist, detect_point = simCheckProximitySensor(docking_station_ir_handle, sim_handle_all)
 
     if (detect_dist ~= nil) then
         detect_angle = math.atan2(detect_point[3], detect_point[1]) * 180/3.14

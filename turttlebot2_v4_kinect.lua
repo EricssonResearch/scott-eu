@@ -1,6 +1,6 @@
 function pointCloud()
     local depthBuffer=sim.getVisionSensorDepthBuffer(depthCam)
-    local header = {seq=0,stamp=simROS.getTime(), frame_id="k"}
+    local header = {seq=0,stamp=simROS.getTime(), frame_id="camera1_link"}
     local points = {}
     --local point = {x=0,y=0,z=0}
     --local ch = {name="distance",values={}}
@@ -82,7 +82,7 @@ if (sim_call_type==sim.childscriptcall_sensing) then
     if(sim.getBoolParameter(sim.boolparam_vision_sensor_handling_enabled) == true) then
         local data,w,h = sim.getVisionSensorCharImage(colorCam)
 	    d = {}
-        d['header'] = {seq=0,stamp=simROS.getTime(), frame_id="k"}
+        d['header'] = {seq=0,stamp=simROS.getTime(), frame_id="camera1_link"}
 	    d['height'] = h
 	    d['width'] = w
 	    d['encoding'] = 'rgb8'
@@ -93,7 +93,7 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 
             data,w,h = sim.getVisionSensorCharImage(depthCam)
 	    d = {}
-            d['header'] = {seq=0,stamp=simROS.getTime(), frame_id="k"}
+            d['header'] = {seq=0,stamp=simROS.getTime(), frame_id="camera1_link"}
 	    d['height'] = h
 	    d['width'] = w
 	    d['encoding'] = 'rgb8'
