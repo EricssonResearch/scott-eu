@@ -1,6 +1,6 @@
 function pointCloud()
     local depthBuffer=sim.getVisionSensorDepthBuffer(depthCam)
-    local header = {seq=0,stamp=simROS.getTime(), frame_id="camera1_link"}
+    local header = {seq=0,stamp=simROS.getTime(), frame_id="camera1_link_optical"}
     local points = {}
     --local point = {x=0,y=0,z=0}
     --local ch = {name="distance",values={}}
