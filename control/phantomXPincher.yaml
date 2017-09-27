@@ -1,0 +1,7 @@
+phantom_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - PhantomXPincher_joint1
+     - PhantomXPincher_joint2
+     - PhantomXPincher_joint3
+     - PhantomXPincher_joint4
