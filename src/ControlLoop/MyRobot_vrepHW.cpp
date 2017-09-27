@@ -25,7 +25,8 @@ MyRobot_vrepHW::MyRobot_vrepHW() :
     // Init arrays m_cmd[], m_pos[], m_vel[], m_eff[].
     for (int i = 0; i < MR_JOINTS_NUM; ++i)
     {
-        m_cmd[i] = 0.0;
+        m_pos_cmd[i] = 0.0;
+        m_vel_cmd[i] = 0.0;	
         m_pos[i] = 0.0;
         m_vel[i] = 0.0;
         m_eff[i] = 0.0;
@@ -69,13 +70,19 @@ void MyRobot_vrepHW::registerHardwareInterfaces()
         hardware_interface::JointStateHandle jointStateHandle(sm_jointsName[i], &m_pos[i], &m_vel[i], &m_eff[i]);
         m_jointState_interface.registerHandle(jointStateHandle);
 
-        // Joint command interface (in MyRobot's case this is a velocity interface).
-        hardware_interface::JointHandle jointVelocityHandle(jointStateHandle, &m_cmd[i]);
+        // Joint velocity command interface 
+        hardware_interface::JointHandle jointVelocityHandle(jointStateHandle, &m_vel_cmd[i]);
         m_jointVelocity_interface.registerHandle(jointVelocityHandle);
+
+	//Joint position command interface
+	hardware_interface::JointHandle jointPositionHandle(jointStateHandle, &m_pos_cmd[i]);
+	m_jointPosition_interface.registerHandle(jointPositionHandle);
+	  
     }
 
     registerInterface(&m_jointState_interface);
     registerInterface(&m_jointVelocity_interface);
+    registerInterface(&m_jointPosition_interface);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,16 +114,21 @@ bool MyRobot_vrepHW::read()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool MyRobot_vrepHW::write()
 {
-    for (int i = 0; i < MR_JOINTS_NUM; ++i)
-    {
-        if (simSetJointTargetVelocity(m_vrepJointsHandle[i], m_cmd[i]) == -1)
-        {
-            ROS_ERROR_STREAM("MR robot interface not able to get state for '" << sm_jointsName[i] << "'." << std::endl);
+    for (int i = 0; i < MR_JOINTS_NUM; ++i){
+      //====== Velocity Control =========
+      
+      /*if (simSetJointTargetVelocity(m_vrepJointsHandle[i], m_vel_cmd[i]) == -1) {
+	ROS_ERROR_STREAM("MR robot interface not able to get state for '" << sm_jointsName[i] << "'." << std::endl);
+	return false;
+      }
+      */
 
-            return false;
-        }
+      //===== Position Control =======
+      if (simSetJointTargetPosition(m_vrepJointsHandle[i], m_pos_cmd[i]) == -1) {
+	ROS_ERROR_STREAM("MR robot interface not able to get state for '" << sm_jointsName[i] << "'." << std::endl);
+	return false;
+      }	
     }
-
     return true;
 }
 

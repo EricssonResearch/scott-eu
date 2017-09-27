@@ -1,5 +1,5 @@
 mr_controller:
-  type: velocity_controllers/JointTrajectoryController
+  type: position_controllers/JointTrajectoryController
   joints:
      - front_left_wheel_joint
      - back_left_wheel_joint

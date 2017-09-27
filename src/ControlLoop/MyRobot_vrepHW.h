@@ -39,13 +39,15 @@ protected:
     int m_vrepJointsHandle[MR_JOINTS_NUM];
 
     // Interfaces.
-    double m_cmd[MR_JOINTS_NUM];
+    double m_pos_cmd[MR_JOINTS_NUM];
+    double m_vel_cmd[MR_JOINTS_NUM];    
     double m_pos[MR_JOINTS_NUM];
     double m_vel[MR_JOINTS_NUM];
     double m_eff[MR_JOINTS_NUM];
 
     hardware_interface::JointStateInterface m_jointState_interface;
     hardware_interface::VelocityJointInterface m_jointVelocity_interface;
+    hardware_interface::PositionJointInterface m_jointPosition_interface;
 
     void registerHardwareInterfaces();
 };
