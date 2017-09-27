@@ -6,9 +6,9 @@ import actionlib
 from control_msgs.msg import *
 from trajectory_msgs.msg import *
 
-JOINT_NAMES = ['front_left_wheel_joint', 'back_left_wheel_joint', 'back_right_wheel_joint', 'front_right_wheel_joint']
+JOINT_NAMES = ['PhantomXPincher_joint1','PhantomXPincher_joint2','PhantomXPincher_joint3','PhantomXPincher_joint4']
 
-Q1_ANGLE = 1.5708
+Q1_ANGLE = 1.5708/4
 Q0 = [0, 0, 0, 0]
 Q1 = [Q1_ANGLE, Q1_ANGLE, Q1_ANGLE, Q1_ANGLE]
 
