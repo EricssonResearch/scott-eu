@@ -8,13 +8,13 @@
 ros::NodeHandle* ROS_server::sm_node = NULL;
 
 // Services:
-ros::ServiceServer ROS_server::sm_displayText_server;
+//ros::ServiceServer ROS_server::sm_displayText_server;
 
 // Publishers:
-ros::Publisher ROS_server::sm_objectCount_publisher;
+//ros::Publisher ROS_server::sm_objectCount_publisher;
 
 // Subscribers:
-ros::Subscriber ROS_server::sm_addStatusBarMessage_subscriber;
+//ros::Subscriber ROS_server::sm_addStatusBarMessage_subscriber;
 
 // Control.
 MR::MyRobot_vrepHW * ROS_server::sm_myRobotHw = 0;
@@ -62,13 +62,13 @@ bool ROS_server::initialize()
     sm_spinner->start();
 
 	// Enable the services:
-    sm_displayText_server = sm_node->advertiseService("displayText",ROS_server::displayText_service);
+    //sm_displayText_server = sm_node->advertiseService("displayText",ROS_server::displayText_service);
 
 	// Enable the publishers:
-    sm_objectCount_publisher = sm_node->advertise<std_msgs::Int32>("objectCount",1);
+    //sm_objectCount_publisher = sm_node->advertise<std_msgs::Int32>("objectCount",1);
 
 	// Enable the subscribers:
-    sm_addStatusBarMessage_subscriber = sm_node->subscribe("addStatusbarMessage",1,&ROS_server::addStatusbarMessage_callback);
+    //sm_addStatusBarMessage_subscriber = sm_node->subscribe("addStatusbarMessage",1,&ROS_server::addStatusbarMessage_callback);
 
 	return(true);
 }
@@ -88,13 +88,13 @@ void ROS_server::shutDown()
     delete sm_rosControlCallbackQueue;
 
 	// Disable the subscribers:
-    sm_addStatusBarMessage_subscriber.shutdown();
+    //sm_addStatusBarMessage_subscriber.shutdown();
 
 	// Disable the publishers:
-    sm_objectCount_publisher.shutdown();
+    //sm_objectCount_publisher.shutdown();
 
 	// Disable the services:
-    sm_displayText_server.shutdown();
+    //sm_displayText_server.shutdown();
 
 	// Shut down:
 	ros::shutdown();
@@ -160,7 +160,7 @@ void ROS_server::spinOnce()
     ros::spinOnce();
 
 	//Handle all streaming (publishers)
-    streamAllData();
+    //streamAllData();
 
 	// Restore previous error report mode:
     simSetIntegerParameter(sim_intparam_error_report_mode,errorModeSaved);
@@ -168,15 +168,15 @@ void ROS_server::spinOnce()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Services:
-bool ROS_server::displayText_service(vrep_skeleton_msg_and_srv::displayText::Request &req,vrep_skeleton_msg_and_srv::displayText::Response &res)
+/*bool ROS_server::displayText_service(vrep_skeleton_msg_and_srv::displayText::Request &req,vrep_skeleton_msg_and_srv::displayText::Response &res)
 {
 	res.dialogHandle=simDisplayDialog("Message from a ROS node",req.textToDisplay.c_str(),sim_dlgstyle_message,NULL,NULL,NULL,NULL);
 	return true;
-}
+	}*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Publishers:
-void ROS_server::streamAllData()
+/*void ROS_server::streamAllData()
 {
 	// Take care of publishers here (i.e. have them publish their data):
 	std_msgs::Int32 objCnt;
@@ -193,4 +193,4 @@ void ROS_server::streamAllData()
 void ROS_server::addStatusbarMessage_callback(const std_msgs::String::ConstPtr& msg)
 {
 	simAddStatusbarMessage(msg->data.c_str());
-}
+	}*/

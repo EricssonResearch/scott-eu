@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(vrep_ros_control_example)
 
-find_package(catkin REQUIRED COMPONENTS roscpp vrep_common controller_manager)
+find_package(catkin REQUIRED COMPONENTS roscpp controller_manager)
 
 ################################################
 # List sources.
@@ -28,7 +28,7 @@ catkin_package(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-link_directories("/opt/ros/indigo/lib")
+link_directories("/opt/ros/kinetic/lib")
 
 add_library(v_repExtRosControl ${${PROJECT_NAME}_headers} ${${PROJECT_NAME}_sources})
 
