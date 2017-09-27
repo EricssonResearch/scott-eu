@@ -27,39 +27,39 @@ ros::AsyncSpinner * ROS_server::sm_spinner = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool ROS_server::initialize()
 {
-	int argc = 0;
-	char** argv = NULL;
-    ros::init(argc,argv,"vrepRosControl");
-
-	if(!ros::master::check())
-		return(false);
+  int argc = 0;
+  char** argv = NULL;
+  ros::init(argc,argv,"vrepRosControl");
+  
+  if(!ros::master::check())
+    return(false);
 	
-    sm_node = new ros::NodeHandle;
-    assert(sm_node);
+  sm_node = new ros::NodeHandle;
+  assert(sm_node);
 
-    // Control.
-    // NOTE: we create a callback queue only handling ros_control callbacks (not the standard callbacks which remain
-    //       handled by the global callback queue). The ros_control callback queue is spinned in a thread of its own
-    //       (but the standard messages remain handled by ros::spinOnce() in vrep's main thread).
-    //       We adopt this architecture because:
-    //          * by design ros_control needs to have the control update and the control callbacks handled in separate
-    //            threads,
-    //          * by design vrep needs to have the standard callbacks handled into the main thread,
-    //          * by design vrep's regular API is not thread safe (and thus accessing the API from a secondary thread as
-    //            well as from the main thread, may break things).
-    sm_rosControlCallbackQueue = new ros::CallbackQueue();
-    assert(sm_rosControlCallbackQueue);
-    sm_node->setCallbackQueue(sm_rosControlCallbackQueue);
+  // Control.
+  // NOTE: we create a callback queue only handling ros_control callbacks (not the standard callbacks which remain
+  //       handled by the global callback queue). The ros_control callback queue is spinned in a thread of its own
+  //       (but the standard messages remain handled by ros::spinOnce() in vrep's main thread).
+  //       We adopt this architecture because:
+  //          * by design ros_control needs to have the control update and the control callbacks handled in separate
+  //            threads,
+  //          * by design vrep needs to have the standard callbacks handled into the main thread,
+  //          * by design vrep's regular API is not thread safe (and thus accessing the API from a secondary thread as
+  //            well as from the main thread, may break things).
+  sm_rosControlCallbackQueue = new ros::CallbackQueue();
+  assert(sm_rosControlCallbackQueue);
+  sm_node->setCallbackQueue(sm_rosControlCallbackQueue);
+  
+  sm_myRobotHw = new MR::MyRobot_vrepHW();
+  assert(sm_myRobotHw);
 
-    sm_myRobotHw = new MR::MyRobot_vrepHW();
-    assert(sm_myRobotHw);
+  sm_ctrlManager = new controller_manager::ControllerManager(sm_myRobotHw, *sm_node);
+  assert(sm_ctrlManager);
 
-    sm_ctrlManager = new controller_manager::ControllerManager(sm_myRobotHw, *sm_node);
-    assert(sm_ctrlManager);
-
-    sm_spinner = new ros::AsyncSpinner(1, sm_rosControlCallbackQueue); // The associated thread stops spinning when object AsyncSpinner is deleted.
-    assert(sm_spinner);
-    sm_spinner->start();
+  sm_spinner = new ros::AsyncSpinner(1, sm_rosControlCallbackQueue); // The associated thread stops spinning when object AsyncSpinner is deleted.
+  assert(sm_spinner);
+  sm_spinner->start();
 
 	// Enable the services:
     //sm_displayText_server = sm_node->advertiseService("displayText",ROS_server::displayText_service);
@@ -70,7 +70,7 @@ bool ROS_server::initialize()
 	// Enable the subscribers:
     //sm_addStatusBarMessage_subscriber = sm_node->subscribe("addStatusbarMessage",1,&ROS_server::addStatusbarMessage_callback);
 
-	return(true);
+  return(true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

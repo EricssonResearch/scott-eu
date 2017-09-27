@@ -11,10 +11,10 @@ namespace MR
 
 
 std::string MyRobot_vrepHW::sm_jointsName[MR_JOINTS_NUM] = {
-    "front_left_wheel_joint",
-    "back_left_wheel_joint",
-    "back_right_wheel_joint",
-    "front_right_wheel_joint"
+  "PhantomXPincher_joint1",
+  "PhantomXPincher_joint2",
+  "PhantomXPincher_joint3",
+  "PhantomXPincher_joint4"
 };
 
 
