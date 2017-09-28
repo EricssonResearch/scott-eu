@@ -75,10 +75,10 @@
       </actuator>
     </transmission>
 
-  <!-- gripper 
-  <xacro:include filename="$(find phantomx_pincher_arm_description)/urdf/phantomx_pincher_gripper.xacro"/> -->
+  <!-- gripper -->
+  <xacro:include filename="phantomx_pincher_gripper.xacro"/> 
 
-<!-- gripper_link 
+<!-- gripper_link -->
     <link name="gripper_link"/>
     <joint name="gripper_link_joint" type="revolute">
       <origin xyz="0.110 0 0" rpy="0 0 0"/>
@@ -86,7 +86,7 @@
       <child link="gripper_link"/>
       <limit effort="6" velocity="1" lower="-3.14" upper="3.14"/>
       <axis xyz="1 0 0"/>
-    </joint> -->
+    </joint> 
   <!--gazebo>
       <gripper name="gripper">
         <grasp_check>
