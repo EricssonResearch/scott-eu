@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 :- module(metric_ff, [
-  generate_plan/6
+  generate_plan/6,
+  generate_plan/8
 ]).
 
 :- use_module(library(semweb/rdf11)).
@@ -25,32 +26,37 @@ limitations under the License.
 :- use_module(library(pddl_generator)).
 
 :- rdf_meta generate_plan(r, -, r, -, r, -).
+:- rdf_meta generate_plan(r, -, -, r, -, -, r, -).
 
 :- thread_local context/1.
 
 generate_plan(Domain, DomainGraph, Problem, ProblemGraph, Plan, PlanGraph) :-
+  generate_plan0(Domain, DomainGraph, _, Problem, ProblemGraph, _, Plan, PlanGraph, false).
+
+generate_plan(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, Plan, PlanGraph) :-
+  generate_plan0(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, Plan, PlanGraph, true).
+
+generate_plan0(Domain, DomainGraph, DomainFile, Problem, ProblemGraph, ProblemFile, Plan, PlanGraph, KeepFiles) :-
   generate_pddl(Domain, DomainGraph, DomainString),
   generate_pddl(Problem, ProblemGraph, ProblemString),
-  tmp_file_stream(text, DomainFile, DomainStream),
-  write(DomainStream, DomainString),
-  close(DomainStream),
-  tmp_file_stream(text, ProblemFile, ProblemStream),
-  write(ProblemStream, ProblemString),
-  close(ProblemStream),
-  process_create('ff', ['-o', DomainFile, '-f', ProblemFile], [stdout(pipe(PlanStream))]),
-  create_resource(Plan, [pddl:'Plan'], [pddl:'PlanShape'], [], rdf(PlanGraph)),
-  Context = _{ plan : Plan,
-         plan_graph : PlanGraph,
-             domain : Domain,
-       domain_graph : DomainGraph,
-            problem : Problem,
-      problem_graph : ProblemGraph },
-  assertz(context(Context)),
-  read_lines(PlanStream),
-  retractall(context(Context)),
-  close(PlanStream),
-  delete_file(DomainFile),
-  delete_file(ProblemFile).
+  setup_call_cleanup(tmp_file_stream(text, DomainFile, DomainStream), (
+    write(DomainStream, DomainString),
+    close(DomainStream),
+    setup_call_cleanup(tmp_file_stream(text, ProblemFile, ProblemStream), (
+      write(ProblemStream, ProblemString),
+      close(ProblemStream),
+      setup_call_cleanup(true, (
+        process_create('ff', ['-o', DomainFile, '-f', ProblemFile], [stdout(pipe(PlanStream))]),
+        create_resource(Plan, [pddl:'Plan'], [pddl:'PlanShape'], [], rdf(PlanGraph)),
+        Context = _{ plan : Plan,
+               plan_graph : PlanGraph,
+             domain_graph : DomainGraph,
+            problem_graph : ProblemGraph },
+        assertz(context(Context)),
+        read_lines(PlanStream)
+      ), (retractall(context(_)), close(PlanStream)))
+    ), (KeepFiles ; delete_file(ProblemFile)))
+  ), (KeepFiles ; delete_file(DomainFile))).
 
 read_lines(Out) :-
   read_line_to_codes(Out, Line),
@@ -119,7 +125,9 @@ action_parameters([SortedParameter|T], [Parameter|T2], ABN, Context) :-
 find_object(ObjectPattern, ObjectResource) :-
   context(Context),
   { icase(ObjectLabel, ObjectPattern) },
-  rdf(ObjectResource, rdfs:label, ObjectLabel^^xsd:string, Context.domain_graph),
+  ( rdf(ObjectResource, rdfs:label, ObjectLabel^^xsd:string, Context.domain_graph)
+  ; rdf(ObjectResource, rdfs:label, ObjectLabel^^xsd:string, Context.problem_graph)
+  ),
   rdfs_individual_of(ObjectResource, pddl:'PrimitiveType').
 
 step(Action, Parameters, Order) -->
@@ -131,12 +139,12 @@ step(Action, Parameters, Order) -->
   parameters(Parameters).
 
 parameters([H|T]) -->
-  (" " ; "\n"),
+  " ",
   string_without(" \n", Codes),
   { atom_codes(H, Codes) },
   parameters(T).
 
-parameters([]) --> [].
+parameters([]) --> [], !.
 
 cost -->
   "plan cost:", whites, float(Cost),

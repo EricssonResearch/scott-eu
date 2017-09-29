@@ -21,9 +21,11 @@ limitations under the License.
 :- use_module(library(oslc_rdf)).
 :- use_module(library(pddl_generator)).
 :- use_module(library(metric_ff)).
+:- use_module(library(validate)).
 
-:- oslc_post(planner:planCreationFactory, pddl_creation_factory, 900).
-:- oslc_post(planner:planCreationFactory, plan_creation_factory, 899).
+:- oslc_post(planner:pddlCreationFactory, pddl_creation_factory).
+:- oslc_post(planner:planCreationFactory, plan_creation_factory).
+:- oslc_post(planner:validatedPlanCreationFactory, validated_plan_creation_factory).
 
 oslc_dispatch:serializer(text/'x-pddl', turtle).
 
@@ -33,6 +35,7 @@ pddl_creation_factory(Context) :-
   findall(String, (
     ( rdf(Resource, rdf:type, pddl:'Domain', Graph)
     ; rdf(Resource, rdf:type, pddl:'Problem', Graph)
+    ; rdf(Resource, rdf:type, pddl:'Plan', Graph)
     ),
     once((
       generate_pddl(Resource, Graph, String)
@@ -42,7 +45,7 @@ pddl_creation_factory(Context) :-
   response(200),
   forall(
     member(String, Strings),
-    writeln(String)
+    write(String)
   ).
 
 plan_creation_factory(Context) :-
@@ -53,6 +56,19 @@ plan_creation_factory(Context) :-
     rdf(Problem, rdf:type, pddl:'Problem', Graph),
     once((
       generate_plan(Domain, Graph, Problem, Graph, plan, Context.graph_out)
+    ; throw(response(400))
+    ))
+  )).
+
+validated_plan_creation_factory(Context) :-
+  Graph = Context.graph_in,
+  make_temp_graph(Context.graph_out),
+  once((
+    rdf(Domain, rdf:type, pddl:'Domain', Graph),
+    rdf(Problem, rdf:type, pddl:'Problem', Graph),
+    once((
+      generate_plan(Domain, Graph, DomainFile, Problem, Graph, ProblemFile, pddl:plan, Context.graph_out),
+      validate_plan(Domain, Graph, DomainFile, Problem, Graph, ProblemFile, pddl:plan, Context.graph_out)
     ; throw(response(400))
     ))
   )).

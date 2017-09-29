@@ -67,14 +67,16 @@ format_value(oslc:'One-or-many', [V|T], [V|T]).
 check_value_type(_, _, [], _) :- !.
 
 check_value_type(IRI, PropertyResource, [V|T], Type) :-
-  once(rdf(PropertyResource, oslc:valueType, Type)),
-  once((
-    check_value(IRI, PropertyResource, V, Type),
-    check_allowed_values(IRI, PropertyResource, V, Type)
-  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    oslc_error("Property [~w] of resource [~w] must be of type [~w]", [PropertyDefinition, IRI, Type])
-  )),
-  check_value_type(IRI, PropertyResource, T, Type).
+  (once(rdf(PropertyResource, oslc:valueType, Type))
+  -> once((
+       check_value(IRI, PropertyResource, V, Type),
+       check_allowed_values(IRI, PropertyResource, V, Type)
+     ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+       oslc_error("Property [~w] of resource [~w] must be of type [~w]", [PropertyDefinition, IRI, Type])
+     )),
+     check_value_type(IRI, PropertyResource, T, Type)
+  ; true
+  ).
 
 check_value(IRI, PropertyResource, Value, oslc:'LocalResource') :-
   rdf_is_bnode(Value),

@@ -41,7 +41,10 @@ pddl(PDDL) -->
   domain(PDDL), !.
 
 pddl(PDDL) -->
-  problem(PDDL).
+  problem(PDDL), !.
+
+pddl(PDDL) -->
+  plan(PDDL).
 
 domain(["(define (domain ", Label, ")",
           indent(2, ["(:requirements :typing :equality :fluents)"]),
@@ -50,7 +53,7 @@ domain(["(define (domain ", Label, ")",
           indent(2, Predicates),
           indent(2, Functions),
           indent(2, Actions),
-        "\n", ")\n"]) -->
+        ")\n"]) -->
   of_type(pddl:'Domain'),
   label(Label),
   types(Types),
@@ -201,7 +204,7 @@ action(["(:action ", Label,
                     ":precondition", indent(2, Precondition),
                     ":effect", indent(2, Effect)
                   ]),
-        ")"]) -->
+        ")\n"]) -->
   subclass_of(pddl:'Action'),
   label(Label),
   parameters(Parameters),
@@ -253,7 +256,7 @@ atomic_formula(P, ["(", Label, Arguments, ")\n"]) -->
     predicate_arguments(P, Resource, SortedParameters, Arguments)
   }.
 
-predicate_arguments(_, _, [], []).
+predicate_arguments(_, _, [], []) :- !.
 predicate_arguments(P, Resource, [Parameter|T], [" ", H2|T2]) :-
   rdf0(Resource, Parameter, Argument),
   member(Rule, P),
@@ -466,6 +469,37 @@ ground_f_exp(GroundFExp) -->
 
 ground_f_exp(GroundFExp) -->
   number(GroundFExp).
+
+plan(Steps) -->
+  individual_of(pddl:'Plan'),
+  all_properties(pddl:step, StepResources),
+  {
+    nonempty(StepResources), !,
+    predsort(order_compare, StepResources, SortedSteps),
+    steps(SortedSteps, Steps)
+  }.
+
+steps([], []).
+steps([Step|T], [H2|T2]) :-
+  step(H2, [Step], [Step]),
+  steps(T, T2).
+
+step(Step) -->
+  individual_of(pddl:'Step'),
+  apply_to_property(pddl:action, step_action, Step).
+
+step_action(["(", Label, Arguments, ")\n"]) -->
+  individual_of(pddl:'Action'),
+  label(Label),
+  lookup(Resource),
+  {
+    rdf0(Resource, rdf:type, ActionType),
+    findall(Parameter,
+      rdf(ActionType, pddl:parameter, Parameter),
+    Parameters),
+    predsort(order_compare, Parameters, SortedParameters),
+    predicate_arguments([object], Resource, SortedParameters, Arguments)
+  }.
 
 test :-
   generate_pddl(pddle:'adl-blocksworld', 'http://ontology.cf.ericsson.net/pddl_example', String1),
