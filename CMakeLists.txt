@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(vrep_ros_control_example)
+project(vrep_ros_control_phantomXPincher)
 
 find_package(catkin REQUIRED COMPONENTS roscpp controller_manager)
 
@@ -12,14 +12,14 @@ set(${PROJECT_NAME}_headers
     src/v_repTypes.h
     src/ControlLoop/vrepRosControl_server.h
     src/ControlLoop/vrepRosControl_plugin.h
-    src/ControlLoop/MyRobot_vrepHW.h
+    src/ControlLoop/Phantom_vrepHW.h
 )
 
 set(${PROJECT_NAME}_sources
     src/v_repLib.cpp
     src/ControlLoop/vrepRosControl_server.cpp
     src/ControlLoop/vrepRosControl_plugin.cpp
-    src/ControlLoop/MyRobot_vrepHW.cpp
+    src/ControlLoop/Phantom_vrepHW.cpp
 )
 
 catkin_package(

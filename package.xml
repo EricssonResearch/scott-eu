@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package>
-  <name>vrep_ros_control_example</name>
+  <name>vrep_ros_control_phantomXPincher</name>
   <version>1.0.0</version>
-  <description>ros_control robot-specific back end for vrep (i.e. ~ gazebo_ros_control but for vrep and for a specific robot)</description>
+  <description>ros_control for phanomXPincher back end for vrep (i.e. ~ gazebo_ros_control but for vrep and for a specific robot)</description>
 
-  <maintainer email="antoinerennuit@hotmail.com">Antoine Rennuit</maintainer>
+  <maintainer email="amadeu.nascimento.junior@ericsson.com">Amadeu do Nascimento Júnior</maintainer>
 
   <license>MIT</license>
 
-  <author email="antoinerennuit@hotmail.com">Antoine Rennuit</author>
+  <author email="amadeu.nascimento.junior@ericsson.com">Antoine Rennuit</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
