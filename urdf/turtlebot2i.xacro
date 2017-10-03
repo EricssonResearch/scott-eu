@@ -7,7 +7,8 @@
   <!-- Orbecc Astra Sensor -->
 
   <joint name="camera1_joint" type="fixed">
-    <origin xyz="-0.088 0 0.28" rpy="${M_PI/2} 0 ${M_PI/2}"/>
+    <origin xyz="-0.088 0 0.32" rpy="${M_PI/2} 0 ${M_PI/2}"/>
+    <!--<origin xyz="-0.088 0 0.28" rpy="${M_PI/2} 0 ${M_PI/2}"/>-->
     <!--<origin xyz="-0.088 0 0.225" rpy="${M_PI/2} 0 ${M_PI/2}"/>-->
     <parent link="base_link"/>
     <child link="camera1_link"/>
@@ -38,6 +39,7 @@
   <!-- Intel RealSense Sensor -->
 
   <joint name="camera2_joint" type="fixed">
+    <!--<origin xyz="0.112 -0.025 0.454" rpy="0 0 0"/>-->
     <origin xyz="0.112 -0.025 0.454" rpy="${M_PI/3+M_PI/2} 0 ${M_PI/2}"/>
     <!--<origin xyz="0.112 0 0.4" rpy="${M_PI/3+M_PI/2} 0 ${M_PI/2}"/>-->
     <parent link="base_link"/>

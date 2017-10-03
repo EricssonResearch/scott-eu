@@ -1,35 +1,20 @@
 function pointCloud()
 
---    id_res_x = sim_visionintparam_resolution_x
---    id_res_y = sim_visionintparam_resolution_y
---    r,res_x = simGetObjectInt32Parameter(depthCam, id_res_x, 0)
---    r,res_y = simGetObjectInt32Parameter(depthCam, id_res_y, 0)
---    local height = res_y 
---    local width  = res_x
-
     local header = {seq = 0, stamp = simROS.getTime(), frame_id = sensorName.."_link"}
     local data = {}
     local height = 160 
     local width  = 120
---    local height = 320 
---    local width  = 240
---    local height = 480
---    local width  = 640
     local fields = {{ name='x', offset=0, datatype= 7, count=1 },
                     { name='y', offset=4, datatype= 7, count=1 },
                     { name='z', offset=8, datatype= 7, count=1 }}
 
---    m1 = sim.getObjectMatrix(depthCam, -1)
-
     r,t1,u1 = simReadVisionSensor(depthCam)
---    r,t1,u1 = simReadVisionSensor(depthCam)
 
     if u1 then
         for j = 0, u1[2]-1, 1 do
             for i = 0, u1[1]-1, 1 do
                 local w = 2+4*(j*u1[1]+i)
                 local p = {u1[w+1], u1[w+2], u1[w+3]}
---                p = simMultiplyVector(m1, p)
                 table.insert(data, p[1])
                 table.insert(data, p[2])
                 table.insert(data, p[3])
@@ -123,6 +108,5 @@ if (sim_call_type==sim.childscriptcall_sensing) then
         -- Publish camera point cloud to ROS
         pointCloud()
         
-
     end      
 end
