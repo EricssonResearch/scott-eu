@@ -125,7 +125,7 @@ bool MyRobot_vrepHW::write()
 
       //===== Position Control =======
       if (simSetJointTargetPosition(m_vrepJointsHandle[i], m_pos_cmd[i]) == -1) {
-	ROS_ERROR_STREAM("MR robot interface not able to get state for '" << sm_jointsName[i] << "'." << std::endl);
+	ROS_ERROR_STREAM("VREP robot interface not able to get state for '" << sm_jointsName[i] << "'." << std::endl);
 	return false;
       }	
     }

@@ -5,3 +5,6 @@ phantom_controller:
      - PhantomXPincher_joint2
      - PhantomXPincher_joint3
      - PhantomXPincher_joint4
+gripper_controller:
+  type: position_controllers/GripperActionController
+  joint: PhantomXPincher_gripperClose_joint

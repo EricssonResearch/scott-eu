@@ -12,6 +12,6 @@
   <!-- Start controllers -->
   <rosparam file="$(find vrep_ros_control_example)/control/phantomXPincher.yaml" command="load"/> <!-- Joint trajectory controller (this is not a low-level controller) -->
 
-  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller" />
+  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller" />
 
 </launch>
