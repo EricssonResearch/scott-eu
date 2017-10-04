@@ -2,8 +2,8 @@
 
 if (sim_call_type == sim.childscriptcall_initialization) then 
 
---    objHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
---    modelBaseName = sim.getObjectName(objHandle)
+    objHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
+    modelBaseName = sim.getObjectName(sim.getObjectParent(sim.getObjectParent(objHandle)))
 
     -- Initialize Gyro sensor
     ref = sim.getObjectHandle('GyroSensor_reference')
@@ -17,8 +17,8 @@ if (sim_call_type == sim.childscriptcall_initialization) then
     lastTime = sim.getSimulationTime()
 	
     -- ROS publisher 
---    pubIMU = simROS.advertise(modelBaseName..'/sensors/imu', 'sensor_msgs/Imu')
-    pubIMU = simROS.advertise('/vrep_ros_interface/turtlebot/sensors/imu', 'sensor_msgs/Imu')
+    pubIMU = simROS.advertise(modelBaseName..'/sensors/imu', 'sensor_msgs/Imu')
+--    pubIMU = simROS.advertise('/vrep_ros_interface/turtlebot/sensors/imu', 'sensor_msgs/Imu')
 end 
 
 if (sim_call_type == sim.childscriptcall_sensing) then
