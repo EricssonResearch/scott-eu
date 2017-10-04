@@ -51,7 +51,9 @@ HOW TO RUN IT (based on the original vrep_ros_control_example)
       - roscd vrep_ros_control_example
       - cd action
       - ./test_move.py follow_joint_trajectory:=phantom_controller/follow_joint_trajectory
-      - The mobile robot should go back for 1 second and forth for another second
+      - The mobile robot arm should go back for 1 second and forth for another second
+      - ./test_move_gripper.py gripper_command:=gripper_controller/gripper_cmd
+      - The arm gripper should open
 
 HOW IT WORKS
 
