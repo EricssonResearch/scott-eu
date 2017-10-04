@@ -9,7 +9,7 @@
 
 namespace MR
 {
-class MyRobot_vrepHW;
+class Phantom_vrepHW;
 }
 
 namespace controller_manager
@@ -56,7 +56,7 @@ private:
     // Control.
     static ros::CallbackQueue * sm_rosControlCallbackQueue;
 
-    static MR::MyRobot_vrepHW * sm_myRobotHw;
+    static MR::Phantom_vrepHW * sm_myRobotHw;
     static controller_manager::ControllerManager * sm_ctrlManager;
 
     static ros::AsyncSpinner * sm_spinner;

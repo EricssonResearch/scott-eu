@@ -3,7 +3,7 @@
 
 #include <ros/callback_queue.h>
 #include <controller_manager/controller_manager.h>
-#include "MyRobot_vrepHW.h"
+#include "Phantom_vrepHW.h"
 
 ros::NodeHandle* ROS_server::sm_node = NULL;
 
@@ -17,7 +17,7 @@ ros::NodeHandle* ROS_server::sm_node = NULL;
 //ros::Subscriber ROS_server::sm_addStatusBarMessage_subscriber;
 
 // Control.
-MR::MyRobot_vrepHW * ROS_server::sm_myRobotHw = 0;
+MR::Phantom_vrepHW * ROS_server::sm_myRobotHw = 0;
 controller_manager::ControllerManager * ROS_server::sm_ctrlManager = 0;
 
 ros::CallbackQueue * ROS_server::sm_rosControlCallbackQueue = 0;
@@ -51,7 +51,7 @@ bool ROS_server::initialize()
   assert(sm_rosControlCallbackQueue);
   sm_node->setCallbackQueue(sm_rosControlCallbackQueue);
   
-  sm_myRobotHw = new MR::MyRobot_vrepHW();
+  sm_myRobotHw = new MR::Phantom_vrepHW();
   assert(sm_myRobotHw);
 
   sm_ctrlManager = new controller_manager::ControllerManager(sm_myRobotHw, *sm_node);

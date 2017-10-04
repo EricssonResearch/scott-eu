@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(vrep_ros_control_phantomXPincher)
+project(vrep_ros_control_example)
 
 find_package(catkin REQUIRED COMPONENTS roscpp controller_manager)
 

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>vrep_ros_control_phantomXPincher</name>
+  <name>vrep_ros_control_example</name>
   <version>1.0.0</version>
   <description>ros_control for phanomXPincher back end for vrep (i.e. ~ gazebo_ros_control but for vrep and for a specific robot)</description>
 
