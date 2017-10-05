@@ -34,6 +34,10 @@ ROS_CONTROL
 
      TLDR.: It's here where you code read and write functions. This will provide an interface to the ros_manager to read states and send commands.
 
+     A diagram to help:
+
+     ![alt text](how_works.png)
+
 HOW TO RUN IT (based on the original vrep_ros_control_example)
 
    * clone the repository in your <workspace>/src folder

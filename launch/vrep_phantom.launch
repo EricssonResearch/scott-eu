@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <param name="robot_description" command="$(find xacro)/xacro.py --inorder '$(find vrep_ros_control_example)/urdf/phantomx_pincher_arm.urdf.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro.py --inorder '$(find vrep_ros_control_example)/urdf/arm/phantomx_pincher_arm.urdf.xacro'"/>
 
   <!-- Robot state publisher node -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
