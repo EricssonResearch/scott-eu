@@ -25,4 +25,4 @@ A docker-compose project that exposes OSLC resources via [ClioPatria](http://cli
 
   `curl -X GET -H Accept:application/turtle http://localhost/oslc/Resource`
 
-  
+
