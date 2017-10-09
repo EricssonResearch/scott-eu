@@ -1,3 +1,19 @@
+/*
+Copyright 2017 Ericsson AB
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 :- module(oslc_shape, [
   check_occurs/4,
   check_value_type/4,
@@ -51,14 +67,16 @@ format_value(oslc:'One-or-many', [V|T], [V|T]).
 check_value_type(_, _, [], _) :- !.
 
 check_value_type(IRI, PropertyResource, [V|T], Type) :-
-  once(rdf(PropertyResource, oslc:valueType, Type)),
-  once((
-    check_value(IRI, PropertyResource, V, Type),
-    check_allowed_values(IRI, PropertyResource, V, Type)
-  ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
-    oslc_error("Property [~w] of resource [~w] must be of type [~w]", [PropertyDefinition, IRI, Type])
-  )),
-  check_value_type(IRI, PropertyResource, T, Type).
+  (once(rdf(PropertyResource, oslc:valueType, Type))
+  -> once((
+       check_value(IRI, PropertyResource, V, Type),
+       check_allowed_values(IRI, PropertyResource, V, Type)
+     ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
+       oslc_error("Property [~w] of resource [~w] must be of type [~w]", [PropertyDefinition, IRI, Type])
+     )),
+     check_value_type(IRI, PropertyResource, T, Type)
+  ; true
+  ).
 
 check_value(IRI, PropertyResource, Value, oslc:'LocalResource') :-
   rdf_is_bnode(Value),
@@ -119,7 +137,13 @@ check_range(IRI, PropertyResource, Value) :-
   -> once((
        once((
          member(Class, Ranges),
-         rdfs_individual_of(Value, Class)
+         once((
+           rdf_equal(oslc:'Any', Class)
+         ; rdf(Value, rdf:type, Class)
+         % According to https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-shape.html#range
+         % oslc:range can only refer to rdf:type(s), not do inferencing through rdfs:subClassOf
+         % this is why rdfs_individual_of(Value, Class) would be too relaxed here.
+         ))
        ))
      ; rdf(PropertyResource, oslc:propertyDefinition, PropertyDefinition),
        oslc_error("Property [~w] of resource [~w] must be of one of the following types: ~w", [PropertyDefinition, IRI, Ranges])

@@ -1,0 +1,336 @@
+#
+# Copyright 2017 Ericsson AB
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix pddl: <http://ontology.cf.ericsson.net/pddl/> .
+@prefix : <http://ontology.cf.ericsson.net/pddl_example/> .
+
+# --- Planning Domain
+
+#    (define (domain adl-blocksworld)
+#      (:requirements :typing :equality :fluents)
+#      (:types location block)
+#      (:predicates (on ?x ?y - (either block location))
+#                   (clear ?x - (either block location))
+#      )
+#      (:functions (moved ?m - block)
+#                  (total-moved))
+#      (:action move
+#         :parameters (?b - block ?x ?y - (either block location))
+#         :precondition
+#            (and
+#              (not(= ?b ?y))
+#              (clear ?b)
+#              (on ?b ?x)
+#              (clear ?y)
+#            )
+#         :effect
+#            (and
+#              (on ?b ?y)
+#              (not (on ?b ?x))
+#              (clear ?x)
+#              (increase (moved ?b) 1)
+#              (increase (total-moved) 1)
+#              (when
+#                (not (= ?y table))
+#                (not (clear ?y))
+#              )
+#            )
+#      )
+#    )
+
+:adl-blocksworld
+  a pddl:Domain ;
+  oslc:instanceShape pddl:DomainShape ;
+  rdfs:label "adl-blocksworld" ;
+  pddl:type :location ,
+            :block ;
+  pddl:constant :table ;
+  pddl:predicate :on ,
+                 :clear ;
+  pddl:function :moved ,
+                :total-moved ;
+  pddl:action :move .
+
+:location
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:PrimitiveType ;
+  oslc:instanceShape pddl:PrimitiveTypeShape ;
+  rdfs:label "location" .
+
+:block
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:PrimitiveType ;
+  oslc:instanceShape pddl:PrimitiveTypeShape ;
+  rdfs:label "block" .
+
+:location-or-block
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:EitherType ;
+  oslc:instanceShape pddl:EitherTypeShape ;
+  rdfs:member :location ,
+              :block .
+
+:on
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Predicate ;
+  oslc:instanceShape pddl:PredicateShape ;
+  rdfs:label "on" ;
+  pddl:parameter :on-x ,
+                 :on-y .
+
+:on-x
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "x" ;
+  pddl:type :location-or-block ;
+  sh:order 1 .
+
+:on-y
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "y" ;
+  pddl:type :location-or-block ;
+  sh:order 2 .
+
+:clear
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Predicate ;
+  oslc:instanceShape pddl:PredicateShape ;
+  rdfs:label "clear" ;
+  pddl:parameter :clear-x .
+
+:clear-x
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "x" ;
+  pddl:type :location-or-block ;
+  sh:order 1 .
+
+:moved
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Function ;
+  oslc:instanceShape pddl:FunctionShape ;
+  rdfs:label "moved" ;
+  pddl:parameter :moved-m .
+
+:moved-m
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "m" ;
+  pddl:type :block ;
+  sh:order 1 .
+
+:total-moved
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Function ;
+  oslc:instanceShape pddl:FunctionShape ;
+  rdfs:label "total-moved" .
+
+:move
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Action ;
+  oslc:instanceShape pddl:ActionShape ;
+  rdfs:label "move" ;
+  pddl:parameter :move-b ,
+                 :move-x ,
+                 :move-y ;
+  pddl:precondition [ a pddl:And ;
+                      pddl:argument [ a pddl:Not ;
+                                      pddl:argument [ a pddl:Equality ;
+                                                      pddl:left :move-b ;
+                                                      pddl:right :move-y
+                                                    ]
+                                    ] ,
+                                    [ a :clear ;
+                                      :clear-x :move-b
+                                    ] ,
+                                    [ a :on ;
+                                      :on-x :move-b ;
+                                      :on-y :move-x
+                                    ] ,
+                                    [ a :clear ;
+                                      :clear-x :move-y
+                                    ]
+                    ] ;
+  pddl:effect [ a pddl:And ;
+                pddl:argument [ a :on ;
+                                :on-x :move-b ;
+                                :on-y :move-y
+                              ] ,
+                              [ a pddl:Not ;
+                                pddl:argument [ a :on ;
+                                                :on-x :move-b ;
+                                                :on-y :move-x
+                                              ]
+                              ] ,
+                              [ a :clear ;
+                                :clear-x :move-x
+                              ] ,
+                              [ a pddl:Increase ;
+                                pddl:parameter [ a :moved ;
+                                                 :moved-m :move-b
+                                               ] ;
+                                pddl:argument 1
+                              ] ,
+                              [ a pddl:Increase ;
+                                pddl:parameter [ a :total-moved ] ;
+                                pddl:argument 1
+                              ] ,
+                              [ a pddl:When ;
+                                pddl:parameter [ a pddl:Not ;
+                                                 pddl:argument [ a pddl:Equality ;
+                                                                 pddl:left :move-y ;
+                                                                 pddl:right :table
+                                                               ]
+                                               ] ;
+                                pddl:argument [ a pddl:Not ;
+                                                pddl:argument [ a :clear ;
+                                                                :clear-x :move-y
+                                                              ]
+                                              ]
+                              ]
+              ] .
+
+:move-b
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "b" ;
+  pddl:type :block ;
+  sh:order 1 .
+
+:move-x
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "x" ;
+  pddl:type :location-or-block ;
+  sh:order 2 .
+
+:move-y
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "y" ;
+  pddl:type :location-or-block ;
+  sh:order 3 .
+
+:table
+  a :location ;
+  oslc:instanceShape pddl:ConstantShape ;
+  rdfs:label "table" .
+
+# --- Planning Problem
+
+#    (define (problem adl-blocksworld-problem)
+#      (:domain adl-blocksworld)
+#      (:objects a b c - block table - location)
+#      (:init
+#        (= (total-moved) 0)
+#        (= (moved a) 0)
+#        (= (moved b) 0)
+#        (= (moved c) 0)
+#        (on b table) (on a table) (on c a)
+#        (clear b) (clear c) (clear table)
+#      )
+#      (:goal
+#        (or
+#          (on a c)
+#          (on b a)
+#        )
+#      )
+#      (:metric minimize (total-time))
+#    )
+
+:adl-blocksworld-problem
+  a pddl:Problem ;
+  oslc:instanceShape pddl:ProblemShape ;
+  rdfs:label "adl-blocksworld-problem" ;
+  pddl:domain :adl-blocksworld ;
+  pddl:object :a ,
+              :b ,
+              :c ,
+              :table ;
+  pddl:init [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :a
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :b
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :c
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :total-moved ] ;
+              pddl:right 0
+            ] ,
+            [ a :on ;
+              :on-x :b ;
+              :on-y :table
+            ] ,
+            [ a :on ;
+              :on-x :a ;
+              :on-y :table
+            ] ,
+            [ a :on ;
+              :on-x :c ;
+              :on-y :a
+            ] ,
+            [ a :clear ;
+              :clear-x :b
+            ] ,
+            [ a :clear ;
+              :clear-x :c
+            ] ,
+            [ a :clear ;
+              :clear-x :table
+            ] ;
+  pddl:goal [ a pddl:Or ;
+              pddl:argument [ a :on ;
+                              :on-x :b ;
+                              :on-y :c
+                            ] ,
+                            [ a :on ;
+                              :on-x :c ;
+                              :on-y :b
+                            ]
+            ] ;
+  pddl:minimize [ a pddl:total-time ].
+
+:a
+  a :block ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "a" .
+
+:b
+  a :block ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "b" .
+
+:c
+  a :block ;
+  oslc:instanceShape pddl:ObjectShape ;
+  rdfs:label "c" .

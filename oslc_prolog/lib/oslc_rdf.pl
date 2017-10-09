@@ -1,3 +1,19 @@
+/*
+Copyright 2017 Ericsson AB
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 :- module(oslc_rdf, [
   make_temp_graph/1,
   clean_temp_graphs/0,
@@ -46,6 +62,25 @@ oslc:delete_property(IRI, PropertyDefinition, rdf(Graph)) :-
   must_be(atom, IRI),
   must_be(atom, Graph),
   rdf_retractall(IRI, PropertyDefinition, _, Graph).
+
+oslc:marshal_property(IRI, PropertyDefinition, Value, Type, tmp(Graph)) :-
+  ( var(Graph)
+  -> make_temp_graph(Graph)
+  ; true
+  ),
+  oslc:marshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph)).
+
+oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, tmp(Graph)) :-
+  ( var(Graph)
+  -> fail
+  ; oslc:unmarshal_property(IRI, PropertyDefinition, Value, Type, rdf(Graph))
+  ).
+
+oslc:delete_property(IRI, PropertyDefinition, tmp(Graph)) :-
+  ( var(Graph)
+  -> make_temp_graph(Graph)
+  ; oslc:delete_property(IRI, PropertyDefinition, rdf(Graph))
+  ).
 
 %!  make_temp_graph(-Graph) is det.
 %
