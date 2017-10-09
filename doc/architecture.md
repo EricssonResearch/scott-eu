@@ -57,7 +57,10 @@ service/adaptor and device/twin boundary is only logical. For example, Planning
 Service acts as an adaptor yet embeds a service inside the same Docker image.
 
 Devices (robots [**TODO** link to the datasheets etc.]) run multiple ROS _nodes_
-and are controlled by a single ROS _master_. MQTT node of the robot must registed an MQTT Last Will & Testament message that will be delivered to the twin when the robot loses MQTT connection to the broker. This will allow the twin to report robot status as down to the warehouse controller.
+and are controlled by a single ROS _master_. MQTT node of the robot must
+registed an MQTT Last Will & Testament message that will be delivered to the
+twin when the robot loses MQTT connection to the broker. This will allow the
+twin to report robot status as down to the warehouse controller.
 
 > I think a single master will conflict with the idea of a twin per device.
 

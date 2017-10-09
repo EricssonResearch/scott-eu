@@ -10,15 +10,16 @@
 
 ### Polling elimination
 
-Instead of appending the change events to a TRS change log that can be fetched via a REST call, we will publish each change event to an MQTT channel. Effectively, each OSLC microservice will host a TRS server and a TRS client.
+Instead of appending the change events to a TRS change log that can be fetched
+via a REST call, we will publish each change event to an MQTT channel.
+Effectively, each OSLC microservice will host a TRS server and a TRS client.
 
 ### Sequential change event ordering
 
 
-To allow multiple resources to be
-updated atomically, the _change events_ in our architecture were extended with
-the following properties, borrowed from the Message Sequence pattern
-\cite[ch.~5, p.~170]{hohpe2003enterprise}:
+To allow multiple resources to be updated atomically, the _change events_ in our
+architecture were extended with the following properties, borrowed from the
+[Message Sequence](http://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageSequence.html) pattern:
 
 - sequence number `oscl_trs:sequence` of integer type, in order to distinguish
   different sequences;
@@ -54,15 +55,30 @@ system load and minimise the delays caused by polling.
 
 ## More motivation
 
-Leo has discovered an issue is that a single PDDL action may have an effect on different resources managed by different adaptors. Therefore, an atomic application of the TRS events across multiple TRS change logs is necessary.
+Leo has discovered an issue is that a single PDDL action may have an effect on
+different resources managed by different adaptors. Therefore, an atomic
+application of the TRS events across multiple TRS change logs is necessary.
 
-Furthermore, we might need to see a consistent state across the whole sandbox and strictly sequential atomic change event application is not enough. A simple example is the case when a robot unloads a box onto a shelf. The states of the Box, Robot, and Shelf resources are changed atomically and the TRS change event sequence has been published. The problem is that at a certain point of time, a fraction of the subscribers has applied this change event sequence atomically, while the rest of the subscribers have not. We might need to avoid that by gathering a disributed snapshot
+Furthermore, we might need to see a consistent state across the whole sandbox
+and strictly sequential atomic change event application is not enough. A simple
+example is the case when a robot unloads a box onto a shelf. The states of the
+Box, Robot, and Shelf resources are changed atomically and the TRS change event
+sequence has been published. The problem is that at a certain point of time, a
+fraction of the subscribers has applied this change event sequence atomically,
+while the rest of the subscribers have not. We might need to avoid that by
+gathering a disributed snapshot
 
 ## More crazy changes :fire:
 
-One way to fix the atomic TRS change event application across multiple change logs is to generate action UUIDs and use them as sequence IDs while relying on vector clock during the publishing of the TRS events to generate monotonically increasing position ids. The total number of the events in a sequence needs to be determined independently (ie needs to be known beforehand, eg by counting the total number of predicates in the event).
+One way to fix the atomic TRS change event application across multiple change
+logs is to generate action UUIDs and use them as sequence IDs while relying on
+vector clock during the publishing of the TRS events to generate monotonically
+increasing position ids. The total number of the events in a sequence needs to
+be determined independently (ie needs to be known beforehand, eg by counting the
+total number of predicates in the event).
 
-In order to construct a distributed snapshot on top of TRS, a new TRS _token resource_ is introduced.
+In order to construct a distributed snapshot on top of TRS, a new TRS _token
+resource_ is introduced.
 
 TRS _token_ resource `oslc_trs:Token` contains the following properties:
 
@@ -70,4 +86,5 @@ TRS _token_ resource `oslc_trs:Token` contains the following properties:
 - RDF type, as every OSLC resource must have one;
 - the sender;
 - the receiver;
-- timestamp, which is optional and not reliable due to the problem of distributed clocks;
+- timestamp, which is optional and not reliable due to the problem of
+  distributed clocks;
