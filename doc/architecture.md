@@ -6,7 +6,7 @@
 
 The _sandbox architecture_, which will be presented in the next section, builds
 on top of the _reference architecture_. The reference architecture (see figure
-above) is built around 2 layers: device/service layer and integration layer. The
+above) is built around 2 layers: device/service layer and adaptation (or integration) layer. The
 former includes any kinds of services and devices that can use virtually any
 kind of technology. The latter includes service adaptors and digital twins to
 integrate the sandbox in a technology-agnotic way.
