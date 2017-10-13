@@ -16,6 +16,7 @@ limitations under the License.
 
 :- module(oslc_prolog_server, []).
 
+:- use_module(library(semweb/rdf11)).
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_client)).
 :- use_module(library(http/http_dispatch)).

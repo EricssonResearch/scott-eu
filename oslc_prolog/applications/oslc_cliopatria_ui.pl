@@ -16,6 +16,8 @@ limitations under the License.
 
 :- module(oslc_cliopatria_ui, []).
 
+:- use_module(library(semweb/rdf11)).
+
 :- http_handler(root(oslc_resource_shapes), oslc_resource_shapes, []).
 :- http_handler(root(oslc_shape_resources), oslc_shape_resources, []).
 :- http_handler(root(oslc_shape), oslc_shape, []).

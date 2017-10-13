@@ -18,6 +18,8 @@ limitations under the License.
   oslc_error/2
 ]).
 
+:- use_module(library(semweb/rdf11)).
+
 % FIXME: probably there is a better way to report errors...
 
 oslc_error(Message, Arguments) :-
