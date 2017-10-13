@@ -19,6 +19,7 @@ limitations under the License.
   reload_ontologies/2
 ]).
 
+:- use_module(library(semweb/rdf11)).
 :- use_module(library(semweb/rdf_library)).
 
 %!  register_ontology(+Ontology) is det.
