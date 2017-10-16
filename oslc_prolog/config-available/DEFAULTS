@@ -1,1 +1,1 @@
-config(oslc_prolog, link).
+config('500-oslc_prolog', link).

@@ -14,23 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-:- module(conf_oslc_prolog, []).
+:- module('700-planner_reasoner', []).
 
-/** <module> OSLC Prolog
+/** <module> Planner Reasoner
 */
 
-%:- debug(http(send_request)).
-%:- debug(http(open)).
-%:- debug(rdf(load)).
-
 :- use_module(library(semweb/rdf_library)).
+:- rdf_attach_library(planner_reasoner(rdf)).
 
-:- rdf_attach_library(oslc_prolog(rdf)).
-:- rdf_load_library(oslc).
-:- rdf_load_library(oslc_shapes).
+:- rdf_load_library(pddl).
+:- rdf_load_library(planner).
+:- rdf_load_library(pddl_example).
 
-:- use_module(library(oslc)).
-:- use_module(library(oslc_core)).
+:- use_module(library(pddl_generator)).
+:- use_module(library(metric_ff)).
 
-:- use_module(oslc_prolog(applications/oslc_prolog_server)).
-:- use_module(oslc_prolog(applications/oslc_cliopatria_ui)).
+:- use_module(planner_reasoner(applications/planner_reasoner_server), []).
