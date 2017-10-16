@@ -1,0 +1,6 @@
+
+<launch>
+  <node name="turtlebot2i_random_walker" pkg="base_robot" type="turtlebot2i_random_walker">
+    <remap from="/turtlebot2i_random_walker" to="/vrep_ros_interface/turtlebot"/> 
+  </node>
+</launch>
