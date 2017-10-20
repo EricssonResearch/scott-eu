@@ -45,7 +45,7 @@
     <!-- elbow joint -->
     <pincher_forearm parent="arm_bicep_link" name="arm_forearm" color="${color}"
                          vlimit="${joints_vlimit}" llimit="${elbow_llimit}" ulimit="${elbow_ulimit}">
-      <origin xyz="0.0325 0 0.104" rpy="0 0 0"/>
+      <origin xyz="0 0 0.104" rpy="3.14 -1.57 0"/>
     </pincher_forearm>
    
     <transmission name="arm_forearm_transmission">
@@ -80,7 +80,7 @@
 
 <!-- gripper_link -->
     <link name="gripper_link"/>
-    <joint name="gripper_link_joint" type="revolute">
+    <joint name="PhantomXPincher_gripperCenter_joint" type="revolute">
       <origin xyz="0.110 0 0" rpy="0 0 0"/>
       <parent link="arm_wrist_flex_link"/>
       <child link="gripper_link"/>

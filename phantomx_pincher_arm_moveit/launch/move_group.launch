@@ -1,6 +1,6 @@
 <launch>
 
-  <include file="planning_context.launch" />
+  <include file="$(find phantomx_pincher_arm_moveit)/launch/planning_context.launch" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false" />
@@ -21,12 +21,12 @@
   <arg name="publish_monitored_planning_scene" default="true"/>
 
   <!-- Planning Functionality -->
-  <include ns="move_group" file="planning_pipeline.launch.xml">
+  <include ns="move_group" file="$(find phantomx_pincher_arm_moveit)/launch/planning_pipeline.launch.xml">
     <arg name="pipeline" value="ompl" />
   </include>
 
   <!-- Trajectory Execution Functionality -->
-  <include ns="move_group" file="trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
+  <include ns="move_group" file="$(find phantomx_pincher_arm_moveit)/launch/trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
     <arg name="moveit_manage_controllers" value="true" />
     <arg name="moveit_controller_manager" value="turtlebot" unless="$(arg fake_execution)"/>
     <arg name="moveit_controller_manager" value="fake" if="$(arg fake_execution)"/>
@@ -34,9 +34,11 @@
 
   <!-- Sensors Functionality -->
   <!-- Seems quite empty -->
+  <!--
   <include ns="move_group" file="$(find turtlebot2i_moveit_config)/launch/sensor_manager.launch.xml" if="$(arg allow_trajectory_execution)">
     <arg name="moveit_sensor_manager" value="turtlebot" />
-  </include>
+    </include>
+  -->
 
   <!-- Start the actual move_group node/action server -->
   <node name="move_group" launch-prefix="$(arg launch_prefix)" pkg="moveit_ros_move_group" type="move_group" respawn="false" output="screen" args="$(arg command_args)">

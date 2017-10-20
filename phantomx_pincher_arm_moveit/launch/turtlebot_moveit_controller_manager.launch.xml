@@ -5,6 +5,6 @@
   <param name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
 
   <!-- load controller_list -->
-  <rosparam file="$(find vrep_ros_control_example)/control/phantomXPincher_moveit.yaml"/>
+  <rosparam file="$(find phantomx_pincher_arm_moveit)/config/phantomXPincher_moveit.yaml"/>
 
 </launch>

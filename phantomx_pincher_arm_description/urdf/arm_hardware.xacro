@@ -63,9 +63,9 @@
       </inertial>
 
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="-0.115 0 -0.2" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://phantomx_pincher_arm_description/meshes/F2Bracket.stl" scale="1.0 1.0 1.0"/>
+          <mesh filename="package://phantomx_pincher_arm_description/meshes/PincherMotor.stl" scale="1.0 1.0 1.0"/>
         </geometry>
         <material name="${color}"/>
       </visual>
@@ -73,7 +73,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://phantomx_pincher_arm_description/meshes/F2Bracket.stl" scale="1.0 1.0 1.0"/>
+          <mesh filename="package://phantomx_pincher_arm_description/meshes/PincherMotor.stl" scale="1.0 1.0 1.0"/>
         </geometry>
       </collision>
     </link>
@@ -105,9 +105,9 @@
       </inertial>
 
       <visual>
-        <origin xyz=" 0 0 0 " rpy="0 0 0"/>
+        <origin xyz=" 0 0 0 " rpy="0 -1.54 0"/>
         <geometry>
-          <mesh filename="package://phantomx_pincher_arm_description/meshes/PincherBicep.stl" scale="1.0 1.0 1.0"/>
+          <mesh filename="package://phantomx_pincher_arm_description/meshes/PincherForeArm.stl" scale="1.0 1.0 1.0"/>
         </geometry>
         <material name="${color}"/>
       </visual>
@@ -115,7 +115,7 @@
       <collision>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://phantomx_pincher_arm_description/meshes/PincherBicep.stl" scale="1.0 1.0 1.0"/>
+          <mesh filename="package://phantomx_pincher_arm_description/meshes/PincherForeArm.stl" scale="1.0 1.0 1.0"/>
         </geometry>
       </collision>
     </link>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <param name="robot_description" command="$(find xacro)/xacro.py --inorder '$(find vrep_ros_control_example)/urdf/arm/phantomx_pincher_arm.urdf.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro.py --inorder '$(find phantomx_pincher_arm_description)/urdf/phantomx_pincher_arm.urdf.xacro'"/>
 
   <!-- Robot state publisher node -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
@@ -10,8 +10,8 @@
   </node>
 
   <!-- Start controllers -->
-  <rosparam file="$(find vrep_ros_control_example)/control/phantomXPincher.yaml" command="load"/> <!-- Joint trajectory controller (this is not a low-level controller) -->
+  <rosparam file="$(find phantomx_pincher_arm_vrep_controller)/control/phantomXPincher.yaml" command="load"/> <!-- Joint trajectory controller (this is not a low-level controller) -->
 
-  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller" />
+ <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
 
 </launch>
