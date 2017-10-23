@@ -7,14 +7,16 @@ MOTIVATION
 
    Packages that are broadly used like the MoveIt! require the robot to have an action server to consume trajectory's messages. This kind of server aim to be used when an long tasks is being executed and a feedback or a stop action is need while the process is running (http://wiki.ros.org/actionlib). Instead of developing a specific action server to consume MoveIt! messages, the MoveIt documentations advise to use a ros_controller (http://moveit.ros.org/documentation/concepts/) as can be seen on the picture below.
 
-   Also, as our project will use a real TurtleBot, is a good practice to have simulation and real robot operating as close as possible. And the TurtleBot uses the ros_controller packages to manage the arm movements.
+   ![alt_text](moveit.jpg)
+
+   Also, as our project will use a real TurtleBot, is a good practice to have simulation and real robot operating similar as possible. 
 
 ROS_CONTROL
 
-   Disclaimer: The documentation is very sparse and sometimes it's hard to put all the different concepts together. On the following paragraphs I will give my understand about how the ROS_CONTROL works, although it's important to keep in mind that I'm probably wrong.
+   Disclaimer: The documentation is very sparse and sometimes it's hard to put all the different concepts together. On the following paragraphs I will give my understand about how the ROS_CONTROL works, although it's important to keep in mind that I'm probably wrong or lacking some important concepts. For a more accurate documentation consult consult the links on the following sections
 
-   The ROS_CONTROL basically takes an set_point and the joints states. With a, lets say a PID controller, it sends a command to the joints. But, in order to do so many components must be available.
-   Lets consider that we a have a moveIt! node publishing (via actionLib) a trajectory, so we a need a controller to read joints states and the input from moveIt! and send commands to joints. To accomplish that, we'll need 3 main components: a Controller Manager, a Controller(Trajectory Controller) and a Hardware Interface.
+   The ROS_CONTROL basically takes an set_point and joints states. With a, lets say, a PID controller, it sends a command to the joints. But in order to do so, many components must be available.
+   Lets consider that we a have a moveIt! node publishing (via actionLib) a trajectory. Thus, we'll a need a controller to read joints states, the input/set point from moveIt! and send commands to joints. To accomplish that, we'll need 3 main components: a Controller Manager, a Controller(Trajectory Controller) and a Hardware Interface.
 
    * Controller
      Briefly: This can be a simple Controller, like a PID. There's many kinds available on ROS, E.g: position, velocity, effort, trajectory.
@@ -62,9 +64,10 @@ HOW TO RUN IT (based on the original vrep_ros_control_example)
 HOW IT WORKS
 
 In order to create a ros_control back end for vrep:
+
    * obviously you need a .ttt vrep file corresponding to your simulated system
       - this is file vrep/turttlebot2_v4.ttt in the current case
-   * The file src/ControlLoop/MyRobot_vrepHW.cpp was modified to meet the simulated turtlebot2i hardware interface
+   * The file src/ControlLoop/Phantom_vrepHW.cpp was modified to meet the simulated turtlebot2i hardware interface
       - the other files like vrepControl_plugin .h or .cpp and vrepControl_server .h or .cpp are generic and should not be changed
       - files src/v_rep* are directly copied from vrep (and needed to create a plugin), they should not be changed
    * unfortunately you need a redundant description of your robot in urdf (so your robot is described both in the .ttt file and in the urdf)
@@ -73,11 +76,3 @@ In order to create a ros_control back end for vrep:
    * this plugin is based on the blank ros skeleton plugin vrep_plugin_skeleton provided in vrep's folder programming/ros_packages/vrep_plugin_skeleton
 
 Please look at the code if you want to understand how the plugin works, it should be self explaining for people who know well about vrep and ros_control, and it is well commented for the others. The main "trick" is in function "bool ROS_server::initialize()" in file vrepControl_server.cpp.
-
-In case of trouble feel free to contact me.
-
-Thanks,
-
-Amadeu do Nascimento Jr.
-
-amadeu.nascimento.junior@ericsson.com
