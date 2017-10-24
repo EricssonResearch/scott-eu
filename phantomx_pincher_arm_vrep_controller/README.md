@@ -45,7 +45,8 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
    * build the newly cloned package.
      * E.g.: on <workspace>/src folder run: catkin\_make
    * once built, you need to copy this plugin file libv\_repExtRosControl.so from your <workspace>/build/lib folder to vrep's main folder (along all the other plugins)
-   * start a terminal with roscore
+   * start roscore
+      - on terminal: roscore
    * then start vrep and load vrep/turttlebot2_v4.ttt
       - check that plugin libv\_repExtRosControl.so is correctly loaded in vrep's trace (i.e., in vrep's console)
    * start the simulation in vrep
