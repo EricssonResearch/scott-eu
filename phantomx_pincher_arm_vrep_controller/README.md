@@ -7,7 +7,7 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
 
    Packages that are broadly used like the MoveIt! thus it requires the robot to have an action server to consume trajectory's messages. This kind of server aims to be used when long tasks are being executed and a feedback or a stop action is need while the process is running (http://wiki.ros.org/actionlib). Instead of developing a specific action server to consume MoveIt! messages, the MoveIt documentations advise using a ros_controller (http://moveit.ros.org/documentation/concepts/) as can be seen in the picture below.
 
-   ![alt_text](moveit.jpg)
+   ![alt_text](doc/imgs/moveit.jpg)
 
    Also, as our project will use a real TurtleBot, it's a good practice to have simulation and real robot operating similarly as possible. 
 
@@ -36,7 +36,7 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
 
      A diagram to help:
 
-     ![alt text](how_works.png)
+     ![alt text](doc/imgs/how_works.png)
 
 ###HOW TO RUN IT###
    Based on the original vrep\_ros\_control\_example
@@ -68,7 +68,7 @@ To create a ros\_control back end for vrep:
       - It's available at vrep/turttlebot2\_v4.ttt in the current repo
    * The file src/ControlLoop/Phantom\_vrepHW.cpp was modified to acomodate the simulated turtlebot2i hardware interface
       - the other files like vrepControl\_plugin .h or .cpp and vrepControl\_server .h or .cpp are generic and should not be changed
-      - files src/v\_rep\* are directly copied from vrep (and needed to create a plugin), they should not be changed
+      - files src/v\_rep\* are directly copied from vrep (needed to create a plugin), they should not be changed
    * Unfortunately, you need a redundant description of your robot in urdf (so your robot is described both in the .ttt file and in the urdf)
       - this is because the urdf contains information on the joints and transmissions not contained in the vrep .ttt file
       - to counterbalance this point, note that the urdf importer works pretty well. But once your urdf is imported and you modify something in vrep's .ttt file you need to redundantly modify it in the urdf (I told Coppelia about this situation but unfortunately did not receive an answer)
