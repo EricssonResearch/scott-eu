@@ -10,37 +10,28 @@
 
 <p>To work properly this package need the following packages: phantomx_pincher_arm_vrep_controller and phantomx_pincher_arm_description.</p>
 
-<p>1- Follow the instructions of phantomx<em>pincher</em>arm<em>vrep</em>controller README.md and check if it's working</p>
-
-<p>2- Source packages files:</p>
-
+<ol>
+<li>Follow the instructions of phantomx_pincher_arm_vrep_controller README.md and check if it's working</li>
+<li>Source packages files:
 <ul>
-<li>inside phantomx_pincher_arm folder:
-<ul>
-<li>source devel/setup.bash</li>
+<li>inside phantomx_pincher_arm folder:</li>
+<li>$ source devel/setup.bash</li>
 </ul></li>
-</ul>
-
-<p>3- Start roscore</p>
-
+<li>Start roscore
 <ul>
-<li>on a terminal: roscore</li>
-</ul>
-
-<p>4- Start vrep and load the scene on vrep/turttlebot2_v4 inside phantomx_pincher_arm package</p>
-
-<p>1- It's possible to start vrep in headless mode with.</p>
-
-<pre><code>  - Inside V-REP root folder run:
-    ./vrep.sh -h -s -q PATH\_TO\_phantomx\_pincher\_arm\_vrep\_controller/vrep/turttlebot2\_v4.ttt
-</code></pre>
-
-<p>5- On a new terminal start demo.launch</p>
-
+<li>on a terminal:</li>
+<li>$ roscore</li>
+</ul></li>
+<li>Start vrep and load the scene on vrep/turttlebot2_v4 inside phantomx_pincher_arm package
+1.1 It's possible to start vrep in headless mode with.
+<ul>
+<li>Inside V-REP root folder run:</li>
+<li>$ ./vrep.sh -h -s -q PATH_TO_phantomx_pincher_arm_vrep_controller/vrep/turttlebot2_v4.ttt</li>
+</ul></li>
+<li>On a new terminal start demo.launch
 <ul>
 <li>on a terminal: roslaunch phantomx_pincher_arm_moveit demo.launch</li>
-</ul>
-
-<p>6- If it's everything ok, after while a rviz window will open with a 3D visualization of the arm</p>
-
-<p>7- In the tab <em>path planning</em> within the moveit! panel it's possible to plan and move the arm to a new position.</p>
+</ul></li>
+<li>If it's everything ok, after while a rviz window will open with a 3D visualization of the arm</li>
+<li>In the tab <em>path planning</em> within the moveit! panel it's possible to plan and move the arm to a new position.</li>
+</ol>
