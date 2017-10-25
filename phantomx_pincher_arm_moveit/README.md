@@ -15,14 +15,14 @@ To work properly this package need the following packages: phantomx\_pincher\_ar
 1. Follow the instructions of phantomx\_pincher\_arm\_vrep\_controller README.md and check if it's working
 1. Source packages files:
    - inside phantomx\_pincher\_arm folder:
-   -  $ source devel/setup.bash
+   -  `$ source devel/setup.bash`
 1. Start roscore
   - on a terminal:
-  - $ roscore
+  - `$ roscore`
 1. Start vrep and load the scene on vrep/turttlebot2\_v4 inside phantomx\_pincher\_arm package
    1.1 It's possible to start vrep in headless mode with.
       - Inside V-REP root folder run:
-      - $ ./vrep.sh -h -s -q PATH\_TO\_phantomx\_pincher\_arm\_vrep\_controller/vrep/turttlebot2\_v4.ttt
+      `$ ./vrep.sh -h -s -q PATH\_TO\_phantomx\_pincher\_arm\_vrep\_controller/vrep/turttlebot2\_v4.ttt`
 1. On a new terminal start demo.launch
    - on a terminal: roslaunch phantomx\_pincher\_arm\_moveit demo.launch
 1. If it's everything ok, after while a rviz window will open with a 3D visualization of the arm
