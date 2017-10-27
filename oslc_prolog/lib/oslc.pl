@@ -124,10 +124,7 @@ applicable_shapes(Types, Shapes) :-
   findall(ResourceShape, (
     member(Type, Types),
     rdf(ResourceShape, rdf:type, oslc:'ResourceShape'),
-    once((
-      \+ rdf(ResourceShape, oslc:describes, _)
-    ; rdf(ResourceShape, oslc:describes, Type)
-    ))
+    rdf(ResourceShape, oslc:describes, Type)
   ), Shapes).
 
 create_shapes_dict(Shapes, Dict) :-
