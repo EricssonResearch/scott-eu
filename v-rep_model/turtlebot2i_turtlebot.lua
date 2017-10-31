@@ -54,6 +54,11 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     invOriginMatrix = simGetInvertedMatrix(originMatrix)
     oldTransformation = originMatrix
     lastTime = simGetSimulationTime()
+
+    bumper_id = 255
+    cliff_sensor = 255
+    wheel_drop_sensor = 255
+
     ----------------------------- ROS STUFF --------------------------------
     -- Bumper
 	pubBumper = simROS.advertise(modelBaseName..'/events/bumper', 'kobuki_msgs/BumperEvent')
@@ -72,18 +77,15 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     -- Commands
     subCmdVel = simROS.subscribe(modelBaseName..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
     subCmdMotor = simROS.subscribe(modelBaseName..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
-end 
 
+end 
 
 if (sim_call_type == sim.childscriptcall_sensing) then 
     -- Bumper
-    local bumper_id = 255
     local bumper_pressed = 0
     -- Cliff
-    local cliff_sensor = 255
     local cliff_sensor_activated = 0
     -- Wheel Drop
-    local wheel_drop_sensor = 255
     local wheel_drop_sensor_activated = 0
     -- Docking IR
     local dock_ir_proximity = 255
@@ -155,6 +157,10 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         cliff_sensor_activated = 1
     end
 
+    if (cliff_sensor == nil) then
+        cliff_sensor = 255
+    end
+
     local ros_cliff_event = {}
     ros_cliff_event["sensor"] = cliff_sensor
     ros_cliff_event["state"] = cliff_sensor_activated
@@ -172,6 +178,10 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     if (right_wheel_drop == nil) then
         wheel_drop_sensor = 1
         wheel_drop_sensor_activated = 1
+    end
+
+    if (wheel_drop_sensor == nil) then
+        wheel_drop_sensor = 255
     end
 
     local ros_wheel_drop_event = {}
