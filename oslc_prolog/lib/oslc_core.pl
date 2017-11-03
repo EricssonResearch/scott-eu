@@ -74,12 +74,6 @@ handle_get(Context) :-
   once(rdf(IRI, _, _)),
   once((
     member(search(Search), Context.request),
-    findall(Option, (
-        member(Key=Value, Search),
-        atom_concat('oslc.', OP, Key),
-        Option =.. [OP, Value]
-      ), Options
-    ),
     L1 = [],
     ( member(rdfs=sup, Search)
     -> findall(SuperClass, (
@@ -114,11 +108,10 @@ handle_get(Context) :-
     ; L5 = L4
     ),
     list_to_set(L5, Set)
-  ; Options = [],
-    Set = []
+  ; Set = []
   )),
   catch((
-    copy_resource([IRI|Set], [IRI|Set], rdf, tmp(Context.graph_out), [inline(rdf)|Options])
+    copy_resource([IRI|Set], [IRI|Set], rdf, tmp(Context.graph_out), [inline(rdf)|Context.options])
   ),
     oslc_error(Message),
     throw(response(400, Message)) % bad request (problem with Options)

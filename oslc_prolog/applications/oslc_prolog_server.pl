@@ -87,6 +87,14 @@ dispatcher0(Request) :-
   -> read_request_body(Request, GraphIn)
   ; true
   ),
+  ( member(search(Search), Request),
+    findall(Option, (
+      member(Key=Value, Search),
+      atom_concat('oslc.', OP, Key),
+      Option =.. [OP, Value]
+    ), Options)
+  ; Options = []
+  ),
   once((
     dispatch(_{ request: Request,
                iri_spec: Prefix:ResourceSegments,
@@ -94,7 +102,8 @@ dispatcher0(Request) :-
            content_type: ContentType,
                graph_in: GraphIn,
               graph_out: GraphOut,
-                headers: Headers }), % main dispatch method
+                headers: Headers,
+                options: Options }), % main dispatch method
     ( ground(GraphOut),
       rdf_graph_property(GraphOut, triples(Triples)),
       Triples > 0 % the output document is not empty
