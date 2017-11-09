@@ -20,7 +20,7 @@ To work properly this package need the following packages: phantomx\_pincher\_ar
 
 1. Follow the instructions of phantomx\_pincher\_arm\_vrep\_controller README.md and check if it's working
 1. Source packages files:
-   - inside phantomx\_pincher\_arm folder: `$ source devel/setup.bash`
+   - on the packages inside phantomx\_pincher\_arm do for each one: `$ source devel/setup.bash`
 1. Start roscore
    - on a terminal:
      `$ roscore`

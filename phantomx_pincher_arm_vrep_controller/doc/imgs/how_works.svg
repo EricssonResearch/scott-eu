@@ -16,7 +16,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="how_works.svg"
-   inkscape:export-filename="/home/eznasam/project/turtlebot2i/src/vrep_ros_control_example/how_works.svg.png"
+   inkscape:export-filename="/home/eznasam/project/turtlebot2i_scott/src/phantomx_pincher_arm/phantomx_pincher_arm_vrep_controller/doc/imgs/how_works.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -118,14 +118,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="312.18703"
-     inkscape:cy="772.76878"
+     inkscape:zoom="0.67810435"
+     inkscape:cx="236.99849"
+     inkscape:cy="722.27317"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1215"
-     inkscape:window-height="896"
+     inkscape:window-width="1295"
+     inkscape:window-height="640"
      inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
@@ -414,7 +414,7 @@
          id="tspan4901"
          x="232.58385"
          y="87.689987"
-         style="font-size:24.17114258px">Action Cliente</tspan></text>
+         style="font-size:24.17114258px">Action Client</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:38.67382812px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -438,7 +438,7 @@
            height="49.497475"
            x="626.49658"
            y="206.66249" /></flowRegion><flowPara
-         id="flowPara4937"></flowPara></flowRoot>    <ellipse
+         id="flowPara4937" /></flowRoot>    <ellipse
        style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.02900004;stroke-miterlimit:4;stroke-dasharray:4.05800009, 2.02900004;stroke-dashoffset:0;stroke-opacity:1"
        id="path4939"
        ry="134.3503"

@@ -5,7 +5,7 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
 
 ###MOTIVATION###
 
-   Packages that are broadly used like the MoveIt! thus it requires the robot to have an action server to consume trajectory's messages. This kind of server aims to be used when long tasks are being executed and a feedback or a stop action is need while the process is running (http://wiki.ros.org/actionlib). Instead of developing a specific action server to consume MoveIt! messages, the MoveIt documentations advise using a ros_controller (http://moveit.ros.org/documentation/concepts/) as can be seen in the picture below.
+   The MoveIt! package requires the robot to have an action server to consume trajectory's messages. This kind of server aims to be used when long tasks are being executed and a feedback or a stop action is need while the process is running (http://wiki.ros.org/actionlib). Instead of developing a specific action server to consume MoveIt! messages, the MoveIt documentations advise the usage of a ros_controller (http://moveit.ros.org/documentation/concepts/) as can be seen in the picture below.
 
    ![alt_text](doc/imgs/moveit.jpg)
 
