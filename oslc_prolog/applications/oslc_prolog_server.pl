@@ -138,10 +138,13 @@ format_response_graph(StatusCode, Graph, Headers, ContentType) :-
   must_be(ground, Graph),
   must_be(ground, ContentType),
   format(atom(ContentTypeValue), '~w; charset=utf-8', [ContentType]),
-  graph_md5(Graph, Hash),
-  append(Headers, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders),
-  response(StatusCode, NewHeaders),
   oslc_dispatch:serializer(ContentType, Serializer), % select proper serializer
+  ( memberchk(Serializer, [rdf, turtle])
+  -> graph_md5(Graph, Hash),
+     append(Headers, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders)
+  ; append(Headers, ['Content-type'(ContentTypeValue)], NewHeaders)
+  ),
+  response(StatusCode, NewHeaders),
   current_output(Out),
   oslc_dispatch:serialize_response(Out, Graph, Serializer). % serialize temporary RDF graph to the response
 
