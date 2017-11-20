@@ -4,6 +4,36 @@
    
   <xacro:property name="M_PI" value="3.1415926535897931" />
 
+  <!-- Hokuyo LiDAR Sensor -->
+
+  <joint name="lidar_joint" type="fixed">
+    <origin xyz="0 0 0.485" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="scan"/>
+  </joint>
+  <link name="scan">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+       <!--<mesh filename="package://turtlebot_description/meshes/sensors/kinect.dae"/>-->
+        <box size="0.08 0.08 0.08"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.08 0.08 0.08"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.564" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
+               iyy="0.000498940" iyz="0.0"
+               izz="0.003879257" />
+    </inertial>
+  </link>
+
   <!-- Orbecc Astra Sensor -->
 
   <joint name="camera1_joint" type="fixed">

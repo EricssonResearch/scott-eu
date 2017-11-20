@@ -3,8 +3,8 @@
  -->
 <launch>
   <node pkg="kobuki_keyop" type="keyop" name="keyop" output="screen">
-    <remap from="keyop/motor_power" to="/vrep_ros_interface/turtlebot/commands/motor_power"/>
-    <remap from="keyop/cmd_vel" to="/vrep_ros_interface/turtlebot/commands/velocity"/>
+    <remap from="keyop/motor_power" to="/vrep_ros_interface/turtlebot2i/commands/motor_power"/>
+    <remap from="keyop/cmd_vel" to="/vrep_ros_interface/turtlebot2i/commands/velocity"/>
     <param name="linear_vel_step"  value="0.05" type="double"/>
     <param name="linear_vel_max"   value="1.5"  type="double"/>
     <param name="angular_vel_step" value="0.33" type="double"/>
