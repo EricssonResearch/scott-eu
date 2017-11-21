@@ -87,6 +87,14 @@ dispatcher0(Request) :-
   -> read_request_body(Request, GraphIn)
   ; true
   ),
+  ( member(search(Search), Request),
+    findall(Option, (
+      member(Key=Value, Search),
+      atom_concat('oslc.', OP, Key),
+      Option =.. [OP, Value]
+    ), Options)
+  ; Options = []
+  ),
   once((
     dispatch(_{ request: Request,
                iri_spec: Prefix:ResourceSegments,
@@ -94,7 +102,8 @@ dispatcher0(Request) :-
            content_type: ContentType,
                graph_in: GraphIn,
               graph_out: GraphOut,
-                headers: Headers }), % main dispatch method
+                headers: Headers,
+                options: Options }), % main dispatch method
     ( ground(GraphOut),
       rdf_graph_property(GraphOut, triples(Triples)),
       Triples > 0 % the output document is not empty
@@ -129,10 +138,13 @@ format_response_graph(StatusCode, Graph, Headers, ContentType) :-
   must_be(ground, Graph),
   must_be(ground, ContentType),
   format(atom(ContentTypeValue), '~w; charset=utf-8', [ContentType]),
-  graph_md5(Graph, Hash),
-  append(Headers, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders),
-  response(StatusCode, NewHeaders),
   oslc_dispatch:serializer(ContentType, Serializer), % select proper serializer
+  ( memberchk(Serializer, [rdf, turtle])
+  -> graph_md5(Graph, Hash),
+     append(Headers, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders)
+  ; append(Headers, ['Content-type'(ContentTypeValue)], NewHeaders)
+  ),
+  response(StatusCode, NewHeaders),
   current_output(Out),
   oslc_dispatch:serialize_response(Out, Graph, Serializer). % serialize temporary RDF graph to the response
 
@@ -191,15 +203,18 @@ read_request_body(Request, GraphIn) :-
     ))
   ; throw(response(415)) % unsupported media type
   )),
-  http_read_data(Request, Data, [to(atom)]),
-  open_string(Data, Stream),
-  catch((
-    make_temp_graph(GraphIn),
-    rdf_load(stream(Stream), [graph(GraphIn), format(Format), silent(true), on_error(error), cache(false)])
-  ),
-    error(E, stream(Stream, Line, Column, _)),
-  (
-    message_to_string(error(E, _), S),
-    format(atom(Message), 'Parsing error (line ~w, column ~w): ~w.', [Line, Column, S]),
-    throw(response(400, Message)) % bad request
-  )).
+  ( memberchk(Format, [rdf, turtle])
+  -> http_read_data(Request, Data, [to(atom)]),
+     open_string(Data, Stream),
+     catch((
+       make_temp_graph(GraphIn),
+       rdf_load(stream(Stream), [graph(GraphIn), format(Format), silent(true), on_error(error), cache(false)])
+     ),
+       error(E, stream(Stream, Line, Column, _)),
+     (
+       message_to_string(error(E, _), S),
+       format(atom(Message), 'Parsing error (line ~w, column ~w): ~w.', [Line, Column, S]),
+       throw(response(400, Message)) % bad request
+     ))
+  ; true
+  ).
