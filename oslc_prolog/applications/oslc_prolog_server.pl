@@ -139,10 +139,11 @@ format_response_graph(StatusCode, Graph, Headers, ContentType) :-
   must_be(ground, ContentType),
   format(atom(ContentTypeValue), '~w; charset=utf-8', [ContentType]),
   oslc_dispatch:serializer(ContentType, Serializer), % select proper serializer
+  append(Headers, ['Content-type'(ContentTypeValue), 'Access-Control-Allow-Origin'('*')], InterimHeaders),
   ( memberchk(Serializer, [rdf, turtle])
   -> graph_md5(Graph, Hash),
-     append(Headers, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders)
-  ; append(Headers, ['Content-type'(ContentTypeValue)], NewHeaders)
+     append(InterimHeaders, ['ETag'(Hash)], NewHeaders)
+  ; NewHeaders = InterimHeaders
   ),
   response(StatusCode, NewHeaders),
   current_output(Out),
