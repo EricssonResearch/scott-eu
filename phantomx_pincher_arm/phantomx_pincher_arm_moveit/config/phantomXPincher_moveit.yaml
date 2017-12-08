@@ -1,0 +1,15 @@
+controller_list:
+  - name: phantom_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    joints:
+      - PhantomXPincher_joint1
+      - PhantomXPincher_joint2
+      - PhantomXPincher_joint3
+      - PhantomXPincher_joint4
+      - PhantomXPincher_gripperCenter_joint
+  - name: gripper_controller
+    action_ns: gripper_cmd
+    type: GripperCommand
+    joints:
+      - PhantomXPincher_gripperClose_joint  
