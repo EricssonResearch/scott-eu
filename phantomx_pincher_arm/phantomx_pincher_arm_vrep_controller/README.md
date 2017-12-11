@@ -3,7 +3,7 @@ vrep\_ros\_control\_example - TurtleBot2i
 
 This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Arm) simulated on VREP. This package was heavily based on the vrep\_ros\_control\_example available [Here](https://github.com/ros-controls/ros\_control)
 
-###MOTIVATION###
+### MOTIVATION ###
 
    The MoveIt! package requires the robot to have an action server to consume trajectory's messages. This kind of server aims to be used when long tasks are being executed and a feedback or a stop action is need while the process is running (http://wiki.ros.org/actionlib). Instead of developing a specific action server to consume MoveIt! messages, the MoveIt documentations advise the usage of a ros_controller (http://moveit.ros.org/documentation/concepts/) as can be seen in the picture below.
 
@@ -11,7 +11,7 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
 
    Also, as our project will use a real TurtleBot, it's a good practice to have simulation and real robot operating similarly as possible. 
 
-###ROS_CONTROL###
+### ROS_CONTROL ###
 
    **Disclaimer:** The Ros Control documentation is very sparse and sometimes it's hard to put all the different concepts together. On the following paragraphs, I will give my understanding of how the ROS\_CONTROL works, although it's important to keep in mind that I'm probably wrong or lacking some important concepts. For a more accurate documentation consult the links on the following sections
 
@@ -38,7 +38,7 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
 
      ![alt text](doc/imgs/how_works.png)
 
-###HOW TO RUN IT###
+### HOW TO RUN ###
    Based on the original vrep\_ros\_control\_example
    
    * clone the repository in your <workspace>/src folder
@@ -61,7 +61,7 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
       - ./test\_move\_gripper.py gripper\_command:=gripper\_controller/gripper_cmd
       - The arm gripper should open
 
-###HOW IT WORKS###
+### HOW IT WORKS ###
 
 To create a ros\_control back end for vrep:
 
@@ -76,7 +76,7 @@ To create a ros\_control back end for vrep:
    * this plugin is based on the blank ros skeleton plugin vrep\_plugin\_skeleton provided in vrep's folder programming/ros\_packages/vrep\_plugin\_skeleton
 
 
-###Notes###
+### Notes ###
 
 1 - Please look at the code if you want to understand how the plugin works, it should be self-explaining for people who know well about vrep and ros\_control, and it is well commented for the others. The main "trick" is in function "bool ROS\_server::initialize()" in file vrepControl\_server.cpp.
 
