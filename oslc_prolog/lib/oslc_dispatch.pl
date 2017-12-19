@@ -163,7 +163,7 @@ error_message(415, 'Unsupported media type').
 error_message(_, 'No message').
 
 select_acceptable_content_type(Request, ContentType) :-
-  member(accept(Accept), Request), % fetch accept header
+  memberchk(accept(Accept), Request), % fetch accept header
   predsort(accept_compare, Accept, AcceptSorted), % sort requested content types according to qualities
   select_content_type(AcceptSorted, ContentType). % select the best matching content type
 
