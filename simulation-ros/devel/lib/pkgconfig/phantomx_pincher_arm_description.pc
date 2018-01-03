@@ -1,0 +1,8 @@
+prefix=/home/eznasam/project/scott-eu/simulation-ros/devel
+
+Name: phantomx_pincher_arm_description
+Description: Description of phantomx_pincher_arm_description
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/eznasam/project/scott-eu/simulation-ros/devel/lib 
+Requires: 
