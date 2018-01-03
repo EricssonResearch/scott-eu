@@ -36,6 +36,22 @@ containing the plan is uploaded. The format must look like:
 In the file, **initURI** is the URI for the current state of the warehouse, **finalURI**
 is the URI for the final state derived from a given mission.
 
+The output returned to warehouse controller is a JSON object:
+{
+	"id":"xyz",
+	"feasibility": True,
+	"reason": 0,
+	"safety_level":0.08263125425916351,
+	"completion-time":269.82189999999997
+}
+
+The "id" refers to the id of the input JSON object. The "feasibility" tells
+if the plan could be carried out successfully by the robots. If it was "false"
+the "reason" attribute gives the reason for infeasibility: 1- unsafe, 2 - too-long The attribute 
+"safety-level" gives a value between 0 (unsafe) and 1 (safe). Values closer to
+1 are "safer". The estimated plan completion time is given through the attribute
+"completion-time".
+
 ## Example
 
 cURL: curl –request POST http://<host>:8080/estimator --upload-file example_plan.json -H “Content-Type: application/json”
