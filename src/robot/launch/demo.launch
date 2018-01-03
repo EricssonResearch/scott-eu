@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find phantomx_pincher_arm_moveit)/launch/demo.launch" />
+  <include file="$(find base_robot)/launch/turtlebot2i_keyop.launch" />
+</launch>
