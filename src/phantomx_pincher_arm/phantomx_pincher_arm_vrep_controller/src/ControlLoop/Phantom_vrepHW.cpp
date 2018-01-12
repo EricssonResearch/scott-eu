@@ -67,9 +67,10 @@ bool Phantom_vrepHW::init()
     }
     read();
     
-    for (int i=0; i < MR_JOINTS_NUM; i++){
+    for (int i=0; i < MR_JOINTS_NUM; ++i){
       m_pos_cmd[i] = m_pos[i];
-    }
+      }
+    ROS_ERROR_STREAM("Init" << std::endl);
     return true;
 }
 
