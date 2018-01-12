@@ -22,7 +22,7 @@ std::string Phantom_vrepHW::sm_jointsName[MR_JOINTS_NUM] = {
   "PhantomXPincher_joint3_1",
   "PhantomXPincher_joint4_1",
   "PhantomXPincher_gripperCenter_joint_1",
-  "PhantomXPincher_gripperClose_joint_1",
+  "PhantomXPincher_gripperClose_joint_1"
 };
 
 
