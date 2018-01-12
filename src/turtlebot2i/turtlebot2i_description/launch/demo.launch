@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
   <include file="$(find phantomx_pincher_arm_moveit)/launch/demo.launch" />
 
