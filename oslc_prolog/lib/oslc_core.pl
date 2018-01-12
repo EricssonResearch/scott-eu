@@ -73,9 +73,9 @@ handle_get(Context) :-
   IRI = Context.iri,
   once(rdf(IRI, _, _)),
   once((
-    member(search(Search), Context.request),
+    memberchk(search(Search), Context.request),
     L1 = [],
-    ( member(rdfs=sup, Search)
+    ( memberchk(rdfs=sup, Search)
     -> findall(SuperClass, (
          rdfs_subclass_of(IRI, SuperClass),
          IRI \= SuperClass
@@ -83,7 +83,7 @@ handle_get(Context) :-
        append(L1, SuperClasses, L2)
     ; L2 = L1
     ),
-    ( member(rdfs=sub, Search)
+    ( memberchk(rdfs=sub, Search)
     -> findall(SubClass, (
          rdfs_subclass_of(SubClass, IRI),
          IRI \= SubClass
@@ -91,7 +91,7 @@ handle_get(Context) :-
        append(L2, SubClasses, L3)
     ; L3 = L2
     ),
-    ( member(rdfs=ind, Search)
+    ( memberchk(rdfs=ind, Search)
     -> findall(Individual, (
          rdfs_individual_of(Individual, IRI),
          IRI \= Individual
@@ -99,7 +99,7 @@ handle_get(Context) :-
        append(L3, Individuals, L4)
     ; L4 = L3
     ),
-    ( member(rdfs=cls, Search)
+    ( memberchk(rdfs=cls, Search)
     -> findall(Class, (
          rdfs_individual_of(IRI, Class),
          IRI \= Class
@@ -172,7 +172,7 @@ handle_put(Context) :-
 
 handle_put0(Context) :-
   once((
-    member(if_match(IfMatch), Context.request),
+    memberchk(if_match(IfMatch), Context.request),
     atomic_list_concat([_, ReceivedHash, _], '\"', IfMatch)
   ; oslc_error('Missing or wrong header [If-Match] in PUT request to [~w]', [Context.iri_spec])
   )),

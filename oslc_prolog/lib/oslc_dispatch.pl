@@ -147,10 +147,10 @@ serializer(text/'rdf+xml', rdf).
 serializer(application/'x-turtle', turtle).
 serializer(text/'turtle', turtle).
 
-serialize_response(Out, Graph, rdf) :-
+serialize_response(Out, Graph, rdf) :- !,
   rdf_save(stream(Out), [graph(Graph)]).
 
-serialize_response(Out, Graph, turtle) :-
+serialize_response(Out, Graph, turtle) :- !,
   rdf_save_turtle(Out, [graph(Graph), comment(false), silent(true), tab_distance(0)]).
 
 error_message(400, 'Bad request').
@@ -163,7 +163,7 @@ error_message(415, 'Unsupported media type').
 error_message(_, 'No message').
 
 select_acceptable_content_type(Request, ContentType) :-
-  member(accept(Accept), Request), % fetch accept header
+  memberchk(accept(Accept), Request), % fetch accept header
   predsort(accept_compare, Accept, AcceptSorted), % sort requested content types according to qualities
   select_content_type(AcceptSorted, ContentType). % select the best matching content type
 

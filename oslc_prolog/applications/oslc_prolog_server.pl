@@ -21,46 +21,48 @@ limitations under the License.
 :- use_module(library(http/http_client)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(broadcast)).
-:- use_module(library(oslc_ontology)).
 :- use_module(library(oslc_dispatch)).
 :- use_module(library(oslc_rdf)).
 :- use_module(library(oslc)).
 
-:- setting(oslc_prolog_server:base_uri, atom, 'http://localhost:3020/', 'Base URI').
-:- setting(oslc_prolog_server:exposed_prefixes, list(atom), [*], 'Exposed Prefixes').
+:- setting(oslc_prolog_server:prefix_path, atom, '/', 'Prefix for all OSLC paths').
+:- setting(oslc_prolog_server:exposed_prefixes, list(atom), [*], 'Exposed prefixes').
 
 :- listen(
-     settings(changed(oslc_prolog_server:base_uri, Old, New)), % listen on base URI setting changes
-     base_uri_changed(Old, New)
+     settings(changed(oslc_prolog_server:prefix_path, Old, New)), % listen on prefix path setting changes
+     prefix_path_changed(Old, New)
    ).
 
 :- cp_after_load(( % after ClioPatria has been completely loaded
      assertz(cp_after_loaded),
-     setting(oslc_prolog_server:base_uri, BaseUri),
-     base_uri_changed(_, BaseUri)
+     setting(oslc_prolog_server:prefix_path, PrefixPath),
+     prefix_path_changed(_, PrefixPath)
    )).
 
-base_uri_changed(OldBaseURI, NewBaseURI) :-
+prefix_path_changed(OldPrefixPath, NewPrefixPath) :-
   ( current_predicate(cp_after_loaded/0) % if ClioPatria is completely loaded
-  -> fix_trailing_slash(OldBaseURI, OldURI, OldPath),
-     fix_trailing_slash(NewBaseURI, NewURI, NewPath),
-     reload_ontologies(OldURI, NewURI),
-     ( nonvar(OldBaseURI)
+  -> fix_slashes(OldPrefixPath, OldPath),
+     fix_slashes(NewPrefixPath, NewPath),
+     ( nonvar(OldPrefixPath)
      -> http_delete_handler(path(OldPath)) % remove old handler
      ; true
      ),
-     http_handler(NewPath, dispatcher, [prefix]) % set a handler for new base URI
+     ( NewPrefixPath == NewPath
+     -> http_handler(NewPath, dispatcher, [prefix]) % set a handler for new prefix path
+     ; set_setting(oslc_prolog_server:prefix_path, NewPath)
+     )
   ; true
   ).
 
-fix_trailing_slash(InURI, OutURI, OutPath) :-
-  ( nonvar(InURI)
-  -> uri_components(InURI, uri_components(C1, C2, InURIPath, C4, C5)),
-     (  atom_concat(_, '/', InURIPath)
-     -> OutURI = InURI,
-        OutPath = InURIPath
-     ; atom_concat(InURIPath, '/', OutPath),
-       uri_components(OutURI, uri_components(C1, C2, OutPath, C4, C5))
+fix_slashes(InPath, OutPath) :-
+  ( nonvar(InPath)
+  -> ( sub_atom(InPath, 0, _, _, /)
+     -> InPath2 = InPath
+     ; atom_concat('/', InPath, InPath2)
+     ),
+     ( atom_concat(_, '/', InPath2)
+     -> OutPath = InPath2
+     ; atom_concat(InPath2, '/', OutPath)
      )
   ; true
   ).
@@ -83,11 +85,11 @@ dispatcher0(Request) :-
   check_path(Request, Prefix, ResourceSegments),
   check_method(Request, Method),
   check_accept(Request, ContentType),
-  ( member(Method, [post,put]) % if POST or PUT request and there is a body, read it
+  ( memberchk(Method, [post,put]) % if POST or PUT request and there is a body, read it
   -> read_request_body(Request, GraphIn)
   ; true
   ),
-  ( member(search(Search), Request),
+  ( memberchk(search(Search), Request),
     findall(Option, (
       member(Key=Value, Search),
       atom_concat('oslc.', OP, Key),
@@ -139,10 +141,11 @@ format_response_graph(StatusCode, Graph, Headers, ContentType) :-
   must_be(ground, ContentType),
   format(atom(ContentTypeValue), '~w; charset=utf-8', [ContentType]),
   oslc_dispatch:serializer(ContentType, Serializer), % select proper serializer
+  append(Headers, ['Content-type'(ContentTypeValue), 'Access-Control-Allow-Origin'('*')], InterimHeaders),
   ( memberchk(Serializer, [rdf, turtle])
   -> graph_md5(Graph, Hash),
-     append(Headers, ['ETag'(Hash), 'Content-type'(ContentTypeValue)], NewHeaders)
-  ; append(Headers, ['Content-type'(ContentTypeValue)], NewHeaders)
+     append(InterimHeaders, ['ETag'(Hash)], NewHeaders)
+  ; NewHeaders = InterimHeaders
   ),
   response(StatusCode, NewHeaders),
   current_output(Out),
@@ -150,23 +153,16 @@ format_response_graph(StatusCode, Graph, Headers, ContentType) :-
 
 check_path(Request, Prefix, ResourceSegments) :-
   once((
-    member(protocol(Protocol), Request),
-    member(host(Host), Request),
-    ( member(port(Port), Request)
-    -> atom_concat(':', Port, PortString)
-    ; PortString = ''
-    ),
-    member(path(Path), Request),
-    atomic_list_concat([Protocol, '://', Host, PortString,  Path], '', Uri), % determine URI called
-    setting(oslc_prolog_server:base_uri, BaseUri),
-    atom_concat(BaseUri, ServicePath, Uri), % check if URI called starts with the base URI
+    memberchk(path(Path), Request),
+    setting(oslc_prolog_server:prefix_path, PrefixPath),
+    atom_concat(PrefixPath, ServicePath, Path), % check if URI called starts with the prefix path
     split_string(ServicePath, "/", "/", Parts),
     strings_to_atoms(Parts, [Prefix|ResourceSegments]),
     rdf_current_prefix(Prefix, _),
     setting(oslc_prolog_server:exposed_prefixes, ExposedPrefixes),
     once((
-      member(Prefix, ExposedPrefixes) % check if prefix is in the list of exposed prefixes
-    ; member((*), ExposedPrefixes)    % ... or exposed list of prefixes contains wildcard (*)
+      memberchk(Prefix, ExposedPrefixes) % check if prefix is in the list of exposed prefixes
+    ; memberchk((*), ExposedPrefixes)    % ... or exposed list of prefixes contains wildcard (*)
     ))
   ; throw(response(404)) % not found
   )).
@@ -178,8 +174,8 @@ strings_to_atoms([S|T], [A|T2]) :-
 
 check_method(Request, Method) :-
   once((
-    member(method(Method), Request),
-    member(Method, [get,post,put,delete])
+    memberchk(method(Method), Request),
+    memberchk(Method, [get,post,put,delete])
   ; throw(response(405)) % method not allowed
   )).
 
@@ -191,12 +187,12 @@ check_accept(Request, ContentType) :-
 
 read_request_body(Request, GraphIn) :-
   once((
-    member(content_length(ContentLength), Request),
+    memberchk(content_length(ContentLength), Request),
     ContentLength > 0
   ; throw(response(411)) % content length required
   )),
   once((
-    member(content_type(InContentType), Request),
+    memberchk(content_type(InContentType), Request),
     once((
       oslc_dispatch:serializer(Type, Format),
       format(atom(InContentType), '~w', Type)
