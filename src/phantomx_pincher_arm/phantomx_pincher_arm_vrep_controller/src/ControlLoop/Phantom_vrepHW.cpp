@@ -16,7 +16,13 @@ std::string Phantom_vrepHW::sm_jointsName[MR_JOINTS_NUM] = {
   "PhantomXPincher_joint3",
   "PhantomXPincher_joint4",
   "PhantomXPincher_gripperCenter_joint",
-  "PhantomXPincher_gripperClose_joint"
+  "PhantomXPincher_gripperClose_joint",
+  "PhantomXPincher_joint1_1",
+  "PhantomXPincher_joint2_1",
+  "PhantomXPincher_joint3_1",
+  "PhantomXPincher_joint4_1",
+  "PhantomXPincher_gripperCenter_joint_1",
+  "PhantomXPincher_gripperClose_joint_1",
 };
 
 
@@ -59,13 +65,25 @@ bool Phantom_vrepHW::init()
 
         m_vrepJointsHandle[i] = vrepJointsHandle;
     }
+<<<<<<< HEAD
 
+=======
+    read();
+    
+    for (int i=0; i < MR_JOINTS_NUM; i++){
+      m_pos_cmd[i] = m_pos[i];
+    }
+>>>>>>> bd87744a8ad238fbc4c13c048d09168f3203337a
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Phantom_vrepHW::registerHardwareInterfaces()
 {
+<<<<<<< HEAD
+=======
+  ROS_ERROR_STREAM("Join numbers =" << MR_JOINTS_NUM << std::endl);
+>>>>>>> bd87744a8ad238fbc4c13c048d09168f3203337a
     for (int i = 0; i < MR_JOINTS_NUM; ++i)
     {
         // Joint state interface.
