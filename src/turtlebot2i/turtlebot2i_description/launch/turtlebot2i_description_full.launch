@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- TODO: Load the variables from the parameter server (check if other launch files do the same)  -->
+
+  <!-- Turtlebot2i -->
+  <arg name="base"        default="kobuki"      doc="mobile base type [kobuki]"/>
+  <arg name="stacks"      default="interbotix"  doc="stack type displayed in visualisation/simulation [interbotix]"/>
+  <arg name="3d_sensor"   default="astra"       doc="3d sensor types [zr300, astra]"/>
+  <arg name="3d_sensor2"  default="sr300"       doc="3d sensor types [zr300, astra]"/>
+
+  <!--Robot-->
+  <!--Description-->
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find turtlebot2i_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="5.0" />
+  </node>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+</launch>
