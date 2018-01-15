@@ -1,16 +1,15 @@
 phantom_controller:
   type: position_controllers/JointTrajectoryController
   joints:
-     - PhantomXPincher_joint1
-     - PhantomXPincher_joint2
-     - PhantomXPincher_joint3
-     - PhantomXPincher_joint4
+     - PhantomXPincher_joint1_1
+     - PhantomXPincher_joint2_1
+     - PhantomXPincher_joint3_1
+     - PhantomXPincher_joint4_1
   publish_rate: 50
 gripper_controller:
   type: position_controllers/GripperActionController
-  joint: PhantomXPincher_gripperClose_joint
+  joint: PhantomXPincher_gripperClose_joint_1
   publish_rate: 50
 joint_states:
   type: joint_state_controller/JointStateController
   publish_rate: 50
-     
