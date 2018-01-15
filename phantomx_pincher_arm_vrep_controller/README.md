@@ -40,11 +40,14 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
 
 ###HOW TO RUN IT###
    Based on the original vrep\_ros\_control\_example
-   
+
+   * download the ros packages ros_control and ros_controllers
+     - sudo apt-get install ros-kinetic-ros-control
+     - sudo apt-get install ros-kinetic-ros-controllers
    * clone the repository in your <workspace>/src folder
    * build the newly cloned package.
      * E.g.: on <workspace>/src folder run: catkin\_make
-   * once built, you need to copy this plugin file libv\_repExtRosControl.so from your <workspace>/build/lib folder to vrep's main folder (along all the other plugins)
+   * once built, you need to copy this plugin file devel/lib\v_repExtRosControl.so from your <workspace>/build/lib folder to vrep's main folder (along all the other plugins)
    * start roscore
       - on terminal: roscore
    * then start vrep and load vrep/turttlebot2_v4.ttt
