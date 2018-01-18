@@ -16,6 +16,9 @@
   <include file="$(find phantomx_pincher_arm_moveit)/launch/named_pose_director.launch" >
     <arg name="load_moveit" value="true"/>
   </include>
+  
+  <!-- This argument disables the joint limits -->
+  <arg name="limited" value="false"/>
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find phantomx_pincher_arm_moveit)/config/block_manipulation_demo.rviz" />
 </launch>

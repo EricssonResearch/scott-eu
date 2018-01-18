@@ -76,7 +76,7 @@
     </transmission>
 
   <!-- gripper -->
-  <xacro:include filename="phantomx_pincher_gripper.xacro"/> 
+  <xacro:include filename="$(find phantomx_pincher_arm_description)/urdf/phantomx_pincher_gripper.xacro"/> 
 
 <!-- gripper_link -->
     <link name="gripper_link"/>
