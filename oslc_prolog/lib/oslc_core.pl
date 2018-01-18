@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 :- module(oslc_core, [
-  post_resource/3
+  post_resource/2
 ]).
 
 :- use_module(library(semweb/rdf11)).
@@ -118,16 +118,32 @@ handle_get(Context) :-
   ).
 
 handle_post(Context) :-
-  post_resource(Context.iri, rdf(Context.graph_in), rdf(user)).
+  post_resource(Context, rdf(user)).
 
-post_resource(IRI, Source, Sink) :-
-  catch(
-    post_resource0(IRI, Source, Sink),
+post_resource(Context, Sink) :-
+  catch((
+      setting(oslc_prolog_server:prefix_path, PrefixPath),
+      memberchk(protocol(Protocol), Context.request),
+      memberchk(host(Host), Context.request),
+      once((
+        memberchk(port(Port), Context.request)
+      ; Port = 80
+      )),
+      ( Port == 80
+      -> Authority = Host
+      ; format(atom(Authority), '~w:~w', [Host, Port])
+      ),
+      post_resource0(Context.iri, rdf(Context.graph_in), Sink, NewResource),
+      rdf_global_id(Prefix:Name, NewResource),
+      format(atom(NewPath), '~w~w/~w', [PrefixPath, Prefix, Name]),
+      uri_components(Location, uri_components(Protocol, Authority, NewPath, _, _)),
+      response(201, ['Location'(Location)]) % created
+    ),
     oslc_error(Message),
     throw(response(400, Message)) % bad request
   ).
 
-post_resource0(IRI, Source, Sink) :-
+post_resource0(IRI, Source, Sink, NewResource) :-
   once((
     rdf(IRI, rdf:type, oslc:'CreationFactory')
   ; oslc_error('Resource [~w] is not a creation factory', [IRI])
@@ -150,18 +166,10 @@ post_resource0(IRI, Source, Sink) :-
     member(Shape, Shapes),
     rdf(Shape, rdf:type, oslc:'ResourceShape'),
     unmarshal_list_property(Shape, oslc:describes, Classes, _, rdf),
-    member(Class, Classes)
+    memberchk(Class, Classes)
   ; oslc_error('Creation factory [~w] does not support type [~w]', [IRI, Class])
   )),
-  copy_resource(NewResource, NewResource, Source, Sink, []),
-  setting(oslc_prolog_server:base_uri, BaseUri),
-  uri_components(BaseUri, uri_components(C1, C2, PrefixPath, C4, C5)),
-  split_string(PrefixPath, "/", "/", Parts),
-  rdf_global_id(Prefix:Name, NewResource),
-  append(Parts, [Prefix, Name], NewParts),
-  atomics_to_string(NewParts, '/', NewPath),
-  uri_components(Location, uri_components(C1, C2, NewPath, C4, C5)),
-  response(201, ['Location'(Location)]). % created
+  copy_resource(NewResource, NewResource, Source, Sink, []).
 
 handle_put(Context) :-
   catch(
