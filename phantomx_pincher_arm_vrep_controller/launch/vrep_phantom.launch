@@ -10,13 +10,13 @@
 
   <param name="vrep_ip" value="127.0.0.1" />
   <param name="vrep_port" value="19997" />
-  <rosparam param="joints">
-    - PhantomXPincher_joint1_1
-    - PhantomXPincher_joint2_1
-    - PhantomXPincher_joint3_1
-    - PhantomXPincher_joint4_1
-    - PhantomXPincher_gripperCenter_joint_1
-    - PhantomXPincher_gripperClose_joint_1
+  <rosparam param="joints" subst_value="true">
+    - $(arg joint1)
+    - $(arg joint2)
+    - $(arg joint3)
+    - $(arg joint4)
+    - $(arg gripper1)
+    - $(arg gripper2)
   </rosparam> 
 
   <node name="vrep_controller" pkg="phantomx_pincher_arm_vrep_controller" type="controller_remoteApi" >

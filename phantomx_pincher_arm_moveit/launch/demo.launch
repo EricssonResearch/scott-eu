@@ -1,6 +1,6 @@
 <launch>
 
-  <group ns="robot1">
+
     <arg name="joint1" default="PhantomXPincher_joint1_1"/>
     <arg name="joint2" default="PhantomXPincher_joint2_1"/>
     <arg name="joint3" default="PhantomXPincher_joint3_1"/>
@@ -28,5 +28,5 @@
     </include>
     
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find phantomx_pincher_arm_moveit)/config/block_manipulation_demo.rviz" />
-  </group>
+
 </launch>
