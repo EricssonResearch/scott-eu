@@ -187,30 +187,32 @@ check_accept(Request, ContentType) :-
 
 read_request_body(Request, GraphIn) :-
   once((
-    memberchk(content_length(ContentLength), Request),
-    ContentLength > 0
+    memberchk(content_length(ContentLength), Request)
   ; throw(response(411)) % content length required
   )),
-  once((
-    memberchk(content_type(InContentType), Request),
-    once((
-      oslc_dispatch:serializer(Type, Format),
-      format(atom(InContentType), '~w', Type)
-    ))
-  ; throw(response(415)) % unsupported media type
-  )),
-  ( memberchk(Format, [rdf, turtle])
-  -> http_read_data(Request, Data, [to(atom)]),
-     open_string(Data, Stream),
-     catch((
-       make_temp_graph(GraphIn),
-       rdf_load(stream(Stream), [graph(GraphIn), format(Format), silent(true), on_error(error), cache(false)])
-     ),
-       error(E, stream(Stream, Line, Column, _)),
-     (
-       message_to_string(error(E, _), S),
-       format(atom(Message), 'Parsing error (line ~w, column ~w): ~w.', [Line, Column, S]),
-       throw(response(400, Message)) % bad request
-     ))
+  ( ContentLength > 0
+  -> once((
+       memberchk(content_type(InContentType), Request),
+       once((
+         oslc_dispatch:serializer(Type, Format),
+         format(atom(InContentType), '~w', Type)
+       ))
+     ; throw(response(415)) % unsupported media type
+     )),
+     ( memberchk(Format, [rdf, turtle])
+     -> http_read_data(Request, Data, [to(atom)]),
+        open_string(Data, Stream),
+        catch((
+          make_temp_graph(GraphIn),
+          rdf_load(stream(Stream), [graph(GraphIn), format(Format), silent(true), on_error(error), cache(false)])
+        ),
+          error(E, stream(Stream, Line, Column, _)),
+        (
+          message_to_string(error(E, _), S),
+          format(atom(Message), 'Parsing error (line ~w, column ~w): ~w.', [Line, Column, S]),
+          throw(response(400, Message)) % bad request
+        ))
+     ; true
+     )
   ; true
   ).
