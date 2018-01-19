@@ -43,7 +43,7 @@
   </xacro:macro>
 
   <xacro:macro name="bracket_F2_revolute" params="parent name color llimit ulimit vlimit *origin">
-    <joint name="$(arg joint1)" type="revolute">
+    <joint name="PhantomXPincher_joint1" type="revolute">
       <xacro:insert_block name="origin"/>
       <axis xyz="0 0 1"/>
       <limit effort="6" velocity="${vlimit}" lower="${llimit}" upper="${ulimit}"/>
@@ -85,7 +85,7 @@
   </xacro:macro>
 
   <xacro:macro name="pincher_bicep" params="parent name color llimit ulimit vlimit *origin">
-    <joint name="$(arg joint2)" type="revolute">
+    <joint name="PhantomXPincher_joint2" type="revolute">
       <xacro:insert_block name="origin"/>
       <axis xyz="0 1 0"/>
       <limit effort="6" velocity="${vlimit}" lower="${llimit}" upper="${ulimit}"/>
@@ -127,7 +127,7 @@
   </xacro:macro>
 
   <xacro:macro name="pincher_forearm" params="parent name color llimit ulimit vlimit *origin">
-    <joint name="$(arg joint3)" type="revolute">
+    <joint name="PhantomXPincher_joint3" type="revolute">
       <xacro:insert_block name="origin"/>
       <axis xyz="0 -1 0"/>
       <limit effort="6" velocity="${vlimit}" lower="${llimit}" upper="${ulimit}"/>
@@ -169,7 +169,7 @@
   </xacro:macro>
   
   <xacro:macro name="pincher_wrist" params="parent name color llimit ulimit vlimit *origin">
-    <joint name="$(arg joint4)" type="revolute">
+    <joint name="PhantomXPincher_joint4" type="revolute">
       <xacro:insert_block name="origin"/>
       <axis xyz="0 -1 0"/>
       <limit effort="6" velocity="${vlimit}" lower="${llimit}" upper="${ulimit}"/>

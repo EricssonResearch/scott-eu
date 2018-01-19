@@ -12,12 +12,12 @@ extern "C" {
 namespace MR
 {
   std::string Phantom_vrepHW::sm_jointsNameUrdf[MR_JOINTS_NUM] = {
-    "PhantomXPincher_joint1_1",
-    "PhantomXPincher_joint2_1",
-    "PhantomXPincher_joint3_1",
-    "PhantomXPincher_joint4_1",
-    "PhantomXPincher_gripperCenter_joint_1",
-    "PhantomXPincher_gripperClose_joint_1"
+    "PhantomXPincher_joint1",
+    "PhantomXPincher_joint2",
+    "PhantomXPincher_joint3",
+    "PhantomXPincher_joint4",
+    "PhantomXPincher_gripperCenter_joint",
+    "PhantomXPincher_gripperClose_joint"
   };
 
 

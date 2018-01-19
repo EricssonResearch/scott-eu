@@ -16,7 +16,7 @@
     </bracket_F2_revolute>
     <transmission name="arm_shoulder_pan_transmission">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="$(arg joint1)">
+      <joint name="PhantomXPincher_joint1">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="arm_shoulder_pan_actuator">
@@ -33,7 +33,7 @@
 
     <transmission name="arm_bicep_transmission">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="$(arg joint2)">
+      <joint name="PhantomXPincher_joint2">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="arm_bicep_actuator">
@@ -50,7 +50,7 @@
    
     <transmission name="arm_forearm_transmission">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="$(arg joint3)">
+      <joint name="PhantomXPincher_joint3">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="arm_forearm_actuator">
@@ -66,7 +66,7 @@
     </pincher_wrist>
     <transmission name="arm_wrist_flex_transmission">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="$(arg joint4)">
+      <joint name="PhantomXPincher_joint4">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="arm_wrist_flex_actuator">
@@ -80,7 +80,7 @@
 
 <!-- gripper_link -->
     <link name="gripper_link"/>
-    <joint name="$(arg gripper2)" type="revolute">
+    <joint name="PhantomXPincher_gripperCenter_joint" type="revolute">
       <origin xyz="0.110 0 0" rpy="0 0 0"/>
       <parent link="arm_wrist_flex_link"/>
       <child link="gripper_link"/>

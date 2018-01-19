@@ -5,8 +5,8 @@
     <arg name="joint2" default="PhantomXPincher_joint2_1"/>
     <arg name="joint3" default="PhantomXPincher_joint3_1"/>
     <arg name="joint4" default="PhantomXPincher_joint4_1"/>
-    <arg name="gripper1" value="PhantomXPincher_gripperClose_joint_1"/>
-    <arg name="gripper2" value="PhantomXPincher_gripperCenter_joint_1"/>
+    <arg name="gripper1" default="PhantomXPincher_gripperClose_joint_1"/>
+    <arg name="gripper2" default="PhantomXPincher_gripperCenter_joint_1"/>
     
     
     <include file="$(find phantomx_pincher_arm_vrep_controller)/launch/vrep_phantom.launch">
