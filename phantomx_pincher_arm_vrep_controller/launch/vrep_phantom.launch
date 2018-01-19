@@ -7,7 +7,20 @@
   <arg name="joint4" />
   <arg name="gripper1" />
   <arg name="gripper2" />
-  
+
+  <param name="vrep_ip" value="127.0.0.1" />
+  <param name="vrep_port" value="19997" />
+  <rosparam param="joints">
+    - PhantomXPincher_joint1_1
+    - PhantomXPincher_joint2_1
+    - PhantomXPincher_joint3_1
+    - PhantomXPincher_joint4_1
+    - PhantomXPincher_gripperCenter_joint_1
+    - PhantomXPincher_gripperClose_joint_1
+  </rosparam> 
+
+  <node name="vrep_controller" pkg="phantomx_pincher_arm_vrep_controller" type="controller_remoteApi" >
+  </node>
 
   <param name="robot_description" command="$(find xacro)/xacro.py --inorder '$(find phantomx_pincher_arm_description)/urdf/phantomx_pincher_arm.urdf.xacro' joint1:=$(arg joint1) joint2:=$(arg joint2) joint3:=$(arg joint3) joint4:=$(arg joint4) gripper1:=$(arg gripper1) gripper2:=$(arg gripper2)"/>
 
@@ -20,6 +33,7 @@
   <!-- Start controllers -->
   <rosparam file="$(find phantomx_pincher_arm_vrep_controller)/control/phantomXPincher.yaml" command="load" /> <!-- Joint trajectory controller (this is not a low-level controller) -->
   <rosparam param="phantom_controller/joints" subst_value="True">[$(arg joint1), $(arg joint2), $(arg joint3), $(arg joint4)] </rosparam>
+
   <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
 
 </launch>
