@@ -19,6 +19,7 @@ limitations under the License.
 ]).
 
 :- use_module(library(semweb/rdf11)).
+:- use_module(library(semweb/rdf_db), [rdf_is_resource/1]).
 
 % FIXME: probably there is a better way to report errors...
 
