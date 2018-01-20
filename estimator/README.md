@@ -71,4 +71,4 @@ python estimator.py
 
 Use cURL to make a sample POST request:
 
-    curl –X POST http://127.0.0.1:8080/estimator --upload-file example_plan.json -H "Content-Type: application/json"
+    curl -X POST http://127.0.0.1:8080/estimator --upload-file example_plan.json -H "Content-Type: application/json"
