@@ -37,6 +37,8 @@ protected:
     std::string sm_jointsNameVrep[MR_JOINTS_NUM];
     static std::string sm_jointsNameUrdf[MR_JOINTS_NUM];
 
+    bool read_blocking();
+    
     // Vrep handles.
     int m_vrepJointsHandle[MR_JOINTS_NUM];
 
