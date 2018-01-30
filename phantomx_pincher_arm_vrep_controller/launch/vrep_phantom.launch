@@ -7,9 +7,11 @@
   <arg name="joint4" />
   <arg name="gripper1" />
   <arg name="gripper2" />
+  <arg name="ns" />
+  <arg name="port" />
 
   <param name="vrep_ip" value="127.0.0.1" />
-  <param name="vrep_port" value="19997" />
+  <param name="vrep_port" value="$(arg port)" />
   <rosparam param="joints" subst_value="true">
     - $(arg joint1)
     - $(arg joint2)
@@ -27,7 +29,7 @@
   <!-- Robot state publisher node -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
     <param name="publish_frequency" type="double" value="50.0" />
-    <param name="tf_prefix" type="string" value="" />
+    <param name="tf_prefix" type="string" value="$(arg ns)" />
   </node>
 
   <!-- Start controllers -->
