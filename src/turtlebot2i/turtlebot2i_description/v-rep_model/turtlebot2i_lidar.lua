@@ -4,35 +4,24 @@
 
 if (sim_call_type == sim.childscriptcall_initialization) then
 
-    modelHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
-    objName=sim.getObjectName(modelHandle)
-
     modelHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
-    parentHandle = simGetObjectParent(modelHandle)
+    object_name = sim.getObjectName(modelHandle)
+    sensor_number, sensor_name = sim.getNameSuffix(object_name)
 
-    sensorName = sim.getObjectName(modelHandle)
-    sensorName = string.gsub(sensorName,"#","")
-
-    if parentHandle ~= -1 then
-        modelBaseName = sim.getObjectName(parentHandle).."/"..sensorName
-     else
-        modelBaseName = sensorName
-    end
+    robot_id = sim.getStringSignal("robot_id")
 
     laserHandle = sim.getObjectHandle("lidar_sensor")
     jointHandle = sim.getObjectHandle("lidar_joint")
 
-    scanRange = 180*math.pi/180 --You can change the scan range. Angle_min=-scanRange/2, Angle_max=scanRange/2-stepSize
-    stepSize = 2*math.pi/1024
+    scanRange = 180 * math.pi/180 --You can change the scan range. Angle_min=-scanRange/2, Angle_max=scanRange/2-stepSize
+    stepSize = 2 * math.pi/1024
     pts = math.floor(scanRange/stepSize)
 
     ----------------------------- ROS STUFF --------------------------------
 
-    pubScan = simROS.advertise(modelBaseName..'/scan', 'sensor_msgs/LaserScan')
+    pubScan = simROS.advertise(robot_id..'/'..sensor_name..'/scan', 'sensor_msgs/LaserScan')
     simROS.publisherTreatUInt8ArrayAsString(pubScan)
 
-    --parentTf=sim.getObjectHandle("parentTf#")  --get handle to parent object in tf tree. Change this to your needs
-    --tfname=simExtROS_enablePublisher('tf',1,simros_strmcmd_get_transform ,modelHandle,parentTf,'') --publish the tf
 end 
 
 if (sim_call_type == sim.childscriptcall_cleanup) then 
@@ -65,12 +54,10 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     -- Now send the data:
     
     local ros_laser_data = {}
-    ros_laser_data["header"] = {seq=0,stamp=simROS.getTime(), frame_id="/scan"}
-    ros_laser_data["angle_min"] = -scanRange*0.5
+    ros_laser_data["header"] = {seq=0,stamp=simROS.getTime(), frame_id = robot_id.."/scan"}
+    ros_laser_data["angle_min"] = -scanRange*0.5 
     ros_laser_data["angle_max"] = scanRange*0.5-stepSize
     ros_laser_data["angle_increment"] = stepSize
-    --ros_laser_data["time_increment"] = 
-    --ros_laser_data["scan_time"] = 
     ros_laser_data["range_min"] = 0 
     ros_laser_data["range_max"] = 50
 

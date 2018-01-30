@@ -1,28 +1,32 @@
 
 -- This function retrieves the stamped transform for a specific object
-function getTransformStamped(objHandle, name, relTo, relToName)
-    
-    t = sim.getSystemTime()
-    p = sim.getObjectPosition(objHandle,relTo)
-    o = sim.getObjectQuaternion(objHandle,relTo)
-    
-    return {
-        header = {
-            stamp = t,
-            frame_id = relToName
-        },
-        child_frame_id = name,
-        transform = {
-            translation = {x=p[1],y=p[2],z=p[3]},
-            rotation = {x=o[1],y=o[2],z=o[3],w=o[4]}
-        }
-    }
-end
+--function getTransformStamped(objHandle, name, relTo, relToName)
+--   
+--    robot_id = sim.getStringSignal("robot_id")
+--    
+--    t = sim.getSystemTime()
+--    p = sim.getObjectPosition(objHandle, relTo)
+--    o = sim.getObjectQuaternion(objHandle, relTo)
+--    
+--    return {
+--        header = {
+--            stamp = t,
+--            frame_id = robot_id..'/'..relToName
+--        },
+--        child_frame_id = robot_id..'/'..name,
+--        transform = {
+--            translation = {x=p[1],y=p[2],z=p[3]},
+--            rotation = {x=o[1],y=o[2],z=o[3],w=o[4]}
+--        }
+--    }
+--end
 
 if (sim_call_type == sim.childscriptcall_initialization) then 
 
     objHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
     modelBaseName = sim.getObjectName(sim.getObjectParent(sim.getObjectParent(objHandle)))
+
+    robot_id = sim.getStringSignal("robot_id")
 
     -- Initialize Gyro sensor
     gyro_object = sim.getObjectHandle('GyroSensor_reference')
@@ -91,7 +95,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
     imu_msg['header'] = {seq = 0,
                          stamp = simROS.getTime(), 
-                         frame_id = "/imu"}
+                         frame_id = robot_id.."/imu"}
 
     imu_msg['orientation'] = { x = orientation[1], 
                                y = orientation[2], 
@@ -113,7 +117,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
     pose_msg['header'] = {seq = 0,
                          stamp = simROS.getTime(), 
-                         frame_id = "/odom"}
+                         frame_id = robot_id.."/odom"}
     local cov = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
     local position_ros = {}
     position_ros['x'] = global_pose[1]

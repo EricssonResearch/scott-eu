@@ -48,26 +48,29 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     colorView = sim.floatingViewAdd(0.69,0.9,0.2,0.2,0)
     sim.adjustView(colorView,colorCam,64)
 
-    objHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
-    parentHandle = simGetObjectParent(objHandle)
+    robot_id = sim.getStringSignal("robot_id")
 
-    sensorName = sim.getObjectName(objHandle)
-    sensorName = string.gsub(sensorName,"#","")
+    --objHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
+    --parentHandle = simGetObjectParent(objHandle)
 
-    if parentHandle ~= -1 then
-        modelBaseName = sim.getObjectName(parentHandle).."/"..sensorName
-     else
-        modelBaseName = sensorName
-    end
+    modelHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
+    object_name = sim.getObjectName(modelHandle)
+    sensor_number, sensor_name = sim.getNameSuffix(object_name)
+
+    --if parentHandle ~= -1 then
+    --    modelBaseName = sim.getObjectName(parentHandle).."/"..sensorName
+    -- else
+    --    modelBaseName = sensorName
+    --end
 
 --    modelBaseName = string.gsub(modelBaseName,"#","_")
     
     -- ROS Stuff
-	pubKinectRgb = simROS.advertise(modelBaseName..'/rgb/raw_image','sensor_msgs/Image')
+	pubKinectRgb = simROS.advertise(robot_id..'/'..sensor_name..'/rgb/raw_image','sensor_msgs/Image')
 	simROS.publisherTreatUInt8ArrayAsString(pubKinectRgb) 
-	pubKinectDepth = simROS.advertise(modelBaseName..'/depth/raw_image','sensor_msgs/Image')
+	pubKinectDepth = simROS.advertise(robot_id..'/'..sensor_name..'/depth/raw_image','sensor_msgs/Image')
 	simROS.publisherTreatUInt8ArrayAsString(pubKinectDepth)
-    pubKinectCloud = simROS.advertise(modelBaseName..'/cloud','sensor_msgs/PointCloud2')
+    pubKinectCloud = simROS.advertise(robot_id..'/'..sensor_name..'/cloud','sensor_msgs/PointCloud2')
 	simROS.publisherTreatUInt8ArrayAsString(pubKinectCloud)
 end 
 
