@@ -1,7 +1,7 @@
 #Moveit Config#
 This package provides configuration files for moveit!. It was generated using MoveIt! [setup assistant](http://docs.ros.org/indigo/api/moveit_tutorials/html/doc/setup_assistant/setup_assistant_tutorial.html) and tailored to work with V-REP ROS controller using as an example the [Interbotix repo](https://github.com/Interbotix/phantomx_pincher_arm).
 
-Package main components are located inside _launch_ and _config_ directory. _Launch_ folder has several files to run Robot's and MoveIt! nodes. The main launch file is demo.launch and it will call all the others _launch_ and config files. Inside _config_ folder, it's nice to pay attention to phantomXPincher\_moveit.yaml that contains the controller's configuration.
+Package main components are located inside _launch_ and _config_ directory. _Launch_ folder has several files to run Robot's and MoveIt! nodes. The main launch file is demo.launch and it will call all the others _launch_ and config files. Inside _config_ folder, it's nice to pay attention to phantomXPincher\_moveit.yaml that contains the controller's configuration. The _multi.launch_ is an example of how o use many robots.
 
 ##MoveIt! Concepts##
 In general, MoveIt! uses robot's URDF to know about robot's configuration, sensors, and actuators. With this information, MoveIt! is capable of planning trajectories, avoid collisions (within the robot and the environment), solve inverse kinematics and so on. To interact with MoveIt! there are interfaces available in C++, Python and rviz provide a GUI interface.
@@ -34,3 +34,7 @@ To work properly this package need the following packages: phantomx\_pincher\_ar
 1. If it's everything ok, after while a rviz window will open with a 3D visualization of the arm
 1. Control the arm using rviz
    - In the tab _path planning_ inside the moveit! panel it's possible to plan and move the arm to a new position.
+
+##Know Issues##
+
+The present solution has a poor performance using other IK solver than KDL.
