@@ -1,17 +1,41 @@
 <?xml version="1.0"?>
 <launch>
 
+  <arg name="joint1" />
+  <arg name="joint2" />
+  <arg name="joint3" />
+  <arg name="joint4" />
+  <arg name="gripper1" />
+  <arg name="gripper2" />
+  <arg name="ns" />
+  <arg name="port" />
+
+  <param name="vrep_ip" value="127.0.0.1" />
+  <param name="vrep_port" value="$(arg port)" />
+  <rosparam param="joints" subst_value="true">
+    - $(arg joint1)
+    - $(arg joint2)
+    - $(arg joint3)
+    - $(arg joint4)
+    - $(arg gripper1)
+    - $(arg gripper2)
+  </rosparam> 
+
+  <node name="vrep_controller" pkg="phantomx_pincher_arm_vrep_controller" type="controller_remoteApi" >
+  </node>
+
   <param name="robot_description" command="$(find xacro)/xacro.py --inorder '$(find phantomx_pincher_arm_description)/urdf/phantomx_pincher_arm.urdf.xacro'"/>
 
   <!-- Robot state publisher node -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
     <param name="publish_frequency" type="double" value="50.0" />
-    <param name="tf_prefix" type="string" value="" />
+    <param name="tf_prefix" type="string" value="$(arg ns)" />
   </node>
 
   <!-- Start controllers -->
-  <rosparam file="$(find phantomx_pincher_arm_vrep_controller)/control/phantomXPincher.yaml" command="load"/> <!-- Joint trajectory controller (this is not a low-level controller) -->
+  <rosparam file="$(find phantomx_pincher_arm_vrep_controller)/control/phantomXPincher.yaml" command="load" /> <!-- Joint trajectory controller (this is not a low-level controller) -->
+  <!--<rosparam param="phantom_controller/joints" subst_value="True">[$(arg joint1), $(arg joint2), $(arg joint3), $(arg joint4)] </rosparam>-->
 
- <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
+  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
 
 </launch>
