@@ -44,14 +44,16 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
    * clone the repository in your <workspace>/src folder
    * build the newly cloned package.
      * E.g.: on <workspace>/src folder run: catkin\_make
-   * once built, you need to copy this plugin file libv\_repExtRosControl.so from your <workspace>/build/lib folder to vrep's main folder (along all the other plugins)
    * start roscore
       - on terminal: roscore
    * then start vrep and load vrep/turttlebot2_v4.ttt
-      - check that plugin libv\_repExtRosControl.so is correctly loaded in vrep's trace (i.e., in vrep's console)
    * start the simulation in vrep
    * start another terminal and launch file vrep.launch
       - roslaunch vrep\_ros\_control\_example vrep\_phantom.launch
+      - it's important to observe the parameters:
+      	- vrep-ip: it's the vrep machine's ip
+	- port: it's the remote api port to listen to the robot
+	- joints: the joints that will be controlled
    * start yet another terminal and run action/test_move.py
       - it creates a follow\_joint\_trajectory action to give a goal to your controller and move your robot
       - roscd vrep\_ros\_control\_example
@@ -78,8 +80,8 @@ To create a ros\_control back end for vrep:
 
 ###Notes###
 
-1 - Please look at the code if you want to understand how the plugin works, it should be self-explaining for people who know well about vrep and ros\_control, and it is well commented for the others. The main "trick" is in function "bool ROS\_server::initialize()" in file vrepControl\_server.cpp.
+1 - Please look at the code if you want to understand how the node works, it should be self-explaining for people who know well about vrep and ros\_control, and it is well commented for the others.
 
-2 - The V-REP plugin used on vrepControl\_plugin files is an old version. So it would be nice to update the plugin and try to add some LUA functions to be the read and write robot's functions thus wholly decoupling the c++ code from the robot.
+2 - The urdf joint names are hard coded and this is not a good practice. It would be good solution to read the joints names and types from the parameter server.
 
-3 - The joint names are hard coded and this is not a good practice. It would be good solution to read the joints names and types from the parameter server.
+3 - This controller interface uses vrep remote api to comunicate.
