@@ -1,4 +1,4 @@
-vrep\_ros\_control\_example - TurtleBot2i
+controller\_remoteApi - TurtleBot2i
 ======================================
 
 This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Arm) simulated on VREP. This package was heavily based on the vrep\_ros\_control\_example available [Here](https://github.com/ros-controls/ros\_control)
@@ -44,19 +44,19 @@ This package contains a ros\_control backend for the PhantomXArm (TurtleBot2i Ar
    * download the ros packages ros_control and ros_controllers
      - sudo apt-get install ros-kinetic-ros-control
      - sudo apt-get install ros-kinetic-ros-controllers
-   * clone the repository in your <workspace>/src folder
+   * clone this repository in your <workspace>/src folder
    * build the newly cloned package.
-     * E.g.: on <workspace>/src folder run: catkin\_make
+     * E.g.: on <workspace> folder run: catkin\_make
    * start roscore
       - on terminal: roscore
    * then start vrep and load vrep/turttlebot2_v4.ttt
    * start the simulation in vrep
    * start another terminal and launch file vrep.launch
-      - roslaunch vrep\_ros\_control\_example vrep\_phantom.launch
+      - roslaunch phantomx\_pincher\_arm_vrep\_controller vrep\_phantom.launch
       - it's important to observe the parameters:
-      	- vrep-ip: it's the vrep machine's ip
-	- port: it's the remote api port to listen to the robot
-	- joints: the joints that will be controlled
+      	- vrep_ip: it's the vrep machine's ip
+	- vrep_port: it's the remote api port to listen to the robot
+	- joints: name of vrep joints that will be controlled
    * start yet another terminal and run action/test_move.py
       - it creates a follow\_joint\_trajectory action to give a goal to your controller and move your robot
       - roscd vrep\_ros\_control\_example
@@ -73,13 +73,10 @@ To create a ros\_control back end for vrep:
    * obviously you need a .ttt vrep file corresponding to your simulated system
       - It's available at vrep/turttlebot2\_v4.ttt in the current repo
    * The file src/ControlLoop/Phantom\_vrepHW.cpp was modified to acomodate the simulated turtlebot2i hardware interface
-      - the other files like vrepControl\_plugin .h or .cpp and vrepControl\_server .h or .cpp are generic and should not be changed
-      - files src/v\_rep\* are directly copied from vrep (needed to create a plugin), they should not be changed
+      - the file vrepControl\_remoteApi.h or .cpp just implement the node that instantiate the PhantomXPincherArm to expose the vrep hardware interfaces.
    * Unfortunately, you need a redundant description of your robot in urdf (so your robot is described both in the .ttt file and in the urdf)
       - this is because the urdf contains information on the joints and transmissions not contained in the vrep .ttt file
-      - to counterbalance this point, note that the urdf importer works pretty well. But once your urdf is imported and you modify something in vrep's .ttt file you need to redundantly modify it in the urdf (I told Coppelia about this situation but unfortunately did not receive an answer)
-   * this plugin is based on the blank ros skeleton plugin vrep\_plugin\_skeleton provided in vrep's folder programming/ros\_packages/vrep\_plugin\_skeleton
-
+      - to counterbalance this point, note that the urdf importer works pretty well. But once your urdf is imported and you modify something in vrep's .ttt file you need to redundantly modify it in the urdf.
 
 ###Notes###
 
