@@ -15,9 +15,8 @@ enum MrJointsEnum
     PHANTOMXPINCHER_JOINT2,
     PHANTOMXPINCHER_JOINT3,
     PHANTOMXPINCHER_JOINT4,
-    PHANTOMXPINCHER_GRIPPERCENTER,
-    PHANTOMXPINCHER_GRIPPER,
-
+    PHANTOMXPINCHER_GRIPPERCENTER_JOINT,
+    PHANTOMXPINCHER_GRIPPERCLOSE_JOINT,
     MR_JOINTS_NUM
 };
 
@@ -27,16 +26,19 @@ enum MrJointsEnum
 class Phantom_vrepHW : public hardware_interface::RobotHW
 {
 public:
-    Phantom_vrepHW();
-
+  Phantom_vrepHW(std::string aIp, int aPort, std::vector<std::string> * joints);
+  
     bool init();
 
     bool read();
     bool write();
 
 protected:
-    static std::string sm_jointsName[MR_JOINTS_NUM];
+    std::string sm_jointsNameVrep[MR_JOINTS_NUM];
+    static std::string sm_jointsNameUrdf[MR_JOINTS_NUM];
 
+    bool read_blocking();
+    
     // Vrep handles.
     int m_vrepJointsHandle[MR_JOINTS_NUM];
 
@@ -47,11 +49,17 @@ protected:
     double m_vel[MR_JOINTS_NUM];
     double m_eff[MR_JOINTS_NUM];
 
+    //Vrep Remote Api
+    std::string ip;
+    int port;
+    int vrepClientId;
+
     hardware_interface::JointStateInterface m_jointState_interface;
     hardware_interface::VelocityJointInterface m_jointVelocity_interface;
     hardware_interface::PositionJointInterface m_jointPosition_interface;
 
     void registerHardwareInterfaces();
+    bool init_vrep();
 };
 
 

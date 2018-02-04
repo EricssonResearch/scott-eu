@@ -12,4 +12,4 @@ controller_list:
     action_ns: gripper_cmd
     type: GripperCommand
     joints:
-      - PhantomXPincher_gripperClose_joint  
+      - PhantomXPincher_gripperClose_joint
