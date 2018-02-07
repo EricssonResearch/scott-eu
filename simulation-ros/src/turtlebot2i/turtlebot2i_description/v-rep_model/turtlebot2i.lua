@@ -237,6 +237,10 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     local r_linear_velocity, r_angular_velocity = 0,0
     r_linear_velocity, r_angular_velocity = simGetObjectVelocity(mainBodyHandle)
 
+    -- Static pose Map --> Odom
+    local r_map_odom_quaternion = simGetQuaternionFromMatrix(originMatrix)
+    local r_map_odom_position = {originMatrix[4], originMatrix[8], originMatrix[12]}
+
     -- ROSing
     local ros_pose = {}
     ros_pose['header'] = {seq = 0,stamp=simROS.getTime(), frame_id = robot_id..'/odom'}
@@ -252,6 +256,17 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     position_ros["x"] = r_position[1]
     position_ros["y"] = r_position[2]
     position_ros["z"] = r_position[3]
+    
+    local quaternion_map_odom_ros = {}
+    quaternion_map_odom_ros["x"] = r_map_odom_quaternion[1]
+    quaternion_map_odom_ros["y"] = r_map_odom_quaternion[2]
+    quaternion_map_odom_ros["z"] = r_map_odom_quaternion[3]
+    quaternion_map_odom_ros["w"] = r_map_odom_quaternion[4]
+    
+    local position_map_odom_ros = {}
+    position_map_odom_ros["x"] = r_map_odom_position[1]
+    position_map_odom_ros["y"] = r_map_odom_position[2]
+    position_map_odom_ros["z"] = r_map_odom_position[3]
     
     local pose_r = {position=position_ros, orientation=quaternion_ros}
     ros_pose['pose'] = {pose=pose_r, covariance = cov}
@@ -269,10 +284,12 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     ros_pose['child_frame_id'] = robot_id..'kinect' -- CHECK THIS!
     simROS.publish(pubPose, ros_pose)     
 
+    time = simROS.getTime()
+
     -- Publish TF
     pose_tf = {
         header = {
-            stamp = simROS.getTime(),
+            stamp = time,
             frame_id = robot_id..'/odom'
         },
         child_frame_id = robot_id..'/base_footprint',
@@ -282,7 +299,21 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         }
     }
 
+    -- Publish Static TF (/map --> /odom)
+    static_tf = {
+        header = {
+            stamp = time,
+            frame_id = '/map'
+        },
+        child_frame_id = robot_id..'/odom',
+        transform = {
+            translation = position_map_odom_ros,
+            rotation = quaternion_map_odom_ros
+        }
+    }
+
     simROS.sendTransform(pose_tf)
+    simROS.sendTransform(static_tf)
 end 
 
 if (sim_call_type == sim.childscriptcall_cleanup) then 

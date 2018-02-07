@@ -54,7 +54,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     -- Now send the data:
     
     local ros_laser_data = {}
-    ros_laser_data["header"] = {seq=0,stamp=simROS.getTime(), frame_id = robot_id.."/scan"}
+    ros_laser_data["header"] = {seq=0,stamp=simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."/scan"}
     ros_laser_data["angle_min"] = -scanRange*0.5 
     ros_laser_data["angle_max"] = scanRange*0.5-stepSize
     ros_laser_data["angle_increment"] = stepSize
