@@ -7,13 +7,38 @@
    ROS:   http://wiki.ros.org/kinetic/Installation
 
 1. Install Turttlebot2i packages from ROS
+  ```
   sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros
   ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
+  ```
 
-2. Install V-REP ROS Interface
-  Follow the instructions inside $VREP_ROOT/programming/ros_packages/ros_vrep_rosinterface_install_guide.txt
+2. Create the Turtlebot2i workspace by clonning the repository
+  ```
+  git clone htpp://url/to/repository
+  ```
 
-3. Enable ROS Turttlebot2i messages for V-REP
+3. Setup the catkin workspace and set ROS environment variables
+  Follow these instructions: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+
+
+4. Compile the repository from the workspace root
+  ```
+  $ catkin build
+
+  ```
+
+
+5. Install V-REP ROS Interface
+  ```
+  $ roscd vrep_ros_interface
+  $ ./install.sh
+  
+  ```
+  If having problems to compile the vrep_ros_interface, check the README.md contained in the package folder.
+  Don't forget to set the environment variable ($VREP_ROOT).
+
+
+6. Enable ROS Turttlebot2i messages for V-REP
     1. Move to vrep_ros_interface folder inside ROS workspace
       roscd vrep_ros_interface
     2. Change CMakeLists.txt
