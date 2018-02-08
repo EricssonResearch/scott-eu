@@ -62,7 +62,7 @@ namespace MR
 
     // Get joint handles.
     for (int i = 0; i < MR_JOINTS_NUM; ++i){
-      int result = simxGetObjectHandle(vrepClientId,sm_jointsNameVrep[i].c_str(), &m_vrepJointsHandle[i], simx_oneshot_wait);
+      int result = simxGetObjectHandle(vrepClientId,sm_jointsNameVrep[i].c_str(), &m_vrepJointsHandle[i], simx_opmode_oneshot_wait);
       if (result != 0) {
 	ROS_ERROR_STREAM("MR robot interface not able to get handle for '" << sm_jointsNameVrep[i].c_str() << "'." << std::endl << "Error code: " << result << std::endl);
 	return false;

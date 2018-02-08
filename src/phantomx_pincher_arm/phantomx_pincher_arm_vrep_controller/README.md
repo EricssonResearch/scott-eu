@@ -74,9 +74,16 @@ To create a ros\_control back end for vrep:
       - It's available at vrep/turttlebot2\_v4.ttt in the current repo
    * The file src/ControlLoop/Phantom\_vrepHW.cpp was modified to acomodate the simulated turtlebot2i hardware interface
       - the file vrepControl\_remoteApi.h or .cpp just implement the node that instantiate the PhantomXPincherArm to expose the vrep hardware interfaces.
+      - This node reads information from the parameter server such as:
+      	- Vrep IP
+	- Vrep remote API port
+	- Joint name
+	Further reference can be checked out in launch/multi.launch
    * Unfortunately, you need a redundant description of your robot in urdf (so your robot is described both in the .ttt file and in the urdf)
       - this is because the urdf contains information on the joints and transmissions not contained in the vrep .ttt file
       - to counterbalance this point, note that the urdf importer works pretty well. But once your urdf is imported and you modify something in vrep's .ttt file you need to redundantly modify it in the urdf.
+      - as the Vrep remote API is been used it's important to open a connection on the server side (VREP scene).
+      	- on the scene check the line 3 inside the dummy child script
 
 ###Notes###
 
