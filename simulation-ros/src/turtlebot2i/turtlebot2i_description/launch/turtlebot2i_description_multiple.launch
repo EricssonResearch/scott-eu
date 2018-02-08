@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description.launch">
+    <arg name="robot_name" value="turtlebot2i"/>
+  </include>
+
+  <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description.launch">
+    <arg name="robot_name" value="turtlebot2i_1"/>
+  </include>
+
+</launch>
