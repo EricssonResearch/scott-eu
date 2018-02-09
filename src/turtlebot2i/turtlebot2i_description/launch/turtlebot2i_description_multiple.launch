@@ -3,10 +3,23 @@
 
   <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description.launch">
     <arg name="robot_name" value="turtlebot2i"/>
+    <arg name="joint1" value="PhantomXPincher_joint1" />
+    <arg name="joint2" value="PhantomXPincher_joint2" />
+    <arg name="joint3" value="PhantomXPincher_joint3" />
+    <arg name="joint4" value="PhantomXPincher_joint4" />
+    <arg name="gripper1" value="PhantomXPincher_gripperCenter_joint" />
+    <arg name="gripper2" value="PhantomXPincher_gripperClose_joint" />
+    <arg name="port" value="20000"/>
   </include>
 
   <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description.launch">
     <arg name="robot_name" value="turtlebot2i_1"/>
+    <arg name="joint1" value="PhantomXPincher_joint1#1" />
+    <arg name="joint2" value="PhantomXPincher_joint2#1" />
+    <arg name="joint3" value="PhantomXPincher_joint3#1" />
+    <arg name="joint4" value="PhantomXPincher_joint4#1" />
+    <arg name="gripper1" value="PhantomXPincher_gripperCenter_joint#1" />
+    <arg name="gripper2" value="PhantomXPincher_gripperClose_joint#1" />
   </include>
 
 </launch>
