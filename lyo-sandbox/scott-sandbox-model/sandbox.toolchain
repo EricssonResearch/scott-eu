@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <oslc4j_tc:Toolchain xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oslc4j_ai="http://org.eclipse.lyo/oslc4j/adaptorInterface" xmlns:oslc4j_tc="http://org.eclipse.lyo/oslc4j/toolChain">
-  <adaptorInterfaces name="WarehouseController" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox" javaFilesBasePath="../sandbox-warehouse-webapp/src/main/java/" jspFilesBasePath="../sandbox-warehouse-webapp/src/main/webapp/" javascriptFilesBasePath="../sandbox-warehouse-webapp/src/main/webapp/">
+  <adaptorInterfaces name="WarehouseController" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox" javaFilesBasePath="sandbox-warehouse-webapp/src/main/java/" jspFilesBasePath="sandbox-warehouse-webapp/src/main/webapp/" javascriptFilesBasePath="sandbox-warehouse-webapp/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Service Provider" description="Service Provider">
-        <services domainSpecification="//@specification/@domainSpecifications.0">
-          <queryCapabilities title="QueryCapabilityObjects" label="" queryBaseURI="queryObjects" resourceTypes="//@specification/@domainSpecifications.0/@resources.3"/>
-          <queryCapabilities title="QueryCapabilityPlaces" label="" queryBaseURI="queryPlaces" resourceTypes="//@specification/@domainSpecifications.0/@resources.1"/>
-          <queryCapabilities title="QueryCapabilityWaypoints" label="" queryBaseURI="queryWaypoints" resourceTypes="//@specification/@domainSpecifications.0/@resources.2"/>
-          <basicCapabilities resourceTypes="//@specification/@domainSpecifications.1/@resources.27 //@specification/@domainSpecifications.0/@resources.1 //@specification/@domainSpecifications.0/@resources.2 //@specification/@domainSpecifications.0/@resources.3"/>
+        <services>
+          <queryCapabilities title="QueryCapabilityObjects" label="" queryBaseURI="queryObjects"/>
+          <queryCapabilities title="QueryCapabilityPlaces" label="" queryBaseURI="queryPlaces"/>
+          <queryCapabilities title="QueryCapabilityWaypoints" label="" queryBaseURI="queryWaypoints"/>
+          <basicCapabilities>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.7"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.0"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.1"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.2"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.3"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.4"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.5"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.6"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.8"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.9"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.10"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.11"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.12"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.13"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.14"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.15"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.16"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.17"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.18"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.19"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.20"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.21"/>
+            <resourceTypes href="spec.xmi#//@domainSpecifications.0/@resources.22"/>
+          </basicCapabilities>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>
@@ -17,134 +41,48 @@
   <adaptorInterfaces name="PlannerReasoner" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox" javaFilesBasePath="../scott-planner-webapp/src/main/java/" jspFilesBasePath="../scott-planner-webapp/src/main/webapp/" javascriptFilesBasePath="../scott-planner-webapp/src/main/webapp/">
     <serviceProviderCatalog title="Planner Reasoner catalog">
       <serviceProviders title="robot" description="Robot planner provider">
-        <services domainSpecification="//@specification/@domainSpecifications.1">
-          <basicCapabilities resourceTypes="//@specification/@domainSpecifications.1/@resources.28"/>
+        <services>
+          <basicCapabilities/>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>
     <specification/>
-    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor" servicedResources="//@specification/@domainSpecifications.1/@resources.27"/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
   <adaptorInterfaces name="Twin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox" javaFilesBasePath="../sandbox-twin-webapp/src/main/java/" jspFilesBasePath="../sandbox-twin-webapp/src/main/webapp/" javascriptFilesBasePath="../sandbox-twin-webapp/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Service Provider" description="Service Provider">
-        <services domainSpecification="//@specification/@domainSpecifications.0">
-          <basicCapabilities resourceTypes="//@specification/@domainSpecifications.0/@resources.0"/>
+        <services>
+          <basicCapabilities/>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>
     <specification/>
-    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor" servicedResources="//@specification/@domainSpecifications.1/@resources.28"/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
   <specification>
-    <domainSpecifications name="Warehouse" namespaceURI="http://aide.md.kth.se/ns/wh#" namespacePrefix="//@specification/@domainPrefixes.0">
-      <resources name="Robot" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.0 //@specification/@domainSpecifications.0/@resourceProperties.1 //@specification/@domainSpecifications.0/@resourceProperties.2 //@specification/@domainSpecifications.0/@resourceProperties.9 //@specification/@domainSpecifications.0/@resourceProperties.10 //@specification/@domainSpecifications.0/@resourceProperties.11 //@specification/@domainSpecifications.0/@resourceProperties.12"/>
-      <resources name="Place" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.3 //@specification/@domainSpecifications.0/@resourceProperties.7 //@specification/@domainSpecifications.0/@resourceProperties.8 //@specification/@domainSpecifications.0/@resourceProperties.0"/>
-      <resources name="Waypoint" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.5"/>
-      <resources name="WhObject" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.4 //@specification/@domainSpecifications.0/@resourceProperties.6 //@specification/@domainSpecifications.0/@resourceProperties.8 //@specification/@domainSpecifications.0/@resourceProperties.0"/>
-      <resourceProperties title="" name="capacity" occurs="zeroOrOne" valueType="Integer"/>
-      <resourceProperties name="chargeLevel" valueType="Integer"/>
-      <resourceProperties name="isAt" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.2"/>
-      <resourceProperties name="situatedAt" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.2"/>
-      <resourceProperties name="isOn" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.1"/>
-      <resourceProperties name="canMove" occurs="zeroOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.2"/>
-      <resourceProperties name="carriedBy" occurs="zeroOrOne" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.0"/>
-      <resourceProperties title="" name="isChargingStation"/>
-      <resourceProperties name="type" valueType="String"/>
-      <resourceProperties name="isCharging"/>
-      <resourceProperties name="maxCharge" valueType="Integer"/>
-      <resourceProperties name="highCharge" valueType="Integer"/>
-      <resourceProperties name="lowCharge" valueType="Integer"/>
-    </domainSpecifications>
-    <domainSpecifications name="Planning" namespaceURI="http://ontology.cf.ericsson.net/planning_problem#" namespacePrefix="//@specification/@domainPrefixes.1">
-      <resources name="Problem" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.5"/>
-      <resources name="ProblemState" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.1 //@specification/@domainSpecifications.1/@resourceProperties.2 //@specification/@domainSpecifications.1/@resourceProperties.3 //@specification/@domainSpecifications.1/@resourceProperties.4"/>
-      <resources name="ProblemFile" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.0"/>
-      <resources name="ActionType">
-        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.6"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.16"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.17"/>
-        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
-      </resources>
-      <resources name="VariableInstance">
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.8"/>
-        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.10"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.18"/>
-      </resources>
-      <resources name="Variable">
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.7"/>
-        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.10"/>
-      </resources>
-      <resources name="FluentInstance" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.11 //@specification/@domainSpecifications.1/@resourceProperties.9"/>
-      <resources name="Fluent">
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.6"/>
-        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
-        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
-      </resources>
-      <resources name="GreaterThan" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
-      <resources name="And" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
-      <resources name="Or" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
-      <resources name="Not" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
-      <resources name="Imply"/>
-      <resources name="LessThan" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
-      <resources name="EqualTo" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
-      <resources name="Minus" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
-      <resources name="Multiply" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
-      <resources name="GreaterOrEqual" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.12 //@specification/@domainSpecifications.1/@resourceProperties.13"/>
-      <resources name="Plus" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
-      <resources name="Divide" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
-      <resources name="LessOrEqual" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.13 //@specification/@domainSpecifications.1/@resourceProperties.12"/>
-      <resources name="ForAll" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.15"/>
-      <resources name="Exists"/>
-      <resources name="When"/>
-      <resources name="Predicate">
-        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.0/@resourceProperties.8"/>
-      </resources>
-      <resources name="DomainPredicate" extends="//@specification/@domainSpecifications.1/@resources.24" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.15"/>
-      <resources name="PredicateArgument" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.14 //@specification/@domainSpecifications.1/@resourceProperties.10"/>
-      <resources name="Mission">
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.19"/>
-        <resourceProperties href="../org.eclipse.lyo.tools.domainmodels/oslcDomainSpecifications.xml#//@domainSpecifications.3/@resourceProperties.2"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.20"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.21"/>
-        <resourceProperties href="#//@specification/@domainSpecifications.1/@resourceProperties.22"/>
-      </resources>
-      <resources name="Plan" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.23 //@specification/@domainSpecifications.1/@resourceProperties.25"/>
-      <resources name="Action" resourceProperties="//@specification/@domainSpecifications.1/@resourceProperties.24 //@specification/@domainSpecifications.1/@resourceProperties.9 //@specification/@domainSpecifications.1/@resourceProperties.10"/>
-      <resourceProperties name="body" valueType="String"/>
-      <resourceProperties name="robots" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.0" description=""/>
-      <resourceProperties name="places" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.1"/>
-      <resourceProperties name="objects" occurs="zeroOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.3"/>
-      <resourceProperties name="waypoints" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.2"/>
-      <resourceProperties name="problemOutput" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.2"/>
-      <resourceProperties title="" name="hasVariable" occurs="zeroOrMany" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.5"/>
-      <resourceProperties name="resourceType" valueType="Resource"/>
-      <resourceProperties name="value" valueType="LocalResource"/>
-      <resourceProperties name="withVariable" occurs="zeroOrMany" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.4"/>
-      <resourceProperties name="order" valueType="Integer"/>
-      <resourceProperties name="fluentType" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.7"/>
-      <resourceProperties name="leftPredicate" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
-      <resourceProperties name="rightPredicate" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
-      <resourceProperties name="predicate" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
-      <resourceProperties name="argument" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.26"/>
-      <resourceProperties name="precondition" occurs="zeroOrOne" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
-      <resourceProperties name="effect" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
-      <resourceProperties title="" name="instanceOf" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.5"/>
-      <resourceProperties name="planningDeadline" valueType="DateTime"/>
+    <domainSpecifications name="MissionOntology" namespaceURI="http://ontology.cf.ericsson.net/mission_ontology/" namespacePrefix="//@specification/@domainPrefixes.0">
+      <resources name="Goal"/>
+      <resources name="MoveGoal" extends="//@specification/@domainSpecifications.0/@resources.0" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.0 //@specification/@domainSpecifications.0/@resourceProperties.1"/>
+      <resources name="Selector"/>
+      <resources name="DirectSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.2"/>
+      <resources name="TypeSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.3 //@specification/@domainSpecifications.0/@resourceProperties.4"/>
+      <resources name="WildcardSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.3"/>
+      <resources name="CompositeSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.0"/>
+      <resources name="LocationSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.0 //@specification/@domainSpecifications.0/@resourceProperties.8"/>
+      <resources name="Location"/>
+      <resources name="Mission" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.7 //@specification/@domainSpecifications.0/@resourceProperties.5 //@specification/@domainSpecifications.0/@resourceProperties.6"/>
+      <resourceProperties title="" name="selector" valueType="LocalResource" representation="reference" range="//@specification/@domainSpecifications.0/@resources.2"/>
+      <resourceProperties name="destination" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.8"/>
+      <resourceProperties name="item" valueType="Resource"/>
+      <resourceProperties name="itemType" valueType="Resource"/>
+      <resourceProperties name="count" valueType="Integer"/>
+      <resourceProperties name="responseTimeout" valueType="Double"/>
       <resourceProperties name="missionDeadline" valueType="DateTime"/>
-      <resourceProperties name="goalPredicate" occurs="oneOrMany" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.24"/>
-      <resourceProperties name="initialState" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.1"/>
-      <resourceProperties name="forMission" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.27"/>
-      <resourceProperties name="ofActionType" valueType="Resource" range="//@specification/@domainSpecifications.1/@resources.3"/>
-      <resourceProperties name="relatesToAction" valueType="LocalResource" range="//@specification/@domainSpecifications.1/@resources.29"/>
+      <resourceProperties name="goal" valueType="LocalResource" range="//@specification/@domainSpecifications.0/@resources.0"/>
+      <resourceProperties name="location" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.8"/>
     </domainSpecifications>
-    <domainSpecifications name="Domain3" namespaceURI="http://your.organisation.domain/nsp3#" namespacePrefix="//@specification/@domainPrefixes.2"/>
-    <domainPrefixes name="wh"/>
-    <domainPrefixes name="pp"/>
-    <domainPrefixes name="nsp3"/>
-    <generationSetting javaClassPackageName="se.ericsson.cf.scott.sandbox.resources" javaFilesPath="../sandbox-domains/src/main/java/"/>
+    <domainPrefixes name="mission"/>
+    <generationSetting javaClassPackageName="my.package1" javaFilesPath="sandbox-domain-pddl/src/main/java"/>
   </specification>
 </oslc4j_tc:Toolchain>
