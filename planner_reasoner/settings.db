@@ -4,8 +4,8 @@ setting(http:public_host, '%PUBLIC_HOST%').
 %	Port on the public server
 setting(http:public_port, %PUBLIC_PORT%).
 
-%	Base URI
-setting(oslc_prolog_server:base_uri, '%BASE_URI%').
+%	Prefix for all OSLC paths
+setting(oslc_prolog_server:prefix_path, '%PREFIX_PATH%').
 
-%	Exposed Prefixes
+%	Exposed prefixes
 setting(oslc_prolog_server:exposed_prefixes, [%EXPOSED_PREFIXES%]).
