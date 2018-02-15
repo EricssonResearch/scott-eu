@@ -1,0 +1,14 @@
+version: '2'
+services:
+  cliopatria:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - PUBLIC_HOST=localhost
+        - PUBLIC_PORT=3020
+        - PREFIX_PATH=/
+        - EXPOSED_PREFIXES=*
+    ports:
+      - "3020:3020"
+    stdin_open: true

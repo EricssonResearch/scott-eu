@@ -24,7 +24,7 @@ When the problem & domain PDDL files are ready, they are uploaded to the [Metric
 
 ## Simulated Environment
 
-This contains simulations required by the sandbox. It currently consists of the automated warehouse simulated in [VREP](http://www.coppeliarobotics.com/downloads.html) with all its elements and robots. 
+This contains simulations required by the sandbox. It currently consists of the automated warehouse simulated in [VREP](http://www.coppeliarobotics.com/downloads.html) with all its elements and robots.
 Until the multi-objective optimisation (MOO) service is present, its results should be provided by the [mission.json](warehousecontroller/mission.json) file.
 Until it contains the discret event simulations for modeling the supply chain dynamics, all required information should be provided  by the [mission.json](warehousecontroller/mission.json) file.
 
@@ -61,13 +61,6 @@ Optic Docker (`/optic-docker`) is a project that packages an alternative [OPTIC 
 > **NB!** This project does not expose OPTIC via REST (yet)!
 
 > :point_right: Start by reading the [README](optic-docker/README.md).
-
-
-## OSLC Prolog
-
-OSLC Prolog (`/oslc_prolog`) is a Prolog library designed to help developing OSLC-compliant REST services. Just ask Leo if you want to build one.
-
-> :point_right: Start by reading the [README](oslc_prolog/README.md).
 
 
 ## PDDL Examples
