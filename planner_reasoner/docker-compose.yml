@@ -1,14 +1,16 @@
 version: '2'
 services:
-  cliopatria:
+  planner_reasoner:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
       args:
-        - PUBLIC_HOST=localhost
-        - PUBLIC_PORT=3020
+        - PUBLIC_HOST=localhost # external host
+        - PUBLIC_PORT=3020 # external port
         - PREFIX_PATH=/
         - EXPOSED_PREFIXES=*
+    environment:
+      - PORT=3020 # internal port
     ports:
-      - "3020:3020"
+      - "3020:3020" # mapping of external port to internal port
     stdin_open: true

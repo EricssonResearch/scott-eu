@@ -1,10 +1,10 @@
 FROM ubuntu:16.04
 LABEL maintainer "leonid.mokrushin@ericsson.com"
 
-ARG PUBLIC_HOST
-ARG PUBLIC_PORT
-ARG PREFIX_PATH
-ARG EXPOSED_PREFIXES
+ARG PUBLIC_HOST=localhost
+ARG PUBLIC_PORT=3020
+ARG PREFIX_PATH=/
+ARG EXPOSED_PREFIXES=*
 
 WORKDIR /opt
 
@@ -13,7 +13,7 @@ COPY settings.db .
 
 RUN apt-get update && \
     apt-get -yq install git wget build-essential flex bison && \
-    git clone https://github.com/ClioPatria/ClioPatria.git && \
+    git clone -b 'V3.1.1' --depth 1 https://github.com/ClioPatria/ClioPatria.git && \
     git clone https://github.com/EricssonResearch/oslc_prolog.git && \
     git clone https://github.com/EricssonResearch/scott-eu.git && \
     git clone https://github.com/KCL-Planning/VAL.git && \
