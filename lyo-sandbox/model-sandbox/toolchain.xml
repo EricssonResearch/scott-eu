@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oslc4j_tc:Toolchain xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oslc4j_ai="http://org.eclipse.lyo/oslc4j/adaptorInterface" xmlns:oslc4j_tc="http://org.eclipse.lyo/oslc4j/toolChain">
+  <adaptorInterfaces name="Warehouse Controller" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.whc" javaFilesBasePath="../webapp-whc/src/main/java/" jspFilesBasePath="../webapp-whc/src/main/webapp/" javascriptFilesBasePath="../webapp-whc/src/main/webapp/">
+    <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
+      <serviceProviders title="Service Provider" description="Service Provider">
+        <services>
+          <basicCapabilities/>
+        </services>
+      </serviceProviders>
+    </serviceProviderCatalog>
+    <specification/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor">
+      <servicedResources href="../scott-model-pddl/spec.xmi#//@domainSpecifications.0/@resources.1"/>
+    </requiredAdaptors>
+  </adaptorInterfaces>
+  <adaptorInterfaces name="PlannerReasoner placeholder" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.planner" javaFilesBasePath="../webapp-planner-placeholder/src/main/java/" jspFilesBasePath="../webapp-planner-placeholder/src/main/webapp/" javascriptFilesBasePath="../webapp-planner-placeholder/src/main/webapp/">
+    <serviceProviderCatalog title="Planner Reasoner catalog">
+      <serviceProviders title="robot" description="Robot planner provider">
+        <services>
+          <basicCapabilities/>
+        </services>
+      </serviceProviders>
+    </serviceProviderCatalog>
+    <specification/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
+  </adaptorInterfaces>
+  <adaptorInterfaces name="Twin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twin" javaFilesBasePath="../webapp-twin/src/main/java/" jspFilesBasePath="../webapp-twin/src/main/webapp/" javascriptFilesBasePath="../webapp-twin/src/main/webapp/">
+    <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
+      <serviceProviders title="Service Provider" description="Service Provider">
+        <services>
+          <basicCapabilities/>
+        </services>
+      </serviceProviders>
+    </serviceProviderCatalog>
+    <specification/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
+  </adaptorInterfaces>
+  <specification>
+    <domainSpecifications name="MissionOntology" namespaceURI="http://ontology.cf.ericsson.net/mission_ontology/" namespacePrefix="//@specification/@domainPrefixes.0">
+      <resources name="Goal"/>
+      <resources name="MoveGoal" extends="//@specification/@domainSpecifications.0/@resources.0" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.0 //@specification/@domainSpecifications.0/@resourceProperties.1"/>
+      <resources name="Selector"/>
+      <resources name="DirectSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.2"/>
+      <resources name="TypeSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.3 //@specification/@domainSpecifications.0/@resourceProperties.4"/>
+      <resources name="WildcardSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.3"/>
+      <resources name="CompositeSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.0"/>
+      <resources name="LocationSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.0 //@specification/@domainSpecifications.0/@resourceProperties.8"/>
+      <resources name="Location"/>
+      <resources name="Mission" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.7 //@specification/@domainSpecifications.0/@resourceProperties.5 //@specification/@domainSpecifications.0/@resourceProperties.6"/>
+      <resourceProperties title="" name="selector" valueType="LocalResource" representation="reference" range="//@specification/@domainSpecifications.0/@resources.2"/>
+      <resourceProperties name="destination" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.8"/>
+      <resourceProperties name="item" valueType="Resource"/>
+      <resourceProperties name="itemType" valueType="Resource"/>
+      <resourceProperties name="count" valueType="Integer"/>
+      <resourceProperties name="responseTimeout" valueType="Double"/>
+      <resourceProperties name="missionDeadline" valueType="DateTime"/>
+      <resourceProperties name="goal" valueType="LocalResource" range="//@specification/@domainSpecifications.0/@resources.0"/>
+      <resourceProperties name="location" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.8"/>
+    </domainSpecifications>
+    <domainPrefixes name="mission"/>
+    <generationSetting javaClassPackageName="my.package1" javaFilesPath="sandbox-domain-pddl/src/main/java"/>
+  </specification>
+</oslc4j_tc:Toolchain>

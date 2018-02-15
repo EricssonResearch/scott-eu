@@ -8,11 +8,11 @@ services:
      - warehouse-fuseki-config
   warehouse-fuseki-config:
     build: ./fuseki
-  sandbox-warehouse:
-    build: ./sandbox-warehouse-webapp
+  sandbox-whc:
+    build: ./webapp-whc
     ports:
      - "8080:8080"
-  sandbox-twin:
-    build: ./sandbox-twin-webapp
-    ports:
-     - "8081:8080"
+  # sandbox-twin:
+  #   build: ./sandbox-twin-webapp
+  #   ports:
+  #    - "8081:8080"
