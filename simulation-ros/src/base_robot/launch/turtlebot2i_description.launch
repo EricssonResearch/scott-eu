@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- Load the URDF into the ROS Parameter Server --> 
+  <param name="robot_description" command="rosrun xacro xacro --inorder '$(find base_robot)/urdf/robots/turtlebot2i.xacro'"/>
+  <param name="use_gui" value="False"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+</launch>
