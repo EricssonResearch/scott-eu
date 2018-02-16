@@ -23,10 +23,10 @@ class ProblemBuilderTest {
             OslcCoreApplicationException, IllegalAccessException {
         final ProblemBuilder problemBuilder = new ProblemBuilder();
 
-        final Problem problem = problemBuilder.buildProblem("urn:problem1");
+        final Object[] problem = problemBuilder.buildProblem("http://example.com/scott-sandbox/");
 
         final String problemTurtleRepresentation = ProblemBuilder.serialiseToTurtle(problem);
         System.out.println(problemTurtleRepresentation);
-        assertThat(problemTurtleRepresentation).contains("urn:problem1");
+        assertThat(problemTurtleRepresentation).contains("http://example.com/scott-sandbox/table");
     }
 }

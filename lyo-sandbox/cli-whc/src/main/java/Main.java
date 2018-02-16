@@ -1,5 +1,4 @@
 import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.Problem;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -21,11 +20,11 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
 public class Main {
     public static void main(String[] args)
             throws URISyntaxException, InvocationTargetException, DatatypeConfigurationException,
-            OslcCoreApplicationException, IllegalAccessException, IOException, OAuthException {
+            OslcCoreApplicationException, IllegalAccessException {
         final ProblemBuilder problemBuilder = new ProblemBuilder();
-        final Problem problem = problemBuilder.buildProblem("");
+        final Object[] problem = problemBuilder.buildProblem("http://example.com/scott-sandbox");
 
-        final Model model = JenaModelHelper.createJenaModel(new Object[]{problem});
+        final Model model = JenaModelHelper.createJenaModel(problem);
 
         final String turtle = ProblemBuilder.serialiseToTurtle(problem);
 
@@ -35,12 +34,12 @@ public class Main {
 //        createPlan(problem);
     }
 
-    public static Plan createPlan(final Problem problem)
+    public static Plan createPlan(final Object[] problem)
             throws IOException, OAuthException, URISyntaxException {
         final OslcClient client = new OslcClient();
         final ClientResponse resource = client.createResource(
-                "http://aide.md.kth.se:3020/planner/planCreationFactory", new Object[]{problem},
-                "text/turtle", "text/turtle");
+                "http://aide.md.kth.se:3020/planner/planCreationFactory", problem, "text/turtle",
+                "text/turtle");
         return resource.getEntity(Plan.class);
     }
 

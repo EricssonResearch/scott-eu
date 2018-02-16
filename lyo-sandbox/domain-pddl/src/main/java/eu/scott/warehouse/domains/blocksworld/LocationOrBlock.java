@@ -73,6 +73,7 @@ import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
 import eu.scott.warehouse.domains.pddl.PrimitiveType;
 
 // Start of user code imports
+import eu.scott.warehouse.domains.pddl.EitherType;
 // End of user code
 
 // Start of user code preClassCode
@@ -87,7 +88,7 @@ public class LocationOrBlock
     extends EitherType
     implements ILocationOrBlock
 {
-    
+
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
@@ -96,40 +97,40 @@ public class LocationOrBlock
            throws URISyntaxException
     {
         super();
-    
+
         // Start of user code constructor1
         // End of user code
     }
-    
+
     public LocationOrBlock(final URI about)
            throws URISyntaxException
     {
         super(about);
-    
+
         // Start of user code constructor2
         // End of user code
     }
-    
-    
+
+
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
         BworldDomainConstants.PATH_LOCATIONORBLOCK,
         LocationOrBlock.class);
     }
-    
-    
+
+
     public String toString()
     {
         return toString(false);
     }
-    
+
     public String toString(boolean asLocalResource)
     {
         String result = "";
         // Start of user code toString_init
         // End of user code
-    
+
         if (asLocalResource) {
             result = result + "{a Local Location-or-block Resource} - update Location-or-block.toString() to present resource as desired.";
             // Start of user code toString_bodyForLocalResource
@@ -138,24 +139,24 @@ public class LocationOrBlock
         else {
             result = getAbout().toString();
         }
-    
+
         // Start of user code toString_finalize
         // End of user code
-    
+
         return result;
     }
-    
+
     public String toHtml()
     {
         return toHtml(false);
     }
-    
+
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
         // Start of user code toHtml_init
         // End of user code
-    
+
         if (asLocalResource) {
             result = toString(true);
             // Start of user code toHtml_bodyForLocalResource
@@ -164,16 +165,16 @@ public class LocationOrBlock
         else {
             result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
         }
-    
+
         // Start of user code toHtml_finalize
         // End of user code
-    
+
         return result;
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 }
