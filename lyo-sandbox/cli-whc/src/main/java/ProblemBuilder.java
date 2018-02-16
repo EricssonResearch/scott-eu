@@ -79,23 +79,25 @@ public class ProblemBuilder {
 
         problem.setPddlObject(linkTo(Arrays.asList(a, b, c, table)));
 
-
         // FIXME Andrew@2018-02-15: Generate Goal resource class
 //        Goal goal = new Goal();
 //        problem.setGoal(new Link(goal.getAbout()));
         final Or or = new Or(relUri("localOr"));
 
         final On on1 = new On(relUri("localOn1"));
-//        on1.setOnX(b)
-//        on1.setOnY(c)
+        on1.setOnX(linkTo(b));
+        on1.setOnY(linkTo(c));
 
         final On on2 = new On(relUri("localOn2"));
+        on2.setOnX(linkTo(c));
+        on2.setOnY(linkTo(b));
 
         or.addArgument(linkTo(on1));
         or.addArgument(linkTo(on2));
         problem.setGoal(linkTo(or));
 
-        return new Object[]{problem, domain, maxFunction, pddlObjects, a, b, c, table};
+        return new Object[]{problem, domain, maxFunction, pddlObjects, a, b, c, table, or, on1,
+                on2};
     }
 
     // FIXME Andrew@2018-02-16: Jad, this should go as a static Link.to() method
