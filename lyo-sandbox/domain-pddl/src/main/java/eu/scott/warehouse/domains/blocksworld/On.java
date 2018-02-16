@@ -69,7 +69,7 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
-
+import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
 
 // Start of user code imports
 // End of user code
@@ -86,6 +86,12 @@ public class On
     extends AbstractResource
     implements IOn
 {
+    // Start of user code attributeAnnotation:onX
+    // End of user code
+    private Link onX = new Link();
+    // Start of user code attributeAnnotation:onY
+    // End of user code
+    private Link onY = new Link();
     
     // Start of user code classAttributes
     // End of user code
@@ -171,8 +177,144 @@ public class On
     }
     
     
+    // Start of user code getterAnnotation:onX
+    // End of user code
+    @OslcName("onX")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onX")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Resource)
+    @OslcReadOnly(false)
+    public Link getOnX()
+    {
+        // Start of user code getterInit:onX
+        // End of user code
+        return onX;
+    }
+    
+    // Start of user code getterAnnotation:onY
+    // End of user code
+    @OslcName("onY")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onY")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Resource)
+    @OslcReadOnly(false)
+    public Link getOnY()
+    {
+        // Start of user code getterInit:onY
+        // End of user code
+        return onY;
+    }
     
     
+    // Start of user code setterAnnotation:onX
+    // End of user code
+    public void setOnX(final Link onX )
+    {
+        // Start of user code setterInit:onX
+        // End of user code
+        this.onX = onX;
+    
+        // Start of user code setterFinalize:onX
+        // End of user code
+    }
+    
+    // Start of user code setterAnnotation:onY
+    // End of user code
+    public void setOnY(final Link onY )
+    {
+        // Start of user code setterInit:onY
+        // End of user code
+        this.onY = onY;
+    
+        // Start of user code setterFinalize:onY
+        // End of user code
+    }
+    
+    
+    static public String onXToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    {
+        String s = "";
+    
+        // Start of user code "Init:onXToHtmlForCreation(...)"
+        // End of user code
+    
+        s = s + "<label for=\"on-x\">on-x: </LABEL>";
+    
+        // Start of user code "Mid:onXToHtmlForCreation(...)"
+        // End of user code
+    
+        // Start of user code "Finalize:onXToHtmlForCreation(...)"
+        // End of user code
+    
+        return s;
+    }
+    
+    static public String onYToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    {
+        String s = "";
+    
+        // Start of user code "Init:onYToHtmlForCreation(...)"
+        // End of user code
+    
+        s = s + "<label for=\"on-y\">on-y: </LABEL>";
+    
+        // Start of user code "Mid:onYToHtmlForCreation(...)"
+        // End of user code
+    
+        // Start of user code "Finalize:onYToHtmlForCreation(...)"
+        // End of user code
+    
+        return s;
+    }
+    
+    
+    public String onXToHtml()
+    {
+        String s = "";
+    
+        // Start of user code onXtoHtml_mid
+        // End of user code
+    
+        try {
+            if ((onX == null) || (onX.getValue() == null)) {
+                s = s + "<em>null</em>";
+            }
+            else {
+                s = s + onX.getValue().toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        // Start of user code onXtoHtml_finalize
+        // End of user code
+    
+        return s;
+    }
+    
+    public String onYToHtml()
+    {
+        String s = "";
+    
+        // Start of user code onYtoHtml_mid
+        // End of user code
+    
+        try {
+            if ((onY == null) || (onY.getValue() == null)) {
+                s = s + "<em>null</em>";
+            }
+            else {
+                s = s + onY.getValue().toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        // Start of user code onYtoHtml_finalize
+        // End of user code
+    
+        return s;
+    }
     
     
 }

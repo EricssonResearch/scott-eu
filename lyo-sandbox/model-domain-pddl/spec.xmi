@@ -54,7 +54,7 @@
     <resources name="location" extends="//@domainSpecifications.0/@resources.4"/>
     <resources name="block" extends="//@domainSpecifications.0/@resources.4"/>
     <resources name="location-or-block" extends="//@domainSpecifications.0/@resources.7"/>
-    <resources name="on"/>
+    <resources name="on" resourceProperties="//@domainSpecifications.1/@resourceProperties.0 //@domainSpecifications.1/@resourceProperties.1"/>
     <resourceProperties name="on-x" valueType="Resource"/>
     <resourceProperties name="on-y" valueType="Resource"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.blocksworld" javaFilesPath=""/>

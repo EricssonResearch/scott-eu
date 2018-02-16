@@ -63,7 +63,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
-
+import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
 
 // Start of user code imports
 // End of user code
@@ -75,6 +75,22 @@ public interface IOn
 {
 
 
+    @OslcName("onX")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onX")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Resource)
+    @OslcReadOnly(false)
+    public Link getOnX();
 
+    @OslcName("onY")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onY")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Resource)
+    @OslcReadOnly(false)
+    public Link getOnY();
+
+
+    public void setOnX(final Link onX );
+    public void setOnY(final Link onY );
 }
 
