@@ -91,10 +91,10 @@ public class Domain
 {
     // Start of user code attributeAnnotation:action
     // End of user code
-    private Action action = new Action();
+    private Link action = new Link();
     // Start of user code attributeAnnotation:constant
     // End of user code
-    private HashSet<Constant> constant = new HashSet<Constant>();
+    private HashSet<Link> constant = new HashSet<Link>();
     // Start of user code attributeAnnotation:function
     // End of user code
     private HashSet<Link> function = new HashSet<Link>();
@@ -103,7 +103,7 @@ public class Domain
     private HashSet<Link> predicate = new HashSet<Link>();
     // Start of user code attributeAnnotation:type
     // End of user code
-    private EitherType type = new EitherType();
+    private Link type = new Link();
     // Start of user code attributeAnnotation:label
     // End of user code
     private String label;
@@ -191,7 +191,7 @@ public class Domain
         return result;
     }
     
-    public void addConstant(final Constant constant)
+    public void addConstant(final Link constant)
     {
         this.constant.add(constant);
     }
@@ -213,10 +213,10 @@ public class Domain
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "action")
     @OslcDescription("Action of the plan step.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_ACTION})
     @OslcReadOnly(false)
-    public Action getAction()
+    public Link getAction()
     {
         // Start of user code getterInit:action
         // End of user code
@@ -229,10 +229,10 @@ public class Domain
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "constant")
     @OslcDescription("Domain constants.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_CONSTANT})
     @OslcReadOnly(false)
-    public HashSet<Constant> getConstant()
+    public HashSet<Link> getConstant()
     {
         // Start of user code getterInit:constant
         // End of user code
@@ -245,7 +245,7 @@ public class Domain
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "function")
     @OslcDescription("Domain functions.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getFunction()
     {
@@ -260,7 +260,7 @@ public class Domain
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "predicate")
     @OslcDescription("Domain predicates.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getPredicate()
     {
@@ -275,10 +275,10 @@ public class Domain
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "type")
     @OslcDescription("Parameter type.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_EITHERTYPE})
     @OslcReadOnly(false)
-    public EitherType getType()
+    public Link getType()
     {
         // Start of user code getterInit:type
         // End of user code
@@ -303,7 +303,7 @@ public class Domain
     
     // Start of user code setterAnnotation:action
     // End of user code
-    public void setAction(final Action action )
+    public void setAction(final Link action )
     {
         // Start of user code setterInit:action
         // End of user code
@@ -315,7 +315,7 @@ public class Domain
     
     // Start of user code setterAnnotation:constant
     // End of user code
-    public void setConstant(final HashSet<Constant> constant )
+    public void setConstant(final HashSet<Link> constant )
     {
         // Start of user code setterInit:constant
         // End of user code
@@ -363,7 +363,7 @@ public class Domain
     
     // Start of user code setterAnnotation:type
     // End of user code
-    public void setType(final EitherType type )
+    public void setType(final Link type )
     {
         // Start of user code setterInit:type
         // End of user code
@@ -504,11 +504,11 @@ public class Domain
         // End of user code
     
         try {
-            if (action == null) {
+            if ((action == null) || (action.getValue() == null)) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + action.toHtml(true);
+                s = s + (new Action (action.getValue())).toHtml(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -529,9 +529,9 @@ public class Domain
     
         try {
             s = s + "<ul>";
-            for(Constant next : constant) {
+            for(Link next : constant) {
                 s = s + "<li>";
-                s = s + next.toHtml(true);
+                s = s + (new Constant (next.getValue())).toHtml(false);
                 s = s + "</li>";
             }
             s = s + "</ul>";
@@ -613,11 +613,11 @@ public class Domain
         // End of user code
     
         try {
-            if (type == null) {
+            if ((type == null) || (type.getValue() == null)) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + type.toHtml(true);
+                s = s + (new EitherType (type.getValue())).toHtml(false);
             }
         } catch (Exception e) {
             e.printStackTrace();

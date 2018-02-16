@@ -77,7 +77,7 @@ import eu.scott.warehouse.domains.pddl.IEitherType;
 public interface IDomain
 {
 
-    public void addConstant(final Constant constant );
+    public void addConstant(final Link constant );
     public void addFunction(final Link function );
     public void addPredicate(final Link predicate );
 
@@ -85,25 +85,25 @@ public interface IDomain
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "action")
     @OslcDescription("Action of the plan step.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_ACTION})
     @OslcReadOnly(false)
-    public Action getAction();
+    public Link getAction();
 
     @OslcName("constant")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "constant")
     @OslcDescription("Domain constants.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_CONSTANT})
     @OslcReadOnly(false)
-    public HashSet<Constant> getConstant();
+    public HashSet<Link> getConstant();
 
     @OslcName("function")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "function")
     @OslcDescription("Domain functions.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getFunction();
 
@@ -111,7 +111,7 @@ public interface IDomain
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "predicate")
     @OslcDescription("Domain predicates.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getPredicate();
 
@@ -119,10 +119,10 @@ public interface IDomain
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "type")
     @OslcDescription("Parameter type.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_EITHERTYPE})
     @OslcReadOnly(false)
-    public EitherType getType();
+    public Link getType();
 
     @OslcName("label")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "label")
@@ -133,11 +133,11 @@ public interface IDomain
     public String getLabel();
 
 
-    public void setAction(final Action action );
-    public void setConstant(final HashSet<Constant> constant );
+    public void setAction(final Link action );
+    public void setConstant(final HashSet<Link> constant );
     public void setFunction(final HashSet<Link> function );
     public void setPredicate(final HashSet<Link> predicate );
-    public void setType(final EitherType type );
+    public void setType(final Link type );
     public void setLabel(final String label );
 }
 

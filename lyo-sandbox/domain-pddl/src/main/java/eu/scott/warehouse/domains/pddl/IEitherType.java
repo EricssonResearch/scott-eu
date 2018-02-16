@@ -63,7 +63,8 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.pddl.IPrimitiveType;
 
 // Start of user code imports
 // End of user code
@@ -74,7 +75,18 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 public interface IEitherType
 {
 
+    public void addMember(final Link member );
+
+    @OslcName("member")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "member")
+    @OslcDescription("Type member (primitive type).")
+    @OslcOccurs(Occurs.OneOrMany)
+    @OslcValueType(ValueType.Resource)
+    @OslcRange({PddlDomainConstants.TYPE_PRIMITIVETYPE})
+    @OslcReadOnly(false)
+    public HashSet<Link> getMember();
 
 
+    public void setMember(final HashSet<Link> member );
 }
 

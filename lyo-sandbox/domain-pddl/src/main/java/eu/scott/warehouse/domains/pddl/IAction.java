@@ -79,7 +79,7 @@ public interface IAction
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "effect")
     @OslcDescription("Action effect describing state modification.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getEffect();
 
@@ -87,7 +87,7 @@ public interface IAction
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "parameter")
     @OslcDescription("Condition (same as precondition).")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getParameter();
 
@@ -95,7 +95,7 @@ public interface IAction
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "precondition")
     @OslcDescription("Action precondition that must be fulfilled to enable it.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getPrecondition();
 

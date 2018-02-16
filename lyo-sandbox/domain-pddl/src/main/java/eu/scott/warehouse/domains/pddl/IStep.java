@@ -83,16 +83,16 @@ public interface IStep
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "action")
     @OslcDescription("Action of the plan step.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_ACTION})
     @OslcReadOnly(false)
-    public Action getAction();
+    public Link getAction();
 
     @OslcName("adding")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "adding")
     @OslcDescription("Step additions.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getAdding();
 
@@ -100,7 +100,7 @@ public interface IStep
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "deleting")
     @OslcDescription("Step deletions.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getDeleting();
 
@@ -108,7 +108,7 @@ public interface IStep
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "updating")
     @OslcDescription("Step updates.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getUpdating();
 
@@ -121,7 +121,7 @@ public interface IStep
     public Integer getOrder();
 
 
-    public void setAction(final Action action );
+    public void setAction(final Link action );
     public void setAdding(final HashSet<Link> adding );
     public void setDeleting(final HashSet<Link> deleting );
     public void setUpdating(final HashSet<Link> updating );

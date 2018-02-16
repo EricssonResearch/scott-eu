@@ -88,7 +88,7 @@ public class BinaryComparator
 {
     // Start of user code attributeAnnotation:argument
     // End of user code
-    private Link argument = new Link();
+    private HashSet<Link> argument = new HashSet<Link>();
     
     // Start of user code classAttributes
     // End of user code
@@ -173,16 +173,21 @@ public class BinaryComparator
         return result;
     }
     
+    public void addArgument(final Link argument)
+    {
+        this.argument.add(argument);
+    }
+    
     
     // Start of user code getterAnnotation:argument
     // End of user code
     @OslcName("argument")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "argument")
     @OslcDescription("Conditional effect.")
-    @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcOccurs(Occurs.OneOrMany)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public Link getArgument()
+    public HashSet<Link> getArgument()
     {
         // Start of user code getterInit:argument
         // End of user code
@@ -192,11 +197,15 @@ public class BinaryComparator
     
     // Start of user code setterAnnotation:argument
     // End of user code
-    public void setArgument(final Link argument )
+    public void setArgument(final HashSet<Link> argument )
     {
         // Start of user code setterInit:argument
         // End of user code
-        this.argument = argument;
+        this.argument.clear();
+        if (argument != null)
+        {
+            this.argument.addAll(argument);
+        }
     
         // Start of user code setterFinalize:argument
         // End of user code
@@ -230,12 +239,18 @@ public class BinaryComparator
         // End of user code
     
         try {
-            if ((argument == null) || (argument.getValue() == null)) {
-                s = s + "<em>null</em>";
+            s = s + "<ul>";
+            for(Link next : argument) {
+                s = s + "<li>";
+                if (next.getValue() == null) {
+                    s= s + "<em>null</em>";
+                }
+                else {
+                    s = s + "<a href=\"" + next.getValue().toString() + "\">" + next.getValue().toString() + "</a>";
+                }
+                s = s + "</li>";
             }
-            else {
-                s = s + argument.getValue().toString();
-            }
+            s = s + "</ul>";
         } catch (Exception e) {
             e.printStackTrace();
         }

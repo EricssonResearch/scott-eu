@@ -79,7 +79,7 @@ public interface IFunction
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "parameter")
     @OslcDescription("Condition (same as precondition).")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getParameter();
 

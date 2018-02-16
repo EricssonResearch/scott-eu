@@ -75,7 +75,7 @@ import eu.scott.warehouse.domains.pddl.IStep;
 public interface IPlan
 {
 
-    public void addStep(final Step step );
+    public void addStep(final Link step );
 
     @OslcName("cost")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "cost")
@@ -89,10 +89,10 @@ public interface IPlan
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "step")
     @OslcDescription("Step of the plan containing an action.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_STEP})
     @OslcReadOnly(false)
-    public HashSet<Step> getStep();
+    public HashSet<Link> getStep();
 
     @OslcName("time")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "time")
@@ -104,7 +104,7 @@ public interface IPlan
 
 
     public void setCost(final Boolean cost );
-    public void setStep(final HashSet<Step> step );
+    public void setStep(final HashSet<Link> step );
     public void setTime(final Boolean time );
 }
 

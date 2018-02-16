@@ -80,24 +80,21 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 // Start of user code classAnnotations
 // End of user code
 @OslcNamespace(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE)
-@OslcName(PddlDomainConstants.FUNCTION)
-@OslcResourceShape(title = "Function Resource Shape", describes = PddlDomainConstants.TYPE_FUNCTION)
-public class Function
+@OslcName(PddlDomainConstants.OR)
+@OslcResourceShape(title = "Or Resource Shape", describes = PddlDomainConstants.TYPE_OR)
+public class Or
     extends AbstractResource
-    implements IFunction
+    implements IOr
 {
-    // Start of user code attributeAnnotation:parameter
+    // Start of user code attributeAnnotation:argument
     // End of user code
-    private Link parameter = new Link();
-    // Start of user code attributeAnnotation:label
-    // End of user code
-    private String label;
+    private HashSet<Link> argument = new HashSet<Link>();
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
-    public Function()
+    public Or()
            throws URISyntaxException
     {
         super();
@@ -106,7 +103,7 @@ public class Function
         // End of user code
     }
     
-    public Function(final URI about)
+    public Or(final URI about)
            throws URISyntaxException
     {
         super(about);
@@ -119,8 +116,8 @@ public class Function
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        PddlDomainConstants.PATH_FUNCTION,
-        Function.class);
+        PddlDomainConstants.PATH_OR,
+        Or.class);
     }
     
     
@@ -136,7 +133,7 @@ public class Function
         // End of user code
     
         if (asLocalResource) {
-            result = result + "{a Local Function Resource} - update Function.toString() to present resource as desired.";
+            result = result + "{a Local Or Resource} - update Or.toString() to present resource as desired.";
             // Start of user code toString_bodyForLocalResource
             // End of user code
         }
@@ -176,144 +173,89 @@ public class Function
         return result;
     }
     
+    public void addArgument(final Link argument)
+    {
+        this.argument.add(argument);
+    }
     
-    // Start of user code getterAnnotation:parameter
+    
+    // Start of user code getterAnnotation:argument
     // End of user code
-    @OslcName("parameter")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "parameter")
-    @OslcDescription("Condition (same as precondition).")
-    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcName("argument")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "argument")
+    @OslcDescription("Conditional effect.")
+    @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public Link getParameter()
+    public HashSet<Link> getArgument()
     {
-        // Start of user code getterInit:parameter
+        // Start of user code getterInit:argument
         // End of user code
-        return parameter;
+        return argument;
     }
     
-    // Start of user code getterAnnotation:label
+    
+    // Start of user code setterAnnotation:argument
     // End of user code
-    @OslcName("label")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "label")
-    @OslcDescription("Parameter name.")
-    @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.String)
-    @OslcReadOnly(false)
-    public String getLabel()
+    public void setArgument(final HashSet<Link> argument )
     {
-        // Start of user code getterInit:label
+        // Start of user code setterInit:argument
         // End of user code
-        return label;
-    }
+        this.argument.clear();
+        if (argument != null)
+        {
+            this.argument.addAll(argument);
+        }
     
-    
-    // Start of user code setterAnnotation:parameter
-    // End of user code
-    public void setParameter(final Link parameter )
-    {
-        // Start of user code setterInit:parameter
-        // End of user code
-        this.parameter = parameter;
-    
-        // Start of user code setterFinalize:parameter
-        // End of user code
-    }
-    
-    // Start of user code setterAnnotation:label
-    // End of user code
-    public void setLabel(final String label )
-    {
-        // Start of user code setterInit:label
-        // End of user code
-        this.label = label;
-    
-        // Start of user code setterFinalize:label
+        // Start of user code setterFinalize:argument
         // End of user code
     }
     
     
-    static public String parameterToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    static public String argumentToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
     
-        // Start of user code "Init:parameterToHtmlForCreation(...)"
+        // Start of user code "Init:argumentToHtmlForCreation(...)"
         // End of user code
     
-        s = s + "<label for=\"parameter\">parameter: </LABEL>";
+        s = s + "<label for=\"argument\">argument: </LABEL>";
     
-        // Start of user code "Mid:parameterToHtmlForCreation(...)"
+        // Start of user code "Mid:argumentToHtmlForCreation(...)"
         // End of user code
     
-        // Start of user code "Finalize:parameterToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"label\">label: </LABEL>";
-    
-        // Start of user code "Mid:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"label\" type=\"text\" style=\"width: 400px\" id=\"label\" >";
-        // Start of user code "Finalize:labelToHtmlForCreation(...)"
+        // Start of user code "Finalize:argumentToHtmlForCreation(...)"
         // End of user code
     
         return s;
     }
     
     
-    public String parameterToHtml()
+    public String argumentToHtml()
     {
         String s = "";
     
-        // Start of user code parametertoHtml_mid
+        // Start of user code argumenttoHtml_mid
         // End of user code
     
         try {
-            if ((parameter == null) || (parameter.getValue() == null)) {
-                s = s + "<em>null</em>";
+            s = s + "<ul>";
+            for(Link next : argument) {
+                s = s + "<li>";
+                if (next.getValue() == null) {
+                    s= s + "<em>null</em>";
+                }
+                else {
+                    s = s + "<a href=\"" + next.getValue().toString() + "\">" + next.getValue().toString() + "</a>";
+                }
+                s = s + "</li>";
             }
-            else {
-                s = s + parameter.getValue().toString();
-            }
+            s = s + "</ul>";
         } catch (Exception e) {
             e.printStackTrace();
         }
     
-        // Start of user code parametertoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String labelToHtml()
-    {
-        String s = "";
-    
-        // Start of user code labeltoHtml_mid
-        // End of user code
-    
-        try {
-            if (label == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + label.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code labeltoHtml_finalize
+        // Start of user code argumenttoHtml_finalize
         // End of user code
     
         return s;

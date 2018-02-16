@@ -74,16 +74,17 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 public interface IImply
 {
 
+    public void addArgument(final Link argument );
 
     @OslcName("argument")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "argument")
     @OslcDescription("Conditional effect.")
-    @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcOccurs(Occurs.OneOrMany)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public Link getArgument();
+    public HashSet<Link> getArgument();
 
 
-    public void setArgument(final Link argument );
+    public void setArgument(final HashSet<Link> argument );
 }
 

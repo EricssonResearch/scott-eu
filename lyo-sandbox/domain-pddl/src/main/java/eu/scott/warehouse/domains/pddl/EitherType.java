@@ -69,7 +69,8 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.pddl.PrimitiveType;
 
 // Start of user code imports
 // End of user code
@@ -86,6 +87,9 @@ public class EitherType
     extends AbstractResource
     implements IEitherType
 {
+    // Start of user code attributeAnnotation:member
+    // End of user code
+    private HashSet<Link> member = new HashSet<Link>();
     
     // Start of user code classAttributes
     // End of user code
@@ -170,9 +174,89 @@ public class EitherType
         return result;
     }
     
+    public void addMember(final Link member)
+    {
+        this.member.add(member);
+    }
     
     
+    // Start of user code getterAnnotation:member
+    // End of user code
+    @OslcName("member")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "member")
+    @OslcDescription("Type member (primitive type).")
+    @OslcOccurs(Occurs.OneOrMany)
+    @OslcValueType(ValueType.Resource)
+    @OslcRange({PddlDomainConstants.TYPE_PRIMITIVETYPE})
+    @OslcReadOnly(false)
+    public HashSet<Link> getMember()
+    {
+        // Start of user code getterInit:member
+        // End of user code
+        return member;
+    }
     
+    
+    // Start of user code setterAnnotation:member
+    // End of user code
+    public void setMember(final HashSet<Link> member )
+    {
+        // Start of user code setterInit:member
+        // End of user code
+        this.member.clear();
+        if (member != null)
+        {
+            this.member.addAll(member);
+        }
+    
+        // Start of user code setterFinalize:member
+        // End of user code
+    }
+    
+    
+    static public String memberToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    {
+        String s = "";
+    
+        // Start of user code "Init:memberToHtmlForCreation(...)"
+        // End of user code
+    
+        s = s + "<label for=\"member\">member: </LABEL>";
+    
+        // Start of user code "Mid:memberToHtmlForCreation(...)"
+        // End of user code
+    
+        // Start of user code "Finalize:memberToHtmlForCreation(...)"
+        // End of user code
+    
+        return s;
+    }
+    
+    
+    public String memberToHtml()
+    {
+        String s = "";
+    
+        // Start of user code membertoHtml_mid
+        // End of user code
+    
+        try {
+            s = s + "<ul>";
+            for(Link next : member) {
+                s = s + "<li>";
+                s = s + (new PrimitiveType (next.getValue())).toHtml(false);
+                s = s + "</li>";
+            }
+            s = s + "</ul>";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        // Start of user code membertoHtml_finalize
+        // End of user code
+    
+        return s;
+    }
     
     
 }

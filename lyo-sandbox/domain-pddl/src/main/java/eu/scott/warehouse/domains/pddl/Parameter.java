@@ -89,7 +89,7 @@ public class Parameter
 {
     // Start of user code attributeAnnotation:type
     // End of user code
-    private EitherType type = new EitherType();
+    private Link type = new Link();
     // Start of user code attributeAnnotation:label
     // End of user code
     private String label;
@@ -187,10 +187,10 @@ public class Parameter
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "type")
     @OslcDescription("Parameter type.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_EITHERTYPE})
     @OslcReadOnly(false)
-    public EitherType getType()
+    public Link getType()
     {
         // Start of user code getterInit:type
         // End of user code
@@ -230,7 +230,7 @@ public class Parameter
     
     // Start of user code setterAnnotation:type
     // End of user code
-    public void setType(final EitherType type )
+    public void setType(final Link type )
     {
         // Start of user code setterInit:type
         // End of user code
@@ -330,11 +330,11 @@ public class Parameter
         // End of user code
     
         try {
-            if (type == null) {
+            if ((type == null) || (type.getValue() == null)) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + type.toHtml(true);
+                s = s + (new EitherType (type.getValue())).toHtml(false);
             }
         } catch (Exception e) {
             e.printStackTrace();

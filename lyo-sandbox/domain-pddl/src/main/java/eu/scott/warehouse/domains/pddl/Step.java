@@ -89,7 +89,7 @@ public class Step
 {
     // Start of user code attributeAnnotation:action
     // End of user code
-    private Action action = new Action();
+    private Link action = new Link();
     // Start of user code attributeAnnotation:adding
     // End of user code
     private HashSet<Link> adding = new HashSet<Link>();
@@ -208,10 +208,10 @@ public class Step
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "action")
     @OslcDescription("Action of the plan step.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_ACTION})
     @OslcReadOnly(false)
-    public Action getAction()
+    public Link getAction()
     {
         // Start of user code getterInit:action
         // End of user code
@@ -224,7 +224,7 @@ public class Step
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "adding")
     @OslcDescription("Step additions.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getAdding()
     {
@@ -239,7 +239,7 @@ public class Step
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "deleting")
     @OslcDescription("Step deletions.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getDeleting()
     {
@@ -254,7 +254,7 @@ public class Step
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "updating")
     @OslcDescription("Step updates.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getUpdating()
     {
@@ -281,7 +281,7 @@ public class Step
     
     // Start of user code setterAnnotation:action
     // End of user code
-    public void setAction(final Action action )
+    public void setAction(final Link action )
     {
         // Start of user code setterInit:action
         // End of user code
@@ -452,11 +452,11 @@ public class Step
         // End of user code
     
         try {
-            if (action == null) {
+            if ((action == null) || (action.getValue() == null)) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + action.toHtml(true);
+                s = s + (new Action (action.getValue())).toHtml(false);
             }
         } catch (Exception e) {
             e.printStackTrace();

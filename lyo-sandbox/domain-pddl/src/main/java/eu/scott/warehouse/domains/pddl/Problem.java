@@ -90,7 +90,7 @@ public class Problem
 {
     // Start of user code attributeAnnotation:domain
     // End of user code
-    private Domain domain = new Domain();
+    private Link domain = new Link();
     // Start of user code attributeAnnotation:goal
     // End of user code
     private Link goal = new Link();
@@ -105,7 +105,7 @@ public class Problem
     private Link minimize = new Link();
     // Start of user code attributeAnnotation:pddlObject
     // End of user code
-    private HashSet<PddlObject> pddlObject = new HashSet<PddlObject>();
+    private HashSet<Link> pddlObject = new HashSet<Link>();
     // Start of user code attributeAnnotation:label
     // End of user code
     private String label;
@@ -198,7 +198,7 @@ public class Problem
         this.init.add(init);
     }
     
-    public void addPddlObject(final PddlObject pddlObject)
+    public void addPddlObject(final Link pddlObject)
     {
         this.pddlObject.add(pddlObject);
     }
@@ -210,10 +210,10 @@ public class Problem
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "domain")
     @OslcDescription("Problem planning domain.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_DOMAIN})
     @OslcReadOnly(false)
-    public Domain getDomain()
+    public Link getDomain()
     {
         // Start of user code getterInit:domain
         // End of user code
@@ -226,7 +226,7 @@ public class Problem
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "goal")
     @OslcDescription("Problem goal.")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getGoal()
     {
@@ -241,7 +241,7 @@ public class Problem
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "init")
     @OslcDescription("Problem init.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public HashSet<Link> getInit()
     {
@@ -256,7 +256,7 @@ public class Problem
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "maximize")
     @OslcDescription("Maximization metric.")
     @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getMaximize()
     {
@@ -271,7 +271,7 @@ public class Problem
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "minimize")
     @OslcDescription("Minimization metric.")
     @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getMinimize()
     {
@@ -286,10 +286,10 @@ public class Problem
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "pddlObject")
     @OslcDescription("Problem objects.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_PDDLOBJECT})
     @OslcReadOnly(false)
-    public HashSet<PddlObject> getPddlObject()
+    public HashSet<Link> getPddlObject()
     {
         // Start of user code getterInit:pddlObject
         // End of user code
@@ -314,7 +314,7 @@ public class Problem
     
     // Start of user code setterAnnotation:domain
     // End of user code
-    public void setDomain(final Domain domain )
+    public void setDomain(final Link domain )
     {
         // Start of user code setterInit:domain
         // End of user code
@@ -378,7 +378,7 @@ public class Problem
     
     // Start of user code setterAnnotation:pddlObject
     // End of user code
-    public void setPddlObject(final HashSet<PddlObject> pddlObject )
+    public void setPddlObject(final HashSet<Link> pddlObject )
     {
         // Start of user code setterInit:pddlObject
         // End of user code
@@ -541,11 +541,11 @@ public class Problem
         // End of user code
     
         try {
-            if (domain == null) {
+            if ((domain == null) || (domain.getValue() == null)) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + domain.toHtml(true);
+                s = s + (new Domain (domain.getValue())).toHtml(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -668,9 +668,9 @@ public class Problem
     
         try {
             s = s + "<ul>";
-            for(PddlObject next : pddlObject) {
+            for(Link next : pddlObject) {
                 s = s + "<li>";
-                s = s + next.toHtml(true);
+                s = s + (new PddlObject (next.getValue())).toHtml(false);
                 s = s + "</li>";
             }
             s = s + "</ul>";

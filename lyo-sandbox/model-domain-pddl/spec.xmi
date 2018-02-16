@@ -48,7 +48,7 @@
     <resourceProperties name="minimize" occurs="zeroOrOne" valueType="Resource" description="Minimization metric."/>
     <resourceProperties name="object" occurs="zeroOrMany" valueType="Resource" range="//@domainSpecifications.0/@resources.13" description="Problem objects."/>
     <resourceProperties name="argument" description="Assignment operator argument (fluent)."/>
-    <generationSetting javaClassPackageName="" javaFilesPath=""/>
+    <generationSetting javaClassPackageName="eu.scott.warehouse.domains.pddl" javaFilesPath=""/>
   </domainSpecifications>
   <domainSpecifications name="Blocksworld Domain" namespaceURI="http://ontology.cf.ericsson.net/pddl_example/" namespacePrefix="//@domainPrefixes.1">
     <resources name="location" extends="//@domainSpecifications.0/@resources.4"/>
@@ -57,8 +57,9 @@
     <resources name="on"/>
     <resourceProperties name="on-x" valueType="Resource"/>
     <resourceProperties name="on-y" valueType="Resource"/>
+    <generationSetting javaClassPackageName="eu.scott.warehouse.domains.blocksworld" javaFilesPath=""/>
   </domainSpecifications>
   <domainPrefixes name="pddl"/>
-  <domainPrefixes name="nsp2"/>
-  <generationSetting javaClassPackageName="eu.scott.warehouse.domains.pddl" javaFilesPath="domain-pddl/src/main/java/"/>
+  <domainPrefixes name="bworld"/>
+  <generationSetting javaClassPackageName="eu.scott.warehouse.domains" javaFilesPath="domain-pddl/src/main/java/"/>
 </oslc4j_ai:Specification>

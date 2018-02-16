@@ -64,46 +64,27 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.pddl.IEitherType;
 
 // Start of user code imports
 // End of user code
 
 @OslcNamespace(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE)
-@OslcName(PddlDomainConstants.PARAMETER)
-@OslcResourceShape(title = "Parameter Resource Shape", describes = PddlDomainConstants.TYPE_PARAMETER)
-public interface IParameter
+@OslcName(PddlDomainConstants.OR)
+@OslcResourceShape(title = "Or Resource Shape", describes = PddlDomainConstants.TYPE_OR)
+public interface IOr
 {
 
+    public void addArgument(final Link argument );
 
-    @OslcName("type")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "type")
-    @OslcDescription("Parameter type.")
-    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcName("argument")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "argument")
+    @OslcDescription("Conditional effect.")
+    @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
-    @OslcRange({PddlDomainConstants.TYPE_EITHERTYPE})
     @OslcReadOnly(false)
-    public Link getType();
-
-    @OslcName("label")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "label")
-    @OslcDescription("Parameter name.")
-    @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.String)
-    @OslcReadOnly(false)
-    public String getLabel();
-
-    @OslcName("order")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "order")
-    @OslcDescription("Parameter order.")
-    @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.Integer)
-    @OslcReadOnly(false)
-    public Integer getOrder();
+    public HashSet<Link> getArgument();
 
 
-    public void setType(final Link type );
-    public void setLabel(final String label );
-    public void setOrder(final Integer order );
+    public void setArgument(final HashSet<Link> argument );
 }
 
