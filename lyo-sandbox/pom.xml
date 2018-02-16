@@ -14,6 +14,8 @@
         <module>webapp-whc</module>
         <!-- <module>webapp-twin</module> -->
 
+        <module>cli-whc</module>
+
         <!-- <module>sandbox-twin-webapp</module> -->
         <!-- <module>sandbox-warehouse-webapp</module> -->
         <!-- <module>scott-planner-webapp</module> -->
