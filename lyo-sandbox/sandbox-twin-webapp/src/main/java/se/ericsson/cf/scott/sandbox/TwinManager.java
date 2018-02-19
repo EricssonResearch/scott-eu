@@ -4,13 +4,13 @@
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  *  The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  *  and the Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
- *  
+ *
  *  Contributors:
- *  
+ *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
  *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
@@ -24,12 +24,8 @@ package se.ericsson.cf.scott.sandbox;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.ServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.resources.Action;
 import se.ericsson.cf.scott.sandbox.resources.ActionType;
 import se.ericsson.cf.scott.sandbox.resources.Mission;
@@ -49,7 +45,7 @@ import javax.servlet.ServletContext;
 import org.eclipse.lyo.store.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.clients.WarehouseAdaptorClient;
+import se.ericsson.cf.scott.sandbox.clients.OslcClientHelper;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import se.ericsson.cf.scott.sandbox.clients.OslcClientException;
 import java.net.URISyntaxException;
@@ -62,18 +58,18 @@ public class TwinManager {
 
     // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
-    private static WarehouseAdaptorClient warehouseAdaptorClient;
+    private static OslcClientHelper warehouseAdaptorClient;
     private static String spId = "dummy";
     private static Store store;
     // End of user code
-    
-    
+
+
     // Start of user code class_methods
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
         final ServletContext context = servletContextEvent.getServletContext();
         final String queryUri = context.getInitParameter(
@@ -93,9 +89,9 @@ public class TwinManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
         // TODO Implement code to shutdown connections to data backbone etc...
         // End of user code
@@ -104,7 +100,7 @@ public class TwinManager {
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
         serviceProviderInfo.serviceProviderId = spId;
@@ -119,12 +115,12 @@ public class TwinManager {
     public static Robot getRobot(HttpServletRequest httpServletRequest, final String serviceProviderId, final String robotId)
     {
         Robot aResource = null;
-        
+
         // Start of user code getRobot
         if ("1".equals(robotId)) {
             try {
-                warehouseAdaptorClient = new WarehouseAdaptorClient("http://sandbox-warehouse:8080/sandbox-warehouse/services");
-                final AbstractResource wp2 = warehouseAdaptorClient.fetchWaypoint("dummy", "wp2");
+                warehouseAdaptorClient = new OslcClientHelper("http://sandbox-warehouse:8080/sandbox-warehouse/services");
+                final AbstractResource wp2 = warehouseAdaptorClient.fetchResource("dummy", "wp2");
 
                 aResource = new Robot(spId, "1");
                 aResource.setIsAt(new Link(wp2.getAbout()));

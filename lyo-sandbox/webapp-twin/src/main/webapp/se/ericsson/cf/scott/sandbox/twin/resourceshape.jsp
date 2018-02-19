@@ -69,7 +69,7 @@ End of user code
 
     <nav class="navbar sticky-top navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="<c:url value="/services/catalog/singleton"/>">Twin</a>
+            <a class="navbar-brand" href="<c:url value="/services/catalog/singleton"/>">RobotTwin</a>
         </div>
     </nav>
 

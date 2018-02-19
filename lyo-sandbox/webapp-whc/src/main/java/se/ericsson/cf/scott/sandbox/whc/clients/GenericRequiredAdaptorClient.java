@@ -21,7 +21,6 @@ import org.apache.wink.client.ClientResponse;
 import org.eclipse.lyo.client.oslc.OSLCConstants;
 import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
-import eu.scott.warehouse.domains.pddl.Plan;
 
 // Start of user code imports
 // End of user code
@@ -58,20 +57,4 @@ public class GenericRequiredAdaptorClient
         return catalog;
     }
 
-    public static Plan getPlan(String resourceURI) throws Exception {
-        OslcClient client = new OslcClient();
-        ClientResponse response = null;
-        Plan resource = null;
-
-        // Start of user code getPlan_init
-        // End of user code
-
-        response = client.getResource(resourceURI, OSLCConstants.CT_RDF);
-        if (response != null) {
-            resource = response.getEntity(Plan.class);
-        }
-        // Start of user code getPlan_final
-        // End of user code
-        return resource;
-    }
 }

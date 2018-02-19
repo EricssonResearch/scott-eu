@@ -50,8 +50,8 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 
-import se.ericsson.cf.scott.sandbox.twin.TwinConstants;
-import se.ericsson.cf.scott.sandbox.twin.TwinManager;
+import se.ericsson.cf.scott.sandbox.twin.RobotTwinConstants;
+import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 
 // Start of user code imports
@@ -114,7 +114,7 @@ public class ServiceProviderCatalogService
         ServiceProviderCatalog catalog =  ServiceProviderCatalogSingleton.getServiceProviderCatalog(httpServletRequest);
 
         if (catalog != null) {
-            httpServletResponse.addHeader(TwinConstants.HDR_OSLC_VERSION,"2.0");
+            httpServletResponse.addHeader(RobotTwinConstants.HDR_OSLC_VERSION,"2.0");
             return catalog;
         }
 

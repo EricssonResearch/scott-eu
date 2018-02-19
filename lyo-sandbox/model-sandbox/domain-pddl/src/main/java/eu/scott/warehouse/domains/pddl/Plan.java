@@ -92,7 +92,7 @@ public class Plan
     private Boolean cost;
     // Start of user code attributeAnnotation:step
     // End of user code
-    private HashSet<Step> step = new HashSet<Step>();
+    private HashSet<Link> step = new HashSet<Link>();
     // Start of user code attributeAnnotation:time
     // End of user code
     private Boolean time;
@@ -119,6 +119,51 @@ public class Plan
         // End of user code
     }
     
+    /**
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinResourcesFactory} instead.
+    */
+    @Deprecated
+    public Plan(final String serviceProviderId, final String planId)
+           throws URISyntaxException
+    {
+        this (constructURI(serviceProviderId, planId));
+        // Start of user code constructor3
+        // End of user code
+    }
+    
+    /**
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinResourcesFactory} instead.
+    */
+    @Deprecated
+    public static URI constructURI(final String serviceProviderId, final String planId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("serviceProviderId", serviceProviderId);
+        pathParameters.put("planId", planId);
+        String instanceURI = "serviceProviders/{serviceProviderId}/resources/plans/{planId}";
+    
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+    
+    /**
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinResourcesFactory} instead.
+    */
+    @Deprecated
+    public static Link constructLink(final String serviceProviderId, final String planId , final String label)
+    {
+        return new Link(constructURI(serviceProviderId, planId), label);
+    }
+    
+    /**
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinResourcesFactory} instead.
+    */
+    @Deprecated
+    public static Link constructLink(final String serviceProviderId, final String planId)
+    {
+        return new Link(constructURI(serviceProviderId, planId));
+    }
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -180,7 +225,7 @@ public class Plan
         return result;
     }
     
-    public void addStep(final Step step)
+    public void addStep(final Link step)
     {
         this.step.add(step);
     }
@@ -207,10 +252,10 @@ public class Plan
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "step")
     @OslcDescription("Step of the plan containing an action.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.LocalResource)
+    @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.TYPE_STEP})
     @OslcReadOnly(false)
-    public HashSet<Step> getStep()
+    public HashSet<Link> getStep()
     {
         // Start of user code getterInit:step
         // End of user code
@@ -247,7 +292,7 @@ public class Plan
     
     // Start of user code setterAnnotation:step
     // End of user code
-    public void setStep(final HashSet<Step> step )
+    public void setStep(final HashSet<Link> step )
     {
         // Start of user code setterInit:step
         // End of user code
@@ -364,9 +409,9 @@ public class Plan
     
         try {
             s = s + "<ul>";
-            for(Step next : step) {
+            for(Link next : step) {
                 s = s + "<li>";
-                s = s + next.toHtml(true);
+                s = s + (new Step (next.getValue())).toHtml(false);
                 s = s + "</li>";
             }
             s = s + "</ul>";

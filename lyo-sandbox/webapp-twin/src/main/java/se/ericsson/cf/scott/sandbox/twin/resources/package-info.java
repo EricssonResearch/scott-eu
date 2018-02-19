@@ -26,7 +26,8 @@
     @OslcNamespaceDefinition(prefix = OslcConstants.OSLC_DATA_NAMESPACE_PREFIX,           namespaceURI = OslcConstants.OSLC_DATA_NAMESPACE),
     @OslcNamespaceDefinition(prefix = OslcConstants.RDF_NAMESPACE_PREFIX,                 namespaceURI = OslcConstants.RDF_NAMESPACE),
     @OslcNamespaceDefinition(prefix = OslcConstants.RDFS_NAMESPACE_PREFIX,                namespaceURI = OslcConstants.RDFS_NAMESPACE),
-
+    @OslcNamespaceDefinition(prefix = BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE_PREFIX, namespaceURI = BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, namespaceURI = PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE)
 })
 package se.ericsson.cf.scott.sandbox.twin.resources;
 
@@ -34,5 +35,6 @@ import org.eclipse.lyo.oslc4j.core.annotation.OslcNamespaceDefinition;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcSchema;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 
-
+import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 

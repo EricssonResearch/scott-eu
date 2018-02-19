@@ -71,17 +71,24 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
-import se.ericsson.cf.scott.sandbox.twin.TwinManager;
-import se.ericsson.cf.scott.sandbox.twin.TwinConstants;
-
+import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager;
+import se.ericsson.cf.scott.sandbox.twin.RobotTwinConstants;
+import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
+import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.PrimitiveType;
+import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.blocksworld.Location;
 
 // Start of user code imports
 // End of user code
 
 // Start of user code pre_class_code
 // End of user code
-@OslcService(.)
+@OslcService(BworldDomainConstants.BLOCKSWORLD_DOMAIN_DOMAIN)
 @Path("serviceProviders/{serviceProviderId}/resources")
 public class ServiceProviderService1
 {
@@ -100,4 +107,236 @@ public class ServiceProviderService1
         super();
     }
 
+    @GET
+    @Path("plans/{planId}")
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    public Plan getPlan(
+                @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws IOException, ServletException, URISyntaxException
+    {
+        // Start of user code getResource_init
+        // End of user code
+
+        final Plan aPlan = RobotTwinManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            // Start of user code getPlan
+            // End of user code
+            httpServletResponse.addHeader(RobotTwinConstants.HDR_OSLC_VERSION, RobotTwinConstants.OSLC_VERSION_V2);
+            return aPlan;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("plans/{planId}")
+    @Produces({ MediaType.TEXT_HTML })
+    public Response getPlanAsHtml(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getPlanAsHtml_init
+        // End of user code
+
+        final Plan aPlan = RobotTwinManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            httpServletRequest.setAttribute("aPlan", aPlan);
+            // Start of user code getPlanAsHtml_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/twin/plan.jsp");
+            rd.forward(httpServletRequest,httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("plans/{planId}")
+    @Produces({OslcMediaType.APPLICATION_X_OSLC_COMPACT_XML})
+    public Compact getPlanCompact(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        String iconUri = OSLC4JUtils.getPublicURI() + "/images/ui_preview_icon.gif";
+        String smallPreviewHintHeight = "10em";
+        String smallPreviewHintWidth = "45em";
+        String largePreviewHintHeight = "20em";
+        String largePreviewHintWidth = "45em";
+
+        // Start of user code getPlanCompact_init
+        //TODO: adjust the preview height & width values from the default values provided above.
+        // End of user code
+
+        final Plan aPlan = RobotTwinManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            final Compact compact = new Compact();
+
+            compact.setAbout(aPlan.getAbout());
+            compact.setTitle(aPlan.toString());
+
+            compact.setIcon(new URI(iconUri));
+
+            //Create and set attributes for OSLC preview resource
+            final Preview smallPreview = new Preview();
+            smallPreview.setHintHeight(smallPreviewHintHeight);
+            smallPreview.setHintWidth(smallPreviewHintWidth);
+            smallPreview.setDocument(UriBuilder.fromUri(aPlan.getAbout()).path("smallPreview").build());
+            compact.setSmallPreview(smallPreview);
+
+            //Use the HTML representation of a change request as the large preview as well
+            final Preview largePreview = new Preview();
+            largePreview.setHintHeight(largePreviewHintHeight);
+            largePreview.setHintWidth(largePreviewHintWidth);
+            largePreview.setDocument(aPlan.getAbout());
+            compact.setLargePreview(largePreview);
+            httpServletResponse.addHeader(RobotTwinConstants.HDR_OSLC_VERSION, RobotTwinConstants.OSLC_VERSION_V2);
+            return compact;
+        }
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("plans/{planId}/smallPreview")
+    @Produces({ MediaType.TEXT_HTML })
+    public void getPlanAsHtmlSmallPreview(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getPlanAsHtmlSmallPreview_init
+        // End of user code
+
+        final Plan aPlan = RobotTwinManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            httpServletRequest.setAttribute("aPlan", aPlan);
+            // Start of user code getPlanAsHtmlSmallPreview_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/twin/plansmallpreview.jsp");
+            httpServletResponse.addHeader(RobotTwinConstants.HDR_OSLC_VERSION, RobotTwinConstants.OSLC_VERSION_V2);
+            rd.forward(httpServletRequest, httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+    @GET
+    @Path("locations/{locationId}")
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    public Location getLocation(
+                @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("locationId") final String locationId
+        ) throws IOException, ServletException, URISyntaxException
+    {
+        // Start of user code getResource_init
+        // End of user code
+
+        final Location aLocation = RobotTwinManager.getLocation(httpServletRequest, serviceProviderId, locationId);
+
+        if (aLocation != null) {
+            // Start of user code getLocation
+            // End of user code
+            httpServletResponse.addHeader(RobotTwinConstants.HDR_OSLC_VERSION, RobotTwinConstants.OSLC_VERSION_V2);
+            return aLocation;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("locations/{locationId}")
+    @Produces({ MediaType.TEXT_HTML })
+    public Response getLocationAsHtml(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("locationId") final String locationId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getLocationAsHtml_init
+        // End of user code
+
+        final Location aLocation = RobotTwinManager.getLocation(httpServletRequest, serviceProviderId, locationId);
+
+        if (aLocation != null) {
+            httpServletRequest.setAttribute("aLocation", aLocation);
+            // Start of user code getLocationAsHtml_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/twin/location.jsp");
+            rd.forward(httpServletRequest,httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("locations/{locationId}")
+    @Produces({OslcMediaType.APPLICATION_X_OSLC_COMPACT_XML})
+    public Compact getLocationCompact(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("locationId") final String locationId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        String iconUri = OSLC4JUtils.getPublicURI() + "/images/ui_preview_icon.gif";
+        String smallPreviewHintHeight = "10em";
+        String smallPreviewHintWidth = "45em";
+        String largePreviewHintHeight = "20em";
+        String largePreviewHintWidth = "45em";
+
+        // Start of user code getLocationCompact_init
+        //TODO: adjust the preview height & width values from the default values provided above.
+        // End of user code
+
+        final Location aLocation = RobotTwinManager.getLocation(httpServletRequest, serviceProviderId, locationId);
+
+        if (aLocation != null) {
+            final Compact compact = new Compact();
+
+            compact.setAbout(aLocation.getAbout());
+            compact.setTitle(aLocation.toString());
+
+            compact.setIcon(new URI(iconUri));
+
+            //Create and set attributes for OSLC preview resource
+            final Preview smallPreview = new Preview();
+            smallPreview.setHintHeight(smallPreviewHintHeight);
+            smallPreview.setHintWidth(smallPreviewHintWidth);
+            smallPreview.setDocument(UriBuilder.fromUri(aLocation.getAbout()).path("smallPreview").build());
+            compact.setSmallPreview(smallPreview);
+
+            //Use the HTML representation of a change request as the large preview as well
+            final Preview largePreview = new Preview();
+            largePreview.setHintHeight(largePreviewHintHeight);
+            largePreview.setHintWidth(largePreviewHintWidth);
+            largePreview.setDocument(aLocation.getAbout());
+            compact.setLargePreview(largePreview);
+            httpServletResponse.addHeader(RobotTwinConstants.HDR_OSLC_VERSION, RobotTwinConstants.OSLC_VERSION_V2);
+            return compact;
+        }
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("locations/{locationId}/smallPreview")
+    @Produces({ MediaType.TEXT_HTML })
+    public void getLocationAsHtmlSmallPreview(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("locationId") final String locationId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getLocationAsHtmlSmallPreview_init
+        // End of user code
+
+        final Location aLocation = RobotTwinManager.getLocation(httpServletRequest, serviceProviderId, locationId);
+
+        if (aLocation != null) {
+            httpServletRequest.setAttribute("aLocation", aLocation);
+            // Start of user code getLocationAsHtmlSmallPreview_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/twin/locationsmallpreview.jsp");
+            httpServletResponse.addHeader(RobotTwinConstants.HDR_OSLC_VERSION, RobotTwinConstants.OSLC_VERSION_V2);
+            rd.forward(httpServletRequest, httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
 }

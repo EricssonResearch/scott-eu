@@ -63,7 +63,8 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.pddl.IAction;
 
 // Start of user code imports
 // End of user code
@@ -74,7 +75,56 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 public interface IStep
 {
 
+    public void addAdding(final Link adding );
+    public void addDeleting(final Link deleting );
+    public void addUpdating(final Link updating );
+
+    @OslcName("action")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "action")
+    @OslcDescription("Action of the plan step.")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Resource)
+    @OslcRange({PddlDomainConstants.TYPE_ACTION})
+    @OslcReadOnly(false)
+    public Link getAction();
+
+    @OslcName("adding")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "adding")
+    @OslcDescription("Step additions.")
+    @OslcOccurs(Occurs.ZeroOrMany)
+    @OslcValueType(ValueType.Resource)
+    @OslcReadOnly(false)
+    public HashSet<Link> getAdding();
+
+    @OslcName("deleting")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "deleting")
+    @OslcDescription("Step deletions.")
+    @OslcOccurs(Occurs.ZeroOrMany)
+    @OslcValueType(ValueType.Resource)
+    @OslcReadOnly(false)
+    public HashSet<Link> getDeleting();
+
+    @OslcName("updating")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "updating")
+    @OslcDescription("Step updates.")
+    @OslcOccurs(Occurs.ZeroOrMany)
+    @OslcValueType(ValueType.Resource)
+    @OslcReadOnly(false)
+    public HashSet<Link> getUpdating();
+
+    @OslcName("order")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "order")
+    @OslcDescription("Parameter order.")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Integer)
+    @OslcReadOnly(false)
+    public Integer getOrder();
 
 
+    public void setAction(final Link action );
+    public void setAdding(final HashSet<Link> adding );
+    public void setDeleting(final HashSet<Link> deleting );
+    public void setUpdating(final HashSet<Link> updating );
+    public void setOrder(final Integer order );
 }
 

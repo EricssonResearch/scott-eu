@@ -30,8 +30,6 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.Step;
 
 
 // Start of user code imports
@@ -43,17 +41,36 @@ import eu.scott.warehouse.domains.pddl.Step;
 public class WarehouseControllerManager {
 
     // Start of user code class_attributes
+    private final static String PACKAGE_ROOT = WarehouseControllerManager.class.getPackage().getName();
+    private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
+    private static Store store;
+    private static ServletContext context;
     // End of user code
     
     
     // Start of user code class_methods
+    private static String parameterFQDN(final String s) {
+        return PACKAGE_ROOT + "." + s;
+    }
+
+    private static String p(final String s) {
+        return context.getInitParameter(parameterFQDN(s));
+    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
         
         // Start of user code contextInitializeServletListener
-        // TODO Implement code to establish connection to data backbone etc ...
+        context = servletContextEvent.getServletContext();
+        try {
+            store = StoreFactory.sparql(p("store.query"), p("store.update"));
+            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
+            store.removeAll();
+        } catch (IOException |ARQException e) {
+            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
+                    p("store.query"), p("store.update"), e);
+        }
         // End of user code
     }
 
@@ -70,7 +87,10 @@ public class WarehouseControllerManager {
         ServiceProviderInfo[] serviceProviderInfos = {};
         
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
-        // TODO Implement code to return the set of ServiceProviders
+        final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
+        serviceProviderInfo.serviceProviderId = "default";
+        serviceProviderInfo.name = "Default Service Provider";
+        serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
         // End of user code
         return serviceProviderInfos;
     }

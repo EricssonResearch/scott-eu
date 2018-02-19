@@ -9,9 +9,7 @@
       </serviceProviders>
     </serviceProviderCatalog>
     <specification/>
-    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor">
-      <servicedResources href="../scott-model-pddl/spec.xmi#//@domainSpecifications.0/@resources.1"/>
-    </requiredAdaptors>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
   <adaptorInterfaces name="PlannerReasoner placeholder" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.planner" javaFilesBasePath="../webapp-planner-placeholder/src/main/java/" jspFilesBasePath="../webapp-planner-placeholder/src/main/webapp/" javascriptFilesBasePath="../webapp-planner-placeholder/src/main/webapp/">
     <serviceProviderCatalog title="Planner Reasoner catalog">
@@ -24,11 +22,31 @@
     <specification/>
     <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
-  <adaptorInterfaces name="Twin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twin" javaFilesBasePath="../webapp-twin/src/main/java/" jspFilesBasePath="../webapp-twin/src/main/webapp/" javascriptFilesBasePath="../webapp-twin/src/main/webapp/">
+  <adaptorInterfaces name="RobotTwin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twin" javaFilesBasePath="../webapp-twin/src/main/java/" jspFilesBasePath="../webapp-twin/src/main/webapp/" javascriptFilesBasePath="../webapp-twin/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Service Provider" description="Service Provider">
         <services>
-          <basicCapabilities/>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1"/>
+          <basicCapabilities>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.0"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1/@resources.0"/>
+          </basicCapabilities>
+        </services>
+      </serviceProviders>
+    </serviceProviderCatalog>
+    <specification/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
+  </adaptorInterfaces>
+  <adaptorInterfaces name="ShelfTwin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twins.shelf" javaFilesBasePath="../webapp-twin-shelf/src/main/java/" jspFilesBasePath="../webapp-twin-shelf/src/main/webapp/" javascriptFilesBasePath="../webapp-twin-shelf/src/main/webapp/">
+    <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
+      <serviceProviders title="Service Provider" description="Service Provider">
+        <services>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1"/>
+          <basicCapabilities>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.0"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1/@resources.0"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1/@resources.1"/>
+          </basicCapabilities>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>

@@ -47,7 +47,7 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
-import se.ericsson.cf.scott.sandbox.twin.TwinManager;
+import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager;
 import se.ericsson.cf.scott.sandbox.twin.ServiceProviderInfo;
 
 // Start of user code imports
@@ -264,7 +264,7 @@ public class ServiceProviderCatalogSingleton
 
             String basePath = OSLC4JUtils.getServletURI();
 
-            ServiceProviderInfo [] serviceProviderInfos = TwinManager.getServiceProviderInfos(httpServletRequest);
+            ServiceProviderInfo [] serviceProviderInfos = RobotTwinManager.getServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (ServiceProviderInfo serviceProviderInfo : serviceProviderInfos) {
                 String identifier = serviceProviderIdentifier(serviceProviderInfo.serviceProviderId);

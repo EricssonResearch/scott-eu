@@ -1,72 +1,65 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>se.ericsson.cf.scott.sandbox</groupId>
-		<artifactId>sandbox-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
-	<artifactId>webapp-whc</artifactId>
-	<packaging>war</packaging>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<version.lyo.core>2.2.0</version.lyo.core>
-		<version.lyo.server>2.2.0</version.lyo.server>
-	</properties>
-	<repositories>
-		<repository>
-			<id>lyo-releases</id>
-			<name>lyo-releases repository</name>
-			<url>https://repo.eclipse.org/content/repositories/lyo-releases/</url>
-		</repository>
-	</repositories>
-	<dependencies>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>se.ericsson.cf.scott.sandbox</groupId>
+    <artifactId>sandbox-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>webapp-whc</artifactId>
+  <packaging>war</packaging>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <version.lyo>2.3.0.M3</version.lyo>
+  </properties>
+  <dependencies>
 
-		<dependency>
-			<groupId>se.ericsson.cf.scott.sandbox</groupId>
-			<artifactId>domain-pddl</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+    <dependency>
+      <groupId>se.ericsson.cf.scott.sandbox</groupId>
+      <artifactId>domain-pddl</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
 
-		<dependency>
-			<groupId>org.eclipse.lyo.oslc4j.core</groupId>
-			<artifactId>oslc4j-core</artifactId>
-			<version>${version.lyo.core}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.lyo.oslc4j.core</groupId>
-			<artifactId>oslc4j-jena-provider</artifactId>
-			<version>${version.lyo.core}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.lyo.oslc4j.core</groupId>
-			<artifactId>oslc4j-wink</artifactId>
-			<version>${version.lyo.core}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.lyo.oslc4j.core</groupId>
-			<artifactId>oslc4j-json4j-provider</artifactId>
-			<version>${version.lyo.core}</version>
-		</dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
+      <artifactId>oslc4j-core</artifactId>
+      <version>${version.lyo}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
+      <artifactId>oslc4j-jena-provider</artifactId>
+      <version>${version.lyo}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
+      <artifactId>oslc4j-wink</artifactId>
+      <version>${version.lyo}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
+      <artifactId>oslc4j-json4j-provider</artifactId>
+      <version>${version.lyo}</version>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.clients</groupId>
       <artifactId>oslc-java-client</artifactId>
-      <version>${version.lyo.core}</version>
+      <version>${version.lyo}</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -77,7 +70,7 @@
     <dependency>
       <groupId>org.eclipse.lyo.store</groupId>
       <artifactId>store-core</artifactId>
-      <version>2.2.0</version>
+      <version>${version.lyo}</version>
     </dependency>
 
     <dependency>
@@ -116,71 +109,80 @@
     </dependency>
 
     <dependency>
-			<groupId>org.eclipse.lyo.server</groupId>
-			<artifactId>oauth-core</artifactId>
-			<version>${version.lyo.server}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.lyo.server</groupId>
-			<artifactId>oauth-consumer-store</artifactId>
-			<version>${version.lyo.server}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.lyo.server</groupId>
-			<artifactId>oauth-webapp</artifactId>
-			<version>${version.lyo.server}</version>
-			<type>war</type>
-		</dependency>
+      <groupId>org.eclipse.lyo.server</groupId>
+      <artifactId>oauth-core</artifactId>
+      <version>${version.lyo}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.server</groupId>
+      <artifactId>oauth-consumer-store</artifactId>
+      <version>${version.lyo}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.server</groupId>
+      <artifactId>oauth-webapp</artifactId>
+      <version>${version.lyo}</version>
+      <type>war</type>
+    </dependency>
   </dependencies>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>jena-core</artifactId>
-        <version>2.13.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.3.9.v20160517</version>
-				<configuration>
-					<webAppConfig>
-						<contextPath>/sandbox-whc</contextPath>
-					</webAppConfig>
-					<reload>automatic</reload>
-					<scanIntervalSeconds>5</scanIntervalSeconds>
-					<systemProperties>
-						<systemProperty>
-							<name>jetty.port</name>
-							<value>8080</value>
-						</systemProperty>
-					</systemProperties>
-					<stopKey />
-					<stopPort />
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>9.3.9.v20160517</version>
+        <configuration>
+          <webAppConfig>
+            <contextPath>/sandbox-whc</contextPath>
+          </webAppConfig>
+          <reload>automatic</reload>
+          <scanIntervalSeconds>5</scanIntervalSeconds>
+          <systemProperties>
+            <systemProperty>
+              <name>jetty.port</name>
+              <value>8080</value>
+            </systemProperty>
+          </systemProperties>
+          <stopKey/>
+          <stopPort/>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <id>lyo-releases</id>
+      <name>Eclipse Lyo Releases</name>
+      <url>https://repo.eclipse.org/content/repositories/lyo-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>lyo-snapshots</id>
+      <name>Eclipse Lyo Snapshots</name>
+      <url>https://repo.eclipse.org/content/repositories/lyo-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
 </project>

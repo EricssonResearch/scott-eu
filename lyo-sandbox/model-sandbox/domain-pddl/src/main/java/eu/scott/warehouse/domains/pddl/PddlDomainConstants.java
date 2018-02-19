@@ -58,9 +58,6 @@ public interface PddlDomainConstants
     public static String EITHERTYPE = "EitherType";
     public static String PATH_EITHERTYPE = "eitherType";
     public static String TYPE_EITHERTYPE = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + EITHERTYPE;
-    public static String EITHERTYPE = "EitherType";
-    public static String PATH_EITHERTYPE = "eitherType";
-    public static String TYPE_EITHERTYPE = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + EITHERTYPE;
     public static String FLUENTMINUS = "FluentMinus";
     public static String PATH_FLUENTMINUS = "fluentMinus";
     public static String TYPE_FLUENTMINUS = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + FLUENTMINUS;
@@ -79,6 +76,9 @@ public interface PddlDomainConstants
     public static String PDDLOBJECT = "PddlObject";
     public static String PATH_PDDLOBJECT = "pddlObject";
     public static String TYPE_PDDLOBJECT = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + PDDLOBJECT;
+    public static String OR = "Or";
+    public static String PATH_OR = "or";
+    public static String TYPE_OR = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + OR;
     public static String PARAMETER = "Parameter";
     public static String PATH_PARAMETER = "parameter";
     public static String TYPE_PARAMETER = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + PARAMETER;
@@ -97,9 +97,6 @@ public interface PddlDomainConstants
     public static String QUANTIFIER = "Quantifier";
     public static String PATH_QUANTIFIER = "quantifier";
     public static String TYPE_QUANTIFIER = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + QUANTIFIER;
-    public static String STEP = "Step";
-    public static String PATH_STEP = "step";
-    public static String TYPE_STEP = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + STEP;
     public static String STEP = "Step";
     public static String PATH_STEP = "step";
     public static String TYPE_STEP = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + STEP;

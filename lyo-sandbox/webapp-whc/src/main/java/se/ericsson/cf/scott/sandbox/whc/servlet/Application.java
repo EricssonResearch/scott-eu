@@ -54,10 +54,9 @@ import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.whc.services.ResourceShapeService;
 
-import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.Step;
 
-// import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
+
+import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 
 // Start of user code imports
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
@@ -81,7 +80,7 @@ public class Application extends OslcWinkApplication {
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
         RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
-        // RESOURCE_CLASSES.add(ServiceProviderService1.class);
+        RESOURCE_CLASSES.add(ServiceProviderService1.class);
 
         // Catalog resources
         RESOURCE_CLASSES.add(ServiceProviderCatalogService.class);
@@ -108,8 +107,6 @@ public class Application extends OslcWinkApplication {
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER,         ServiceProvider.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER_CATALOG, ServiceProviderCatalog.class);
 
-        // RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PATH_PLAN, Plan.class);
-        // RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PATH_STEP, Step.class);
     }
 
     public Application()

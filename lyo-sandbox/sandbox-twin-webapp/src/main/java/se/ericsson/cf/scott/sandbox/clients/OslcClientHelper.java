@@ -10,6 +10,7 @@ import net.oauth.OAuthException;
 import org.apache.wink.client.ClientResponse;
 import org.eclipse.lyo.client.oslc.OSLCConstants;
 import org.eclipse.lyo.client.oslc.OslcClient;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.resources.Waypoint;
@@ -21,40 +22,39 @@ import se.ericsson.cf.scott.sandbox.resources.Waypoint;
  * @version $version-stub$
  * @since 0.0.1
  */
-public class WarehouseAdaptorClient {
+public class OslcClientHelper {
 
-    private final static Logger log = LoggerFactory.getLogger(WarehouseAdaptorClient.class);
+    private final static Logger log = LoggerFactory.getLogger(OslcClientHelper.class);
 
     private final OslcClient client = new OslcClient();
-    private final String base;
+//    private final String base;
 
-    public WarehouseAdaptorClient(final String base) {
-        this.base = base;
-    }
+//    public OslcClientHelper(final String base) {
+////        this.base = base;
+//    }
 
-    public Waypoint fetchWaypoint(final String serviceProviderId, final String waypointId)
+    public <R extends AbstractResource> R fetchResource(URI uri, Class<R> clazz)
             throws OslcClientException {
-        final URI waypointURI = constructWaypointURI(base, serviceProviderId, waypointId);
         try {
-            final String url = String.valueOf(waypointURI);
+            final String url = String.valueOf(uri);
             log.debug("Fetching an OSLC resource from the URI '{}'", url);
             final ClientResponse response = client.getResource(url,
                     OSLCConstants.CT_RDF);
-            return response.getEntity(Waypoint.class);
+            return response.getEntity(clazz);
         } catch (URISyntaxException | IOException | OAuthException e) {
             throw new OslcClientException("Failed to fetch Waypoint OSLC resource", e);
         }
     }
 
-    private URI constructWaypointURI(final String basePath, final String serviceProviderId,
-            final String waypointId) {
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("serviceProviderId", serviceProviderId);
-        pathParameters.put("waypointId", waypointId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/resources/waypoints" +
-                "/{waypointId}";
-
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
-    }
+//    private URI constructWaypointURI(final String basePath, final String serviceProviderId,
+//            final String waypointId) {
+//        Map<String, Object> pathParameters = new HashMap<String, Object>();
+//        pathParameters.put("serviceProviderId", serviceProviderId);
+//        pathParameters.put("waypointId", waypointId);
+//        String instanceURI = "serviceProviders/{serviceProviderId}/resources/waypoints" +
+//                "/{waypointId}";
+//
+//        final UriBuilder builder = UriBuilder.fromUri(basePath);
+//        return builder.path(instanceURI).buildFromMap(pathParameters);
+//    }
 }

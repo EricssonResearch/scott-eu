@@ -54,8 +54,13 @@ import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
 
-
-
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.PrimitiveType;
+import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.blocksworld.Location;
+import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderService1;
 
 // Start of user code imports
@@ -106,6 +111,11 @@ public class Application extends OslcWinkApplication {
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER,         ServiceProvider.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER_CATALOG, ServiceProviderCatalog.class);
 
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PATH_ACTION, Action.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PATH_PLAN, Plan.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PATH_PRIMITIVETYPE, PrimitiveType.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PATH_STEP, Step.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(BworldDomainConstants.PATH_LOCATION, Location.class);
     }
 
     public Application()
