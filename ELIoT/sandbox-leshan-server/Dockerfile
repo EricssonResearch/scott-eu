@@ -6,4 +6,3 @@ EXPOSE 5683 5684 8080
 
 WORKDIR /
 ENTRYPOINT ["java", "-jar", "sandbox-leshan.jar"]
-
