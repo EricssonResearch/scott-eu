@@ -37,7 +37,7 @@ import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
 
-
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 
 // Start of user code imports
@@ -75,6 +75,7 @@ public class ServiceProvidersFactory
             new PrefixDefinition(OslcConstants.OSLC_DATA_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_DATA_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDF_NAMESPACE_PREFIX, new URI(OslcConstants.RDF_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
+            new PrefixDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, new URI(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE))
         };
 
         serviceProvider.setPrefixDefinitions(prefixDefinitions);

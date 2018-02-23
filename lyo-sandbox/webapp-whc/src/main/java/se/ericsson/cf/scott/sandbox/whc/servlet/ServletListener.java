@@ -57,7 +57,7 @@ public class ServletListener implements ServletContextListener  {
     {
         // Start of user code contextInitialized_init
         //TODO: override the default servletName to match that defined in your web.xml configuration file.
-        //servletName = "Your_Configured_Servlet_Name";
+        servletName = "oslc-servlet";
         // End of user code
 
         String baseUrl = generateBasePath(servletContextEvent);

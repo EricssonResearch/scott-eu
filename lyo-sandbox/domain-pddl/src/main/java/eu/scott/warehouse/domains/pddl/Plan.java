@@ -89,13 +89,13 @@ public class Plan
 {
     // Start of user code attributeAnnotation:cost
     // End of user code
-    private Boolean cost;
+    private Float cost;
     // Start of user code attributeAnnotation:step
     // End of user code
-    private HashSet<Link> step = new HashSet<Link>();
+    private HashSet<Step> step = new HashSet<Step>();
     // Start of user code attributeAnnotation:time
     // End of user code
-    private Boolean time;
+    private Float time;
     
     // Start of user code classAttributes
     // End of user code
@@ -149,6 +149,7 @@ public class Plan
         }
     
         // Start of user code toString_finalize
+        result = "Plan{" + "cost=" + cost + ", step=" + step + ", time=" + time + '}';
         // End of user code
     
         return result;
@@ -180,7 +181,7 @@ public class Plan
         return result;
     }
     
-    public void addStep(final Link step)
+    public void addStep(final Step step)
     {
         this.step.add(step);
     }
@@ -192,9 +193,9 @@ public class Plan
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "cost")
     @OslcDescription("Cost of the plan according to metric.")
     @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.Boolean)
+    @OslcValueType(ValueType.Float)
     @OslcReadOnly(false)
-    public Boolean isCost()
+    public Float getCost()
     {
         // Start of user code getterInit:cost
         // End of user code
@@ -207,10 +208,10 @@ public class Plan
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "step")
     @OslcDescription("Step of the plan containing an action.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.Resource)
+    @OslcValueType(ValueType.LocalResource)
     @OslcRange({PddlDomainConstants.TYPE_STEP})
     @OslcReadOnly(false)
-    public HashSet<Link> getStep()
+    public HashSet<Step> getStep()
     {
         // Start of user code getterInit:step
         // End of user code
@@ -223,9 +224,9 @@ public class Plan
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "time")
     @OslcDescription("Time in seconds it took to produce the plan.")
     @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.Boolean)
+    @OslcValueType(ValueType.Float)
     @OslcReadOnly(false)
-    public Boolean isTime()
+    public Float getTime()
     {
         // Start of user code getterInit:time
         // End of user code
@@ -235,7 +236,7 @@ public class Plan
     
     // Start of user code setterAnnotation:cost
     // End of user code
-    public void setCost(final Boolean cost )
+    public void setCost(final Float cost )
     {
         // Start of user code setterInit:cost
         // End of user code
@@ -247,7 +248,7 @@ public class Plan
     
     // Start of user code setterAnnotation:step
     // End of user code
-    public void setStep(final HashSet<Link> step )
+    public void setStep(final HashSet<Step> step )
     {
         // Start of user code setterInit:step
         // End of user code
@@ -263,7 +264,7 @@ public class Plan
     
     // Start of user code setterAnnotation:time
     // End of user code
-    public void setTime(final Boolean time )
+    public void setTime(final Float time )
     {
         // Start of user code setterInit:time
         // End of user code
@@ -286,7 +287,7 @@ public class Plan
         // Start of user code "Mid:costToHtmlForCreation(...)"
         // End of user code
     
-        s= s + "<input name=\"cost\" type=\"radio\" value=\"true\">True<input name=\"cost\" type=\"radio\" value=\"false\">False";
+        s= s + "<input name=\"cost\" type=\"text\" style=\"width: 400px\" id=\"cost\" >";
         // Start of user code "Finalize:costToHtmlForCreation(...)"
         // End of user code
     
@@ -323,7 +324,7 @@ public class Plan
         // Start of user code "Mid:timeToHtmlForCreation(...)"
         // End of user code
     
-        s= s + "<input name=\"time\" type=\"radio\" value=\"true\">True<input name=\"time\" type=\"radio\" value=\"false\">False";
+        s= s + "<input name=\"time\" type=\"text\" style=\"width: 400px\" id=\"time\" >";
         // Start of user code "Finalize:timeToHtmlForCreation(...)"
         // End of user code
     
@@ -364,9 +365,9 @@ public class Plan
     
         try {
             s = s + "<ul>";
-            for(Link next : step) {
+            for(Step next : step) {
                 s = s + "<li>";
-                s = s + (new Step (next.getValue())).toHtml(false);
+                s = s + next.toHtml(true);
                 s = s + "</li>";
             }
             s = s + "</ul>";

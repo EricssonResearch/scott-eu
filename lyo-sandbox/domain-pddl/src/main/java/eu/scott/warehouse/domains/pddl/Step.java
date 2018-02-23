@@ -155,6 +155,9 @@ public class Step
         }
     
         // Start of user code toString_finalize
+        // FIXME Andrew@2018-02-23: remove getAbout().toString() or make it String.valueOf(about);
+        result = "Step{" + "action=" + action + ", adding=" + adding + ", deleting=" + deleting +
+                ", updating=" + updating + ", order=" + order + '}';
         // End of user code
     
         return result;

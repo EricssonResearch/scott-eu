@@ -4,13 +4,13 @@
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  *  The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  *  and the Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
- *  
+ *
  *  Contributors:
- *  
+ *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
  *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
@@ -42,6 +42,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.jena.sparql.ARQException;
+import java.io.IOException;
+import javax.servlet.ServletContext;
+import org.eclipse.lyo.store.Store;
+import org.eclipse.lyo.store.StoreFactory;
 // End of user code
 
 // Start of user code pre_class_code
@@ -55,8 +59,8 @@ public class RobotTwinManager {
     private static Store store;
     private static ServletContext context;
     // End of user code
-    
-    
+
+
     // Start of user code class_methods
     private static String parameterFQDN(final String s) {
         return PACKAGE_ROOT + "." + s;
@@ -69,7 +73,7 @@ public class RobotTwinManager {
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
         context = servletContextEvent.getServletContext();
         try {
@@ -83,9 +87,9 @@ public class RobotTwinManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
         // TODO Implement code to shutdown connections to data backbone etc...
         // End of user code
@@ -94,7 +98,7 @@ public class RobotTwinManager {
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
             final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
             serviceProviderInfo.serviceProviderId = "default";
@@ -109,7 +113,7 @@ public class RobotTwinManager {
     public static Plan getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
     {
         Plan aResource = null;
-        
+
         // Start of user code getPlan
         // TODO Implement code to return a resource
         // End of user code
@@ -118,7 +122,7 @@ public class RobotTwinManager {
     public static Location getLocation(HttpServletRequest httpServletRequest, final String serviceProviderId, final String locationId)
     {
         Location aResource = null;
-        
+
         // Start of user code getLocation
         // TODO Implement code to return a resource
         // End of user code

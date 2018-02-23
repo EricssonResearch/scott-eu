@@ -4,7 +4,10 @@
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Service Provider" description="Service Provider">
         <services>
-          <basicCapabilities/>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0"/>
+          <basicCapabilities>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.0"/>
+          </basicCapabilities>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>

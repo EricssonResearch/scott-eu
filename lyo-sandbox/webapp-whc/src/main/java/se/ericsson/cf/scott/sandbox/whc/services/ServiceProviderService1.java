@@ -73,16 +73,20 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerConstants;
-
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
 // End of user code
 
 // Start of user code pre_class_code
 // End of user code
-@OslcService(.)
-@Path("serviceProviders/{serviceProviderId}/resources")
+@OslcService(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_DOMAIN)
+@Path("serviceProviders/{serviceProviderId}/plans")
 public class ServiceProviderService1
 {
     @Context private HttpServletRequest httpServletRequest;
@@ -100,4 +104,120 @@ public class ServiceProviderService1
         super();
     }
 
+    @GET
+    @Path("{planId}")
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    public Plan getPlan(
+                @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws IOException, ServletException, URISyntaxException
+    {
+        // Start of user code getResource_init
+        // End of user code
+
+        final Plan aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            // Start of user code getPlan
+            // End of user code
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
+            return aPlan;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("{planId}")
+    @Produces({ MediaType.TEXT_HTML })
+    public Response getPlanAsHtml(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getPlanAsHtml_init
+        // End of user code
+
+        final Plan aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            httpServletRequest.setAttribute("aPlan", aPlan);
+            // Start of user code getPlanAsHtml_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/whc/plan.jsp");
+            rd.forward(httpServletRequest,httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("{planId}")
+    @Produces({OslcMediaType.APPLICATION_X_OSLC_COMPACT_XML})
+    public Compact getPlanCompact(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        String iconUri = OSLC4JUtils.getPublicURI() + "/images/ui_preview_icon.gif";
+        String smallPreviewHintHeight = "10em";
+        String smallPreviewHintWidth = "45em";
+        String largePreviewHintHeight = "20em";
+        String largePreviewHintWidth = "45em";
+
+        // Start of user code getPlanCompact_init
+        //TODO: adjust the preview height & width values from the default values provided above.
+        // End of user code
+
+        final Plan aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            final Compact compact = new Compact();
+
+            compact.setAbout(aPlan.getAbout());
+            compact.setTitle(aPlan.toString());
+
+            compact.setIcon(new URI(iconUri));
+
+            //Create and set attributes for OSLC preview resource
+            final Preview smallPreview = new Preview();
+            smallPreview.setHintHeight(smallPreviewHintHeight);
+            smallPreview.setHintWidth(smallPreviewHintWidth);
+            smallPreview.setDocument(UriBuilder.fromUri(aPlan.getAbout()).path("smallPreview").build());
+            compact.setSmallPreview(smallPreview);
+
+            //Use the HTML representation of a change request as the large preview as well
+            final Preview largePreview = new Preview();
+            largePreview.setHintHeight(largePreviewHintHeight);
+            largePreview.setHintWidth(largePreviewHintWidth);
+            largePreview.setDocument(aPlan.getAbout());
+            compact.setLargePreview(largePreview);
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
+            return compact;
+        }
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("{planId}/smallPreview")
+    @Produces({ MediaType.TEXT_HTML })
+    public void getPlanAsHtmlSmallPreview(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getPlanAsHtmlSmallPreview_init
+        // End of user code
+
+        final Plan aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            httpServletRequest.setAttribute("aPlan", aPlan);
+            // Start of user code getPlanAsHtmlSmallPreview_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/whc/plansmallpreview.jsp");
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
+            rd.forward(httpServletRequest, httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
 }

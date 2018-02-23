@@ -75,36 +75,36 @@ import eu.scott.warehouse.domains.pddl.IStep;
 public interface IPlan
 {
 
-    public void addStep(final Link step );
+    public void addStep(final Step step );
 
     @OslcName("cost")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "cost")
     @OslcDescription("Cost of the plan according to metric.")
     @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.Boolean)
+    @OslcValueType(ValueType.Float)
     @OslcReadOnly(false)
-    public Boolean isCost();
+    public Float getCost();
 
     @OslcName("step")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "step")
     @OslcDescription("Step of the plan containing an action.")
     @OslcOccurs(Occurs.ZeroOrMany)
-    @OslcValueType(ValueType.Resource)
+    @OslcValueType(ValueType.LocalResource)
     @OslcRange({PddlDomainConstants.TYPE_STEP})
     @OslcReadOnly(false)
-    public HashSet<Link> getStep();
+    public HashSet<Step> getStep();
 
     @OslcName("time")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "time")
     @OslcDescription("Time in seconds it took to produce the plan.")
     @OslcOccurs(Occurs.ZeroOrOne)
-    @OslcValueType(ValueType.Boolean)
+    @OslcValueType(ValueType.Float)
     @OslcReadOnly(false)
-    public Boolean isTime();
+    public Float getTime();
 
 
-    public void setCost(final Boolean cost );
-    public void setStep(final HashSet<Link> step );
-    public void setTime(final Boolean time );
+    public void setCost(final Float cost );
+    public void setStep(final HashSet<Step> step );
+    public void setTime(final Float time );
 }
 
