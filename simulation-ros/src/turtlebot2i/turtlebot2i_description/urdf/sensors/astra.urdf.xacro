@@ -70,10 +70,12 @@
     <link name="camera_depth_frame"/>
 
     <joint name="camera_depth_optical_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <!--<origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />-->
+      <origin xyz="0 0 0" rpy="${-M_PI/2} ${M_PI} ${-M_PI/2}" />
       <parent link="camera_depth_frame" />
       <child link="camera_depth_optical_frame" />
     </joint>
+
     <link name="camera_depth_optical_frame"/>
 
     <!-- RGBD sensor for simulation, same as Kinect -->
