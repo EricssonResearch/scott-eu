@@ -13,7 +13,8 @@
  *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug
+ *     .cgi?id=422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -22,30 +23,27 @@
 
 package se.ericsson.cf.scott.sandbox.twins.shelf;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletContextEvent;
-import java.util.List;
-
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twins.shelf.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twins.shelf.ServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.PrimitiveType;
-import eu.scott.warehouse.domains.pddl.Step;
+import com.google.common.collect.Lists;
 import eu.scott.warehouse.domains.blocksworld.Block;
 import eu.scott.warehouse.domains.blocksworld.Location;
-
-
-// Start of user code imports
+import eu.scott.warehouse.domains.pddl.Plan;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.concurrent.Executors;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.jena.sparql.ARQException;
+import org.eclipse.lyo.oslc4j.trs.consumer.httpclient.TRSHttpClient;
+import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsConsumerConfiguration;
+import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsConsumerUtils;
+import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsProviderConfiguration;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.lyo.store.StoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+// Start of user code imports
 // End of user code
 
 // Start of user code pre_class_code
@@ -60,19 +58,7 @@ public class ShelfTwinManager {
     private static ServletContext context;
     // End of user code
 
-
-    // Start of user code class_methods
-    private static String parameterFQDN(final String s) {
-        return PACKAGE_ROOT + "." + s;
-    }
-
-    private static String p(final String s) {
-        return context.getInitParameter(parameterFQDN(s));
-    }
-    // End of user code
-
-    public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
-    {
+    public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent) {
 
         // Start of user code contextInitializeServletListener
         context = servletContextEvent.getServletContext();
@@ -80,23 +66,30 @@ public class ShelfTwinManager {
             store = StoreFactory.sparql(p("store.query"), p("store.update"));
             // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
             store.removeAll();
-        } catch (IOException |ARQException e) {
-            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
-                    p("store.query"), p("store.update"), e);
+        } catch (IOException | ARQException e) {
+            log.error("SPARQL Store failed to initialise with the URIs query={};update={}", p("store.query"),
+                    p("store.update"), e);
         }
+
+        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
+                "https://aide.md.kth.se/fuseki/trs-everywhere/sparql",
+                "https://aide.md.kth.se/fuseki/trs-everywhere/update", null, null, new TRSHttpClient(),
+                "trs-consumer-whc", Executors.newSingleThreadScheduledExecutor());
+        final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(new TrsProviderConfiguration("http://localhost:8080/sandbox-whc/services/trs", null, null, "tcp://aide.md.kth.se:1883", "trs-whc"));
+        TrsConsumerUtils.loadTrsProviders(consumerConfig, providerConfigs);
+
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
-    {
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) {
 
         // Start of user code contextDestroyed
         // TODO Implement code to shutdown connections to data backbone etc...
         // End of user code
     }
+    // End of user code
 
-    public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
-    {
+    public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest) {
         ServiceProviderInfo[] serviceProviderInfos = {};
 
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
@@ -108,10 +101,8 @@ public class ShelfTwinManager {
         return serviceProviderInfos;
     }
 
-
-
-    public static Plan getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
-    {
+    public static Plan getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId,
+            final String planId) {
         Plan aResource = null;
 
         // Start of user code getPlan
@@ -119,8 +110,9 @@ public class ShelfTwinManager {
         // End of user code
         return aResource;
     }
-    public static Location getLocation(HttpServletRequest httpServletRequest, final String serviceProviderId, final String locationId)
-    {
+
+    public static Location getLocation(HttpServletRequest httpServletRequest, final String serviceProviderId,
+            final String locationId) {
         Location aResource = null;
 
         // Start of user code getLocation
@@ -128,8 +120,9 @@ public class ShelfTwinManager {
         // End of user code
         return aResource;
     }
-    public static Block getBlock(HttpServletRequest httpServletRequest, final String serviceProviderId, final String blockId)
-    {
+
+    public static Block getBlock(HttpServletRequest httpServletRequest, final String serviceProviderId,
+            final String blockId) {
         Block aResource = null;
 
         // Start of user code getBlock
@@ -138,32 +131,37 @@ public class ShelfTwinManager {
         return aResource;
     }
 
-
-
-
-    public static String getETagFromPlan(final Plan aResource)
-    {
+    public static String getETagFromPlan(final Plan aResource) {
         String eTag = null;
         // Start of user code getETagFromPlan
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
     }
-    public static String getETagFromBlock(final Block aResource)
-    {
+
+    public static String getETagFromBlock(final Block aResource) {
         String eTag = null;
         // Start of user code getETagFromBlock
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
     }
-    public static String getETagFromLocation(final Location aResource)
-    {
+
+    public static String getETagFromLocation(final Location aResource) {
         String eTag = null;
         // Start of user code getETagFromLocation
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
+    }
+
+    // Start of user code class_methods
+    private static String parameterFQDN(final String s) {
+        return PACKAGE_ROOT + "." + s;
+    }
+
+    private static String p(final String s) {
+        return context.getInitParameter(parameterFQDN(s));
     }
 
 }

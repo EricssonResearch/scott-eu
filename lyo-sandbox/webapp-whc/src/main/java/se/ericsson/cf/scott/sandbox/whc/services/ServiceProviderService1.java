@@ -56,6 +56,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.wink.json4j.JSONObject;
+import org.eclipse.lyo.oslc4j.core.model.IResource;
 import org.eclipse.lyo.oslc4j.provider.json4j.JsonHelper;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcCreationFactory;
@@ -107,14 +108,14 @@ public class ServiceProviderService1
     @GET
     @Path("{planId}")
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-    public Plan getPlan(
+    public IResource[] getPlan(
                 @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
         ) throws IOException, ServletException, URISyntaxException
     {
         // Start of user code getResource_init
         // End of user code
 
-        final Plan aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+        final IResource[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
 
         if (aPlan != null) {
             // Start of user code getPlan
@@ -136,10 +137,11 @@ public class ServiceProviderService1
         // Start of user code getPlanAsHtml_init
         // End of user code
 
-        final Plan aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+        final IResource[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
 
         if (aPlan != null) {
-            httpServletRequest.setAttribute("aPlan", aPlan);
+            // FIXME Andrew@2018-02-26: replace with the strongly typed wrapper class with main field for the plan and the rest of objects
+            httpServletRequest.setAttribute("aPlan", aPlan[0]);
             // Start of user code getPlanAsHtml_setAttributes
             // End of user code
 
@@ -150,7 +152,7 @@ public class ServiceProviderService1
         throw new WebApplicationException(Status.NOT_FOUND);
     }
 
-    @GET
+    /*@GET
     @Path("{planId}")
     @Produces({OslcMediaType.APPLICATION_X_OSLC_COMPACT_XML})
     public Compact getPlanCompact(
@@ -219,5 +221,5 @@ public class ServiceProviderService1
         }
 
         throw new WebApplicationException(Status.NOT_FOUND);
-    }
+    }*/
 }

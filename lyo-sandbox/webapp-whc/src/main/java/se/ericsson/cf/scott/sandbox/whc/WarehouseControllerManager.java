@@ -22,12 +22,23 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
+import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import org.eclipse.lyo.oslc4j.trs.consumer.httpclient.TRSHttpClient;
+import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsConsumerConfiguration;
+import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsConsumerUtils;
+import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsProviderConfiguration;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 
@@ -70,6 +81,7 @@ import org.eclipse.lyo.oslc4j.core.model.IResource;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
 import org.eclipse.lyo.store.StoreFactory;
+import se.ericsson.cf.scott.sandbox.whc.trs.WhcChangeHistories;
 // End of user code
 
 // Start of user code pre_class_code
@@ -80,13 +92,19 @@ public class WarehouseControllerManager {
     // Start of user code class_attributes
     private final static String PACKAGE_ROOT = WarehouseControllerManager.class.getPackage().getName();
     private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
+    private static final String DEFAULT_SP_ID = "default";
     private static Store store;
     private static ServletContext context;
     private static ServiceProviderInfo serviceProviderInfo;
+
+    // TODO Andrew@2018-02-26: use lock object if CRUD write ops will be allowed
+    // FIXME Andrew@2018-02-26: this should be in the Lyo Store
+    private static Map<String, IResource[]> plans = new HashMap<>();
     // End of user code
 
 
     // Start of user code class_methods
+    // region class_methods
     private static String parameterFQDN(final String s) {
         return PACKAGE_ROOT + "." + s;
     }
@@ -203,6 +221,7 @@ public class WarehouseControllerManager {
             }
         }
     }
+    //endregion
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -229,16 +248,34 @@ public class WarehouseControllerManager {
 
 
         final Plan plan = fromJenaModelSingle(planModel, Plan.class);
+        final ArrayList<IResource> planResources = new ArrayList<>();
         log.info("Received plan: {}", plan);
-
+        planResources.add(plan);
         // TODO Andrew@2018-02-23: why not getSteps?
         final HashSet<Step> planSteps = plan.getStep();
         for (Step step : planSteps) {
-            // FIXME Andrew@2018-02-23: the sh:order hack did not work
-            step.setOrder((Integer)step.getExtendedProperties().getOrDefault("http://www.w3.org/ns/shacl#order", null));
+            step.setOrder((Integer)step.getExtendedProperties().getOrDefault(new QName("http://www.w3.org/ns/shacl#", "order"), null));
             final IResource action = navTry(planModel, step.getAction(), Action.class, Move.class);
+            planResources.add(step);
+            planResources.add(action);
             log.info("Step {}: {}", step.getOrder(), action);
         }
+
+        // TODO Andrew@2018-02-26: extract method
+        final String planId = String.valueOf(plans.size() + 1);
+        plan.setAbout(WarehouseControllerResourcesFactory.constructURIForPlan(DEFAULT_SP_ID, planId));
+        plans.put(planId, planResources.toArray(new IResource[0]));
+        WhcChangeHistories.INSTANCE.addResource(plan);
+
+        /*++++++++++++++++++++++++++++
+          TRS Consumer initialisation
+         ++++++++++++++++++++++++++++*/
+
+//        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration("https://aide.md.kth.se/fuseki/trs-everywhere/sparql", "https://aide.md.kth.se/fuseki/trs-everywhere/update", null, null, new TRSHttpClient(), "trs-consumer-whc",
+//                Executors.newSingleThreadScheduledExecutor());
+//        final Collection<TrsProviderConfiguration> providerConfigs = Lists.asList(new TrsProviderConfiguration());
+//        TrsConsumerUtils.loadTrsProviders(consumerConfig, providerConfigs);
+
 
         // TODO: check the hack from Yash
         // TODO Andrew@2018-02-23: here the plan needs to be put through lyo store update
@@ -260,7 +297,7 @@ public class WarehouseControllerManager {
 
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         serviceProviderInfo = new ServiceProviderInfo();
-        serviceProviderInfo.serviceProviderId = "default";
+        serviceProviderInfo.serviceProviderId = DEFAULT_SP_ID;
         serviceProviderInfo.name = "Default Service Provider";
         serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
         // End of user code
@@ -269,12 +306,19 @@ public class WarehouseControllerManager {
 
 
 
-    public static Plan getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
+    public static IResource[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
     {
-        Plan aResource = null;
+        IResource[] aResource = new IResource[0];
 
         // Start of user code getPlan
-        // TODO Implement code to return a resource
+
+        // minimal impl to get the TRS provider going
+        if (serviceProviderId.equals(DEFAULT_SP_ID)) {
+           if (plans.containsKey(planId)) {
+               aResource = plans.get(planId);
+           }
+        }
+
         // End of user code
         return aResource;
     }

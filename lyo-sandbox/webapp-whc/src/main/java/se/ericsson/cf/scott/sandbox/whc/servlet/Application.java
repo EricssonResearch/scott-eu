@@ -62,6 +62,7 @@ import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 
 // Start of user code imports
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import se.ericsson.cf.scott.sandbox.whc.services.WhcTrsService;
 // End of user code
 
 // Start of user code pre_class_code
@@ -90,6 +91,7 @@ public class Application extends OslcWinkApplication {
         RESOURCE_CLASSES.add(ResourceShapeService.class);
 
         // Start of user code Custom Resource Classes
+        RESOURCE_CLASSES.add(WhcTrsService.class);
         // End of user code
 
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_ALLOWED_VALUES,           AllowedValues.class);
