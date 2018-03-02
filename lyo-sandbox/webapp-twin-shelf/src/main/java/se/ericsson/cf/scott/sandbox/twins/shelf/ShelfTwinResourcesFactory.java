@@ -25,12 +25,12 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
-import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.PrimitiveType;
 import eu.scott.warehouse.domains.pddl.Step;
-import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.blocksworld.Block;
+import eu.scott.warehouse.domains.pddl.PrimitiveType;
+import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.blocksworld.Location;
+import eu.scott.warehouse.domains.pddl.Action;
 
 // Start of user code imports
 // End of user code
@@ -45,36 +45,6 @@ public class ShelfTwinResourcesFactory {
     
     // Start of user code class_methods
     // End of user code
-
-    //methods for Plan resource
-    public static Plan createPlan(final String serviceProviderId, final String planId)
-           throws URISyntaxException
-    {
-        return new Plan(constructURIForPlan(serviceProviderId, planId));
-    }
-    
-    public static URI constructURIForPlan(final String serviceProviderId, final String planId)
-    {
-        String basePath = OSLC4JUtils.getServletURI();
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("serviceProviderId", serviceProviderId);
-        pathParameters.put("planId", planId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/resources/plans/{planId}";
-    
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
-    }
-    
-    public static Link constructLinkForPlan(final String serviceProviderId, final String planId , final String label)
-    {
-        return new Link(constructURIForPlan(serviceProviderId, planId), label);
-    }
-    
-    public static Link constructLinkForPlan(final String serviceProviderId, final String planId)
-    {
-        return new Link(constructURIForPlan(serviceProviderId, planId));
-    }
-    
 
     //methods for Block resource
     public static Block createBlock(final String serviceProviderId, final String blockId)
@@ -103,6 +73,36 @@ public class ShelfTwinResourcesFactory {
     public static Link constructLinkForBlock(final String serviceProviderId, final String blockId)
     {
         return new Link(constructURIForBlock(serviceProviderId, blockId));
+    }
+    
+
+    //methods for Plan resource
+    public static Plan createPlan(final String serviceProviderId, final String planId)
+           throws URISyntaxException
+    {
+        return new Plan(constructURIForPlan(serviceProviderId, planId));
+    }
+    
+    public static URI constructURIForPlan(final String serviceProviderId, final String planId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("serviceProviderId", serviceProviderId);
+        pathParameters.put("planId", planId);
+        String instanceURI = "serviceProviders/{serviceProviderId}/resources/plans/{planId}";
+    
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+    
+    public static Link constructLinkForPlan(final String serviceProviderId, final String planId , final String label)
+    {
+        return new Link(constructURIForPlan(serviceProviderId, planId), label);
+    }
+    
+    public static Link constructLinkForPlan(final String serviceProviderId, final String planId)
+    {
+        return new Link(constructURIForPlan(serviceProviderId, planId));
     }
     
 

@@ -25,9 +25,9 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+import eu.scott.warehouse.domains.pddl.Step;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
 // End of user code

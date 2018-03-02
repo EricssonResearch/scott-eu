@@ -22,28 +22,25 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
-import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import org.eclipse.lyo.oslc4j.trs.consumer.httpclient.TRSHttpClient;
-import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsConsumerConfiguration;
-import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsConsumerUtils;
-import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsProviderConfiguration;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.Step;
 
 
 // Start of user code imports
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.namespace.QName;
+
 import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.pddl.Step;
@@ -308,7 +305,7 @@ public class WarehouseControllerManager {
 
     public static IResource[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
     {
-        IResource[] aResource = new IResource[0];
+        IResource[] aResource = null;
 
         // Start of user code getPlan
 

@@ -46,6 +46,9 @@ public interface BworldDomainConstants
     public static String LOCATIONORBLOCK = "LocationOrBlock";
     public static String PATH_LOCATIONORBLOCK = "locationOrBlock";
     public static String TYPE_LOCATIONORBLOCK = BLOCKSWORLD_DOMAIN_NAMSPACE + LOCATIONORBLOCK;
+    public static String MOVE = "Move";
+    public static String PATH_MOVE = "move";
+    public static String TYPE_MOVE = BLOCKSWORLD_DOMAIN_NAMSPACE + MOVE;
     public static String ON = "On";
     public static String PATH_ON = "on";
     public static String TYPE_ON = BLOCKSWORLD_DOMAIN_NAMSPACE + ON;

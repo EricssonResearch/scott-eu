@@ -14,13 +14,24 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.lyo>2.3.0-SNAPSHOT</version.lyo>
+    <version.lyo>2.3.0</version.lyo>
+    <!--<version.lyo>2.3.1-SNAPSHOT</version.lyo>-->
   </properties>
   <dependencies>
 
     <dependency>
+      <groupId>org.eclipse.lyo</groupId>
+      <artifactId>lyo-validation</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.lyo.trs</groupId>
       <artifactId>trs-consumer</artifactId>
+      <version>2.4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.trs</groupId>
+      <artifactId>trs-provider</artifactId>
       <version>2.4.0-SNAPSHOT</version>
     </dependency>
 
@@ -29,11 +40,7 @@
       <artifactId>domain-pddl</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.lyo.trs</groupId>
-      <artifactId>trs-provider</artifactId>
-      <version>2.4.0-SNAPSHOT</version>
-    </dependency>
+
 
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
@@ -43,7 +50,9 @@
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-jena-provider</artifactId>
-      <version>${version.lyo}</version>
+      <!--<version>${version.lyo}</version>-->
+      <!--TODO submit a patch to fix regression with isWritable()-->
+      <version>2.3.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
@@ -68,6 +77,12 @@
       <groupId>org.eclipse.lyo.store</groupId>
       <artifactId>store-core</artifactId>
       <version>${version.lyo}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 
@@ -90,6 +105,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -103,6 +122,11 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.25</version>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>1.7.25</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

@@ -13,8 +13,7 @@
  *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
- *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug
- *     .cgi?id=422448)
+ *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
  *     Matthieu Helleboid   - Support for multiple Service Providers.
  *     Anass Radouani       - Support for multiple Service Providers.
  *
@@ -23,27 +22,46 @@
 
 package se.ericsson.cf.scott.sandbox.twins.shelf;
 
-import com.google.common.collect.Lists;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletContextEvent;
+import java.util.List;
+
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.twins.shelf.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.twins.shelf.ServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.PrimitiveType;
+import eu.scott.warehouse.domains.pddl.Step;
 import eu.scott.warehouse.domains.blocksworld.Block;
 import eu.scott.warehouse.domains.blocksworld.Location;
-import eu.scott.warehouse.domains.pddl.Plan;
+
+
+// Start of user code imports
 import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.Executors;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import com.google.common.collect.Lists;
+
 import org.apache.jena.sparql.ARQException;
-import org.eclipse.lyo.oslc4j.trs.consumer.httpclient.TRSHttpClient;
-import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsConsumerConfiguration;
-import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsConsumerUtils;
-import org.eclipse.lyo.oslc4j.trs.consumer.util.TrsProviderConfiguration;
+import org.eclipse.leshan.server.californium.LeshanServerBuilder;
+import org.eclipse.leshan.server.californium.impl.LeshanServer;
+import org.eclipse.lyo.trs.consumer.config.TrsConsumerConfiguration;
+import org.eclipse.lyo.trs.consumer.config.TrsProviderConfiguration;
+import org.eclipse.lyo.trs.consumer.handlers.TrsProviderHandler;
+import org.eclipse.lyo.trs.consumer.util.TrsBasicAuthOslcClient;
+import org.eclipse.lyo.trs.consumer.util.TrsConsumerUtils;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.lyo.store.StoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-// Start of user code imports
+import se.ericsson.cf.scott.sandbox.twins.shelf.lwm2m.ScottClientRegistryListener;
+import se.ericsson.cf.scott.sandbox.twins.shelf.lwm2m.ScottObservationRegistryListener;
+import se.ericsson.cf.scott.sandbox.twins.shelf.trs.PlanChangeEventListener;
 // End of user code
 
 // Start of user code pre_class_code
@@ -58,102 +76,6 @@ public class ShelfTwinManager {
     private static ServletContext context;
     // End of user code
 
-    public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent) {
-
-        // Start of user code contextInitializeServletListener
-        context = servletContextEvent.getServletContext();
-        try {
-            store = StoreFactory.sparql(p("store.query"), p("store.update"));
-            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
-            store.removeAll();
-        } catch (IOException | ARQException e) {
-            log.error("SPARQL Store failed to initialise with the URIs query={};update={}", p("store.query"),
-                    p("store.update"), e);
-        }
-
-        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
-                "https://aide.md.kth.se/fuseki/trs-everywhere/sparql",
-                "https://aide.md.kth.se/fuseki/trs-everywhere/update", null, null, new TRSHttpClient(),
-                "trs-consumer-whc", Executors.newSingleThreadScheduledExecutor());
-        final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(new TrsProviderConfiguration("http://localhost:8080/sandbox-whc/services/trs", null, null, "tcp://aide.md.kth.se:1883", "trs-whc"));
-        TrsConsumerUtils.loadTrsProviders(consumerConfig, providerConfigs);
-
-        // End of user code
-    }
-
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) {
-
-        // Start of user code contextDestroyed
-        // TODO Implement code to shutdown connections to data backbone etc...
-        // End of user code
-    }
-    // End of user code
-
-    public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest) {
-        ServiceProviderInfo[] serviceProviderInfos = {};
-
-        // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
-        final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
-        serviceProviderInfo.serviceProviderId = "default";
-        serviceProviderInfo.name = "Default Service Provider";
-        serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
-        // End of user code
-        return serviceProviderInfos;
-    }
-
-    public static Plan getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId,
-            final String planId) {
-        Plan aResource = null;
-
-        // Start of user code getPlan
-        // TODO Implement code to return a resource
-        // End of user code
-        return aResource;
-    }
-
-    public static Location getLocation(HttpServletRequest httpServletRequest, final String serviceProviderId,
-            final String locationId) {
-        Location aResource = null;
-
-        // Start of user code getLocation
-        // TODO Implement code to return a resource
-        // End of user code
-        return aResource;
-    }
-
-    public static Block getBlock(HttpServletRequest httpServletRequest, final String serviceProviderId,
-            final String blockId) {
-        Block aResource = null;
-
-        // Start of user code getBlock
-        // TODO Implement code to return a resource
-        // End of user code
-        return aResource;
-    }
-
-    public static String getETagFromPlan(final Plan aResource) {
-        String eTag = null;
-        // Start of user code getETagFromPlan
-        // TODO Implement code to return an ETag for a particular resource
-        // End of user code
-        return eTag;
-    }
-
-    public static String getETagFromBlock(final Block aResource) {
-        String eTag = null;
-        // Start of user code getETagFromBlock
-        // TODO Implement code to return an ETag for a particular resource
-        // End of user code
-        return eTag;
-    }
-
-    public static String getETagFromLocation(final Location aResource) {
-        String eTag = null;
-        // Start of user code getETagFromLocation
-        // TODO Implement code to return an ETag for a particular resource
-        // End of user code
-        return eTag;
-    }
 
     // Start of user code class_methods
     private static String parameterFQDN(final String s) {
@@ -162,6 +84,163 @@ public class ShelfTwinManager {
 
     private static String p(final String s) {
         return context.getInitParameter(parameterFQDN(s));
+    }
+    // End of user code
+
+    public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
+    {
+
+        // Start of user code contextInitializeServletListener
+        context = servletContextEvent.getServletContext();
+        try {
+            store = StoreFactory.sparql(p("store.query"), p("store.update"));
+            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
+            store.removeAll();
+        } catch (IOException | ARQException e) {
+            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
+                    p("store.query"),
+                    p("store.update"),
+                    e
+            );
+        }
+
+        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(p("store" +
+                ".query"),
+                // disable the SPARQL triplestore update
+                null, null, null, new TrsBasicAuthOslcClient(), "trs-consumer-whc",
+                // nothing fancy is really needed on the twins
+                Executors.newSingleThreadScheduledExecutor()
+        );
+        final String warehouseTrsUri = "http://localhost:8080/sandbox-whc/services/trs";
+        final String basicAuthUsername = null;
+        final String basicAuthPassword = null;
+        final String mqttBroker = "tcp://aide.md.kth.se:1883";
+        final String mqttTopic = "trs-whc";
+        final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(new
+                TrsProviderConfiguration(warehouseTrsUri,
+                basicAuthUsername,
+                basicAuthPassword,
+                mqttBroker,
+                mqttTopic
+        ));
+        final List<TrsProviderHandler> handlers = TrsConsumerUtils.buildHandlersSequential
+                (consumerConfig,
+                providerConfigs
+        );
+
+        // attach our own listener to use "TRS everywhere"
+        final PlanChangeEventListener listener = new PlanChangeEventListener();
+        for (TrsProviderHandler handler : handlers) {
+            handler.attachListener(listener);
+        }
+
+        final Random random = new Random(System.currentTimeMillis());
+        final Integer updateInterval = Integer.valueOf(p("update.interval"));
+        for (TrsProviderHandler handler : handlers) {
+            consumerConfig.getScheduler()
+                          .scheduleAtFixedRate(handler,
+                                  random.nextInt(updateInterval),
+                                  updateInterval,
+                                  TimeUnit.SECONDS
+                          );
+        }
+
+        /*+++++++++++++++++++++++++++++++++++++++++++++++++
+        Leshan server
+        ++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+        // build the lwm2m server
+        final LeshanServer server = new LeshanServerBuilder().build();
+
+        // listen for new client registrations
+        server.getClientRegistry().addListener(new ScottClientRegistryListener(server));
+        // listen for observe notifications
+        server.getObservationRegistry().addListener(new ScottObservationRegistryListener());
+
+        server.start();
+
+
+        // End of user code
+    }
+
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
+    {
+
+        // Start of user code contextDestroyed
+        // TODO Implement code to shutdown connections to data backbone etc...
+        // End of user code
+    }
+
+    public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
+    {
+        ServiceProviderInfo[] serviceProviderInfos = {};
+
+        // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
+        // FIXME Andrew@2018-02-28: add ctor to Lyo class
+        final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
+        serviceProviderInfo.serviceProviderId = "default";
+        serviceProviderInfo.name = "Default Service Provider";
+        serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
+        // End of user code
+        return serviceProviderInfos;
+    }
+
+
+
+    public static Plan getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
+    {
+        Plan aResource = null;
+
+        // Start of user code getPlan
+        // TODO Implement code to return a resource
+        // End of user code
+        return aResource;
+    }
+    public static Location getLocation(HttpServletRequest httpServletRequest, final String serviceProviderId, final String locationId)
+    {
+        Location aResource = null;
+
+        // Start of user code getLocation
+        // TODO Implement code to return a resource
+        // End of user code
+        return aResource;
+    }
+    public static Block getBlock(HttpServletRequest httpServletRequest, final String serviceProviderId, final String blockId)
+    {
+        Block aResource = null;
+
+        // Start of user code getBlock
+        // TODO Implement code to return a resource
+        // End of user code
+        return aResource;
+    }
+
+
+
+
+    public static String getETagFromBlock(final Block aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromBlock
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
+    public static String getETagFromPlan(final Plan aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromPlan
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
+    public static String getETagFromLocation(final Location aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromLocation
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
     }
 
 }

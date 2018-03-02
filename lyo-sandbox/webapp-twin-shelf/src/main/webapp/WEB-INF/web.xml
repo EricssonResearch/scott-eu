@@ -13,11 +13,15 @@
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.store.query</param-name>
-    <param-value>http://fuseki.aide.md.kth.se/warehouse/query</param-value>
+    <param-value>https://fuseki.aide.md.kth.se/trs-everywhere/query</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.store.update</param-name>
-    <param-value>http://fuseki.aide.md.kth.se/warehouse/update</param-value>
+    <param-value>https://fuseki.aide.md.kth.se/trs-everywhere/update</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.update.interval</param-name>
+    <param-value>20</param-value><!--seconds-->
   </context-param>
 
   <listener>
