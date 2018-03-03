@@ -14,13 +14,20 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.lyo>2.3.0</version.lyo>
-    <version.lyo.core>2.3.1-SNAPSHOT</version.lyo.core>
+    <version.lyo>2.4.0-SNAPSHOT</version.lyo>
+    <version.lyo.core>2.4.0-SNAPSHOT</version.lyo.core>
     <!--<version.leshan>0.1.11-M4</version.leshan>-->
     <version.leshan>0.1.11-M5-SNAPSHOT</version.leshan>
     <version.log4j>2.8.2</version.log4j>
   </properties>
   <dependencies>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>apache-jena-libs</artifactId>
+      <version>3.6.0</version>
+      <type>pom</type>
+    </dependency>
 
     <dependency>
       <groupId>se.ericsson.cf.scott.sandbox</groupId>
@@ -69,9 +76,22 @@
     <dependency>
       <groupId>org.eclipse.lyo.trs</groupId>
       <artifactId>trs-consumer</artifactId>
-      <!--TODO fix-->
-      <!--<version>${version.lyo}</version>-->
-      <version>2.4.0-SNAPSHOT</version>
+      <version>${version.lyo}</version>
+      <!--<version>2.4.0-SNAPSHOT</version>-->
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-tdb</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-arq</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 
@@ -90,11 +110,11 @@
       <artifactId>oslc4j-wink</artifactId>
       <version>${version.lyo.core}</version>
     </dependency>
-    <dependency>
+<!--    <dependency>
       <groupId>org.eclipse.lyo.clients</groupId>
       <artifactId>oslc-java-client</artifactId>
       <version>${version.lyo}</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.eclipse.lyo.store</groupId>
       <artifactId>store-core</artifactId>
