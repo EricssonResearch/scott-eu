@@ -107,7 +107,7 @@ public class ServiceProviderService1
 
     @GET
     @Path("{planId}")
-    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE})
     public IResource[] getPlan(
                 @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
         ) throws IOException, ServletException, URISyntaxException
