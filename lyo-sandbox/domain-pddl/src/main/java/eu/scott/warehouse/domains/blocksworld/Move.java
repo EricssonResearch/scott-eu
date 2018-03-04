@@ -99,7 +99,7 @@ public class Move
     // Start of user code attributeAnnotation:moveY
     // End of user code
     private Link moveY = new Link();
-    
+
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
@@ -108,40 +108,40 @@ public class Move
            throws URISyntaxException
     {
         super();
-    
+
         // Start of user code constructor1
         // End of user code
     }
-    
+
     public Move(final URI about)
            throws URISyntaxException
     {
         super(about);
-    
+
         // Start of user code constructor2
         // End of user code
     }
-    
-    
+
+
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
         BworldDomainConstants.PATH_MOVE,
         Move.class);
     }
-    
-    
+
+
     public String toString()
     {
         return toString(false);
     }
-    
+
     public String toString(boolean asLocalResource)
     {
         String result = "";
         // Start of user code toString_init
         // End of user code
-    
+
         if (asLocalResource) {
             result = result + "{a Local Move Resource} - update Move.toString() to present resource as desired.";
             // Start of user code toString_bodyForLocalResource
@@ -150,25 +150,25 @@ public class Move
         else {
             result = getAbout().toString();
         }
-    
+
         // Start of user code toString_finalize
-        result = "Move{" + "moveB=" + moveB + ", moveX=" + moveX + ", moveY=" + moveY + '}';
+        result = "Move{" + "block=" + moveB + ", from=" + moveX + ", to=" + moveY + '}';
         // End of user code
-    
+
         return result;
     }
-    
+
     public String toHtml()
     {
         return toHtml(false);
     }
-    
+
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
         // Start of user code toHtml_init
         // End of user code
-    
+
         if (asLocalResource) {
             result = toString(true);
             // Start of user code toHtml_bodyForLocalResource
@@ -177,14 +177,14 @@ public class Move
         else {
             result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
         }
-    
+
         // Start of user code toHtml_finalize
         // End of user code
-    
+
         return result;
     }
-    
-    
+
+
     // Start of user code getterAnnotation:moveB
     // End of user code
     @OslcName("moveB")
@@ -199,7 +199,7 @@ public class Move
         // End of user code
         return moveB;
     }
-    
+
     // Start of user code getterAnnotation:moveX
     // End of user code
     @OslcName("moveX")
@@ -214,7 +214,7 @@ public class Move
         // End of user code
         return moveX;
     }
-    
+
     // Start of user code getterAnnotation:moveY
     // End of user code
     @OslcName("moveY")
@@ -229,8 +229,8 @@ public class Move
         // End of user code
         return moveY;
     }
-    
-    
+
+
     // Start of user code setterAnnotation:moveB
     // End of user code
     public void setMoveB(final Link moveB )
@@ -238,11 +238,11 @@ public class Move
         // Start of user code setterInit:moveB
         // End of user code
         this.moveB = moveB;
-    
+
         // Start of user code setterFinalize:moveB
         // End of user code
     }
-    
+
     // Start of user code setterAnnotation:moveX
     // End of user code
     public void setMoveX(final Link moveX )
@@ -250,11 +250,11 @@ public class Move
         // Start of user code setterInit:moveX
         // End of user code
         this.moveX = moveX;
-    
+
         // Start of user code setterFinalize:moveX
         // End of user code
     }
-    
+
     // Start of user code setterAnnotation:moveY
     // End of user code
     public void setMoveY(final Link moveY )
@@ -262,74 +262,74 @@ public class Move
         // Start of user code setterInit:moveY
         // End of user code
         this.moveY = moveY;
-    
+
         // Start of user code setterFinalize:moveY
         // End of user code
     }
-    
-    
+
+
     static public String moveBToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
-    
+
         // Start of user code "Init:moveBToHtmlForCreation(...)"
         // End of user code
-    
+
         s = s + "<label for=\"move-b\">move-b: </LABEL>";
-    
+
         // Start of user code "Mid:moveBToHtmlForCreation(...)"
         // End of user code
-    
+
         // Start of user code "Finalize:moveBToHtmlForCreation(...)"
         // End of user code
-    
+
         return s;
     }
-    
+
     static public String moveXToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
-    
+
         // Start of user code "Init:moveXToHtmlForCreation(...)"
         // End of user code
-    
+
         s = s + "<label for=\"move-x\">move-x: </LABEL>";
-    
+
         // Start of user code "Mid:moveXToHtmlForCreation(...)"
         // End of user code
-    
+
         // Start of user code "Finalize:moveXToHtmlForCreation(...)"
         // End of user code
-    
+
         return s;
     }
-    
+
     static public String moveYToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
-    
+
         // Start of user code "Init:moveYToHtmlForCreation(...)"
         // End of user code
-    
+
         s = s + "<label for=\"move-y\">move-y: </LABEL>";
-    
+
         // Start of user code "Mid:moveYToHtmlForCreation(...)"
         // End of user code
-    
+
         // Start of user code "Finalize:moveYToHtmlForCreation(...)"
         // End of user code
-    
+
         return s;
     }
-    
-    
+
+
     public String moveBToHtml()
     {
         String s = "";
-    
+
         // Start of user code moveBtoHtml_mid
         // End of user code
-    
+
         try {
             if ((moveB == null) || (moveB.getValue() == null)) {
                 s = s + "<em>null</em>";
@@ -340,20 +340,20 @@ public class Move
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
+
         // Start of user code moveBtoHtml_finalize
         // End of user code
-    
+
         return s;
     }
-    
+
     public String moveXToHtml()
     {
         String s = "";
-    
+
         // Start of user code moveXtoHtml_mid
         // End of user code
-    
+
         try {
             if ((moveX == null) || (moveX.getValue() == null)) {
                 s = s + "<em>null</em>";
@@ -364,20 +364,20 @@ public class Move
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
+
         // Start of user code moveXtoHtml_finalize
         // End of user code
-    
+
         return s;
     }
-    
+
     public String moveYToHtml()
     {
         String s = "";
-    
+
         // Start of user code moveYtoHtml_mid
         // End of user code
-    
+
         try {
             if ((moveY == null) || (moveY.getValue() == null)) {
                 s = s + "<em>null</em>";
@@ -388,12 +388,12 @@ public class Move
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
+
         // Start of user code moveYtoHtml_finalize
         // End of user code
-    
+
         return s;
     }
-    
-    
+
+
 }

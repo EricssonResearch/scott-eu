@@ -1,9 +1,15 @@
 package se.ericsson.cf.scott.sandbox.twins.shelf.trs;
 
+import eu.scott.warehouse.domains.blocksworld.Move;
 import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.Step;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
@@ -13,6 +19,7 @@ import org.eclipse.lyo.core.trs.Deletion;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.IResource;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
+import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException;
 import org.eclipse.lyo.trs.consumer.exceptions.JenaModelException;
 import org.eclipse.lyo.trs.consumer.handlers.ChangeEventListener;
 import org.slf4j.Logger;
@@ -79,9 +86,23 @@ public class PlanChangeEventListener implements ChangeEventListener {
             return;
         }
         try {
-            final Plan plan = fromJenaModelSingle(trsResourceModel, Plan.class);
-            log.debug("Received a new or updated Plan:\n{}", lyoResourceToString(plan));
-        } catch (JenaModelException e) {
+            final Plan plan = JenaModelHelper.unmarshalSingle(trsResourceModel, Plan.class);
+//            log.debug("Received a new or updated Plan:\n{}", lyoResourceToString(plan));
+            final HashSet<Step> steps = plan.getStep();
+            final List<Step> stepList = steps.stream()
+                                            .sorted(Comparator.comparingInt(Step::getOrder))
+                                            .collect(Collectors.toList());
+            for (Step step : stepList) {
+                // FIXME Andrew@2018-03-04: properly unmarshal any action
+                final Move action = JenaModelHelper.followLink(
+                        trsResourceModel,
+                        step.getAction(),
+                        Move.class
+                );
+                log.info("Found step {}: {}", step.getOrder(), action);
+            }
+
+        } catch (LyoJenaModelException e) {
             log.error("A Plan cannot be built from the TRS change event resource model", e);
         }
     }
