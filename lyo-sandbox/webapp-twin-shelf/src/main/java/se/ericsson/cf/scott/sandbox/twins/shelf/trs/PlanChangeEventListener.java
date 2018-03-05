@@ -1,15 +1,8 @@
 package se.ericsson.cf.scott.sandbox.twins.shelf.trs;
 
-import eu.scott.warehouse.domains.blocksworld.Move;
 import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.Step;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
@@ -24,6 +17,7 @@ import org.eclipse.lyo.trs.consumer.exceptions.JenaModelException;
 import org.eclipse.lyo.trs.consumer.handlers.ChangeEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twins.shelf.model.PlanContainer;
 
 /**
  * Created on 2018-02-27
@@ -35,29 +29,30 @@ import org.slf4j.LoggerFactory;
 public class PlanChangeEventListener implements ChangeEventListener {
     private final static Logger log = LoggerFactory.getLogger(PlanChangeEventListener.class);
 
-    // TODO Andrew@2018-02-07: submit to the JenaModelHelper
-    private static <T> T[] fromJenaModelTyped(final Model model, Class<T> clazz) {
-        try {
-            final Object[] objects = JenaModelHelper.fromJenaModel(model, clazz);
-            //noinspection unchecked
-            final T[] clazzObjects = (T[]) objects;
-            return clazzObjects;
-        } catch (DatatypeConfigurationException | IllegalAccessException |
-                InvocationTargetException | InstantiationException | OslcCoreApplicationException
-                | NoSuchMethodException | URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
+//     TODO Andrew@2018-02-07: submit to the JenaModelHelper
+//    private static <T> T[] fromJenaModelTyped(final Model model, Class<T> clazz) {
+//        try {
+//            final Object[] objects = JenaModelHelper.fromJenaModel(model, clazz);
+//            //noinspection unchecked
+//            final T[] clazzObjects = (T[]) objects;
+//            return clazzObjects;
+//        } catch (DatatypeConfigurationException | IllegalAccessException |
+//                InvocationTargetException | InstantiationException | OslcCoreApplicationException
+//                | NoSuchMethodException | URISyntaxException e) {
+//            throw new IllegalArgumentException(e);
+//        }
+//    }
 
-    // TODO Andrew@2018-02-07: submit to the JenaModelHelper
-    private static <T> T fromJenaModelSingle(final Model model, Class<T> clazz)
-            throws JenaModelException {
-        final T[] ts = fromJenaModelTyped(model, clazz);
-        if (ts.length != 1) {
-            throw new JenaModelException("Model shall contain exactly 1 instance of the class");
-        }
-        return ts[0];
-    }
+//    // TODO Andrew@2018-02-07: submit to the JenaModelHelper
+//    private static <T> T fromJenaModelSingle(final Model model, Class<T> clazz)
+//            throws LyoJenaModelException {
+//        final T[] ts = JenaModelHelper.unmarshal(model, clazz);
+//        if (ts.length != 1) {
+//            throw new IllegalArgumentException("Model shall contain exactly 1 instance of the
+// class");
+//        }
+//        return ts[0];
+//    }
 
     // TODO Andrew@2018-02-27: move it to JenaModelHelper or something of a sort
     private static String jenaModelToString(final Model responsePlan) {
@@ -66,12 +61,12 @@ public class PlanChangeEventListener implements ChangeEventListener {
         return stringWriter.toString();
     }
 
+    // FIXME Andrew@2018-03-04: hangs infinitely with a Plan
     private static String lyoResourceToString(final IResource... resources)
             throws JenaModelException {
         try {
             return jenaModelToString(JenaModelHelper.createJenaModel(resources));
-        } catch (DatatypeConfigurationException | IllegalAccessException |
-                OslcCoreApplicationException | InvocationTargetException e) {
+        } catch (DatatypeConfigurationException | IllegalAccessException | OslcCoreApplicationException | InvocationTargetException e) {
             // FIXME Andrew@2018-02-27: move this exception to Lyo
             throw new JenaModelException(e);
         }
@@ -87,21 +82,33 @@ public class PlanChangeEventListener implements ChangeEventListener {
         }
         try {
             final Plan plan = JenaModelHelper.unmarshalSingle(trsResourceModel, Plan.class);
-//            log.debug("Received a new or updated Plan:\n{}", lyoResourceToString(plan));
-            final HashSet<Step> steps = plan.getStep();
-            final List<Step> stepList = steps.stream()
-                                            .sorted(Comparator.comparingInt(Step::getOrder))
-                                            .collect(Collectors.toList());
-            for (Step step : stepList) {
-                // FIXME Andrew@2018-03-04: properly unmarshal any action
-                final Move action = JenaModelHelper.followLink(
-                        trsResourceModel,
-                        step.getAction(),
-                        Move.class
-                );
-                log.info("Found step {}: {}", step.getOrder(), action);
-            }
 
+            final PlanContainer planContainer = new PlanContainer(plan, trsResourceModel);
+//
+////            log.debug("Received a new or updated Plan:\n{}", lyoResourceToString(plan));
+//            log.debug("Received a new or updated Plan: {}", plan);
+//            final HashSet<Step> steps = plan.getStep();
+//            final List<Step> stepList = steps.stream()
+//                                            .sorted(Comparator.comparingInt(Step::getOrder))
+//                                            .collect(Collectors.toList());
+//            for (Step step : stepList) {
+//                // FIXME Andrew@2018-03-04: properly unmarshal any action
+//                final Move action = JenaModelHelper.followLink(
+//                        trsResourceModel,
+//                        step.getAction(),
+//                        Move.class
+//                );
+
+            try {
+                final Model model = planContainer.toModel();
+                log.debug(
+                        "The Plan contains the following resources in its model:\n{}",
+                        jenaModelToString(model));
+            } catch (InvocationTargetException | DatatypeConfigurationException |
+                    OslcCoreApplicationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+//            log.info("Found step {}: {}", step.getOrder(), action);
         } catch (LyoJenaModelException e) {
             log.error("A Plan cannot be built from the TRS change event resource model", e);
         }
