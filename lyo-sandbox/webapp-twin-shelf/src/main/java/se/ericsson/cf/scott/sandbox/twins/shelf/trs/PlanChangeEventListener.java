@@ -4,7 +4,6 @@ import eu.scott.warehouse.domains.pddl.Plan;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -35,31 +34,6 @@ import se.ericsson.cf.scott.sandbox.twins.shelf.model.PlanContainer;
 public class PlanChangeEventListener implements ChangeEventListener {
     private final static Logger log = LoggerFactory.getLogger(PlanChangeEventListener.class);
 
-//     TODO Andrew@2018-02-07: submit to the JenaModelHelper
-//    private static <T> T[] fromJenaModelTyped(final Model model, Class<T> clazz) {
-//        try {
-//            final Object[] objects = JenaModelHelper.fromJenaModel(model, clazz);
-//            //noinspection unchecked
-//            final T[] clazzObjects = (T[]) objects;
-//            return clazzObjects;
-//        } catch (DatatypeConfigurationException | IllegalAccessException |
-//                InvocationTargetException | InstantiationException | OslcCoreApplicationException
-//                | NoSuchMethodException | URISyntaxException e) {
-//            throw new IllegalArgumentException(e);
-//        }
-//    }
-
-//    // TODO Andrew@2018-02-07: submit to the JenaModelHelper
-//    private static <T> T fromJenaModelSingle(final Model model, Class<T> clazz)
-//            throws LyoJenaModelException {
-//        final T[] ts = JenaModelHelper.unmarshal(model, clazz);
-//        if (ts.length != 1) {
-//            throw new IllegalArgumentException("Model shall contain exactly 1 instance of the
-// class");
-//        }
-//        return ts[0];
-//    }
-
     // TODO Andrew@2018-02-27: move it to JenaModelHelper or something of a sort
     private static String jenaModelToString(final Model responsePlan) {
         final StringWriter stringWriter = new StringWriter();
@@ -88,8 +62,24 @@ public class PlanChangeEventListener implements ChangeEventListener {
         }
         try {
             final Plan plan = JenaModelHelper.unmarshalSingle(trsResourceModel, Plan.class);
-
             final PlanContainer planContainer = new PlanContainer(plan, trsResourceModel);
+
+            try {
+                final Model model = planContainer.toModel();
+                log.debug(
+                        "The Plan contains the following resources in its model:\n{}",
+                        jenaModelToString(model));
+            } catch (InvocationTargetException | DatatypeConfigurationException |
+                    OslcCoreApplicationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+
+            /*
+             * Okay, now we are redefining the architecture and we might want to go away from the
+             * LWM2M for the purposes of the demo.
+             */
+            // FIXME Andrew@2018-03-06: reevaluate the plan below depending on whether we use lwm2m
 
             // TODO Andrew@2018-03-05: define a single-threaded executor or init a thread by hand
 
@@ -111,33 +101,21 @@ public class PlanChangeEventListener implements ChangeEventListener {
              */
             final Future<PlanExecutionResult> planExecutionResultFuture = ShelfTwinManager
                     .planExecutorSvc
-                    .submit(new Callable<PlanExecutionResult>() {
-                        @Override
-                        public PlanExecutionResult call() throws Exception {
-                            Thread.sleep(5);
-                            for (ActionContainer actionContainer : planContainer.getActions()) {
-                                log.info("Executing {}", actionContainer.getResource());
-                            }
-                            return new PlanExecutionResult(true, Duration.ofSeconds(5));
+                    .submit(() -> {
+                        Thread.sleep(5);
+                        for (ActionContainer actionContainer : planContainer.getActions()) {
+                            log.info("Executing {}", actionContainer.getResource());
                         }
+                        return new PlanExecutionResult(true, Duration.ofSeconds(5));
                     });
             try {
                 final PlanExecutionResult planExecutionResult = planExecutionResultFuture.get();
                 log.info(
                         "The plan finished correctly within {}s",
                         planExecutionResult.getPlanExecutionTime().getSeconds());
+                // TODO Andrew@2018-03-06: report back the plan has executed successfully
             } catch (InterruptedException | ExecutionException e) {
                 log.error("Error executing the plan", e);
-            }
-
-            try {
-                final Model model = planContainer.toModel();
-                log.debug(
-                        "The Plan contains the following resources in its model:\n{}",
-                        jenaModelToString(model));
-            } catch (InvocationTargetException | DatatypeConfigurationException |
-                    OslcCoreApplicationException | IllegalAccessException e) {
-                e.printStackTrace();
             }
         } catch (LyoJenaModelException e) {
             log.error("A Plan cannot be built from the TRS change event resource model", e);
