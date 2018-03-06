@@ -31,8 +31,7 @@
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1"/>
           <basicCapabilities>
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.0"/>
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1/@resources.0"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.22"/>
           </basicCapabilities>
         </services>
       </serviceProviders>
@@ -46,9 +45,7 @@
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1"/>
           <basicCapabilities>
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.0"/>
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1/@resources.0"/>
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1/@resources.1"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.22"/>
           </basicCapabilities>
         </services>
       </serviceProviders>

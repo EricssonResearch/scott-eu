@@ -23,6 +23,7 @@
     <resources name="BinaryComparator" resourceProperties="//@domainSpecifications.0/@resourceProperties.6"/>
     <resources name="Predicate" resourceProperties="//@domainSpecifications.0/@resourceProperties.7 //@domainSpecifications.0/@resourceProperties.4"/>
     <resources name="Or" resourceProperties="//@domainSpecifications.0/@resourceProperties.6"/>
+    <resources name="PlanExecutionResult" resourceProperties="//@domainSpecifications.0/@resourceProperties.25 //@domainSpecifications.0/@resourceProperties.26 //@domainSpecifications.0/@resourceProperties.27"/>
     <resourceProperties name="cost" occurs="zeroOrOne" valueType="Float" description="Cost of the plan according to metric."/>
     <resourceProperties name="step" occurs="zeroOrMany" valueType="LocalResource" range="//@domainSpecifications.0/@resources.10" description="Step of the plan containing an action."/>
     <resourceProperties name="time" occurs="zeroOrOne" valueType="Float" description="Time in seconds it took to produce the plan."/>
@@ -48,6 +49,9 @@
     <resourceProperties name="minimize" occurs="zeroOrOne" valueType="Resource" description="Minimization metric."/>
     <resourceProperties name="object" occurs="zeroOrMany" valueType="Resource" range="//@domainSpecifications.0/@resources.13" description="Problem objects."/>
     <resourceProperties name="argument" description="Assignment operator argument (fluent)."/>
+    <resourceProperties name="plan" valueType="Resource" range="//@domainSpecifications.0/@resources.0"/>
+    <resourceProperties name="isSuccessful"/>
+    <resourceProperties name="durationSeconds" valueType="Double"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.pddl" javaFilesPath=""/>
   </domainSpecifications>
   <domainSpecifications name="Blocksworld Domain" namespaceURI="http://ontology.cf.ericsson.net/pddl_example/" namespacePrefix="//@domainPrefixes.1">
@@ -63,7 +67,9 @@
     <resourceProperties name="move-y" valueType="Resource" range="//@domainSpecifications.1/@resources.2"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.blocksworld" javaFilesPath=""/>
   </domainSpecifications>
+  <domainSpecifications name="Domain3" namespaceURI="http://your.organisation.domain/nsp3#" namespacePrefix="//@domainPrefixes.2"/>
   <domainPrefixes name="pddl"/>
   <domainPrefixes name="bworld"/>
+  <domainPrefixes name="nsp3"/>
   <generationSetting javaClassPackageName="eu.scott.warehouse.domains" javaFilesPath="domain-pddl/src/main/java/"/>
 </oslc4j_ai:Specification>

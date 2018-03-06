@@ -85,6 +85,9 @@ public interface PddlDomainConstants
     public static String PLAN = "Plan";
     public static String PATH_PLAN = "plan";
     public static String TYPE_PLAN = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + PLAN;
+    public static String PLANEXECUTIONRESULT = "PlanExecutionResult";
+    public static String PATH_PLANEXECUTIONRESULT = "planExecutionResult";
+    public static String TYPE_PLANEXECUTIONRESULT = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + PLANEXECUTIONRESULT;
     public static String PREDICATE = "Predicate";
     public static String PATH_PREDICATE = "predicate";
     public static String TYPE_PREDICATE = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + PREDICATE;
