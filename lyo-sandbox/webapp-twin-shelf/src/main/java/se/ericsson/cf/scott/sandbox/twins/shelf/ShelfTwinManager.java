@@ -22,46 +22,41 @@
 
 package se.ericsson.cf.scott.sandbox.twins.shelf;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletContextEvent;
-import java.util.List;
-
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twins.shelf.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twins.shelf.ServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.PrimitiveType;
-import eu.scott.warehouse.domains.pddl.Step;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Queues;
 import eu.scott.warehouse.domains.blocksworld.Block;
 import eu.scott.warehouse.domains.blocksworld.Location;
-
-
-// Start of user code imports
+import eu.scott.warehouse.domains.pddl.Plan;
 import java.io.IOException;
 import java.util.Collection;
-import javax.servlet.ServletContext;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import com.google.common.collect.Lists;
-
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.jena.sparql.ARQException;
+import org.eclipse.leshan.core.node.LwM2mNode;
+import org.eclipse.leshan.core.request.AbstractDownlinkRequest;
 import org.eclipse.leshan.server.californium.LeshanServerBuilder;
 import org.eclipse.leshan.server.californium.impl.LeshanServer;
+import org.eclipse.lyo.store.Store;
+import org.eclipse.lyo.store.StoreFactory;
 import org.eclipse.lyo.trs.consumer.config.TrsConsumerConfiguration;
 import org.eclipse.lyo.trs.consumer.config.TrsProviderConfiguration;
 import org.eclipse.lyo.trs.consumer.handlers.TrsProviderHandler;
 import org.eclipse.lyo.trs.consumer.util.TrsBasicAuthOslcClient;
 import org.eclipse.lyo.trs.consumer.util.TrsConsumerUtils;
-import org.eclipse.lyo.store.Store;
-import org.eclipse.lyo.store.StoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twins.shelf.lwm2m.ScottClientRegistryListener;
 import se.ericsson.cf.scott.sandbox.twins.shelf.lwm2m.ScottObservationRegistryListener;
 import se.ericsson.cf.scott.sandbox.twins.shelf.trs.PlanChangeEventListener;
+
+// Start of user code imports
 // End of user code
 
 // Start of user code pre_class_code
@@ -71,9 +66,14 @@ public class ShelfTwinManager {
 
     // Start of user code class_attributes
     private final static String PACKAGE_ROOT = ShelfTwinManager.class.getPackage().getName();
-    private final static Logger log = LoggerFactory.getLogger(ShelfTwinManager.class);
-    private static Store store;
+    private final static Logger log          = LoggerFactory.getLogger(ShelfTwinManager.class);
+    private static Store          store;
     private static ServletContext context;
+    public final static BlockingQueue<LwM2mNode>               newlyObservedValues  = Queues
+            .newLinkedBlockingDeque();
+    public final static BlockingQueue<AbstractDownlinkRequest> pendingWriteRequests = Queues
+            .newLinkedBlockingDeque();
+    public final static ExecutorService planExecutorSvc = Executors.newSingleThreadExecutor();
     // End of user code
 
 

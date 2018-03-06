@@ -3,6 +3,7 @@ package se.ericsson.cf.scott.sandbox.twins.shelf.lwm2m;
 import java.util.Arrays;
 import org.eclipse.leshan.core.request.ObserveRequest;
 import org.eclipse.leshan.core.request.ReadRequest;
+import org.eclipse.leshan.core.request.WriteRequest;
 import org.eclipse.leshan.core.response.LwM2mResponse;
 import org.eclipse.leshan.server.californium.impl.LeshanServer;
 import org.eclipse.leshan.server.client.Client;
@@ -30,10 +31,10 @@ public class ScottClientRegistryListener implements ClientRegistryListener {
         boolean ReadAttempt = false;
         // Request for SmartObject
         // write the current time resource
-        // WriteRequest write = new WriteRequest("/3/0/13", new LwM2mResource(13, Value
-        // .newDateValue(new Date())),
-        //        ContentFormat.TEXT, true);
-        log.info("Get Object Links: " + Arrays.asList(client.getObjectLinks()));
+//         WriteRequest write = new WriteRequest("/3/0/13", new LwM2mResource(13, Value
+//                                                                             .newDateValue(new Date())),
+//                                                                                    ContentFormat.TEXT, true);
+//                                                                            log.info("Get Object Links: " + Arrays.asList(client.getObjectLinks()));
         if (Arrays.asList(client.getObjectLinks())
                   .stream()
                   .anyMatch(l -> "/6/0".equals(l.getUrl()))) {

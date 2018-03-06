@@ -622,7 +622,7 @@
         </edges>
         <edges xmi:type="notation:Edge" xmi:id="_4DYmsBNlEeic--BxzbxoHg" type="4001" element="_4C76wBNlEeic--BxzbxoHg" source="_vWKqlQ_ZEeihFIT0HlPICw" target="_vWKqgA_ZEeihFIT0HlPICw">
           <children xmi:type="notation:Node" xmi:id="_4DYmtBNlEeic--BxzbxoHg" type="6001">
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_4DYmtRNlEeic--BxzbxoHg" y="-10"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_4DYmtRNlEeic--BxzbxoHg" y="39"/>
           </children>
           <children xmi:type="notation:Node" xmi:id="_4DYmthNlEeic--BxzbxoHg" type="6002">
             <layoutConstraint xmi:type="notation:Bounds" xmi:id="_4DYmtxNlEeic--BxzbxoHg" y="10"/>
@@ -832,8 +832,8 @@
     </ownedAnnotationEntries>
     <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_vSQa4A_ZEeihFIT0HlPICw" name="SCOTT PDDL 2.1 subset spec (pddl)" width="40" height="30">
       <target xmi:type="oslc4j_ai:DomainSpecification" href="spec.xmi#//@domainSpecifications.0"/>
-      <semanticElements xmi:type="oslc4j_ai:GenerationSetting" href="spec.xmi#//@domainSpecifications.0/@generationSetting"/>
       <semanticElements xmi:type="oslc4j_ai:DomainSpecification" href="spec.xmi#//@domainSpecifications.0"/>
+      <semanticElements xmi:type="oslc4j_ai:GenerationSetting" href="spec.xmi#//@domainSpecifications.0/@generationSetting"/>
       <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
       <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
       <arrangeConstraints>KEEP_RATIO</arrangeConstraints>

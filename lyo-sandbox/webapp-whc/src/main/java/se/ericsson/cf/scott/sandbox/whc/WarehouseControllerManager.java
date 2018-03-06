@@ -22,12 +22,15 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
+import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
+import org.eclipse.lyo.oslc4j.core.TestLog;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
@@ -225,6 +228,11 @@ public class WarehouseControllerManager {
     {
 
         // Start of user code contextInitializeServletListener
+
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        java.util.logging.Logger.getLogger("").setLevel(Level.FINEST);
+
         context = servletContextEvent.getServletContext();
         try {
             store = StoreFactory.sparql(p("store.query"), p("store.update"));

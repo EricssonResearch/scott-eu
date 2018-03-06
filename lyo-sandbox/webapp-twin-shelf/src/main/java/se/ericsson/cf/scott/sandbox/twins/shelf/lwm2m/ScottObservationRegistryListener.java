@@ -21,12 +21,15 @@ public class ScottObservationRegistryListener implements ObservationRegistryList
 
     @Override
     public void newValue(Observation observation, LwM2mNode value) {
-
         log.info(
                 "New notification from client {}:{}",
                 observation.getClient().getEndpoint(),
                 value
         );
+
+        // enqueue for processing later
+        // TODO Andrew@2018-03-05: handle enqueued but unprocessed overwrites
+        ShelfTwinManager.newlyObservedValues.add(value);
     }
 
     @Override

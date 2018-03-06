@@ -27,7 +27,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.lyo.oslc4j.application.OslcWinkApplication;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.AllowedValues;
@@ -50,6 +51,7 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
 import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.whc.services.ResourceShapeService;

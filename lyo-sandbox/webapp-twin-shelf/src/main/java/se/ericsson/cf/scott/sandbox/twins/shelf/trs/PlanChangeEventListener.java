@@ -3,6 +3,10 @@ package se.ericsson.cf.scott.sandbox.twins.shelf.trs;
 import eu.scott.warehouse.domains.pddl.Plan;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
@@ -17,6 +21,8 @@ import org.eclipse.lyo.trs.consumer.exceptions.JenaModelException;
 import org.eclipse.lyo.trs.consumer.handlers.ChangeEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinManager;
+import se.ericsson.cf.scott.sandbox.twins.shelf.model.ActionContainer;
 import se.ericsson.cf.scott.sandbox.twins.shelf.model.PlanContainer;
 
 /**
@@ -84,20 +90,45 @@ public class PlanChangeEventListener implements ChangeEventListener {
             final Plan plan = JenaModelHelper.unmarshalSingle(trsResourceModel, Plan.class);
 
             final PlanContainer planContainer = new PlanContainer(plan, trsResourceModel);
-//
-////            log.debug("Received a new or updated Plan:\n{}", lyoResourceToString(plan));
-//            log.debug("Received a new or updated Plan: {}", plan);
-//            final HashSet<Step> steps = plan.getStep();
-//            final List<Step> stepList = steps.stream()
-//                                            .sorted(Comparator.comparingInt(Step::getOrder))
-//                                            .collect(Collectors.toList());
-//            for (Step step : stepList) {
-//                // FIXME Andrew@2018-03-04: properly unmarshal any action
-//                final Move action = JenaModelHelper.followLink(
-//                        trsResourceModel,
-//                        step.getAction(),
-//                        Move.class
-//                );
+
+            // TODO Andrew@2018-03-05: define a single-threaded executor or init a thread by hand
+
+            // TODO Andrew@2018-03-05: terminate any previously running runnable!
+            // TODO Andrew@2018-03-05: add create a PlanExecutionRunnable instance
+
+            // TODO Andrew@2018-03-05: Drain the write requests queue and log their cancellation
+            // TODO Andrew@2018-03-05: process all new values before executing plan
+            // TODO Andrew@2018-03-05: convert a step of a plan into a WriteRequest(s)
+            // TODO Andrew@2018-03-05: block until the step has executed (via SynchronousQueue)
+            // or something more advanced than that (ie to handle plan execution error cases)
+
+            // TODO Andrew@2018-03-05: define the same process for handling the new values queue
+
+            /*
+             * So we are going to make a dummy plan executor for now while the LWM2M issue are
+             * getting ironed out. Once we get an LWM2M comm or any other comm to the ROS and
+             * make sure the comm is nicely working with VREP, we can remove this dummy code.
+             */
+            final Future<PlanExecutionResult> planExecutionResultFuture = ShelfTwinManager
+                    .planExecutorSvc
+                    .submit(new Callable<PlanExecutionResult>() {
+                        @Override
+                        public PlanExecutionResult call() throws Exception {
+                            Thread.sleep(5);
+                            for (ActionContainer actionContainer : planContainer.getActions()) {
+                                log.info("Executing {}", actionContainer.getResource());
+                            }
+                            return new PlanExecutionResult(true, Duration.ofSeconds(5));
+                        }
+                    });
+            try {
+                final PlanExecutionResult planExecutionResult = planExecutionResultFuture.get();
+                log.info(
+                        "The plan finished correctly within {}s",
+                        planExecutionResult.getPlanExecutionTime().getSeconds());
+            } catch (InterruptedException | ExecutionException e) {
+                log.error("Error executing the plan", e);
+            }
 
             try {
                 final Model model = planContainer.toModel();
@@ -108,7 +139,6 @@ public class PlanChangeEventListener implements ChangeEventListener {
                     OslcCoreApplicationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
-//            log.info("Found step {}: {}", step.getOrder(), action);
         } catch (LyoJenaModelException e) {
             log.error("A Plan cannot be built from the TRS change event resource model", e);
         }
