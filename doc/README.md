@@ -39,14 +39,18 @@ The main advatage of ROS is that (in most of the cases) it dispenses the necessi
 
 # 5. Installation
 
+<<<<<<< HEAD
 All the instructions below were tested in Ubuntu 16.04. 
 
+=======
+>>>>>>> 277a3ff... Update README.md
 ## 1. Install V-Rep
 
 If using simulated environment, install V-REP from: http://www.coppeliarobotics.com/downloads.html
 
 In the next section you will install ROS and V-REP ROS Interface.
 
+<<<<<<< HEAD
 Set the following **VREP_ROOT** environment variables by running the following lines in the terminal (replace the <path_to_vrep> by the full path to the V-REP folder):
 
 ```
@@ -57,12 +61,24 @@ source ~/.bashrc
 
 
 ## 2. Install ROS Kinect
+=======
+Set the following VREP_ROOT environment variables by adding these lines to .bashrc:
+
+```
+export VREP_ROOT_DIR=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux
+export VREP_ROOT=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux
+```
+
+
+## 2. Install ROS Kinect. 
+>>>>>>> 277a3ff... Update README.md
 Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
 * When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
 "
 * Follow the "recommended" installation for ease of use.
 
+<<<<<<< HEAD
 1. Install Turttlebot2i packages from ROS
     ```
     $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros
@@ -94,16 +110,74 @@ Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
     ```
     $ sudo apt-get install python-catkin-tools
     ```
+=======
+
+
+1. Install Turttlebot2i packages from ROS
+  ```
+  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros
+  ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
+  ```
+
+2. Create the Turtlebot2i workspace by clonning the SCOTT repository
+  ```
+  $ git clone https://github.com/EricssonResearch/scott-eu.git
+  ```
+*As of 7/Mar/2018 you need to change to a subbranch by doing: 
+```
+$ git checkout simulation-ros 
+```
+In the future it might not be necessary
+
+3. Setup the catkin workspace and set ROS environment variables
+  Follow these instructions: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+
+* Be careful to always select the "kinetic" version of ROS
+
+Install catkin python tools:
+
+```
+$ sudo apt-get install python-catkin-tools
+```
+>>>>>>> 277a3ff... Update README.md
 
 
 4. Compile the repository from the simulation-ros workspace root
 
+<<<<<<< HEAD
     Go to /scott-eu/simulation-ros and run:
     ```
     $ catkin build
     ```
+=======
+Go to /scott-eu/simulation-ros and run:
+  ```
+  $ catkin build
+
+  ```
 
 
+5. Install V-REP ROS Interface
+Add to .bashrc :
+```
+$ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simulation-ros
+```
+
+  ```
+  $ source ~/.bashrc
+  $ roscd vrep_ros_interface
+  $ ./install.sh
+  
+  ```
+  If having problems to compile the vrep_ros_interface, check the README.md contained in the package folder.
+  
+[TODO]: Until here it's ok. Check the next steps 
+
+## 3. Follow instructions in each package's there is a README.md.
+>>>>>>> 277a3ff... Update README.md
+
+
+<<<<<<< HEAD
 5. Install V-REP ROS Interface
 
     ```
@@ -151,3 +225,20 @@ To use the python remote API provided by VREP, some adjustments are necessary:
     echo "export PYTHONPATH=$PYTHONPATH:$VREP_ROOT/programming/remoteApiBindings/python/python" >> ~/.bashrc
     source ~/.bashrc
     ```
+=======
+# Running
+
+## Start ROS CORE
+roscore
+
+## Open Vrep Scene
+
+./vrep
+turttlebot2i.ttt
+
+Press play
+
+
+
+
+>>>>>>> 277a3ff... Update README.md
