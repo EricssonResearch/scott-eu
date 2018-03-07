@@ -53,6 +53,7 @@ public class Main {
         final ClientResponse resource = client.createResource(
                 "http://aide.md.kth.se:3020/planner/planCreationFactory", problem, "text/turtle",
                 "text/turtle");
+        // FIXME Andrew@2018-03-06: does not quite work yet
         return resource.getEntity(Plan.class);
     }
 
