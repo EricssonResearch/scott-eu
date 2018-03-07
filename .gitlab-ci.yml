@@ -22,6 +22,8 @@ build_planner_reasoner:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build --build-arg PUBLIC_PORT=3021 -t "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - master
 
 deploy_planner_reasoner:
   stage: deploy
@@ -30,3 +32,5 @@ deploy_planner_reasoner:
     - sed -i -e 's/3020:3020/3021:3020/g' docker-compose.yml
     - docker -H $SWARM_MANAGER login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker -H $SWARM_MANAGER stack deploy -c docker-compose.yml --with-registry-auth planner_reasoner
+  only:
+    - master
