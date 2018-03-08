@@ -12,8 +12,16 @@ The robot model is a Turtlebot2i which is equipped with a robotic arm and two ac
 
 The  presented architecture is formed by the following components that are necessary to run and monitor the robots inside the
 warehouse: V-REP, Robots and Digital Twin. These components are intended to run in different machines in a seamless way
-and in different networks. The following figure illustrates the components of the architecture and the communication
+and in different networks. 
+
+There are two scenarios in this architecture: 
+
+- **Simulated Scenario:** The robots and the warehouse are simulated by V-REP and all the information are gathered from the simulator. In this scenario a single ROS MASTER is used. ROS algorithms communicate with the V-REP through *ROS_INTERFACE* and *ROS API*.
+- **Real Scenario:** In this scenario, real robots are used and each robot has its own ROS MASTER. Each robot will be equipped with its own computer and running ROS on top of it. Each ROS MASTER can communicate with each other with using [ROS MultiMaster](http://wiki.ros.org/ROS/Tutorials/MultipleMachines). 
+
+The following figure illustrates the components of the architecture and the communication
 between them.
+
 
 ![alt text](http://url/to/img.png)
 
