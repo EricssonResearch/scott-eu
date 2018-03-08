@@ -1,0 +1,14 @@
+<package>
+  <description brief="turtlebot2i_warehouse">
+
+     turtlebot2i_warehouse
+
+  </description>
+  <author>Alberto</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/turtlebot2i_warehouse</url>
+
+</package>
+
+
