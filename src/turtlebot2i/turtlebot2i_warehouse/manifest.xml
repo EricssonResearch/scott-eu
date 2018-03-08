@@ -4,10 +4,9 @@
      turtlebot2i_warehouse
 
   </description>
-  <author>Alberto</author>
-  <license>BSD</license>
+  <author>Alberto Hata</author>
+  <license>Apache 2.0</license>
   <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/turtlebot2i_warehouse</url>
 
 </package>
 

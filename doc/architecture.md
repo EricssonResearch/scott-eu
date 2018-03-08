@@ -22,8 +22,7 @@ There are two scenarios in this architecture:
 The following figure illustrates the components of the architecture and the communication
 between them.
 
-
-![alt text](http://url/to/img.png)
+![ROS Architecture](https://github.com/EricssonResearch/scott-eu/blob/simulation-ros/simulation-ros/doc/ROS_multirobot_architecture.png)
 
 ### 2.1. V-REP
 
