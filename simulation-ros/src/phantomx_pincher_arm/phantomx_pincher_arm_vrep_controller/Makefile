@@ -270,17 +270,17 @@ controller_manager_msgs_generate_messages_cpp/fast:
 .PHONY : controller_manager_msgs_generate_messages_cpp/fast
 
 #=============================================================================
-# Target rules for targets named v_repExtRosControl
+# Target rules for targets named controller_remoteApi
 
 # Build rule for target.
-v_repExtRosControl: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 v_repExtRosControl
-.PHONY : v_repExtRosControl
+controller_remoteApi: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 controller_remoteApi
+.PHONY : controller_remoteApi
 
 # fast build rule for target.
-v_repExtRosControl/fast:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/build
-.PHONY : v_repExtRosControl/fast
+controller_remoteApi/fast:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/build
+.PHONY : controller_remoteApi/fast
 
 #=============================================================================
 # Target rules for targets named roscpp_generate_messages_eus
@@ -535,7 +535,7 @@ src/ControlLoop/Phantom_vrepHW.o: src/ControlLoop/Phantom_vrepHW.cpp.o
 
 # target to build an object file
 src/ControlLoop/Phantom_vrepHW.cpp.o:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/Phantom_vrepHW.cpp.o
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/ControlLoop/Phantom_vrepHW.cpp.o
 .PHONY : src/ControlLoop/Phantom_vrepHW.cpp.o
 
 src/ControlLoop/Phantom_vrepHW.i: src/ControlLoop/Phantom_vrepHW.cpp.i
@@ -544,7 +544,7 @@ src/ControlLoop/Phantom_vrepHW.i: src/ControlLoop/Phantom_vrepHW.cpp.i
 
 # target to preprocess a source file
 src/ControlLoop/Phantom_vrepHW.cpp.i:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/Phantom_vrepHW.cpp.i
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/ControlLoop/Phantom_vrepHW.cpp.i
 .PHONY : src/ControlLoop/Phantom_vrepHW.cpp.i
 
 src/ControlLoop/Phantom_vrepHW.s: src/ControlLoop/Phantom_vrepHW.cpp.s
@@ -553,89 +553,89 @@ src/ControlLoop/Phantom_vrepHW.s: src/ControlLoop/Phantom_vrepHW.cpp.s
 
 # target to generate assembly for a file
 src/ControlLoop/Phantom_vrepHW.cpp.s:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/Phantom_vrepHW.cpp.s
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/ControlLoop/Phantom_vrepHW.cpp.s
 .PHONY : src/ControlLoop/Phantom_vrepHW.cpp.s
 
-src/ControlLoop/vrepRosControl_plugin.o: src/ControlLoop/vrepRosControl_plugin.cpp.o
+src/ControlLoop/vrepRosControl_remoteApi.o: src/ControlLoop/vrepRosControl_remoteApi.cpp.o
 
-.PHONY : src/ControlLoop/vrepRosControl_plugin.o
-
-# target to build an object file
-src/ControlLoop/vrepRosControl_plugin.cpp.o:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/vrepRosControl_plugin.cpp.o
-.PHONY : src/ControlLoop/vrepRosControl_plugin.cpp.o
-
-src/ControlLoop/vrepRosControl_plugin.i: src/ControlLoop/vrepRosControl_plugin.cpp.i
-
-.PHONY : src/ControlLoop/vrepRosControl_plugin.i
-
-# target to preprocess a source file
-src/ControlLoop/vrepRosControl_plugin.cpp.i:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/vrepRosControl_plugin.cpp.i
-.PHONY : src/ControlLoop/vrepRosControl_plugin.cpp.i
-
-src/ControlLoop/vrepRosControl_plugin.s: src/ControlLoop/vrepRosControl_plugin.cpp.s
-
-.PHONY : src/ControlLoop/vrepRosControl_plugin.s
-
-# target to generate assembly for a file
-src/ControlLoop/vrepRosControl_plugin.cpp.s:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/vrepRosControl_plugin.cpp.s
-.PHONY : src/ControlLoop/vrepRosControl_plugin.cpp.s
-
-src/ControlLoop/vrepRosControl_server.o: src/ControlLoop/vrepRosControl_server.cpp.o
-
-.PHONY : src/ControlLoop/vrepRosControl_server.o
+.PHONY : src/ControlLoop/vrepRosControl_remoteApi.o
 
 # target to build an object file
-src/ControlLoop/vrepRosControl_server.cpp.o:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/vrepRosControl_server.cpp.o
-.PHONY : src/ControlLoop/vrepRosControl_server.cpp.o
+src/ControlLoop/vrepRosControl_remoteApi.cpp.o:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/ControlLoop/vrepRosControl_remoteApi.cpp.o
+.PHONY : src/ControlLoop/vrepRosControl_remoteApi.cpp.o
 
-src/ControlLoop/vrepRosControl_server.i: src/ControlLoop/vrepRosControl_server.cpp.i
+src/ControlLoop/vrepRosControl_remoteApi.i: src/ControlLoop/vrepRosControl_remoteApi.cpp.i
 
-.PHONY : src/ControlLoop/vrepRosControl_server.i
+.PHONY : src/ControlLoop/vrepRosControl_remoteApi.i
 
 # target to preprocess a source file
-src/ControlLoop/vrepRosControl_server.cpp.i:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/vrepRosControl_server.cpp.i
-.PHONY : src/ControlLoop/vrepRosControl_server.cpp.i
+src/ControlLoop/vrepRosControl_remoteApi.cpp.i:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/ControlLoop/vrepRosControl_remoteApi.cpp.i
+.PHONY : src/ControlLoop/vrepRosControl_remoteApi.cpp.i
 
-src/ControlLoop/vrepRosControl_server.s: src/ControlLoop/vrepRosControl_server.cpp.s
+src/ControlLoop/vrepRosControl_remoteApi.s: src/ControlLoop/vrepRosControl_remoteApi.cpp.s
 
-.PHONY : src/ControlLoop/vrepRosControl_server.s
+.PHONY : src/ControlLoop/vrepRosControl_remoteApi.s
 
 # target to generate assembly for a file
-src/ControlLoop/vrepRosControl_server.cpp.s:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/ControlLoop/vrepRosControl_server.cpp.s
-.PHONY : src/ControlLoop/vrepRosControl_server.cpp.s
+src/ControlLoop/vrepRosControl_remoteApi.cpp.s:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/ControlLoop/vrepRosControl_remoteApi.cpp.s
+.PHONY : src/ControlLoop/vrepRosControl_remoteApi.cpp.s
 
-src/v_repLib.o: src/v_repLib.cpp.o
+src/extApi.o: src/extApi.c.o
 
-.PHONY : src/v_repLib.o
+.PHONY : src/extApi.o
 
 # target to build an object file
-src/v_repLib.cpp.o:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/v_repLib.cpp.o
-.PHONY : src/v_repLib.cpp.o
+src/extApi.c.o:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/extApi.c.o
+.PHONY : src/extApi.c.o
 
-src/v_repLib.i: src/v_repLib.cpp.i
+src/extApi.i: src/extApi.c.i
 
-.PHONY : src/v_repLib.i
+.PHONY : src/extApi.i
 
 # target to preprocess a source file
-src/v_repLib.cpp.i:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/v_repLib.cpp.i
-.PHONY : src/v_repLib.cpp.i
+src/extApi.c.i:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/extApi.c.i
+.PHONY : src/extApi.c.i
 
-src/v_repLib.s: src/v_repLib.cpp.s
+src/extApi.s: src/extApi.c.s
 
-.PHONY : src/v_repLib.s
+.PHONY : src/extApi.s
 
 # target to generate assembly for a file
-src/v_repLib.cpp.s:
-	$(MAKE) -f CMakeFiles/v_repExtRosControl.dir/build.make CMakeFiles/v_repExtRosControl.dir/src/v_repLib.cpp.s
-.PHONY : src/v_repLib.cpp.s
+src/extApi.c.s:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/extApi.c.s
+.PHONY : src/extApi.c.s
+
+src/extApiPlatform.o: src/extApiPlatform.c.o
+
+.PHONY : src/extApiPlatform.o
+
+# target to build an object file
+src/extApiPlatform.c.o:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/extApiPlatform.c.o
+.PHONY : src/extApiPlatform.c.o
+
+src/extApiPlatform.i: src/extApiPlatform.c.i
+
+.PHONY : src/extApiPlatform.i
+
+# target to preprocess a source file
+src/extApiPlatform.c.i:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/extApiPlatform.c.i
+.PHONY : src/extApiPlatform.c.i
+
+src/extApiPlatform.s: src/extApiPlatform.c.s
+
+.PHONY : src/extApiPlatform.s
+
+# target to generate assembly for a file
+src/extApiPlatform.c.s:
+	$(MAKE) -f CMakeFiles/controller_remoteApi.dir/build.make CMakeFiles/controller_remoteApi.dir/src/extApiPlatform.c.s
+.PHONY : src/extApiPlatform.c.s
 
 # Help Target
 help:
@@ -658,7 +658,7 @@ help:
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... install"
 	@echo "... controller_manager_msgs_generate_messages_cpp"
-	@echo "... v_repExtRosControl"
+	@echo "... controller_remoteApi"
 	@echo "... roscpp_generate_messages_eus"
 	@echo "... download_extra_data"
 	@echo "... std_msgs_generate_messages_lisp"
@@ -681,15 +681,15 @@ help:
 	@echo "... src/ControlLoop/Phantom_vrepHW.o"
 	@echo "... src/ControlLoop/Phantom_vrepHW.i"
 	@echo "... src/ControlLoop/Phantom_vrepHW.s"
-	@echo "... src/ControlLoop/vrepRosControl_plugin.o"
-	@echo "... src/ControlLoop/vrepRosControl_plugin.i"
-	@echo "... src/ControlLoop/vrepRosControl_plugin.s"
-	@echo "... src/ControlLoop/vrepRosControl_server.o"
-	@echo "... src/ControlLoop/vrepRosControl_server.i"
-	@echo "... src/ControlLoop/vrepRosControl_server.s"
-	@echo "... src/v_repLib.o"
-	@echo "... src/v_repLib.i"
-	@echo "... src/v_repLib.s"
+	@echo "... src/ControlLoop/vrepRosControl_remoteApi.o"
+	@echo "... src/ControlLoop/vrepRosControl_remoteApi.i"
+	@echo "... src/ControlLoop/vrepRosControl_remoteApi.s"
+	@echo "... src/extApi.o"
+	@echo "... src/extApi.i"
+	@echo "... src/extApi.s"
+	@echo "... src/extApiPlatform.o"
+	@echo "... src/extApiPlatform.i"
+	@echo "... src/extApiPlatform.s"
 .PHONY : help
 
 

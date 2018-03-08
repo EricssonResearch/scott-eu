@@ -1,0 +1,8 @@
+bin/
+devel/
+build/
+logs/
+install/
+*~
+*.swp
+*.stamp
