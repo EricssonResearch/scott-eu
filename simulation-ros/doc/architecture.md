@@ -30,13 +30,11 @@ The following diagram depicts the architecture representing the components of th
 
 ### 2.2. Real Robots Scenario
 
-In this scenario, it is used real robots equipped with its own computer and running ROS on top of it. Each robot has its own *ROS MASTER*, therefore, [ROS MultiMaster](http://wiki.ros.org/ROS/Tutorials/MultipleMachines) is used to perform communication between robots. The digital twins access the robot data from the *ROS MASTER* of each robot. All the robot algorithms are developed through ROS libraries, thus, it is intended to use the same algorithms of the simulated setup.
+In this scenario, it is used real robots equipped with its own computer and running ROS on top of it. Each robot has its own *ROS MASTER*, therefore, the OSLC/MQTT layer is used to perform communication between robots. The digital twins access the robot data from the *ROS MASTER* of each robot. All the robot algorithms are developed through ROS libraries, thus, it is intended to use the same algorithms of the simulated setup.
 
 The main components of the architecture in the real robot setting are:
 
-- **ROS Multimaster:** Enables the use of multiple ROS Master by providing the communication interface between them. Through this, one robot can communicate with other without having to pass the data through OSLC/MQTT layer.
-
-- **ROS Master:** Provides the inner communication interface of the robot by centralizing all the components of the robot. It also is the common interface of the real robots to the *ROS Multimaster* and to the digital twins.
+- **ROS Master:** Provides the inner communication interface of the robot by centralizing all the components of the robot. It is also the comunication interface between each real robot to its corresponting digital twin.
 
 - **Robot ROS Nodes:** Contain all the methods necessary to run the robot, such as obstacle detection, localization and motion planning. Essentially, the same codes used in the simulated architecture are used. The algorithms are developed using ROS libraries and provides high level abstraction interface to the *Robot Hardware*.
 
