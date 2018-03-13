@@ -30,6 +30,10 @@ import java.util.List;
 import org.eclipse.lyo.oslc4j.core.TestLog;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
@@ -100,6 +104,7 @@ public class WarehouseControllerManager {
     // TODO Andrew@2018-02-26: use lock object if CRUD write ops will be allowed
     // FIXME Andrew@2018-02-26: this should be in the Lyo Store
     private static Map<String, IResource[]> plans = new HashMap<>();
+    private static WhcChangeHistories changeHistoriesInstance;
     // End of user code
 
 
@@ -222,6 +227,12 @@ public class WarehouseControllerManager {
         }
     }
     //endregion
+
+    public static ChangeHistories getChangeHistories() {
+        return changeHistoriesInstance;
+    }
+
+
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -243,6 +254,18 @@ public class WarehouseControllerManager {
                     p("store.query"), p("store.update"), e);
         }
 
+        try {
+            final String mqttBroker = p("trs.mqtt.broker");
+            final String mqttTopic = p("trs.mqtt.topic");
+            final MqttClient mqttClient = new MqttClient(mqttBroker, "WHC Controller Service");
+            final MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
+            mqttConnectOptions.setAutomaticReconnect(true);
+            // TODO Andrew@2018-03-13: set highest QoS
+            mqttClient.connect(mqttConnectOptions);
+            changeHistoriesInstance = new WhcChangeHistories(mqttClient, mqttTopic);
+        } catch (MqttException e) {
+            log.error("MQTT connection failed");
+        }
 
         final Model problemModel = loadJenaModelFromResource("sample-problem-request.ttl",
                 Lang.TURTLE);
@@ -270,7 +293,7 @@ public class WarehouseControllerManager {
         final String planId = String.valueOf(plans.size() + 1);
         plan.setAbout(WarehouseControllerResourcesFactory.constructURIForPlan(DEFAULT_SP_ID, planId));
         plans.put(planId, planResources.toArray(new IResource[0]));
-        WhcChangeHistories.INSTANCE.addResource(plan);
+        changeHistoriesInstance.addResource(plan);
 
         /*++++++++++++++++++++++++++++
           TRS Consumer initialisation

@@ -27,8 +27,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.lyo.oslc4j.application.OslcWinkApplication;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.AllowedValues;
@@ -49,9 +47,7 @@ import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
-import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
-import org.slf4j.bridge.SLF4JBridgeHandler;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.whc.services.ResourceShapeService;
@@ -63,7 +59,6 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 
 // Start of user code imports
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.WhcTrsService;
 // End of user code
 
@@ -84,7 +79,7 @@ public class Application extends OslcWinkApplication {
     static
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
-        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
+//        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
         RESOURCE_CLASSES.add(ServiceProviderService1.class);
 
         // Catalog resources
@@ -94,6 +89,8 @@ public class Application extends OslcWinkApplication {
 
         // Start of user code Custom Resource Classes
         RESOURCE_CLASSES.add(WhcTrsService.class);
+        // TODO Andrew@2018-03-13: switch to Jersey then to Wildfly then try this
+//        RESOURCE_CLASSES.add(TrackedResourceSetServiceDI.class);
         // End of user code
 
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_ALLOWED_VALUES,           AllowedValues.class);
