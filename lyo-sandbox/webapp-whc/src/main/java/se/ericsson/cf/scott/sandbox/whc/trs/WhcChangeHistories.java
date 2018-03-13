@@ -1,5 +1,6 @@
 package se.ericsson.cf.scott.sandbox.whc.trs;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
 import org.eclipse.lyo.core.trs.ChangeEvent;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -92,11 +95,9 @@ public class WhcChangeHistories extends ChangeHistories {
     }
 
     private byte[] marshalJenaModel(final Model m) {
-        // FIXME Andrew@2018-03-13: ACHTUNG!!!
-        return m.toString().getBytes();
-//        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        RDFDataMgr.write(byteArrayOutputStream, m, RDFFormat.JSONLD_COMPACT_FLAT);
-//        return byteArrayOutputStream.toByteArray();
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        RDFDataMgr.write(byteArrayOutputStream, m, RDFFormat.JSONLD_COMPACT_FLAT);
+        return byteArrayOutputStream.toByteArray();
     }
 
 }

@@ -115,7 +115,7 @@ public class ShelfTwinManager {
         final String basicAuthUsername = null;
         final String basicAuthPassword = null;
         final String mqttBroker = "tcp://aide.md.kth.se:1883";
-        final String mqttTopic = "trs-whc";
+        final String mqttTopic = "scott-whc";
         final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(new
                 TrsProviderConfiguration(warehouseTrsUri,
                 basicAuthUsername,
