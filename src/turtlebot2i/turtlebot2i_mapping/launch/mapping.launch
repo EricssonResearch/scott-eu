@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<launch>
+  
+  <node name="gmapping" pkg="gmapping" type="slam_gmapping">
+
+    <remap from="scan" to="/turtlebot2i/lidar/scan"/>
+    <param name="odom_frame" value="/turtlebot2i/odom"/>
+    <param name="base_frame" value="/turtlebot2i/base_link"/>
+    <param name="xmin" value="-10"/>
+    <param name="xmax" value="10"/>
+    <param name="ymin" value="-10"/>
+    <param name="ymax" value="10"/>
+
+  </node>
+
+</launch>
