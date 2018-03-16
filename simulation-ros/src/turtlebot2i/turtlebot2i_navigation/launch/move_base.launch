@@ -1,18 +1,24 @@
-<launch>
-  <group ns="/vrep_ros_interface/turtlebot2i">
+<?xml version="1.0"?>
 
-    <include file="$(find base_robot)/launch/turtlebot2i_description.launch" />
+<launch>
+  
+  <include file="$(find turtlebot2i_mapping)/launch/map_server.launch" />
+  
+<!--  <group ns="/vrep_ros_interface/turtlebot2i">-->
+
+
+    <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description_multiple.launch" />
     
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-      <remap from="cmd_vel" to="/vrep_ros_interface/turtlebot2i/commands/velocity"/>
-      <rosparam file="$(find base_robot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find base_robot)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find base_robot)/config/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find base_robot)/config/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find base_robot)/config/base_local_planner_params.yaml" command="load" />
+      <remap from="cmd_vel" to="/turtlebot2i/commands/velocity"/>
+      <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/base_local_planner_params.yaml" command="load" />
     </node>
 
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find base_robot)/config/navigation.rviz" />
-  </group>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/config/navigation.rviz" />
+<!--  </group>-->
   
 </launch>

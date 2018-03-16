@@ -10,5 +10,6 @@
   </include>
 
 
+  <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find turtlebot2i_description)/rviz/turtlebot2i_multiple_robots.rviz" />
 
 </launch>
