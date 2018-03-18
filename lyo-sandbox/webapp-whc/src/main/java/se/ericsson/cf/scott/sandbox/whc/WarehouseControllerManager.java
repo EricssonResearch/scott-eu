@@ -22,6 +22,7 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
+import java.time.Duration;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
@@ -40,7 +41,6 @@ import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
 import java.util.ArrayList;
@@ -127,7 +127,7 @@ public class WarehouseControllerManager {
     }
 
     private static Model planForProblem(final Model problemModel) {
-        log.info("Problem request\n{}", jenaModelToString(problemModel));
+        log.trace("Problem request\n{}", jenaModelToString(problemModel));
         try {
             final InputStream response = requestPlanManually(problemModel);
             final Model responsePlan = ModelFactory.createDefaultModel();
@@ -262,7 +262,9 @@ public class WarehouseControllerManager {
             mqttConnectOptions.setAutomaticReconnect(true);
             // TODO Andrew@2018-03-13: set highest QoS
             mqttClient.connect(mqttConnectOptions);
-            changeHistoriesInstance = new WhcChangeHistories(mqttClient, mqttTopic);
+            changeHistoriesInstance = new WhcChangeHistories(mqttClient,
+                                                             mqttTopic,
+                                                             Duration.ofMinutes(5).toMillis());
         } catch (MqttException e) {
             log.error("MQTT connection failed");
         }
@@ -271,13 +273,11 @@ public class WarehouseControllerManager {
                 Lang.TURTLE);
 
         Model planModel = planForProblem(problemModel);
-
         skolemize(planModel);
-
-
         final Plan plan = fromJenaModelSingle(planModel, Plan.class);
+        log.debug("Received plan: {}", plan);
+
         final ArrayList<IResource> planResources = new ArrayList<>();
-        log.info("Received plan: {}", plan);
         planResources.add(plan);
         // TODO Andrew@2018-02-23: why not getSteps?
         final HashSet<Step> planSteps = plan.getStep();

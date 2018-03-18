@@ -2,10 +2,14 @@ package se.ericsson.cf.scott.sandbox.whc.trs;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.jena.rdf.model.Model;
@@ -38,41 +42,57 @@ public class WhcChangeHistories extends ChangeHistories {
 
     // TODO Andrew@2018-02-26: extract a default "manual" implementation
 //    public static final WhcChangeHistories INSTANCE = new WhcChangeHistories();
-    private final List<HistoryData> history = new ArrayList<>();
+    private final List<HistoryData>   history            = new ArrayList<>();
+    private final Map<URI, IResource> trackedResourceMap = new HashMap<>();
     private final MqttClient client;
     private final String     topic;
 
-    public WhcChangeHistories(MqttClient client, String topic) {
+    public WhcChangeHistories(MqttClient client, String topic, final long baseUpdateInterval) {
+        super(baseUpdateInterval);
         this.client = client;
         this.topic = topic;
-        // FIXME Andrew@2018-02-27: the WhcTrsService shall pass the base on all requests
-        this.setServiceBase(OSLC4JUtils.getServletURI());
     }
 
+
     @Override
-    public HistoryData[] getHistory(final HttpServletRequest httpServletRequest, final Date dateAfter) {
+    public HistoryData[] getHistory(final HttpServletRequest httpServletRequest,
+            final Date dateAfter) {
         // TODO Andrew@2018-02-26: less expensive implementation
         // TODO Andrew@2018-02-26: consider switching the caller to use lists
-        return history.toArray(new HistoryData[0]);
+        final Date filterDate = dateAfter == null ? new Date(0) : dateAfter;
+        return history.stream()
+                      .filter(d -> d.getTimestamp().after(filterDate))
+                      .toArray(HistoryData[]::new);
     }
 
     @Override
     protected void newChangeEvent(final ChangeEvent ce) {
         log.info("New ChangeEvent: {}", ce);
 
+        IResource resource = getResourceForChangeEvent(ce);
         // FIXME Andrew@2018-03-13: inline
-        MqttMessage message = buildMqttMessage(ce, null);
+        MqttMessage message = buildMqttMessage(ce, resource);
         try {
+            if (!client.isConnected()) {
+                client.connect();
+            }
             client.publish(topic, message);
         } catch (MqttException e) {
             log.error("Can't publish the message to the MQTT channel", e);
         }
     }
 
+    private IResource getResourceForChangeEvent(final ChangeEvent ce) {
+        return trackedResourceMap.get(ce.getChanged());
+    }
+
     public void addResource(IResource resource) {
         final Date now = new Date();
-        final HistoryData historyData = HistoryData.getInstance(now, resource.getAbout(), HistoryData.CREATED);
+        final HistoryData historyData = HistoryData.getInstance(now,
+                                                                resource.getAbout(),
+                                                                HistoryData.CREATED);
         history.add(historyData);
+        trackedResourceMap.put(resource.getAbout(), resource);
         try {
             super.buildBaseResourcesAndChangeLogs(null);
         } catch (URISyntaxException e) {
@@ -81,10 +101,19 @@ public class WhcChangeHistories extends ChangeHistories {
 
     }
 
-    private MqttMessage buildMqttMessage(ChangeEvent changeEvent,
-            AbstractResource trackedResource) {
+    private MqttMessage buildMqttMessage(ChangeEvent changeEvent, IResource trackedResource) {
         try {
-            Model changeEventJenaModel = JenaModelHelper.createJenaModel(new Object[]{changeEvent});
+            Model changeEventJenaModel;
+            if (trackedResource != null) {
+                log.warn("FAT PING will take place for the {}", changeEvent);
+                changeEventJenaModel = JenaModelHelper.createJenaModel(new Object[]{changeEvent,
+                        trackedResource});
+
+            } else {
+                log.warn("ACHTUNG inlining is impossible, the resource is NULL for {}",
+                         changeEvent);
+                changeEventJenaModel = JenaModelHelper.createJenaModel(new Object[]{changeEvent});
+            }
             MqttMessage message = new MqttMessage();
             message.setPayload(marshalJenaModel(changeEventJenaModel));
             return message;
