@@ -4,7 +4,7 @@ project(vrep_ros_interface)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 find_package(catkin REQUIRED COMPONENTS
-  roscpp rosmsg image_transport tf cv_bridge
+  roscpp rosmsg image_transport tf cv_bridge message_generation turtlebot2i_safety
 )
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
@@ -13,7 +13,7 @@ find_package(VREP REQUIRED)
 catkin_package(
     CATKIN_DEPENDS roscpp rosconsole cv_bridge image_transport tf brics_actuator roslib actionlib_msgs control_msgs
     diagnostic_msgs geometry_msgs map_msgs nav_msgs pcl_msgs sensor_msgs shape_msgs std_msgs tf2_geometry_msgs tf2_msgs
-    tf2_sensor_msgs trajectory_msgs visualization_msgs actionlib_msgs kobuki_msgs
+    tf2_sensor_msgs trajectory_msgs visualization_msgs actionlib_msgs kobuki_msgs turtlebot2i_safety message_runtime
 )
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/generated)
