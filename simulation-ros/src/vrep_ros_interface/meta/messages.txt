@@ -177,4 +177,4 @@ kobuki_msgs/SensorState
 kobuki_msgs/Sound
 kobuki_msgs/VersionInfo
 kobuki_msgs/WheelDropEvent
-
+turtlebot2i_safety/SafetyZone
