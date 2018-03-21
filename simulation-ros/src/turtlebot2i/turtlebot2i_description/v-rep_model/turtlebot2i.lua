@@ -16,8 +16,20 @@ end
 -- Enable/disable motors
 function setMotor_cb(msg)
     motor_power = msg.state
+-----------------------------------TEST-------
+	sim.scaleObject (zoneRed_handle,2,2,0,0) 
+----------------------------END-----------------
 end
-
+-------------------------------------------------------------
+------------------------Add by Enyu Cao----------------------
+-- Adjust circle size
+function setCirlceSize_cb(msg)
+	sim.scaleObject (zoneRed_handle，msg.critical_zone_radius,ctical_zone_radius,0,0)  
+	sim.scaleObject (zoneYellow_handle，msg.warning_zone_radius,warning_zone_radius,0,0)
+	sim.scaleObject (zoneGreen_handle，msg.clear_zone_radius,critical_zone_radius,0,0)
+end
+--------------------END ------------------------------------
+-------------------------------------------------------------
 if (sim_call_type==sim.childscriptcall_initialization) then 
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
 
@@ -47,7 +59,17 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 
     docking_station_ir_handle = sim.getObjectHandle('docking_station_ir_sensor')
     docking_station_handle = sim.getObjectHandle('dockStation')
+------------------------Add by Enyu Cao----------------------
+-- Adjust circle size
+    zoneRed_handle = sim.getObjectHandle('DiscRed')
+    zoneYellow_handle = sim.getObjectHandle('DiscYellow')
+    zoneGreen_handle = sim.getObjectHandle('DiscGreen')
+    sim.scaleObject (zoneRed_handle,2,2,0,0)  
+    sim.scaleObject (zoneYellow_handle,2,2,0,0)  
+    sim.scaleObject (zoneGreen_handle,2,2,0,0)  
 
+--------------------END ------------------------------------
+-------------------------------------------------------------
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
     originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)
@@ -263,7 +285,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     quaternion_map_odom_ros["z"] = r_map_odom_quaternion[3]
     quaternion_map_odom_ros["w"] = r_map_odom_quaternion[4]
     
-    local position_map_odom_ros = {}
+    mocal position_map_odom_ros = {}
     position_map_odom_ros["x"] = r_map_odom_position[1]
     position_map_odom_ros["y"] = r_map_odom_position[2]
     position_map_odom_ros["z"] = r_map_odom_position[3]
