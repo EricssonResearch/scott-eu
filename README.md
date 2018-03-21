@@ -1,4 +1,4 @@
-﻿# Branch discription
+﻿# Branch description
 This branch was created by Enyu Cao <enyu.cao@ericsson.com>, a current thesis worker from KTH.
 
 This branch was created from existing sg-safety branch. And it aims to keep other branchs clean. 
