@@ -58,6 +58,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     r_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_right')
 
     docking_station_ir_handle = sim.getObjectHandle('docking_station_ir_sensor')
+<<<<<<< HEAD
     docking_station_handle = sim.getObjectHandle('dockStation')
 ------------------------Add by Enyu Cao----------------------
 -- Adjust circle size
@@ -70,6 +71,10 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 
 --------------------END ------------------------------------
 -------------------------------------------------------------
+=======
+    docking_station_handle = sim.getObjectHandle('dockstation')
+
+>>>>>>> 47a1a6d912d3ec637c2c54f45e720e5e5bded828
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
     originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)

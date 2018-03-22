@@ -1,6 +1,6 @@
 function pointCloud()
 
-    local header = {seq = 0, stamp = simROS.getTime(), frame_id = sensorName.."_link"}
+    local header = {seq = 0, stamp = simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
     local data = {}
     local height = 160 
     local width  = 120
@@ -38,32 +38,21 @@ end
 
 if (sim_call_type==sim.childscriptcall_initialization) then 
 
-    -- Depth camera handler
-    depthCam = sim.getObjectHandle('camera_depth')
-    depthView = sim.floatingViewAdd(0.9,0.9,0.2,0.2,0)
-    sim.adjustView(depthView,depthCam,64)
-
-    -- Color camera handler
-    colorCam = sim.getObjectHandle('camera_rgb')
-    colorView = sim.floatingViewAdd(0.69,0.9,0.2,0.2,0)
-    sim.adjustView(colorView,colorCam,64)
-
     robot_id = sim.getStringSignal("robot_id")
-
-    --objHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
-    --parentHandle = simGetObjectParent(objHandle)
 
     modelHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
     object_name = sim.getObjectName(modelHandle)
     sensor_number, sensor_name = sim.getNameSuffix(object_name)
 
-    --if parentHandle ~= -1 then
-    --    modelBaseName = sim.getObjectName(parentHandle).."/"..sensorName
-    -- else
-    --    modelBaseName = sensorName
-    --end
+    -- Depth camera handler
+    depthCam = sim.getObjectHandle(sensor_name..'_depth')
+    depthView = sim.floatingViewAdd(0.9,0.9,0.2,0.2,0)
+    sim.adjustView(depthView,depthCam,64)
 
---    modelBaseName = string.gsub(modelBaseName,"#","_")
+    -- Color camera handler
+    colorCam = sim.getObjectHandle(sensor_name..'_rgb')
+    colorView = sim.floatingViewAdd(0.69,0.9,0.2,0.2,0)
+    sim.adjustView(colorView,colorCam,64)
     
     -- ROS Stuff
 	pubKinectRgb = simROS.advertise(robot_id..'/'..sensor_name..'/rgb/raw_image','sensor_msgs/Image')
@@ -87,7 +76,7 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 
         -- Publish camera RGB image to ROS
 	    d = {}
-        d['header'] = {seq=0, stamp=simROS.getTime(), frame_id = sensorName.."_link_optical"}
+        d['header'] = {seq=0, stamp=simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."_rgb_optical_frame"}
 	    d['height'] = h
 	    d['width'] = w
 	    d['encoding'] = 'rgb8'
@@ -99,7 +88,7 @@ if (sim_call_type==sim.childscriptcall_sensing) then
         -- Publish camera depth image to ROS
         data,w,h = sim.getVisionSensorCharImage(depthCam)
 	    d = {}
-        d['header'] = {seq=0, stamp=simROS.getTime(), frame_id = sensorName.."_link_optical"}
+        d['header'] = {seq=0, stamp=simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
 	    d['height'] = h
 	    d['width'] = w
 	    d['encoding'] = 'rgb8'
