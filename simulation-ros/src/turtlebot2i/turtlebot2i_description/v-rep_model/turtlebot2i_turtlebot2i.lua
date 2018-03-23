@@ -16,24 +16,43 @@ end
 -- Enable/disable motors
 function setMotor_cb(msg)
     motor_power = msg.state
+-----------------------------------TEST-------
+	sim.scaleObject (zoneRed_handle,2,2,0,0) 
+----------------------------END-----------------
 end
-
+-------------------------------------------------------------
+------------------------Add by Enyu Cao----------------------
+-- Adjust circle size
+function setCirlceSize_cb(msg)
+	sim.scaleObject (zoneRed_handle,msg.critical_zone_radius,ctical_zone_radius,0,0)  
+	sim.scaleObject (zoneYellow_handle,msg.warning_zone_radius,warning_zone_radius,0,0)
+	sim.scaleObject (zoneGreen_handle,msg.clear_zone_radius,critical_zone_radius,0,0)
+end
+--------------------END ------------------------------------
+-------------------------------------------------------------
 if (sim_call_type==sim.childscriptcall_initialization) then 
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
-    modelBaseName = sim.getObjectName(objHandle)
+
+    robot_id = sim.getStringSignal('robot_id')
+print=printToConsole
+if not robot_id then
+    error("invaid robot id, this signal doesn't exist")
+else print("robot_id is found!",robot_id)
+end
+
 
     mainBodyHandle = sim.getObjectHandle("turtlebot_body_visual")
-    
-    leftJoint=sim.getObjectHandle("turtlebot_leftWheelJoint_")
-    rightJoint=sim.getObjectHandle("turtlebot_rightWheelJoint_")
-    simulationIsKinematic=false -- we want a dynamic simulation here!
+
+    leftJoint = sim.getObjectHandle("turtlebot_leftWheelJoint_")
+    rightJoint = sim.getObjectHandle("turtlebot_rightWheelJoint_")
+    simulationIsKinematic = false -- we want a dynamic simulation here!
     velocityLeft = 0
     velocityRight = 0
     linVel = 0
     rotVel = 0
-
     motor_power = 1 --Enable motors by default
 
+print("start getting handlers")
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')
     t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
     t_rightBumper = sim.getObjectHandle('bumper_right_joint')
@@ -46,7 +65,18 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     r_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_right')
 
     docking_station_ir_handle = sim.getObjectHandle('docking_station_ir_sensor')
-    docking_station_handle = sim.getObjectHandle('DockStation')
+    docking_station_handle = sim.getObjectHandle('dockStation')
+------------------------Add by Enyu Cao----------------------
+-- Adjust circle size
+    zoneRed_handle = sim.getObjectHandle('DiscRed')
+    zoneYellow_handle = sim.getObjectHandle('DiscYellow')
+    zoneGreen_handle = sim.getObjectHandle('DiscGreen')
+    --sim.scaleObject (zoneRed_handle,2,2,0,0)     --Testing is OK
+    --sim.scaleObject (zoneYellow_handle,2,2,0,0)  --Testing is OK
+    --sim.scaleObject (zoneGreen_handle,2,2,0,0)   --Testing is OK
+
+--------------------END ------------------------------------
+-------------------------------------------------------------
 
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
@@ -57,26 +87,30 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 
     bumper_id = 255
     cliff_sensor = 255
-    wheel_drop_sensor = 255
+    wheel_drop_sensor = 256
 
     ----------------------------- ROS STUFF --------------------------------
+--I have tried to install KOBUKI pacakage by 
+    --$sudo apt-get install ros-kinetic-kobuki ros-kinetic-kobuki-core
+    --And the msgs can be found in /opt/ros/kinetic/share/kobuki_msgs
+    --Maybe we need catkin_make, but I will give this problem to Shaolei
+
     -- Bumper
-	pubBumper = simROS.advertise(modelBaseName..'/events/bumper', 'kobuki_msgs/BumperEvent')
-	--simROS.publisherTreatUInt8ArrayAsString(pubBumper)
+	pubBumper = simROS.advertise(robot_id..'/events/bumper', 'kobuki_msgs/BumperEvent')
     -- Cliff
-	pubCliff = simROS.advertise(modelBaseName..'/events/cliff', 'kobuki_msgs/CliffEvent')
+	pubCliff = simROS.advertise(robot_id..'/events/cliff', 'kobuki_msgs/CliffEvent')
     -- Wheel Drop
-	pubWheelDrop = simROS.advertise(modelBaseName..'/events/wheel_drop', 'kobuki_msgs/WheelDropEvent')
+	pubWheelDrop = simROS.advertise(robot_id..'/events/wheel_drop', 'kobuki_msgs/WheelDropEvent')
 	--  Docking IR
-    pubDockIR = simROS.advertise(modelBaseName..'/sensors/dock_ir', 'kobuki_msgs/DockInfraRed')
+    pubDockIR = simROS.advertise(robot_id..'/sensors/dock_ir', 'kobuki_msgs/DockInfraRed')
 	simROS.publisherTreatUInt8ArrayAsString(pubDockIR)
     -- Odometry
-    pubPose = simROS.advertise(modelBaseName..'/odom', 'nav_msgs/Odometry')
+    pubPose = simROS.advertise(robot_id..'/odom', 'nav_msgs/Odometry')
     simROS.publisherTreatUInt8ArrayAsString(pubPose)
 
     -- Commands
-    subCmdVel = simROS.subscribe(modelBaseName..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
-    subCmdMotor = simROS.subscribe(modelBaseName..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
+    subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
+    subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
 
 end 
 
@@ -221,14 +255,13 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     end
 
     local ros_dock_ir = {}
-    ros_dock_ir["header"] = {seq=0,stamp=simROS.getTime(), frame_id='/dock_ir'}
+        ros_dock_ir["header"] = {seq = 0,stamp = simROS.getTime(), frame_id = robot_id..'/dock_ir'}
     ros_dock_ir["data"] = string.char(dock_ir_orientation)
 
     if (dock_ir_proximity == 1) then
+
         ros_dock_ir["data"] = string.char(8 * dock_ir_orientation)
     end
-
-    -- print(string.byte(ros_dock_ir["data"]))
 
     simROS.publish(pubDockIR, ros_dock_ir)     
     
@@ -240,50 +273,89 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     local r_linear_velocity, r_angular_velocity = 0,0
     r_linear_velocity, r_angular_velocity = simGetObjectVelocity(mainBodyHandle)
 
+
+    -- Static pose Map --> Odom
+    local r_map_odom_quaternion = simGetQuaternionFromMatrix(originMatrix)
+    local r_map_odom_position = {originMatrix[4], originMatrix[8], originMatrix[12]}
+
     -- ROSing
     local ros_pose = {}
-    ros_pose['header'] = {seq=0,stamp=simROS.getTime(), frame_id="/odom"}
+    ros_pose['header'] = {seq = 0,stamp=simROS.getTime(), frame_id = robot_id..'/odom'}
     local cov = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+    
     local quaternion_ros = {}
     quaternion_ros["x"] = r_quaternion[1]
     quaternion_ros["y"] = r_quaternion[2]
     quaternion_ros["z"] = r_quaternion[3]
     quaternion_ros["w"] = r_quaternion[4]
+    
     local position_ros = {}
     position_ros["x"] = r_position[1]
     position_ros["y"] = r_position[2]
     position_ros["z"] = r_position[3]
+    
+    local quaternion_map_odom_ros = {}
+
+    quaternion_map_odom_ros["x"] = r_map_odom_quaternion[1]
+    quaternion_map_odom_ros["y"] = r_map_odom_quaternion[2]
+    quaternion_map_odom_ros["z"] = r_map_odom_quaternion[3]
+    quaternion_map_odom_ros["w"] = r_map_odom_quaternion[4]
+    
+    local position_map_odom_ros = {}
+    position_map_odom_ros["x"] = r_map_odom_position[1]
+    position_map_odom_ros["y"] = r_map_odom_position[2]
+    position_map_odom_ros["z"] = r_map_odom_position[3]
+    
     local pose_r = {position=position_ros, orientation=quaternion_ros}
     ros_pose['pose'] = {pose=pose_r, covariance = cov}
+    
     local linear_speed = {}
     linear_speed["x"] = r_linear_velocity[1]
     linear_speed["y"] = r_linear_velocity[2]
     linear_speed["z"] = r_linear_velocity[3]
+    
     local angular_speed = {}
     angular_speed["x"] = r_angular_velocity[1]
     angular_speed["y"] = r_angular_velocity[2]
     angular_speed["z"] = r_angular_velocity[3]
-    ros_pose['twist'] = {twist={linear=linear_speed, angular=angular_speed}, covariance=cov}
-    ros_pose['child_frame_id'] = "kinect"
+    ros_pose['twist'] = {twist = {linear = linear_speed, angular = angular_speed}, covariance = cov}
+    ros_pose['child_frame_id'] = robot_id..'kinect' -- CHECK THIS!0
+
     simROS.publish(pubPose, ros_pose)     
+
+    time = simROS.getTime()
 
     -- Publish TF
     pose_tf = {
         header = {
-            stamp = simROS.getTime(),
-            frame_id = '/odom'
+            stamp = time,
+            frame_id = robot_id..'/odom'
         },
-        child_frame_id = '/base_footprint',
+        child_frame_id = robot_id..'/base_footprint',
         transform = {
             translation = position_ros,
             rotation = quaternion_ros 
         }
     }
 
+    -- Publish Static TF (/map --> /odom)
+    static_tf = {
+        header = {
+            stamp = time,
+            frame_id = '/map'
+        },
+        child_frame_id = robot_id..'/odom',
+        transform = {
+            translation = position_map_odom_ros,
+            rotation = quaternion_map_odom_ros
+        }
+    }
+
     simROS.sendTransform(pose_tf)
+    simROS.sendTransform(static_tf)
 end 
 
-if (sim_call_type==sim.childscriptcall_cleanup) then 
+if (sim_call_type == sim.childscriptcall_cleanup) then 
     -- ROS Shutdown
     simROS.shutdownPublisher(pubPose)
     simROS.shutdownPublisher(pubBumper)
@@ -293,40 +365,46 @@ if (sim_call_type==sim.childscriptcall_cleanup) then
     simROS.shutdownSubscriber(subCmdVel)
 end 
 
-if (sim_call_type==sim.childscriptcall_actuation) then 
-    s=sim.getObjectSizeFactor(objHandle) -- make sure that if we scale the robot during simulation, other values are scaled too!
-    v0=0.4*s
-    wheelDiameter=0.085*s
-    interWheelDistance=0.137*s
-    noDetectionDistance=0.4*s
+if (sim_call_type == sim.childscriptcall_actuation) then 
+    s = sim.getObjectSizeFactor(objHandle) -- make sure that if we scale the robot during simulation, other values are scaled too!
+    v0 = 0.4*s
+    wheelDiameter = 0.085*s
+    interWheelDistance = 0.137*s
+    noDetectionDistance = 0.4*s
 
     if simulationIsKinematic then
         -- Simulation is kinematic
-        p=sim.boolOr32(sim.getModelProperty(objHandle),sim.modelproperty_not_dynamic)
+        p = sim.boolOr32(sim.getModelProperty(objHandle),sim.modelproperty_not_dynamic)
         sim.setModelProperty(objHandle,p)
-        dt=sim.getSimulationTimeStep()
-        p=sim.getJointPosition(leftJoint)
+        dt = sim.getSimulationTimeStep()
+ 
+        p = sim.getJointPosition(leftJoint)
         sim.setJointPosition(leftJoint,p+velocityLeft*dt*2/wheelDiameter)
-        p=sim.getJointPosition(rightJoint)
+        
+        p = sim.getJointPosition(rightJoint)
         sim.setJointPosition(rightJoint,p+velocityRight*dt*2/wheelDiameter)
-        linMov=dt*(velocityLeft+velocityRight)/2.0
-        rotMov=dt*math.atan((velocityRight-velocityLeft)/interWheelDistance)
-        position=sim.getObjectPosition(objHandle,sim.handle_parent)
-        orientation=sim.getObjectOrientation(objHandle,sim.handle_parent)
-        xDir={math.cos(orientation[3]),math.sin(orientation[3]),0.0}
-        position[1]=position[1]+xDir[1]*linMov
-        position[2]=position[2]+xDir[2]*linMov
-        orientation[3]=orientation[3]+rotMov
-        sim.setObjectPosition(objHandle,sim.handle_parent,position)
-        sim.setObjectOrientation(objHandle,sim.handle_parent,orientation)
+        
+        linMov = dt*(velocityLeft+velocityRight)/2.0
+        rotMov = dt*math.atan((velocityRight-velocityLeft)/interWheelDistance)
+        
+        position = sim.getObjectPosition(objHandle, sim.handle_parent)
+        orientation = sim.getObjectOrientation(objHandle, sim.handle_parent)
+        
+        xDir = {math.cos(orientation[3]), math.sin(orientation[3]), 0.0}
+        
+        position[1] = position[1] +xDir[1]*linMov
+        position[2] = position[2] + xDir[2]*linMov
+        orientation[3] = orientation[3] + rotMov
+        
+        sim.setObjectPosition(objHandle, sim.handle_parent, position)
+        sim.setObjectOrientation(objHandle, sim.handle_parent, orientation)
     else
         -- Simulation is dynamic
-        p=sim.boolOr32(sim.getModelProperty(objHandle),sim.modelproperty_not_dynamic)-sim.modelproperty_not_dynamic
-        sim.setModelProperty(objHandle,p)
+        p = sim.boolOr32(sim.getModelProperty(objHandle), sim.modelproperty_not_dynamic) - sim.modelproperty_not_dynamic
+        sim.setModelProperty(objHandle, p)
         --velocityRight = linVel + rotVel
         --velocityLeft = linVel - rotVel
-        sim.setJointTargetVelocity(leftJoint,velocityLeft*2/wheelDiameter)
-        sim.setJointTargetVelocity(rightJoint,velocityRight*2/wheelDiameter)
+        sim.setJointTargetVelocity(leftJoint, velocityLeft*2/wheelDiameter)
+        sim.setJointTargetVelocity(rightJoint, velocityRight*2/wheelDiameter)
     end
 end 
-

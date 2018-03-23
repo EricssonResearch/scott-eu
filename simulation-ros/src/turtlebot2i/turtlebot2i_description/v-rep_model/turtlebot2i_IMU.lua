@@ -27,7 +27,11 @@ if (sim_call_type == sim.childscriptcall_initialization) then
     modelBaseName = sim.getObjectName(sim.getObjectParent(sim.getObjectParent(objHandle)))
 
     robot_id = sim.getStringSignal("robot_id")
-
+print=printToConsole
+if not robot_id then
+    error("invaid robot id, this signal doesn't exist")
+else print("robot_id is found!")
+end
     -- Initialize Gyro sensor
     gyro_object = sim.getObjectHandle('GyroSensor_reference')
     oldTransformationMatrix = sim.getObjectMatrix(gyro_object, -1)
@@ -59,6 +63,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
     -- Get gyro sensor data
     local transformationMatrix = sim.getObjectMatrix(gyro_object, -1)
+--BUG here gyro_object
     local orientation = sim.getQuaternionFromMatrix(transformationMatrix)
     local oldInverse = simGetInvertedMatrix(oldTransformationMatrix)
     local m = sim.multiplyMatrices(oldInverse, transformationMatrix)

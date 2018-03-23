@@ -9,7 +9,11 @@ if (sim_call_type == sim.childscriptcall_initialization) then
     sensor_number, sensor_name = sim.getNameSuffix(object_name)
 
     robot_id = sim.getStringSignal("robot_id")
-
+print=printToConsole
+if not robot_id then
+    error("invaid robot id, this signal doesn't exist")
+else print("robot_id is found!")
+end
     laserHandle = sim.getObjectHandle("lidar_sensor")
     jointHandle = sim.getObjectHandle("lidar_joint")
 
@@ -31,7 +35,7 @@ end
 if (sim_call_type == sim.childscriptcall_sensing) then 
     local dists = {}
     angle =- scanRange*0.5
-
+--BUG here :scanRange is nil
     sim.setJointPosition(jointHandle, angle)
     jointPos = angle
     

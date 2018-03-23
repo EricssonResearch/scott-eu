@@ -39,7 +39,11 @@ end
 if (sim_call_type==sim.childscriptcall_initialization) then 
 
     robot_id = sim.getStringSignal("robot_id")
-
+print=printToConsole
+if not robot_id then
+    error("invaid robot id, this signal doesn't exist")
+else print("robot_id is found!")
+end
     modelHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
     object_name = sim.getObjectName(modelHandle)
     sensor_number, sensor_name = sim.getNameSuffix(object_name)
