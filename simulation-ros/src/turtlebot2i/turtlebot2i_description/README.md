@@ -17,7 +17,7 @@ To run the description for **one ore two robots**, execute the following steps:
 1. Run the scene containing the turtlebot2i
 
 ```
-./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/turtlebot2i_Warehouse.lua
+./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/turtlebot2i_Warehouse.ttt
 ```
 
 2. Execute the ros launch associated to the robot description
@@ -49,4 +49,24 @@ The *turtlebot2i_description_multiple_robots.launch* is limited to be used with 
     <arg name="robot_name" value="turtlebot2i"/>
   </include>
 ```
+
+# 5. Steps to test the function of safety zone size change 
+If you just want to test the safety zone function, `catkin build` is necessary in the root path (`/yourpath/scout-eu/simulation-ros`) . Please also do `source devel/setup.bash` in the root path.
+
+1. Run `roscore`.
+2. Start V-rep and open the scenaro  `turtlebot2i.ttt` from the path `/yourpath/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_description` and run it.
+3. Send ros topic for a new terminal, the format of this message (change safety zone size) should be like:
+```
+$ rostopic pub /turtlebot/commands/setSafetySize turtlebot2i_safety/SafetyZone "header:
+  seq: 0
+  stamp:
+    secs: 0
+    nsecs: 0
+  frame_id: ''
+clear_zone_radius: 1.8
+warning_zone_radius: 1.3
+critical_zone_radius: 1.0" 
+
+```
+Please note: **Don't** save the scene after your finish the simulation. Otherwise you need to modify geometry of the safety zone manually to 1 meter in the beginning of next simulation, or the size of the safety zone in the simulator might display incorrectly.
 
