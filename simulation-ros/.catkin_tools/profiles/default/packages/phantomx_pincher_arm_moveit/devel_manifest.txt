@@ -1,0 +1,4 @@
+phantomx_pincher_arm/phantomx_pincher_arm_moveit
+/home/enwhsaa/Private/scott-eu/simulation-ros/devel/.private/phantomx_pincher_arm_moveit/lib/pkgconfig/phantomx_pincher_arm_moveit.pc /home/enwhsaa/Private/scott-eu/simulation-ros/devel/lib/pkgconfig/phantomx_pincher_arm_moveit.pc
+/home/enwhsaa/Private/scott-eu/simulation-ros/devel/.private/phantomx_pincher_arm_moveit/share/phantomx_pincher_arm_moveit/cmake/phantomx_pincher_arm_moveitConfig.cmake /home/enwhsaa/Private/scott-eu/simulation-ros/devel/share/phantomx_pincher_arm_moveit/cmake/phantomx_pincher_arm_moveitConfig.cmake
+/home/enwhsaa/Private/scott-eu/simulation-ros/devel/.private/phantomx_pincher_arm_moveit/share/phantomx_pincher_arm_moveit/cmake/phantomx_pincher_arm_moveitConfig-version.cmake /home/enwhsaa/Private/scott-eu/simulation-ros/devel/share/phantomx_pincher_arm_moveit/cmake/phantomx_pincher_arm_moveitConfig-version.cmake

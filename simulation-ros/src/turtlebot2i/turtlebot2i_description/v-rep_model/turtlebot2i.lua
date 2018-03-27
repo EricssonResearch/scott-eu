@@ -18,6 +18,41 @@ function setMotor_cb(msg)
     motor_power = msg.state
 end
 
+--set safety zone size, display correctly, but results from sim.getObjectSizeValues() are not right
+function setZoneSize_cb(msg)
+    --recover the scaling size to origin one (1.0 meter)
+    criticalScale = 1/criticalStore
+    warningScale = 1/warningStore
+    clearScale = 1/clearStore
+
+    sim.scaleObject (criticalZone_handle,criticalScale,criticalScale,0,0)  
+	sim.scaleObject (warningZone_handle,warningScale,warningScale,0,0)
+	sim.scaleObject (clearZone_handle,clearScale,clearScale,0,0)
+
+    --change size by changing scaling 
+	sim.scaleObject (criticalZone_handle,msg.critical_zone_radius,msg.critical_zone_radius,0,0)  
+	sim.scaleObject (warningZone_handle,msg.warning_zone_radius,msg.warning_zone_radius,0,0)
+    sim.scaleObject (clearZone_handle,msg.clear_zone_radius,msg.clear_zone_radius,0,0)
+    --store the scaling size, prepare for next scaling usage
+    criticalStore = msg.critical_zone_radius
+    warningStore = msg.warning_zone_radius
+    clearStore = msg.clear_zone_radius
+end
+
+--[[
+--set safety zone size, results from sim.getObjectSizeValues() are right, but display not correctly
+function setZoneSize_cb(msg)
+    --set initial size 1 for scaling
+    sim.setObjectSizeValues(criticalZone_handle, {1, 1, 0})
+    sim.setObjectSizeValues(warningZone_handle, {1, 1, 0})
+    sim.setObjectSizeValues(clearZone_handle, {1, 1, 0})
+   
+    sim.scaleObject (criticalZone_handle,msg.critical_zone_radius,msg.critical_zone_radius,0,0)  
+	sim.scaleObject (warningZone_handle,msg.warning_zone_radius,msg.warning_zone_radius,0,0)
+    sim.scaleObject (clearZone_handle,msg.clear_zone_radius,msg.clear_zone_radius,0,0)
+end
+--]]
+
 if (sim_call_type==sim.childscriptcall_initialization) then 
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
 
@@ -48,6 +83,16 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     docking_station_ir_handle = sim.getObjectHandle('docking_station_ir_sensor')
     docking_station_handle = sim.getObjectHandle('dockstation')
 
+    -- get safety zone handle 
+    criticalZone_handle = sim.getObjectHandle('criticalZone')
+    warningZone_handle = sim.getObjectHandle('warningZone')
+    clearZone_handle = sim.getObjectHandle('clearZone')
+
+    -- initializing variables to store previous scaling size
+    criticalStore = 1
+    warningStore = 1
+    clearStore = 1
+
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
     originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)
@@ -77,6 +122,14 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
     subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
 
+--[[
+    msg.header.seq = 0
+    msg.header.stamp = sim.getSystemTime()
+    msg.header.frame_id = "safetyZone_id"
+--]]
+
+    --safety size
+    subSafetySize = simROS.subscribe(robot_id..'/commands/setSafetySize', 'turtlebot2i_safety/SafetyZone', 'setZoneSize_cb')
 end 
 
 if (sim_call_type == sim.childscriptcall_sensing) then 

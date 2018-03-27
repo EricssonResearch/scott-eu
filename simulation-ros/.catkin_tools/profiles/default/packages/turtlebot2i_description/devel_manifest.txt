@@ -1,0 +1,4 @@
+turtlebot2i/turtlebot2i_description
+/home/enwhsaa/Private/scott-eu/simulation-ros/devel/.private/turtlebot2i_description/lib/pkgconfig/turtlebot2i_description.pc /home/enwhsaa/Private/scott-eu/simulation-ros/devel/lib/pkgconfig/turtlebot2i_description.pc
+/home/enwhsaa/Private/scott-eu/simulation-ros/devel/.private/turtlebot2i_description/share/turtlebot2i_description/cmake/turtlebot2i_descriptionConfig.cmake /home/enwhsaa/Private/scott-eu/simulation-ros/devel/share/turtlebot2i_description/cmake/turtlebot2i_descriptionConfig.cmake
+/home/enwhsaa/Private/scott-eu/simulation-ros/devel/.private/turtlebot2i_description/share/turtlebot2i_description/cmake/turtlebot2i_descriptionConfig-version.cmake /home/enwhsaa/Private/scott-eu/simulation-ros/devel/share/turtlebot2i_description/cmake/turtlebot2i_descriptionConfig-version.cmake
