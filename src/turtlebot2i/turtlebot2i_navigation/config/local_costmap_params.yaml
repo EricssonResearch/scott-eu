@@ -1,7 +1,7 @@
 local_costmap:
  global_frame: /turtlebot2i/odom
  robot_base_frame: /turtlebot2i/base_footprint
- update_frequency: 10
+ update_frequency: 5
  publish_frequency: 10
  static_map: false
  rolling_window: true
