@@ -18,6 +18,7 @@
     <serviceProviderCatalog title="Planner Reasoner catalog">
       <serviceProviders title="robot" description="Robot planner provider">
         <services>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0"/>
           <basicCapabilities/>
         </services>
       </serviceProviders>
@@ -78,4 +79,5 @@
     <domainPrefixes name="mission"/>
     <generationSetting javaClassPackageName="my.package1" javaFilesPath="sandbox-domain-pddl/src/main/java"/>
   </specification>
+  <vocabularies/>
 </oslc4j_tc:Toolchain>

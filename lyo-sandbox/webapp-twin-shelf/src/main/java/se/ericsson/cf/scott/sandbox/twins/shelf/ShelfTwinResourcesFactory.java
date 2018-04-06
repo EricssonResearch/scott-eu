@@ -1,3 +1,4 @@
+// Start of user code Copyright
 /*******************************************************************************
  * Copyright (c) 2017 Jad El-khoury.
  *
@@ -14,6 +15,7 @@
  *     Jad El-khoury        - initial implementation
  *     
  *******************************************************************************/
+// End of user code
 
 package se.ericsson.cf.scott.sandbox.twins.shelf;
 
@@ -25,12 +27,10 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
-import eu.scott.warehouse.domains.pddl.Step;
-import eu.scott.warehouse.domains.blocksworld.Block;
-import eu.scott.warehouse.domains.pddl.PrimitiveType;
-import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.blocksworld.Location;
+import eu.scott.warehouse.domains.pddl.PlanExecutionResult;
 import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.pddl.Plan;
 
 // Start of user code imports
 // End of user code
@@ -46,93 +46,33 @@ public class ShelfTwinResourcesFactory {
     // Start of user code class_methods
     // End of user code
 
-    //methods for Block resource
-    public static Block createBlock(final String serviceProviderId, final String blockId)
+    //methods for PlanExecutionResult resource
+    public static PlanExecutionResult createPlanExecutionResult(final String serviceProviderId, final String planExecutionResultId)
            throws URISyntaxException
     {
-        return new Block(constructURIForBlock(serviceProviderId, blockId));
+        return new PlanExecutionResult(constructURIForPlanExecutionResult(serviceProviderId, planExecutionResultId));
     }
     
-    public static URI constructURIForBlock(final String serviceProviderId, final String blockId)
+    public static URI constructURIForPlanExecutionResult(final String serviceProviderId, final String planExecutionResultId)
     {
         String basePath = OSLC4JUtils.getServletURI();
         Map<String, Object> pathParameters = new HashMap<String, Object>();
         pathParameters.put("serviceProviderId", serviceProviderId);
-        pathParameters.put("blockId", blockId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/resources/blocks/{blockId}";
+        pathParameters.put("planExecutionResultId", planExecutionResultId);
+        String instanceURI = "serviceProviders/{serviceProviderId}/planExecutionResults/{planExecutionResultId}";
     
         final UriBuilder builder = UriBuilder.fromUri(basePath);
         return builder.path(instanceURI).buildFromMap(pathParameters);
     }
     
-    public static Link constructLinkForBlock(final String serviceProviderId, final String blockId , final String label)
+    public static Link constructLinkForPlanExecutionResult(final String serviceProviderId, final String planExecutionResultId , final String label)
     {
-        return new Link(constructURIForBlock(serviceProviderId, blockId), label);
+        return new Link(constructURIForPlanExecutionResult(serviceProviderId, planExecutionResultId), label);
     }
     
-    public static Link constructLinkForBlock(final String serviceProviderId, final String blockId)
+    public static Link constructLinkForPlanExecutionResult(final String serviceProviderId, final String planExecutionResultId)
     {
-        return new Link(constructURIForBlock(serviceProviderId, blockId));
-    }
-    
-
-    //methods for Plan resource
-    public static Plan createPlan(final String serviceProviderId, final String planId)
-           throws URISyntaxException
-    {
-        return new Plan(constructURIForPlan(serviceProviderId, planId));
-    }
-    
-    public static URI constructURIForPlan(final String serviceProviderId, final String planId)
-    {
-        String basePath = OSLC4JUtils.getServletURI();
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("serviceProviderId", serviceProviderId);
-        pathParameters.put("planId", planId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/resources/plans/{planId}";
-    
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
-    }
-    
-    public static Link constructLinkForPlan(final String serviceProviderId, final String planId , final String label)
-    {
-        return new Link(constructURIForPlan(serviceProviderId, planId), label);
-    }
-    
-    public static Link constructLinkForPlan(final String serviceProviderId, final String planId)
-    {
-        return new Link(constructURIForPlan(serviceProviderId, planId));
-    }
-    
-
-    //methods for Location resource
-    public static Location createLocation(final String serviceProviderId, final String locationId)
-           throws URISyntaxException
-    {
-        return new Location(constructURIForLocation(serviceProviderId, locationId));
-    }
-    
-    public static URI constructURIForLocation(final String serviceProviderId, final String locationId)
-    {
-        String basePath = OSLC4JUtils.getServletURI();
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("serviceProviderId", serviceProviderId);
-        pathParameters.put("locationId", locationId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/resources/locations/{locationId}";
-    
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
-    }
-    
-    public static Link constructLinkForLocation(final String serviceProviderId, final String locationId , final String label)
-    {
-        return new Link(constructURIForLocation(serviceProviderId, locationId), label);
-    }
-    
-    public static Link constructLinkForLocation(final String serviceProviderId, final String locationId)
-    {
-        return new Link(constructURIForLocation(serviceProviderId, locationId));
+        return new Link(constructURIForPlanExecutionResult(serviceProviderId, planExecutionResultId));
     }
     
 

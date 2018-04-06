@@ -12,7 +12,7 @@
     <module>domain-pddl</module>
 
     <module>webapp-whc</module>
-    <!--<module>webapp-twin</module>-->
+    <module>webapp-twin</module>
     <module>webapp-twin-shelf</module>
 
     <!--<module>cli-whc</module>-->

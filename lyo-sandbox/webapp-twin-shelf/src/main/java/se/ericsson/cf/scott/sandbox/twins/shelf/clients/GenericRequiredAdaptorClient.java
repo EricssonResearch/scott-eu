@@ -1,3 +1,4 @@
+// Start of user code Copyright
 /*******************************************************************************
  * Copyright (c) 2015 Jad El-khoury.
  *
@@ -14,6 +15,7 @@
  *     Jad El-khoury        - initial implementation of client code
  *     
  *******************************************************************************/
+// End of user code
 
 package se.ericsson.cf.scott.sandbox.twins.shelf.clients;
 
