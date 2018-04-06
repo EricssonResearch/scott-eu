@@ -77,14 +77,15 @@ public class RobotTwinManager {
         
         // Start of user code contextInitializeServletListener
         context = servletContextEvent.getServletContext();
-        try {
+        // FIXME Andrew@2018-04-06: debug the connection params
+        /*try {
             store = StoreFactory.sparql(p("store.query"), p("store.update"));
             // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
             store.removeAll();
         } catch (IOException |ARQException e) {
             log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
                     p("store.query"), p("store.update"), e);
-        }
+        }*/
         // End of user code
     }
 
