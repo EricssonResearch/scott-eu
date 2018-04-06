@@ -79,12 +79,12 @@
       <groupId>org.eclipse.lyo.store</groupId>
       <artifactId>store-core</artifactId>
       <version>${version.lyo}</version>
-      <exclusions>
+      <!--<exclusions>
         <exclusion>
           <groupId>log4j</groupId>
           <artifactId>log4j</artifactId>
         </exclusion>
-      </exclusions>
+      </exclusions>-->
     </dependency>
 
 
