@@ -22,10 +22,15 @@
 
 <%--
 Start of user code "indexBody"
-TODO: Replace/adjust this default content as necessary.
+--%>
+<%--TODO: Replace/adjust this default content as necessary.
 All manual changes in this "protected" user code area will NOT be overwritten upon subsequent code generations.
 To revert to the default generated content, delete all content in this file, and then re-generate.
 --%>
+<%@page import="org.eclipse.lyo.oslc4j.core.OSLC4JUtils"%>
+<%@page import="javax.ws.rs.core.UriBuilder"%>
+<%@page import="java.net.URI"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
