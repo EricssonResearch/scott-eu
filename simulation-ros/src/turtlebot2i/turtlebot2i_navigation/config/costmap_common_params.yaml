@@ -3,7 +3,7 @@ raytrace_range: 3.0
 #footprint: [[x0, y0], [x1, y1], ... [xn, yn]]
 robot_radius: 0.2
 inflation_radius: 0.3
-transform_tolerance: 3.0
+transform_tolerance: 10.0
 
 observation_sources: laser_scan_sensor
 

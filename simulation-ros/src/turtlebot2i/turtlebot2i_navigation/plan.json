@@ -1,0 +1,21 @@
+{
+    "id": "xyz",
+    "init": "initURI",
+    "goal": "finalURI",
+    "plan":[
+                ["move", "youBot#0", "Waypoint_SH#1"],
+                ["pick", "youBot#0", "Shelf#1", "productRed"],
+                ["pick", "youBot#0", "Shelf#1", "productGreen"],
+                ["move", "youBot#0", "Waypoint_CB"],
+                ["drop", "youBot#0", "ConveyorBelt", "productRed"],
+                ["move", "youBot#0", "Waypoint_CB#0"],
+                ["drop", "youBot#0", "ConveyorBelt#0", "productGreen"],
+                ["move", "youBot#1", "Waypoint_SH#0"],
+                ["pick", "youBot#1", "Shelf#0", "productYellow"],
+                ["move", "youBot#1", "Waypoint_CB#0"],
+                ["drop", "youBot#1", "ConveyorBelt#0", "productYellow"],
+                ["move", "youBot#1", "Waypoint_CB#1"],
+                ["drop", "youBot#1", "ConveyorBelt#1", "productGreen"]
+                ]
+}
+
