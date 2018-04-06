@@ -123,8 +123,8 @@ public class ShelfTwinManager {
         final String warehouseTrsUri = "http://localhost:8080/sandbox-whc/services/trs";
         final String basicAuthUsername = null;
         final String basicAuthPassword = null;
-        final String mqttBroker = "tcp://aide.md.kth.se:1883";
-        final String mqttTopic = "scott-whc";
+        final String mqttBroker = p("trs.mqtt.broker");
+        final String mqttTopic = p("trs.mqtt.topic");
         final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(new
                 TrsProviderConfiguration(warehouseTrsUri,
                 basicAuthUsername,
@@ -158,7 +158,7 @@ public class ShelfTwinManager {
         Leshan server
         ++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-        // build the lwm2m server
+/*        // build the lwm2m server
         final LeshanServer server = new LeshanServerBuilder().build();
 
         // listen for new client registrations
@@ -166,7 +166,7 @@ public class ShelfTwinManager {
         // listen for observe notifications
         server.getObservationRegistry().addListener(new ScottObservationRegistryListener());
 
-        server.start();
+        server.start();*/
 
 
         // End of user code

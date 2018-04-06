@@ -23,6 +23,14 @@
     <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.update.interval</param-name>
     <param-value>10</param-value><!--seconds-->
   </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.trs.mqtt.broker</param-name>
+    <param-value>tcp://aide.md.kth.se:1883</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.trs.mqtt.topic</param-name>
+    <param-value>scott-whc</param-value>
+  </context-param>
 
   <listener>
     <description>Listener for ServletContext lifecycle changes</description>

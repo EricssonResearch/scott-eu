@@ -1,22 +1,36 @@
 version: '2'
 services:
-  warehouse-fuseki:
-    image: stain/jena-fuseki
-    ports:
-     - "3030:3030"
-    volumes_from:
-     - warehouse-fuseki-config
-  warehouse-fuseki-config:
-    build: ./fuseki
   sandbox-whc:
     build: ./webapp-whc
     ports:
-     - "8080:8080"
+    - "8080:8080"
+    depends_on:
+    - warehouse-fuseki
+    - mosquitto
   sandbox-twin:
     build: ./webapp-twin
     ports:
      - "8081:8080"
+    depends_on:
+    - sandbox-whc
+    - mosquitto
   sandbox-twin-shelf:
     build: ./webapp-twin-shelf
     ports:
      - "8082:8080"
+    depends_on:
+    - sandbox-whc
+    - mosquitto
+  warehouse-fuseki:
+    image: stain/jena-fuseki
+    ports:
+     - 3030
+    volumes_from:
+     - warehouse-fuseki-config
+  warehouse-fuseki-config:
+    build: ./fuseki
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+     - 1883
+     - 9001

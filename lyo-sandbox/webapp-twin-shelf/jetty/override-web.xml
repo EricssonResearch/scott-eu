@@ -18,6 +18,14 @@
     <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.store.update</param-name>
     <param-value>http://warehouse-fuseki:3030/sandbox-whc/update</param-value>
   </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.trs.mqtt.broker</param-name>
+    <param-value>tcp://mosquitto:1883</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.trs.mqtt.topic</param-name>
+    <param-value>scott-whc</param-value>
+  </context-param>
 
   <listener>
     <description>Listener for ServletContext lifecycle changes</description>
