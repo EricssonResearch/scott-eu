@@ -1,5 +1,3 @@
-<%@ page import="javax.ws.rs.core.UriBuilder" %>
-<%@ page import="org.eclipse.lyo.oslc4j.core.OSLC4JUtils" %>
 <!DOCTYPE html>
 <%--Start of user code "Copyright"
 --%>
@@ -24,10 +22,15 @@
 
 <%--
 Start of user code "indexBody"
-TODO: Replace/adjust this default content as necessary.
+--%>
+<%--TODO: Replace/adjust this default content as necessary.
 All manual changes in this "protected" user code area will NOT be overwritten upon subsequent code generations.
 To revert to the default generated content, delete all content in this file, and then re-generate.
 --%>
+<%@page import="org.eclipse.lyo.oslc4j.core.OSLC4JUtils"%>
+<%@page import="javax.ws.rs.core.UriBuilder"%>
+<%@page import="java.net.URI"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -49,7 +52,7 @@ To revert to the default generated content, delete all content in this file, and
 
     <div class="jumbotron">
         <h1 class="display-3">Adaptor home!</h1>
-        <p class="lead">This is a homepage of the <em>Twin</em> that was generated using
+        <p class="lead">This is a homepage of the <em>RobotTwin</em> that was generated using
             Eclipse Lyo Toolchain Designer.</p>
         <hr class="my-4">
         <p>In order to begin exploring it, start from the Service Provider Catalog to see the

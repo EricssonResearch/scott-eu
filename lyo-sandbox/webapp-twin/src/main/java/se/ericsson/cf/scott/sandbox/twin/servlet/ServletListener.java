@@ -45,7 +45,7 @@ public class ServletListener implements ServletContextListener  {
     private static final Logger logger = Logger.getLogger(ServletListener.class.getName());
 
     //If you are using another servletName in your web.xml configuration file, modify this variable early in the method contextInitialized below
-    private static String servletName = "oslc-servlet";
+    private static String servletName = "JAX-RS Servlet";
 
     // Start of user code class_attributes
     // End of user code
@@ -58,8 +58,7 @@ public class ServletListener implements ServletContextListener  {
     public void contextInitialized(final ServletContextEvent servletContextEvent)
     {
         // Start of user code contextInitialized_init
-        //TODO: override the default servletName to match that defined in your web.xml configuration file.
-        //servletName = "Your_Configured_Servlet_Name";
+        servletName = "oslc-servlet";
         // End of user code
 
         String baseUrl = generateBasePath(servletContextEvent);
