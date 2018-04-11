@@ -232,12 +232,24 @@ To use the python remote API provided by VREP, some adjustments are necessary:
 roscore
 
 ## Open Vrep Scene
-
-./vrep
-turttlebot2i.ttt
-
+ 
+ /path_to_vrep_folder/vrep.sh /path_to_scott_project_folder/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_turtlebot2i.ttt 
+ 
 Press play
 
+A number of errors will pop up at initialization, but they should fade and you can ignore them. The simulation should now be running, but the robots are not doing anything interesting.
+
+## Make one robot move
+
+Update build (might take a while):
+
+/path_to_scott_project_folder/scott-eu/simulation-ros$ catkin build
+
+Run navigation functionality:
+
+roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch 
+
+At the terminal, press 'e' for enabling the robot. Then 'up arrow' for the robot to move ahead.
 
 
 
