@@ -39,9 +39,10 @@ The main advatage of ROS is that (in most of the cases) it dispenses the necessi
 
 # 5. Installation
 
-## 1. Install V-Rep
+## 1. Install V-REP
 
 If using simulated environment, install V-REP from: http://www.coppeliarobotics.com/downloads.html
+Download the latest version of **V-REP Pro** or **V-REP Pro Edu**. The **V-REP Player** version was not tested here.
 
 In the next section you will install ROS and V-REP ROS Interface.
 
@@ -52,6 +53,7 @@ export VREP_ROOT_DIR=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux
 export VREP_ROOT=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux
 ```
 
+**Note:** There are some V-REP versions that have problems with Remote API and ROS Interface, so it is recommended to download the latest version.
 
 ## 2. Install ROS Kinect. 
 Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
@@ -123,16 +125,18 @@ $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simul
 
 # Running
 
-## Start ROS CORE
+## 1. Start ROS CORE
 roscore
 
-## Open Vrep Scene
+## 2. Open V-REP Pro or V-REP Pro Edu and then the Scene
  
  /path_to_vrep_folder/vrep.sh /path_to_scott_project_folder/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_turtlebot2i.ttt 
  
-Press play
+Press play button
 
 A number of errors will pop up at initialization, but they should fade and you can ignore them. The simulation should now be running, but the robots are not doing anything interesting.
+
+**Note:** In the terminal that vrep.sh was executed, make sure that the message "Plugin 'RosInterface': load succeeded." appears. If not, recheck the installation instructions or try a different version of V-REP.
 
 ## Make one robot move
 
