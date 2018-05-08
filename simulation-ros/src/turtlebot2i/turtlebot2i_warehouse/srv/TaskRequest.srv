@@ -6,4 +6,4 @@ string robot
 time stamp
 string task
 string object
-Pose waypoint
+geometry_msgs/Pose waypoint
