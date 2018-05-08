@@ -3,8 +3,9 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 project(turtlebot2i_warehouse)
 
 find_package(catkin REQUIRED COMPONENTS
-                    #roscpp
+                    roscpp
                     rospy
+                    #genjava
                     geometry_msgs
                     std_msgs
                     message_generation
@@ -36,6 +37,13 @@ generate_messages(
   geometry_msgs
   std_msgs  # Or other packages containing msgs
 )
+
+#generate_rosjava_messages(
+#  PACKAGES
+#  geometry_msgs
+#  std_msgs
+#)
+
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
