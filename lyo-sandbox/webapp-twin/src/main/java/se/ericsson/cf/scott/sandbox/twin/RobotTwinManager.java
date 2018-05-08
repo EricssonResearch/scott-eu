@@ -30,6 +30,12 @@ import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import org.ros.RosRun;
+import org.ros.node.DefaultNodeMainExecutor;
+import org.ros.node.NodeConfiguration;
+import org.ros.node.NodeMainExecutor;
+import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
+import se.ericsson.cf.scott.sandbox.twin.ros.TwinNode;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.ServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
@@ -47,6 +53,8 @@ import java.io.IOException;
 import javax.servlet.ServletContext;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.lyo.store.StoreFactory;
+import turtlebot2i_warehouse.TaskRequest;
+import turtlebot2i_warehouse.TaskRequestRequest;
 // End of user code
 
 // Start of user code pre_class_code
@@ -86,6 +94,14 @@ public class RobotTwinManager {
             log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
                     p("store.query"), p("store.update"), e);
         }*/
+
+        final NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
+        final TwinNode twinNode = new TwinNode();
+        final RobotClientNode clientNode = new RobotClientNode();
+
+        //TODO make at least one node public
+        nodeMainExecutor.execute(twinNode, NodeConfiguration.newPrivate());
+        nodeMainExecutor.execute(clientNode, NodeConfiguration.newPrivate());
         // End of user code
     }
 

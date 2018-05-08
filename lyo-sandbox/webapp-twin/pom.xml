@@ -74,6 +74,28 @@
     </dependency>
 
     <dependency>
+      <groupId>org.ros.rosjava_messages</groupId>
+      <artifactId>turtlebot2i_warehouse</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ros.rosjava_messages</groupId>
+      <artifactId>geometry_msgs</artifactId>
+      <version>1.12.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ros.rosjava_bootstrap</groupId>
+      <artifactId>message_generation</artifactId>
+      <version>0.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ros.rosjava_core</groupId>
+      <artifactId>rosjava</artifactId>
+      <version>0.3.5</version>
+    </dependency>
+
+
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.25</version>
@@ -178,6 +200,15 @@
     </plugins>
   </build>
   <repositories>
+    <repository>
+      <id>scott</id>
+      <name>SCOTT sandbox</name>
+      <url>https://aide.md.kth.se/artifactory/scott</url>
+    </repository>
+    <repository>
+      <id>rosjava</id>
+      <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
+    </repository>
     <repository>
       <id>lyo-releases</id>
       <name>Eclipse Lyo Releases</name>
