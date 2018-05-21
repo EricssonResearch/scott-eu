@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description_full.launch"/>
+  
+  <!-- V-REP ROS Controller -->
+  <rosparam file="$(find phantomx_pincher_arm_vrep_controller)/control/phantomXPincher.yaml" command="load"/> 
+ 
+  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="/use_gui" value="false"/>
+    <rosparam param="/source_list">[/joint_states]</rosparam>
+  </node>
+
+  <include file="$(find phantomx_pincher_arm_moveit)/launch/named_pose_director.launch" >
+    <arg name="load_moveit" value="true"/>
+  </include>
+  
+  <!-- This argument disables the joint limits -->
+  <arg name="limited" value="false"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find phantomx_pincher_arm_moveit)/config/block_manipulation_demo.rviz" />
+</launch>

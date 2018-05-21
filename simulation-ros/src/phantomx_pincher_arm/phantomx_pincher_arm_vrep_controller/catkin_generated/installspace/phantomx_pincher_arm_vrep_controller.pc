@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: phantomx_pincher_arm_vrep_controller
+Description: Description of phantomx_pincher_arm_vrep_controller
+Version: 1.0.0
+Cflags: 
+Libs: -L/usr/local/lib 
+Requires: roscpp rosconsole std_msgs roslib roscpp rosconsole std_msgs roslib
