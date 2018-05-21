@@ -693,7 +693,7 @@
 :BinaryComparatorShape
   a oslc:ResourceShape ;
   oslc:describes :BinaryComparator ;
-  dcterms:description "Binary comparators (=,>,<,<=,>=) in precondition."^^rdf:XMLLiteral ;
+  dcterms:description "Binary comparators (=,&gt;,&lt;,&lt;=,&gt;=) in precondition."^^rdf:XMLLiteral ;
   oslc:property [ a oslc:Property ;
                   dcterms:description "Binary comparators arguments (fluents)."^^rdf:XMLLiteral ;
                   oslc:propertyDefinition :argument ;

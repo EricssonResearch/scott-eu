@@ -1,8 +1,3 @@
-sudo: required
-
-services:
-  - docker
-
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -10,6 +5,4 @@ before_install:
   - sudo apt-get -y install docker-ce
 
 script:
-  - (cd ff-metric-docker && docker build -t ff-metric .)
-  - (cd warehousecontroller && docker build -t wc .)
-  - (cd deployment && docker-compose build)
+  - (cd planner_reasoner && docker-compose build)
