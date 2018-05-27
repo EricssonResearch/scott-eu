@@ -125,7 +125,7 @@ public class WhcChangeHistories extends ChangeHistories {
 
     private byte[] marshalJenaModel(final Model m) {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        RDFDataMgr.write(byteArrayOutputStream, m, RDFFormat.JSONLD_COMPACT_FLAT);
+        RDFDataMgr.write(byteArrayOutputStream, m, RDFFormat.JSONLD_FLAT);
         return byteArrayOutputStream.toByteArray();
     }
 

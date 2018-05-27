@@ -110,7 +110,7 @@ public class ServiceProviderCatalogService
      */
     @GET
     @Path("{serviceProviderCatalogId}") // Required to distinguish from array result.  But, ignored.
-    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+//    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public ServiceProviderCatalog getServiceProviderCatalog()
     {
         ServiceProviderCatalog catalog =  ServiceProviderCatalogSingleton.getServiceProviderCatalog(httpServletRequest);
