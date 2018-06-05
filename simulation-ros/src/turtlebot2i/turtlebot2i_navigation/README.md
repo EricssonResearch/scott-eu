@@ -13,22 +13,53 @@ The autonomous navigation is performed through the ROS *move_base* package. This
 
 In the figure below is represented the pipeline of the robot navigation (extracted from [ROS navigation](http://wiki.ros.org/move_base)):
 
-![alt text](http://wiki.ros.org/move_base?action=AttachFile&do=view&target=overview_tf.png "ROS move_base")
+![alt text](http://wiki.ros.org/move_base?action=AttachFile&do=get&target=overview_tf.png "ROS move_base")
 
 ## 2.1 Running Autonomous Navigation
 
-The *move_base* can be executed by runnnin the following command:
+The *move_base* can be executed by running the following command:
 ```
-roslaunch turtlebot2i_navigation move_base
+roslaunch turtlebot2i_navigation move_base.launch
 ```
+
+The parameters of the navigation algorithm can be changed by editing the configuration in the __config__ folder.
+The complete list of the parameters and their description can be checked in the following link: http://wiki.ros.org/navigation/Tutorials/RobotSetup#Navigation_Stack_Setup
+
+After running the launch script, the [rviz](http://wiki.ros.org/navigation/Tutorials/RobotSetup#Navigation_Stack_Setup) will open, which will enable to set iterative parameters of the navigation, such as the robot initial position and the desired destination. The rviz will open with a predefined configuration that connects to the simulated turtlebot2i topics.
+
+To set the robot destination, click on "2D Nav Goal" button and then click on the map to set the goal. The interface will show the trajectory that the robot will follow.
+Additional information to use rviz for navigation can be found in this link: http://wiki.ros.org/navigation/Tutorials/Using%20rviz%20with%20the%20Navigation%20Stack
+
+**Note:** The launch file is set up to subscribe predefined topics of a turtlebot2i robot. To change the topic, just edit the move_base.launch file:
+```
+rosed turtlebot2i_navigation move_base.launch 
+```
+
+**Note 2:** A more detailed description of using the navigation stack can be found in this link: http://wiki.ros.org/navigation/Tutorials/RobotSetup
 
 ## 3. Non-Autonomous Navigation
 
-The non-autonomous navigation is performed through manually inputing the velocity commands to the robot. In this sense, the user uses the keyboard to input the robot translation and rotation velocities. This navigation uses the *kobuki_keyop* package provided by Kobuki stack of ROS.
+The non-autonomous navigation is performed through manually imputing the velocity commands to the robot. In this sense, the user uses the keyboard to input the robot translation and rotation velocities. This navigation uses the *kobuki_keyop* package provided by Kobuki stack of ROS.
 
 ## 3.1 Running Non-Autonomous Navigation
 
-The *move_base* can be executed by runnnin the following command:
+The *move_base* can be executed by running the following command:
 ```
 roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch 
 ```
+
+Use the following commands to move the robot:
+
+1. Once the script is started, enable the robot motors by pressing 'e' (skip this command if using the simulated warehouse scenario).
+2. Move robot forward by pressing up key. This increases the linear velocity.
+3. Move robot backward by pressing down key. This decreases the linear velocity.
+4. Move robot right by pressing right key. This increases the angular velocity.
+5. Move robot left by pressing left key. This decreases the angular velocity.
+
+
+**Note:** The launch file is set up to subscribe predefined topics of a turtlebot2i robot. To change the topic, just edit the turtlebot2i_keyop.launch file:
+```
+rosed turtlebot2i_navigation turtlebot2i_keyop.launch 
+```
+
+
