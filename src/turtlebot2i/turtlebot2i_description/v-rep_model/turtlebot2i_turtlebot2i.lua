@@ -235,8 +235,10 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     -- Odometry
     local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
     local pose_orientationNow = sim.multiplyMatrices(invOriginMatrix, transformNow)
-    local r_quaternion = simGetQuaternionFromMatrix(pose_orientationNow)
-    local r_position = {pose_orientationNow[4], pose_orientationNow[8], pose_orientationNow[12]}
+    --local r_quaternion = simGetQuaternionFromMatrix(pose_orientationNow) -- uses relative orientation
+    local r_quaternion = simGetObjectQuaternion(mainBodyHandle, -1)        -- uses absolute orientation
+    --local r_position = {pose_orientationNow[4], pose_orientationNow[8], pose_orientationNow[12]} -- uses relative pose
+    local r_position = simGetObjectPosition(mainBodyHandle, -1)                                    -- uses absolute pose
     local r_linear_velocity, r_angular_velocity = 0,0
     r_linear_velocity, r_angular_velocity = simGetObjectVelocity(mainBodyHandle)
 
