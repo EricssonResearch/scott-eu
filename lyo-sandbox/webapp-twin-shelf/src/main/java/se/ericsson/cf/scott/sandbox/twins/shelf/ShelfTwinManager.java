@@ -5,13 +5,13 @@
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  *  The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  *  and the Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
- *  
+ *
  *  Contributors:
- *  
+ *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
  *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
@@ -52,8 +52,6 @@ import javax.servlet.ServletContext;
 import org.apache.jena.sparql.ARQException;
 import org.eclipse.leshan.core.node.LwM2mNode;
 import org.eclipse.leshan.core.request.AbstractDownlinkRequest;
-import org.eclipse.leshan.server.californium.LeshanServerBuilder;
-import org.eclipse.leshan.server.californium.impl.LeshanServer;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.lyo.store.StoreFactory;
 import org.eclipse.lyo.trs.consumer.config.TrsConsumerConfiguration;
@@ -63,8 +61,6 @@ import org.eclipse.lyo.trs.consumer.util.TrsBasicAuthOslcClient;
 import org.eclipse.lyo.trs.consumer.util.TrsConsumerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.twins.shelf.lwm2m.ScottClientRegistryListener;
-import se.ericsson.cf.scott.sandbox.twins.shelf.lwm2m.ScottObservationRegistryListener;
 import se.ericsson.cf.scott.sandbox.twins.shelf.trs.PlanChangeEventListener;
 // End of user code
 
@@ -84,8 +80,8 @@ public class ShelfTwinManager {
             .newLinkedBlockingDeque();
     public final static ExecutorService planExecutorSvc = Executors.newSingleThreadExecutor();
     // End of user code
-    
-    
+
+
     // Start of user code class_methods
     private static String parameterFQDN(final String s) {
         return PACKAGE_ROOT + "." + s;
@@ -98,7 +94,7 @@ public class ShelfTwinManager {
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
         context = servletContextEvent.getServletContext();
         try {
@@ -113,29 +109,25 @@ public class ShelfTwinManager {
             );
         }
 
-        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(p("store" +
-                ".query"),
+        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
+                p("store.query"),
                 // disable the SPARQL triplestore update
                 null, null, null, new TrsBasicAuthOslcClient(), "trs-consumer-whc",
                 // nothing fancy is really needed on the twins
                 Executors.newSingleThreadScheduledExecutor()
         );
-        final String warehouseTrsUri = "http://localhost:8080/sandbox-whc/services/trs";
+        // FIXME Andrew@2018-06-19: extract to a property
+        final String warehouseTrsUri = "http://sandbox-whc:8080/services/trs";
         final String basicAuthUsername = null;
         final String basicAuthPassword = null;
         final String mqttBroker = p("trs.mqtt.broker");
         final String mqttTopic = p("trs.mqtt.topic");
-        final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(new
-                TrsProviderConfiguration(warehouseTrsUri,
-                basicAuthUsername,
-                basicAuthPassword,
-                mqttBroker,
-                mqttTopic
-        ));
-        final List<TrsProviderHandler> handlers = TrsConsumerUtils.buildHandlersSequential
-                (consumerConfig,
-                providerConfigs
-        );
+        final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
+                new TrsProviderConfiguration(warehouseTrsUri, basicAuthUsername, basicAuthPassword,
+                                             mqttBroker, mqttTopic
+                ));
+        final List<TrsProviderHandler> handlers = TrsConsumerUtils.buildHandlersSequential(
+                consumerConfig, providerConfigs);
 
         // attach our own listener to use "TRS everywhere"
         final PlanChangeEventListener listener = new PlanChangeEventListener();
@@ -172,9 +164,9 @@ public class ShelfTwinManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
         // TODO Implement code to shutdown connections to data backbone etc...
         // End of user code
@@ -183,7 +175,7 @@ public class ShelfTwinManager {
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         // FIXME Andrew@2018-02-28: add ctor to Lyo class
         final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
@@ -199,7 +191,7 @@ public class ShelfTwinManager {
     public static PlanExecutionResult getPlanExecutionResult(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planExecutionResultId)
     {
         PlanExecutionResult aResource = null;
-        
+
         // Start of user code getPlanExecutionResult
         // TODO Implement code to return a resource
         // End of user code
