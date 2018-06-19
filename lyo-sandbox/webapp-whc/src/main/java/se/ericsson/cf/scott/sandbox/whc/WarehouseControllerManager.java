@@ -24,6 +24,7 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
+import com.github.jsonldjava.utils.Obj;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
@@ -106,7 +107,7 @@ public class WarehouseControllerManager {
 
     // TODO Andrew@2018-02-26: use lock object if CRUD write ops will be allowed
     // FIXME Andrew@2018-02-26: this should be in the Lyo Store
-    private static Map<String, IResource[]> plans = new HashMap<>();
+    private static Map<String, Object[]> plans = new HashMap<>();
     private static WhcChangeHistories changeHistoriesInstance;
     // End of user code
     
@@ -240,7 +241,7 @@ public class WarehouseControllerManager {
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
 
         SLF4JBridgeHandler.removeHandlersForRootLogger();
@@ -295,7 +296,7 @@ public class WarehouseControllerManager {
         // TODO Andrew@2018-02-26: extract method
         final String planId = String.valueOf(plans.size() + 1);
         plan.setAbout(WarehouseControllerResourcesFactory.constructURIForPlan(DEFAULT_SP_ID, planId));
-        plans.put(planId, planResources.toArray(new IResource[0]));
+        plans.put(planId, planResources.toArray(new Object[0]));
         changeHistoriesInstance.addResource(plan);
 
         /*++++++++++++++++++++++++++++
@@ -314,9 +315,9 @@ public class WarehouseControllerManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
         // TODO Implement code to shutdown connections to data backbone etc...
         // End of user code
@@ -325,7 +326,7 @@ public class WarehouseControllerManager {
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         serviceProviderInfo = new ServiceProviderInfo();
         serviceProviderInfo.serviceProviderId = DEFAULT_SP_ID;
@@ -337,16 +338,21 @@ public class WarehouseControllerManager {
 
 
 
-    public static IResource[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
+    public static Object[] getPlan(HttpServletRequest httpServletRequest, final String
+            serviceProviderId, final String planId)
     {
-        IResource[] aResource = null;
+        Object[] aResource = null;
 
         // Start of user code getPlan
 
+        log.trace("getPlan({}, {}) called", serviceProviderId, planId);
         // minimal impl to get the TRS provider going
         if (serviceProviderId.equals(DEFAULT_SP_ID)) {
             if (plans.containsKey(planId)) {
                 aResource = plans.get(planId);
+                log.info("found a plan", aResource);
+            } else {
+                log.warn("a plan {} was not found", planId);
             }
         }
 

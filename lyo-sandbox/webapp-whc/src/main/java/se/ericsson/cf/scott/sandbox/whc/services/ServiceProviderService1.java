@@ -111,20 +111,22 @@ public class ServiceProviderService1
     @GET
     @Path("{planId}")
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE})
-    public IResource[] getPlan(
+    public Object[] getPlan(
             @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
     ) throws IOException, ServletException, URISyntaxException
     {
         // Start of user code getResource_init
         // End of user code
 
-        final IResource[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest,
+                                                               serviceProviderId, planId);
 
         if (aPlan != null) {
             // Start of user code getPlan
             // End of user code
             httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
-            return aPlan;
+            // FIXME Andrew@2018-06-19: performance issue
+            return Arrays.copyOf(aPlan, aPlan.length, Object[].class);
         }
 
         throw new WebApplicationException(Status.NOT_FOUND);
@@ -140,7 +142,8 @@ public class ServiceProviderService1
         // Start of user code getPlanAsHtml_init
         // End of user code
 
-        final IResource[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest,
+                                                             serviceProviderId, planId);
 
         if (aPlan != null) {
             // FIXME Andrew@2018-02-26: replace with the strongly typed wrapper class with main field for the plan and the rest of objects
