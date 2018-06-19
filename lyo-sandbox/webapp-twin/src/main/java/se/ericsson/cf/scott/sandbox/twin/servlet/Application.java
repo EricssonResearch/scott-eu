@@ -49,7 +49,7 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
-import org.eclipse.lyo.oslc4j.provider.jena.UniversalResourceSingleProvider;
+//import org.eclipse.lyo.oslc4j.provider.jena.UniversalResourceSingleProvider;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
 import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
@@ -84,10 +84,10 @@ public class Application extends OslcWinkApplication {
 
     static
     {
-//        RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
-//        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
+        RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
+        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
         // FIXME Andrew@2018-05-27: does not support returning arrays or collections
-        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
+//        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
         RESOURCE_CLASSES.add(ServiceProviderService1.class);
 
         // Catalog resources
