@@ -50,8 +50,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import org.apache.jena.sparql.ARQException;
-import org.eclipse.leshan.core.node.LwM2mNode;
-import org.eclipse.leshan.core.request.AbstractDownlinkRequest;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.lyo.store.StoreFactory;
 import org.eclipse.lyo.trs.consumer.config.TrsConsumerConfiguration;
@@ -74,10 +72,6 @@ public class ShelfTwinManager {
     private final static Logger log          = LoggerFactory.getLogger(ShelfTwinManager.class);
     private static Store          store;
     private static ServletContext context;
-    public final static BlockingQueue<LwM2mNode>               newlyObservedValues  = Queues
-            .newLinkedBlockingDeque();
-    public final static BlockingQueue<AbstractDownlinkRequest> pendingWriteRequests = Queues
-            .newLinkedBlockingDeque();
     public final static ExecutorService planExecutorSvc = Executors.newSingleThreadExecutor();
     // End of user code
 

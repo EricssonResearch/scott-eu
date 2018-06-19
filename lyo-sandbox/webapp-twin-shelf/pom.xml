@@ -39,6 +39,7 @@
     </dependency>
 
     <!--TODO remove-->
+<!--
     <dependency>
       <groupId>org.eclipse.leshan</groupId>
       <artifactId>leshan-core</artifactId>
@@ -49,7 +50,7 @@
       <artifactId>leshan-server-core</artifactId>
       <version>${version.leshan}</version>
       <exclusions>
-        <!-- FIXME Log4j2 uses java 9 modules, not supported by Jetty 9.2 -->
+        &lt;!&ndash; FIXME Log4j2 uses java 9 modules, not supported by Jetty 9.2 &ndash;&gt;
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-api</artifactId>
@@ -58,7 +59,7 @@
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-core</artifactId>
         </exclusion>
-        <!--because we are using Log4j back to SLF4j bridge below-->
+        &lt;!&ndash;because we are using Log4j back to SLF4j bridge below&ndash;&gt;
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-slf4j-impl</artifactId>
@@ -66,7 +67,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <!--NB: added to fix ClassNotFoundException due to Log4J2 exclusions-->
+      &lt;!&ndash;NB: added to fix ClassNotFoundException due to Log4J2 exclusions&ndash;&gt;
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-to-slf4j</artifactId>
       <version>${version.log4j}</version>
@@ -76,6 +77,7 @@
       <artifactId>leshan-server-cf</artifactId>
       <version>${version.leshan}</version>
     </dependency>
+-->
 
 
 
