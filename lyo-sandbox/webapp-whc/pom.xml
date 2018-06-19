@@ -52,6 +52,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
+      <artifactId>oslc4j-json4j-provider</artifactId>
+      <version>${version.lyo}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-wink</artifactId>
       <version>${version.lyo}</version>
     </dependency>
