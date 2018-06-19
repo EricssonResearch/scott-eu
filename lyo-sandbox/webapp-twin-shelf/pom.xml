@@ -15,7 +15,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <version.lyo>2.4.0-SNAPSHOT</version.lyo>
-    <version.lyo.core>2.4.0-SNAPSHOT</version.lyo.core>
     <!--<version.leshan>0.1.11-M4</version.leshan>-->
     <version.leshan>0.1.11-M5-SNAPSHOT</version.leshan>
     <version.log4j>2.8.2</version.log4j>
@@ -23,18 +22,23 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
-      <version>3.6.0</version>
-      <type>pom</type>
-    </dependency>
-
-    <dependency>
       <groupId>se.ericsson.cf.scott.sandbox</groupId>
       <artifactId>domain-pddl</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.eclipse.lyo.trs</groupId>
+      <artifactId>trs-client</artifactId>
+      <version>${version.lyo}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.store</groupId>
+      <artifactId>store-core</artifactId>
+      <version>${version.lyo}</version>
+    </dependency>
+
+    <!--TODO remove-->
     <dependency>
       <groupId>org.eclipse.leshan</groupId>
       <artifactId>leshan-core</artifactId>
@@ -73,59 +77,24 @@
       <version>${version.leshan}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.eclipse.lyo.trs</groupId>
-      <artifactId>trs-consumer</artifactId>
-      <version>${version.lyo}</version>
-      <!--<version>2.4.0-SNAPSHOT</version>-->
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.jena</groupId>
-          <artifactId>jena-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.jena</groupId>
-          <artifactId>jena-tdb</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.jena</groupId>
-          <artifactId>jena-arq</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
 
 
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-core</artifactId>
-      <version>${version.lyo.core}</version>
+      <version>${version.lyo}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-jena-provider</artifactId>
-      <version>${version.lyo.core}</version>
+      <version>${version.lyo}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-wink</artifactId>
-      <version>${version.lyo.core}</version>
-    </dependency>
-<!--    <dependency>
-      <groupId>org.eclipse.lyo.clients</groupId>
-      <artifactId>oslc-java-client</artifactId>
       <version>${version.lyo}</version>
-    </dependency>-->
-    <dependency>
-      <groupId>org.eclipse.lyo.store</groupId>
-      <artifactId>store-core</artifactId>
-      <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
