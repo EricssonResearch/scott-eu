@@ -8,7 +8,7 @@
   <context-param>
     <description>Base URI for the adaptor.</description>
     <param-name>se.ericsson.cf.scott.sandbox.whc.servlet.baseurl</param-name>
-    <param-value>http://sandbox-warehouse:8080</param-value>
+    <param-value>http://sandbox-whc:8080</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.whc.store.query</param-name>
