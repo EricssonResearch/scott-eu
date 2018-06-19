@@ -83,10 +83,16 @@ class SceneObjectExtractor:
     def __init__(self, ip, port):
         # TODO: return error if could not connect
         # start connection
-        self.clientID = self.start_connection('127.0.0.1', 19997)
+        #self.clientID = self.start_connection('127.0.0.1', 19997)
+        self.clientID = self.start_connection(ip, port)
 
         # callback mode
-        self.operation_mode = vrep.simx_opmode_blocking
+        #self.operation_mode = vrep.simx_opmode_streaming
+        #self.operation_mode = vrep.simx_opmode_buffer
+        self.operation_mode = vrep.simx_opmode_oneshot_wait
+        #self.operation_mode = vrep.simx_opmode_oneshot_split
+        #self.operation_mode = vrep.simx_opmode_oneshot
+        #self.operation_mode = vrep.simx_opmode_blocking
     
         # TODO: get objects dynamically
         # List of object names to retrieve information
@@ -96,7 +102,7 @@ class SceneObjectExtractor:
                                       'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1',\
                                       'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'] 
                                       
-        self.dynamic_obj_name_list = ['Bill', 'Bill#0', 'product']
+        self.dynamic_obj_name_list = ['Bill', 'Bill#0', 'Bill#3', 'product']
         self.robot_name_list = ['turtlebot2i', 'turtlebot2i#0']
         
         # List of objects with attributes
@@ -165,6 +171,8 @@ class SceneObjectExtractor:
                 self.get_robot_vision_sensor_info(obj)
                 self.robot_obj_list.append(obj)
         
+            print(obj_name, obj_size)
+
         return obj_list
 
 

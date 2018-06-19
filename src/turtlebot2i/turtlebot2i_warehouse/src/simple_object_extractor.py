@@ -4,7 +4,7 @@ from SceneObjectExtractor import SceneObjectExtractor
 import time
    
 # Update rate in seconds
-rate = 0.5
+rate = 0.1
 
 extractor = SceneObjectExtractor('127.0.0.1', 19997)
 print('Connected to remote API server')
