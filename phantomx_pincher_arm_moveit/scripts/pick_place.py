@@ -7,11 +7,6 @@ import tf
 from moveit_commander import RobotCommander, roscpp_initialize
 from moveit_commander import PlanningSceneInterface
 from moveit_msgs.msg import RobotState
-#, CollisionObject
-#from geometry_msgs.msg import PoseStamped
-#from control_msgs.msg import JointTrajectoryControllerState
-#from sensor_msgs.msg import JointState
-#from trajectory_msgs.msg import JointTrajectory ,JointTrajectoryPoint
 import time
 
 
@@ -28,6 +23,10 @@ def closeGripper():
     return posture
     
 def ef_pose(target, arm, attemps = 10):
+
+    # Here we try to verify if the target is in the arm range. Also, we
+    # try to orient the end-effector(ef) to nice hard-coded orientation
+    
     d = pow(pow(target[0], 2) + pow(target[1], 2), 0.5)
     if d > 3.0:
         print("Too far. Out of reach")
@@ -100,6 +99,10 @@ if __name__ == '__main__':
     scene.add_box("box", p, [0.03, 0.03, 0.03])
     rospy.sleep(1)
 
+
+    # ------------------------------
+    # Configure the planner
+    # -----------------------------
     robot = RobotCommander()
     robot.pincher_arm.set_start_state(RobotState())
 
@@ -110,7 +113,7 @@ if __name__ == '__main__':
     robot.pincher_arm.set_goal_orientation_tolerance(0.5)
 
     # -----------------------------
-    #  Abre o gripper
+    #  Open gripper
     #------------------------------
 
     robot.get_current_state()
@@ -121,7 +124,7 @@ if __name__ == '__main__':
     robot.pincher_gripper.execute(gplan)
 
     # -----------------------------
-    #  Vai para algum lugar
+    #  Go to some pose
     #------------------------------
     robot.get_current_state()
     robot.pincher_arm.set_start_state(RobotState())
@@ -136,12 +139,13 @@ if __name__ == '__main__':
         print('No trajectory found')
         exit()
 
+
     rospy.sleep(5)
-    scene.remove_world_object("box")
+    scene.remove_world_object("box") #it's necessary to properly close the gripper
     rospy.sleep(1)
 
     # -----------------------------
-    # Fecha o gripper
+    # Close gripper
     #------------------------------
     robot.get_current_state()
     robot.pincher_arm.set_start_state(RobotState())
@@ -150,13 +154,14 @@ if __name__ == '__main__':
     gplan = robot.pincher_gripper.plan()
     robot.pincher_gripper.execute(gplan)
 
-    
+
+    #with closed gripper, attach the box to it
     rospy.sleep(1)
     scene.attach_box("gripper_link", "box", p, [0.03, 0.03, 0.03])
     rospy.sleep(1)
     
     # -----------------------------
-    #  Vai para algum lugar
+    #  Go to some pose
     #------------------------------
     robot.get_current_state()
     robot.pincher_arm.set_start_state(RobotState())
@@ -171,12 +176,13 @@ if __name__ == '__main__':
         exit()
 
     rospy.sleep(5)
-    scene.remove_attached_object("gripper_link", "box")
+    scene.remove_attached_object("gripper_link", "box")#it's necessary to properly open the gripper
     rospy.sleep(1)
-    scene.remove_world_object("box")
+    scene.remove_world_object("box")#just because the program it's about to end
     rospy.sleep(1)
+
     # -----------------------------
-    #  Abre o gripper
+    #  Open gripper
     #------------------------------
     robot.get_current_state()
     robot.pincher_arm.set_start_state(RobotState())
