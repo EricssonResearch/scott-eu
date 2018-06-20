@@ -5,27 +5,28 @@ import rospy
 import geometry_msgs.msg
 import tf
 from moveit_commander import RobotCommander, roscpp_initialize
-from moveit_commander import roscpp_shutdown, PlanningSceneInterface
-from moveit_msgs.msg import RobotState, Grasp, CollisionObject
-from geometry_msgs.msg import PoseStamped
-from control_msgs.msg import JointTrajectoryControllerState
-from sensor_msgs.msg import JointState
-from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from moveit_commander import PlanningSceneInterface
+from moveit_msgs.msg import RobotState
+#, CollisionObject
+#from geometry_msgs.msg import PoseStamped
+#from control_msgs.msg import JointTrajectoryControllerState
+#from sensor_msgs.msg import JointState
+#from trajectory_msgs.msg import JointTrajectory ,JointTrajectoryPoint
 import time
+
 
 def openGripper():
     posture = dict()
-    posture["PhantomXPincher_gripperClose_joint"] = 0.03
+    posture["PhantomXPincher_gripperClose_joint"] = 0.030
     print posture
     return posture
-    
 
 def closeGripper():
     posture = dict()
     posture["PhantomXPincher_gripperClose_joint"] = 0.015
     print posture
     return posture
-
+    
 def try_target(target, arm, attemps = 10):
     d = pow(pow(target[0], 2) + pow(target[1], 2), 0.5)
     if d > 3.0:
@@ -114,7 +115,6 @@ class Arm():
         return False
 
 if __name__ == '__main__':
-    
     roscpp_initialize(sys.argv)
     rospy.init_node('moveit_py_demo', anonymous=True)
     arm = Arm()
@@ -161,8 +161,10 @@ if __name__ == '__main__':
     print "Arm Tip:"
     print robot.pincher_arm.get_end_effector_link()
 
+    #robot.pincher_arm.set_planner_id('RRTConnectkConfigDefault')
+
     robot.pincher_arm.set_num_planning_attempts(10000)
-    robot.pincher_arm.set_planning_time(10)
+    robot.pincher_arm.set_planning_time(5)
     print "Tolerances"
     robot.pincher_arm.set_goal_position_tolerance(0.01)
     robot.pincher_arm.set_goal_orientation_tolerance(0.5)
@@ -189,7 +191,7 @@ if __name__ == '__main__':
     #0.19169 0.05708 0.13376 -0.02705 0.1856 0.1416 0.9719
     robot.get_current_state()
     robot.pincher_arm.set_start_state(RobotState())
-    target = [0.17, 0, 0.019]
+    target = [0.17, 0.005, 0.019]
     #target = [0.17, 0.05, 0.025]
     plan = try_target(target, robot.pincher_arm)
 
@@ -209,7 +211,7 @@ if __name__ == '__main__':
         if (count % 100 == 0):
             print robot.pincher_arm.get_current_joint_values()
             print plan.joint_trajectory.points[-1].positions
-    rospy.sleep(1)
+    rospy.sleep(5)
     # -----------------------------
     #  Vai para algum lugar
     #------------------------------
@@ -237,6 +239,8 @@ if __name__ == '__main__':
             print plan.joint_trajectory.points[-1].positions
 
     '''
+    scene.remove_world_object("box")
+    rospy.sleep(1)
     # -----------------------------
     # Fecha o gripper
     #------------------------------
@@ -245,12 +249,12 @@ if __name__ == '__main__':
     fechado = closeGripper()
     robot.pincher_gripper.set_joint_value_target(fechado)
     gplan = robot.pincher_gripper.plan()
+    print gplan
     robot.pincher_gripper.execute(gplan)
 
     rospy.sleep(1)
     scene.attach_box("gripper_link", "box", p, [0.03, 0.03, 0.03])
     rospy.sleep(1)
-
     
     # -----------------------------
     #  Vai para algum lugar
@@ -276,7 +280,12 @@ if __name__ == '__main__':
         if (count % 100 == 0):
             print robot.pincher_arm.get_current_joint_values()
             print plan.joint_trajectory.points[-1].positions
-    
+
+    rospy.sleep(5)
+    scene.remove_attached_object("gripper_link", "box")
+    rospy.sleep(1)
+    scene.remove_world_object("box")
+    rospy.sleep(1)
     # -----------------------------
     #  Abre o gripper
     #------------------------------
@@ -285,5 +294,5 @@ if __name__ == '__main__':
     fechado = openGripper()
     robot.pincher_gripper.set_joint_value_target(fechado)
     gplan = robot.pincher_gripper.plan()
+    print gplan
     robot.pincher_gripper.execute(gplan)
-
