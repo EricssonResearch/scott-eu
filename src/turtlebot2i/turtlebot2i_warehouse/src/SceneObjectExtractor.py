@@ -269,6 +269,8 @@ class SceneObjectExtractor:
             dynamic_obj.pose = obj_pose
             dynamic_obj.ori = obj_ori
             dynamic_obj.vel = obj_vel
+            dynamic_obj.bbox_min = bbox_min
+            dynamic_obj.bbox_max = bbox_max
 
 
     # Updated robot (vision sensor) pose and orientation
