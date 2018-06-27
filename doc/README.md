@@ -121,7 +121,7 @@ Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
 2. Open Vrep and load a scene
     ```
-    cd /<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux
+    cd /<path_to_vrep>
     ./vrep.sh
     ```
     - All the scenes are stored in the *turtlebot2i_description/v-rep_model* folder of ROS workspace. V-REP scenes have .ttt extension.
@@ -133,4 +133,21 @@ Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
     Example to run the keyboard teleoperation:
     ```
     $ roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
+    ```
+
+## 4. Using Python VREP Remote API (Optional)
+
+To use the python remote API provided by VREP, some adjustments are necessary:
+
+1. Copy the remoteApi.so (.dll in Windows and .dylib in Mac) to the V-REP python programming folder
+    ```
+    cp /<path_to_vrep>/programming/remoteApiBindings/lib/lib/64Bit/remoteApi.so /<path_to_vrep>/programming/remoteApiBindings/python/python/
+    ```
+    - It may be necessary to change the source folder to copy the remoteApi library depending on the OS (Win/Mac/Linux) and processor (32/64bit). All the library versions are located on /<path_to_vrep>/programming/remoteApiBindings/lib/lib/ folder
+
+2. Add python remote API library to python path
+
+    ```
+    echo "export PYTHONPATH=$PYTHONPATH:$VREP_ROOT/programming/remoteApiBindings/python/python" >> ~/.bashrc
+    source ~/.bashrc
     ```
