@@ -877,8 +877,8 @@
     </ownedAnnotationEntries>
     <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_vSQa4A_ZEeihFIT0HlPICw" name="SCOTT PDDL 2.1 subset spec (pddl)" width="40" height="30">
       <target xmi:type="oslc4j_ai:DomainSpecification" href="spec.xmi#//@domainSpecifications.0"/>
-      <semanticElements xmi:type="oslc4j_ai:DomainSpecification" href="spec.xmi#//@domainSpecifications.0"/>
       <semanticElements xmi:type="oslc4j_ai:GenerationSetting" href="spec.xmi#//@domainSpecifications.0/@generationSetting"/>
+      <semanticElements xmi:type="oslc4j_ai:DomainSpecification" href="spec.xmi#//@domainSpecifications.0"/>
       <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
       <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
       <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
@@ -1787,8 +1787,8 @@
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_a6ZB0BNmEeic--BxzbxoHg" name="Blocksworld Domain (bworld)" width="40" height="30">
       <target xmi:type="oslc4j_ai:DomainSpecification" href="spec.xmi#//@domainSpecifications.1"/>
-      <semanticElements xmi:type="oslc4j_ai:GenerationSetting" href="spec.xmi#//@domainSpecifications.1/@generationSetting"/>
       <semanticElements xmi:type="oslc4j_ai:DomainSpecification" href="spec.xmi#//@domainSpecifications.1"/>
+      <semanticElements xmi:type="oslc4j_ai:GenerationSetting" href="spec.xmi#//@domainSpecifications.1/@generationSetting"/>
       <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_a6d6UBNmEeic--BxzbxoHg" labelSize="9" iconPath="/org.eclipse.lyo.tools.toolchain.design/images/IconAdaptor.png" borderSize="1" borderSizeComputationExpression="1" foregroundColor="255,255,255">
         <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@style"/>
       </ownedStyle>

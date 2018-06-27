@@ -28,23 +28,11 @@
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-core</artifactId>
       <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-jena-provider</artifactId>
       <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <!--FIXME NoClassDefFoundError: org/apache/jena/riot/lang/ReaderRIOTRDFXML-->
@@ -150,12 +138,6 @@
       <groupId>org.eclipse.lyo.server</groupId>
       <artifactId>oauth-consumer-store</artifactId>
       <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.server</groupId>
