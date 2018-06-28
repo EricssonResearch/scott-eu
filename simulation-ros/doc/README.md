@@ -114,41 +114,42 @@ $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simul
   $ roscd vrep_ros_interface
   $ ./install.sh
   
-  ```
-  If having problems to compile the vrep_ros_interface, check the README.md contained in the package folder.
-  
-[TODO]: Until here it's ok. Check the next steps 
+## 3. Running the Simulated Environment
 
-## 3. Follow instructions in each package's there is a README.md.
+1. Start ROS CORE
+    ```
+    $ roscore
+    ```
 
-**Note:** ROS has a limited support to Windows. It is recommended to install ROS on linux distributions.
+2. Open Vrep and load a scene
+    ```
+    cd /<path_to_vrep>
+    ./vrep.sh
+    ```
+    - All the scenes are stored in the *turtlebot2i_description/v-rep_model* folder of ROS workspace. V-REP scenes have .ttt extension.
+    - Try opening the "warehouse_turtlebot2i.ttt" file from V-REP (File -> Open Scene...).
+    - Press play button to start the simulation.
 
-# Running
+3. Run ROS programs
+    All the ROS programs are stored in the ROS package. The instructions to run the programs can be found in the README.md files located in each package.
+    Example to run the keyboard teleoperation:
+    ```
+    $ roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
+    ```
 
-## 1. Start ROS CORE
-roscore
+## 4. Using Python VREP Remote API (Optional)
 
-## 2. Open V-REP Pro or V-REP Pro Edu and then the Scene
- 
- /path_to_vrep_folder/vrep.sh /path_to_scott_project_folder/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_turtlebot2i.ttt 
- 
-Press play button
+To use the python remote API provided by VREP, some adjustments are necessary:
 
-A number of errors will pop up at initialization, but they should fade and you can ignore them. The simulation should now be running, but the robots are not doing anything interesting.
+1. Copy the remoteApi.so (.dll in Windows and .dylib in Mac) to the V-REP python programming folder
+    ```
+    cp /<path_to_vrep>/programming/remoteApiBindings/lib/lib/64Bit/remoteApi.so /<path_to_vrep>/programming/remoteApiBindings/python/python/
+    ```
+    - It may be necessary to change the source folder to copy the remoteApi library depending on the OS (Win/Mac/Linux) and processor (32/64bit). All the library versions are located on /<path_to_vrep>/programming/remoteApiBindings/lib/lib/ folder
 
-**Note:** In the terminal that vrep.sh was executed, make sure that the message "Plugin 'RosInterface': load succeeded." appears. If not, recheck the installation instructions or try a different version of V-REP.
+2. Add python remote API library to python path
 
-## Make one robot move
-
-Update build (might take a while):
-
-/path_to_scott_project_folder/scott-eu/simulation-ros$ catkin build
-
-Run navigation functionality:
-
-roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch 
-
-At the terminal, press 'e' for enabling the robot. Then 'up arrow' for the robot to move ahead.
-
-
-
+    ```
+    echo "export PYTHONPATH=$PYTHONPATH:$VREP_ROOT/programming/remoteApiBindings/python/python" >> ~/.bashrc
+    source ~/.bashrc
+    ```

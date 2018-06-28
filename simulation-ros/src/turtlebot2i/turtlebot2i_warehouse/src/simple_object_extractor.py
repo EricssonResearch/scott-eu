@@ -2,11 +2,22 @@
 
 from SceneObjectExtractor import SceneObjectExtractor
 import time
+import vrep
    
 # Update rate in seconds
 rate = 0.1
 
 extractor = SceneObjectExtractor('127.0.0.1', 19997)
+
+# List of object names to retrieve information
+# For now it is hardcoded
+extractor.set_static_obj_names(['fake_obj', 'stairs', 'slidingDoor',      
+                                'DockStationBody', 'DockStationBody#0',\
+                                'ConveyorBeltBody', 'ConveyorBeltBody#0', 
+                                'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
+extractor.set_dynamic_obj_names(['Bill#3', 'product', 'fake_obj'])
+extractor.set_robot_names(['turtlebot2i', 'turtlebot2i#0'])
+
 print('Connected to remote API server')
 
 print('Getting scene properties (this can take a while)...') 
@@ -35,7 +46,8 @@ while True:
         # Print detected objects of the vision sensor
         print(robot.name, robot.vision_sensor.name, obj_list)
 
-    time.sleep(rate)
+    #time.sleep(rate)
+    #vrep.simxStartSimulation(extractor.clientID, vrep.simx_opmode_blocking);
 
 # Close the connection to V-REP
 vrep.simxFinish(clientID)
