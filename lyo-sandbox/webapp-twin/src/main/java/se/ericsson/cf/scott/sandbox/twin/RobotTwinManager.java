@@ -96,7 +96,8 @@ public class RobotTwinManager {
         try {
             final NodeMainExecutor executor = DefaultNodeMainExecutor.newDefault();
             final URI masterUri = URI.create("http://localhost:11311");
-            executor.execute(new RobotClientNode(), NodeConfiguration.newPublic("javanode", masterUri));
+            executor.execute(new RobotClientNode(), NodeConfiguration.newPublic("localhost",
+                                                                                masterUri));
         } catch (Exception e) {
             e.printStackTrace();
         }

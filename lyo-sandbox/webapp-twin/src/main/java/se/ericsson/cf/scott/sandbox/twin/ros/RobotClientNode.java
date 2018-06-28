@@ -29,6 +29,7 @@ public class RobotClientNode extends AbstractNodeMain {
     public void onStart(final ConnectedNode connectedNode) {
         ServiceClient<TaskRequestRequest, TaskRequestResponse> serviceClient;
         try {
+            log.info("RobotClientNode started");
             serviceClient = connectedNode.newServiceClient(TASK_SVC_NAME, TaskRequest._TYPE);
 
             final TaskRequestRequest request = serviceClient.newMessage();
