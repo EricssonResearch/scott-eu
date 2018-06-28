@@ -24,6 +24,7 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
+import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
@@ -32,6 +33,11 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 //import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
 //import se.ericsson.cf.scott.sandbox.twin.ros.TwinNode;
+import org.ros.RosRun;
+import org.ros.node.DefaultNodeMainExecutor;
+import org.ros.node.NodeConfiguration;
+import org.ros.node.NodeMainExecutor;
+import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.ServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
@@ -87,6 +93,13 @@ public class RobotTwinManager {
         
         // Start of user code contextInitializeServletListener
         context = servletContextEvent.getServletContext();
+        try {
+            final NodeMainExecutor executor = DefaultNodeMainExecutor.newDefault();
+            final URI masterUri = URI.create("http://localhost:11311");
+            executor.execute(new RobotClientNode(), NodeConfiguration.newPublic("javanode", masterUri));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // FIXME Andrew@2018-04-06: debug the connection params
         /*try {
             store = StoreFactory.sparql(p("store.query"), p("store.update"));
