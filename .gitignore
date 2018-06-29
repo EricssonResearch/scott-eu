@@ -5,6 +5,8 @@ build/
 logs/
 install/
 
+/.catkin_tools/
+
 # compiled targets:
 *.dylib
 *.so
