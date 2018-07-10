@@ -1,2 +1,9 @@
-export PYTHONPATH=$PYTHONPATH:~/Desktop/Soar/out
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Desktop/Soar/out
+
+Add the following to .bashrc
+
+echo "export PYTHONPATH=$PYTHONPATH:$PWD/lib" >> ~/.bashrc
+echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/lib" >> ~/.bashrc
+
+
+
+
