@@ -28,7 +28,7 @@ build_planner_reasoner:
 deploy_to_swarm:
   stage: deploy
   script:
-    - cd planner_reasoner
+    - cd deployment
     - sed -i -e 's/3020:3020/3021:3020/g' docker-compose.yml
     - echo "$CI_REGISTRY_PASSWORD" | docker -H $SWARM_MANAGER login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - docker -H $SWARM_MANAGER stack deploy -c docker-compose.yml --with-registry-auth planner_reasoner
@@ -38,7 +38,7 @@ deploy_to_swarm:
 deploy_to_swarm_erdc:
   stage: deploy
   script:
-    - cd planner_reasoner
+    - cd deployment
     - sed -i -e 's/3020:3020/3021:3020/g' docker-compose.yml
     - echo "$CI_REGISTRY_PASSWORD" | docker -H $SWARM_MANAGER_ERDC login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - docker -H $SWARM_MANAGER_ERDC stack deploy -c docker-compose.yml --with-registry-auth planner_reasoner
