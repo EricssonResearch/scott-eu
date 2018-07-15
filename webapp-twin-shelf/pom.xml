@@ -6,6 +6,7 @@
     <groupId>se.ericsson.cf.scott.sandbox</groupId>
     <artifactId>sandbox-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../lyo-webapp-parent</relativePath>
   </parent>
   <artifactId>webapp-twin-shelf</artifactId>
   <packaging>war</packaging>

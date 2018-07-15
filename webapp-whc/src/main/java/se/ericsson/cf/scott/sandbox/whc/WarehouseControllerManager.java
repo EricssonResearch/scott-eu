@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
+import org.apache.jena.atlas.web.HttpException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
@@ -253,9 +254,11 @@ public class WarehouseControllerManager {
             store = StoreFactory.sparql(p("store.query"), p("store.update"));
             // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
             store.removeAll();
-        } catch (IOException |ARQException e) {
-            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
-                    p("store.query"), p("store.update"), e);
+        } catch (IOException | ARQException | HttpException e) {
+            log.error(
+                    "SPARQL Store failed to initialise with the URIs query={};update={}",
+                    p("store.query"), p("store.update"), e
+            );
         }
 
         try {
