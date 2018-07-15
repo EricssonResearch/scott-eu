@@ -2,8 +2,8 @@
 /webapp-planner-placeholder/
 
 # Maven
-/target/
-/overlays/
+*/target/
+*/overlays/
 
 # Acceleo
 *.lost
