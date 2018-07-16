@@ -40,6 +40,17 @@ services:
     - mosquitto
     networks:
       - overlay
+  robot-emulator:
+    build: ../robot-emulator
+    # 'ContainerSpec: image reference must be provided'
+    image: robot-emulator:latest
+    depends_on:
+      # - sandbox-twin
+      - mosquitto
+    networks:
+      - overlay
+    deploy:
+       replicas: 3
   sandbox-twin-shelf:
     build: ../webapp-twin-shelf
     ports:

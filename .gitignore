@@ -18,6 +18,10 @@
 .idea/
 *.iml
 
+# Python
+*/venv/
+*.pyc
+
 # OS
 .DS_Store
 *.tmp
