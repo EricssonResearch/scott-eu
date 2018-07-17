@@ -22,7 +22,7 @@ public class RobotClientNode extends AbstractNodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("rosjava_tutorial_services/client");
+        return GraphName.of("turtlebot2i_twin");
     }
 
     @Override

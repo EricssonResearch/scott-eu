@@ -95,7 +95,7 @@ public class RobotTwinManager {
         context = servletContextEvent.getServletContext();
         try {
             final NodeMainExecutor executor = DefaultNodeMainExecutor.newDefault();
-            final URI masterUri = URI.create("http://localhost:11311");
+            final URI masterUri = URI.create(System.getenv("ROS_MASTER_URI"));
             executor.execute(new RobotClientNode(), NodeConfiguration.newPublic("localhost",
                                                                                 masterUri));
         } catch (Exception e) {
