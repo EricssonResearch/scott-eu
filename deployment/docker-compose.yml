@@ -13,7 +13,7 @@ services:
     environment:
       - PORT=3020 # internal port
     ports:
-      - "3020:3020" # mapping of external port to internal port
+      - "3021:3020" # mapping of external port to internal port
     stdin_open: true
     image: ${CI_REGISTRY_IMAGE-planner_reasoner}
     deploy:
