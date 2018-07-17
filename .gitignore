@@ -1,3 +1,23 @@
+# Sandobox-specific
+/webapp-planner-placeholder/
+
+# Maven
+*/target/
+*/overlays/
+
+# Acceleo
+*.lost
+
+# Eclipse
+*/bin/
+.project
+.classpath
+*/.settings/
+
+# Intellij
+.idea/
+*.iml
+
 # OS
 .DS_Store
 *.tmp

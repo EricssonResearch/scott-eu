@@ -1,8 +1,69 @@
-warehouse-controller:
-  image: wc
-  ports:
-   - "5001:5001"
-  links:
-   - ff-metric
-ff-metric:
-  image: ff-metric
+version: '3.3'
+
+services:
+  planner_reasoner:
+    build:
+      context: ../planner_reasoner
+      dockerfile: Dockerfile
+      args:
+        - PUBLIC_HOST=localhost # external host
+        - PUBLIC_PORT=3020 # external port
+        - PREFIX_PATH=/
+        - EXPOSED_PREFIXES=*
+    environment:
+      - PORT=3020 # internal port
+    ports:
+      - "3021:3020" # mapping of external port to internal port
+    stdin_open: true
+    image: ${CI_REGISTRY_IMAGE-planner_reasoner}
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
+  sandbox-whc:
+    build: ../webapp-whc
+    ports:
+    - "8080:8080"
+    depends_on:
+    - warehouse-fuseki
+    - mosquitto
+    networks:
+      - overlay
+  sandbox-twin:
+    build: ../webapp-twin
+    ports:
+     - "8081:8080"
+    depends_on:
+    - sandbox-whc
+    - mosquitto
+    networks:
+      - overlay
+  sandbox-twin-shelf:
+    build: ../webapp-twin-shelf
+    ports:
+     - "8082:8080"
+    depends_on:
+    - sandbox-whc
+    - mosquitto
+    networks:
+      - overlay
+  warehouse-fuseki:
+    image: stain/jena-fuseki
+    ports:
+     - "3030:3030"
+    volumes:
+      - ./fuseki_config:/fuseki/configuration
+    networks:
+      - overlay
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+     - 1883
+     - 9001
+    networks:
+      - overlay
+
+networks:
+  overlay:

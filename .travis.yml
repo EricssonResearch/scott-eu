@@ -5,4 +5,4 @@ before_install:
   - sudo apt-get -y install docker-ce
 
 script:
-  - (cd planner_reasoner && docker-compose build)
+  - make build
