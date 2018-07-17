@@ -92,11 +92,15 @@ $ sudo apt-get install python-catkin-tools
 ```
 
 4. Install xsltproc (required by the vrep_ros_interface)
-sudo apt-get install xsltproc
+
+```
+$ sudo apt-get install xsltproc
+```
 
 5. Compile the repository from the simulation-ros workspace root
 
 Go to /scott-eu/simulation-ros and run:
+
   ```
   $ catkin build
 
