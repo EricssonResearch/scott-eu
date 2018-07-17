@@ -9,11 +9,13 @@ services:
     - mosquitto
   sandbox-twin:
     build: ./webapp-twin
+    environment: ROS_MASTER_URI=http://rosmaster:11311
     ports:
      - "8081:8080"
     depends_on:
     - sandbox-whc
     - mosquitto
+    - rosmaster
   sandbox-twin-shelf:
     build: ./webapp-twin-shelf
     ports:
@@ -34,3 +36,8 @@ services:
     ports:
      - 1883
      - 9001
+  rosmaster:
+    image: ros
+    command: roscore
+    ports:
+     - 11311
