@@ -18,43 +18,43 @@ services:
     image: scott-webapp-whc
     networks:
       - overlay
-  ports:
-    - "8080:8080"
+    ports:
+      - "8080:8080"
     deploy:
-       replicas: 2
-       placement:
+      replicas: 2
+      placement:
         constraints: [node.role == worker]
-       restart_policy:
-         condition: on-failure
+      restart_policy:
+        condition: on-failure
     depends_on:
-    - warehouse-fuseki
-    - mosquitto
+      - warehouse-fuseki
+      - mosquitto
   sandbox-twin:
     image: scott-webapp-twin
     networks:
       - overlay
-  ports:
-     - "8081:8080"
+    ports:
+      - "8081:8080"
     deploy:
-       replicas: 2
-       placement:
+      replicas: 2
+      placement:
         constraints: [node.role == worker]
-       restart_policy:
-         condition: on-failure
+      restart_policy:
+        condition: on-failure
     depends_on:
-    # - sandbox-whc
-    - mosquitto
+      # - sandbox-whc
+      - mosquitto
   robot-emulator:
     # 'ContainerSpec: image reference must be provided'
     image: scott-robot-emulator
     networks:
       - overlay
     deploy:
-       replicas: 2
-       placement:
+      replicas: 2
+      placement:
         constraints: [node.role == worker]
-       restart_policy:
-         condition: on-failure
+      restart_policy:
+        condition: on-failure
     depends_on:
       # - sandbox-twin
       - mosquitto
@@ -69,31 +69,31 @@ services:
   #     - overlay
   warehouse-fuseki:
     image: stain/jena-fuseki
-  networks:
+    networks:
       - overlay
     ports:
-     - "3030:3030"
+      - "3030:3030"
     volumes:
       - ./fuseki_config:/fuseki/configuration
-  deploy:
-       replicas: 1
-       placement:
+    deploy:
+      replicas: 1
+      placement:
         constraints: [node.role == worker]
-       restart_policy:
-         condition: on-failure
+      restart_policy:
+        condition: on-failure
   mosquitto:
     image: eclipse-mosquitto
-  networks:
+    networks:
       - overlay
     ports:
-     - 1883
-     - 9001
-  deploy:
-       replicas: 1
-       placement:
+      - 1883
+      - 9001
+    deploy:
+      replicas: 1
+      placement:
         constraints: [node.role == worker]
-       restart_policy:
-         condition: on-failure
+      restart_policy:
+        condition: on-failure
 
 networks:
   overlay:
