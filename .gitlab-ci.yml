@@ -18,7 +18,7 @@ stages:
 build_planner_reasoner:
   stage: build
   script:
-    - cd planner_reasoner
+    # - cd planner_reasoner
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build --build-arg PUBLIC_PORT=3021 -t "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
