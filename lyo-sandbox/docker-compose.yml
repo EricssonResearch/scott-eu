@@ -9,7 +9,8 @@ services:
     - mosquitto
   sandbox-twin:
     build: ./webapp-twin
-    environment: ROS_MASTER_URI=http://rosmaster:11311
+    environment: 
+     - ROS_MASTER_URI=http://rosmaster:11311
     ports:
      - "8081:8080"
     depends_on:
