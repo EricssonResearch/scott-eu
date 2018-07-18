@@ -1,7 +1,7 @@
 .PHONY: build push
 
 build:
-	docker build -t scott-robot-emulator .
+	docker build -t ${CI_REGISTRY_IMAGE}/scott-robot-emulator .
 
 push:
-	docker push scott-robot-emulator
+	docker push ${CI_REGISTRY_IMAGE}/scott-robot-emulator
