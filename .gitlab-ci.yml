@@ -4,7 +4,7 @@ services:
   - docker:dind
 
 variables:
-  GIT_STRATEGY: none
+  # GIT_STRATEGY: none
 
 stages:
   - build
