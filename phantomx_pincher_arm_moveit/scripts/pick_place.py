@@ -6,7 +6,8 @@ import geometry_msgs.msg
 import tf
 from moveit_commander import RobotCommander, roscpp_initialize
 from moveit_commander import PlanningSceneInterface
-from moveit_msgs.msg import RobotState
+from moveit_msgs.msg import RobotState, Grasp
+from trajectory_msgs.msg import JointTrajectoryPoint
 import time
 
 
@@ -89,7 +90,7 @@ if __name__ == '__main__':
     p.pose.orientation.y = 0
     p.pose.orientation.z = 0
     p.pose.orientation.w = 0.707106
-    scene.add_box("base", p, [0.052, 0.136, 0.526])
+#    scene.add_box("base", p, [0.052, 0.136, 0.526])
     p.header.frame_id = "base_link"
     p.pose.position.x = 0.165
     p.pose.position.y = 0.
@@ -111,6 +112,60 @@ if __name__ == '__main__':
     robot.pincher_arm.set_planning_time(5)
     robot.pincher_arm.set_goal_position_tolerance(0.01)
     robot.pincher_arm.set_goal_orientation_tolerance(0.5)
+    robot.pincher_gripper.set_goal_position_tolerance(0.01)
+    robot.pincher_gripper.set_goal_orientation_tolerance(0.5)
+
+    robot.get_current_state()
+    robot.pincher_arm.set_start_state(RobotState())
+
+    #------------------------------
+    # The Grasp
+    #-----------------------------
+
+    the_grasp = Grasp()
+    the_grasp.id = "Por cima"
+
+    # Gripper Posture before the grasp (opened griper)
+    the_grasp.pre_grasp_posture.joint_names = robot.pincher_gripper.get_active_joints()
+    the_grasp.pre_grasp_posture.points.append(JointTrajectoryPoint())
+    the_grasp.pre_grasp_posture.points[0].positions = [0.030]
+
+    # Gripper posture while grapping (closed gripper)
+    the_grasp.grasp_posture.joint_names = robot.pincher_gripper.get_active_joints()
+    the_grasp.grasp_posture.points.append(JointTrajectoryPoint())
+    the_grasp.grasp_posture.points[0].positions = [0.015]
+
+    # Where the arm should go to grasp the object
+    the_grasp.grasp_pose.header.frame_id = 'base_link'
+    the_grasp.grasp_pose.pose.position.x = 0.170
+    the_grasp.grasp_pose.pose.position.y = 0.00
+    the_grasp.grasp_pose.pose.position.z = 0.019
+    d = pow(pow(the_grasp.grasp_pose.pose.position.x, 2) + pow(the_grasp.grasp_pose.pose.position.y, 2), 0.5)
+    rp = np.pi/2.0 - np.arcsin((d-0.1)/.205)
+    ry = np.arctan2(the_grasp.grasp_pose.pose.position.y, the_grasp.grasp_pose.pose.position.x)
+    q = tf.transformations.quaternion_from_euler(0, rp, ry)
+    the_grasp.grasp_pose.pose.orientation.x = 0.000251349802 #q[0]
+    the_grasp.grasp_pose.pose.orientation.y = 0.368718562700413 #q[1]
+    the_grasp.grasp_pose.pose.orientation.z = -0.00061982980 #q[2]
+    the_grasp.grasp_pose.pose.orientation.w = 0.92954083826657420 #q[3]
+
+    # the arm movement direction to grasp the object
+    the_grasp.pre_grasp_approach.direction.header.frame_id = 'base_link'
+    the_grasp.pre_grasp_approach.direction.vector.x = -1.00
+    the_grasp.pre_grasp_approach.min_distance = 0.01
+    the_grasp.pre_grasp_approach.desired_distance = 0.01
+
+    # the arm movement direction after the grasp
+    the_grasp.post_grasp_retreat.direction.header.frame_id = 'base_link'
+    the_grasp.post_grasp_retreat.direction.vector.x = 1.00
+    the_grasp.post_grasp_retreat.min_distance = 0.01
+    the_grasp.post_grasp_retreat.desired_distance = 0.01
+    
+    the_grasp.grasp_quality = 0.8
+
+    # Pickup is failing. Probabily due to:
+    # https://github.com/ros-planning/moveit_ros/issues/577
+    # https://groups.google.com/forum/#!topic/moveit-users/-Eie-wLDbu0
 
     # -----------------------------
     #  Open gripper
@@ -118,6 +173,13 @@ if __name__ == '__main__':
 
     robot.get_current_state()
     robot.pincher_arm.set_start_state(RobotState())
+
+    
+    robot.pincher_arm.pick('box', the_grasp)
+    print('pick')
+    print(robot.pincher_arm.get_goal_orientation_tolerance())
+    exit()
+    
     fechado = openGripper()
     robot.pincher_gripper.set_joint_value_target(fechado)
     gplan = robot.pincher_gripper.plan()
@@ -148,6 +210,9 @@ if __name__ == '__main__':
     # Close gripper
     #------------------------------
     robot.get_current_state()
+    print(robot.pincher_arm.get_current_pose())
+    print(robot.pincher_arm.get_current_rpy())
+    exit()
     robot.pincher_arm.set_start_state(RobotState())
     fechado = closeGripper()
     robot.pincher_gripper.set_joint_value_target(fechado)
