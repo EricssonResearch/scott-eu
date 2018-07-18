@@ -15,51 +15,64 @@ services:
     ports:
       - "3020:3020" # mapping of external port to internal port
     stdin_open: true
-    image: ${CI_REGISTRY_IMAGE-planner_reasoner}
+    image: scott-planner-reasoner
     deploy:
       replicas: 1
-      placement:
-        constraints: [node.role == worker]
+      # placement:
+        # constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
   sandbox-whc:
-    build: ../webapp-whc
+    image: scott-webapp-whc
+    networks:
+      - overlay
+    deploy:
+       replicas: 2
+       mode: replicated
+       restart_policy:
+         condition: on-failure
     ports:
     - "8080:8080"
     depends_on:
     - warehouse-fuseki
     - mosquitto
-    networks:
-      - overlay
   sandbox-twin:
-    build: ../webapp-twin
-    ports:
-     - "8081:8080"
-    depends_on:
-    - sandbox-whc
-    - mosquitto
-    networks:
-      - overlay
-  robot-emulator:
-    build: ../robot-emulator
-    # 'ContainerSpec: image reference must be provided'
-    image: robot-emulator:latest
-    depends_on:
-      # - sandbox-twin
-      - mosquitto
+    image: scott-webapp-twin
     networks:
       - overlay
     deploy:
-       replicas: 3
-  sandbox-twin-shelf:
-    build: ../webapp-twin-shelf
+       replicas: 2
+       mode: replicated
+       restart_policy:
+         condition: on-failure
     ports:
-     - "8082:8080"
+     - "8081:8080"
     depends_on:
-    - sandbox-whc
+    # - sandbox-whc
     - mosquitto
+  robot-emulator:
+    build: ../robot-emulator
+    # 'ContainerSpec: image reference must be provided'
+    image: scott-robot-emulator
     networks:
       - overlay
+    deploy:
+       replicas: 2
+       mode: replicated
+       restart_policy:
+         condition: on-failure
+    depends_on:
+      # - sandbox-twin
+      - mosquitto
+  # sandbox-twin-shelf:
+  #   build: ../webapp-twin-shelf
+  #   ports:
+  #    - "8082:8080"
+  #   depends_on:
+  #   - sandbox-whc
+  #   - mosquitto
+  #   networks:
+  #     - overlay
   warehouse-fuseki:
     image: stain/jena-fuseki
     ports:
