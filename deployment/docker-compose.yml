@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   planner_reasoner:
-    image: scott-planner-reasoner
+    image: ${CI_REGISTRY_IMAGE}/scott-planner-reasoner
     environment:
       - PORT=3020 # internal port
     ports:
@@ -15,7 +15,7 @@ services:
       restart_policy:
         condition: on-failure
   sandbox-whc:
-    image: scott-webapp-whc
+    image: ${CI_REGISTRY_IMAGE}/scott-webapp-whc
     networks:
       - overlay
     ports:
@@ -30,7 +30,7 @@ services:
       - warehouse-fuseki
       - mosquitto
   sandbox-twin:
-    image: scott-webapp-twin
+    image: ${CI_REGISTRY_IMAGE}/scott-webapp-twin
     networks:
       - overlay
     ports:
@@ -46,7 +46,7 @@ services:
       - mosquitto
   robot-emulator:
     # 'ContainerSpec: image reference must be provided'
-    image: scott-robot-emulator
+    image: ${CI_REGISTRY_IMAGE}/scott-robot-emulator
     networks:
       - overlay
     deploy:
