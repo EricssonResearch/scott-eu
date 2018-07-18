@@ -67,20 +67,21 @@ services:
   #   - mosquitto
   #   networks:
   #     - overlay
-  warehouse-fuseki:
-    image: stain/jena-fuseki
-    networks:
-      - overlay
-    ports:
-      - "3030:3030"
-    volumes:
-      - ./fuseki_config:/fuseki/configuration
-    deploy:
-      replicas: 1
-      placement:
-        constraints: [node.role == worker]
-      restart_policy:
-        condition: on-failure
+  # TODO bring back, see https://github.com/EricssonResearch/scott-eu/issues/101
+  # warehouse-fuseki:
+  #   image: stain/jena-fuseki
+  #   networks:
+  #     - overlay
+  #   ports:
+  #     - "3030:3030"
+  #   volumes:
+  #     - ./fuseki_config:/fuseki/configuration
+  #   deploy:
+  #     replicas: 1
+  #     placement:
+  #       constraints: [node.role == worker]
+  #     restart_policy:
+  #       condition: on-failure
   mosquitto:
     image: eclipse-mosquitto
     networks:
