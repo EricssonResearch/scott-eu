@@ -69,7 +69,7 @@ class ToyEnv(object):
 pub=None #pub should be visible by main and callbacks
 sub=None #sub should be visible by main and callbacks
 
-## SOAR variables    
+## SOAR variables    #TODO is there a better way of doing this?
 kernel=None
 agent=None
 te=None
@@ -79,40 +79,89 @@ b_value=None
 output_link=None
 
 
+seq_wme=None
+secs_wme=None
+nsecs_wme=None
+
+frame_id_wme=None
+child_frame_id_wme=None
+
+xp_wme=None
+yp_wme=None
+zp_wme=None
+    
+xo_wme=None
+yo_wme=None
+zo_wme=None
+wo_wme=None
+
+xtl_wme=None
+ytl_wme=None
+ztl_wme=None
+
+xta_wme=None
+yta_wme=None
+zta_wme=None
+
+
 def topic_callback(odom_data, scan_data,data):
 
     rospy.loginfo('odom_stamp: ' + str(odom_data.header.stamp.to_sec()) + ' ; scan_stamp: ' + str(scan_data.header.stamp.to_sec())+ ' ; data: ' + str(data))
 
    
 
-    if(True):
-        #Do something with data
-        dict=eval(data.data)
-        ## Cognitive cycle goes here
- 
-        a_value_temp=float(dict['a_value'])
-        b_value_temp=float(dict['b_value'])
+    #Do something with data
+    dict=eval(data.data)
+    ## Cognitive cycle goes here
 
-       # 2) push senses to soar
-        a_value.Update(a_value_temp)
-        b_value.Update(b_value_temp)
+    a_value_temp=float(dict['a_value'])
+    b_value_temp=float(dict['b_value'])
 
-       # 3) make soar think about it
-        result=0
-        #run_result=agent.RunSelf(1)    #Run agent for one step (should run until output?)
-        run_result=agent.RunSelfTilOutput() #TODO see why so many substates are being created
-       # 4) get results from soar
-        output_link=agent.GetOutputLink()## returns an Identifier
-        if output_link!= None:
-            result_output_wme = output_link.FindByAttribute("result", 0) # returns a WMElement of the form (<output_link> ^result <val>)
-            result=None
-            if result_output_wme != None:
-                result = float(result_output_wme.GetValueAsString())
+    # 2) push senses to soar
+    a_value.Update(a_value_temp)
+    b_value.Update(b_value_temp)
 
-    #    #5) send result to environment
-        te.set_actuators(result) 
-        rospy.loginfo("output result log: "+str(result))
-        pub.publish("output result topic: "+str(result)) # Here goes the output
+    #Odometer
+    print("odom_data.pose.pose.position.x: ",odom_data.pose.pose.position.x)
+    xp_wme.Update(float(odom_data.pose.pose.position.x))
+    yp_wme.Update(float(odom_data.pose.pose.position.y))
+    zp_wme.Update(float(odom_data.pose.pose.position.z))
+        
+    xo_wme.Update(float(odom_data.pose.pose.orientation.x))
+    yo_wme.Update(float(odom_data.pose.pose.orientation.y))
+    zo_wme.Update(float(odom_data.pose.pose.orientation.z))
+    wo_wme.Update(float(odom_data.pose.pose.orientation.w))
+
+    xtl_wme.Update(float(odom_data.twist.twist.linear.x))
+    ytl_wme.Update(float(odom_data.twist.twist.linear.y))
+    ztl_wme.Update(float(odom_data.twist.twist.linear.z))
+
+    xta_wme.Update(float(odom_data.twist.twist.angular.x))
+    yta_wme.Update(float(odom_data.twist.twist.angular.y))
+    zta_wme.Update(float(odom_data.twist.twist.angular.z))
+
+
+
+
+
+
+    # 3) make soar think about it
+    result=0
+    #run_result=agent.RunSelf(1)    #Run agent for one step (should run until output?)
+    run_result=agent.RunSelfTilOutput() #TODO see why so many substates are being created
+    
+    # 4) get results from soar
+    output_link=agent.GetOutputLink()## returns an Identifier
+    if output_link!= None:
+        result_output_wme = output_link.FindByAttribute("result", 0) # returns a WMElement of the form (<output_link> ^result <val>)
+        result=None
+        if result_output_wme != None:
+            result = float(result_output_wme.GetValueAsString())
+
+    #5) send result to environment
+    te.set_actuators(result) 
+    rospy.loginfo("output result log: "+str(result))
+    pub.publish("output result topic: "+str(result)) # Here goes the output
 
     cli(agent) #open client to interact with agent
 
@@ -141,8 +190,10 @@ if __name__ == "__main__":
 
     ##TODO Create input structure for odometer #TODO How about doing this automatically based on the topic's structure?
     odom_wme=agent.CreateIdWME(input_link,"odom")
-    head_wme=agent.CreateIdWME(odom_wme,"head")    
-    
+
+    header_wme=agent.CreateIdWME(odom_wme,"header")  
+    stamp_wme=agent.CreateIdWME(header_wme,"stamp")
+      
     pose_wme=agent.CreateIdWME(odom_wme,"pose")
     pose2_wme=agent.CreateIdWME(pose_wme,"pose") #Weird, but that's how ROS odom does it
     position_wme=agent.CreateIdWME(pose2_wme,"position")
@@ -154,6 +205,14 @@ if __name__ == "__main__":
     twist_angular_wme=agent.CreateIdWME(twist2_wme,"angular")
 
     #Leaves
+    seq_wme=agent.CreateIntWME(header_wme,"seq",-1)
+    secs_wme=agent.CreateFloatWME(stamp_wme,"secs",-1)
+    nsecs_wme=agent.CreateFloatWME(stamp_wme,"nsecs",-1)
+
+    frame_id_wme=agent.CreateStringWME(header_wme,"frame_id","empty") 
+
+    child_frame_id_wme=agent.CreateStringWME(odom_wme,"child_frame_id","empty") 
+
     xp_wme=agent.CreateFloatWME(position_wme,"x",-1.0)
     yp_wme=agent.CreateFloatWME(position_wme,"y",-1.0)
     zp_wme=agent.CreateFloatWME(position_wme,"z",-1.0)
@@ -172,6 +231,7 @@ if __name__ == "__main__":
     yta_wme=agent.CreateFloatWME(twist_angular_wme,"y",-1.0)
     zta_wme=agent.CreateFloatWME(twist_angular_wme,"z",-1.0)
 
+    
 
     #Get output link
     output_link=agent.GetOutputLink()
