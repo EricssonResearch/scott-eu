@@ -2,6 +2,7 @@
 # Initialization
 #
 
+
 sp {toy-env*propose*initialize-toy-env
 	(state <s> 	^superstate nil 
 			-^name)
@@ -15,6 +16,8 @@ sp {toy-env*apply*initialize-toy-env
 	(<io> ^output-link <output-link>)
 -->
 	(<s> ^name toy-env)
+    (write (crlf)|===: Toyenv initialized | (crlf))
+    (write (crlf)|===: Soar ffffff: | <s> | | <s> (crlf))
 }
 
 ######################################
@@ -27,7 +30,8 @@ sp {toy-env*propose*addup
 	(<input-link> ^b <bval>)
 -->
   	(<s> ^operator <o>  =)
-	(write (crlf)|===> Soar input: | <aval> | | <bval> (crlf))
+	(write (crlf)|===: Soar input: | <aval> | | <bval> (crlf))
+
 }
 
 sp {toy-env*apply*addup
@@ -39,7 +43,7 @@ sp {toy-env*apply*addup
 	(<inode> ^b <bval>)
 -->
 	(<onode> ^result (+ <aval> <bval>))
-	(write (crlf)|===> Soar output: | (+ <aval> <bval>) (crlf))
+	(write (crlf)|===: Soar output: | (+ <aval> <bval>) (crlf))
 }
 
 ######################################
@@ -56,6 +60,7 @@ sp {top-ps*propose*wait
 -->
    (<s> ^operator <o> + <)
    (<o> ^name wait)
+   (write (crlf)|===: Wait due to state-no-change | (crlf))
 }
 
 

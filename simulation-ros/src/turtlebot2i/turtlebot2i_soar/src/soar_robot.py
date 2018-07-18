@@ -21,6 +21,10 @@ sys.path.append(LIB_PATH)
 import Python_sml_ClientInterface as sml # Python interface to SOAR
 import rospy # ROS library
 
+from nav_msgs.msg import Odometry
+from sensor_msgs.msg import LaserScan
+
+import message_filters
 from std_msgs.msg import String
 
 
@@ -53,7 +57,7 @@ class ToyEnv(object):
         a=randint(1, 10)
         b=randint(1, 10)
         sensors=[a,b]
-        print("---> Environment sensed: ",sensors)
+        #print("---> Environment sensed: ",sensors)
         return sensors
 
     def set_actuators(self, act):
@@ -75,14 +79,17 @@ b_value=None
 output_link=None
 
 
-def topic_callback(data):
+def topic_callback(odom_data, scan_data,data):
 
-    rospy.loginfo(data)
-    if(False):
+    rospy.loginfo('odom_stamp: ' + str(odom_data.header.stamp.to_sec()) + ' ; scan_stamp: ' + str(scan_data.header.stamp.to_sec())+ ' ; data: ' + str(data))
+
+   
+
+    if(True):
         #Do something with data
         dict=eval(data.data)
         ## Cognitive cycle goes here
-        print("DDDDDDD: ",dict)
+ 
         a_value_temp=float(dict['a_value'])
         b_value_temp=float(dict['b_value'])
 
@@ -107,7 +114,7 @@ def topic_callback(data):
         rospy.loginfo("output result log: "+str(result))
         pub.publish("output result topic: "+str(result)) # Here goes the output
 
-
+    cli(agent) #open client to interact with agent
 
 """ Main program """
 if __name__ == "__main__":   
@@ -125,12 +132,46 @@ if __name__ == "__main__":
 
     #Load soar sources
     agent.ExecuteCommandLine("source soar_robot.soar")
-
+    agent.ExecuteCommandLine("soar wait-snc")
     #Get input link and create input  structure
     input_link=agent.GetInputLink()
     
     a_value=agent.CreateFloatWME(input_link, "a", -1.0)
     b_value=agent.CreateFloatWME(input_link, "b", -1.0)
+
+    ##TODO Create input structure for odometer #TODO How about doing this automatically based on the topic's structure?
+    odom_wme=agent.CreateIdWME(input_link,"odom")
+    head_wme=agent.CreateIdWME(odom_wme,"head")    
+    
+    pose_wme=agent.CreateIdWME(odom_wme,"pose")
+    pose2_wme=agent.CreateIdWME(pose_wme,"pose") #Weird, but that's how ROS odom does it
+    position_wme=agent.CreateIdWME(pose2_wme,"position")
+    orientation_wme=agent.CreateIdWME(pose2_wme,"orientation")
+    
+    twist_wme=agent.CreateIdWME(odom_wme,"twist")
+    twist2_wme=agent.CreateIdWME(twist_wme,"twist") #Weird, but that's how ROS odom does it
+    twist_linear_wme=agent.CreateIdWME(twist2_wme,"linear")
+    twist_angular_wme=agent.CreateIdWME(twist2_wme,"angular")
+
+    #Leaves
+    xp_wme=agent.CreateFloatWME(position_wme,"x",-1.0)
+    yp_wme=agent.CreateFloatWME(position_wme,"y",-1.0)
+    zp_wme=agent.CreateFloatWME(position_wme,"z",-1.0)
+    
+    xo_wme=agent.CreateFloatWME(orientation_wme,"x",-1.0)
+    yo_wme=agent.CreateFloatWME(orientation_wme,"y",-1.0)
+    zo_wme=agent.CreateFloatWME(orientation_wme,"z",-1.0)
+    wo_wme=agent.CreateFloatWME(orientation_wme,"w",-1.0)
+
+
+    xtl_wme=agent.CreateFloatWME(twist_linear_wme,"x",-1.0)
+    ytl_wme=agent.CreateFloatWME(twist_linear_wme,"y",-1.0)
+    ztl_wme=agent.CreateFloatWME(twist_linear_wme,"z",-1.0)
+
+    xta_wme=agent.CreateFloatWME(twist_angular_wme,"x",-1.0)
+    yta_wme=agent.CreateFloatWME(twist_angular_wme,"y",-1.0)
+    zta_wme=agent.CreateFloatWME(twist_angular_wme,"z",-1.0)
+
 
     #Get output link
     output_link=agent.GetOutputLink()
@@ -139,13 +180,38 @@ if __name__ == "__main__":
     print("Initializing ROS SOAR node")
     rospy.init_node("soar_ros_node",anonymous=True) #Always first
 
-    sub=rospy.Subscriber("soar_sub_topic", String, topic_callback)
-    pub=rospy.Publisher("soar_pub_topic",String, queue_size=10)
+    ## SUBSCRIBERS
+    # Creates a subscriber object for each topic
+    # The messages to be synced must have the 'header' field or
+    #  use the 'allow_headerless=True' in the TimeSynchronizer() function
+    #  if this field is not present
+    sub=message_filters.Subscriber("/turtlebot2i/soar_sub_topic", String)
+    odom_sub = message_filters.Subscriber('/turtlebot2i/odom', Odometry)
+    scan_sub = message_filters.Subscriber('/turtlebot2i/lidar/scan', LaserScan)
 
-    dummy_pub=rospy.Publisher("soar_sub_topic",String, queue_size=10) #used for inputing debug data to soar_sub_topic
+    # Make the topics sync through ApproximateTimeSynchronizer with 0.1s of tolerance
+    ts =  message_filters.ApproximateTimeSynchronizer([odom_sub, scan_sub,sub], 10, 0.1, allow_headerless=True)
 
-    tasks_list_topic=rospy.Subscriber("soar_tasks_list_topic", String, topic_callback)
-    dummy_tasks_list_topic=rospy.Publisher("soar_tasks_list_topic",String, queue_size=10) #used for inputing debug data to soar_tasks_list_topic
+    # Associate the synchronizer with a callback
+    ts.registerCallback(topic_callback)
+
+    ## PUBLISHERS
+    pub=rospy.Publisher("soar_pub_topic", String, queue_size=10)
+    dummy_pub=rospy.Publisher("/turtlebot2i/soar_sub_topic",String, queue_size=10) #used for inputing debug data to soar_sub_topic
+    #tasks_list_topic=rospy.Subscriber("soar_tasks_list_topic", String, topic_callback)
+#    dummy_tasks_list_topic=rospy.Publisher("soar_tasks_list_topic",String, queue_size=10) #used for inputing debug data to soar_tasks_list_topic
+
+
+
+
+
+#    sub=rospy.Subscriber("soar_sub_topic", String, topic_callback)
+#    pub=rospy.Publisher("soar_pub_topic",String, queue_size=10)
+#
+#    dummy_pub=rospy.Publisher("soar_sub_topic",String, queue_size=10) #used for inputing debug data to soar_sub_topic
+#
+#    tasks_list_topic=rospy.Subscriber("soar_tasks_list_topic", String, topic_callback)
+#    dummy_tasks_list_topic=rospy.Publisher("soar_tasks_list_topic",String, queue_size=10) #used for inputing debug data to soar_tasks_list_topic
 
 
 
@@ -164,11 +230,7 @@ if __name__ == "__main__":
 
         dummy_pub.publish(str(new_input)) 
 #        rospy.loginfo("Log new_input: "+ str(new_input))
-        new_input=dict()
-        new_input['tasks_list']=str(randint(30,40))
-        current_time=str(rospy.get_time())
-        new_input['time']=str(current_time)
-        dummy_tasks_list_topic.publish(str(new_input))
+       
 
        
         rate.sleep()
@@ -231,5 +293,42 @@ if __name__ == "__main__":
     #Close agent and kernel
     kernel.DestroyAgent(agent)
     kernel.Shutdown()
+"""
+
+
+"""
+---
+header: 
+  seq: 68884
+  stamp: 
+    secs: 1531936453
+    nsecs: 639370680
+  frame_id: "turtlebot2i/odom"
+child_frame_id: "turtlebot2ikinect"
+pose: 
+  pose: 
+    position: 
+      x: 2.27206683159
+      y: -0.190607577562
+      z: 1.34853923321
+    orientation: 
+      x: -0.00055553537095
+      y: 0.000350441696355
+      z: 0.709878265858
+      w: 0.704324126244
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+twist: 
+  twist: 
+    linear: 
+      x: 0.000438690185547
+      y: 0.000247657299042
+      z: -0.000138282775879
+    angular: 
+      x: 0.00346004939638
+      y: 0.00924359634519
+      z: 0.000447982223704
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+---
+
 """
     
