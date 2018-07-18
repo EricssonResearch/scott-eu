@@ -9,7 +9,7 @@ services:
       - "3021:3020" # mapping of external port to internal port
     stdin_open: true
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         constraints: [node.role == worker]
       restart_policy:
