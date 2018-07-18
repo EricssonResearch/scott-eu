@@ -2,37 +2,30 @@ version: '3.3'
 
 services:
   planner_reasoner:
-    build:
-      context: ../planner_reasoner
-      dockerfile: Dockerfile
-      args:
-        - PUBLIC_HOST=localhost # external host
-        - PUBLIC_PORT=3020 # external port
-        - PREFIX_PATH=/
-        - EXPOSED_PREFIXES=*
+    image: scott-planner-reasoner
     environment:
       - PORT=3020 # internal port
     ports:
-      - "3020:3020" # mapping of external port to internal port
+      - "3021:3020" # mapping of external port to internal port
     stdin_open: true
-    image: scott-planner-reasoner
     deploy:
       replicas: 1
-      # placement:
-        # constraints: [node.role == worker]
+      placement:
+        constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
   sandbox-whc:
     image: scott-webapp-whc
     networks:
       - overlay
+  ports:
+    - "8080:8080"
     deploy:
        replicas: 2
-       mode: replicated
+       placement:
+        constraints: [node.role == worker]
        restart_policy:
          condition: on-failure
-    ports:
-    - "8080:8080"
     depends_on:
     - warehouse-fuseki
     - mosquitto
@@ -40,25 +33,26 @@ services:
     image: scott-webapp-twin
     networks:
       - overlay
+  ports:
+     - "8081:8080"
     deploy:
        replicas: 2
-       mode: replicated
+       placement:
+        constraints: [node.role == worker]
        restart_policy:
          condition: on-failure
-    ports:
-     - "8081:8080"
     depends_on:
     # - sandbox-whc
     - mosquitto
   robot-emulator:
-    build: ../robot-emulator
     # 'ContainerSpec: image reference must be provided'
     image: scott-robot-emulator
     networks:
       - overlay
     deploy:
        replicas: 2
-       mode: replicated
+       placement:
+        constraints: [node.role == worker]
        restart_policy:
          condition: on-failure
     depends_on:
@@ -75,19 +69,31 @@ services:
   #     - overlay
   warehouse-fuseki:
     image: stain/jena-fuseki
+  networks:
+      - overlay
     ports:
      - "3030:3030"
     volumes:
       - ./fuseki_config:/fuseki/configuration
-    networks:
-      - overlay
+  deploy:
+       replicas: 1
+       placement:
+        constraints: [node.role == worker]
+       restart_policy:
+         condition: on-failure
   mosquitto:
     image: eclipse-mosquitto
+  networks:
+      - overlay
     ports:
      - 1883
      - 9001
-    networks:
-      - overlay
+  deploy:
+       replicas: 1
+       placement:
+        constraints: [node.role == worker]
+       restart_policy:
+         condition: on-failure
 
 networks:
   overlay:
