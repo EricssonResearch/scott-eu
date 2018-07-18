@@ -10,7 +10,7 @@ stages:
   - build
   - deploy
 
-# before_script:
+before_script:
   - apk add --no-cache git alpine-sdk
 #   - git clone https://github.com/EricssonResearch/scott-eu.git
 #   - cd scott-eu
