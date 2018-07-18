@@ -5,6 +5,12 @@ build:
 	(cd lyo-services 	&&	make all)
 	(cd robot-emulator 	&&	docker build -t scott-robot-emulator .)
 
+push:
+	docker push scott-planner-reasoner
+	docker push scott-webapp-whc
+	docker push scott-webapp-twin
+	docker push scott-robot-emulator
+
 up: build
 	(cd deployment 				&& docker-compose up)
 
