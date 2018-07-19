@@ -5,7 +5,7 @@ import time
 import vrep
    
 # Update rate in seconds
-rate = 0.1
+#rate = 0.1
 
 extractor = SceneObjectExtractor('127.0.0.1', 19997)
 
@@ -22,9 +22,20 @@ print('Connected to remote API server')
 
 print('Getting scene properties (this can take a while)...') 
 
-# Get all objects info once (for static properties)
-extractor.operation_mode = vrep.simx_opmode_oneshot_wait
+# Get all objects info once (for static properties) and
+#  prepare the callback for the streaming mode
+
+extractor.operation_mode = vrep.simx_opmode_streaming
 extractor.get_all_objects_info() 
+extractor.update_robots_vision_sensor_info()
+extractor.update_all_robots_vision_sensors_fov()
+time.sleep(0.3) # streaming takes a while to get ready
+
+extractor.operation_mode = vrep.simx_opmode_buffer
+extractor.get_all_objects_info() 
+extractor.update_robots_vision_sensor_info()
+extractor.update_all_robots_vision_sensors_fov()
+
 
 print('Finished getting scene properties!\n')
 
@@ -49,7 +60,6 @@ while True:
         print(robot.name, robot.vision_sensor.name, obj_list)
 
     #time.sleep(rate)
-    #vrep.simxStartSimulation(extractor.clientID, vrep.simx_opmode_blocking);
 
 # Close the connection to V-REP
 vrep.simxFinish(clientID)
