@@ -98,3 +98,14 @@ To work properly this package need the following packages: phantomx\_pincher\_ar
 ##Know Issues##
 
 The present solution has a poor performance using other IK solver than trac.
+
+#TO-DO#
+
+[ ] Add pick and place action server to a launch file
+[ ] Test pick and place for multiple robots
+[ ] Improve how to pick an object
+[ ] Improve modularity on action servers scripts
+[ ] Eliminate some prints and use roslog properly
+[ ] Improve control .cpp file
+  - roslog usage
+  - remoteAPI checkup
