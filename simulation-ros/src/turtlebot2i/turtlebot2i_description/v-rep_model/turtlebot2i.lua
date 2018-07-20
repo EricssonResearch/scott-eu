@@ -283,7 +283,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     angular_speed["y"] = r_angular_velocity[2]
     angular_speed["z"] = r_angular_velocity[3]
     ros_pose['twist'] = {twist = {linear = linear_speed, angular = angular_speed}, covariance = cov}
-    ros_pose['child_frame_id'] = robot_id..'kinect' -- CHECK THIS!
+    ros_pose['child_frame_id'] = robot_id..'/base_footprint'
     simROS.publish(pubPose, ros_pose)     
 
     time = simROS.getTime()

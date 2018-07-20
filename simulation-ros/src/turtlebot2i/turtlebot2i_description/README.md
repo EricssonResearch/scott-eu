@@ -17,15 +17,33 @@ To run the description for **one ore two robots**, execute the following steps:
 1. Run the scene containing the turtlebot2i
 
 ```
-./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/turtlebot2i_Warehouse.lua
+./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v3.ttt
 ```
 
-2. Execute the ros launch associated to the robot description
+**Note:** Plese check if there is a newer version of the warehouse_turtlebot2i_v3.ttt scene file.
 
+2. Execute the roslaunch associated to the robot description
+
+* For a single robot:
+```
+roslaunch turtlebot2i_description turtlebot2i_description_single_robot.launch
+```
+
+* For multiple robots:
 ```
 roslaunch turtlebot2i_description turtlebot2i_description_multiple_robots.launch
 ```
 
+* If want to visualize the models and the topic outputs in the rviz:
+```
+roslaunch turtlebot2i_description turtlebot2i_description_single_robot_rviz.launch
+```
+or
+```
+roslaunch turtlebot2i_description turtlebot2i_description_multiple_robots_rviz.launch
+```
+
+**Note:** The turtlebot2i_description.launch is the base script used by other scripts to launch the kobuki and the phanthon pincher arm models.
 
 # 3. Loading the Turtlebot2i model and TF using real robots 
 

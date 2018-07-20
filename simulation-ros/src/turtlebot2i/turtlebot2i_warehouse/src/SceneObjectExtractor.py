@@ -88,12 +88,12 @@ class SceneObjectExtractor:
 
         # callback mode
         # TODO: check why callback is very slow
-        #self.operation_mode = vrep.simx_opmode_streaming
+        self.operation_mode = vrep.simx_opmode_streaming
         #self.operation_mode = vrep.simx_opmode_buffer
         #self.operation_mode = vrep.simx_opmode_oneshot_wait
         #self.operation_mode = vrep.simx_opmode_oneshot_split
         #self.operation_mode = vrep.simx_opmode_oneshot
-        self.operation_mode = vrep.simx_opmode_blocking
+        #self.operation_mode = vrep.simx_opmode_blocking
         
         # List of objects with attributes
         self.static_obj_list = []
@@ -131,10 +131,11 @@ class SceneObjectExtractor:
 
         for obj_name in obj_name_list:
     
-            returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, obj_name, self.operation_mode)
+            #returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, obj_name, self.operation_mode)
+            returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, obj_name, vrep.simx_opmode_oneshot_wait)
     
             # Skip non-existent objects
-            if (returnCode != 0):
+            if (returnCode > 1):
                 continue
 
             # Get pose and orientation 
@@ -195,7 +196,8 @@ class SceneObjectExtractor:
     # Get information of a visual sensor (name)
     def get_vision_sensor_info_from_name(self, vision_sensor_name):
         
-        returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, vision_sensor_name, self.operation_mode)
+        #returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, vision_sensor_name, self.operation_mode)
+        returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, vision_sensor_name, vrep.simx_opmode_oneshot_wait)
     
         # Skip non-existent objects
         if (returnCode != 0):
@@ -207,7 +209,10 @@ class SceneObjectExtractor:
         returnCode, param_resolution_y = vrep.simxGetObjectIntParameter(self.clientID, obj_handle, 1003, self.operation_mode)
         returnCode, param_perspective_angle = vrep.simxGetObjectFloatParameter(self.clientID, obj_handle, 1004, self.operation_mode)
 
-        ratio = param_resolution_x/param_resolution_y
+        try:
+            ratio = param_resolution_x/param_resolution_y
+        except ZeroDivisionError:
+            return None
 
         if (ratio > 1):
             param_perspective_angle_x = param_perspective_angle
@@ -233,7 +238,8 @@ class SceneObjectExtractor:
         dynamic_obj_list = []
 
         for obj_name in self.dynamic_obj_name_list:
-            returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, obj_name, self.operation_mode)
+            #returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, obj_name, self.operation_mode)
+            returnCode, obj_handle = vrep.simxGetObjectHandle(self.clientID, obj_name, vrep.simx_opmode_oneshot_wait)
 
             # Skip non-existent objects
             if (returnCode != 0):
@@ -252,6 +258,13 @@ class SceneObjectExtractor:
             obj_vel = np.array([param_vel_x, param_vel_y, param_vel_z, param_vel_r])
         
         self.dynamic_obj_list = dynamic_obj_list
+
+
+    # Update all robots' vision sensor info
+    def update_robots_vision_sensor_info(self):
+        
+        for robot in self.robot_obj_list:
+            self.get_robot_vision_sensor_info(robot)
 
 
     # Update information of dynamic objects
@@ -292,11 +305,18 @@ class SceneObjectExtractor:
 
             vision_sensor = robot.vision_sensor
 
+            if (vision_sensor == None):
+                continue
+
             returnCode, obj_pose = vrep.simxGetObjectPosition(self.clientID, vision_sensor.handle, -1, self.operation_mode)
             
+            if (returnCode != 0):
+                continue
+
             parent_name = robot.name
 
-            returnCode, parent_handler = vrep.simxGetObjectHandle(self.clientID, parent_name, self.operation_mode)
+            #returnCode, parent_handler = vrep.simxGetObjectHandle(self.clientID, parent_name, self.operation_mode)
+            returnCode, parent_handler = vrep.simxGetObjectHandle(self.clientID, parent_name, vrep.simx_opmode_oneshot_wait)
             returnCode, r = vrep.simxGetObjectOrientation(self.clientID, parent_handler, -1, self.operation_mode)
             
             # Use robot orientation as the sensor's
@@ -342,6 +362,9 @@ class SceneObjectExtractor:
         obj_list_detected = []
 
         obj_list = self.static_obj_list + self.dynamic_obj_list + self.robot_obj_list
+
+        if (vision_sensor == None):
+            return None
 
         pol_fov = Polygon([vision_sensor.fov['upper_base'][0], vision_sensor.fov['upper_base'][1], vision_sensor.fov['lower_base'][0], vision_sensor.fov['lower_base'][1]])
 
