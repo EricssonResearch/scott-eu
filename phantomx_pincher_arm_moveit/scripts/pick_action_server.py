@@ -27,8 +27,14 @@ class Pick(object):
         rospy.loginfo('Moveit Planning Scene Loaded')
         rospy.loginfo('Pick action is ok. Awaiting for connections')
 
-    def get_target(self):
+    def get_target(self, target_name):
+        obj = self.scene.get_objects([target_name])
+        obj = obj[target_name]
+        pose = obj.primitive_poses[0].position
         target = [0.17, 0.005, 0.019]
+        rospy.loginfo(target)
+        target = [pose.x, pose.y, pose.z]
+        rospy.loginfo(target)
         return target
 
     def execute_cb(self, goal):
@@ -59,7 +65,7 @@ class Pick(object):
 
         self._feedback.state = "Planning to reach object"
         self._as.publish_feedback(self._feedback)
-        target = self.get_target()
+        target = self.get_target(goal.target_name)
         plan = self.robot.ef_pose(target)
         if plan is None:
             rospy.loginfo("Plan to grasp failed")
@@ -80,7 +86,8 @@ class Pick(object):
         obj  = self.scene.get_objects([goal.target_name])
         obj = obj[goal.target_name]
         self.scene.remove_world_object(goal.target_name)
-
+        rospy.sleep(1)
+        
         self._feedback.state = "Planning to close the gripper"
         self._as.publish_feedback(self._feedback)
         plan = self.robot.closeGripper()
