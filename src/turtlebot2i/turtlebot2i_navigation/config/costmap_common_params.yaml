@@ -3,8 +3,8 @@ raytrace_range: 3.0
 #footprint: [[x0, y0], [x1, y1], ... [xn, yn]]
 robot_radius: 0.2
 inflation_radius: 0.3
-transform_tolerance: 3.0
+transform_tolerance: 10.0
 
 observation_sources: laser_scan_sensor
 
-laser_scan_sensor: {sensor_frame: scan, data_type: LaserScan, topic: /vrep_ros_interface/turtlebot2i/lidar/scan, marking: true, clearing: true}
+laser_scan_sensor: {sensor_frame: /turtlebot2i/lidar/scan, data_type: LaserScan, topic: /turtlebot2i/lidar/scan, marking: true, clearing: true}

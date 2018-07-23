@@ -7,10 +7,10 @@
     <remap from="scan" to="/turtlebot2i/lidar/scan"/>
     <param name="odom_frame" value="/turtlebot2i/odom"/>
     <param name="base_frame" value="/turtlebot2i/base_link"/>
-    <param name="xmin" value="-10"/>
-    <param name="xmax" value="10"/>
-    <param name="ymin" value="-10"/>
-    <param name="ymax" value="10"/>
+    <param name="xmin" value="-8"/>
+    <param name="xmax" value="8"/>
+    <param name="ymin" value="-8"/>
+    <param name="ymax" value="8"/>
 
   </node>
 

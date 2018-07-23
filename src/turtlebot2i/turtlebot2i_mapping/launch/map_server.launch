@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<launch>
+  
+  <!--<node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">-->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map_v2.yaml">
+    <param name="frame_id" value="map"/>
+    <!--<param name="frame_id" value="map_ros"/>-->
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 1 /map /turtlebot2i/odom 100" /> 
+
+</launch>
