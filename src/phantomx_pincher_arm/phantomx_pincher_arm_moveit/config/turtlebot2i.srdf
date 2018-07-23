@@ -36,7 +36,7 @@
         <joint name="PhantomXPincher_gripperClose_joint" value="0.031" />
     </group_state>
     <group_state name="gripper_closed" group="pincher_gripper">
-        <joint name="PhantomXPincher_gripperClose_joint" value="0.002" />
+        <joint name="PhantomXPincher_gripperClose_joint" value="0.015" />
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="main_eef" parent_link="gripper_link" group="pincher_gripper" parent_group="pincher_arm" />
