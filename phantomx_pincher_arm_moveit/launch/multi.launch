@@ -9,7 +9,7 @@
 	<arg name="gripper1" value="PhantomXPincher_gripperCenter_joint" />
 	<arg name="gripper2" value="PhantomXPincher_gripperClose_joint" />
 	<arg name="ns" value="robot1" />
-	<arg name="port" value="20000"/>
+	<arg name="port" value="20001"/>
       </include>
   </group>
   <group ns="robot2">
