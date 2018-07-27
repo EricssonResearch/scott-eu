@@ -156,7 +156,8 @@ To use the python remote API provided by VREP, some adjustments are necessary:
     ```
     echo "export PYTHONPATH=$PYTHONPATH:$VREP_ROOT/programming/remoteApiBindings/python/python" >> ~/.bashrc
     source ~/.bashrc
-
+    ```
+    
 ## To get things running for the mobile base + robotics arm.
 
 1. Run the scene containing the turtlebot2i
