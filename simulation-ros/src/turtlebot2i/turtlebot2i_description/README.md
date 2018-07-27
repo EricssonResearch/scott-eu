@@ -27,9 +27,10 @@ To run the description for **one ore two robots**, execute the following steps:
 * For a single robot:
 ```
 roslaunch turtlebot2i_description turtlebot2i_description_single.launch
-(Enyu checked the launch file name and edit this README. 
-NOT roslaunch turtlebot2i_description turtlebot2i_description_single_robot.launch)
+
 ```
+**Note:** Enyu checked the launch file name and edit a few lines. 
+**Note:** Enyu: it is hard to find the functionality of ROS launch. Because this file just initialize the robot. 
 
 * For multiple robots:
 ```
