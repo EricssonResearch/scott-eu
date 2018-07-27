@@ -68,3 +68,16 @@ The *turtlebot2i_description_multiple_robots.launch* is limited to be used with 
   </include>
 ```
 
+## To get things running for the mobile base + robotics arm.
+
+1. Run the scene containing the turtlebot2i
+
+```
+./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v4.ttt
+```
+
+2. Launch a rosfile that will bringou moveit and rviz to visualize and control the arm
+
+```
+roslaunch turtlebot2i_description turtlebot2i_description_single_moveit.launch
+```
