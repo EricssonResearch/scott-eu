@@ -26,21 +26,23 @@ To run the description for **one ore two robots**, execute the following steps:
 
 * For a single robot:
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_single_robot.launch
+roslaunch turtlebot2i_description turtlebot2i_description_single.launch
+(Enyu checked the launch file name and edit this README. 
+NOT roslaunch turtlebot2i_description turtlebot2i_description_single_robot.launch)
 ```
 
 * For multiple robots:
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_multiple_robots.launch
+roslaunch turtlebot2i_description turtlebot2i_description_multiple.launch
 ```
 
 * If want to visualize the models and the topic outputs in the rviz:
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_single_robot_rviz.launch
+roslaunch turtlebot2i_description turtlebot2i_description_single_rviz.launch
 ```
 or
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_multiple_robots_rviz.launch
+roslaunch turtlebot2i_description turtlebot2i_description_multiple_rviz.launch
 ```
 
 **Note:** The turtlebot2i_description.launch is the base script used by other scripts to launch the kobuki and the phanthon pincher arm models.
@@ -53,6 +55,7 @@ To run the description for **one ore two robots**, execute the following steps:
 
 ```
 roslaunch turtlebot2i_description turtlebot2i_description_multiple_robots.launch
+(Enyu didn't edit this part. But this might use a wrong file name.)
 ```
 
 
