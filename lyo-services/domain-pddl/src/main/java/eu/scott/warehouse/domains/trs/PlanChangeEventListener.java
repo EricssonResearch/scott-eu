@@ -1,10 +1,13 @@
-package se.ericsson.cf.scott.sandbox.twins.shelf.trs;
+package eu.scott.warehouse.domains.trs;
 
+import eu.scott.warehouse.domains.containers.ActionContainer;
+import eu.scott.warehouse.domains.containers.PlanContainer;
 import eu.scott.warehouse.domains.pddl.Plan;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.jena.rdf.model.Model;
@@ -20,9 +23,6 @@ import org.eclipse.lyo.trs.consumer.exceptions.JenaModelException;
 import org.eclipse.lyo.trs.consumer.handlers.ChangeEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinManager;
-import se.ericsson.cf.scott.sandbox.twins.shelf.model.ActionContainer;
-import se.ericsson.cf.scott.sandbox.twins.shelf.model.PlanContainer;
 
 /**
  * Created on 2018-02-27
@@ -33,6 +33,12 @@ import se.ericsson.cf.scott.sandbox.twins.shelf.model.PlanContainer;
  */
 public class PlanChangeEventListener implements ChangeEventListener {
     private final static Logger log = LoggerFactory.getLogger(PlanChangeEventListener.class);
+    private ExecutorService executorService;
+
+    public PlanChangeEventListener(
+            final ExecutorService executorService) {
+        this.executorService = executorService;
+    }
 
     // TODO Andrew@2018-02-27: move it to JenaModelHelper or something of a sort
     private static String jenaModelToString(final Model responsePlan) {
@@ -99,8 +105,7 @@ public class PlanChangeEventListener implements ChangeEventListener {
              * getting ironed out. Once we get an LWM2M comm or any other comm to the ROS and
              * make sure the comm is nicely working with VREP, we can remove this dummy code.
              */
-            final Future<PlanExecutionResult> planExecutionResultFuture = ShelfTwinManager
-                    .planExecutorSvc
+            final Future<PlanExecutionResult> planExecutionResultFuture = executorService
                     .submit(() -> {
                         Thread.sleep(5);
                         for (ActionContainer actionContainer : planContainer.getActions()) {

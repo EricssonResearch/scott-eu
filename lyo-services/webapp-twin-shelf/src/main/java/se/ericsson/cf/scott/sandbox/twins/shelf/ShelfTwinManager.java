@@ -26,40 +26,19 @@ package se.ericsson.cf.scott.sandbox.twins.shelf;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twins.shelf.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twins.shelf.ServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.pddl.PlanExecutionResult;
-import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
-import com.google.common.collect.Lists;
-import com.google.common.collect.Queues;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Random;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
-import org.apache.jena.sparql.ARQException;
 import org.eclipse.lyo.store.Store;
-import org.eclipse.lyo.store.StoreFactory;
-import org.eclipse.lyo.trs.consumer.config.TrsConsumerConfiguration;
-import org.eclipse.lyo.trs.consumer.config.TrsProviderConfiguration;
-import org.eclipse.lyo.trs.consumer.handlers.TrsProviderHandler;
-import org.eclipse.lyo.trs.consumer.util.TrsBasicAuthOslcClient;
-import org.eclipse.lyo.trs.consumer.util.TrsConsumerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.twins.shelf.trs.PlanChangeEventListener;
+import se.ericsson.cf.scott.sandbox.twins.shelf.manager.LeshanManager;
+import se.ericsson.cf.scott.sandbox.twins.shelf.manager.LyoStoreManager;
+import se.ericsson.cf.scott.sandbox.twins.shelf.manager.TrsConsumerManager;
 // End of user code
 
 // Start of user code pre_class_code
@@ -67,96 +46,40 @@ import se.ericsson.cf.scott.sandbox.twins.shelf.trs.PlanChangeEventListener;
 
 public class ShelfTwinManager {
 
+
+
     // Start of user code class_attributes
-    private final static String PACKAGE_ROOT = ShelfTwinManager.class.getPackage().getName();
-    private final static Logger log          = LoggerFactory.getLogger(ShelfTwinManager.class);
-    private static Store          store;
-    private static ServletContext context;
+    public final static String PACKAGE_ROOT = ShelfTwinManager.class.getPackage().getName();
     public final static ExecutorService planExecutorSvc = Executors.newSingleThreadExecutor();
+    private final static Logger log = LoggerFactory.getLogger(ShelfTwinManager.class);
+    private static Store store;
+    private static ServletContext context;
     // End of user code
 
 
     // Start of user code class_methods
-    private static String parameterFQDN(final String s) {
-        return PACKAGE_ROOT + "." + s;
+    public static ServletContext getContext() {
+        if(context == null) {
+            log.warn("The context was accessed before initialisation");
+        }
+        return context;
     }
 
-    private static String p(final String s) {
-        return context.getInitParameter(parameterFQDN(s));
-    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-
         // Start of user code contextInitializeServletListener
+
         context = servletContextEvent.getServletContext();
-        try {
-            store = StoreFactory.sparql(p("store.query"), p("store.update"));
-            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
-            store.removeAll();
-        } catch (IOException | ARQException e) {
-            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
-                    p("store.query"),
-                    p("store.update"),
-                    e
-            );
-        }
 
-        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
-                p("store.query"),
-                // disable the SPARQL triplestore update
-                null, null, null, new TrsBasicAuthOslcClient(), "trs-consumer-whc",
-                // nothing fancy is really needed on the twins
-                Executors.newSingleThreadScheduledExecutor()
-        );
-        // FIXME Andrew@2018-06-19: extract to a property
-        final String warehouseTrsUri = "http://sandbox-whc:8080/services/trs";
-        final String basicAuthUsername = null;
-        final String basicAuthPassword = null;
-        final String mqttBroker = p("trs.mqtt.broker");
-        final String mqttTopic = p("trs.mqtt.topic");
-        final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
-                new TrsProviderConfiguration(warehouseTrsUri, basicAuthUsername, basicAuthPassword,
-                                             mqttBroker, mqttTopic
-                ));
-        final List<TrsProviderHandler> handlers = TrsConsumerUtils.buildHandlersSequential(
-                consumerConfig, providerConfigs);
-
-        // attach our own listener to use "TRS everywhere"
-        final PlanChangeEventListener listener = new PlanChangeEventListener();
-        for (TrsProviderHandler handler : handlers) {
-            handler.attachListener(listener);
-        }
-
-        final Random random = new Random(System.currentTimeMillis());
-        final Integer updateInterval = Integer.valueOf(p("update.interval"));
-        for (TrsProviderHandler handler : handlers) {
-            consumerConfig.getScheduler()
-                          .scheduleAtFixedRate(handler,
-                                  random.nextInt(updateInterval),
-                                  updateInterval,
-                                  TimeUnit.SECONDS
-                          );
-        }
-
-        /*+++++++++++++++++++++++++++++++++++++++++++++++++
-        Leshan server
-        ++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-/*        // build the lwm2m server
-        final LeshanServer server = new LeshanServerBuilder().build();
-
-        // listen for new client registrations
-        server.getClientRegistry().addListener(new ScottClientRegistryListener(server));
-        // listen for observe notifications
-        server.getObservationRegistry().addListener(new ScottObservationRegistryListener());
-
-        server.start();*/
-
+        store = LyoStoreManager.initLyoStore();
+        TrsConsumerManager.initTrsConsumer();
+        LeshanManager.buildTheLwm2mServer();
 
         // End of user code
     }
+
 
     public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
@@ -172,15 +95,13 @@ public class ShelfTwinManager {
 
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         // FIXME Andrew@2018-02-28: add ctor to Lyo class
-        final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
-        serviceProviderInfo.serviceProviderId = "default";
-        serviceProviderInfo.name = "Default Service Provider";
+        final ServiceProviderInfo serviceProviderInfo = AdaptorHelper.buildSPInfo("default",
+                                                                                  "Default Service Provider"
+        );
         serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
         // End of user code
         return serviceProviderInfos;
     }
-
-
 
     public static PlanExecutionResult getPlanExecutionResult(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planExecutionResultId)
     {

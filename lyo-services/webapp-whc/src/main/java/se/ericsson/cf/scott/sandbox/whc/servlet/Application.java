@@ -50,7 +50,7 @@ import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
-import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
+//import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService;
@@ -83,7 +83,7 @@ public class Application extends OslcWinkApplication {
     static
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
-        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
+//        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
         RESOURCE_CLASSES.add(ServiceProviderService1.class);
 
         // Catalog resources

@@ -24,45 +24,31 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
-import java.net.URI;
+import com.google.common.base.Strings;
+import eu.scott.warehouse.MqttClientBuilder;
+import eu.scott.warehouse.MqttTopics;
+import eu.scott.warehouse.TrsMqttGateway;
+import eu.scott.warehouse.domains.trs.TrsXConstants;
+import java.util.UUID;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-//import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
-//import se.ericsson.cf.scott.sandbox.twin.ros.TwinNode;
-import org.ros.RosRun;
-import org.ros.node.DefaultNodeMainExecutor;
-import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeMainExecutor;
-import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
-import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.ServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.Plan;
+import org.eclipse.lyo.store.Store;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import eu.scott.warehouse.domains.pddl.PlanExecutionResult;
-import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.jena.sparql.ARQException;
-import java.io.IOException;
-import javax.servlet.ServletContext;
-import org.eclipse.lyo.store.Store;
-import org.eclipse.lyo.store.StoreFactory;
+import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
+import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
 
-//import org.ros.RosRun;
-//import org.ros.node.DefaultNodeMainExecutor;
-//import org.ros.node.NodeConfiguration;
-//import org.ros.node.NodeMainExecutor;
-//
-//import turtlebot2i_warehouse.TaskRequest;
-//import turtlebot2i_warehouse.TaskRequestRequest;
+//import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
+
 // End of user code
 
 // Start of user code pre_class_code
@@ -71,73 +57,106 @@ import org.eclipse.lyo.store.StoreFactory;
 public class RobotTwinManager {
 
     // Start of user code class_attributes
-    private final static String PACKAGE_ROOT = RobotTwinManager.class.getPackage().getName();
+    public final static String PACKAGE_ROOT = RobotTwinManager.class.getPackage().getName();
     private final static Logger log = LoggerFactory.getLogger(RobotTwinManager.class);
+    private final static UUID uuid = UUID.randomUUID();
+    private static String trsTopic;
+    private static TrsMqttClientManager trsClientManager;
     private static Store store;
-    private static ServletContext context;
+    private static ServletContext servletContext;
+    private static TrsMqttGateway mqttGateway;
     // End of user code
-    
-    
-    // Start of user code class_methods
-    private static String parameterFQDN(final String s) {
-        return PACKAGE_ROOT + "." + s;
+
+    @NotNull
+    public static String getTwinUUID() {
+        return "twn-" + uuid.toString();
     }
 
-    private static String p(final String s) {
-        return context.getInitParameter(parameterFQDN(s));
+    public static String getTrsTopic() {
+        if(Strings.isNullOrEmpty(trsTopic)) {
+            log.warn("The TRS topic was requested before it was set");
+        }
+        return trsTopic;
+    }
+
+    public static void setTrsTopic(String trsTopic) {
+        RobotTwinManager.trsTopic = trsTopic;
+    }
+
+    public static TrsMqttClientManager getTrsClientManager() {
+        return trsClientManager;
+    }
+
+    public static void setTrsClientManager(TrsMqttClientManager trsClientManager) {
+        RobotTwinManager.trsClientManager = trsClientManager;
+    }
+
+    public static ServletContext getServletContext() {
+        return servletContext;
     }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
-        context = servletContextEvent.getServletContext();
+        log.info("Twin {} is starting", getTwinUUID());
+        servletContext = servletContextEvent.getServletContext();
+//        final Store store = LyoStoreManager.initLyoStore();
+//        setStore(store);
+
+//        RosManager.runRosNode();
+//        new Thread(RobotTwinManager::runRosNode).run();
+//        RosManager.execMainNode();
+
+
+        final String mqttBroker = AdaptorHelper.p("trs.mqtt.broker");
+//        final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttBroker);
+//        setTrsClientManager(trsClientManager);
+//        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
+        // FIXME Andrew@2018-07-31: remove non-gateway based code
         try {
-            final NodeMainExecutor executor = DefaultNodeMainExecutor.newDefault();
-            final URI masterUri = URI.create("http://localhost:11311");
-            executor.execute(new RobotClientNode(), NodeConfiguration.newPublic("localhost",
-                                                                                masterUri));
-        } catch (Exception e) {
-            e.printStackTrace();
+            mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
+                                                 .withId(getTwinUUID())
+                                                 .withRegistration(
+                                                                              new TwinAckRegistrationAgent(
+                                                                                      MqttTopics.WHC_PLANS))
+                                                 .build();
+        } catch (MqttException e) {
+            log.error("Failed to initialise the MQTT gateway", e);
         }
-        // FIXME Andrew@2018-04-06: debug the connection params
-        /*try {
-            store = StoreFactory.sparql(p("store.query"), p("store.update"));
-            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
-            store.removeAll();
-        } catch (IOException |ARQException e) {
-            log.error("SPARQL Store failed to initialise with the URIs query={};update={}",
-                    p("store.query"), p("store.update"), e);
-        }*/
-
-//        final NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-//        final TwinNode twinNode = new TwinNode();
-//        final RobotClientNode clientNode = new RobotClientNode();
-//
-//        //TODO make at least one node public
-//        nodeMainExecutor.execute(twinNode, NodeConfiguration.newPrivate());
-//        nodeMainExecutor.execute(clientNode, NodeConfiguration.newPrivate());
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    private static void setStore(final Store store) {
+        RobotTwinManager.store = store;
+    }
+
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
-        // TODO Implement code to shutdown connections to data backbone etc...
+        log.info("Destroying the servlet");
+        try {
+            mqttGateway.disconnect();
+        } catch (MqttException e) {
+            log.error("Failed to disconnect from the MQTT broker");
+        }
+//        getTrsClientManager().unregisterTwinAndDisconnect();
         // End of user code
     }
 
+    @SuppressWarnings("Duplicates")
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
-            final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
-            serviceProviderInfo.serviceProviderId = "default";
-            serviceProviderInfo.name = "Default Service Provider";
-            serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
+        // TODO Andrew@2018-07-29: use Shelf Twin helper methods
+        final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
+        serviceProviderInfo.serviceProviderId = "default";
+        serviceProviderInfo.name = "Default Service Provider";
+        serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
         // End of user code
         return serviceProviderInfos;
     }

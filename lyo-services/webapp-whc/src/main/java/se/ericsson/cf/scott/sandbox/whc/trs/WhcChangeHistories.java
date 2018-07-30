@@ -30,11 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created on 2018-02-26
+ * TBD
  *
- * @author Andrew Berezovskyi (andriib@kth.se)
  * @version $version-stub$
- * @since 0.0.1
+ * @since FIXME
  */
 public class WhcChangeHistories extends ChangeHistories {
 

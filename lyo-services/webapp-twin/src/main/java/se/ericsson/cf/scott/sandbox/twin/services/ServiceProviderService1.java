@@ -59,7 +59,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.wink.json4j.JSONObject;
-import org.eclipse.lyo.oslc4j.provider.json4j.JsonHelper;
+//import org.eclipse.lyo.oslc4j.provider.json4j.JsonHelper;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcCreationFactory;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDialog;

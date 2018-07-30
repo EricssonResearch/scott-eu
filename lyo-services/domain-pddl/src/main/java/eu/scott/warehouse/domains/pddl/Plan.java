@@ -30,17 +30,8 @@ package eu.scott.warehouse.domains.pddl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -102,6 +93,23 @@ public class Plan
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Plan)) {
+            return false;
+        }
+        final Plan plan = (Plan) o;
+        return Objects.equals(cost, plan.cost) && Objects.equals(step, plan.step) && Objects.equals(
+                time, plan.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cost, step, time);
+    }
     // End of user code
     public Plan()
            throws URISyntaxException
@@ -406,6 +414,5 @@ public class Plan
     
         return s;
     }
-    
     
 }

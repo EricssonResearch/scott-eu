@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.twins.shelf.model;
+package eu.scott.warehouse.domains.containers;
 
 import eu.scott.warehouse.domains.pddl.Action;
 import java.util.Collection;

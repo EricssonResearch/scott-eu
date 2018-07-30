@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.twins.shelf.trs;
+package eu.scott.warehouse.domains.trs;
 
 import java.time.Duration;
 import java.time.Instant;

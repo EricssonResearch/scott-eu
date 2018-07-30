@@ -24,73 +24,28 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
-import com.github.jsonldjava.utils.Obj;
+import java.net.URI;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
-import org.apache.jena.atlas.web.HttpException;
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.namespace.QName;
-
-import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.Step;
 
 import javax.servlet.ServletContext;
-import org.eclipse.lyo.store.Store;
+//import org.eclipse.lyo.store.Store;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.scott.warehouse.domains.blocksworld.Move;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.util.HashSet;
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.sparql.ARQException;
-import org.apache.jena.util.ResourceUtils;
-import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import org.eclipse.lyo.oslc4j.core.model.IResource;
-import org.eclipse.lyo.oslc4j.core.model.Link;
-import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
-import org.eclipse.lyo.store.StoreFactory;
+//import org.eclipse.lyo.store.StoreFactory;
+import se.ericsson.cf.scott.sandbox.whc.managers.MqttManager;
+import se.ericsson.cf.scott.sandbox.whc.managers.StoreManager;
+import se.ericsson.cf.scott.sandbox.whc.managers.TRSManager;
 import se.ericsson.cf.scott.sandbox.whc.trs.WhcChangeHistories;
-import java.time.Duration;
-import java.util.logging.Level;
 
-import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 // End of user code
 
 // Start of user code pre_class_code
@@ -98,223 +53,54 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class WarehouseControllerManager {
 
-    // Start of user code class_attributes
-    private final static String PACKAGE_ROOT = WarehouseControllerManager.class.getPackage().getName();
+    // FIXME Andrew@2018-07-30: "Start of user code" missing
     private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
-    private static final String DEFAULT_SP_ID = "default";
-    private static Store store;
+    private final static UUID whcUUID = UUID.randomUUID();
     private static ServletContext context;
-    private static ServiceProviderInfo serviceProviderInfo;
-
-    // TODO Andrew@2018-02-26: use lock object if CRUD write ops will be allowed
-    // FIXME Andrew@2018-02-26: this should be in the Lyo Store
-    private static Map<String, Object[]> plans = new HashMap<>();
     private static WhcChangeHistories changeHistoriesInstance;
     // End of user code
     
     
     // Start of user code class_methods
-    // region class_methods
-    private static String parameterFQDN(final String s) {
-        return PACKAGE_ROOT + "." + s;
+    private static UUID getUUID() {
+        return whcUUID;
     }
 
-    private static String p(final String s) {
-        return context.getInitParameter(parameterFQDN(s));
+    public static String p(final String s) {
+        return context.getInitParameter(AdaptorHelper.parameterFQDN(s));
     }
 
-    private static Model loadJenaModelFromResource(final String resourceName, final Lang lang) {
-        final InputStream resourceAsStream = WarehouseControllerManager.class.getClassLoader().getResourceAsStream(
-                resourceName);
-        final Model problemModel = ModelFactory.createDefaultModel();
-        RDFDataMgr.read(problemModel, resourceAsStream, lang);
-        return problemModel;
-    }
-
-    private static Model planForProblem(final Model problemModel) {
-        log.trace("Problem request\n{}", jenaModelToString(problemModel));
-        try {
-            final InputStream response = requestPlanManually(problemModel);
-            final Model responsePlan = ModelFactory.createDefaultModel();
-            RDFDataMgr.read(responsePlan, response, Lang.TURTLE);
-            log.info("Plan response\n{}", jenaModelToString(responsePlan));
-            return responsePlan;
-        } catch (IOException e) {
-            log.error("Something went wrong", e);
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static InputStream requestPlanManually(final Model problemModel) throws IOException {
-        String url = "http://aide.md.kth.se:3020/planner/planCreationFactory";
-
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        RDFDataMgr.write(out, problemModel, RDFFormat.TURTLE_BLOCKS);
-
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost(url);
-
-        post.setHeader("Content-type", "text/turtle");
-        post.setHeader("Accept", "text/turtle");
-        post.setEntity(new ByteArrayEntity(out.toByteArray()));
-
-        HttpResponse response = client.execute(post);
-        return response.getEntity().getContent();
-    }
-
-    private static String jenaModelToString(final Model responsePlan) {
-        final StringWriter stringWriter = new StringWriter();
-        RDFDataMgr.write(stringWriter, responsePlan, RDFFormat.TURTLE_PRETTY);
-        return stringWriter.toString();
-    }
-
-    // TODO Andrew@2018-02-07: submit to the JenaModelHelper
-    public static <T> T[] fromJenaModelTyped(final Model model, Class<T> clazz) {
-        try {
-            final Object[] objects = JenaModelHelper.fromJenaModel(model, clazz);
-            //noinspection unchecked
-            final T[] clazzObjects = (T[]) objects;
-            return clazzObjects;
-        } catch (DatatypeConfigurationException | IllegalAccessException | InvocationTargetException | InstantiationException | OslcCoreApplicationException
-                | NoSuchMethodException | URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    // TODO Andrew@2018-02-07: submit to the JenaModelHelper
-    public static <T> T fromJenaModelSingle(final Model model, Class<T> clazz) {
-        final T[] ts = fromJenaModelTyped(model, clazz);
-        if (ts.length != 1) {
-            throw new IllegalArgumentException(
-                    "Model shall contain exactly 1 instance of the class");
-        }
-        return ts[0];
-    }
-
-    // TODO Andrew@2018-02-23: move to JMH
-    // TODO Andrew@2018-02-23: create a stateful JMH that would keep resources hashed by URI
-    private static <R extends IResource> R nav(final Model m, final Link l,
-            final Class<R> rClass) {
-        final R[] rs = fromJenaModelTyped(m, rClass);
-        for (R r : rs) {
-            if(l.getValue().equals(r.getAbout())) {
-                return r;
-            }
-        }
-        throw new IllegalArgumentException("Link cannot be followed in this model");
-    }
-
-    private static IResource navTry(final Model m, final Link l,
-            final Class<? extends IResource>... rClass) {
-        for (Class<? extends IResource> aClass : rClass) {
-            try {
-                final IResource nav = nav(m, l, aClass);
-                return nav;
-            } catch (IllegalArgumentException e) {
-                log.warn("Fix RDFS reasoning in JMH!!!");
-            }
-        }
-        // give up
-        throw new IllegalArgumentException("Link cannot be followed in this model");
-    }
-
-    private static void skolemize(final Model m) {
-        final ResIterator resIterator = m.listSubjects();
-        while(resIterator.hasNext()) {
-            final Resource resource = resIterator.nextResource();
-            if(resource != null && resource.isAnon()) {
-                final String skolemURI = "urn:skolem:" + resource.getId()
-                        .getBlankNodeId()
-                        .getLabelString();
-                final Resource skolemizedResource = ResourceUtils.renameResource(resource,
-                        skolemURI);
-            }
-        }
-    }
-    //endregion
-
-    public static ChangeHistories getChangeHistories() {
+    public static WhcChangeHistories getChangeHistories() {
         return changeHistoriesInstance;
     }
 
+    public static void setChangeHistories(final WhcChangeHistories changeHistoriesInstance) {
+        WarehouseControllerManager.changeHistoriesInstance = changeHistoriesInstance;
+    }
 
+    @NotNull
+    public static String getWhcId() {
+        return "whc-" + getUUID();
+    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
 
         // Start of user code contextInitializeServletListener
-
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
-        java.util.logging.Logger.getLogger("").setLevel(Level.FINEST);
+        AdaptorHelper.initLogger();
 
         context = servletContextEvent.getServletContext();
-        try {
-            store = StoreFactory.sparql(p("store.query"), p("store.update"));
-            // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
-            store.removeAll();
-        } catch (IOException | ARQException | HttpException e) {
-            log.error(
-                    "SPARQL Store failed to initialise with the URIs query={};update={}",
-                    p("store.query"), p("store.update"), e
-            );
-        }
 
-        try {
-            final String mqttBroker = p("trs.mqtt.broker");
-            final String mqttTopic = p("trs.mqtt.topic");
-            final MqttClient mqttClient = new MqttClient(mqttBroker, "WHC Controller Service");
-            final MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
-            mqttConnectOptions.setAutomaticReconnect(true);
-            // TODO Andrew@2018-03-13: set highest QoS
-            mqttClient.connect(mqttConnectOptions);
-            changeHistoriesInstance = new WhcChangeHistories(mqttClient,
-                                                             mqttTopic,
-                                                             Duration.ofMinutes(5).toMillis());
-        } catch (MqttException e) {
-            log.error("MQTT connection failed");
-        }
+        log.info("WHC instance '{}' is initialising", whcUUID.toString());
 
-        final Model problemModel = loadJenaModelFromResource("sample-problem-request.ttl",
-                Lang.TURTLE);
+        // FIXME Andrew@2018-07-30: https://github.com/EricssonResearch/scott-eu/issues/101
+//        StoreManager.initLyoStore();
 
-        Model planModel = planForProblem(problemModel);
-        skolemize(planModel);
-        final Plan plan = fromJenaModelSingle(planModel, Plan.class);
-        log.debug("Received plan: {}", plan);
+        final MqttClient mqttClient = MqttManager.initMqttClient();
 
-        final ArrayList<IResource> planResources = new ArrayList<>();
-        planResources.add(plan);
-        // TODO Andrew@2018-02-23: why not getSteps?
-        final HashSet<Step> planSteps = plan.getStep();
-        for (Step step : planSteps) {
-            step.setOrder((Integer)step.getExtendedProperties().getOrDefault(new QName("http://www.w3.org/ns/shacl#", "order"), null));
-            final IResource action = navTry(planModel, step.getAction(), Action.class, Move.class);
-            planResources.add(step);
-            planResources.add(action);
-            log.info("Step {}: {}", step.getOrder(), action);
-        }
-
-        // TODO Andrew@2018-02-26: extract method
-        final String planId = String.valueOf(plans.size() + 1);
-        plan.setAbout(WarehouseControllerResourcesFactory.constructURIForPlan(DEFAULT_SP_ID, planId));
-        plans.put(planId, planResources.toArray(new Object[0]));
-        changeHistoriesInstance.addResource(plan);
-
-        /*++++++++++++++++++++++++++++
-          TRS Consumer initialisation
-         ++++++++++++++++++++++++++++*/
-
-//        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration("https://aide.md.kth.se/fuseki/trs-everywhere/sparql", "https://aide.md.kth.se/fuseki/trs-everywhere/update", null, null, new TRSHttpClient(), "trs-consumer-whc",
-//                Executors.newSingleThreadScheduledExecutor());
-//        final Collection<TrsProviderConfiguration> providerConfigs = Lists.asList(new TrsProviderConfiguration());
-//        TrsConsumerUtils.loadTrsProviders(consumerConfig, providerConfigs);
-
-
-        // TODO: check the hack from Yash
-        // TODO Andrew@2018-02-23: here the plan needs to be put through lyo store update
-
+//        TRSManager.initTRSServer(mqttClient);
+//        TRSManager.initTRSClient(mqttClient);
         // End of user code
     }
 
@@ -323,6 +109,8 @@ public class WarehouseControllerManager {
 
         // Start of user code contextDestroyed
         // TODO Implement code to shutdown connections to data backbone etc...
+        log.info("Shutting down the adaptor");
+        // FIXME Andrew@2018-07-30: disconnect from the MQTT broker
         // End of user code
     }
 
@@ -331,15 +119,10 @@ public class WarehouseControllerManager {
         ServiceProviderInfo[] serviceProviderInfos = {};
 
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
-        serviceProviderInfo = new ServiceProviderInfo();
-        serviceProviderInfo.serviceProviderId = DEFAULT_SP_ID;
-        serviceProviderInfo.name = "Default Service Provider";
-        serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
+        serviceProviderInfos = AdaptorHelper.defaultSPInfo();
         // End of user code
         return serviceProviderInfos;
     }
-
-
 
     public static Object[] getPlan(HttpServletRequest httpServletRequest, final String
             serviceProviderId, final String planId)
@@ -347,18 +130,18 @@ public class WarehouseControllerManager {
         Object[] aResource = null;
 
         // Start of user code getPlan
-
         log.trace("getPlan({}, {}) called", serviceProviderId, planId);
         // minimal impl to get the TRS provider going
-        if (serviceProviderId.equals(DEFAULT_SP_ID)) {
-            if (plans.containsKey(planId)) {
-                aResource = plans.get(planId);
+        if (serviceProviderId.equals(AdaptorHelper.DEFAULT_SP_ID)) {
+            final URI planURI = WarehouseControllerResourcesFactory.constructURIForPlan(
+                    serviceProviderId, planId);
+            if (TRSManager.getPlans().containsKey(planURI)) {
+                aResource = TRSManager.getPlans().get(planURI);
                 log.info("found a plan", aResource);
             } else {
                 log.warn("a plan {} was not found", planId);
             }
         }
-
         // End of user code
         return aResource;
     }
@@ -370,9 +153,8 @@ public class WarehouseControllerManager {
     {
         String eTag = null;
         // Start of user code getETagFromPlan
-        // TODO Implement code to return an ETag for a particular resource
+        eTag = AdaptorHelper.hexHashCodeFor(aResource);
         // End of user code
         return eTag;
     }
-
 }

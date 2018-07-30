@@ -1,7 +1,7 @@
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
   <Set name="contextPath">/</Set>
-  <Set name="war">/var/lib/jetty/webapps/webapp.war</Set>
+  <Set name="war">/webapps/webapp.war</Set>
   <!-- Set up the path to the custom override descriptor,
   relative to your $(jetty.home) directory or to the current directory -->
-  <Set name="overrideDescriptor">/override-web.xml</Set>
+  <!--<Set name="overrideDescriptor">/override-web.xml</Set>-->
 </Configure>

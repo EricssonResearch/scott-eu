@@ -9,55 +9,74 @@ services:
       - "3021:3020" # mapping of external port to internal port
     stdin_open: true
     deploy:
+      # should be stateless
       replicas: 2
-      placement:
-        constraints: [node.role == worker]
+      # placement:
+      #   constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          memory: 256m
+  # rename to use underscores in line with the Docker convention
+  # though hostnames are not supposed to have underscores
   sandbox-whc:
     image: ${CI_REGISTRY_IMAGE}/scott-webapp-whc
+    environment:
+      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2"
     networks:
       - overlay
     ports:
       - "8080:8080"
     deploy:
-      replicas: 2
-      placement:
-        constraints: [node.role == worker]
+      # not ready for scaling yet
+      replicas: 1
+      # placement
+      #   constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          memory: 512m
     depends_on:
-      - warehouse-fuseki
+      # - warehouse-fuseki
       - mosquitto
   sandbox-twin:
     image: ${CI_REGISTRY_IMAGE}/scott-webapp-twin
+    environment:
+      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2"
     networks:
       - overlay
     ports:
       - "8081:8080"
-    deploy:
-      replicas: 2
-      placement:
-        constraints: [node.role == worker]
-      restart_policy:
-        condition: on-failure
     depends_on:
       # - sandbox-whc
       - mosquitto
-  robot-emulator:
-    # 'ContainerSpec: image reference must be provided'
-    image: ${CI_REGISTRY_IMAGE}/scott-robot-emulator
-    networks:
-      - overlay
     deploy:
-      replicas: 2
-      placement:
-        constraints: [node.role == worker]
+      # just '4' for the test
+      replicas: 4
+      resources:
+        limits:
+          memory: 384m
+      # placement:
+      #   constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
-    depends_on:
-      # - sandbox-twin
-      - mosquitto
+  # WIP, does not do the bidirectional
+  # robot-emulator:
+  #   # 'ContainerSpec: image reference must be provided'
+  #   image: ${CI_REGISTRY_IMAGE}/scott-robot-emulator
+  #   networks:
+  #     - overlay
+  #   deploy:
+  #     replicas: 2
+  #     # placement:
+  #     #   constraints: [node.role == worker]
+  #     restart_policy:
+  #       condition: on-failure
+  #   depends_on:
+  #     # - sandbox-twin
+  #     - mosquitto
   # sandbox-twin-shelf:
   #   build: ../webapp-twin-shelf
   #   ports:
@@ -87,14 +106,16 @@ services:
     networks:
       - overlay
     ports:
-      - 1883
-      - 9001
+      - "1883:1883"
+      - "9001:9001"
     deploy:
       replicas: 1
-      placement:
-        constraints: [node.role == worker]
+      # placement:
+      #   constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
-
+      resources:
+        limits:
+          memory: 128m
 networks:
   overlay:
