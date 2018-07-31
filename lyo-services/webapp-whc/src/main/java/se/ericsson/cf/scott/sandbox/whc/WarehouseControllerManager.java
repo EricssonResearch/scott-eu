@@ -24,15 +24,22 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
-import java.net.URI;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
+import java.util.List;
 
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.Step;
+
 
 // Start of user code imports
-
+import java.net.URI;
 import javax.servlet.ServletContext;
 //import org.eclipse.lyo.store.Store;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +60,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 
 public class WarehouseControllerManager {
 
-    // FIXME Andrew@2018-07-30: "Start of user code" missing
+    // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
     private final static UUID whcUUID = UUID.randomUUID();
     private static ServletContext context;
@@ -86,7 +93,7 @@ public class WarehouseControllerManager {
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-
+        
         // Start of user code contextInitializeServletListener
         AdaptorHelper.initLogger();
 
@@ -104,9 +111,9 @@ public class WarehouseControllerManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
     {
-
+        
         // Start of user code contextDestroyed
         // TODO Implement code to shutdown connections to data backbone etc...
         log.info("Shutting down the adaptor");
@@ -117,18 +124,19 @@ public class WarehouseControllerManager {
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-
+        
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         serviceProviderInfos = AdaptorHelper.defaultSPInfo();
         // End of user code
         return serviceProviderInfos;
     }
 
-    public static Object[] getPlan(HttpServletRequest httpServletRequest, final String
-            serviceProviderId, final String planId)
+
+
+    public static Object[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
     {
         Object[] aResource = null;
-
+        
         // Start of user code getPlan
         log.trace("getPlan({}, {}) called", serviceProviderId, planId);
         // minimal impl to get the TRS provider going
@@ -157,4 +165,5 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
+
 }
