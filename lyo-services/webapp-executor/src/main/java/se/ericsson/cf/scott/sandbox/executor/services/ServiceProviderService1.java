@@ -76,7 +76,7 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
 import se.ericsson.cf.scott.sandbox.executor.PlanExecutorManager;
 import se.ericsson.cf.scott.sandbox.executor.PlanExecutorConstants;
-import my.package1.MissionDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.executor.servlet.ServiceProviderCatalogSingleton;
 
 // Start of user code imports
@@ -84,7 +84,7 @@ import se.ericsson.cf.scott.sandbox.executor.servlet.ServiceProviderCatalogSingl
 
 // Start of user code pre_class_code
 // End of user code
-@OslcService(MissionDomainConstants.MISSIONONTOLOGY_DOMAIN)
+@OslcService(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_DOMAIN)
 @Path("serviceProviders/{serviceProviderId}/resources")
 public class ServiceProviderService1
 {

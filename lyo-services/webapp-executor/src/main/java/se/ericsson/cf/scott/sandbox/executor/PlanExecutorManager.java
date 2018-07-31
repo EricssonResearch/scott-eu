@@ -56,7 +56,7 @@ public class PlanExecutorManager {
     {
         
         // Start of user code contextInitializeServletListener
-        log.info("Plan Executor is starting up");
+        log.info("Plan Executor is starting");
         // End of user code
     }
 
@@ -73,7 +73,7 @@ public class PlanExecutorManager {
         ServiceProviderInfo[] serviceProviderInfos = {};
         
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
-        throw new UnsupportedOperationException("The REST I/F is not implemented yet.");
+        throw new UnsupportedOperationException("The REST I/F is not implemented yet");
         // End of user code
 //        return serviceProviderInfos;
     }

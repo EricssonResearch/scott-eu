@@ -57,7 +57,7 @@ import se.ericsson.cf.scott.sandbox.executor.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.executor.services.ResourceShapeService;
 
 
-import my.package1.MissionDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.executor.services.ServiceProviderService1;
 
 // Start of user code imports

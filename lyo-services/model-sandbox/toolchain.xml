@@ -57,7 +57,8 @@
   <adaptorInterfaces name="PlanExecutor" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.executor" javaFilesBasePath="../webapp-executor/src/main/java/" jspFilesBasePath="../webapp-executor/src/main/webapp/" javascriptFilesBasePath="../webapp-executor/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Service Provider" description="Service Provider">
-        <services domainSpecification="//@specification/@domainSpecifications.0">
+        <services>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0"/>
           <basicCapabilities/>
         </services>
       </serviceProviders>
@@ -86,6 +87,7 @@
       <resourceProperties name="missionDeadline" valueType="DateTime"/>
       <resourceProperties name="goal" valueType="LocalResource" range="//@specification/@domainSpecifications.0/@resources.0"/>
       <resourceProperties name="location" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.8"/>
+      <generationSetting javaClassPackageName="" javaFilesPath=""/>
     </domainSpecifications>
     <domainPrefixes name="mission"/>
     <generationSetting javaClassPackageName="my.package1" javaFilesPath="sandbox-domain-pddl/src/main/java"/>
