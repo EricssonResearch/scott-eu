@@ -54,6 +54,17 @@
     <specification/>
     <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
+  <adaptorInterfaces name="PlanExecutor" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.executor" javaFilesBasePath="../webapp-executor/src/main/java/" jspFilesBasePath="../webapp-executor/src/main/webapp/" javascriptFilesBasePath="../webapp-executor/src/main/webapp/">
+    <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
+      <serviceProviders title="Service Provider" description="Service Provider">
+        <services domainSpecification="//@specification/@domainSpecifications.0">
+          <basicCapabilities/>
+        </services>
+      </serviceProviders>
+    </serviceProviderCatalog>
+    <specification/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
+  </adaptorInterfaces>
   <specification>
     <domainSpecifications name="MissionOntology" namespaceURI="http://ontology.cf.ericsson.net/mission_ontology/" namespacePrefix="//@specification/@domainPrefixes.0">
       <resources name="Goal"/>
