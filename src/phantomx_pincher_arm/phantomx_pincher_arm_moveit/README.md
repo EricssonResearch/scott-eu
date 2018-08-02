@@ -109,3 +109,5 @@ The present solution has a poor performance using other IK solver than trac.
 [ ] Improve control .cpp file
   - roslog usage
   - remoteAPI checkup
+[ ] Robot name inside turtlebot2i.srdf must be one for only the arm and for the arm+mobile_base
+[ ] phantomx_pincher_arm.urdf.xacro must be the same for only the arm and for the arm+mobile_base
