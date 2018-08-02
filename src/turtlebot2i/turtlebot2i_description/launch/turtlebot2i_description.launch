@@ -13,14 +13,14 @@
 
 
   <!-- Robot Arm -->
-  <arg name="joint1"        default="PhantomXPincher_joint1_1" />
-  <arg name="joint2"        default="PhantomXPincher_joint1_2" />
-  <arg name="joint3"        default="PhantomXPincher_joint1_3" />
-  <arg name="joint4"        default="PhantomXPincher_joint1_4" />
-  <arg name="gripper1"      default="PhantomXPincher_gripperClose_joint_1" />
-  <arg name="gripper2"      default="PhantomXPincher_gripperClose_joint_1" />
+  <arg name="joint1"        default="PhantomXPincher_joint1" />
+  <arg name="joint2"        default="PhantomXPincher_joint2" />
+  <arg name="joint3"        default="PhantomXPincher_joint3" />
+  <arg name="joint4"        default="PhantomXPincher_joint4" />
+  <arg name="gripper1"      default="PhantomXPincher_gripperCenter_joint" />
+  <arg name="gripper2"      default="PhantomXPincher_gripperClose_joint" />
   <arg name="port"          default="19997" />
-  <arg name="ns"            default="" /> 
+  <!--<arg name="ns"            default="" /> -->
   <arg name="moveit"        default="false" /> 
   <!--<rosparam param="joints"  subst_value="true" />-->
 
@@ -30,10 +30,10 @@
   <group ns="$(arg robot_name)">
 
     <param name="robot_description" command="$(arg urdf_file)" />
-    <param name="tf_prefix" value="$(arg robot_name)"/>
 
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
       <param name="publish_frequency" type="double" value="50.0" />
+    <param name="tf_prefix" value="$(arg robot_name)"/>
     </node>
 
 
@@ -41,7 +41,7 @@
 
     <!-- Include only if $moveit==true -->
     <group if="$(arg moveit)">
-      <param name="vrep_ip"     value="127.0.0.10" />
+      <param name="vrep_ip"     value="127.0.0.1" />
       <param name="vrep_port"   value="$(arg port)" />
       <rosparam param="joints" subst_value="true">
         - $(arg joint1)
