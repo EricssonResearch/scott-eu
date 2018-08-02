@@ -45,8 +45,10 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     l_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_left')
     r_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_right')
 
-    docking_station_ir_handle = sim.getObjectHandle('docking_station_ir_sensor')
-    docking_station_handle = sim.getObjectHandle('dockstation')
+    dock_station_ir_handle = sim.getObjectHandle('dock_station_ir_sensor')
+    dock_station_handle = sim.getObjectHandle('dockstation')
+
+    dock_station_ir_emitter_collection_handle = sim.getCollectionHandle('dock_station_ir_emitters')
 
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
@@ -72,6 +74,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     -- Odometry
     pubPose = simROS.advertise(robot_id..'/odom', 'nav_msgs/Odometry')
     simROS.publisherTreatUInt8ArrayAsString(pubPose)
+    -- Sensor State
+    pubState = simROS.advertise(robot_id..'/sensors/core', 'kobuki_msgs/SensorState')
+    simROS.publisherTreatUInt8ArrayAsString(pubState)
 
     -- Commands
     subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
@@ -81,11 +86,14 @@ end
 
 if (sim_call_type == sim.childscriptcall_sensing) then 
     -- Bumper
-    local bumper_pressed = 0
+    local bumper_pressed = 0  -- used in BumperEvent msg
+    local bumper_state = 0    -- used in SensorState msg
     -- Cliff
     local cliff_sensor_activated = 0
+    local cliff_sensor_state = 0
     -- Wheel Drop
     local wheel_drop_sensor_activated = 0
+    local wheel_drop_sensor_state = 0
     -- Docking IR
     local dock_ir_proximity = 255
     local dock_ir_orientation = 255
@@ -98,6 +106,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         bumperCenterState = 1
         bumper_id = 1
         bumper_pressed = 1
+        bumper_state = bumper_state + 2
     else
         front_collision=false
         bumperCenterState = 0
@@ -110,6 +119,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         bumperRightState = 1
         bumper_id = 2
         bumper_pressed = 1
+        bumper_state = bumper_state + 1
     else
         right_collision=false
         bumperRightState = 0
@@ -122,6 +132,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         bumperLeftState = 1
         bumper_id = 0
         bumper_pressed = 1
+        bumper_state = bumper_state + 4
     else
         left_collision=false
         bumperLeftState = 0
@@ -144,16 +155,19 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     if (left_cliff_dist == nil) then
         cliff_sensor = 0
         cliff_sensor_activated = 1
+        cliff_sensor_state = cliff_sensor_state + 4
     end
    
     if (front_cliff_dist == nil) then
         cliff_sensor = 1
         cliff_sensor_activated = 1
+        cliff_sensor_state = cliff_sensor_state + 2
     end
     
     if (right_cliff_dist == nil) then
         cliff_sensor = 2
         cliff_sensor_activated = 1
+        cliff_sensor_state = cliff_sensor_state + 1
     end
 
     if (cliff_sensor == nil) then
@@ -172,11 +186,13 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     if (left_wheel_drop == nil) then
         wheel_drop_sensor = 0
         wheel_drop_sensor_activated = 1
+        wheel_drop_sensor_state = wheel_drop_sensor + 2
     end
     
     if (right_wheel_drop == nil) then
         wheel_drop_sensor = 1
         wheel_drop_sensor_activated = 1
+        wheel_drop_sensor_state = wheel_drop_sensor + 1
     end
 
     if (wheel_drop_sensor == nil) then
@@ -192,40 +208,74 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     local max_range = 0.8 -- check a way to get this value from VREP
     local detect_angle = 0
     local detect_proximity = 0
-    --local res, detect_dist, detect_point = simCheckProximitySensor(docking_station_ir_handle, docking_station_handle)
-    res, detect_dist, detect_point = simCheckProximitySensor(docking_station_ir_handle, sim_handle_all)
 
+    -- TODO: change to http://www.coppeliarobotics.com/helpFiles/en/regularApi/simCheckProximitySensorEx.htm
+    --res, detect_dist, detect_point = simCheckProximitySensor(dock_station_ir_handle, sim_handle_all)
+    detection_mode = 12      -- fast dection + max detected angle
+    detection_threshold = 10
+    detection_max_angle = 0.174  -- 10 degrees
+    res, detect_dist, detect_point, detect_obj_handle, detect_surf = simCheckProximitySensorEx(dock_station_ir_handle, dock_station_ir_emitter_collection_handle, detection_mode, detection_threshold, detection_max_angle)
+
+    dock_ir_data = {0, 0, 0}
+    
     if (detect_dist ~= nil) then
+
+        ir_emitter_name = simGetObjectName(detect_obj_handle)
+        idx = string.find(ir_emitter_name, '_')
+        ir_emitter_pos = string.sub(ir_emitter_name, 1, idx-1)
+
+        --print('emitter:'..ir_emitter_pos)
+
+        if ir_emitter_pos == 'left' then
+            ir_emitter_pos_code = 1
+        elseif ir_emitter_pos == 'center' then
+            ir_emitter_pos_code = 2
+        else
+            ir_emitter_pos_code = 3
+        end
+
         detect_angle = math.atan2(detect_point[3], detect_point[1]) * 180/3.14
         detect_proximity = detect_dist/max_range
 
         -- dock is near
         if (detect_proximity < 0.5) then
-            dock_ir_proximity = 0
+            -- dock is near left
+            if (detect_angle < 10) then
+                dock_ir_dist_ori = 1
+            -- dock is near center
+            elseif (detect_angle >= 85 and detect_angle < 95) then
+                dock_ir_dist_ori = 2
+            -- dock is near right
+            elseif (detect_angle > 170) then
+                dock_ir_dist_ori = 4
+            end
         -- dock is far
         else
-            dock_ir_proximity = 1
+            -- dock is far left
+            if (detect_angle < 10) then
+                dock_ir_dist_ori = 16
+            -- dock is far front
+            elseif (detect_angle >= 85 and detect_angle < 95) then
+                dock_ir_dist_ori = 8
+            -- dock is far right
+            elseif (detect_angle > 170) then
+                dock_ir_dist_ori = 32
+            end
         end
 
-        -- dock is left
-        if (detect_angle < 75) then
-            dock_ir_orientation = 1
-        -- dock is front
-        elseif (detect_angle >= 75 and detect_angle < 105) then
-            dock_ir_orientation = 2
-        -- dock is right
-        else
-            dock_ir_orientation = 4
-        end
+        dock_ir_data[ir_emitter_pos_code] = dock_ir_dist_ori
     end
+
 
     local ros_dock_ir = {}
         ros_dock_ir["header"] = {seq = 0,stamp = simROS.getTime(), frame_id = robot_id..'/dock_ir'}
-    ros_dock_ir["data"] = string.char(dock_ir_orientation)
+    --ros_dock_ir["data"] = string.char(dock_ir_dist_ori)
+    ros_dock_ir["data"] = simPackUInt8Table(dock_ir_data)
+    --print(dock_ir_data)
 
-    if (dock_ir_proximity == 1) then
-        ros_dock_ir["data"] = string.char(8 * dock_ir_orientation)
-    end
+    --if (dock_ir_proximity == 1) then
+    --    ros_dock_ir["data"] = string.char(8 * dock_ir_dist_ori)
+    --end
 
     simROS.publish(pubDockIR, ros_dock_ir)     
     
@@ -316,6 +366,36 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
     simROS.sendTransform(pose_tf)
 --    simROS.sendTransform(static_tf)
+
+
+    -- Sensor State
+
+    ros_sensor_state = {
+        header = {
+            stamp = time,
+            frame_id = robot_id..'/base_link'
+        },
+        
+        time_stamp = time,
+        bumper = bumper_state,
+        wheel_drop = wheel_drop_sensor_state,
+        cliff = cliff_sensor_state,
+        left_encoder = 0,
+        right_encoder = 0,
+        left_pwm = 0,
+        right_pwm = 0,
+        buttons = 0,
+        charger = 0,
+        battery = 0,
+        bottom = {0,0,0},
+        current = simPackUInt8Table({0,0}),
+        over_current = 0,
+        digital_input = 0,
+        analog_input = {0,0,0,0}
+    }
+
+    simROS.publish(pubState, ros_sensor_state)
+
 end 
 
 if (sim_call_type == sim.childscriptcall_cleanup) then 
