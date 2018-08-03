@@ -1,4 +1,11 @@
-﻿# SCOTT sandbox
+﻿# Branch description
+This branch was created by Enyu Cao <enyu.cao@ericsson.com>, a current thesis worker from KTH. 
+
+This branch was created from existing <simulation-ros> branch. And it aims to keep other branchs clean.
+
+Enyu will test the <simulation-ros> branch, add his comments on README, edit code files. Other developer can check whether these changes are useful, and merge it with <simulation-ros> branch.
+
+# SCOTT sandbox
 
 <a href="https://travis-ci.org/EricssonResearch/scott-eu"><img src="https://travis-ci.org/EricssonResearch/scott-eu.svg?branch=master"/></a>
 
