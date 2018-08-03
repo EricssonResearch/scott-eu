@@ -13,10 +13,10 @@ The scene files are:
 
 **Note:** Some components are not activated, and you can edit the Lua files in the scene. e.g.  the line 16 and 17 in camera_sr300 
 
-'''
+```
     sim.setExplicitHandling(object_sr300_camera_rgb, 1) -- 0: enable camera rgb
     sim.setExplicitHandling(object_sr300_camera_depth, 1) -- 1:disable camera depth
-'''
+```
 
 **Note:** Enyu: If possible, I feel that it is better to explain the difference between models, or recommand one model. 
 
