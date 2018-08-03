@@ -113,19 +113,29 @@ Go to /scott-eu/simulation-ros and run:
   $ catkin build
 
   ```
-Now you should have 6 packages built suceessfully.
+Now you should have 6 packages built suceessfully.(Or 10 packages? I am not sure.)
 
 6. Install V-REP ROS Interface
-Add to .bashrc :
+
+Add this line to ~/.bashrc:
 ```
 $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simulation-ros
 ```
-
+For example,
+```
+$ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/scott-eu/simulation-ros
+```
+And you can check the ROS_PACKAGE_PATH in the terminal:
+```
+$ echo $ROS_PACKAGE_PATH
+```
+Don't forget to run it manually if you don't want to restart the terminal. Now check whether you have correct path and try to find the ROS package vrep_ros_interface:
   ```
   $ source ~/.bashrc
   $ roscd vrep_ros_interface
   $ ./install.sh
-  
+   ```
+   
 ## 3. Running the Simulated Environment
 
 1. Start ROS CORE
@@ -141,14 +151,18 @@ $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simul
     - All the scenes are stored in the *turtlebot2i_description/v-rep_model* folder of ROS workspace. V-REP scenes have .ttt extension.
     - Try opening the "warehouse_turtlebot2i.ttt" file from V-REP (File -> Open Scene...).
     - Press play button to start the simulation.
-
+    
+    **Note:** Check the terminal and make sure ROS plugin is loaded successful.
+    
 3. Run ROS programs
-    All the ROS programs are stored in the ROS package. The instructions to run the programs can be found in the README.md files located in each package.
+
+All the ROS programs are stored in the ROS package. The instructions to run the programs can be found in the README.md files located in each package.
+    
     Example to run the keyboard teleoperation:
     ```
     $ roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
     ```
-
+If everything is configured correctly, the terminal should show "KeyOp: connected". Otherwise, check whether roscore is running, whether V-rep scene is running and whether V-rep loaded RosInterface successfully.
 ## 4. Using Python VREP Remote API (Optional)
 
 To use the python remote API provided by VREP, some adjustments are necessary:
@@ -165,3 +179,4 @@ To use the python remote API provided by VREP, some adjustments are necessary:
     echo "export PYTHONPATH=$PYTHONPATH:$VREP_ROOT/programming/remoteApiBindings/python/python" >> ~/.bashrc
     source ~/.bashrc
     ```
+**Note:** Enyu tested this Readme except Section 4:Remote API.
