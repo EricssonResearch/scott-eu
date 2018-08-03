@@ -28,7 +28,10 @@ Before running experiments with real robots, it is interesting to validate the c
 The main reason for choosing V-REP is the presence of many ready to use models, possibility to draw new models and demands relatively less computational power (compared to Gazebo).
 
 **Note:** As V-REP does not have a native support to ROS, the [ROS Interface](http://www.coppeliarobotics.com/helpFiles/en/rosInterf.htm) plugin should be installed. 
+
 **Note 2:** Most of the lua scripts of the scenario are stored outside V-REP. This means that the lua scripts contained in the scenario just load these files (they are inside *vrep* folder). This was necessary for version control of the scripts and better reusability.
+
+**Note 3:**(Enyu wrote) The V-REP will innitalize components in the A-Z order, so there will be a few error message in the V-REP console. But the initialization will loop until it succeed. I wrote a [new lua file](http://file_link_to_be_added), especially for DockStation, that can handle this unpleasant error message.  
 
 # 4. ROS
 
@@ -53,21 +56,25 @@ export VREP_ROOT_DIR=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux
 export VREP_ROOT=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux
 ```
 
+For example, if you have V-REP under Home,
+```
+export VREP_ROOT_DIR=~/V-REP_PRO_EDU_V3_5_0_Linux
+export VREP_ROOT=~/V-REP_PRO_EDU_V3_5_0_Linux
+```
 **Note:** There are some V-REP versions that have problems with Remote API and ROS Interface, so it is recommended to download the latest version.
 
 ## 2. Install ROS Kinect. 
 Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
-* When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
-"
+* When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:"
+
 * Follow the "recommended" installation for ease of use.
 
 
 
 1. Install Turttlebot2i packages from ROS
   ```
-  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros
-  ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
+  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros  ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
   ```
 
 2. Create the Turtlebot2i workspace by clonning the SCOTT repository
@@ -81,7 +88,8 @@ $ git checkout simulation-ros
 In the future it might not be necessary
 
 3. Setup the catkin workspace and set ROS environment variables
-  Follow these instructions: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+
+Read these instructions, but use the existing workspace: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
 
 * Be careful to always select the "kinetic" version of ROS
 
@@ -105,7 +113,7 @@ Go to /scott-eu/simulation-ros and run:
   $ catkin build
 
   ```
-
+Now you should have 6 packages built suceessfully.
 
 6. Install V-REP ROS Interface
 Add to .bashrc :
