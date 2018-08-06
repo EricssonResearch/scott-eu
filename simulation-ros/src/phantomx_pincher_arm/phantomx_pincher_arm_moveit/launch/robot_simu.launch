@@ -1,0 +1,37 @@
+<launch>
+
+
+    <arg name="joint1" default="PhantomXPincher_joint1_1"/>
+    <arg name="joint2" default="PhantomXPincher_joint2_1"/>
+    <arg name="joint3" default="PhantomXPincher_joint3_1"/>
+    <arg name="joint4" default="PhantomXPincher_joint4_1"/>
+    <arg name="gripper1" default="PhantomXPincher_gripperClose_joint_1"/>
+    <arg name="gripper2" default="PhantomXPincher_gripperCenter_joint_1"/>
+    <arg name="ns" default=""/>
+    <arg name="port" default="20000" />
+    
+    
+    <include file="$(find phantomx_pincher_arm_vrep_controller)/launch/vrep_phantom.launch">
+      <arg name="joint1" value="$(arg joint1)"/>
+      <arg name="joint2" value="$(arg joint2)"/>
+      <arg name="joint3" value="$(arg joint3)"/>
+      <arg name="joint4" value="$(arg joint4)"/>
+      <arg name="gripper1" value="$(arg gripper1)"/>
+      <arg name="gripper2" value="$(arg gripper2)"/>
+      <arg name="ns" value="$(arg ns)"/>
+      <arg name="port" value="$(arg port)"/>
+    </include>
+    
+    <!--<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <param name="/use_gui" value="true"/>
+      <rosparam param="source_list">/joint_states</rosparam>
+    </node>-->
+    
+    <include file="$(find phantomx_pincher_arm_moveit)/launch/named_pose_director.launch" >
+      <arg name="load_moveit" value="true"/>
+    </include>
+    
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find phantomx_pincher_arm_moveit)/config/block_manipulation_demo.rviz" />
+
+   
+</launch>

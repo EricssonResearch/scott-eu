@@ -31,7 +31,7 @@ The main reason for choosing V-REP is the presence of many ready to use models, 
 
 **Note 2:** Most of the lua scripts of the scenario are stored outside V-REP. This means that the lua scripts contained in the scenario just load these files (they are inside *vrep* folder). This was necessary for version control of the scripts and better reusability.
 
-**Note 3:**(Enyu wrote) The V-REP will innitalize components in the A-Z order, so there will be a few error message in the V-REP console. But the initialization will loop until it succeed. I wrote a [new lua file](http://file_link_to_be_added), especially for DockStation, that can handle this unpleasant error message.  
+**Note 3:** The V-REP will innitalize components in the A-Z order, so there will be a few error message in the V-REP console. But the initialization will loop until it succeed. I wrote a [new lua file](http://file_link_to_be_added), especially for DockStation, that can handle this unpleasant error message.  
 
 # 4. ROS
 
@@ -152,7 +152,7 @@ Don't forget to run it manually if you don't want to restart the terminal. Now c
     - Try opening the "warehouse_turtlebot2i.ttt" file from V-REP (File -> Open Scene...).
     - Press play button to start the simulation.
     
-    **Note:** Check the terminal and make sure ROS plugin is loaded successful.
+    **Note:** Check the terminal and make sure ROS plugin is loaded successfully.
     
 3. Run ROS programs
 
@@ -163,6 +163,7 @@ All the ROS programs are stored in the ROS package. The instructions to run the 
     $ roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
     ```
 If everything is configured correctly, the terminal should show "KeyOp: connected". Otherwise, check whether roscore is running, whether V-rep scene is running and whether V-rep loaded RosInterface successfully.
+
 ## 4. Using Python VREP Remote API (Optional)
 
 To use the python remote API provided by VREP, some adjustments are necessary:
@@ -179,4 +180,17 @@ To use the python remote API provided by VREP, some adjustments are necessary:
     echo "export PYTHONPATH=$PYTHONPATH:$VREP_ROOT/programming/remoteApiBindings/python/python" >> ~/.bashrc
     source ~/.bashrc
     ```
-**Note:** Enyu tested this Readme except Section 4:Remote API.
+    
+## To get things running for the mobile base + robotics arm.
+
+1. Run the scene containing the turtlebot2i
+
+```
+./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v4.ttt
+```
+
+2. Launch a rosfile that will bringou moveit and rviz to visualize and control the arm
+
+```
+roslaunch turtlebot2i_description turtlebot2i_description_single_moveit.launch
+```
