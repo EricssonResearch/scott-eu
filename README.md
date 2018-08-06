@@ -1,4 +1,11 @@
-﻿# SCOTT sandbox
+﻿# Branch description
+This branch was created by Enyu Cao <enyu.cao@ericsson.com>, a current thesis worker from KTH.  
+
+This branch was created from existing sg-safety branch. And it aims to keep other branchs clean.
+
+This branch is not currently working. Enyu is working on another branch <safetyBranchEnyu> for data generation.
+  
+# SCOTT sandbox
 
 <a href="https://travis-ci.org/EricssonResearch/scott-eu"><img src="https://travis-ci.org/EricssonResearch/scott-eu.svg?branch=master"/></a>
 
