@@ -23,5 +23,10 @@
   <export>
     <!-- Other tools can request additional information be placed here -->
 
+  <export>
+    <nodelet plugin="${prefix}/plugins/nodelet_plugins.xml"/>
+  </export>
+
+
   </export>
 </package>
