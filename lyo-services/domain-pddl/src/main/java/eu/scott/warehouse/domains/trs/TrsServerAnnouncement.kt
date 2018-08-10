@@ -24,12 +24,10 @@ class TrsServerAnnouncement() : PrimitiveType() {
         @OslcPropertyDefinition(TrsXConstants.NS + "trs_uri")
         @OslcOccurs(Occurs.ExactlyOne)
         @OslcValueType(ValueType.Resource)
-//        @OslcReadOnly(false)
         get
 
-    var twinId: String = ""
-        @OslcName("twin_id")
-        @OslcPropertyDefinition(TrsXConstants.NS + "twin_id")
+    var adaptorId: String = ""
+        @OslcName("adaptor_id") @OslcPropertyDefinition(TrsXConstants.NS + "adaptor_id")
         @OslcOccurs(Occurs.ExactlyOne)
         @OslcValueType(ValueType.String)
 //        @OslcReadOnly(false)
@@ -44,10 +42,29 @@ class TrsServerAnnouncement() : PrimitiveType() {
 //        @OslcReadOnly(false)
         get
 
-    @JvmOverloads
-    constructor(trsUri: URI, twinId: String, isLeaving: Boolean = false) : this() {
+    var kind: String = ""
+        @OslcName("kind")
+        @OslcPropertyDefinition(TrsXConstants.NS + "kind")
+//        @OslcOccurs(Occurs.ExactlyOne)
+        @OslcValueType(ValueType.String)
+        get
+
+    var lwtTopic: String = ""
+        @OslcName("lwt_topic") @OslcPropertyDefinition(TrsXConstants.NS + "lwt_topic") @OslcOccurs(
+                Occurs.ZeroOrOne) @OslcValueType(ValueType.String) get
+
+    @JvmOverloads constructor(twinId: String, kind: String = TrsXConstants.TYPE_TWIN, trsUri: URI,
+                              lwtTopic: String, isLeaving: Boolean = false) : this() {
         this.trsUri = Link(trsUri)
-        this.twinId = twinId
+        this.kind = kind
+        this.adaptorId = twinId
         this.isLeaving = isLeaving
+        this.lwtTopic = lwtTopic
     }
+
+    override fun toString(): String {
+        return "TrsServerAnnouncement(id=${adaptorId}, kind=${kind}, trsURI=${trsUri}, lwtTopic=${lwtTopic}, isLeaving=${isLeaving})"
+    }
+
+
 }

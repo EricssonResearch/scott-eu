@@ -13,7 +13,7 @@
  * Xufei Ning          -  Initial implementation
  * Andrew Berezovskyi  -  Lyo contribution updates
  */
-package se.ericsson.cf.scott.sandbox.twin.trs
+package eu.scott.warehouse
 
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
@@ -75,7 +75,7 @@ class ChangeEventMqttMessageListener(private val changeEventListener: ChangeEven
         val payloadModel = ModelFactory.createDefaultModel()
         val inputStream = ByteArrayInputStream(payload.toByteArray(StandardCharsets.UTF_8))
         RDFDataMgr.read(payloadModel, inputStream, Lang.JSONLD)
-        try {
+        try {1
             changeEvent = JenaModelHelper.unmarshalSingle(payloadModel, Modification::class.java)
         } catch (e: LyoJenaModelException) {
             try {

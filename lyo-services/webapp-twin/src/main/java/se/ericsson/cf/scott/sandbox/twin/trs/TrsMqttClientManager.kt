@@ -1,5 +1,6 @@
 package se.ericsson.cf.scott.sandbox.twin.trs
 
+import eu.scott.warehouse.ChangeEventMqttMessageListener
 import eu.scott.warehouse.MqttHelper
 import eu.scott.warehouse.MqttTopics
 import eu.scott.warehouse.domains.trs.*
@@ -82,7 +83,7 @@ class TrsMqttClientManager(private val mqttBroker: String) {
         val model = MqttHelper.extractModelFromMessage(message)
         try {
             val serverAck = JenaModelHelper.unmarshalSingle(model, TrsServerAck::class.java)
-            if (getTwinUUID() == serverAck.twinId) {
+            if (getTwinUUID() == serverAck.adaptorId) {
                 log.debug("The WHC registration of the {} has been confirmed", getTwinUUID())
                 trsTopic = serverAck.trsTopic
                 log.info("Using the '{}' topic to monitor new plans", trsTopic)
@@ -109,8 +110,8 @@ class TrsMqttClientManager(private val mqttBroker: String) {
     }
 
     private fun subscribeToPlans(trsTopic: String) {
-        mqttClient.subscribe(trsTopic,
-                ChangeEventMqttMessageListener(PlanChangeEventListener(executorService)))
+        mqttClient.subscribe(trsTopic, ChangeEventMqttMessageListener(
+                PlanChangeEventListener(executorService)))
         // TODO Andrew@2018-07-29: shall I ACK this too to make WHC registration deterministic?
 //        mqttClient.subscribe(trsTopic, ChangeEventMqttMessageListener(
 //                ChangeEventListener { changeEvent, trsResourceModel ->
@@ -121,15 +122,14 @@ class TrsMqttClientManager(private val mqttBroker: String) {
 
     private fun getTwinUUID() = RobotTwinManager.getTwinUUID()
 
-    private fun getTwinRegistrationMessage(): MqttMessage {
+    private fun getTwinRegistrationMessage(isLeaving: Boolean = false): MqttMessage {
         val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
-        val announcement = TrsServerAnnouncement(trsUri, getTwinUUID())
+        val announcement = TrsServerAnnouncement(getTwinUUID(), TrsXConstants.TYPE_TWIN, trsUri, MqttTopics.REGISTRATION_ANNOUNCE,
+                isLeaving)
         return MqttHelper.msgFromResources(TrsXConstants.rdfFormat, announcement)
     }
 
     private fun getTwinUnregistrationMessage(): MqttMessage {
-        val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
-        val announcement = TrsServerAnnouncement(trsUri, getTwinUUID(), true)
-        return MqttHelper.msgFromResources(TrsXConstants.rdfFormat, announcement)
+        return getTwinRegistrationMessage(true)
     }
 }

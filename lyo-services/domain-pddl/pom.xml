@@ -19,18 +19,6 @@
     <version.lyo>2.4.0-SNAPSHOT</version.lyo>
     <kotlin.version>1.2.51</kotlin.version>
   </properties>
-  <repositories>
-    <repository>
-      <id>lyo-releases</id>
-      <name>lyo-releases repository</name>
-      <url>https://repo.eclipse.org/content/repositories/lyo-releases/</url>
-    </repository>
-    <repository>
-      <id>lyo-snapshots</id>
-      <name>lyo-shapshots repository</name>
-      <url>https://repo.eclipse.org/content/repositories/lyo-snapshots/</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <!--TODO refactor-->

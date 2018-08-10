@@ -25,18 +25,14 @@
 package se.ericsson.cf.scott.sandbox.whc;
 
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
+import se.ericsson.cf.scott.sandbox.whc.planning.PlanBuilder;
 import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
 import java.net.URI;
@@ -48,8 +44,8 @@ import org.slf4j.LoggerFactory;
 
 //import org.eclipse.lyo.store.StoreFactory;
 import se.ericsson.cf.scott.sandbox.whc.managers.MqttManager;
-import se.ericsson.cf.scott.sandbox.whc.managers.StoreManager;
 import se.ericsson.cf.scott.sandbox.whc.managers.TRSManager;
+import se.ericsson.cf.scott.sandbox.whc.planning.PlanDTO;
 import se.ericsson.cf.scott.sandbox.whc.trs.WhcChangeHistories;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -65,6 +61,7 @@ public class WarehouseControllerManager {
     private final static UUID whcUUID = UUID.randomUUID();
     private static ServletContext context;
     private static WhcChangeHistories changeHistoriesInstance;
+    private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
     // End of user code
     
     
@@ -105,6 +102,13 @@ public class WarehouseControllerManager {
 //        StoreManager.initLyoStore();
 
         final MqttClient mqttClient = MqttManager.initMqttClient();
+
+        execService.schedule(() -> {
+            log.debug("Can now begin the execution of the planner");
+            TRSManager.fetchPlanForProblem("sample-problem-request.ttl");
+            final Object[] resources = new PlanBuilder().build();
+            MqttManager.triggerPlan(new PlanDTO(resources));
+        }, 30, TimeUnit.SECONDS);
 
 //        TRSManager.initTRSServer(mqttClient);
 //        TRSManager.initTRSClient(mqttClient);

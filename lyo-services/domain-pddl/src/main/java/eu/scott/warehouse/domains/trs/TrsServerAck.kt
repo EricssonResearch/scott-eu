@@ -1,13 +1,9 @@
 package eu.scott.warehouse.domains.trs
 
-import eu.scott.warehouse.domains.blocksworld.IBlock
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import org.eclipse.lyo.oslc4j.core.annotation.*
-import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.core.model.Occurs
 import org.eclipse.lyo.oslc4j.core.model.ValueType
-import java.net.URI
 
 /**
  * Acknowledging the 
@@ -21,9 +17,9 @@ import java.net.URI
 @OslcResourceShape(describes = [(TrsXConstants.NS + "TrsServerAck")])
 class TrsServerAck() : PrimitiveType() {
 
-    var twinId: String = ""
-        @OslcName("twin_id")
-        @OslcPropertyDefinition(TrsXConstants.NS + "twin_id")
+    var adaptorId: String = ""
+        @OslcName("adaptor_id")
+        @OslcPropertyDefinition(TrsXConstants.NS + "adaptor_id")
         @OslcOccurs(Occurs.ExactlyOne)
         @OslcValueType(ValueType.String)
         get
@@ -37,7 +33,7 @@ class TrsServerAck() : PrimitiveType() {
 
 
     constructor(twinId: String, trsTopic: String) : this() {
-        this.twinId = twinId
+        this.adaptorId = twinId
         this.trsTopic = trsTopic
     }
 }

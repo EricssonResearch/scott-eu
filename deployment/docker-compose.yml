@@ -41,6 +41,62 @@ services:
     depends_on:
       # - warehouse-fuseki
       - mosquitto
+  # hazelcast:
+  #   image: hazelcast/hazelcast
+  #   networks:
+  #     - overlay
+  #   deploy:
+  #     # just '4' for the test
+  #     replicas: 4
+  #     resources:
+  #       limits:
+  #         memory: 384m
+  #     # placement:
+  #     #   constraints: [node.role == worker]
+  #     restart_policy:
+  #       condition: on-failure
+  swarm-manager:
+    #TODO depend on it
+    image: bobrik/socat:latest
+    command: TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
+    networks:
+      - overlay
+    ports:
+      - "2376:2375"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  sandbox-executor:
+    image: ${CI_REGISTRY_IMAGE}/scott-webapp-executor
+    environment:
+      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-executor -DhazelcastPeerPort=5701"
+      # JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=y -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-executor -DhazelcastPeerPort=5701"
+      # JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      # https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi#how-it-works
+      # swarmMgrUri: "http://192.168.65.3:2377"
+      # dockerNetworkNames: "overlay"
+      # dockerServiceNames: "sandbox-executor"
+      # hazelcastPeerPort: "5701"
+    networks:
+      - overlay
+    ports:
+      - "8083:8080"
+      - "9999:9999"
+      # - "5701"
+      # - "54327"
+    depends_on:
+      # - sandbox-whc
+      - sandbox-whc
+      - swarm-manager
+    deploy:
+      # just '4' for the test
+      replicas: 12
+      resources:
+        limits:
+          memory: 384m
+      # placement:
+      #   constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
   sandbox-twin:
     image: ${CI_REGISTRY_IMAGE}/scott-webapp-twin
     environment:
@@ -51,10 +107,10 @@ services:
       - "8081:8080"
     depends_on:
       # - sandbox-whc
-      - mosquitto
+      - sandbox-whc
     deploy:
       # just '4' for the test
-      replicas: 4
+      replicas: 1
       resources:
         limits:
           memory: 384m

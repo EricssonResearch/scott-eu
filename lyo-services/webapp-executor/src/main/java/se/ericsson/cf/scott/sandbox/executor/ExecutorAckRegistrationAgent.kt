@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.twin.trs
+package se.ericsson.cf.scott.sandbox.executor
 
 import eu.scott.warehouse.ChangeEventMqttMessageListener
 import eu.scott.warehouse.LastWillMessage
@@ -17,7 +17,6 @@ import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.slf4j.LoggerFactory
-import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.UriBuilder
@@ -28,7 +27,8 @@ import javax.ws.rs.core.UriBuilder
  * @version $version-stub$
  * @since   FIXME
  */
-class TwinAckRegistrationAgent(val whcTopic: String) :
+class ExecutorAckRegistrationAgent(private val adaptorId: String,
+                                   private val lastWillTopic: String) :
         SimpleAckRegistrationAgent<TrsServerAnnouncement, TrsServerAck>() {
     private val log = LoggerFactory.getLogger(javaClass)!!
     private lateinit var trsTopic: String
@@ -36,10 +36,9 @@ class TwinAckRegistrationAgent(val whcTopic: String) :
     override fun register(gateway: TrsMqttGateway) {
         val latch = CountDownLatch(1)
         try {
-            gateway.subscribe(MqttTopics.REGISTRATION_ACK,
-                    IMqttMessageListener() { topic, message ->
-                        completeRegistration(message, latch, gateway)
-                    })
+            gateway.subscribe(MqttTopics.REGISTRATION_ACK, IMqttMessageListener { _, message ->
+                completeRegistration(message, latch, gateway)
+            })
         } catch (e: MqttException) {
             log.error("Something went wrong with the REG_ACK subscription", e)
         }
@@ -47,11 +46,10 @@ class TwinAckRegistrationAgent(val whcTopic: String) :
         try {
             while (latch.count > 0) {
                 log.trace("Posting the registration message")
-                gateway.publish(MqttTopics.REGISTRATION_ANNOUNCE,
-                        getTwinRegistrationMessage(gateway.clientId))
+                gateway.publish(MqttTopics.REGISTRATION_ANNOUNCE, getExecutorRegistrationMessage())
                 latch.await(5, TimeUnit.SECONDS)
                 if (latch.count > 0) {
-                    log.warn("Failed to register the twin with the WHC, attempting again")
+                    log.warn("Failed to register the PE with the WHC, attempting again")
                 }
             }
         } catch (e: MqttException) {
@@ -69,17 +67,17 @@ class TwinAckRegistrationAgent(val whcTopic: String) :
     override val lastWill: LastWillMessage
         get() {
             val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
-            val announcement = TrsServerAnnouncement(RobotTwinManager.getTwinUUID(),
-                    TrsXConstants.TYPE_TWIN, trsUri, MqttTopics.REGISTRATION_ANNOUNCE, true)
+            val announcement = TrsServerAnnouncement(adaptorId, TrsXConstants.TYPE_EXECUTOR, trsUri,
+                    MqttTopics.REGISTRATION_ANNOUNCE, true)
             val model = MqttHelper.jenaModelFrom(announcement)
-            return LastWillMessage(whcTopic, model)
+            return LastWillMessage(lastWillTopic, model)
         }
 
 
-    private fun getTwinRegistrationMessage(id: String): MqttMessage {
+    private fun getExecutorRegistrationMessage(): MqttMessage {
         val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
-        val announcement = TrsServerAnnouncement(RobotTwinManager.getTwinUUID(),
-                TrsXConstants.TYPE_TWIN, trsUri, MqttTopics.REGISTRATION_ANNOUNCE, false)
+        val announcement = TrsServerAnnouncement(adaptorId, TrsXConstants.TYPE_EXECUTOR, trsUri,
+                MqttTopics.REGISTRATION_ANNOUNCE, false)
         return MqttHelper.msgFromResources(TrsXConstants.rdfFormat, announcement)
     }
 

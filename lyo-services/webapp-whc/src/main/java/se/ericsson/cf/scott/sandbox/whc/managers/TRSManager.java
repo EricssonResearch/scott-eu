@@ -87,8 +87,6 @@ public class TRSManager {
                                                                              Duration.ofMinutes(5)
                                                                                      .toMillis()
         ));
-
-        fetchPlanForProblem("sample-problem-request.ttl");
     }
 
     public static Map<URI, Object[]> getPlans() {

@@ -1,10 +1,10 @@
 package se.ericsson.cf.scott.sandbox.whc.managers;
 
+import com.google.common.collect.ImmutableMap;
 import eu.scott.warehouse.MqttTopics;
 import eu.scott.warehouse.domains.trs.LoggingMqttCallback;
 import java.net.URI;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.whc.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
+import se.ericsson.cf.scott.sandbox.whc.planning.PlanDTO;
 import se.ericsson.cf.scott.sandbox.whc.trs.TwinRegistrationListener;
 
 /**
@@ -22,11 +23,15 @@ import se.ericsson.cf.scott.sandbox.whc.trs.TwinRegistrationListener;
  */
 public class MqttManager {
     private final static Logger log = LoggerFactory.getLogger(MqttManager.class);
-    private static Map<String, URI> twins = new ConcurrentHashMap<>();
     private static MqttClient mqttClient;
+    private static TwinRegistrationListener registrationListener;
 
     public static Map<String, URI> getTwins() {
-        return twins;
+        return ImmutableMap.copyOf(registrationListener.getTwins());
+    }
+
+    public static ImmutableMap<String, URI> getExecutors() {
+        return ImmutableMap.copyOf(registrationListener.getExecutors());
     }
 
     public static MqttClient getMqttClient() {
@@ -42,9 +47,8 @@ public class MqttManager {
             mqttClient.setCallback(new LoggingMqttCallback());
             // TODO Andrew@2018-03-13: set highest QoS
             mqttClient.connect(mqttConnectOptions);
-            mqttClient.subscribeWithResponse(
-                    MqttTopics.REGISTRATION_ANNOUNCE,
-                    new TwinRegistrationListener(twins, mqttClient, MqttTopics.WHC_PLANS)
+            registrationListener = new TwinRegistrationListener(mqttClient, MqttTopics.WHC_PLANS);
+            mqttClient.subscribeWithResponse(MqttTopics.REGISTRATION_ANNOUNCE, registrationListener
             );
             return mqttClient;
         } catch (MqttException e) {
@@ -55,4 +59,8 @@ public class MqttManager {
         }
     }
 
+    public static void triggerPlan(final PlanDTO planDTO) {
+//        URI exec = pickExecutor()
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

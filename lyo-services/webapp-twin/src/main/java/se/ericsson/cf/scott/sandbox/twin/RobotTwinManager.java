@@ -109,7 +109,6 @@ public class RobotTwinManager {
 //        new Thread(RobotTwinManager::runRosNode).run();
 //        RosManager.execMainNode();
 
-
         final String mqttBroker = AdaptorHelper.p("trs.mqtt.broker");
 //        final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttBroker);
 //        setTrsClientManager(trsClientManager);
@@ -118,9 +117,8 @@ public class RobotTwinManager {
         try {
             mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
                                                  .withId(getTwinUUID())
-                                                 .withRegistration(
-                                                                              new TwinAckRegistrationAgent(
-                                                                                      MqttTopics.WHC_PLANS))
+                                                 .withRegistration(new TwinAckRegistrationAgent(
+                                                         MqttTopics.WHC_PLANS))
                                                  .build();
         } catch (MqttException e) {
             log.error("Failed to initialise the MQTT gateway", e);
