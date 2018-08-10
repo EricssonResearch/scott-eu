@@ -2,8 +2,7 @@
 
 <launch>
   
-  <!--<node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">-->
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map_v2.yaml">
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
     <param name="frame_id" value="map"/>
     <!--<param name="frame_id" value="map_ros"/>-->
   </node>
