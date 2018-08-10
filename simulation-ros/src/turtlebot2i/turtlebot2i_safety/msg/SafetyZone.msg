@@ -1,5 +1,5 @@
 # Message header
-Header header
+#Header header
 
 # Defines the safety zone circle radius (in meters) by safety level
 # - clear_zone is the most external to the robot
