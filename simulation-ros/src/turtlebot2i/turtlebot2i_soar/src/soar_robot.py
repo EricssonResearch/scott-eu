@@ -43,25 +43,24 @@ def cli(agent):
 		cmd = raw_input("soar> ")
 
 from random import *
-class ToyEnv(object):
-    """
-    A very simple 'environment': sensors return two random numbers and expects a single number as actuation.
-    """
-    def __init__(self):
-        """Return a new toy env object."""
 
-
-    def get_sensors(self):
-        """"""
-        a=randint(1, 10)
-        b=randint(1, 10)
-        sensors=[a,b]
-        #print("---> Environment sensed: ",sensors)
-        return sensors
-
-    def set_actuators(self, act):
-        """"""
-        print("---> Environment acted:",act)
+#class ToyEnv(object):
+#    """
+#    A very simple 'environment': sensors return two random numbers and expects a single number as actuation.
+#    """
+#    def __init__(self):
+#        """Return a new toy env object."""
+#    def get_sensors(self):
+#        """"""
+#        a=randint(1, 10)
+#        b=randint(1, 10)
+#        sensors=[a,b]
+#        #print("---> Environment sensed: ",sensors)
+#        return sensors
+#
+#    def set_actuators(self, act):
+#        """"""
+#        print("---> Environment acted:",act)
 
 
 ## ROS variables
@@ -81,6 +80,8 @@ b_value=None
 output_link=None
 
 tasks_wme=None
+tasks_data_json=json.dumps({})
+previous_tasks_data_json=json.dumps({})
 
 seq_wme=None
 secs_wme=None
@@ -106,13 +107,13 @@ xta_wme=None
 yta_wme=None
 zta_wme=None
 
-
-def topic_callback(odom_data, scan_data,tasks_data,data):
-
-
+loop_counter=0
+def topic_callback(odom_data, scan_data,tasks_data):
+    print("________________________")
+    print("Enter ROS topic_callback")
     input_link=agent.GetInputLink()
 
-    rospy.loginfo('odom_stamp: ' + str(odom_data.header.stamp.to_sec()) + ' ; scan_stamp: ' + str(scan_data.header.stamp.to_sec())+ ' ; tasks_data: ' + str(tasks_data)+ ' ; data: ' + str(data))
+ #   rospy.loginfo('odom_stamp: ' + str(odom_data.header.stamp.to_sec()) + ' ; scan_stamp: ' + str(scan_data.header.stamp.to_sec())+ ' ; tasks_data: ' + str(tasks_data))
 
     
 
@@ -144,16 +145,16 @@ def topic_callback(odom_data, scan_data,tasks_data,data):
 
 
     #Do something with data
-    dict=eval(data.data)
+    #dict=eval(data.data)
 
     ## Cognitive cycle goes here
 
-    a_value_temp=float(dict['a_value'])
-    b_value_temp=float(dict['b_value'])
+  #  a_value_temp=float(dict['a_value'])
+   # b_value_temp=float(dict['b_value'])
 
     ## 2) push senses to soar
-    a_value.Update(a_value_temp)
-    b_value.Update(b_value_temp)
+   # a_value.Update(a_value_temp)
+  #  b_value.Update(b_value_temp)
 
     #Odometer
     xp_wme.Update(float(odom_data.pose.pose.position.x))
@@ -174,33 +175,37 @@ def topic_callback(odom_data, scan_data,tasks_data,data):
     zta_wme.Update(float(odom_data.twist.twist.angular.z))
 
     #Tasks List
-    global tasks_wme
+    global tasks_wme,tasks_data_json,previous_tasks_data_json
+
     tasks_data_json = json.loads(str(tasks_data.data))
-    if(tasks_wme!=None):
-        print("DestroyWME")
-        tasks_wme=agent.DestroyWME(tasks_wme)
+    if(previous_tasks_data_json!=tasks_data_json): #Checking if list of tasks has changed before sending it to soar
+        print("##########################")
+        if(tasks_wme!=None):
+            #print("DestroyWME: ",tasks_wme)
+            tasks_wme=agent.DestroyWME(tasks_wme)
 
-    tasks_wme = agent.CreateIdWME(input_link,"tasks")
+        tasks_wme = agent.CreateIdWME(input_link,"tasks")
 
-    tasks_wme_list=[]
-    previous_task_wme=tasks_wme
+        tasks_wme_list=[]
+        previous_task_wme=tasks_wme
 
-    for i in range(len(tasks_data_json['plan'])):
-        task_wme=agent.CreateIdWME(previous_task_wme,"next_task")
-        action_name=str(tasks_data_json['plan'][i][0])
-        agent.CreateStringWME(task_wme,"name",action_name) 
-        if(action_name=='move'):
-            agent.CreateStringWME(task_wme,"waypoint",str(tasks_data_json['plan'][i][2])) 
-        elif(action_name=='pick'):
-            agent.CreateStringWME(task_wme,"shelf",str(tasks_data_json['plan'][i][2])) 
-            agent.CreateStringWME(task_wme,"product",str(tasks_data_json['plan'][i][3]))
-        elif(action_name=='drop'):
-            agent.CreateStringWME(task_wme,"conveyor_belt",str(tasks_data_json['plan'][i][2])) 
-            agent.CreateStringWME(task_wme,"product",str(tasks_data_json['plan'][i][3])) 
-        else:
-            print('unknown action: ',action_name)
-        previous_task_wme=task_wme
+        for i in range(len(tasks_data_json['plan'])):
+            task_wme=agent.CreateIdWME(previous_task_wme,"next_task")
+            action_name=str(tasks_data_json['plan'][i][0])
+            agent.CreateStringWME(task_wme,"name",action_name) 
+            if(action_name=='move'):
+                agent.CreateStringWME(task_wme,"waypoint",str(tasks_data_json['plan'][i][2])) 
+            elif(action_name=='pick'):
+                agent.CreateStringWME(task_wme,"shelf",str(tasks_data_json['plan'][i][2])) 
+                agent.CreateStringWME(task_wme,"product",str(tasks_data_json['plan'][i][3]))
+            elif(action_name=='drop'):
+                agent.CreateStringWME(task_wme,"conveyor_belt",str(tasks_data_json['plan'][i][2])) 
+                agent.CreateStringWME(task_wme,"product",str(tasks_data_json['plan'][i][3])) 
+            else:
+                print('unknown action: ',action_name)
+            previous_task_wme=task_wme
 
+        previous_tasks_data_json = tasks_data_json
 
 
     ## 3) make soar think about it
@@ -217,9 +222,9 @@ def topic_callback(odom_data, scan_data,tasks_data,data):
             result = float(result_output_wme.GetValueAsString())
 
     ## 5) send result to environment
-    te.set_actuators(result) 
-    rospy.loginfo("output result log: "+str(result))
-    pub.publish("output result topic: "+str(result)) # Here goes the output
+   # te.set_actuators(result) 
+    #rospy.loginfo("output result log: "+str(result))
+  #  pub.publish("output result topic: "+str(result)) # Here goes the output
 
     vel_msg=Twist()
     vel_msg.linear.x=0.0
@@ -229,11 +234,15 @@ def topic_callback(odom_data, scan_data,tasks_data,data):
     vel_msg.angular.y=0.0
     vel_msg.angular.z=0.0
     vel_output_pub.publish(vel_msg)
-    print("vel_msg: ",vel_msg)
+    #print("vel_msg: ",vel_msg)
+    ##TODO Improve soar_robot.soar based on Move-north operator
 
-
-    cli(agent) #open client to interact with agent
-
+    
+    global loop_counter
+    print("loop_counter: ",loop_counter)
+    loop_counter=loop_counter+1
+    if(loop_counter>0):
+        cli(agent) #open client to interact with agent 
 
 """ =============================================================== """
 """ === Main program                                            === """
@@ -263,7 +272,7 @@ if __name__ == "__main__":
 #-- SOAR AGENT INITIALIZATION-----------------------------------
     print("Initializing SOAR Agent")
     #Instantiate link to environment
-    te = ToyEnv()
+    #te = ToyEnv()
 
     #Create soar kernel and agent
     kernel = sml.Kernel.CreateKernelInCurrentThread()
@@ -345,23 +354,24 @@ if __name__ == "__main__":
     # The messages to be synced must have the 'header' field or
     #  use the 'allow_headerless=True' in the TimeSynchronizer() function
     #  if this field is not present
-    sub=message_filters.Subscriber("/turtlebot2i/soar_sub_topic", String)
+    #sub=message_filters.Subscriber("/turtlebot2i/soar_sub_topic", String)
     odom_sub = message_filters.Subscriber('/turtlebot2i/odom', Odometry)
     scan_sub = message_filters.Subscriber('/turtlebot2i/lidar/scan', LaserScan)
     tasks_sub = message_filters.Subscriber('/turtlebot2i/tasks', String)
 
     # Make the topics sync through ApproximateTimeSynchronizer with 0.1s of tolerance
-    ts =  message_filters.ApproximateTimeSynchronizer([odom_sub, scan_sub,tasks_sub,sub], 10, 0.1, allow_headerless=True)
+    ts =  message_filters.ApproximateTimeSynchronizer([odom_sub, scan_sub,tasks_sub], 10, 0.1, allow_headerless=True)
 
     # Associate the synchronizer with a callback
     ts.registerCallback(topic_callback)
 
     ## PUBLISHERS
-    pub=rospy.Publisher("soar_pub_topic", String, queue_size=10)
+    #pub=rospy.Publisher("soar_pub_topic", String, queue_size=10)
+    ##TODO decide wether to go with direct input to velocities or use navigation package
     vel_output_pub=rospy.Publisher("/turtlebot2i/commands/velocity",Twist, queue_size=10) #velocity output publisher
     vel_msg=Twist()
 
-    dummy_pub=rospy.Publisher("/turtlebot2i/soar_sub_topic",String, queue_size=10) #dummy pubs are used for inputing debug data to input topics
+    #dummy_pub=rospy.Publisher("/turtlebot2i/soar_sub_topic",String, queue_size=10) #dummy pubs are used for inputing debug data to input topics
     dummy_tasks_pub=rospy.Publisher("/turtlebot2i/tasks", String, queue_size=10)
 
  
@@ -382,18 +392,19 @@ if __name__ == "__main__":
     while not rospy.is_shutdown(): #loop that updates agent's inputs
         
 
-        sense=te.get_sensors()
-        new_input=dict()
-        new_input['a_value']=str(sense[0])
-        new_input['b_value']=str(sense[1])
-        current_time=str(rospy.get_time())
-        new_input['time']=str(current_time)
+ #       sense=te.get_sensors()
+ #       new_input=dict()
+ #       new_input['a_value']=str(sense[0])
+ #       new_input['b_value']=str(sense[1])
+ #       current_time=str(rospy.get_time())
+ #       new_input['time']=str(current_time)
 
-        dummy_pub.publish(str(new_input)) 
+ #       dummy_pub.publish(str(new_input)) 
 #        rospy.loginfo("Log new_input: "+ str(new_input))
+
         dummy_tasks_pub.publish(str(tasks_dummy_data))
        
-
+    
        
         rate.sleep()
 
