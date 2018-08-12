@@ -1,0 +1,13 @@
+<!--
+  Basic auto-docking configuration for working with the kobuki_dock_driver. 
+ -->
+<launch>
+  <node pkg="turtlebot2i_navigation" type="docking" name="docking">
+    <rosparam file="$(find kobuki_auto_docking)/param/auto_docking.yaml" command="load"/>
+    <remap from="odom" to="/turtlebot2i/odom"/>
+    <remap from="core" to="/turtlebot2i/sensors/core"/>
+    <remap from="dock_ir" to="/turtlebot2i/sensors/dock_ir"/>
+    <remap from="motor_power" to="/turtlebot2i/commands/motor_power"/>
+    <remap from="velocity" to="/turtlebot2i/commands/velocity"/>
+  </node>
+</launch>

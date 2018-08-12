@@ -62,4 +62,22 @@ Use the following commands to move the robot:
 rosed turtlebot2i_navigation turtlebot2i_keyop.launch 
 ```
 
+## 4. Auto Docking for Recharging
 
+
+The robot can use the *kobuki_dock_driver* to automatically find the docking station and start recharging the battery itself.
+In the simulated environment the recharging station was sligtly adapted and the robot starts to recharge when it is very close to the dock station (< 10 cm).
+
+Use the following steps to start the auto docking process:
+
+1. Start the auto docking actionlib server:
+
+```
+roslaunch turtlebot2i_navigation turtlebot2i_auto_docking_server.launch 
+```
+2. Start the auto docking actionlib client:
+```
+roslaunch turtlebot2i_navigation turtlebot2i_auto_docking_client.launch 
+```
+
+**Note:** Use the option --screen for debugging
