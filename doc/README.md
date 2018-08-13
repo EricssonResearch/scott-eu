@@ -39,10 +39,11 @@ The main advatage of ROS is that (in most of the cases) it dispenses the necessi
 
 # 5. Installation
 
-## 1. Install V-REP
+All the instructions below were tested in Ubuntu 16.04. 
+
+## 1. Install V-Rep
 
 If using simulated environment, install V-REP from: http://www.coppeliarobotics.com/downloads.html
-Download the latest version of **V-REP Pro** or **V-REP Pro Edu**. The **V-REP Player** version was not tested here.
 
 In the next section you will install ROS and V-REP ROS Interface.
 
@@ -55,7 +56,7 @@ source ~/.bashrc
 ```
 
 
-## 2. Install ROS Kinect.
+## 2. Install ROS Kinect
 Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
 * When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
@@ -63,59 +64,54 @@ Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 * Follow the "recommended" installation for ease of use.
 
 1. Install Turttlebot2i packages from ROS
-  ```
-  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros
-  ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
-  ```
+    ```
+    $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros
+    ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
+    ```
 
 2. Create the Turtlebot2i workspace by clonning the SCOTT repository
-  ```
-  $ git clone https://github.com/EricssonResearch/scott-eu.git
-  ```
-*As of 7/Mar/2018 you need to change to a subbranch by doing: 
-```
-$ git checkout simulation-ros 
-```
-In the future it might not be necessary
+    ```
+    $ git clone https://github.com/EricssonResearch/scott-eu.git
+    ```
+    *As of 7/Mar/2018 you need to change to a subbranch by doing (in the future it might not be necessary): 
+    ```
+    $ git checkout simulation-ros 
+    ```
+    
+    Add to .bashrc (replace <path_to_repository> by the path to the scott folder) :
+    ```
+    $ echo "export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simulation-ros" >> ~/.bashrc
+    $ source ~/.bashrc
+    ```
 
 3. Setup the catkin workspace and set ROS environment variables
-  Follow these instructions: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+    Follow these instructions: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
 
-* Be careful to always select the "kinetic" version of ROS
+    *Be careful to always select the "kinetic" version of ROS
 
-Install catkin python tools:
+    Install catkin python tools:
+    
+    ```
+    $ sudo apt-get install python-catkin-tools
+    ```
 
-```
-$ sudo apt-get install python-catkin-tools
-```
 
-4. Install xsltproc (required by the vrep_ros_interface)
+4. Compile the repository from the simulation-ros workspace root
 
-```
-$ sudo apt-get install xsltproc
-```
+    Go to /scott-eu/simulation-ros and run:
+    ```
+    $ catkin build
+    ```
 
-5. Compile the repository from the simulation-ros workspace root
 
-Go to /scott-eu/simulation-ros and run:
+5. Install V-REP ROS Interface
 
-  ```
-  $ catkin build
-
-  ```
-
-6. Install V-REP ROS Interface
-Add to .bashrc :
-```
-$ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simulation-ros
-```
-
-```
-  $ source ~/.bashrc
-  $ roscd vrep_ros_interface
-  $ ./install.sh
+    ```
+    $ roscd vrep_ros_interface
+    $ ./install.sh
+    ```
+    If having problems to compile the vrep_ros_interface, check the README.md contained in the vrep_ros_interface package folder.
   
-```
 ## 3. Running the Simulated Environment
 
 1. Start ROS CORE
@@ -155,18 +151,3 @@ To use the python remote API provided by VREP, some adjustments are necessary:
     echo "export PYTHONPATH=$PYTHONPATH:$VREP_ROOT/programming/remoteApiBindings/python/python" >> ~/.bashrc
     source ~/.bashrc
     ```
-
-
-## To get things running for the mobile base + robotics arm.
-
-1. Run the scene containing the turtlebot2i
-
-```
-./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v4.ttt
-```
-
-2. Launch a rosfile that will bringou moveit and rviz to visualize and control the arm
-
-```
-roslaunch turtlebot2i_description turtlebot2i_description_single_moveit.launch
-```
