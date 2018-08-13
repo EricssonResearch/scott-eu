@@ -40,10 +40,18 @@ public interface MissionDomainConstants
     public static String MISSIONONTOLOGY_NAMSPACE = "http://ontology.cf.ericsson.net/mission_ontology/";
     public static String MISSIONONTOLOGY_NAMSPACE_PREFIX = "mission";
 
+    public static String AGENTREQUEST_PATH = "agentRequest";
+    public static String AGENTREQUEST_NAMESPACE = MISSIONONTOLOGY_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String AGENTREQUEST_LOCALNAME = "AgentRequest"; //localName of the rdfs:class the resource describes
+    public static String AGENTREQUEST_TYPE = AGENTREQUEST_NAMESPACE + AGENTREQUEST_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String COMPOSITESELECTOR_PATH = "compositeSelector";
     public static String COMPOSITESELECTOR_NAMESPACE = MISSIONONTOLOGY_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String COMPOSITESELECTOR_LOCALNAME = "CompositeSelector"; //localName of the rdfs:class the resource describes
     public static String COMPOSITESELECTOR_TYPE = COMPOSITESELECTOR_NAMESPACE + COMPOSITESELECTOR_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String DEREGISTRATIONREQUEST_PATH = "deregistrationRequest";
+    public static String DEREGISTRATIONREQUEST_NAMESPACE = MISSIONONTOLOGY_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String DEREGISTRATIONREQUEST_LOCALNAME = "DeregistrationRequest"; //localName of the rdfs:class the resource describes
+    public static String DEREGISTRATIONREQUEST_TYPE = DEREGISTRATIONREQUEST_NAMESPACE + DEREGISTRATIONREQUEST_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String DIRECTSELECTOR_PATH = "directSelector";
     public static String DIRECTSELECTOR_NAMESPACE = MISSIONONTOLOGY_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String DIRECTSELECTOR_LOCALNAME = "DirectSelector"; //localName of the rdfs:class the resource describes
@@ -68,6 +76,10 @@ public interface MissionDomainConstants
     public static String MOVEGOAL_NAMESPACE = MISSIONONTOLOGY_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String MOVEGOAL_LOCALNAME = "MoveGoal"; //localName of the rdfs:class the resource describes
     public static String MOVEGOAL_TYPE = MOVEGOAL_NAMESPACE + MOVEGOAL_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String REGISTRATIONREQUEST_PATH = "registrationRequest";
+    public static String REGISTRATIONREQUEST_NAMESPACE = MISSIONONTOLOGY_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String REGISTRATIONREQUEST_LOCALNAME = "RegistrationRequest"; //localName of the rdfs:class the resource describes
+    public static String REGISTRATIONREQUEST_TYPE = REGISTRATIONREQUEST_NAMESPACE + REGISTRATIONREQUEST_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String SELECTOR_PATH = "selector";
     public static String SELECTOR_NAMESPACE = MISSIONONTOLOGY_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String SELECTOR_LOCALNAME = "Selector"; //localName of the rdfs:class the resource describes

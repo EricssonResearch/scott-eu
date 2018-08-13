@@ -26,14 +26,12 @@ interface AckRegistrationAgent<R, A> : RegistrationAgent {
 
 // TODO Andrew@2018-08-03: extract the latch logic from ExecutorAckRegistrationAgent
 /**
- * The simplest registration that sends the unregistration message to a special topic
+ * The simplest registration that sends the un-registration message to a special topic
  */
-abstract class SimpleAckRegistrationAgent<R, A>() : AckRegistrationAgent<R, A> {}
+abstract class SimpleAckRegistrationAgent<R, A> : AckRegistrationAgent<R, A>
 
 
 /**
  * The registration that allows to notify multiple nodes with an LWT message by setting up its own topic.
  */
-abstract class TopicAckRegistrationAgent<R, A>() : AckRegistrationAgent<R, A> {
-
-}
+abstract class TopicAckRegistrationAgent<R, A> : AckRegistrationAgent<R, A>
