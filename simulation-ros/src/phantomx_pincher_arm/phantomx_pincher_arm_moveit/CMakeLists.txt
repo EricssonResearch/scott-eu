@@ -156,10 +156,10 @@ ${catkin_LIBRARY_DIRS}
 ## add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_pick_test 
-  ${catkin_LIBRARIES}
-  ${Boost_LIBRARIES}  
-)
+#target_link_libraries(${PROJECT_NAME}_pick_test 
+#  ${catkin_LIBRARIES}
+#  ${Boost_LIBRARIES}  
+#)
 
 #############
 ## Install ##
