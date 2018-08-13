@@ -55,7 +55,7 @@ source ~/.bashrc
 ```
 
 
-## 2. Install ROS Kinect
+## 2. Install ROS Kinect.
 Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
 * When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
@@ -110,12 +110,12 @@ Add to .bashrc :
 $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simulation-ros
 ```
 
-  ```
+```
   $ source ~/.bashrc
   $ roscd vrep_ros_interface
   $ ./install.sh
   
-  ```
+```
 ## 3. Running the Simulated Environment
 
 1. Start ROS CORE
@@ -170,4 +170,3 @@ To use the python remote API provided by VREP, some adjustments are necessary:
 ```
 roslaunch turtlebot2i_description turtlebot2i_description_single_moveit.launch
 ```
-
