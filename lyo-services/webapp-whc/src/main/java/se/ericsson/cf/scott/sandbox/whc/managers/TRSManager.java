@@ -53,19 +53,25 @@ public class TRSManager {
     private final static Map<URI, Object[]> plans = new ConcurrentHashMap<>();
 
     public static void fetchPlanForProblem(final String resourceName) {
-        final Model problemModel = AdaptorHelper.loadJenaModelFromResource(resourceName,
-                                                                           Lang.TURTLE
-        );
+        final Model problemModel = getProblem(resourceName);
 
         Model planModel = requestPlan(problemModel);
         final Plan plan = extractPlan(planModel);
         log.debug("Received plan: {}", plan);
         final Object[] planResources = getPlanResources(planModel, plan);
-        getPlans().put(plan.getAbout(), planResources);
+        final URI key = plan.getAbout();
+        if (plans.containsKey(key)) {
+            throw new IllegalStateException("The plan with the same URI has already been fetched");
+        }
+        getPlans().put(key, planResources);
         // TODO: check the hack from Yash
         // TODO Andrew@2018-02-23: here the plan needs to be put through lyo store update
 
         WarehouseControllerManager.getChangeHistories().addResource(plan);
+    }
+
+    private static Model getProblem(final String resourceName) {
+        return AdaptorHelper.loadJenaModelFromResource(resourceName, Lang.TURTLE);
     }
 
     public static void initTRSClient(final MqttClient mqttClient) {

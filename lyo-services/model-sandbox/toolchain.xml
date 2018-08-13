@@ -78,7 +78,7 @@
       <resources name="LocationSelector" extends="//@specification/@domainSpecifications.0/@resources.2" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.0 //@specification/@domainSpecifications.0/@resourceProperties.8"/>
       <resources name="Location"/>
       <resources name="Mission" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.7 //@specification/@domainSpecifications.0/@resourceProperties.5 //@specification/@domainSpecifications.0/@resourceProperties.6"/>
-      <resources name="AgentRequest" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.9 //@specification/@domainSpecifications.0/@resourceProperties.10 //@specification/@domainSpecifications.0/@resourceProperties.11"/>
+      <resources name="AgentRequest" resourceProperties="//@specification/@domainSpecifications.0/@resourceProperties.9 //@specification/@domainSpecifications.0/@resourceProperties.10 //@specification/@domainSpecifications.0/@resourceProperties.11 //@specification/@domainSpecifications.0/@resourceProperties.12"/>
       <resources name="RegistrationRequest" extends="//@specification/@domainSpecifications.0/@resources.10"/>
       <resources name="DeregistrationRequest" extends="//@specification/@domainSpecifications.0/@resources.10"/>
       <resourceProperties title="" name="selector" valueType="LocalResource" representation="reference" range="//@specification/@domainSpecifications.0/@resources.2"/>
@@ -93,7 +93,10 @@
       <resourceProperties name="adaptor_id" valueType="String"/>
       <resourceProperties title="" name="trs_topic" valueType="URI" description="Should be a field on the TRS Server resource, but it's too much work to extend it now"/>
       <resourceProperties name="trs_server" valueType="URI"/>
-      <resourceProperties title="" name="action" valueType="String"/>
+      <resourceProperties title="" name="action" valueType="String">
+        <allowedValue>join</allowedValue>
+        <allowedValue>leave</allowedValue>
+      </resourceProperties>
       <generationSetting javaClassPackageName="eu.scott.warehouse.domains.mission" javaFilesPath="../domain-pddl/src/main/java"/>
     </domainSpecifications>
     <domainPrefixes name="mission"/>

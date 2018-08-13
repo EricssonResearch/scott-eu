@@ -104,12 +104,12 @@ public class AdaptorHelper {
     }
 
     // TODO Andrew@2018-07-30: move to LyoHelper
+    @SafeVarargs
     public static IResource navTry(final Model m, final Link l,
             final Class<? extends IResource>... rClass) {
         for (Class<? extends IResource> aClass : rClass) {
             try {
-                final IResource nav = nav(m, l, aClass);
-                return nav;
+                return nav(m, l, aClass);
             } catch (IllegalArgumentException e) {
                 log.warn("Fix RDFS reasoning in JMH!!!");
             }

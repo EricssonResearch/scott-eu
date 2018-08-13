@@ -82,7 +82,7 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 // Start of user code classAnnotations
 // End of user code
 @OslcNamespace(PddlDomainConstants.PRIMITIVETYPE_NAMESPACE)
-@OslcName(PddlDomainConstants.PRIMITIVETYPE_LOCALNAME)
+@OslcName(PddlDomainConstants.PRIMITIVETYPE_LOCALNAME + "Shape")
 @OslcResourceShape(title = "PrimitiveType Resource Shape", describes = PddlDomainConstants.PRIMITIVETYPE_TYPE)
 public class PrimitiveType
     extends AbstractResource
