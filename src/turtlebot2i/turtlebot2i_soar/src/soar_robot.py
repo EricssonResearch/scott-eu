@@ -76,37 +76,33 @@ output_link=None
 
 
 def topic_callback(data):
+    #Do something with data
+    dict=eval(data.data)
+    ## Cognitive cycle goes here
+    print("DDDDDDD: ",dict)
+    a_value_temp=float(dict['a_value'])
+    b_value_temp=float(dict['b_value'])
 
-    rospy.loginfo(data)
-    if(False):
-        #Do something with data
-        dict=eval(data.data)
-        ## Cognitive cycle goes here
-        print("DDDDDDD: ",dict)
-        a_value_temp=float(dict['a_value'])
-        b_value_temp=float(dict['b_value'])
+   # 2) push senses to soar
+    a_value.Update(a_value_temp)
+    b_value.Update(b_value_temp)
 
-       # 2) push senses to soar
-        a_value.Update(a_value_temp)
-        b_value.Update(b_value_temp)
+   # 3) make soar think about it
+    result=0
+    run_result=agent.RunSelf(1)    #Run agent for one step
+    
+   # 4) get results from soar
+    output_link=agent.GetOutputLink()## returns an Identifier
+    if output_link!= None:
+        result_output_wme = output_link.FindByAttribute("result", 0) # returns a WMElement of the form (<output_link> ^result <val>)
+        result=None
+        if result_output_wme != None:
+            result = float(result_output_wme.GetValueAsString())
 
-       # 3) make soar think about it
-        result=0
-        #run_result=agent.RunSelf(1)    #Run agent for one step (should run until output?)
-        run_result=agent.RunSelfTilOutput() #TODO see why so many substates are being created
-       # 4) get results from soar
-        output_link=agent.GetOutputLink()## returns an Identifier
-        if output_link!= None:
-            result_output_wme = output_link.FindByAttribute("result", 0) # returns a WMElement of the form (<output_link> ^result <val>)
-            result=None
-            if result_output_wme != None:
-                result = float(result_output_wme.GetValueAsString())
-
-    #    #5) send result to environment
-        te.set_actuators(result) 
-        rospy.loginfo("output result log: "+str(result))
-        pub.publish("output result topic: "+str(result)) # Here goes the output
-
+#    #5) send result to environment
+    te.set_actuators(result) 
+    rospy.loginfo("output result log: "+str(result))
+    pub.publish("output result topic: "+str(result)) # Here goes the output
 
 
 """ Main program """
@@ -144,31 +140,22 @@ if __name__ == "__main__":
 
     dummy_pub=rospy.Publisher("soar_sub_topic",String, queue_size=10) #used for inputing debug data to soar_sub_topic
 
-    tasks_list_topic=rospy.Subscriber("soar_tasks_list_topic", String, topic_callback)
-    dummy_tasks_list_topic=rospy.Publisher("soar_tasks_list_topic",String, queue_size=10) #used for inputing debug data to soar_tasks_list_topic
-
-
-
 #-- INPUT UPDATE LOOP (for debug purposes)-----------------------------------
     rate = rospy.Rate(1)
 
     while not rospy.is_shutdown(): #loop that updates agent's inputs
-        
+        current_time=str(rospy.get_time())
 
         sense=te.get_sensors()
         new_input=dict()
         new_input['a_value']=str(sense[0])
         new_input['b_value']=str(sense[1])
-        current_time=str(rospy.get_time())
         new_input['time']=str(current_time)
 
         dummy_pub.publish(str(new_input)) 
-#        rospy.loginfo("Log new_input: "+ str(new_input))
-        new_input=dict()
-        new_input['tasks_list']=str(randint(30,40))
-        current_time=str(rospy.get_time())
-        new_input['time']=str(current_time)
-        dummy_tasks_list_topic.publish(str(new_input))
+        rospy.loginfo("Log new_input: "+ str(new_input))
+
+
 
        
         rate.sleep()
