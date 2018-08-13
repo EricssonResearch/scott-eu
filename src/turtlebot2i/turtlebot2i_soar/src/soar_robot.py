@@ -60,110 +60,23 @@ class ToyEnv(object):
         """"""
         print("---> Environment acted:",act)
 
-
-## ROS variables
-pub=None #pub should be visible by main and callbacks
-sub=None #sub should be visible by main and callbacks
-
-## SOAR variables    
-kernel=None
-agent=None
-te=None
-input_link=None
-a_value=None
-b_value=None
-output_link=None
-
-
+pub=None
 def topic_callback(data):
+    rospy.loginfo(data.data)
     #Do something with data
-    dict=eval(data.data)
-    ## Cognitive cycle goes here
-    print("DDDDDDD: ",dict)
-    a_value_temp=float(dict['a_value'])
-    b_value_temp=float(dict['b_value'])
-
-   # 2) push senses to soar
-    a_value.Update(a_value_temp)
-    b_value.Update(b_value_temp)
-
-   # 3) make soar think about it
-    result=0
-    run_result=agent.RunSelf(1)    #Run agent for one step
+    pub.publish("hello: "+data.data)
     
-   # 4) get results from soar
-    output_link=agent.GetOutputLink()## returns an Identifier
-    if output_link!= None:
-        result_output_wme = output_link.FindByAttribute("result", 0) # returns a WMElement of the form (<output_link> ^result <val>)
-        result=None
-        if result_output_wme != None:
-            result = float(result_output_wme.GetValueAsString())
-
-#    #5) send result to environment
-    te.set_actuators(result) 
-    rospy.loginfo("output result log: "+str(result))
-    pub.publish("output result topic: "+str(result)) # Here goes the output
-
 
 """ Main program """
-if __name__ == "__main__":   
+if __name__ == "__main__":    
 
+    rospy.init_node("soar_ros_node") #Always first
 
-#-- SOAR AGENT INITIALIZATION-----------------------------------
-    print("Initializing SOAR Agent")
-    #Instantiate link to environment
-    te = ToyEnv()
+    rospy.Subscriber("soar_sub_topic", String, topic_callback)
 
-    #Create soar kernel and agent
-    kernel = sml.Kernel.CreateKernelInCurrentThread()
-    agent = kernel.CreateAgent("agent")
-    register_print_callback(kernel, agent, callback_print_message, None)
-
-    #Load soar sources
-    agent.ExecuteCommandLine("source soar_robot.soar")
-
-    #Get input link and create input  structure
-    input_link=agent.GetInputLink()
-    
-    a_value=agent.CreateFloatWME(input_link, "a", -1.0)
-    b_value=agent.CreateFloatWME(input_link, "b", -1.0)
-
-    #Get output link
-    output_link=agent.GetOutputLink()
-
-#-- ROS SOAR NODE INITIALIZATION-----------------------------------    
-    print("Initializing ROS SOAR node")
-    rospy.init_node("soar_ros_node",anonymous=True) #Always first
-
-    sub=rospy.Subscriber("soar_sub_topic", String, topic_callback)
-    pub=rospy.Publisher("soar_pub_topic",String, queue_size=10)
-
-    dummy_pub=rospy.Publisher("soar_sub_topic",String, queue_size=10) #used for inputing debug data to soar_sub_topic
-
-#-- INPUT UPDATE LOOP (for debug purposes)-----------------------------------
-    rate = rospy.Rate(1)
-
-    while not rospy.is_shutdown(): #loop that updates agent's inputs
-        current_time=str(rospy.get_time())
-
-        sense=te.get_sensors()
-        new_input=dict()
-        new_input['a_value']=str(sense[0])
-        new_input['b_value']=str(sense[1])
-        new_input['time']=str(current_time)
-
-        dummy_pub.publish(str(new_input)) 
-        rospy.loginfo("Log new_input: "+ str(new_input))
-
-
-
-       
-        rate.sleep()
+    pub=rospy.Publisher("soar_pub_topic",String, queue_size=5)
 
     rospy.spin()
-
-
-"""
     #Instantiate link to environment
     te = ToyEnv()
 
@@ -218,5 +131,5 @@ if __name__ == "__main__":
     #Close agent and kernel
     kernel.DestroyAgent(agent)
     kernel.Shutdown()
-"""
+
     
