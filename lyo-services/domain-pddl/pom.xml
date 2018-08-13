@@ -10,7 +10,7 @@
     <relativePath>../lyo-webapp-parent</relativePath>
   </parent>
   <artifactId>domain-pddl</artifactId>
-  <name>Sandbox PPDL Domain</name>
+  <name>Sandbox :: Domain model</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

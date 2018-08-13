@@ -87,7 +87,7 @@
       <resourceProperties name="missionDeadline" valueType="DateTime"/>
       <resourceProperties name="goal" valueType="LocalResource" range="//@specification/@domainSpecifications.0/@resources.0"/>
       <resourceProperties name="location" valueType="Resource" range="//@specification/@domainSpecifications.0/@resources.8"/>
-      <generationSetting javaClassPackageName="" javaFilesPath=""/>
+      <generationSetting javaClassPackageName="eu.scott.warehouse.domains.mission" javaFilesPath="../domain-pddl/src/main/java"/>
     </domainSpecifications>
     <domainPrefixes name="mission"/>
     <generationSetting javaClassPackageName="my.package1" javaFilesPath="sandbox-domain-pddl/src/main/java"/>
