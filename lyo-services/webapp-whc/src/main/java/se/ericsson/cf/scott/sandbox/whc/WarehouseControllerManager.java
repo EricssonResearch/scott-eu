@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 
-import se.ericsson.cf.scott.sandbox.whc.planning.PlanBuilder;
+import se.ericsson.cf.scott.sandbox.whc.planning.PlanRequestBuilder;
 import eu.scott.warehouse.domains.pddl.Plan;
 
 // Start of user code imports
@@ -106,7 +106,7 @@ public class WarehouseControllerManager {
         execService.schedule(() -> {
             log.debug("Can now begin the execution of the planner");
             TRSManager.fetchPlanForProblem("sample-problem-request.ttl");
-            final Object[] resources = new PlanBuilder().build();
+            final Object[] resources = new PlanRequestBuilder().build();
             MqttManager.triggerPlan(new PlanDTO(resources));
         }, 30, TimeUnit.SECONDS);
 

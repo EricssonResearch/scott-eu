@@ -116,13 +116,12 @@ public class TRSManager {
 
     // TODO Andrew@2018-07-30: move to PlanManager
     private static InputStream requestPlanManually(final Model problemModel) throws IOException {
-        String url = AdaptorHelper.PLAN_CF_URI;
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         RDFDataMgr.write(out, problemModel, RDFFormat.TURTLE_BLOCKS);
 
         HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost(url);
+        HttpPost post = new HttpPost(AdaptorHelper.PLAN_CF_URI);
 
         post.setHeader("Content-type", AdaptorHelper.MIME_TURTLE);
         post.setHeader("Accept", AdaptorHelper.MIME_TURTLE);

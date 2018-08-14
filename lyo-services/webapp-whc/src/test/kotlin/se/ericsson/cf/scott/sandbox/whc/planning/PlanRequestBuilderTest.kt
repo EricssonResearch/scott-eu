@@ -2,14 +2,13 @@ package se.ericsson.cf.scott.sandbox.whc.planning
 
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import org.apache.jena.rdf.model.Model
-import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.riot.Lang
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.RDFFormat
-import org.apache.jena.riot.RDFParser
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
-import org.junit.Assert.*
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.modelFrom
 import java.io.ByteArrayOutputStream
 import java.net.URI
 
@@ -19,7 +18,7 @@ import java.net.URI
  * @version $version-stub$
  * @since FIXME
  */
-class PlanBuilderTest {
+class PlanRequestBuilderTest {
 
     @Test
     fun locationIsIsomorphic() {
@@ -37,7 +36,7 @@ class PlanBuilderTest {
               rdfs:label "location" .
         """, Lang.TURTLE)
 
-        val location = PlanBuilder().buildLocation()
+        val location = PlanRequestBuilder().buildLocation()
         val locationModelActual = JenaModelHelper.createJenaModel(arrayOf(location))
 
         assertIsomorphic("Location object is incorrect", locationModelExpected, locationModelActual)
@@ -58,11 +57,7 @@ class PlanBuilderTest {
                 locationModelExpected.isIsomorphicWith(locationModelActual))
     }
 
-    private fun modelFrom(str: String, l: Lang): Model {
-        val model = ModelFactory.createDefaultModel()
-        RDFParser.fromString(str.trimIndent()).lang(l).parse(model.graph)
-        return model
-    }
+
 }
 
 val Model.turtle: String
