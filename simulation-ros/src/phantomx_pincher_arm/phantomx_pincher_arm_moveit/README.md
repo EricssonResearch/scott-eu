@@ -12,7 +12,7 @@ More details can be found at [MoveIt! concepts](http://moveit.ros.org/documentat
 
 ## MoveIt! Launch Files ##
 
-A detailed description about launch files could be helpful on understanding how MoveIt! components are connected to robot's components.
+**TO_DO:** A detailed description about launch files could be helpful on understanding how MoveIt! components are connected to robot's components.
 
 
 ## How to run - Basic example ##
@@ -21,7 +21,10 @@ This basic example uses rviz to control the arm.
 
 To work properly this package need the following packages: phantomx\_pincher\_arm\_vrep\_controller and phantomx\_pincher\_arm\_description.
 
-1. Follow the instructions of phantomx\_pincher\_arm\_vrep\_controller README.md and check if it's working
+To run an example follow the steps:
+
+1. Install [trac_ik](https://bitbucket.org/traclabs/trac_ik) plugin: ```sudo apt-get install ros-kinetic-trac-ik```
+1. Follow the instructions of phantomx\_pincher\_arm\_vrep\_controller [README.md](../phantomx_pincher_arm_vrep_controller/README.md) and check if it's working
 1. Source packages files:
    - on the packages inside phantomx\_pincher\_arm do for each one: `$ source devel/setup.bash`
 1. Start roscore
@@ -46,6 +49,9 @@ This example show how to execute a pick and place task
 
 To work properly this package need the following packages: phantomx\_pincher\_arm\_vrep\_controller and phantomx\_pincher\_arm\_description.
 
+To run an example follow the steps:
+
+1. Install [trac_ik](https://bitbucket.org/traclabs/trac_ik) plugin: ```sudo apt-get install ros-kinetic-trac-ik```
 1. Follow the instructions of phantomx\_pincher\_arm\_vrep\_controller README.md and check if it's working
 1. Source packages files:
    - on the packages inside phantomx\_pincher\_arm do for each one: `$ source devel/setup.bash`
@@ -103,12 +109,19 @@ The present solution has a poor performance using other IK solver than trac.
 # TO-DO #
 
 [ ] Add pick and place action server to a launch file
+
 [ ] Test pick and place for multiple robots
+
 [ ] Improve how to pick an object
+
 [ ] Improve modularity on action servers scripts
+
 [ ] Eliminate some prints and use roslog properly
+
 [ ] Improve control .cpp file
   - roslog usage
   - remoteAPI checkup
+  
 [ ] Robot name inside turtlebot2i.srdf must be one for only the arm and for the arm+mobile_base
+
 [ ] phantomx_pincher_arm.urdf.xacro must be the same for only the arm and for the arm+mobile_base
