@@ -162,11 +162,19 @@ To use the python remote API provided by VREP, some adjustments are necessary:
 1. Run the scene containing the turtlebot2i
 
 ```
+./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v3_recharge.ttt
+```
+
+```
 ./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v4.ttt
 ```
 
-2. Launch a rosfile that will bringou moveit and rviz to visualize and control the arm
+
+2. Launch a rosfile that will open moveit and rviz
 
 ```
 roslaunch turtlebot2i_description turtlebot2i_description_single_moveit.launch
 ```
+
+
+
