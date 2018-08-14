@@ -16,4 +16,7 @@
 		<arg name="info" value="true"/>
 	</include>
 
+	<node pkg="phantomx_pincher_arm_moveit" name="pick_custom" type="pick_action_server.py" output="screen" />
+
+	<node pkg="phantomx_pincher_arm_moveit" name="place_custom" type="place_action_server.py" output="screen" />
 </launch>
