@@ -100,8 +100,9 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
     ---- BUMPER SENSING ----
     -- Front Bumper
-    front_bumper_pos = sim.getJointPosition(t_frontBumper)
-    if(front_bumper_pos < -0.005) then
+    --front_bumper_pos = sim.getJointPosition(t_frontBumper)
+    front_bumper_force = sim.getJointForce(t_frontBumper) -- Works better with force instead of position
+    if(front_bumper_force < -1) then
         front_collision=true
         bumperCenterState = 1
         bumper_id = 1
@@ -113,8 +114,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     end
     
     -- Right Bumper
-    right_bumper_pos = sim.getJointPosition(t_rightBumper)
-    if(right_bumper_pos < -0.005) then
+    right_bumper_force = sim.getJointForce(t_rightBumper)
+    if(right_bumper_force < -1) then
         right_collision=true
         bumperRightState = 1
         bumper_id = 2
@@ -126,8 +127,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     end
     
     -- Left Bumper
-    left_bumper_pos = sim.getJointPosition(t_leftBumper)
-    if(left_bumper_pos < -0.005) then
+    left_bumper_force = sim.getJointForce(t_leftBumper)
+    if(left_bumper_force < -1) then
         left_collision=true
         bumperLeftState = 1
         bumper_id = 0
@@ -142,6 +143,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     ros_kobuki_bumper_event = {}
     ros_kobuki_bumper_event["bumper"] = bumper_id 
     ros_kobuki_bumper_event["state"] = bumper_pressed
+    print(bumper_id,'  ',bumper_pressed)
 	simROS.publish(pubBumper, ros_kobuki_bumper_event)
     
     ---- CLIFF SENSING ----
