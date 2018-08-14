@@ -71,6 +71,8 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
+import eu.scott.warehouse.domains.pddl.EitherType;
+
 
 import eu.scott.warehouse.domains.pddl.PrimitiveType;
 

@@ -71,6 +71,8 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+
+
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.PrimitiveType;
 
@@ -201,7 +203,7 @@ public class EitherType
     
     // Start of user code setterAnnotation:member
     // End of user code
-    public void setMember(final HashSet<Link> member )
+    public void setMember(final Set<Link> member )
     {
         // Start of user code setterInit:member
         // End of user code

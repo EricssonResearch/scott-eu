@@ -95,7 +95,7 @@ public interface IForAll
     public Link getParameter();
 
 
-    public void setArgument(final HashSet<Link> argument );
+    public void setArgument(final Set<Link> argument );
     public void setParameter(final Link parameter );
 }
 

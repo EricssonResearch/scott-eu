@@ -30,8 +30,17 @@ package eu.scott.warehouse.domains.pddl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -62,6 +71,8 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+
+
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.Step;
 
@@ -258,7 +269,7 @@ public class Plan
     
     // Start of user code setterAnnotation:step
     // End of user code
-    public void setStep(final HashSet<Step> step )
+    public void setStep(final Set<Step> step )
     {
         // Start of user code setterInit:step
         // End of user code
@@ -414,5 +425,6 @@ public class Plan
     
         return s;
     }
+    
     
 }

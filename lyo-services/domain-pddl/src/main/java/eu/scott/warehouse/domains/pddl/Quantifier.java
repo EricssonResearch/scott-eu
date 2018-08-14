@@ -71,6 +71,8 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+
+
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 
 // Start of user code imports
@@ -217,7 +219,7 @@ public class Quantifier
     
     // Start of user code setterAnnotation:argument
     // End of user code
-    public void setArgument(final HashSet<Link> argument )
+    public void setArgument(final Set<Link> argument )
     {
         // Start of user code setterInit:argument
         // End of user code

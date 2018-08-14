@@ -71,6 +71,8 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+
+
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Constant;
@@ -317,7 +319,7 @@ public class Domain
     
     // Start of user code setterAnnotation:constant
     // End of user code
-    public void setConstant(final HashSet<Link> constant )
+    public void setConstant(final Set<Link> constant )
     {
         // Start of user code setterInit:constant
         // End of user code
@@ -333,7 +335,7 @@ public class Domain
     
     // Start of user code setterAnnotation:function
     // End of user code
-    public void setFunction(final HashSet<Link> function )
+    public void setFunction(final Set<Link> function )
     {
         // Start of user code setterInit:function
         // End of user code
@@ -349,7 +351,7 @@ public class Domain
     
     // Start of user code setterAnnotation:predicate
     // End of user code
-    public void setPredicate(final HashSet<Link> predicate )
+    public void setPredicate(final Set<Link> predicate )
     {
         // Start of user code setterInit:predicate
         // End of user code

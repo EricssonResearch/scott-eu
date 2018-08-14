@@ -71,6 +71,8 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+
+
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.Domain;
 import eu.scott.warehouse.domains.pddl.PddlObject;
@@ -340,7 +342,7 @@ public class Problem
     
     // Start of user code setterAnnotation:init
     // End of user code
-    public void setInit(final HashSet<Link> init )
+    public void setInit(final Set<Link> init )
     {
         // Start of user code setterInit:init
         // End of user code
@@ -380,7 +382,7 @@ public class Problem
     
     // Start of user code setterAnnotation:pddlObject
     // End of user code
-    public void setPddlObject(final HashSet<Link> pddlObject )
+    public void setPddlObject(final Set<Link> pddlObject )
     {
         // Start of user code setterInit:pddlObject
         // End of user code

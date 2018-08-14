@@ -71,6 +71,8 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+
+
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.Action;
 
@@ -298,7 +300,7 @@ public class Step
     
     // Start of user code setterAnnotation:adding
     // End of user code
-    public void setAdding(final HashSet<Link> adding )
+    public void setAdding(final Set<Link> adding )
     {
         // Start of user code setterInit:adding
         // End of user code
@@ -314,7 +316,7 @@ public class Step
     
     // Start of user code setterAnnotation:deleting
     // End of user code
-    public void setDeleting(final HashSet<Link> deleting )
+    public void setDeleting(final Set<Link> deleting )
     {
         // Start of user code setterInit:deleting
         // End of user code
@@ -330,7 +332,7 @@ public class Step
     
     // Start of user code setterAnnotation:updating
     // End of user code
-    public void setUpdating(final HashSet<Link> updating )
+    public void setUpdating(final Set<Link> updating )
     {
         // Start of user code setterInit:updating
         // End of user code

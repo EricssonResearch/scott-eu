@@ -142,10 +142,10 @@ public interface IProblem
 
     public void setDomain(final Link domain );
     public void setGoal(final Link goal );
-    public void setInit(final HashSet<Link> init );
+    public void setInit(final Set<Link> init );
     public void setMaximize(final Link maximize );
     public void setMinimize(final Link minimize );
-    public void setPddlObject(final HashSet<Link> pddlObject );
+    public void setPddlObject(final Set<Link> pddlObject );
     public void setLabel(final String label );
 }
 

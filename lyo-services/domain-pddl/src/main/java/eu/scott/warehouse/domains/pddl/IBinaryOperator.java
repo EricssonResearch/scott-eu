@@ -87,6 +87,6 @@ public interface IBinaryOperator
     public HashSet<Link> getArgument();
 
 
-    public void setArgument(final HashSet<Link> argument );
+    public void setArgument(final Set<Link> argument );
 }
 
