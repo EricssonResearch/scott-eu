@@ -73,6 +73,7 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 
 
+import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Constant;
@@ -292,7 +293,7 @@ public class Domain
     // Start of user code getterAnnotation:label
     // End of user code
     @OslcName("label")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsDomainConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("Parameter name.")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)

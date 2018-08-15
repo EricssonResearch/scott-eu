@@ -2,33 +2,32 @@
 <oslc4j_ai:Specification xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:oslc4j_ai="http://org.eclipse.lyo/oslc4j/adaptorInterface">
   <domainSpecifications name="SCOTT PDDL 2.1 subset spec" namespaceURI="http://ontology.cf.ericsson.net/pddl/" namespacePrefix="//@domainPrefixes.0">
     <resources name="Plan" resourceProperties="//@domainSpecifications.0/@resourceProperties.0 //@domainSpecifications.0/@resourceProperties.1 //@domainSpecifications.0/@resourceProperties.2"/>
-    <resources name="Parameter" resourceProperties="//@domainSpecifications.0/@resourceProperties.3 //@domainSpecifications.0/@resourceProperties.4 //@domainSpecifications.0/@resourceProperties.5"/>
-    <resources name="When" resourceProperties="//@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.0/@resourceProperties.7"/>
-    <resources name="Imply" resourceProperties="//@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="PrimitiveType" resourceProperties="//@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="Action" resourceProperties="//@domainSpecifications.0/@resourceProperties.8 //@domainSpecifications.0/@resourceProperties.7 //@domainSpecifications.0/@resourceProperties.9 //@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="Not" resourceProperties="//@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="EitherType" resourceProperties="//@domainSpecifications.0/@resourceProperties.10"/>
-    <resources name="Constant" resourceProperties="//@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="ForAll" resourceProperties="//@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.0/@resourceProperties.7"/>
-    <resources name="Step" resourceProperties="//@domainSpecifications.0/@resourceProperties.11 //@domainSpecifications.0/@resourceProperties.12 //@domainSpecifications.0/@resourceProperties.13 //@domainSpecifications.0/@resourceProperties.14 //@domainSpecifications.0/@resourceProperties.5"/>
-    <resources name="Domain" resourceProperties="//@domainSpecifications.0/@resourceProperties.11 //@domainSpecifications.0/@resourceProperties.15 //@domainSpecifications.0/@resourceProperties.16 //@domainSpecifications.0/@resourceProperties.17 //@domainSpecifications.0/@resourceProperties.3 //@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="Quantifier" resourceProperties="//@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.0/@resourceProperties.7"/>
-    <resources name="Object" resourceProperties="//@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="BinaryOperator" resourceProperties="//@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="Problem" resourceProperties="//@domainSpecifications.0/@resourceProperties.18 //@domainSpecifications.0/@resourceProperties.19 //@domainSpecifications.0/@resourceProperties.20 //@domainSpecifications.0/@resourceProperties.21 //@domainSpecifications.0/@resourceProperties.22 //@domainSpecifications.0/@resourceProperties.23 //@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="Function" resourceProperties="//@domainSpecifications.0/@resourceProperties.7 //@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="FluentMinus" resourceProperties="//@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="AssignmentOperator" resourceProperties="//@domainSpecifications.0/@resourceProperties.24 //@domainSpecifications.0/@resourceProperties.7"/>
-    <resources name="BinaryComparator" resourceProperties="//@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="Predicate" resourceProperties="//@domainSpecifications.0/@resourceProperties.7 //@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="Or" resourceProperties="//@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="PlanExecutionResult" resourceProperties="//@domainSpecifications.0/@resourceProperties.25 //@domainSpecifications.0/@resourceProperties.26 //@domainSpecifications.0/@resourceProperties.27"/>
+    <resources name="Parameter" resourceProperties="//@domainSpecifications.0/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0 //@domainSpecifications.0/@resourceProperties.4"/>
+    <resources name="When" resourceProperties="//@domainSpecifications.0/@resourceProperties.5 //@domainSpecifications.0/@resourceProperties.6"/>
+    <resources name="Imply" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
+    <resources name="PrimitiveType" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="Action" resourceProperties="//@domainSpecifications.0/@resourceProperties.7 //@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.0/@resourceProperties.8 //@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="Not" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
+    <resources name="EitherType" resourceProperties="//@domainSpecifications.0/@resourceProperties.9"/>
+    <resources name="Constant" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="ForAll" resourceProperties="//@domainSpecifications.0/@resourceProperties.5 //@domainSpecifications.0/@resourceProperties.6"/>
+    <resources name="Step" resourceProperties="//@domainSpecifications.0/@resourceProperties.10 //@domainSpecifications.0/@resourceProperties.11 //@domainSpecifications.0/@resourceProperties.12 //@domainSpecifications.0/@resourceProperties.13 //@domainSpecifications.0/@resourceProperties.4"/>
+    <resources name="Domain" resourceProperties="//@domainSpecifications.0/@resourceProperties.10 //@domainSpecifications.0/@resourceProperties.14 //@domainSpecifications.0/@resourceProperties.15 //@domainSpecifications.0/@resourceProperties.16 //@domainSpecifications.0/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="Quantifier" resourceProperties="//@domainSpecifications.0/@resourceProperties.5 //@domainSpecifications.0/@resourceProperties.6"/>
+    <resources name="Object" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="BinaryOperator" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
+    <resources name="Problem" resourceProperties="//@domainSpecifications.0/@resourceProperties.17 //@domainSpecifications.0/@resourceProperties.18 //@domainSpecifications.0/@resourceProperties.19 //@domainSpecifications.0/@resourceProperties.20 //@domainSpecifications.0/@resourceProperties.21 //@domainSpecifications.0/@resourceProperties.22 //@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="Function" resourceProperties="//@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="FluentMinus" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
+    <resources name="AssignmentOperator" resourceProperties="//@domainSpecifications.0/@resourceProperties.23 //@domainSpecifications.0/@resourceProperties.6"/>
+    <resources name="BinaryComparator" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
+    <resources name="Predicate" resourceProperties="//@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="Or" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
+    <resources name="PlanExecutionResult" resourceProperties="//@domainSpecifications.0/@resourceProperties.24 //@domainSpecifications.0/@resourceProperties.25 //@domainSpecifications.0/@resourceProperties.26"/>
     <resourceProperties name="cost" occurs="zeroOrOne" valueType="Float" description="Cost of the plan according to metric."/>
     <resourceProperties name="step" occurs="zeroOrMany" valueType="LocalResource" range="//@domainSpecifications.0/@resources.10" description="Step of the plan containing an action."/>
     <resourceProperties name="time" occurs="zeroOrOne" valueType="Float" description="Time in seconds it took to produce the plan."/>
     <resourceProperties name="type" valueType="Resource" range="//@domainSpecifications.0/@resources.7" description="Parameter type."/>
-    <resourceProperties name="label" valueType="String" description="Parameter name."/>
     <resourceProperties name="order" valueType="Integer" description="Parameter order."/>
     <resourceProperties name="argument" occurs="oneOrMany" valueType="Resource" description="Conditional effect."/>
     <resourceProperties name="parameter" valueType="Resource" description="Condition (same as precondition)."/>
@@ -44,7 +43,7 @@
     <resourceProperties name="predicate" occurs="zeroOrMany" valueType="Resource" description="Domain predicates."/>
     <resourceProperties name="domain" valueType="Resource" range="//@domainSpecifications.0/@resources.11" description="Problem planning domain."/>
     <resourceProperties name="goal" valueType="Resource" representation="inline" description="Problem goal."/>
-    <resourceProperties name="init" occurs="zeroOrMany" valueType="Resource" description="Problem init."/>
+    <resourceProperties name="init" occurs="zeroOrMany" valueType="Resource" representation="inline" description="Problem init."/>
     <resourceProperties name="maximize" occurs="zeroOrOne" valueType="Resource" description="Maximization metric."/>
     <resourceProperties name="minimize" occurs="zeroOrOne" valueType="Resource" description="Minimization metric."/>
     <resourceProperties name="object" occurs="zeroOrMany" valueType="Resource" range="//@domainSpecifications.0/@resources.13" description="Problem objects."/>
@@ -68,8 +67,12 @@
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.blocksworld" javaFilesPath=""/>
   </domainSpecifications>
   <domainSpecifications name="Domain3" namespaceURI="http://your.organisation.domain/nsp3#" namespacePrefix="//@domainPrefixes.2"/>
+  <domainSpecifications name="RDFS" namespaceURI="http://www.w3.org/2000/01/rdf-schema#" namespacePrefix="//@domainPrefixes.3">
+    <resourceProperties name="label" valueType="String" description="Parameter name."/>
+  </domainSpecifications>
   <domainPrefixes name="pddl"/>
   <domainPrefixes name="bworld"/>
   <domainPrefixes name="nsp3"/>
+  <domainPrefixes name="rdfs"/>
   <generationSetting javaClassPackageName="eu.scott.warehouse.domains" javaFilesPath="domain-pddl/src/main/java/"/>
 </oslc4j_ai:Specification>

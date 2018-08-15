@@ -65,6 +65,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.IDomain;
 import eu.scott.warehouse.domains.pddl.IPddlObject;
@@ -95,6 +96,7 @@ public interface IProblem
     @OslcDescription("Problem goal.")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
+    @OslcRepresentation(Representation.Inline)
     @OslcReadOnly(false)
     public Link getGoal();
 
@@ -103,6 +105,7 @@ public interface IProblem
     @OslcDescription("Problem init.")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
+    @OslcRepresentation(Representation.Inline)
     @OslcReadOnly(false)
     public HashSet<Link> getInit();
 
@@ -132,7 +135,7 @@ public interface IProblem
     public HashSet<Link> getPddlObject();
 
     @OslcName("label")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsDomainConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("Parameter name.")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)

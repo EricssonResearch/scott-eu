@@ -29,6 +29,7 @@ import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.ns
 import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.nsSh
 import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.u
 import java.net.URI
+import java.util.*
 import javax.ws.rs.core.UriBuilder
 import javax.xml.namespace.QName
 
@@ -51,7 +52,9 @@ fun IExtendedResource.setProperty(name: URI, p: Any) {
     setProperty(name.toString(), p)
 }
 
-class RawResource(about: URI?) : AbstractResource(about)
+class RawResource(about: URI) : AbstractResource(about) {
+    constructor() : this(u(UUID.randomUUID()))
+}
 
 fun IExtendedResource.setInstanceShape(cl: Class<*>) {
     this.setProperty(ns(OSLC, "instanceShape"), nsSh(cl))
@@ -282,7 +285,8 @@ class PlanRequestBuilder {
               rdfs:label "table" .
         */
 
-        val table = Location(u("table"))
+        val table = RawResource(u("table"))
+        table.addType(u("location"))
         table.setInstanceShape(Constant::class.java)
         table.setLabel("table")
 
@@ -403,13 +407,17 @@ class PlanRequestBuilder {
         problem.goal = goalState.instance.link
         resources.addAll(goalState.resources)
 
-        problem.minimize = Link(ns(PDDL, "total-time"))
+        val minFn = RawResource(u(UUID.randomUUID()))
+        minFn.addType(ns(PDDL, "total-time"))
 
+        problem.minimize = minFn.link
+
+        resources.add(problem)
 
         return JenaModelHelper.createJenaModel(resources.toArray())
     }
 
-    private fun buildGoalState(tables: ImmutableList<Location>?,
+    private fun buildGoalState(tables: ImmutableList<IResource>,
                                blocks: ImmutableList<Block>?): InstanceWithResources<IResource> {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         /*
@@ -425,7 +433,7 @@ class PlanRequestBuilder {
             ] ;
          */
 
-        val goal = Or()
+        val goal = Or(u(UUID.randomUUID()))
 
         val bONc = on(u("b"), u("c"))
         val cONb = on(u("c"), u("b"))
@@ -435,7 +443,7 @@ class PlanRequestBuilder {
     }
 
     fun on(x: URI, y: URI): On {
-        val bONc = On()
+        val bONc = On(u(UUID.randomUUID()))
         bONc.setProperty(u("on-x"), x)
         bONc.setProperty(u("on-y"), y)
         return bONc
@@ -443,9 +451,9 @@ class PlanRequestBuilder {
 
     fun eq(l: IResource, r: Any): IExtendedResource {
         // FIXME Andrew@2018-08-14: EQ class
-        val equal = RawResource(null)
+        val equal = RawResource(u(UUID.randomUUID()))
         equal.addType(ns(PDDL, "EQ"))
-        equal.setProperty(ns(PDDL, "left"), l)
+        equal.setProperty(ns(PDDL, "left"), l.about)
         equal.setProperty(ns(PDDL, "right"), r)
 
         return equal
@@ -470,13 +478,13 @@ class PlanRequestBuilder {
     }
 
     fun clear(what: URI): IExtendedResource {
-        val clear = RawResource(null)
+        val clear = RawResource(u(UUID.randomUUID()))
         clear.addType(u("clear"))
         clear.setProperty(u("clear-x"), what)
         return clear
     }
 
-    private fun buildInitState(tables: List<Location>,
+    private fun buildInitState(tables: List<IResource>,
                                blocks: List<Block>): Collection<IResource> {
         /*
           pddl:init [ a pddl:EQ ;
@@ -547,196 +555,13 @@ class PlanRequestBuilder {
     }
 
     private fun moved(b: Block): InstanceWithResources<IResource> {
-        val m = RawResource(null)
-        m.setProperty(ns(RDFS, "Class"), u("moved"))
+        val m = RawResource(u(UUID.randomUUID()))
+        m.addType(u("moved"))
         m.setProperty(u("moved-m"), b.about)
 
         return InstanceWithResources(m, ImmutableSet.of(m, b))
     }
 
-
-//    fun build(): Array<Any> {
-//        OslcRdfHelper.setBase(base)
-//
-//        val location = buildLocation()
-//
-//        /*
-//        :block
-//          a rdfs:Class ;
-//          rdfs:subClassOf pddl:PrimitiveType ;
-//          oslc:instanceShape pddl:PrimitiveTypeShape ;
-//          rdfs:label "block" .
-//         */
-//        val block = Block(u("block"))
-//        block.label = "block"
-//
-//        /*
-//        :table
-//          a :location ;
-//          oslc:instanceShape pddl:ConstantShape ;
-//          rdfs:label "table" .
-//         */
-//        val table = Location(u("table"))
-//        table.setInstanceShape(Constant::class.java)
-//        table.setLabel("table")
-//
-//
-//        /*
-//        :on
-//          a rdfs:Class ;
-//          rdfs:subClassOf pddl:Predicate ;
-//          oslc:instanceShape pddl:PredicateShape ;
-//          rdfs:label "on" ;
-//          pddl:parameter :on-x ,
-//                         :on-y .
-//         */
-//        val on = RawResource(u("on"))
-//        on.addType(ns(RDFS, "Class"))
-////        location.types.add(ns(RDFS, "Class"))
-//        on.setSuperclass(Predicate::class.java)
-//        on.setInstanceShape(Predicate::class.java)
-////        location.setProperty(ns(RDFS, "subClassOf"), ns(Predicate::class.java))
-////        location.setProperty(ns(OSLC, "instanceShape"), nsSh(Predicate::class.java))
-//        on.setLabel("on")
-////        location.setProperty(ns(RDFS, "label"), "on")
-//
-//        /*=location-or-block=*/
-//        /*
-//        :location-or-block
-//          a rdfs:Class ;
-//          rdfs:subClassOf pddl:EitherType ;
-//          oslc:instanceShape pddl:EitherTypeShape ;
-//          rdfs:member :location ,
-//                      :block .
-//         */
-//        val locationOrBlock = LocationOrBlock(u("location-or-block"))
-//        // FIXME Andrew@2018-08-14: add Instance Shape
-//        locationOrBlock.setProperty(ns(RDFS, "member"), ImmutableSet.of(location, block))
-//        /*=/location-or-block=*/
-//
-//        /*=on-x=*/
-//        /*
-//        :on-x
-//            a pddl:Parameter ;
-//            oslc:instanceShape pddl:ParameterShape ;
-//            rdfs:label "x" ;
-//            pddl:type :location-or-block ;
-//            sh:order 1 .
-//         */
-//        val onX = Parameter(u("on-x"))
-//        onX.label = "x"
-//        onX.setProperty(ns(PDDL, "type"), locationOrBlock.link)
-//        onX.setProperty(SH_ORDER, 1)
-//        /*=/on-x=*/
-//
-//        val onY = Parameter(u("on-y"))
-//        onY.label = "y"
-//        onY.setProperty(ns(PDDL, "type"), locationOrBlock.link)
-//        onY.setProperty(SH_ORDER, 2)
-//
-//        on.setProperty(ns(PDDL, "parameter"), ImmutableSet.of(onX, onY))
-//
-//        /*
-//        :clear-x
-//          a pddl:Parameter ;
-//          oslc:instanceShape pddl:ParameterShape ;
-//          rdfs:label "x" ;
-//          pddl:type :location-or-block ;
-//          sh:order 1 .
-//         */
-//        val clearX = Parameter(u("clear-x"))
-//        clearX.setInstanceShape(Parameter::class.java)
-//        clearX.label = "x"
-//        clearX.setProperty(ns(PDDL, "type"), locationOrBlock.link)
-//        clearX.setProperty(SH_ORDER, 1)
-//
-//
-//        /*
-//        :clear
-//          a rdfs:Class ;
-//          rdfs:subClassOf pddl:Predicate ;
-//          oslc:instanceShape pddl:PredicateShape ;
-//          rdfs:label "clear" ;
-//          pddl:parameter :clear-x .
-//         */
-//        val clear = RawResource(u("clear"))
-//        clear.setSuperclass(Predicate::class.java)
-//        clear.setInstanceShape(Predicate::class.java)
-//        clear.setLabel("clear")
-//        clear.setProperty(ns(PDDL, "parameter"), clearX)
-//
-//        /*
-//        :moved
-//          a rdfs:Class ;
-//          rdfs:subClassOf pddl:Function ;
-//          oslc:instanceShape pddl:FunctionShape ;
-//          rdfs:label "moved" ;
-//          pddl:parameter :moved-m .
-//
-//        :moved-m
-//          a pddl:Parameter ;
-//          oslc:instanceShape pddl:ParameterShape ;
-//          rdfs:label "m" ;
-//          pddl:type :block ;
-//          sh:order 1 .
-//
-//        :total-moved
-//          a rdfs:Class ;
-//          rdfs:subClassOf pddl:Function ;
-//          oslc:instanceShape pddl:FunctionShape ;
-//          rdfs:label "total-moved" .
-//         */
-//        val moved = RawResource(u("moved"))
-//        moved.addType(ns(RDFS, "Class"))
-//        moved.setSuperclass(Function::class.java)
-//        moved.setInstanceShape(Function::class.java)
-//        moved.setLabel("moved")
-//
-//        val movedM = Parameter(u("moved-m"))
-//        movedM.label = "m"
-//        movedM.setInstanceShape(Parameter::class.java)
-//        movedM.setProperty(ns(PDDL, "type"), block)
-//        movedM.setProperty(SH_ORDER, 1)
-//
-//        moved.setProperty(ns(PDDL, "parameter"), movedM)
-//
-//        val totalMoved = RawResource(u("total-moved"))
-//        totalMoved.addType(ns(RDFS, "Class"))
-//        totalMoved.setSuperclass(Function::class.java)
-//        totalMoved.setInstanceShape(Function::class.java)
-//        totalMoved.setLabel("total-moved")
-//
-//
-//        val moveAction = JenaModelHelper.unmarshalSingle()
-//
-//        /*
-//        :adl-blocksworld
-//          a pddl:Domain ;
-//          oslc:instanceShape pddl:DomainShape ;
-//          rdfs:label "adl-blocksworld" ;
-//          pddl:type :location ,
-//                    :block ;
-//          pddl:constant :table ;
-//          pddl:predicate :on ,
-//                         :clear ;
-//          pddl:function :moved ,
-//                        :total-moved ;
-//          pddl:action :move .
-//         */
-//
-//        val adl = Domain(u("adl-blocksworld"))
-//
-//        adl.label = "adl-blocksworld"
-//        // FIXME must be a set
-////        adl.type = Sets.of(location, block)
-//        adl.type = location.link
-//        adl.setConstant(ImmutableSet.of(table.link))
-//        adl.setPredicate(ImmutableSet.of(on.link, clear.link))
-//        adl.setFunction(ImmutableSet.of(moved.link, totalMoved.link))
-//        adl.action = moveAction.link
-//
-//        return arrayOf()
-//    }
 
     fun buildLocation(): RawResource {
         /*
@@ -804,6 +629,10 @@ object OslcRdfHelper {
 
     fun u(p: String): URI {
         return UriBuilder.fromUri(base).path(p).build()
+    }
+
+    fun u(p: UUID?): URI {
+        return u("blnk_" + p.toString())
     }
 
     fun modelFrom(str: String, l: Lang): Model {

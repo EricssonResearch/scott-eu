@@ -65,7 +65,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
 
 // Start of user code imports
 // End of user code
@@ -78,7 +78,7 @@ public interface IPddlObject
 
 
     @OslcName("label")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsDomainConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("Parameter name.")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)
