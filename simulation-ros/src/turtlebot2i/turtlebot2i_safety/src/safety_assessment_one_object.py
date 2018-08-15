@@ -1,8 +1,9 @@
 """Making sure we are running the right version of python"""
 import sys
 if sys.version_info[0] >= 3:
-    raise "Must be using Python 2"
-""" later
+    #print("Wrong Python Version") #redundant
+    raise Exception("Must be using Python 2")
+""" later, if neccessary
 # Python 2.x and 3.x compatibility
 if sys.version_info[0] == 3:
     ...
@@ -25,9 +26,11 @@ warnings.filterwarnings("ignore")  #  a lot of warning messages, but why?
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
+'''
+def topic_callback() 
+#def topic_callback(odom_data, scan_data,data):
 
-
-
+'''
 """ Main program """
 if __name__ == "__main__":  
 #-- RISK ASSESSMENT FLS INITIALIZATION-----------------------------------
@@ -86,15 +89,40 @@ if __name__ == "__main__":
 
     #In order to simulate this control system, we will create a instance (Call it Agent?)
     risk_assessment_instance = ctrl.ControlSystemSimulation(risk_assessment_system)  # this is a FLS instance
-'''
-#-- ROS SOAR NODE INITIALIZATION-----------------------------------    
+    """
+    #-- ROS RA NODE INITIALIZATION-----------------------------------    
     print("Initializing ROS RISK ASSESSMENT node")
     rospy.init_node("ra_ros_node",anonymous=True) #Always first
-'''
 
+    ## SUBSCRIBERS
+    # Creates a subscriber object for each topic
+    # The messages to be synced must have the 'header' field or
+    #  use the 'allow_headerless=True' in the TimeSynchronizer() function
+    #  if this field is not present
+    #examples
+    #sub=message_filters.Subscriber("/turtlebot2i/soar_sub_topic", String)
+    #odom_sub = message_filters.Subscriber('/turtlebot2i/odom', Odometry)
+    #scan_sub = message_filters.Subscriber('/turtlebot2i/lidar/scan', LaserScan)
+
+    scene_graph_sub = message_filters.Subscriber('/turtlebot2i/topicName', Type)
+
+    # Make the topics sync through ApproximateTimeSynchronizer with 0.1s of tolerance
+    ts =  message_filters.ApproximateTimeSynchronizer([odom_sub, scan_sub,sub], 10, 0.1, allow_headerless=True)
+
+    # Associate the synchronizer with a callback
+    ts.registerCallback(topic_callback)
+
+    ## PUBLISHERS
+    pub=rospy.Publisher("soar_pub_topic", String, queue_size=10)
+    dummy_pub=rospy.Publisher("/turtlebot2i/soar_sub_topic",String, queue_size=10) #used for inputing debug data to soar_sub_topic   
+    """
+
+    """
+    This part will be moved to the callback function
     #We can now simulate our control system by simply specifying the inputs and calling the ``compute`` method.  
     # Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
     # Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
+    """  
     risk_assessment_instance.input['distance'] = 1		# 0- 3  meter
     risk_assessment_instance.input['direction'] = 180	# 0-360 degree
     risk_assessment_instance.input['speed'] = 2		#0- 2 m/s
@@ -108,7 +136,7 @@ if __name__ == "__main__":
     Once computed, we can view the result as well as visualize it.
     """
 
-    print risk_assessment_instance.output['risk']
+    #print risk_assessment_instance.output['risk'] #This line can not bu run with Python3
     #risk.view(sim=risk_assessment_instance) # a figure
  
 
