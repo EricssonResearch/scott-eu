@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   sandbox-whc:
     build: ./webapp-whc
@@ -9,10 +9,13 @@ services:
     - mosquitto
   sandbox-twin:
     build: ./webapp-twin
+    sysctls:
+     - net.ipv4.ip_local_port_range=40000 40100
     environment: 
      - ROS_MASTER_URI=http://rosmaster:11311
     ports:
      - "8081:8080"
+     - "40000-40100:40000-40100"
     depends_on:
     - sandbox-whc
     - mosquitto
@@ -39,6 +42,7 @@ services:
      - 9001
   rosmaster:
     image: ros
-    command: roscore
+    command: roscore -p 11311
     ports:
      - 11311
+     - "11313:11311"
