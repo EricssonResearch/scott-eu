@@ -71,6 +71,17 @@ data class InstanceWithResources<T : IResource>(val instance: T,
 class PlanRequestBuilder {
     private val base: URI = URI.create("http://ontology.cf.ericsson.net/pddl_example/")
 
+    init {
+        OslcRdfHelper.setBase(base)
+    }
+
+    fun getPlanRequestComplete(): Model {
+        val domainStatic = getDomainStatic()
+        val domainDynamic = getDomainDynamic()
+        domainDynamic.add(domainStatic)
+        return domainDynamic
+    }
+
     fun getDomainStatic(): Model {
         val ttl = """
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -260,7 +271,7 @@ class PlanRequestBuilder {
         return model
     }
 
-    fun modelDynamic(): Model {
+    fun getDomainDynamic(): Model {
 
         val resources = HashSet<IResource>()
 
@@ -380,19 +391,19 @@ class PlanRequestBuilder {
         problem.pddlObject.addAll(blocks.map { entry -> entry.value.link })
         problem.pddlObject.add(table.link)
 
-        val initialState: Collection<InstanceWithResources<IResource>> = buildInitState(
+        val initialState: Collection<IResource> = buildInitState(
                 ImmutableList.of(table), ImmutableList.copyOf(blocks.values))
         val goalState: InstanceWithResources<IResource> = buildGoalState(ImmutableList.of(table),
                 ImmutableList.copyOf(blocks.values))
 
-        problem.setInit(ImmutableSet.copyOf(initialState.map { it -> it.instance.link }))
-        resources.addAll(initialState.flatMap { i -> i.resources })
+        // FIXME Andrew@2018-08-15: shall be inlined
+        problem.setInit(ImmutableSet.copyOf(initialState.map { it -> it.link }))
+        resources.addAll(initialState)
 
         problem.goal = goalState.instance.link
         resources.addAll(goalState.resources)
 
         problem.minimize = Link(ns(PDDL, "total-time"))
-
 
 
         return JenaModelHelper.createJenaModel(resources.toArray())
@@ -444,6 +455,7 @@ class PlanRequestBuilder {
         val eqResource = eq(l.instance, r)
         val builder = ImmutableSet.builder<IResource>()
         builder.add(eqResource)
+        builder.addAll(l.resources)
         builder.addAll(filterResources(r))
         return InstanceWithResources(eqResource, builder.build())
     }
@@ -464,8 +476,8 @@ class PlanRequestBuilder {
         return clear
     }
 
-    private fun buildInitState(tables: ImmutableList<Location>?,
-                               blocks: ImmutableList<Block>?): Collection<InstanceWithResources<IResource>> {
+    private fun buildInitState(tables: List<Location>,
+                               blocks: List<Block>): Collection<IResource> {
         /*
           pddl:init [ a pddl:EQ ;
               pddl:left [ a :moved ;
@@ -488,7 +500,10 @@ class PlanRequestBuilder {
             [ a pddl:EQ ;
               pddl:left [ a :total-moved ] ;
               pddl:right 0
-            ] ,
+            ] , */
+        val values: Collection<InstanceWithResources<IResource>> = blocks.map { b -> eq(moved(b), 0) }
+
+        /*
             [ a :on ;
               :on-x :b ;
               :on-y :table
@@ -512,7 +527,23 @@ class PlanRequestBuilder {
             ] ;
          */
 
-        val values: Collection<IResource> = blocks.map { b -> eq(moved(b), 0) }
+        val allButLastBlocks = blocks.subList(0, blocks.size - 1)
+        val onBlocks = allButLastBlocks.map { b -> on(b.about, tables.first().about) }
+        val bONb = on(blocks.last().about, blocks.first().about)
+
+        val clearBlocks = blocks.subList(1, blocks.size).map { b -> clear(b.about) }
+        val clearTable = clear(tables.first().about)
+
+        val setBuilder = ImmutableSet.builder<IResource>()
+        setBuilder.addAll(tables)
+        setBuilder.addAll(blocks)
+        setBuilder.addAll(values.flatMap { v -> v.resources })
+        setBuilder.addAll(onBlocks)
+        setBuilder.addAll(clearBlocks)
+        setBuilder.add(bONb)
+        setBuilder.add(clearTable)
+
+        return setBuilder.build()
     }
 
     private fun moved(b: Block): InstanceWithResources<IResource> {

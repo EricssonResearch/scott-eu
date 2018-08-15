@@ -21,6 +21,12 @@ import java.net.URI
 class PlanRequestBuilderTest {
 
     @Test
+    fun outputTurtleForManualTesting() {
+        val planRequestComplete = PlanRequestBuilder().getPlanRequestComplete()
+        println(planRequestComplete.turtle)
+    }
+
+    @Test
     fun locationIsIsomorphic() {
         val locationModelExpected: Model = modelFrom("""
             @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

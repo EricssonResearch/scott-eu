@@ -106,8 +106,8 @@ public class WarehouseControllerManager {
         execService.schedule(() -> {
             log.debug("Can now begin the execution of the planner");
             TRSManager.fetchPlanForProblem("sample-problem-request.ttl");
-            final Object[] resources = new PlanRequestBuilder().build();
-            MqttManager.triggerPlan(new PlanDTO(resources));
+//            final Object[] resources = new PlanRequestBuilder().build();
+//            MqttManager.triggerPlan(new PlanDTO(resources));
         }, 30, TimeUnit.SECONDS);
 
 //        TRSManager.initTRSServer(mqttClient);

@@ -77,6 +77,7 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
+import java.util.Objects;
 // End of user code
 
 // Start of user code preClassCode

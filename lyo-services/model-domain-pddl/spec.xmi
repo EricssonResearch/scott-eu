@@ -43,7 +43,7 @@
     <resourceProperties name="function" occurs="zeroOrMany" valueType="Resource" description="Domain functions."/>
     <resourceProperties name="predicate" occurs="zeroOrMany" valueType="Resource" description="Domain predicates."/>
     <resourceProperties name="domain" valueType="Resource" range="//@domainSpecifications.0/@resources.11" description="Problem planning domain."/>
-    <resourceProperties name="goal" valueType="Resource" description="Problem goal."/>
+    <resourceProperties name="goal" valueType="Resource" representation="inline" description="Problem goal."/>
     <resourceProperties name="init" occurs="zeroOrMany" valueType="Resource" description="Problem init."/>
     <resourceProperties name="maximize" occurs="zeroOrOne" valueType="Resource" description="Maximization metric."/>
     <resourceProperties name="minimize" occurs="zeroOrOne" valueType="Resource" description="Minimization metric."/>
