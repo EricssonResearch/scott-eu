@@ -1,8 +1,25 @@
 #!/usr/bin/env python
+"""Making sure we are running the right version of python"""
+"""
+import sys
+if sys.version_info[0] >= 3:
+    #print("Wrong Python Version") #redundant
+    raise Exception("Must be using Python 2")
+"""
+""" later, if neccessary
+# Python 2.x and 3.x compatibility
+if sys.version_info[0] == 3:
+    ...
+else:
+    # using Python 2.x, import and rename
+    ...
+""" 
 
 import rospy # ROS library
 
 from turtlebot2i_safety.msg import SceneGraph
+#import message_filters
+#from std_msgs.msg import String
 
 
 import warnings
@@ -20,7 +37,6 @@ def topic_callback(data):
     
     risk_assessment_instance.compute()
     print risk_assessment_instance.output['risk'] #This line can not bu run with Python3
-
 
 """ Main program """
 if __name__ == "__main__":  
@@ -42,6 +58,24 @@ if __name__ == "__main__":
     object_orientation.automf(3)	# left behind right 	#will be changed to custom MF
 
     risk.automf(3) 
+
+    '''
+    # Custom membership functions can be built interactively with a familiar,
+    # Pythonic API
+
+    object_direction['front_1'] = fuzz.trimf(tip.universe, [0, 0, 45])
+    object_direction['front_2'] = fuzz.trimf(tip.universe, [315, 315, 360])
+    object_direction['front_left'] = fuzz.trimf(tip.universe, [0, 45, 90])
+    object_direction['left'] = fuzz.trimf(tip.universe, [45, 90, 135])
+    ...
+
+    object_orientation['front_1'] = fuzz.trimf(tip.universe, [0, 0, 45])
+    object_orientation['front_2'] = fuzz.trimf(tip.universe, [315, 315, 360])
+    object_orientation['front_left'] = fuzz.trimf(tip.universe, [0, 45, 90])
+    object_orientation['left'] = fuzz.trimf(tip.universe, [45, 90, 135])
+    ...
+
+    '''
 
     #Add Fuzzy rules
     #-----------
@@ -69,6 +103,46 @@ if __name__ == "__main__":
 
     ## SUBSCRIBERS
     # Creates a subscriber object for each topic
+    # The messages to be synced must have the 'header' field or
+    #  use the 'allow_headerless=True' in the TimeSynchronizer() function
+    #  if this field is not present
+    #examples
+    #sub=message_filters.Subscriber("/turtlebot2i/soar_sub_topic", String)
+    #odom_sub = message_filters.Subscriber('/turtlebot2i/odom', Odometry)
+    #scan_sub = message_filters.Subscriber('/turtlebot2i/lidar/scan', LaserScan)
 
+    #scene_graph_sub = message_filters.Subscriber('/turtlebot2i_safety/SceneGraph', SceneGraph)
     rospy.Subscriber('/turtlebot2i_safety/SceneGraph', SceneGraph, topic_callback)
 
+    # Make the topics sync through ApproximateTimeSynchronizer with 0.1s of tolerance
+    #ts =  message_filters.ApproximateTimeSynchronizer([odom_sub, scan_sub,sub], 10, 0.1, allow_headerless=True)
+
+    # Associate the synchronizer with a callback
+    #ts.registerCallback(topic_callback)
+
+    ## PUBLISHERS
+    #pub=rospy.Publisher("soar_pub_topic", String, queue_size=10)
+    #dummy_pub=rospy.Publisher("/turtlebot2i/soar_sub_topic",String, queue_size=10) #used for inputing debug data to soar_sub_topic   
+   
+
+    """
+    This part will be moved to the callback function
+    #We can now simulate our control system by simply specifying the inputs and calling the ``compute`` method.  
+    # Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
+    # Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
+    """
+
+
+    # Crunch the numbers
+    #risk_assessment_instance.compute()
+
+    """
+    Once computed, we can view the result as well as visualize it.
+    """
+
+    #print risk_assessment_instance.output['risk'] #This line can not bu run with Python3
+    #risk.view(sim=risk_assessment_instance) # a figure
+ 
+
+    raw_input('Task finished!')  # If you use Python 2
+    #input('Task finished!')      # If you use Python 3. But you should use Python 2 for the whole project.
