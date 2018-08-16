@@ -12,7 +12,7 @@ def listener():
     pub = rospy.Publisher('topic_name', SceneGraph, queue_size=10)
     rospy.init_node('listener', anonymous=True)
 
-    rospy.Subscriber("risk_assessment", SceneGraph, sg_cb)
+    rospy.Subscriber("/turtlebot2i_safety/SceneGraph", SceneGraph, sg_cb)
     
     rospy.spin()
 

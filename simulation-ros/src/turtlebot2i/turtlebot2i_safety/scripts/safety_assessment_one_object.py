@@ -19,7 +19,8 @@ def topic_callback(data):
     risk_assessment_instance.input['orientation'] = data.object_orientation		#0-360 degree
     
     risk_assessment_instance.compute()
-    print risk_assessment_instance.output['risk'] #This line can not bu run with Python3
+    rospy.loginfo("The risk is %f at %s",risk_assessment_instance.output['risk'],data.header.stamp)
+    #print risk_assessment_instance.output['risk'] #This line can not bu run with Python3
 
 
 """ Main program """
@@ -71,4 +72,5 @@ if __name__ == "__main__":
     # Creates a subscriber object for each topic
 
     rospy.Subscriber('/turtlebot2i_safety/SceneGraph', SceneGraph, topic_callback)
+    rospy.spin()
 
