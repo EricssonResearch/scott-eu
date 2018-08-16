@@ -288,9 +288,12 @@ public class Problem
     }
     
     // Start of user code getterAnnotation:pddlObject
-    // End of user code
+    // TODO Andrew@2018-08-16: rename the pddlObject field into object OR provide a codegen workaround
     @OslcName("object")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "object")
+    // End of user code
+//    @OslcName("object")
+//    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "object")
     @OslcDescription("Problem objects.")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)

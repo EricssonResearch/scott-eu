@@ -4,10 +4,8 @@ import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import eu.scott.warehouse.domains.blocksworld.Block
 import eu.scott.warehouse.domains.blocksworld.On
-import eu.scott.warehouse.domains.mission.Location
 import eu.scott.warehouse.domains.pddl.Constant
 import eu.scott.warehouse.domains.pddl.Or
-import eu.scott.warehouse.domains.pddl.PddlObject
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import eu.scott.warehouse.domains.pddl.Problem
 import org.apache.jena.rdf.model.Model
@@ -28,6 +26,7 @@ import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.RDFS
 import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.ns
 import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.nsSh
 import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.u
+import java.math.BigInteger
 import java.net.URI
 import java.util.*
 import javax.ws.rs.core.UriBuilder
@@ -69,6 +68,9 @@ fun IExtendedResource.setLabel(l: String) {
 }
 
 data class InstanceWithResources<T : IResource>(val instance: T,
+                                                val resources: Collection<IResource>)
+
+data class InstanceMultiWithResources<T : IResource>(val instance: Collection<T>,
                                                 val resources: Collection<IResource>)
 
 class PlanRequestBuilder {
@@ -315,7 +317,7 @@ class PlanRequestBuilder {
             val block = Block(u(b))
             block.label = b
             // FIXME Andrew@2018-08-14: wrong resource name, not the exact same shape
-            block.setInstanceShape(PddlObject::class.java)
+//            block.setInstanceShape(PddlObject::class.java)
             blocks[b] = block
             resources.add(block)
         }
@@ -395,20 +397,21 @@ class PlanRequestBuilder {
         problem.pddlObject.addAll(blocks.map { entry -> entry.value.link })
         problem.pddlObject.add(table.link)
 
-        val initialState: Collection<IResource> = buildInitState(
+        val initialState: InstanceMultiWithResources<IResource> = buildInitState(
                 ImmutableList.of(table), ImmutableList.copyOf(blocks.values))
         val goalState: InstanceWithResources<IResource> = buildGoalState(ImmutableList.of(table),
                 ImmutableList.copyOf(blocks.values))
 
         // FIXME Andrew@2018-08-15: shall be inlined
-        problem.setInit(ImmutableSet.copyOf(initialState.map { it -> it.link }))
-        resources.addAll(initialState)
+        problem.setInit(ImmutableSet.copyOf(initialState.instance.map { it.link }))
+        resources.addAll(initialState.resources)
 
         problem.goal = goalState.instance.link
         resources.addAll(goalState.resources)
 
         val minFn = RawResource(u(UUID.randomUUID()))
         minFn.addType(ns(PDDL, "total-time"))
+        resources.add(minFn)
 
         problem.minimize = minFn.link
 
@@ -417,9 +420,95 @@ class PlanRequestBuilder {
         return JenaModelHelper.createJenaModel(resources.toArray())
     }
 
+    private fun buildInitState(tables: List<IResource>,
+                               blocks: List<Block>): InstanceMultiWithResources<IResource> {
+        /*
+          pddl:init [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :a
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :b
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :moved ;
+                          :moved-m :c
+                        ] ;
+              pddl:right 0
+            ] ,
+            [ a pddl:EQ ;
+              pddl:left [ a :total-moved ] ;
+              pddl:right 0
+            ] , */
+        val values: Collection<InstanceWithResources<IResource>> = blocks.map { b -> eq(moved(b), BigInteger.ZERO) }
+        val totalMoved = RawResource()
+        totalMoved.addType(u("total-moved"))
+        val totalMovedEq = eq(totalMoved, BigInteger.ZERO)
+
+        /*
+            [ a :on ;
+              :on-x :b ;
+              :on-y :table
+            ] ,
+            [ a :on ;
+              :on-x :a ;
+              :on-y :table
+            ] ,
+            [ a :on ;
+              :on-x :c ;
+              :on-y :a
+            ] ,
+            [ a :clear ;
+              :clear-x :b
+            ] ,
+            [ a :clear ;
+              :clear-x :c
+            ] ,
+            [ a :clear ;
+              :clear-x :table
+            ] ;
+         */
+
+        val allButLastBlocks = blocks.subList(0, blocks.size - 1)
+        val onBlocks = allButLastBlocks.map { b -> on(b.about, tables.first().about) }
+        val bONb = on(blocks.last().about, blocks.first().about)
+
+        val clearBlocks = blocks.subList(1, blocks.size).map { b -> clear(b.about) }
+        val clearTable = clear(tables.first().about)
+
+        val initResourcesBuilder = ImmutableSet.builder<IResource>()
+        initResourcesBuilder.addAll(values.map { v -> v.instance })
+        initResourcesBuilder.addAll(onBlocks)
+        initResourcesBuilder.addAll(clearBlocks)
+        initResourcesBuilder.add(bONb)
+        initResourcesBuilder.add(clearTable)
+        initResourcesBuilder.add(totalMovedEq)
+
+        val allResourcesBuilder = ImmutableSet.builder<IResource>()
+        allResourcesBuilder.addAll(tables)
+        allResourcesBuilder.addAll(blocks)
+        allResourcesBuilder.addAll(values.flatMap { v -> v.resources })
+        allResourcesBuilder.addAll(onBlocks)
+        allResourcesBuilder.addAll(clearBlocks)
+        allResourcesBuilder.add(bONb)
+        allResourcesBuilder.add(clearTable)
+        allResourcesBuilder.add(totalMoved)
+        allResourcesBuilder.add(totalMovedEq)
+
+        val initResources = initResourcesBuilder.build()
+        val allResources = allResourcesBuilder.build()
+
+        return InstanceMultiWithResources<IResource>(initResources, allResources)
+    }
+
+
     private fun buildGoalState(tables: ImmutableList<IResource>,
                                blocks: ImmutableList<Block>?): InstanceWithResources<IResource> {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         /*
           pddl:goal [ a pddl:Or ;
               pddl:argument [ a :on ;
@@ -433,20 +522,24 @@ class PlanRequestBuilder {
             ] ;
          */
 
+        // FIXME Andrew@2018-08-16: one of the goals is empty when serialised
         val goal = Or(u(UUID.randomUUID()))
 
         val bONc = on(u("b"), u("c"))
         val cONb = on(u("c"), u("b"))
         goal.setArgument(ImmutableSet.of(bONc.link, cONb.link))
 
-        return InstanceWithResources(goal, ImmutableList.of(goal, bONc, cONb))
+        val instanceWithResources: InstanceWithResources<IResource> = InstanceWithResources(goal,
+                ImmutableList.of(goal, bONc, cONb))
+        return instanceWithResources
     }
 
-    fun on(x: URI, y: URI): On {
-        val bONc = On(u(UUID.randomUUID()))
-        bONc.setProperty(u("on-x"), x)
-        bONc.setProperty(u("on-y"), y)
-        return bONc
+    fun on(x: URI, y: URI): IResource {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("on"))
+        r.setProperty(u("on-x"), x)
+        r.setProperty(u("on-y"), y)
+        return r
     }
 
     fun eq(l: IResource, r: Any): IExtendedResource {
@@ -484,75 +577,6 @@ class PlanRequestBuilder {
         return clear
     }
 
-    private fun buildInitState(tables: List<IResource>,
-                               blocks: List<Block>): Collection<IResource> {
-        /*
-          pddl:init [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :a
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :b
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :c
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :total-moved ] ;
-              pddl:right 0
-            ] , */
-        val values: Collection<InstanceWithResources<IResource>> = blocks.map { b -> eq(moved(b), 0) }
-
-        /*
-            [ a :on ;
-              :on-x :b ;
-              :on-y :table
-            ] ,
-            [ a :on ;
-              :on-x :a ;
-              :on-y :table
-            ] ,
-            [ a :on ;
-              :on-x :c ;
-              :on-y :a
-            ] ,
-            [ a :clear ;
-              :clear-x :b
-            ] ,
-            [ a :clear ;
-              :clear-x :c
-            ] ,
-            [ a :clear ;
-              :clear-x :table
-            ] ;
-         */
-
-        val allButLastBlocks = blocks.subList(0, blocks.size - 1)
-        val onBlocks = allButLastBlocks.map { b -> on(b.about, tables.first().about) }
-        val bONb = on(blocks.last().about, blocks.first().about)
-
-        val clearBlocks = blocks.subList(1, blocks.size).map { b -> clear(b.about) }
-        val clearTable = clear(tables.first().about)
-
-        val setBuilder = ImmutableSet.builder<IResource>()
-        setBuilder.addAll(tables)
-        setBuilder.addAll(blocks)
-        setBuilder.addAll(values.flatMap { v -> v.resources })
-        setBuilder.addAll(onBlocks)
-        setBuilder.addAll(clearBlocks)
-        setBuilder.add(bONb)
-        setBuilder.add(clearTable)
-
-        return setBuilder.build()
-    }
 
     private fun moved(b: Block): InstanceWithResources<IResource> {
         val m = RawResource(u(UUID.randomUUID()))
