@@ -139,7 +139,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     ---- BUMPER SENSING ----
     -- Front Bumper
     front_bumper_pos = sim.getJointPosition(t_frontBumper)
-    if(front_bumper_pos < -0.001) then
+    if(front_bumper_pos < -0.005) then
         front_collision=true
         bumperCenterState = 1
         bumper_id = 1
@@ -152,7 +152,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     
     -- Right Bumper
     right_bumper_pos = sim.getJointPosition(t_rightBumper)
-    if(right_bumper_pos < -0.001) then
+    if(right_bumper_pos < -0.005) then
         right_collision=true
         bumperRightState = 1
         bumper_id = 2
@@ -165,7 +165,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     
     -- Left Bumper
     left_bumper_pos = sim.getJointPosition(t_leftBumper)
-    if(left_bumper_pos < -0.001) then
+    if(left_bumper_pos < -0.005) then
         left_collision=true
         bumperLeftState = 1
         bumper_id = 0
@@ -255,6 +255,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     res, detect_dist, detect_point, detect_obj_handle, detect_surf = simCheckProximitySensorEx(dock_station_ir_handle, dock_station_ir_emitter_collection_handle, detection_mode, detection_threshold, detection_max_angle)
 
     dock_ir_data = {0, 0, 0}
+    charger_state = 0
     
     if (detect_dist ~= nil) then
 
@@ -299,6 +300,13 @@ if (sim_call_type == sim.childscriptcall_sensing) then
             elseif (detect_angle > 170) then
                 dock_ir_dist_ori = 32
             end
+        end
+
+        -- Set state to "Charging" if the robot is very close and in front of the docking station
+        if (detect_proximity < 0.10 and ir_emitter_pos_code == 2 and dock_ir_dist_ori == 2) then
+            charger_state = 6  -- DOCKING_CHARGING 
+        else
+            charger_state = 0  -- DISCHARGING
         end
 
         dock_ir_data[ir_emitter_pos_code] = dock_ir_dist_ori
@@ -423,7 +431,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         left_pwm = 0,
         right_pwm = 0,
         buttons = 0,
-        charger = 0,
+        charger = charger_state,
         battery = 0,
         bottom = {0,0,0},
         current = simPackUInt8Table({0,0}),

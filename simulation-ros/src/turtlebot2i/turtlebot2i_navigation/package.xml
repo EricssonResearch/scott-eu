@@ -20,8 +20,11 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
-  <export>
     <!-- Other tools can request additional information be placed here -->
 
-  </export>
+  <build_depend>roscpp</build_depend>
+  <build_depend>kobuki_auto_docking</build_depend>
+  <run_depend>kobuki_auto_docking</run_depend>
+
+
 </package>
