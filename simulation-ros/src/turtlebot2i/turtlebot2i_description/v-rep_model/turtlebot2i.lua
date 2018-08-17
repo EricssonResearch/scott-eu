@@ -22,6 +22,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
 
     robot_id = sim.getStringSignal('robot_id')
+    robot_name = sim.getStringSignal('robot_name')
+
+    sim.setIntegerSignal(robot_name .. '_charger_state', 0)  -- Battery is discharging
 
     mainBodyHandle = sim.getObjectHandle("turtlebot_body_visual")
 
@@ -100,8 +103,9 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
     ---- BUMPER SENSING ----
     -- Front Bumper
-    front_bumper_pos = sim.getJointPosition(t_frontBumper)
-    if(front_bumper_pos < -0.005) then
+    --front_bumper_pos = sim.getJointPosition(t_frontBumper)
+    front_bumper_force = sim.getJointForce(t_frontBumper) -- Works better with force instead of position
+    if(front_bumper_force < -1) then
         front_collision=true
         bumperCenterState = 1
         bumper_id = 1
@@ -113,8 +117,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     end
     
     -- Right Bumper
-    right_bumper_pos = sim.getJointPosition(t_rightBumper)
-    if(right_bumper_pos < -0.005) then
+    right_bumper_force = sim.getJointForce(t_rightBumper)
+    if(right_bumper_force < -1) then
         right_collision=true
         bumperRightState = 1
         bumper_id = 2
@@ -126,8 +130,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     end
     
     -- Left Bumper
-    left_bumper_pos = sim.getJointPosition(t_leftBumper)
-    if(left_bumper_pos < -0.005) then
+    left_bumper_force = sim.getJointForce(t_leftBumper)
+    if(left_bumper_force < -1) then
         left_collision=true
         bumperLeftState = 1
         bumper_id = 0
@@ -217,7 +221,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     res, detect_dist, detect_point, detect_obj_handle, detect_surf = simCheckProximitySensorEx(dock_station_ir_handle, dock_station_ir_emitter_collection_handle, detection_mode, detection_threshold, detection_max_angle)
 
     dock_ir_data = {0, 0, 0}
-    charger_state = 0
+    
+    charger_state = sim.getIntegerSignal(robot_name .. '_charger_state')
     
     if (detect_dist ~= nil) then
 
@@ -265,15 +270,14 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         end
 
         -- Set state to "Charging" if the robot is very close and in front of the docking station
-        if (detect_proximity < 0.10 and ir_emitter_pos_code == 2 and dock_ir_dist_ori == 2) then
+        if (detect_proximity < 0.10 and ir_emitter_pos_code == 2 and dock_ir_dist_ori == 2 and charger_state == 0) then
             charger_state = 6  -- DOCKING_CHARGING 
-        else
-            charger_state = 0  -- DISCHARGING
         end
 
         dock_ir_data[ir_emitter_pos_code] = dock_ir_dist_ori
     end
 
+    sim.setIntegerSignal(robot_name .. '_charger_state', charger_state)
 
     local ros_dock_ir = {}
         ros_dock_ir["header"] = {seq = 0,stamp = simROS.getTime(), frame_id = robot_id..'/dock_ir'}
