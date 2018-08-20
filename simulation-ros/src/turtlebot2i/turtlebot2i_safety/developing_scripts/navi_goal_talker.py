@@ -28,24 +28,25 @@ def talker():
     goal_message.header.stamp = rospy.Time.now()
     #target_pose.header.seq=5
     goal_message.goal.target_pose.header.stamp = rospy.Time.now()
-    goal_message.goal.target_pose.header.frame_id="base_link"#"map"
-    goal_message.goal.target_pose.pose.position.x=1#4.8#-0.8  #4.8
-    goal_message.goal.target_pose.pose.position.y=0#-4.0 #0.5  
+    goal_message.goal.target_pose.header.frame_id="map"#"map"
+    goal_message.goal.target_pose.pose.position.x=4.8#-0.8  #4.8
+    goal_message.goal.target_pose.pose.position.y=-4.0 #0.5  
     goal_message.goal.target_pose.pose.position.z=0.0
 
     goal_message.goal.target_pose.pose.orientation.x=0.0
     goal_message.goal.target_pose.pose.orientation.y=0.0
-    goal_message.goal.target_pose.pose.orientation.z=0.0
-    goal_message.goal.target_pose.pose.orientation.w=1.0
-
+    goal_message.goal.target_pose.pose.orientation.z=1.0
+    goal_message.goal.target_pose.pose.orientation.w=0.0
+    '''#this doesn't work! But why...
     rospy.loginfo("Publish a navi goal")    
     pub.publish(goal_message)
     '''
+    #'''#this works! But why...
     while not rospy.is_shutdown():
         rospy.loginfo("Publish a navi goal")
         pub.publish(goal_message)
         rate.sleep()
-    '''
+    #'''
 
 if __name__ == '__main__':
     try:
