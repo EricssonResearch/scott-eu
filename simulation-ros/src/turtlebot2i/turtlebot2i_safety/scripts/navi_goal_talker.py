@@ -4,10 +4,13 @@ import move_base_msgs.msg
 from move_base_msgs.msg import MoveBaseActionGoal,MoveBaseGoal
 from actionlib_msgs.msg import GoalID
 import geometry_msgs.msg
-from geometry_msgs.msg import PoseStamped#,Pose,Point,Quaternion
+from geometry_msgs.msg import PoseStamped#,Quaternion#,Pose,Point,Quaternion
 import std_msgs.msg
+from tf.transformations import quaternion_from_euler#euler_from_quaternion, 
+import math
+PI=math.pi
 
-def quaternion_from_euler_conventor()
+#def quaternion_from_euler_conventor()
     
 
 def talker(): 
@@ -31,16 +34,29 @@ def talker():
     goal_message.goal.target_pose.header.frame_id="map"#"map"
     ''' Position information
     '''
-    goal_message.goal.target_pose.pose.position.x=4.8#-0.8  #4.8
-    goal_message.goal.target_pose.pose.position.y=-4.0 #0.5  
+    goal_message.goal.target_pose.pose.position.x=2.8#-0.8  #4.8
+    goal_message.goal.target_pose.pose.position.y=2.0 #0.5  
     goal_message.goal.target_pose.pose.position.z=0.0
+
     ''' Orientation info.
-    This part now from function quaternion_from_euler_conventor()
+    #This part now from function quaternion_from_euler_conventor()
     goal_message.goal.target_pose.pose.orientation.x=0.0
     goal_message.goal.target_pose.pose.orientation.y=0.0
     goal_message.goal.target_pose.pose.orientation.z=1.0
     goal_message.goal.target_pose.pose.orientation.w=0.0
     '''
+    #"""
+    orientation=geometry_msgs.msg.Quaternion()    
+    yaw  =45*PI/180 #unit: from deg. to rad.
+    orientation=quaternion_from_euler(0,0,yaw)#(roll, pitch,yaw) # return an array
+    #print type(orientation)
+    goal_message.goal.target_pose.pose.orientation.x=0.0
+    goal_message.goal.target_pose.pose.orientation.y=0.0
+    goal_message.goal.target_pose.pose.orientation.z=orientation[2]
+    goal_message.goal.target_pose.pose.orientation.w=orientation[3]
+    #"""
+
+
     #'''#this works! But why...
     while not rospy.is_shutdown():
         rospy.loginfo("Publish a navi goal")
