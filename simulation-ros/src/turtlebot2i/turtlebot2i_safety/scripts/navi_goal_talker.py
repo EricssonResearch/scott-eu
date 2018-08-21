@@ -32,8 +32,8 @@ def talker():
 
     goal_message.goal.target_pose.header.stamp = rospy.Time.now()
     goal_message.goal.target_pose.header.frame_id="map"#"map"
-    ''' Position information
-    '''
+    ''' #Position information
+    ''' #Check Map in Rviz to understand X,Y axis
     goal_message.goal.target_pose.pose.position.x=2.8#-0.8  #4.8
     goal_message.goal.target_pose.pose.position.y=2.0 #0.5  
     goal_message.goal.target_pose.pose.position.z=0.0
