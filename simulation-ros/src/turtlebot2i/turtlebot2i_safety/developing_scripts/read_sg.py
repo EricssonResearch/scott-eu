@@ -3,7 +3,7 @@
 import pydot
 import re
 
-dot = Digraph()
+#dot = Digraph()
 
 #"""
 dot_file="robot0.dot"
@@ -36,7 +36,7 @@ for x in node_list:
         
         #''' 
         '''    "{DockStationBody#0|distance: 2.61|orientation: 174.79|direction: 350.52}" '''
-        matchObj = re.match(r'"{(.*|)distance: (.+|)orientation: (.+|)direction: (.+)}"', node_info,re.M|re.I) '''Work''''
+        matchObj = re.match(r'"{(.*|)distance: (.+|)orientation: (.+|)direction: (.+)}"', node_info,re.M|re.I) #It Works
         '''    Prefer: pattern ='"{(\w+#?\d?|)distance: (\d+\.\d+|)orientation: (\d+\.\d+|)direction: (\d+\.\d+)}"' '''
         #matchObj = re.match(r'"{(\w+#?0?|)distance: (.+|)orientation: (.+|)direction: (.+)}"', node_info,re.M|re.I)
         #matchObj = re.match(r'"{(.+|)distance: (\d+\.\d+|)orientation: (.+|)direction: (.+)}"', node_info,re.M|re.I)
@@ -56,7 +56,6 @@ g.del_node("slidingDoor")
 print len(g.get_nodes())
 '''
 
-g.write_png('dot2_graph.png')
-
+#g.write_png('dot2_graph.png')
 #g.write_pdf("test.pdf")
 
