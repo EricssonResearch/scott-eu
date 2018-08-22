@@ -24,9 +24,10 @@ node_list = g.get_nodes()
 '''
 regular expression
 '''
-#pattern = '{.*|distance: .*|orientation: .*|direction: .*}'
-#print type(pattern)
-#matchObj = re.match( r'{.*|distance: .*|orientation: .*|direction: .*}', line)
+'''    "{DockStationBody#0|distance: 2.61|orientation: 174.79|direction: 350.52}" '''
+name_pattern  = "(\w+#?\d?)"
+float_pattern = "(\d+\.\d+)"
+pattern = '"{' + name_pattern+ '(\|distance: )'+float_pattern+'(\|orientation: )'+float_pattern+'(\|direction: )'+float_pattern+'}"'
 
 print len(node_list)
 for x in node_list:
@@ -35,18 +36,15 @@ for x in node_list:
         print type(node_info),node_info
         
         #''' 
-        '''    "{DockStationBody#0|distance: 2.61|orientation: 174.79|direction: 350.52}" '''
-        matchObj = re.match(r'"{(.*|)distance: (.+|)orientation: (.+|)direction: (.+)}"', node_info,re.M|re.I) #It Works
-        '''    Prefer: pattern ='"{(\w+#?\d?|)distance: (\d+\.\d+|)orientation: (\d+\.\d+|)direction: (\d+\.\d+)}"' '''
-        #matchObj = re.match(r'"{(\w+#?0?|)distance: (.+|)orientation: (.+|)direction: (.+)}"', node_info,re.M|re.I)
-        #matchObj = re.match(r'"{(.+|)distance: (\d+\.\d+|)orientation: (.+|)direction: (.+)}"', node_info,re.M|re.I)
-        #matchObj = re.match(r'{(.*)|distance: (.*)|orientation: (.*)|direction: (.*)}', node_info.replace("\"", ""),re.M|re.I)
+        
+        matchObj = re.match(pattern, node_info,re.M|re.I) #It Works
+
         if matchObj:
            print "matchObj.group() : ", matchObj.group()
-           print "Obj Name : ", matchObj.group(1).replace("|", "")
-           print "distance : ", matchObj.group(2).replace("|", "")
-           print "orientation : ", matchObj.group(3).replace("|", "")
-           print "direction: ", matchObj.group(4).replace("|", "")
+           print "Obj Name : ", matchObj.group(1)#.replace("|", "")
+           print "distance : ", matchObj.group(3)#.replace("|", "")
+           print "orientation : ", matchObj.group(5)#.replace("|", "")
+           print "direction: ", matchObj.group(7)#.replace("|", "")
         else:
            print "No match!!"   
         #''' 
