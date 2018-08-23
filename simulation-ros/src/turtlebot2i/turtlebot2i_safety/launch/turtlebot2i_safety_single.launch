@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+<!-- MAP  -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
+    <param name="frame_id" value="map"/>
+  </node>
+<!-- Robot  -->
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_navigation_multiple_base.launch">
+    <arg name="robot_name" value="turtlebot2i"/>
+    <arg name="moveit" value="false"/>
+    
+  </include>
+<!-- Robot  -->
+<!-- 
+  <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
+    <arg name="robot_name" value="turtlebot2i_0"/>
+    <arg name="moveit" value="false"/>
+  </include>
+-->
+<!-- RVIZ  -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_multirobot.rviz" />
+<!-- cmd_vel_mux  -->
+  <!-- velocity mulitplexer -->
+  <arg name="nodelet_manager_name"  value="nodelet_manager"/>
+  <arg name="config_file"           value="$(find turtlebot2i_safety)/param/vel_mux.yaml"/>
+  <include file="$(find yocs_cmd_vel_mux)/launch/cmd_vel_mux.launch">
+    <arg name="nodelet_manager_name"  value="$(arg nodelet_manager_name)"/>
+    <arg name="config_file"           value="$(arg config_file)"/>
+  </include>
+</launch>
