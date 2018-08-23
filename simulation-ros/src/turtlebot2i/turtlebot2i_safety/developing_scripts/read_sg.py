@@ -27,7 +27,7 @@ regular expression
 '''    "{DockStationBody#0|distance: 2.61|orientation: 174.79|direction: 350.52}" '''
 name_pattern  = "(\w+#?\d?)"
 float_pattern = "(\d+\.\d+)"
-pattern = '"{' + name_pattern+ '(\|distance: )'+float_pattern+'(\|orientation: )'+float_pattern+'(\|direction: )'+float_pattern+'}"'
+pattern = '"{' + name_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'}"'
 
 print len(node_list)
 for x in node_list:
@@ -42,9 +42,9 @@ for x in node_list:
         if matchObj:
            print "matchObj.group() : ", matchObj.group()
            print "Obj Name : ", matchObj.group(1)#.replace("|", "")
-           print "distance : ", matchObj.group(3)#.replace("|", "")
-           print "orientation : ", matchObj.group(5)#.replace("|", "")
-           print "direction: ", matchObj.group(7)#.replace("|", "")
+           print "distance : ", matchObj.group(2)#.replace("|", "")
+           print "orientation : ", matchObj.group(3)#.replace("|", "")
+           print "direction: ", matchObj.group(4)#.replace("|", "")
         else:
            print "No match!!"   
         #''' 
