@@ -7,16 +7,18 @@
 <!-- Robot  -->
   <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_navigation_multiple_base.launch">
     <arg name="robot_name" value="turtlebot2i"/>
-    <arg name="moveit" value="false"/>
-    
+    <arg name="moveit" value="false"/>    
   </include>
-<!-- Robot  -->
+<!-- Second Robot  -->
 <!-- 
   <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
     <arg name="robot_name" value="turtlebot2i_0"/>
     <arg name="moveit" value="false"/>
   </include>
 -->
+<!-- KeyOp  -->
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_keyop.launch">
+
 <!-- RVIZ  -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_multirobot.rviz" />
 <!-- cmd_vel_mux  -->
@@ -27,4 +29,5 @@
     <arg name="nodelet_manager_name"  value="$(arg nodelet_manager_name)"/>
     <arg name="config_file"           value="$(arg config_file)"/>
   </include>
+
 </launch>
