@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description.launch">
+    <arg name="robot_name" value="turtlebot2i"/>
+  </include>
+
+  <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description.launch">
+    <arg name="robot_name" value="turtlebot2i_0"/>
+  </include>
+
+
+  <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find turtlebot2i_description)/rviz/turtlebot2i_multiple_robots.rviz" />
+
+</launch>

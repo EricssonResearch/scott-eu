@@ -1,0 +1,104 @@
+<h1>vrep_ros_control_example - TurtleBot2i</h1>
+
+<p>This package contains a ros_control backend for the PhantomXArm (TurtleBot2i Arm) simulated on VREP. This package was heavily based on the vrep_ros_control_example available <a href="https://github.com/ros-controls/ros_control">Here</a></p>
+
+<h3>MOTIVATION</h3>
+
+<p>The MoveIt! package requires the robot to have an action server to consume trajectory's messages. This kind of server aims to be used when long tasks are being executed and a feedback or a stop action is need while the process is running (http://wiki.ros.org/actionlib). Instead of developing a specific action server to consume MoveIt! messages, the MoveIt documentations advise the usage of a ros_controller (http://moveit.ros.org/documentation/concepts/) as can be seen in the picture below.</p>
+
+<p><img src="doc/imgs/moveit.jpg" alt="alt_text" title="" /></p>
+
+<p>Also, as our project will use a real TurtleBot, it's a good practice to have simulation and real robot operating similarly as possible. </p>
+
+<h3>ROS_CONTROL</h3>
+
+<p><strong>Disclaimer:</strong> The Ros Control documentation is very sparse and sometimes it's hard to put all the different concepts together. On the following paragraphs, I will give my understanding of how the ROS_CONTROL works, although it's important to keep in mind that I'm probably wrong or lacking some important concepts. For a more accurate documentation consult the links on the following sections</p>
+
+<p>The ROS_CONTROL takes a set-point and joints states. With a lets say, a PID controller, it sends a command to the joints. But to do so, many components must be available.
+   Let's consider that we a have a moveIt! node publishing (via actionLib) a trajectory. Thus, we'll a need a controller to read joints states, the input/set point from moveIt! and send commands to joints. To accomplish that, we'll need 3 main components: a Controller Manager, a Controller(Trajectory Controller) and a Hardware Interface.</p>
+
+<ul>
+<li><p><a href="http://wiki.ros.org/ros_controllers">Controller</a>
+ This can be a simple Controller, like a PID. There are many kinds available on ROS, e.g: position, velocity, effort, trajectory.</p></li>
+<li><p><a href="http://wiki.ros.org/controller_manager">Controller Manager</a>
+ This component is responsible for spawning a Controller and will do the interface between the Controller and Hardware Interface.
+ The Controller Manager will provide an interface to load, start, stop and unload a controller. It will also keep an internal state machine relative to the control loop execution.
+ Apparently, the controller manager will manage the interface to read from the Hardware the joints states and write a command to the joints. Inside the controller manager, those interfaces are agnostic from the robot's hardware perspective. So, the Controller Manager provides a general propose interface between the controller and the robot's hardware.</p>
+
+<p>TLDR.: Provides a general interface between hardware and controller, keep track of the Controller (start, stop, load, unload).</p></li>
+<li><p><a href="https://github.com/ros-controls/ros_control/wiki/hardware_interface">Hardware Interface</a></p>
+
+<p>This component will provide a software abstraction of the robot's hardware. It will make available the respective interfaces to the controller read joint states and send the correct kind of commands to joints. There are three main interfaces joint_state, velocity, position, and effort.</p>
+
+<p><strong>TLDR.:</strong> It's here where you code robot's read and write functions. This will provide an interface to the ros_manager to read states and send commands.</p>
+
+<p>A diagram to help:</p>
+
+<p><img src="doc/imgs/how_works.png" alt="alt text" title="" /></p></li>
+</ul>
+
+<h3>HOW TO RUN IT</h3>
+
+<p>Based on the original vrep_ros_control_example</p>
+
+<ul>
+<li>clone the repository in your <workspace>/src folder</li>
+<li>build the newly cloned package.
+<ul>
+<li>E.g.: on <workspace>/src folder run: catkin_make</li>
+</ul></li>
+<li>once built, you need to copy this plugin file libv_repExtRosControl.so from your <workspace>/build/lib folder to vrep's main folder (along all the other plugins)</li>
+<li>start roscore
+<ul>
+<li>on terminal: roscore</li>
+</ul></li>
+<li>then start vrep and load vrep/turttlebot2_v4.ttt
+<ul>
+<li>check that plugin libv_repExtRosControl.so is correctly loaded in vrep's trace (i.e., in vrep's console)</li>
+</ul></li>
+<li>start the simulation in vrep</li>
+<li>start another terminal and launch file vrep.launch
+<ul>
+<li>roslaunch vrep_ros_control_example vrep_phantom.launch</li>
+</ul></li>
+<li>start yet another terminal and run action/test<em>move.py
+<ul>
+<li>it creates a follow_joint_trajectory action to give a goal to your controller and move your robot</li>
+<li>roscd vrep_ros_control_example</li>
+<li>cd action</li>
+<li>./test_move.py follow_joint_trajectory:=phantom_controller/follow<em>joint</em>trajectory</li>
+<li>The mobile robot arm should go back for 1 second and forth for another second</li>
+<li>./test_move_gripper.py gripper_command:=gripper_controller/gripper</em>cmd</li>
+<li>The arm gripper should open</li>
+</ul></li>
+</ul>
+
+<h3>HOW IT WORKS</h3>
+
+<p>To create a ros_control back end for vrep:</p>
+
+<ul>
+<li>obviously you need a .ttt vrep file corresponding to your simulated system
+<ul>
+<li>It's available at vrep/turttlebot2_v4.ttt in the current repo</li>
+</ul></li>
+<li>The file src/ControlLoop/Phantom_vrepHW.cpp was modified to acomodate the simulated turtlebot2i hardware interface
+<ul>
+<li>the other files like vrepControl_plugin .h or .cpp and vrepControl_server .h or .cpp are generic and should not be changed</li>
+<li>files src/v_rep* are directly copied from vrep (needed to create a plugin), they should not be changed</li>
+</ul></li>
+<li>Unfortunately, you need a redundant description of your robot in urdf (so your robot is described both in the .ttt file and in the urdf)
+<ul>
+<li>this is because the urdf contains information on the joints and transmissions not contained in the vrep .ttt file</li>
+<li>to counterbalance this point, note that the urdf importer works pretty well. But once your urdf is imported and you modify something in vrep's .ttt file you need to redundantly modify it in the urdf (I told Coppelia about this situation but unfortunately did not receive an answer)</li>
+</ul></li>
+<li>this plugin is based on the blank ros skeleton plugin vrep_plugin_skeleton provided in vrep's folder programming/ros_packages/vrep_plugin_skeleton</li>
+</ul>
+
+<h3>Notes</h3>
+
+<p>1 - Please look at the code if you want to understand how the plugin works, it should be self-explaining for people who know well about vrep and ros_control, and it is well commented for the others. The main "trick" is in function "bool ROS_server::initialize()" in file vrepControl_server.cpp.</p>
+
+<p>2 - The V-REP plugin used on vrepControl_plugin files is an old version. So it would be nice to update the plugin and try to add some LUA functions to be the read and write robot's functions thus wholly decoupling the c++ code from the robot.</p>
+
+<p>3 - The joint names are hard coded and this is not a good practice. It would be good solution to read the joints names and types from the parameter server.</p>
