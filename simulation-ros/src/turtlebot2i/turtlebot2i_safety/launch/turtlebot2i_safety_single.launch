@@ -1,30 +1,13 @@
 <?xml version="1.0"?>
 <launch>
-<!-- MAP  -->
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
-    <param name="frame_id" value="map"/>
-  </node>
-<!-- Robot  navigation -->
 
- <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_navigation_multiple_base.launch">
-    <arg name="robot_name" value="turtlebot2i"/>
-    <arg name="moveit" value="false"/>    
-  </include>
-<!-- Second Robot  -->
-<!-- 
-  <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
-    <arg name="robot_name" value="turtlebot2i_0"/>
-    <arg name="moveit" value="false"/>
-  </include>
--->
+<!-- Navigation Single Robot  -->
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_navigation_single.launch"/>
+
 <!-- KeyOp  -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_keyop.launch">
-  </include>
-<!-- RVIZ  -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_multirobot.rviz" />
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_keyop.launch"/>
 
 <!-- Cmd_vel_mux  -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_cmd_vel_mux.launch">
-  </include>
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_cmd_vel_mux.launch"/>
     
 </launch>
