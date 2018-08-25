@@ -15,29 +15,20 @@
       (?b - block ?x ?y - (either location block))
     :precondition
       (and
-        (not
-          (= ?b ?y)
-        )
+        (not (= ?b ?y))
         (clear ?b)
         (on ?b ?x)
-        (clear ?y)
-      )
+        (clear ?y))
     :effect
       (and
         (on ?b ?y)
-        (not
-          (on ?b ?x)
-        )
+        (not (on ?b ?x))
         (clear ?x)
         (increase (moved ?b) 1)
         (increase (total-moved) 1)
         (when
-          (not
-            (= ?y table)
-          )
-          (not
-            (clear ?y)
-          )
+          (not (= ?y table))
+          (not (clear ?y))
         )
       )
   )
