@@ -1,5 +1,10 @@
+
 # Sandobox-specific
 /webapp-planner-placeholder/
+
+# Misc
+
+TODO*.md
 
 # Maven
 */target/
