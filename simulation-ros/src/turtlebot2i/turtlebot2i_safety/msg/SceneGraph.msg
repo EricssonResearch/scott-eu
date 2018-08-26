@@ -1,8 +1,11 @@
 # Add Message header
 Header header
 
-# Consider one object now, but how to deal with multiple object?
-float64    object_distance
-float64    object_direction
-float64    object_speed 
-float64    object_orientation 
+# Data is here in DOT format
+string sg_data
+
+# For each object, the four important components are
+#float64    object_distance
+#float64    object_direction
+#float64    object_speed 
+#float64    object_orientation 

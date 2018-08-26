@@ -5,7 +5,11 @@ import time
 import re
 from graphviz import Digraph
 import math   
+pi = math.pi
 from shapely.geometry import box
+import rospy
+from turtlebot2i_safety.msg import SceneGraph 
+import std_msgs.msg
 
 def get_distance(i, j):
     dx = j.pose[0] - i.pose[0]
@@ -55,48 +59,20 @@ def get_direction(i, j):
     dy = j.pose[1] - i.pose[1]
     dire_tan = math.atan2(dy, dx) - i.ori[2]
     dire_tan = dire_tan*180/pi
-    '''
-    if (dire_tan > -pi/8) and (dire_tan < pi/8):
-        dire_label = 'right'
-    elif (dire_tan >= pi/8) and (dire_tan <= 3*pi/8):
-        dire_label = 'front-right'
-    elif (dire_tan > 3*pi/8) and (dire_tan < 5*pi/8):
-        dire_label = 'front'
-    elif (dire_tan >= 5*pi/8) and (dire_tan <= 7*pi/8):
-        dire_label = 'front-left'
-    elif (dire_tan > 7*pi/8) or (dire_tan < -7*pi/8):
-        dire_label = 'left'
-    elif (dire_tan >= -7*pi/8) and (dire_tan <= -5*pi/8):
-        dire_label = 'back-left'
-    elif (dire_tan > -5*pi/8) and (dire_tan < -3*pi/8):
-        dire_label = 'back'
-    else:
-        dire_label = 'back-right'
-    '''
     return dire_tan
 
-# Update rate in seconds
-rate = 0.1 #0.5
-pi = math.pi
+def init():
+    global extractor 
+    extractor= SceneObjectExtractor('127.0.0.1', 19997)
+    print('Connected to remote API server')
+    print('Getting scene properties (this can take a while)...') 
 
-extractor = SceneObjectExtractor('127.0.0.1', 19997)
-print('Connected to remote API server')
+    # Get all objects info once (for static properties)
+    obj_all = extractor.get_all_objects_info()
+    print(obj_all) 
+    print('Finished getting scene properties!\n')
 
-print('Getting scene properties (this can take a while)...') 
-
-# Get all objects info once (for static properties)
-obj_all = extractor.get_all_objects_info()
-
-print(obj_all) 
-
-print('Finished getting scene properties!\n')
-
-print('Started getting scene objects from vision sensor FOV...')
-
-# ii = 0
-# while ii == 0:
-#     # ii = 1
-while True:
+def sgGenerate():
     # Get dynamic object info (pose and vel) periodically
     extractor.update_dynamic_obj_info()
 
@@ -126,8 +102,7 @@ while True:
         dot.node_attr['shape']='record'
         robot_velocity = get_velocity(robot[robot_num])
         i = robot[robot_num]
-        # print(i.bbox_min[0], i.bbox_min[1], i.bbox_max[0], i.bbox_max[1])
-        # robot_label = '{%s|%s|velocity: %.2f|orientation: %.2f}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name, robot_velocity, robot[robot_num].ori[2]*180/pi)
+
         robot_label = '{%s|%s|velocity: %.2f}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name, robot_velocity)
         
         # robot_label = '{%s|%s}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name)
@@ -141,17 +116,9 @@ while True:
             obj_direction = get_direction(robot[robot_num], obj)
             obj_distance = get_distance_bbox(robot[robot_num], obj)
             obj_velocity = get_velocity(obj)
-            # print(obj.name, '%.3f' %obj_velocity)
-            # node_label = '{%s|direction: %s|distance: %.2f}'%(obj.name, obj_direction, obj_distance)  
-            # if obj.name == 'Bill#3':
-            #     node_label = '{%s|velocity: 0.2|distance: %.2f}'%(obj.name, obj_distance)
-            # else:
-            #     node_label = '{%s|Static|distance: %.2f}'%(obj.name, obj_distance)
+
             node_label = '{%s|distance: %.2f|orientation: %.2f|direction: %.2f}'%( obj.name, obj_distance, obj.ori[2]*180/pi - robot[robot_num].ori[2]*180/pi, obj_direction)
-            # node_label = '{%s|velocity: %.2f|distance: %.2f}'%( obj.name, obj_velocity, obj_distance)
-                
-            # node_label = '{%s|distance: %.2f}'%(obj.name, obj_distance)
-            
+
             dot.node(obj.name, label=node_label)
             if re.match(r'wall*', obj.name):
                 dot.edge('warehouse', obj.name, label='on')
@@ -166,31 +133,45 @@ while True:
                         break
             else:
                 dot.edge('floor', obj.name, label='on')
-        '''
-        L = [floor]
-        assign_object = []
 
-        while jj not in assign_object:
-            if len(L) != 0:
-                parent = L[0]
-                L.pop(0)
-                for i in obj_list:
-                    dot.node(i.name, label='%s'%i.name)
-                    dot.edge(parent.name, i.name, label='on')
-                    L.append(i)
-
-        for i in range(len()):
-            for j in range(i, len())
-                dot.edge(obj_list[i].name, obj_list[j].name, label='')
-        '''
         #output scene graph as .svg file in 
         #sg_name = 'sg_robot/robot%d' %robot_num
         #dot.render(sg_name, view=True)
 
-        #
-        print dot.source
-    time.sleep(rate)
+        #output scene graph as string
+        #print dot.source
+        sg_message=SceneGraph()
+        sg_message.header = std_msgs.msg.Header()
+        sg_message.header.stamp = rospy.Time.now()
 
-# Close the connection to V-REP
-extractor.close_connection()
-#vrep.simxFinish(clientID)
+        sg_message.sg_data=dot.source
+
+        pub.publish(sg_message)
+
+if __name__ == '__main__':
+    init()
+    # Update rate in seconds
+    rate = 0.1 #0.5
+    try:
+        print('Started getting scene objects from vision sensor FOV...')
+        pub = rospy.Publisher('/turtlebot2i_safety/SceneGraph', SceneGraph, queue_size=10)
+        rospy.init_node('sg_generator', anonymous=True)
+        rate = rospy.Rate(10) # 10 Hz
+        while not rospy.is_shutdown():          
+            sgGenerate()
+            rate.sleep()
+
+    except rospy.ROSInterruptException:
+        # Close the connection to V-REP
+        extractor.close_connection() 
+        #vrep.simxFinish(clientID)       
+        pass
+
+
+
+
+
+
+
+
+
