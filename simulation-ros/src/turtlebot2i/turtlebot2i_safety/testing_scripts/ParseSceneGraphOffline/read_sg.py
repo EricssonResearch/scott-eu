@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #from graphviz import Digraph
-import pydot
+import pydot # sudo pip install -I pydot==1.2.4
 import re
 
 #dot = Digraph()
