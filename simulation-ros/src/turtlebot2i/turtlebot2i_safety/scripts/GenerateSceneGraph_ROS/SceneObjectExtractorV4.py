@@ -103,7 +103,7 @@ class SceneObjectExtractor:
                                       'ShelfBody#1', 'ShelfBody#0', 'ShelfBody',\
                                       'Wall_Door', 'Wall_Window'] 
                                       
-        self.dynamic_obj_name_list = [] #,
+        self.dynamic_obj_name_list = ['productRed#1', 'productRed#2', 'productRed#3'] #,
                                     #   'productRed#1', 'productRed#2', 'productRed#3', \
                                     #   'productGreen#1', 'productGreen#2', 'productGreen#3',\
                                     #   'productYellow#1', 'productYellow#2', 'productYellow#3']

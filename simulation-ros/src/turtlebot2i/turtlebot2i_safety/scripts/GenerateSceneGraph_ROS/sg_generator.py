@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from SceneObjectExtractorV4 import SceneObjectExtractor
 import time
 import re
