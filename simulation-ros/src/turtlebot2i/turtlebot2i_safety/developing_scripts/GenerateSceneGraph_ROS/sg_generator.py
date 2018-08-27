@@ -134,10 +134,6 @@ def sgGenerate():
             else:
                 dot.edge('floor', obj.name, label='on')
 
-        #output scene graph as .svg file in 
-        #sg_name = 'sg_robot/robot%d' %robot_num
-        #dot.render(sg_name, view=True)
-
         #output scene graph as string
         #print dot.source
         sg_message=SceneGraph()
@@ -152,6 +148,7 @@ if __name__ == '__main__':
     init()
     # Update rate in seconds
     rate = 0.1 #0.5
+    time_previous = time.time()
     try:
         print('Started getting scene objects from vision sensor FOV...')
         pub = rospy.Publisher('/turtlebot2i_safety/SceneGraph', SceneGraph, queue_size=10)
@@ -159,8 +156,13 @@ if __name__ == '__main__':
         rate = rospy.Rate(10) # 10 Hz
         while not rospy.is_shutdown():          
             sgGenerate()
-            rate.sleep()
-
+            #rate.sleep()
+            #''' #If one want to check execution time
+            one_run_time = time.time() - time_previous
+            #print 'execute time=',one_run_time,'s'           
+            print 'execute frequency=',1/float(one_run_time),'Hz'
+            time_previous =time.time()
+            #'''
     except rospy.ROSInterruptException:
         # Close the connection to V-REP
         extractor.close_connection() 
