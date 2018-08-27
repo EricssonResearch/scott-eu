@@ -11,6 +11,7 @@ from moveit_msgs.msg import RobotState
 class Phantomx_Pincher():
     def __init__(self):
         roscpp_initialize([])
+        rospy.sleep(5) #wait for moveit. TO-DO
         self.robot = RobotCommander()
         self.init_planner()
 
