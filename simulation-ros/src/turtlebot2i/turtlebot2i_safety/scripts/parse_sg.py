@@ -18,21 +18,22 @@ def init():
 def parse_dot_file(graph):
     
     node_list = graph.get_nodes()
-    print len(node_list)
+    #print len(node_list)
     for x in node_list:
-        if not x.get_name()=='node':        
+        if not ( (x.get_name()=='node') or (x.get_name()=='warehouse')or(x.get_name()=='floor')or(x.get_name()=='robot') ):        
             node_info= x.__get_attribute__("label")
-            print type(node_info),node_info
-            
+            #print type(node_info),node_info
+            print "-------------------------------"
+            print x.get_name()
           
             matchObj = re.match(pattern, node_info,re.M|re.I) #It Works
 
             if matchObj:
-               print "matchObj.group() : ", matchObj.group()
-               print "Obj Name : ", matchObj.group(1)
-               print "distance : ", matchObj.group(2)
-               print "orientation : ", matchObj.group(3)
-               print "direction: ", matchObj.group(4)
+               #print "matchObj.group() : ", matchObj.group()
+               print "*Obj Name : ", matchObj.group(1)
+               print "*Distance : ", float(matchObj.group(2))
+               print "*Orientation : ", float(matchObj.group(3))
+               print "*Direction: ",float(matchObj.group(4))
             else:
                print "No match!!"   
 
