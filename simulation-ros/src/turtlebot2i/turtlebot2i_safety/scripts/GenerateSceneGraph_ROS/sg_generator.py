@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-from SceneObjectExtractorV4 import SceneObjectExtractor
+
+from SceneObjectExtractorV5 import SceneObjectExtractor
 import time
+import vrep
 import re
 from graphviz import Digraph
 import math   
@@ -10,6 +12,7 @@ import rospy
 from turtlebot2i_safety.msg import SceneGraph 
 import std_msgs.msg
 
+# some functions for label message in scene graph nodes
 def get_distance(i, j):
     dx = j.pose[0] - i.pose[0]
     dy = j.pose[1] - i.pose[1]
@@ -63,46 +66,65 @@ def get_direction(i, j):
 def init():
     global extractor 
     extractor= SceneObjectExtractor('127.0.0.1', 19997)
+    # List of object names to retrieve information
+    # For now it is hardcoded
+    extractor.set_static_obj_names(['stairs', 'slidingDoor',      
+                                    'dockstation_body',\
+                                    'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1', 
+                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
+    extractor.set_dynamic_obj_names(['Bill#2'])
+    extractor.set_robot_names(['turtlebot2i'])
+
     print('Connected to remote API server')
+
     print('Getting scene properties (this can take a while)...') 
 
-    # Get all objects info once (for static properties)
-    obj_all = extractor.get_all_objects_info()
-    print(obj_all) 
+    # Get all objects info once (for static properties) and
+    #  prepare the callback for the streaming mode
+
+    extractor.operation_mode = vrep.simx_opmode_streaming
+    extractor.get_all_objects_info() 
+    extractor.update_robots_vision_sensor_info()
+    extractor.update_all_robots_vision_sensors_fov()
+    time.sleep(0.3) # streaming takes a while to get ready
+
+    extractor.operation_mode = vrep.simx_opmode_buffer
+    extractor.get_all_objects_info() 
+    extractor.update_robots_vision_sensor_info()
+    extractor.update_all_robots_vision_sensors_fov()
+
+
     print('Finished getting scene properties!\n')
 
 def sgGenerate():
     # Get dynamic object info (pose and vel) periodically
-    extractor.update_dynamic_obj_info()
+    extractor.update_dynamic_obj_info() 
 
     # Update vision sensor info
     extractor.update_all_robots_vision_sensors_fov()
 
+    robot_list = extractor.robot_obj_list
     # Get objects that are in the sensor FOV
-    # for robot in extractor.robot_obj_list:
-    
-    robot = extractor.robot_obj_list
-    # print len(robot)
-    # for robot_num in range(len(robot)):
-    for robot_num in range(1):        
-        # robot[robot_num] = extractor.robot_obj_list[robot_num]
-        obj_list = extractor.get_objects_from_vision_sensor(robot[robot_num].vision_sensor)
+    for robot_num in range(1):
+        obj_list = extractor.get_objects_from_vision_sensor(robot_list[robot_num].vision_sensor)
 
-        # Remove the robot itself from the list
-        obj_list = [i for i in obj_list if i.name!=robot[robot_num].name]
+        if (obj_list != None):
+            # Remove the robot itself from the list
+            obj_list = [i for i in obj_list if i.name!=robot_list[robot_num].name]
 
         # Print detected objects of the vision sensor
-        print(robot[robot_num].name, robot[robot_num].vision_sensor.name, obj_list)
+        print(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, obj_list)
 
         #############################################
         # generate scene graph
         #############################################
         dot = Digraph(comment='warehouse', format='svg')
         dot.node_attr['shape']='record'
-        robot_velocity = get_velocity(robot[robot_num])
-        i = robot[robot_num]
-
-        robot_label = '{%s|%s|velocity: %.2f}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name, robot_velocity)
+        robot_velocity = get_velocity(robot_list[robot_num])
+        i = robot_list[robot_num]
+        # print(i.bbox_min[0], i.bbox_min[1], i.bbox_max[0], i.bbox_max[1])
+        # robot_label = '{%s|%s|velocity: %.2f|orientation: %.2f}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name, robot_velocity, robot[robot_num].ori[2]*180/pi)
+        robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
         
         # robot_label = '{%s|%s}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name)
         
@@ -112,12 +134,20 @@ def sgGenerate():
         dot.edge('warehouse','floor')
 
         for obj in obj_list:
-            obj_direction = get_direction(robot[robot_num], obj)
-            obj_distance = get_distance_bbox(robot[robot_num], obj)
+            obj_direction = get_direction(robot_list[robot_num], obj)
+            obj_distance = get_distance_bbox(robot_list[robot_num], obj)
             obj_velocity = get_velocity(obj)
-
-            node_label = '{%s|distance: %.2f|orientation: %.2f|direction: %.2f}'%( obj.name, obj_distance, obj.ori[2]*180/pi - robot[robot_num].ori[2]*180/pi, obj_direction)
-
+            # print(obj.name, '%.3f' %obj_velocity)
+            # node_label = '{%s|direction: %s|distance: %.2f}'%(obj.name, obj_direction, obj_distance)  
+            # if obj.name == 'Bill#3':
+            #     node_label = '{%s|velocity: 0.2|distance: %.2f}'%(obj.name, obj_distance)
+            # else:
+            #     node_label = '{%s|Static|distance: %.2f}'%(obj.name, obj_distance)
+            node_label = '{%s|distance: %.2f|orientation: %.2f|direction: %.2f}'%( obj.name, obj_distance, obj.ori[2]*180/pi - robot_list[robot_num].ori[2]*180/pi, obj_direction)
+            # node_label = '{%s|velocity: %.2f|distance: %.2f}'%( obj.name, obj_velocity, obj_distance)
+                
+            # node_label = '{%s|distance: %.2f}'%(obj.name, obj_distance)
+            
             dot.node(obj.name, label=node_label)
             if re.match(r'wall*', obj.name):
                 dot.edge('warehouse', obj.name, label='on')
@@ -132,6 +162,10 @@ def sgGenerate():
                         break
             else:
                 dot.edge('floor', obj.name, label='on')
+
+        #output scene graph as .svg file in 
+        #sg_name = 'sg_robot/robot%d' %robot_num
+        #dot.render(sg_name, view=True)
 
         #output scene graph as string
         #print dot.source
@@ -167,6 +201,7 @@ if __name__ == '__main__':
         extractor.close_connection() 
         #vrep.simxFinish(clientID)       
         pass
+
 
 
 
