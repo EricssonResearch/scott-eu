@@ -3,8 +3,6 @@ package se.ericsson.cf.scott.sandbox.whc.planning
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import eu.scott.warehouse.domains.blocksworld.Block
-import eu.scott.warehouse.domains.blocksworld.On
-import eu.scott.warehouse.domains.pddl.Constant
 import eu.scott.warehouse.domains.pddl.Or
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import eu.scott.warehouse.domains.pddl.Problem
@@ -31,6 +29,7 @@ import java.net.URI
 import java.util.*
 import javax.ws.rs.core.UriBuilder
 import javax.xml.namespace.QName
+import kotlin.collections.HashSet
 
 /**
  * REALLY useful method
@@ -74,350 +73,544 @@ data class InstanceMultiWithResources<T : IResource>(val instance: Collection<T>
                                                 val resources: Collection<IResource>)
 
 class PlanRequestBuilder {
-    private val base: URI = URI.create("http://ontology.cf.ericsson.net/pddl_example/")
+    // TODO Andrew@2018-08-27: does not seem to support #
+    private val base = URI.create("http://ontology.cf.ericsson.net/ns/scott-warehouse/")
 
     init {
         OslcRdfHelper.setBase(base)
     }
 
     fun getPlanRequestComplete(): Model {
-        val domainStatic = getDomainStatic()
-        val domainDynamic = getDomainDynamic()
-        domainDynamic.add(domainStatic)
-        return domainDynamic
+        val domain = genDomain()
+        val problem = genProblem()
+        problem.add(domain)
+        return problem
     }
 
-    fun getDomainStatic(): Model {
+    fun genDomain(): Model {
         val ttl = """
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-        @prefix oslc: <http://open-services.net/ns/core#> .
-        @prefix sh: <http://www.w3.org/ns/shacl#> .
-        @prefix pddl: <http://ontology.cf.ericsson.net/pddl/> .
-        @prefix : <http://ontology.cf.ericsson.net/pddl_example/> .
+@prefix :      <http://ontology.cf.ericsson.net/ns/scott-warehouse/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix pddl:  <http://ontology.cf.ericsson.net/pddl/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
 
-        :adl-blocksworld
-          a pddl:Domain ;
-          oslc:instanceShape pddl:DomainShape ;
-          rdfs:label "adl-blocksworld" ;
-          pddl:type :location ,
-                    :block ;
-          pddl:constant :table ;
-          pddl:predicate :on ,
-                         :clear ;
-          pddl:function :moved ,
-                        :total-moved ;
-          pddl:action :move .
+# DOMAIN
 
-          :location
-            a rdfs:Class ;
-            rdfs:subClassOf pddl:PrimitiveType ;
-            oslc:instanceShape pddl:PrimitiveTypeShape ;
-            rdfs:label "location" .
+:scott-warehouse  a         pddl:Domain ;
+        rdfs:label          "scott-warehouse" ;
+        pddl:type           :Box, :Robot, :ConveyorBelt, :Shelf, :Coord;
+        pddl:predicate      :robot-at, :on-belt, :on-shelf, :on-robot, :free-robot, :shelf-at, :belt-at;
+        pddl:action         :pick-shelf, :move-to, :drop-belt ;
+        oslc:instanceShape  pddl:DomainShape .
 
-          :block
-            a rdfs:Class ;
-            rdfs:subClassOf pddl:PrimitiveType ;
-            oslc:instanceShape pddl:PrimitiveTypeShape ;
-            rdfs:label "block" .
+# TYPES
 
-          :location-or-block
-            a rdfs:Class ;
-            rdfs:subClassOf pddl:EitherType ;
-            oslc:instanceShape pddl:EitherTypeShape ;
-            rdfs:member :location ,
-                        :block .
+:Box    a                   rdfs:Class ;
+        rdfs:label          "box" ;
+        rdfs:subClassOf     pddl:PrimitiveType ;
+        oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-          :on
-            a rdfs:Class ;
-            rdfs:subClassOf pddl:Predicate ;
-            oslc:instanceShape pddl:PredicateShape ;
-            rdfs:label "on" ;
-            pddl:parameter :on-x ,
-                           :on-y .
+:Robot  a                   rdfs:Class ;
+        rdfs:label          "robot" ;
+        rdfs:subClassOf     pddl:PrimitiveType ;
+        oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-          :on-x
-            a pddl:Parameter ;
-            oslc:instanceShape pddl:ParameterShape ;
-            rdfs:label "x" ;
-            pddl:type :location-or-block ;
-            sh:order 1 .
+:ConveyorBelt  a           rdfs:Class ;
+        rdfs:label          "conveyor-belt" ;
+        rdfs:subClassOf     pddl:PrimitiveType ;
+        oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-          :on-y
-            a pddl:Parameter ;
-            oslc:instanceShape pddl:ParameterShape ;
-            rdfs:label "y" ;
-            pddl:type :location-or-block ;
-            sh:order 2 .
+:Shelf  a           rdfs:Class ;
+        rdfs:label          "shelf" ;
+        rdfs:subClassOf     pddl:PrimitiveType ;
+        oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-          :clear
-            a rdfs:Class ;
-            rdfs:subClassOf pddl:Predicate ;
-            oslc:instanceShape pddl:PredicateShape ;
-            rdfs:label "clear" ;
-            pddl:parameter :clear-x .
+:Coord  a           rdfs:Class ;
+        rdfs:label          "coord" ;
+        rdfs:subClassOf     pddl:PrimitiveType ;
+        oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-          :clear-x
-            a pddl:Parameter ;
-            oslc:instanceShape pddl:ParameterShape ;
-            rdfs:label "x" ;
-            pddl:type :location-or-block ;
-            sh:order 1 .
+# PREDICATES
 
-          :moved
-            a rdfs:Class ;
-            rdfs:subClassOf pddl:Function ;
-            oslc:instanceShape pddl:FunctionShape ;
-            rdfs:label "moved" ;
-            pddl:parameter :moved-m .
+:robot-at  a                rdfs:Class ;
+        rdfs:label          "robot-at" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :robot-at-rb, :robot-at-x, :robot-at-y ;
+        oslc:instanceShape  pddl:PredicateShape .
 
-          :moved-m
-            a pddl:Parameter ;
-            oslc:instanceShape pddl:ParameterShape ;
-            rdfs:label "m" ;
-            pddl:type :block ;
-            sh:order 1 .
+:robot-at-rb  a             pddl:Parameter ;
+        rdfs:label          "rb" ;
+        pddl:type           :Robot ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
 
-          :total-moved
-            a rdfs:Class ;
-            rdfs:subClassOf pddl:Function ;
-            oslc:instanceShape pddl:FunctionShape ;
-            rdfs:label "total-moved" .
+:robot-at-x  a             pddl:Parameter ;
+        rdfs:label          "x" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
 
-            :move
-              a rdfs:Class ;
-              rdfs:subClassOf pddl:Action ;
-              oslc:instanceShape pddl:ActionShape ;
-              rdfs:label "move" ;
-              pddl:parameter :move-b ,
-                             :move-x ,
-                             :move-y ;
-              pddl:precondition [ a pddl:And ;
-                                  pddl:argument [ a pddl:Not ;
-                                                  pddl:argument [ a pddl:Equality ;
-                                                                  pddl:left :move-b ;
-                                                                  pddl:right :move-y
-                                                                ]
-                                                ] ,
-                                                [ a :clear ;
-                                                  :clear-x :move-b
-                                                ] ,
-                                                [ a :on ;
-                                                  :on-x :move-b ;
-                                                  :on-y :move-x
-                                                ] ,
-                                                [ a :clear ;
-                                                  :clear-x :move-y
-                                                ]
-                                ] ;
-              pddl:effect [ a pddl:And ;
-                            pddl:argument [ a :on ;
-                                            :on-x :move-b ;
-                                            :on-y :move-y
-                                          ] ,
-                                          [ a pddl:Not ;
-                                            pddl:argument [ a :on ;
-                                                            :on-x :move-b ;
-                                                            :on-y :move-x
-                                                          ]
-                                          ] ,
-                                          [ a :clear ;
-                                            :clear-x :move-x
-                                          ] ,
-                                          [ a pddl:Increase ;
-                                            pddl:parameter [ a :moved ;
-                                                             :moved-m :move-b
-                                                           ] ;
-                                            pddl:argument 1
-                                          ] ,
-                                          [ a pddl:Increase ;
-                                            pddl:parameter [ a :total-moved ] ;
-                                            pddl:argument 1
-                                          ] ,
-                                          [ a pddl:When ;
-                                            pddl:parameter [ a pddl:Not ;
-                                                             pddl:argument [ a pddl:Equality ;
-                                                                             pddl:left :move-y ;
-                                                                             pddl:right :table
-                                                                           ]
-                                                           ] ;
-                                            pddl:argument [ a pddl:Not ;
-                                                            pddl:argument [ a :clear ;
-                                                                            :clear-x :move-y
-                                                                          ]
-                                                          ]
-                                          ]
-                          ] .
+:robot-at-y  a             pddl:Parameter ;
+        rdfs:label          "y" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            3 .
 
-            :move-b
-              a pddl:Parameter ;
-              oslc:instanceShape pddl:ParameterShape ;
-              rdfs:label "b" ;
-              pddl:type :block ;
-              sh:order 1 .
+:on-belt  a                   rdfs:Class ;
+        rdfs:label          "on-belt" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :on-belt-b, :on-belt-cb;
+        oslc:instanceShape  pddl:PredicateShape .
 
-            :move-x
-              a pddl:Parameter ;
-              oslc:instanceShape pddl:ParameterShape ;
-              rdfs:label "x" ;
-              pddl:type :location-or-block ;
-              sh:order 2 .
+:on-belt-b  a             pddl:Parameter ;
+        rdfs:label          "b" ;
+        pddl:type           :Box ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
 
-            :move-y
-              a pddl:Parameter ;
-              oslc:instanceShape pddl:ParameterShape ;
-              rdfs:label "y" ;
-              pddl:type :location-or-block ;
-              sh:order 3 .
+:on-belt-cb  a             pddl:Parameter ;
+        rdfs:label          "cb" ;
+        pddl:type           :ConveyorBelt ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:on-shelf  a                   rdfs:Class ;
+        rdfs:label          "on-shelf" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :on-shelf-b, :on-shelf-sh ;
+        oslc:instanceShape  pddl:PredicateShape .
+
+:on-shelf-b  a             pddl:Parameter ;
+        rdfs:label          "b" ;
+        pddl:type           :Box ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:on-shelf-sh  a             pddl:Parameter ;
+        rdfs:label          "sh" ;
+        pddl:type           :Shelf ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:on-robot  a                   rdfs:Class ;
+        rdfs:label          "on-robot" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :on-robot-b, :on-robot-rb ;
+        oslc:instanceShape  pddl:PredicateShape .
+
+:on-robot-b  a             pddl:Parameter ;
+        rdfs:label          "b" ;
+        pddl:type           :Box ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:on-robot-rb  a             pddl:Parameter ;
+        rdfs:label          "rb" ;
+        pddl:type           :Robot ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+
+:free-robot  a                   rdfs:Class ;
+        rdfs:label          "free-robot" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :free-robot-rb ;
+        oslc:instanceShape  pddl:PredicateShape .
+
+:free-robot-rb  a             pddl:Parameter ;
+        rdfs:label          "rb" ;
+        pddl:type           :Robot ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+
+:shelf-at  a                   rdfs:Class ;
+        rdfs:label          "shelf-at" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :shelf-at-sh, :shelf-at-x, :shelf-at-y ;
+        oslc:instanceShape  pddl:PredicateShape .
+
+:shelf-at-sh  a             pddl:Parameter ;
+        rdfs:label          "sh" ;
+        pddl:type           :Shelf ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:shelf-at-x  a             pddl:Parameter ;
+        rdfs:label          "x" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:shelf-at-y  a             pddl:Parameter ;
+        rdfs:label          "y" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            3 .
+
+:belt-at  a                   rdfs:Class ;
+        rdfs:label          "belt-at" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :belt-at-cb, :belt-at-x, :belt-at-y ;
+        oslc:instanceShape  pddl:PredicateShape .
+
+:belt-at-cb  a             pddl:Parameter ;
+        rdfs:label          "cb" ;
+        pddl:type           :ConveyorBelt ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order           1 .
+
+:belt-at-x  a             pddl:Parameter ;
+        rdfs:label          "x" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:belt-at-y  a             pddl:Parameter ;
+        rdfs:label          "y" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            3 .
+
+# ACTIONS
+
+
+:move-to   a                   rdfs:Class ;
+        oslc:instanceShape  pddl:ActionShape ;
+        rdfs:label          "move-to" ;
+        rdfs:subClassOf     pddl:Action ;
+        pddl:parameter      :move-to-rb, :move-to-x1, :move-to-y1, :move-to-x2, :move-to-y2 ;
+        pddl:precondition   [ a              pddl:And ;
+                              pddl:argument  [ a         :robot-at ;
+                                               :robot-at-rb :move-to-rb;
+                                               :robot-at-x :move-to-x1;
+                                               :robot-at-y :move-to-y1 ] ;
+                            ] ;
+        pddl:effect   [ a  pddl:And ;
+                        pddl:argument  [ a         :robot-at ;
+                                         :robot-at-rb :move-to-rb;
+                                         :robot-at-x :move-to-x2;
+                                         :robot-at-y :move-to-y2 ] ;
+                      ] .
+
+:move-to-rb  a             pddl:Parameter ;
+        rdfs:label          "rb" ;
+        pddl:type           :Robot ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:move-to-x1  a             pddl:Parameter ;
+        rdfs:label          "x1" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:move-to-y1  a             pddl:Parameter ;
+        rdfs:label          "y1" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            3 .
+
+:move-to-x2  a             pddl:Parameter ;
+        rdfs:label          "x2" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            4 .
+
+:move-to-y2  a             pddl:Parameter ;
+        rdfs:label          "y2" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            5 .
+
+:pick-shelf   a                   rdfs:Class ;
+        oslc:instanceShape  pddl:ActionShape ;
+        rdfs:subClassOf     pddl:Action ;
+        rdfs:label          "pick-shelf" ;
+        pddl:parameter      :pick-shelf-rb, :pick-shelf-b, :pick-shelf-sh, :pick-shelf-x, :pick-shelf-y ;
+        pddl:precondition   [ a              pddl:And ;
+                              pddl:argument  [ a         :on-shelf ;
+                                              :on-shelf-b :pick-shelf-b;
+                                              :on-shelf-sh :pick-shelf-sh ] ;
+                             pddl:argument  [ a         :shelf-at ;
+                                              :shelf-at-sh :pick-shelf-sh;
+                                              :shelf-at-x :pick-shelf-x;
+                                              :shelf-at-y :pick-shelf-y ] ;
+                              pddl:argument  [ a         :robot-at ;
+                                               :robot-at-rb :pick-shelf-rb;
+                                               :robot-at-x :pick-shelf-x;
+                                               :robot-at-y :pick-shelf-y ] ;
+                              pddl:argument  [ a         :free-robot ;
+                                               :free-robot-rb :pick-shelf-rb ] ;
+                            ] ;
+        pddl:effect   [ a  pddl:And ;
+                        pddl:argument  [ a  :on-robot ;
+                                         :on-robot-b :pick-shelf-b;
+                                         :on-robot-rb :pick-shelf-rb ] ;
+                        pddl:argument  [ a pddl:Not ;
+                                         pddl:argument [ a         :on-shelf ;
+                                                          :on-shelf-b :pick-shelf-b;
+                                                          :on-shelf-sh :pick-shelf-sh ] ];
+                        pddl:argument  [ a pddl:Not ;
+                                         pddl:argument [ a         :free-robot ;
+                                                          :free-robot-rb :pick-shelf-rb ] ] ;
+                      ] .
+
+
+:pick-shelf-rb  a             pddl:Parameter ;
+        rdfs:label          "rb" ;
+        pddl:type           :Robot ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:pick-shelf-b  a             pddl:Parameter ;
+        rdfs:label          "b" ;
+        pddl:type           :Box ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:pick-shelf-sh  a             pddl:Parameter ;
+        rdfs:label          "sh" ;
+        pddl:type           :Shelf ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            3 .
+
+:pick-shelf-x  a             pddl:Parameter ;
+        rdfs:label          "x" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            4 .
+
+:pick-shelf-y  a             pddl:Parameter ;
+        rdfs:label          "y" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            5 .
+
+:drop-belt   a                   rdfs:Class ;
+        oslc:instanceShape  pddl:ActionShape ;
+        rdfs:label          "drop-belt" ;
+        rdfs:subClassOf     pddl:Action ;
+        pddl:parameter      :drop-belt-rb, :drop-belt-b, :drop-belt-cb, :drop-belt-x, :drop-belt-y ;
+        pddl:precondition   [ a              pddl:And ;
+                              pddl:argument  [ a  :on-robot ;
+                                               :on-robot-b :drop-belt-b;
+                                               :on-robot-rb :drop-belt-rb ] ;
+                              pddl:argument  [ a         :belt-at ;
+                                               :belt-at-cb :drop-belt-cb;
+                                               :belt-at-x :drop-belt-x;
+                                               :belt-at-y :drop-belt-y ] ;
+                              pddl:argument  [ a         :robot-at ;
+                                              :robot-at-rb :pick-shelf-rb;
+                                              :robot-at-x  :pick-shelf-x;
+                                              :robot-at-y  :pick-shelf-y ] ;
+                            ] ;
+        pddl:effect   [ a  pddl:And ;
+                        pddl:argument  [ a  :on-belt ;
+                                         :on-belt-b :drop-belt-b;
+                                         :on-belt-cb :drop-belt-cb ] ;
+                        pddl:argument  [ a pddl:Not ;
+                                        pddl:argument  [ a  :on-robot ;
+                                                         :on-robot-b :drop-belt-b;
+                                                         :on-robot-rb :drop-belt-rb ] ] ;
+                        pddl:argument [ a         :free-robot ;
+                                         :free-robot-rb :drop-belt-rb ] ;
+                      ] .
+
+
+:drop-belt-rb  a             pddl:Parameter ;
+        rdfs:label          "rb" ;
+        pddl:type           :Robot ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:drop-belt-b  a             pddl:Parameter ;
+        rdfs:label          "b" ;
+        pddl:type           :Box ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:drop-belt-cb  a             pddl:Parameter ;
+        rdfs:label          "cb" ;
+        pddl:type           :ConveyorBelt ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            3 .
+
+:drop-belt-x  a             pddl:Parameter ;
+        rdfs:label          "x" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            4 .
+
+:drop-belt-y  a             pddl:Parameter ;
+        rdfs:label          "y" ;
+        pddl:type           :Coord ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            5 .
         """.trimIndent()
 
         val model = OslcRdfHelper.modelFrom(ttl, Lang.TURTLE)
         return model
     }
 
-    fun getDomainDynamic(): Model {
-
+    fun genProblem(): Model {
         val resources = HashSet<IResource>()
-
-        /*
-            :table
-              a :location ;
-              oslc:instanceShape pddl:ConstantShape ;
-              rdfs:label "table" .
-        */
-
-        val table = RawResource(u("table"))
-        table.addType(u("location"))
-        table.setInstanceShape(Constant::class.java)
-        table.setLabel("table")
-
-        resources.add(table)
-
-        /*
-            :a
-              a :block ;
-              oslc:instanceShape pddl:ObjectShape ;
-              rdfs:label "a" .
-
-            :b
-              a :block ;
-              oslc:instanceShape pddl:ObjectShape ;
-              rdfs:label "b" .
-
-            :c
-              a :block ;
-              oslc:instanceShape pddl:ObjectShape ;
-              rdfs:label "c" .
-         */
-
-        val blocks: MutableMap<Any, Block> = HashMap()
-
-        for (b in ImmutableSet.of("a", "b", "c")) {
-            val block = Block(u(b))
-            block.label = b
-            // FIXME Andrew@2018-08-14: wrong resource name, not the exact same shape
-//            block.setInstanceShape(PddlObject::class.java)
-            blocks[b] = block
-            resources.add(block)
-        }
-
-        /*
-
-        :adl-blocksworld-problem
-          a pddl:Problem ;
-          oslc:instanceShape pddl:ProblemShape ;
-          rdfs:label "adl-blocksworld-problem" ;
-          pddl:domain :adl-blocksworld ;
-          pddl:object :a ,
-                      :b ,
-                      :c ,
-                      :table ;
-          pddl:init [ a pddl:EQ ;
-                      pddl:left [ a :moved ;
-                                  :moved-m :a
-                                ] ;
-                      pddl:right 0
-                    ] ,
-                    [ a pddl:EQ ;
-                      pddl:left [ a :moved ;
-                                  :moved-m :b
-                                ] ;
-                      pddl:right 0
-                    ] ,
-                    [ a pddl:EQ ;
-                      pddl:left [ a :moved ;
-                                  :moved-m :c
-                                ] ;
-                      pddl:right 0
-                    ] ,
-                    [ a pddl:EQ ;
-                      pddl:left [ a :total-moved ] ;
-                      pddl:right 0
-                    ] ,
-                    [ a :on ;
-                      :on-x :b ;
-                      :on-y :table
-                    ] ,
-                    [ a :on ;
-                      :on-x :a ;
-                      :on-y :table
-                    ] ,
-                    [ a :on ;
-                      :on-x :c ;
-                      :on-y :a
-                    ] ,
-                    [ a :clear ;
-                      :clear-x :b
-                    ] ,
-                    [ a :clear ;
-                      :clear-x :c
-                    ] ,
-                    [ a :clear ;
-                      :clear-x :table
-                    ] ;
-          pddl:goal [ a pddl:Or ;
-                      pddl:argument [ a :on ;
-                                      :on-x :b ;
-                                      :on-y :c
-                                    ] ,
-                                    [ a :on ;
-                                      :on-x :c ;
-                                      :on-y :b
-                                    ]
-                    ] ;
-          pddl:minimize [ a pddl:total-time ].
-
-        */
-
-        var problem = Problem(u("adl-blocksworld-problem"))
-        problem.label = "adl-blocksworld-problem"
-        // this is a resource defined in the "static" part of the domain
-        problem.domain = Link(u("adl-blocksworld"))
-        problem.pddlObject.addAll(blocks.map { entry -> entry.value.link })
-        problem.pddlObject.add(table.link)
-
-        val initialState: InstanceMultiWithResources<IResource> = buildInitState(
-                ImmutableList.of(table), ImmutableList.copyOf(blocks.values))
-        val goalState: InstanceWithResources<IResource> = buildGoalState(ImmutableList.of(table),
-                ImmutableList.copyOf(blocks.values))
-
-        // FIXME Andrew@2018-08-15: shall be inlined
-        problem.setInit(ImmutableSet.copyOf(initialState.instance.map { it.link }))
-        resources.addAll(initialState.resources)
-
-        problem.goal = goalState.instance.link
-        resources.addAll(goalState.resources)
-
-        val minFn = RawResource(u(UUID.randomUUID()))
-        minFn.addType(ns(PDDL, "total-time"))
-        resources.add(minFn)
-
-        problem.minimize = minFn.link
-
+        val problem = Problem(u("scott-warehouse-problem"))
         resources.add(problem)
 
+        problem.label = "scott-warehouse-problem"
+        problem.domain = Link(u("scott-warehouse"))
+
+
+        // OBJECTS
+
+        val sh1 = shelf("sh1")
+        val rb1 = robot("rb1")
+        val cb1 = belt("cb1")
+        val b1 = box("b1")
+
+        val x0 = coord("x0")
+        val y0 = coord("y0")
+        val y10 = coord("y10")
+        val y20 = coord("y20")
+
+        val pddlObjects = hashSetOf(sh1, rb1, cb1, b1, x0, y0, y10, y20);
+        problem.pddlObject.addAll(pddlObjects.map { it.link })
+        resources += pddlObjects
+
+
+        // INIT STATE
+
+        val robotAt: InstanceWithResources<IExtendedResource> = robotAt(rb1, x0, y0)
+        val shelfAt = shelfAt(sh1, x0, y10)
+        val beltAt = beltAt(cb1, x0, y20)
+        val onShelf = onShelf(b1, sh1)
+        val freeRobot = freeRobot(rb1)
+
+
+        val initObjects = hashSetOf(robotAt, shelfAt, beltAt, onShelf, freeRobot)
+        problem.setInit(initObjects.map { it.instance.link }.toMutableSet())
+        resources += initObjects.flatMap { it.resources }
+
+        // GOAL STATE
+
+        val goal = and(onBelt(b1, cb1))
+        problem.goal = goal.instance.link
+        resources += goal.resources
+
+
+        // misc
+
+        val minFn = this.minFn()
+        problem.minimize = minFn.link
+        resources += minFn
+
         return JenaModelHelper.createJenaModel(resources.toArray())
+    }
+
+
+    private fun minFn(): RawResource {
+        val minFn = RawResource(u(UUID.randomUUID()))
+        minFn.addType(ns(PDDL, "total-time"))
+        return minFn
+    }
+
+    private fun freeRobot(robot: IExtendedResource): InstanceWithResources<IExtendedResource> {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("free-robot"))
+        r.setProperty(u("free-robot-rb"), robot.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, robot))
+    }
+
+    private fun and(
+            vararg predicates: InstanceWithResources<IExtendedResource>): InstanceWithResources<IExtendedResource> {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(ns(PDDL, "And"))
+        r.setProperty(ns(PDDL, "argument"), predicates.map { it.instance.about })
+        val resources = HashSet(predicates.flatMap { it.resources })
+        resources.add(r)
+        return InstanceWithResources(r, resources)
+    }
+
+    private fun robotAt(robot: IExtendedResource, x: IExtendedResource,
+                        y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("robot-at"))
+        r.setProperty(u("robot-at-rb"), robot.about)
+        r.setProperty(u("robot-at-x"), x.about)
+        r.setProperty(u("robot-at-y"), y.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, robot, x, y))
+    }
+
+    private fun beltAt(belt: IExtendedResource, x: IExtendedResource,
+                       y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("belt-at"))
+        r.setProperty(u("belt-at-cb"), belt.about)
+        r.setProperty(u("belt-at-x"), x.about)
+        r.setProperty(u("belt-at-y"), y.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, belt, x, y))
+
+    }
+
+    private fun shelfAt(shelf: IExtendedResource, x: IExtendedResource,
+                        y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("shelf-at"))
+        r.setProperty(u("shelf-at-sh"), shelf.about)
+        r.setProperty(u("shelf-at-x"), x.about)
+        r.setProperty(u("shelf-at-y"), y.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, shelf, x, y))
+    }
+
+
+    private fun onShelf(box: IExtendedResource,
+                        shelf: IExtendedResource): InstanceWithResources<IExtendedResource> {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("on-shelf"))
+        r.setProperty(u("on-shelf-b"), box.about)
+        r.setProperty(u("on-shelf-sh"), shelf.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, shelf, box))
+    }
+
+    private fun onBelt(box: IExtendedResource,
+                       belt: IExtendedResource): InstanceWithResources<IExtendedResource> {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("on-belt"))
+        r.setProperty(u("on-belt-cb"), belt.about)
+        r.setProperty(u("on-belt-b"), box.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, belt, box))
+    }
+
+    fun shelf(id: String): IExtendedResource {
+        return pddlInstance(id, "Shelf")
+    }
+
+    fun box(id: String): IExtendedResource {
+        return pddlInstance(id, "Box")
+    }
+
+    fun robot(id: String): IExtendedResource {
+        return pddlInstance(id, "Robot")
+    }
+
+    fun belt(id: String): IExtendedResource {
+        return pddlInstance(id, "ConveyorBelt")
+    }
+
+    fun coord(id: String): IExtendedResource {
+        return pddlInstance(id, "Coord")
+    }
+
+    fun pddlInstance(id: String, type: String): IExtendedResource {
+        val pddlResource = RawResource(u(id))
+        pddlResource.setLabel(id)
+        pddlResource.addType(u(type))
+
+        return pddlResource
     }
 
     private fun buildInitState(tables: List<IResource>,
