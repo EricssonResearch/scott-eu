@@ -38,6 +38,10 @@ public class MqttManager {
         return mqttClient;
     }
 
+    /**
+     * Begin listening on AdaptorHelper.MQTT_TOPIC and perform a handshake with any twin that
+     * registers there.
+     */
     public static MqttClient initMqttClient() {
         try {
             final String mqttBroker = WarehouseControllerManager.p(AdaptorHelper.MQTT_TOPIC);
@@ -48,8 +52,7 @@ public class MqttManager {
             // TODO Andrew@2018-03-13: set highest QoS
             mqttClient.connect(mqttConnectOptions);
             registrationListener = new TwinRegistrationListener(mqttClient, MqttTopics.WHC_PLANS);
-            mqttClient.subscribeWithResponse(MqttTopics.REGISTRATION_ANNOUNCE, registrationListener
-            );
+            mqttClient.subscribe(MqttTopics.REGISTRATION_ANNOUNCE, registrationListener);
             return mqttClient;
         } catch (MqttException e) {
             log.error("MQTT connection failed", e);
@@ -59,8 +62,4 @@ public class MqttManager {
         }
     }
 
-    public static void triggerPlan(final PlanDTO planDTO) {
-//        URI exec = pickExecutor()
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
 }

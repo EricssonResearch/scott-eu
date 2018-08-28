@@ -92,13 +92,12 @@ public class WarehouseControllerManager {
     {
         
         // Start of user code contextInitializeServletListener
+
         AdaptorHelper.initLogger();
-
-        context = servletContextEvent.getServletContext();
-
         log.info("WHC instance '{}' is initialising", whcUUID.toString());
 
-        // FIXME Andrew@2018-07-30: https://github.com/EricssonResearch/scott-eu/issues/101
+        context = servletContextEvent.getServletContext();
+        // TODO Andrew@2018-07-30: https://github.com/EricssonResearch/scott-eu/issues/101
 //        StoreManager.initLyoStore();
 
         final MqttClient mqttClient = MqttManager.initMqttClient();
@@ -111,7 +110,8 @@ public class WarehouseControllerManager {
         }, 30, TimeUnit.SECONDS);
 
 //        TRSManager.initTRSServer(mqttClient);
-//        TRSManager.initTRSClient(mqttClient);
+        TRSManager.initTRSClient(mqttClient);
+
         // End of user code
     }
 
