@@ -233,18 +233,18 @@
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='ToolchainDiagram']/@defaultLayer/@containerMappings[name='Toolchain.AdaptorInterface']"/>
     </ownedDiagramElements>
-    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_deAL8CE5Eeitxayfxj6eXg" name="[plan]" sourceNode="_ddnxcCE5Eeitxayfxj6eXg" targetNode="_Q2ebgBi5EeikF-vCO9HXQg">
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_deAL8CE5Eeitxayfxj6eXg" name="[isSuccessful]" sourceNode="_ddnxcCE5Eeitxayfxj6eXg" targetNode="_Q2ebgBi5EeikF-vCO9HXQg">
       <target xmi:type="oslc4j_ai:Resource" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.22"/>
-      <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resourceProperties.25"/>
+      <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resourceProperties.24"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_debCsCE5Eeitxayfxj6eXg" lineStyle="dot" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='ToolchainDiagram']/@defaultLayer/@edgeMappings[name='Toolchain.ManagedResourceToManagedResource']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_debCsSE5Eeitxayfxj6eXg" labelSize="9" showIcon="false"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='ToolchainDiagram']/@defaultLayer/@edgeMappings[name='Toolchain.ManagedResourceToManagedResource']"/>
     </ownedDiagramElements>
-    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_kDZyoCE5Eeitxayfxj6eXg" name="[plan]" sourceNode="_kDWvUCE5Eeitxayfxj6eXg" targetNode="_Q2ebgBi5EeikF-vCO9HXQg">
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_kDZyoCE5Eeitxayfxj6eXg" name="[isSuccessful]" sourceNode="_kDWvUCE5Eeitxayfxj6eXg" targetNode="_Q2ebgBi5EeikF-vCO9HXQg">
       <target xmi:type="oslc4j_ai:Resource" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.22"/>
-      <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resourceProperties.25"/>
+      <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resourceProperties.24"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_kDaZsCE5Eeitxayfxj6eXg" lineStyle="dot" size="2">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='ToolchainDiagram']/@defaultLayer/@edgeMappings[name='Toolchain.ManagedResourceToManagedResource']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_kDaZsSE5Eeitxayfxj6eXg" labelSize="9" showIcon="false"/>
@@ -487,7 +487,7 @@
             <styles xmi:type="notation:FilteringStyle" xmi:id="_gU0BEhHPEei8f44qdc-xoQ"/>
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_gUzaARHPEei8f44qdc-xoQ" fontName=".AppleSystemUIFont"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_gUzaAhHPEei8f44qdc-xoQ" x="16" y="28" width="823" height="507"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_gUzaAhHPEei8f44qdc-xoQ" x="16" y="24" width="823" height="507"/>
         </children>
         <styles xmi:type="notation:DiagramStyle" xmi:id="_J2INghHPEei8f44qdc-xoQ"/>
         <edges xmi:type="notation:Edge" xmi:id="_gU-ZIBHPEei8f44qdc-xoQ" type="4001" element="_gUBW4BHPEei8f44qdc-xoQ" source="_gU12RBHPEei8f44qdc-xoQ" target="_gU45lBHPEei8f44qdc-xoQ">
@@ -718,8 +718,8 @@
     </ownedAnnotationEntries>
     <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_gRoxQBHPEei8f44qdc-xoQ" name="MissionOntology (mission)" width="40" height="30">
       <target xmi:type="oslc4j_ai:DomainSpecification" href="toolchain.xml#//@specification/@domainSpecifications.0"/>
-      <semanticElements xmi:type="oslc4j_ai:GenerationSetting" href="toolchain.xml#//@specification/@domainSpecifications.0/@generationSetting"/>
       <semanticElements xmi:type="oslc4j_ai:DomainSpecification" href="toolchain.xml#//@specification/@domainSpecifications.0"/>
+      <semanticElements xmi:type="oslc4j_ai:GenerationSetting" href="toolchain.xml#//@specification/@domainSpecifications.0/@generationSetting"/>
       <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
       <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
       <arrangeConstraints>KEEP_RATIO</arrangeConstraints>

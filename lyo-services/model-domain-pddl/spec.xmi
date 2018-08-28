@@ -70,9 +70,34 @@
   <domainSpecifications name="RDFS" namespaceURI="http://www.w3.org/2000/01/rdf-schema#" namespacePrefix="//@domainPrefixes.3">
     <resourceProperties name="label" valueType="String" description="Parameter name."/>
   </domainSpecifications>
+  <domainSpecifications name="SCOTT Warehouse" namespaceURI="http://ontology.cf.ericsson.net/ns/scott-warehouse#" namespacePrefix="//@domainPrefixes.4">
+    <resources name="Coord" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="Box" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1 //@domainSpecifications.4/@resourceProperties.2 //@domainSpecifications.4/@resourceProperties.3 //@domainSpecifications.4/@resourceProperties.4 //@domainSpecifications.4/@resourceProperties.5"/>
+    <resources name="Shelf" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1"/>
+    <resources name="ConveyorBelt" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1"/>
+    <resources name="Robot"/>
+    <resourceProperties name="at-x" valueType="Resource" range="//@domainSpecifications.4/@resources.0"/>
+    <resourceProperties name="at-y" valueType="Resource" range="//@domainSpecifications.4/@resources.0"/>
+    <resourceProperties name="on-belt" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications.4/@resources.3"/>
+    <resourceProperties name="on-shelf" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications.4/@resources.2"/>
+    <resourceProperties name="on-robot" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications.4/@resources.4"/>
+    <resourceProperties name="is-free"/>
+    <generationSetting javaClassPackageName="eu.scott.warehouse.domains.scott"/>
+  </domainSpecifications>
+  <domainSpecifications name="Twins Domain" namespaceURI="http://ontology.cf.ericsson.net/ns/twins#" namespacePrefix="//@domainPrefixes.5">
+    <resources name="RegistrationMessage" resourceProperties="//@domainSpecifications.5/@resourceProperties.0 //@domainSpecifications.5/@resourceProperties.1 //@domainSpecifications.5/@resourceProperties.2 //@domainSpecifications.5/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0"/>
+    <resourceProperties name="twinType" valueType="String"/>
+    <resourceProperties name="deregister"/>
+    <resourceProperties name="trsUri" valueType="URI"/>
+    <resourceProperties name="trsMqttTopic" valueType="String"/>
+    <resourceProperties name="id" valueType="String"/>
+    <generationSetting javaClassPackageName="eu.scott.warehouse.domains.twins" javaFilesPath=""/>
+  </domainSpecifications>
   <domainPrefixes name="pddl"/>
   <domainPrefixes name="bworld"/>
   <domainPrefixes name="nsp3"/>
   <domainPrefixes name="rdfs"/>
+  <domainPrefixes name="scott"/>
+  <domainPrefixes name="twins"/>
   <generationSetting javaClassPackageName="eu.scott.warehouse.domains" javaFilesPath="domain-pddl/src/main/java/"/>
 </oslc4j_ai:Specification>
