@@ -21,7 +21,7 @@ if (sim_call_type==sim.syscb_init) then
     --print('minimumDistanceForRecharging: ',minimumDistanceForRecharging)
 
     charger_state = sim.getIntegerSignal(robot_name .. '_charger_state')
-    print('charger_state: '..charger_state)
+    --print('charger_state: '..charger_state)
 
     previous_timestamp = sim.getSimulationTime()
 
@@ -53,8 +53,8 @@ if (sim_call_type==sim.syscb_actuation) then
             end
         end
 
-        print('battery_level: '..battery_level)
-        print('charger_state: '..charger_state)
+        --print('battery_level: '..battery_level)
+        --print('charger_state: '..charger_state)
         previous_timestamp = current_timestamp
 
         --Change color of battery to visually represent how charged it is
