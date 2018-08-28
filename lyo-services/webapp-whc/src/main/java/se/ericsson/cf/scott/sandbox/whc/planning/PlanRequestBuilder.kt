@@ -492,7 +492,7 @@ class PlanRequestBuilder {
 
 
         val initObjects = hashSetOf(robotAt, shelfAt, beltAt, onShelf, freeRobot)
-        problem.setInit(initObjects.map { it.instance.link }.toMutableSet())
+        problem.setInit(initObjects.map { it.instance.link }.toHashSet())
         resources += initObjects.flatMap { it.resources }
 
         // GOAL STATE
@@ -720,7 +720,7 @@ class PlanRequestBuilder {
 
         val bONc = on(u("b"), u("c"))
         val cONb = on(u("c"), u("b"))
-        goal.setArgument(ImmutableSet.of(bONc.link, cONb.link))
+        goal.argument = hashSetOf(bONc.link, cONb.link)
 
         val instanceWithResources: InstanceWithResources<IResource> = InstanceWithResources(goal,
                 ImmutableList.of(goal, bONc, cONb))

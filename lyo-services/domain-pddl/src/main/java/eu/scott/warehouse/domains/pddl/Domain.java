@@ -320,7 +320,7 @@ public class Domain
     
     // Start of user code setterAnnotation:constant
     // End of user code
-    public void setConstant(final Set<Link> constant )
+    public void setConstant(final HashSet<Link> constant )
     {
         // Start of user code setterInit:constant
         // End of user code
@@ -336,7 +336,7 @@ public class Domain
     
     // Start of user code setterAnnotation:function
     // End of user code
-    public void setFunction(final Set<Link> function )
+    public void setFunction(final HashSet<Link> function )
     {
         // Start of user code setterInit:function
         // End of user code
@@ -352,7 +352,7 @@ public class Domain
     
     // Start of user code setterAnnotation:predicate
     // End of user code
-    public void setPredicate(final Set<Link> predicate )
+    public void setPredicate(final HashSet<Link> predicate )
     {
         // Start of user code setterInit:predicate
         // End of user code

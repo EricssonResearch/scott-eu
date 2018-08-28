@@ -219,7 +219,7 @@ public class ForAll
     
     // Start of user code setterAnnotation:argument
     // End of user code
-    public void setArgument(final Set<Link> argument )
+    public void setArgument(final HashSet<Link> argument )
     {
         // Start of user code setterInit:argument
         // End of user code

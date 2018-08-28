@@ -270,7 +270,7 @@ public class Plan
     
     // Start of user code setterAnnotation:step
     // End of user code
-    public void setStep(final Set<Step> step )
+    public void setStep(final HashSet<Step> step )
     {
         // Start of user code setterInit:step
         // End of user code

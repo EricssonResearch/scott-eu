@@ -348,7 +348,7 @@ public class Problem
     
     // Start of user code setterAnnotation:init
     // End of user code
-    public void setInit(final Set<Link> init )
+    public void setInit(final HashSet<Link> init )
     {
         // Start of user code setterInit:init
         // End of user code
@@ -388,7 +388,7 @@ public class Problem
     
     // Start of user code setterAnnotation:pddlObject
     // End of user code
-    public void setPddlObject(final Set<Link> pddlObject )
+    public void setPddlObject(final HashSet<Link> pddlObject )
     {
         // Start of user code setterInit:pddlObject
         // End of user code
