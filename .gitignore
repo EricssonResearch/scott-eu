@@ -5,6 +5,7 @@
 # Misc
 
 TODO*.md
+TODO*.pdf
 
 # Maven
 */target/
