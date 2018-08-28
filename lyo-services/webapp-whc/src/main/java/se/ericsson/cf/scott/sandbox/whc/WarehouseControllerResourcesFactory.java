@@ -60,7 +60,7 @@ public class WarehouseControllerResourcesFactory {
         Map<String, Object> pathParameters = new HashMap<String, Object>();
         pathParameters.put("serviceProviderId", serviceProviderId);
         pathParameters.put("planId", planId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/resources/plans/{planId}";
+        String instanceURI = "serviceProviders/{serviceProviderId}/service1/plans/{planId}";
     
         final UriBuilder builder = UriBuilder.fromUri(basePath);
         return builder.path(instanceURI).buildFromMap(pathParameters);

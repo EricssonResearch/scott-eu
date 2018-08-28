@@ -145,15 +145,7 @@ public class WarehouseControllerManager {
         return serviceProviderInfos;
     }
 
-    public static RegistrationRequest createRegistrationRequest(HttpServletRequest httpServletRequest, final RegistrationRequest aResource, final String serviceProviderId)
-    {
-        RegistrationRequest newResource = null;
-        
-        // Start of user code createRegistrationRequest
-        // TODO Implement code to create a resource
-        // End of user code
-        return newResource;
-    }
+
 
 
     public static Object[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
@@ -175,6 +167,18 @@ public class WarehouseControllerManager {
         }
         // End of user code
         return aResource;
+    }
+
+
+
+    public static RegistrationRequest createRegistrationRequest(HttpServletRequest httpServletRequest, final RegistrationRequest aResource)
+    {
+        RegistrationRequest newResource = null;
+        
+        // Start of user code createRegistrationRequest
+        // TODO Implement code to create a resource
+        // End of user code
+        return newResource;
     }
 
 

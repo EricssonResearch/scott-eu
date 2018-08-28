@@ -43,6 +43,7 @@ import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 
 // Start of user code imports
 // End of user code
@@ -51,7 +52,7 @@ public class ServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        ServiceProviderService1.class
+        ServiceProviderService1.class, ServiceProviderService2.class
     };
 
     private ServiceProvidersFactory()

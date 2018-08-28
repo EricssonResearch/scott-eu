@@ -65,6 +65,7 @@ import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 
 // Start of user code imports
 import se.ericsson.cf.scott.sandbox.whc.services.WhcTrsService;
@@ -87,8 +88,9 @@ public class Application extends OslcWinkApplication {
     static
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
-        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
+        //RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
         RESOURCE_CLASSES.add(ServiceProviderService1.class);
+        RESOURCE_CLASSES.add(ServiceProviderService2.class);
 
         // Catalog resources
         RESOURCE_CLASSES.add(ServiceProviderCatalogService.class);

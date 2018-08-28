@@ -5,11 +5,12 @@
       <serviceProviders title="Twin SP" description="Service Provider">
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0"/>
-          <creationFactories title="RegistrationCF" label="Registration Creation Factory" creationURI="register" resourceTypes="//@specification/@domainSpecifications.0/@resources.11"/>
+          
           <basicCapabilities>
             <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.0"/>
           </basicCapabilities>
         </services>
+        <services domainSpecification="//@specification/@domainSpecifications.0" serviceNamespace="independantOfServiceProvider"><creationFactories title="RegistrationCF" label="Registration Creation Factory" creationURI="register" resourceTypes="//@specification/@domainSpecifications.0/@resources.11" /></services>
       </serviceProviders>
     </serviceProviderCatalog>
     <specification/>
