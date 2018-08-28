@@ -220,6 +220,7 @@ def topic_callback(odom_data, scan_data,tasks_data):
         result=None
         if result_output_wme != None:
             result = float(result_output_wme.GetValueAsString())
+            print("Result: ",result)
 
     ## 5) send result to environment
    # te.set_actuators(result) 
@@ -241,7 +242,7 @@ def topic_callback(odom_data, scan_data,tasks_data):
     global loop_counter
     print("loop_counter: ",loop_counter)
     loop_counter=loop_counter+1
-    if(loop_counter>0):
+    if(loop_counter>3):
         cli(agent) #open client to interact with agent 
 
 """ =============================================================== """
@@ -280,8 +281,11 @@ if __name__ == "__main__":
     register_print_callback(kernel, agent, callback_print_message, None)
 
     #Load soar sources
+
     agent.ExecuteCommandLine("source soar_robot.soar")
     agent.ExecuteCommandLine("soar wait-snc")
+
+
     #Get input link and create input  structure
     input_link=agent.GetInputLink()
     
@@ -344,6 +348,8 @@ if __name__ == "__main__":
 
     #Get output link
     output_link=agent.GetOutputLink()
+
+
 
 #-- ROS SOAR NODE INITIALIZATION-----------------------------------    
     print("Initializing ROS SOAR node")
