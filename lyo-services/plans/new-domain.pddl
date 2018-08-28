@@ -3,7 +3,6 @@
     :typing
     :equality
     :fluents)
-  ; TODO impl "addType("box"): PddlType("box")"
   (:types box - object robot conveyor-belt shelf - twin coord)
   (:constants table - location)
   (:predicates

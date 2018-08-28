@@ -1,4 +1,4 @@
-@prefix :      <http://ontology.cf.ericsson.net/pddl_example/> .
+@prefix :      <http://ontology.cf.ericsson.net/ns/scott-warehouse#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh:    <http://www.w3.org/ns/shacl#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
@@ -10,34 +10,34 @@
 
 :scott-warehouse  a         pddl:Domain ;
         rdfs:label          "scott-warehouse" ;
-        pddl:type           :box, :robot, :conveyor-belt, :shelf, :coord;
+        pddl:type           :box, :robot, :conveyor-belt, :shelf, :Coord;
         pddl:predicate      :robot-at, :on-belt, :on-shelf, :on-robot, :free-robot, :shelf-at, :belt-at;
         pddl:action         :pick-shelf, :move-to, :drop-belt ;
         oslc:instanceShape  pddl:DomainShape .
 
 # TYPES
 
-:box    a                   rdfs:Class ;
+:Box    a                   rdfs:Class ;
         rdfs:label          "box" ;
         rdfs:subClassOf     pddl:PrimitiveType ;
         oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-:robot  a                   rdfs:Class ;
+:Robot  a                   rdfs:Class ;
         rdfs:label          "robot" ;
         rdfs:subClassOf     pddl:PrimitiveType ;
         oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-:conveyor-belt  a           rdfs:Class ;
+:ConveyorBelt  a           rdfs:Class ;
         rdfs:label          "conveyor-belt" ;
         rdfs:subClassOf     pddl:PrimitiveType ;
         oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-:shelf  a           rdfs:Class ;
+:Shelf  a           rdfs:Class ;
         rdfs:label          "shelf" ;
         rdfs:subClassOf     pddl:PrimitiveType ;
         oslc:instanceShape  pddl:PrimitiveTypeShape .
 
-:coord  a           rdfs:Class ;
+:Coord  a           rdfs:Class ;
         rdfs:label          "coord" ;
         rdfs:subClassOf     pddl:PrimitiveType ;
         oslc:instanceShape  pddl:PrimitiveTypeShape .
@@ -52,19 +52,19 @@
 
 :robot-at-rb  a             pddl:Parameter ;
         rdfs:label          "rb" ;
-        pddl:type           :robot ;
+        pddl:type           :Robot ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
 :robot-at-x  a             pddl:Parameter ;
         rdfs:label          "x" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
 :robot-at-y  a             pddl:Parameter ;
         rdfs:label          "y" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            3 .
 
@@ -76,13 +76,13 @@
 
 :on-belt-b  a             pddl:Parameter ;
         rdfs:label          "b" ;
-        pddl:type           :box ;
+        pddl:type           :Box ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
 :on-belt-cb  a             pddl:Parameter ;
         rdfs:label          "cb" ;
-        pddl:type           :conveyor-belt ;
+        pddl:type           :ConveyorBelt ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
@@ -94,13 +94,13 @@
 
 :on-shelf-b  a             pddl:Parameter ;
         rdfs:label          "b" ;
-        pddl:type           :box ;
+        pddl:type           :Box ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
 :on-shelf-sh  a             pddl:Parameter ;
         rdfs:label          "sh" ;
-        pddl:type           :shelf ;
+        pddl:type           :Shelf ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
@@ -112,13 +112,13 @@
 
 :on-robot-b  a             pddl:Parameter ;
         rdfs:label          "b" ;
-        pddl:type           :box ;
+        pddl:type           :Box ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
 :on-robot-rb  a             pddl:Parameter ;
         rdfs:label          "rb" ;
-        pddl:type           :robot ;
+        pddl:type           :Robot ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
@@ -131,7 +131,7 @@
 
 :free-robot-rb  a             pddl:Parameter ;
         rdfs:label          "rb" ;
-        pddl:type           :robot ;
+        pddl:type           :Robot ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
@@ -144,19 +144,19 @@
 
 :shelf-at-sh  a             pddl:Parameter ;
         rdfs:label          "sh" ;
-        pddl:type           :shelf ;
+        pddl:type           :Shelf ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
 :shelf-at-x  a             pddl:Parameter ;
         rdfs:label          "x" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
 :shelf-at-y  a             pddl:Parameter ;
         rdfs:label          "y" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            3 .
 
@@ -168,19 +168,19 @@
 
 :belt-at-cb  a             pddl:Parameter ;
         rdfs:label          "cb" ;
-        pddl:type           :conveyor-belt ;
+        pddl:type           :ConveyorBelt ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order           1 .
 
 :belt-at-x  a             pddl:Parameter ;
         rdfs:label          "x" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
 :belt-at-y  a             pddl:Parameter ;
         rdfs:label          "y" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            3 .
 
@@ -207,31 +207,31 @@
 
 :move-to-rb  a             pddl:Parameter ;
         rdfs:label          "rb" ;
-        pddl:type           :robot ;
+        pddl:type           :Robot ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
 :move-to-x1  a             pddl:Parameter ;
         rdfs:label          "x1" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
 :move-to-y1  a             pddl:Parameter ;
         rdfs:label          "y1" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            3 .
 
 :move-to-x2  a             pddl:Parameter ;
         rdfs:label          "x2" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            4 .
 
 :move-to-y2  a             pddl:Parameter ;
         rdfs:label          "y2" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            5 .
 
@@ -271,31 +271,31 @@
 
 :pick-shelf-rb  a             pddl:Parameter ;
         rdfs:label          "rb" ;
-        pddl:type           :robot ;
+        pddl:type           :Robot ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
 :pick-shelf-b  a             pddl:Parameter ;
         rdfs:label          "b" ;
-        pddl:type           :box ;
+        pddl:type           :Box ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
 :pick-shelf-sh  a             pddl:Parameter ;
         rdfs:label          "sh" ;
-        pddl:type           :shelf ;
+        pddl:type           :Shelf ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            3 .
 
 :pick-shelf-x  a             pddl:Parameter ;
         rdfs:label          "x" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            4 .
 
 :pick-shelf-y  a             pddl:Parameter ;
         rdfs:label          "y" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            5 .
 
@@ -332,30 +332,30 @@
 
 :drop-belt-rb  a             pddl:Parameter ;
         rdfs:label          "rb" ;
-        pddl:type           :robot ;
+        pddl:type           :Robot ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            1 .
 
 :drop-belt-b  a             pddl:Parameter ;
         rdfs:label          "b" ;
-        pddl:type           :box ;
+        pddl:type           :Box ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            2 .
 
 :drop-belt-cb  a             pddl:Parameter ;
         rdfs:label          "cb" ;
-        pddl:type           :conveyor-belt ;
+        pddl:type           :ConveyorBelt ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            3 .
 
 :drop-belt-x  a             pddl:Parameter ;
         rdfs:label          "x" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            4 .
 
 :drop-belt-y  a             pddl:Parameter ;
         rdfs:label          "y" ;
-        pddl:type           :coord ;
+        pddl:type           :Coord ;
         oslc:instanceShape  pddl:ParameterShape ;
         sh:order            5 .
