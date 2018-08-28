@@ -7,6 +7,7 @@ import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.RDFFormat
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.junit.Assert.assertTrue
+import org.junit.Ignore
 import org.junit.Test
 import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.modelFrom
 import java.io.ByteArrayOutputStream
@@ -27,6 +28,8 @@ class PlanRequestBuilderTest {
     }
 
     @Test
+    // TODO Andrew@2018-08-28: update the expectation in the unit test
+    @Ignore("shall be updated from blocksworld to the scott-warehouse PDDL domain")
     fun locationIsIsomorphic() {
         val locationModelExpected: Model = modelFrom("""
             @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

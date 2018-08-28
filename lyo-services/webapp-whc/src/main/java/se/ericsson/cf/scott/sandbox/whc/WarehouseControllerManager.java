@@ -24,15 +24,20 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
-import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
+import java.util.List;
 
-import se.ericsson.cf.scott.sandbox.whc.planning.PlanRequestBuilder;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.mission.AgentRequest;
 import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.mission.RegistrationRequest;
+import eu.scott.warehouse.domains.pddl.Step;
+
 
 // Start of user code imports
 import java.net.URI;
@@ -41,6 +46,11 @@ import javax.servlet.ServletContext;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+
 
 //import org.eclipse.lyo.store.StoreFactory;
 import se.ericsson.cf.scott.sandbox.whc.managers.MqttManager;
@@ -135,6 +145,15 @@ public class WarehouseControllerManager {
         return serviceProviderInfos;
     }
 
+    public static RegistrationRequest createRegistrationRequest(HttpServletRequest httpServletRequest, final RegistrationRequest aResource, final String serviceProviderId)
+    {
+        RegistrationRequest newResource = null;
+        
+        // Start of user code createRegistrationRequest
+        // TODO Implement code to create a resource
+        // End of user code
+        return newResource;
+    }
 
 
     public static Object[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
@@ -166,6 +185,14 @@ public class WarehouseControllerManager {
         String eTag = null;
         // Start of user code getETagFromPlan
         eTag = AdaptorHelper.hexHashCodeFor(aResource);
+        // End of user code
+        return eTag;
+    }
+    public static String getETagFromRegistrationRequest(final RegistrationRequest aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromRegistrationRequest
+        // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
     }

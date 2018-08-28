@@ -28,7 +28,9 @@ import javax.ws.rs.core.UriBuilder;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.mission.AgentRequest;
 import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.mission.RegistrationRequest;
 import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
@@ -58,7 +60,7 @@ public class WarehouseControllerResourcesFactory {
         Map<String, Object> pathParameters = new HashMap<String, Object>();
         pathParameters.put("serviceProviderId", serviceProviderId);
         pathParameters.put("planId", planId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/plans/{planId}";
+        String instanceURI = "serviceProviders/{serviceProviderId}/resources/plans/{planId}";
     
         final UriBuilder builder = UriBuilder.fromUri(basePath);
         return builder.path(instanceURI).buildFromMap(pathParameters);
@@ -73,6 +75,9 @@ public class WarehouseControllerResourcesFactory {
     {
         return new Link(constructURIForPlan(serviceProviderId, planId));
     }
+    
+
+    //methods for RegistrationRequest resource
     
 
 }

@@ -276,7 +276,7 @@ public class ServiceProviderCatalogSingleton
                     String description = String.format("%s (id: %s; kind: %s)",
                         "Service Provider",
                         identifier,
-                        "Service Provider");
+                        "Twin SP");
                     Publisher publisher = null;
                     Map<String, Object> parameterMap = new HashMap<String, Object>();
                     parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);

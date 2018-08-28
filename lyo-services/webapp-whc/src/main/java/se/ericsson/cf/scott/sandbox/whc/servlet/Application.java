@@ -50,15 +50,19 @@ import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
-//import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
+import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.whc.services.ResourceShapeService;
 
 import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.mission.AgentRequest;
 import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.mission.RegistrationRequest;
 import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.mission.MissionDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 
@@ -83,7 +87,7 @@ public class Application extends OslcWinkApplication {
     static
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
-//        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
+        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
         RESOURCE_CLASSES.add(ServiceProviderService1.class);
 
         // Catalog resources
@@ -115,7 +119,9 @@ public class Application extends OslcWinkApplication {
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER_CATALOG, ServiceProviderCatalog.class);
 
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.ACTION_PATH, Action.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(MissionDomainConstants.AGENTREQUEST_PATH, AgentRequest.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PLAN_PATH, Plan.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(MissionDomainConstants.REGISTRATIONREQUEST_PATH, RegistrationRequest.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.STEP_PATH, Step.class);
     }
 

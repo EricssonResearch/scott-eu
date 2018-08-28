@@ -59,7 +59,6 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.wink.json4j.JSONObject;
-import org.eclipse.lyo.oslc4j.core.model.IResource;
 import org.eclipse.lyo.oslc4j.provider.json4j.JsonHelper;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcCreationFactory;
@@ -77,11 +76,14 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerConstants;
+import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.mission.AgentRequest;
 import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.mission.RegistrationRequest;
 import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
@@ -90,7 +92,7 @@ import eu.scott.warehouse.domains.pddl.Step;
 // Start of user code pre_class_code
 // End of user code
 @OslcService(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_DOMAIN)
-@Path("serviceProviders/{serviceProviderId}/plans")
+@Path("serviceProviders/{serviceProviderId}/resources")
 public class ServiceProviderService1
 {
     @Context private HttpServletRequest httpServletRequest;
@@ -108,12 +110,45 @@ public class ServiceProviderService1
         super();
     }
 
+    /**
+     * Create a single RegistrationRequest via RDF/XML, XML or JSON POST
+     *
+     * @throws IOException
+     * @throws ServletException
+     */
+    @OslcCreationFactory
+    (
+         title = "RegistrationCF",
+         label = "Registration Creation Factory",
+         resourceShapes = {OslcConstants.PATH_RESOURCE_SHAPES + "/" + MissionDomainConstants.REGISTRATIONREQUEST_PATH},
+         resourceTypes = {MissionDomainConstants.REGISTRATIONREQUEST_TYPE},
+         usages = {}
+    )
+    @POST
+    @Path("register")
+    @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    public Response createRegistrationRequest(
+            @PathParam("serviceProviderId") final String serviceProviderId ,
+            final RegistrationRequest aResource
+        ) throws IOException, ServletException
+    {
+        try {
+            RegistrationRequest newResource = WarehouseControllerManager.createRegistrationRequest(httpServletRequest, aResource, serviceProviderId);
+            httpServletResponse.setHeader("ETag", WarehouseControllerManager.getETagFromRegistrationRequest(newResource));
+            return Response.created(newResource.getAbout()).entity(newResource).header(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new WebApplicationException(e);
+        }
+    }
+
     @GET
-    @Path("{planId}")
+    @Path("plans/{planId}")
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE})
     public Object[] getPlan(
-            @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
-    ) throws IOException, ServletException, URISyntaxException
+                @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws IOException, ServletException, URISyntaxException
     {
         // Start of user code getResource_init
         // End of user code
@@ -133,11 +168,11 @@ public class ServiceProviderService1
     }
 
     @GET
-    @Path("{planId}")
+    @Path("plans/{planId}")
     @Produces({ MediaType.TEXT_HTML })
     public Response getPlanAsHtml(
-            @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
-    ) throws ServletException, IOException, URISyntaxException
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
     {
         // Start of user code getPlanAsHtml_init
         // End of user code
@@ -205,7 +240,7 @@ public class ServiceProviderService1
     }
 
     @GET
-    @Path("{planId}/smallPreview")
+    @Path("plans/{planId}/smallPreview")
     @Produces({ MediaType.TEXT_HTML })
     public void getPlanAsHtmlSmallPreview(
         @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
@@ -230,7 +265,7 @@ public class ServiceProviderService1
     }
 
     @GET
-    @Path("{planId}/largePreview")
+    @Path("plans/{planId}/largePreview")
     @Produces({ MediaType.TEXT_HTML })
     public void getPlanAsHtmlLargePreview(
         @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId

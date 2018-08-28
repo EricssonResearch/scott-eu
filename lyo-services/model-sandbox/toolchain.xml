@@ -2,9 +2,10 @@
 <oslc4j_tc:Toolchain xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oslc4j_ai="http://org.eclipse.lyo/oslc4j/adaptorInterface" xmlns:oslc4j_tc="http://org.eclipse.lyo/oslc4j/toolChain">
   <adaptorInterfaces name="Warehouse Controller" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.whc" javaFilesBasePath="../webapp-whc/src/main/java/" jspFilesBasePath="../webapp-whc/src/main/webapp/" javascriptFilesBasePath="../webapp-whc/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
-      <serviceProviders title="Service Provider" description="Service Provider">
+      <serviceProviders title="Twin SP" description="Service Provider">
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0"/>
+          <creationFactories title="RegistrationCF" label="Registration Creation Factory" creationURI="register" resourceTypes="//@specification/@domainSpecifications.0/@resources.11"/>
           <basicCapabilities>
             <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.0"/>
           </basicCapabilities>
