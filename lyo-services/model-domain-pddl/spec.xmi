@@ -90,7 +90,7 @@
     <resourceProperties name="deregister"/>
     <resourceProperties name="trsUri" valueType="URI"/>
     <resourceProperties name="trsMqttTopic" valueType="String"/>
-    <resourceProperties name="id" valueType="String"/>
+    <resourceProperties name="twinId" valueType="String"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.twins" javaFilesPath=""/>
   </domainSpecifications>
   <domainPrefixes name="pddl"/>

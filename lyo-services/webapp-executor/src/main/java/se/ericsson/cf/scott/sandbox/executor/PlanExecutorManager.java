@@ -24,28 +24,21 @@
 
 package se.ericsson.cf.scott.sandbox.executor;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.google.common.collect.Lists;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IQueue;
 import eu.scott.warehouse.MqttClientBuilder;
 import eu.scott.warehouse.MqttTopics;
 import eu.scott.warehouse.TrsMqttGateway;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 
-import org.apache.jena.shared.uuid.UUIDFactory;
-import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +95,6 @@ public class PlanExecutorManager {
         log.debug("New instance of Hazelcast has been constructed");
         assert hc != null;
         new Thread(new PlanQueueRunnable(hc)).start();
-
 
         try {
             log.debug("Starting MQTT broker initialisation");

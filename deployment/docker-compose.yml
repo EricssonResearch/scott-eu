@@ -88,8 +88,7 @@ services:
       - sandbox-whc
       - swarm-manager
     deploy:
-      # just '4' for the test
-      replicas: 12
+      replicas: 1
       resources:
         limits:
           memory: 384m
@@ -100,6 +99,7 @@ services:
   sandbox-twin:
     image: ${CI_REGISTRY_IMAGE}/scott-webapp-twin
     environment:
+      TWINS: "10"
       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2"
     networks:
       - overlay

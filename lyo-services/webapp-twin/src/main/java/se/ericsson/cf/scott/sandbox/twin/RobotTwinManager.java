@@ -25,15 +25,18 @@
 package se.ericsson.cf.scott.sandbox.twin;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import eu.scott.warehouse.MqttClientBuilder;
 import eu.scott.warehouse.MqttTopics;
 import eu.scott.warehouse.TrsMqttGateway;
 import eu.scott.warehouse.domains.trs.TrsXConstants;
+import java.net.URI;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 
+import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import eu.scott.warehouse.domains.pddl.PlanExecutionResult;
@@ -44,6 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.ericsson.cf.scott.sandbox.twin.clients.TwinRegistrationClient;
 import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
 
@@ -123,7 +127,20 @@ public class RobotTwinManager {
         } catch (MqttException e) {
             log.error("Failed to initialise the MQTT gateway", e);
         }
+
+        registerTwins();
         // End of user code
+    }
+
+    private static void registerTwins() {
+        final OslcClient client = new OslcClient();
+        final TwinRegistrationClient registrationClient = new TwinRegistrationClient(
+            client, "http://sandbox-whc:8080/services/service2/registrationRequests/register");
+
+        for(String id: ImmutableList.of("r1", "r2", "r3")) {
+            registrationClient.registerTwin("robot", id);
+        }
+
     }
 
     private static void setStore(final Store store) {

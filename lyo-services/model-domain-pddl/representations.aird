@@ -2528,7 +2528,7 @@
           </ownedStyle>
           <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
         </ownedElements>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_LjTrcKq2EeibYKtxaqrILw" name="id: String">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_LjTrcKq2EeibYKtxaqrILw" name="twinId: String">
           <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications.5/@resourceProperties.4"/>
           <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications.5/@resourceProperties.4"/>
           <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_LjTrcaq2EeibYKtxaqrILw" labelSize="9" showIcon="false" labelAlignment="LEFT" labelPosition="node">
