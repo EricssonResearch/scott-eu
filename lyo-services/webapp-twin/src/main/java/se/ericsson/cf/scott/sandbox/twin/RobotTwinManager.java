@@ -24,22 +24,23 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import eu.scott.warehouse.MqttClientBuilder;
-import eu.scott.warehouse.MqttTopics;
-import eu.scott.warehouse.TrsMqttGateway;
-import eu.scott.warehouse.domains.trs.TrsXConstants;
-import java.net.URI;
-import java.util.UUID;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
+import java.util.List;
 
-import org.eclipse.lyo.client.oslc.OslcClient;
-import org.eclipse.lyo.store.Store;
-import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.twin.RobotsServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.BeltsServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.mission.AgentRequest;
+import eu.scott.warehouse.domains.mission.Goal;
+import eu.scott.warehouse.domains.mission.Mission;
+import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.pddl.PlanExecutionResult;
+import eu.scott.warehouse.domains.pddl.Step;
+
 
 // Start of user code imports
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -52,6 +53,22 @@ import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
 
 //import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import eu.scott.warehouse.MqttClientBuilder;
+import eu.scott.warehouse.MqttTopics;
+import eu.scott.warehouse.TrsMqttGateway;
+import eu.scott.warehouse.domains.trs.TrsXConstants;
+import java.net.URI;
+import java.util.UUID;
+import javax.servlet.ServletContext;
+
+import org.eclipse.lyo.client.oslc.OslcClient;
+import org.eclipse.lyo.store.Store;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+
+
 
 // End of user code
 
@@ -70,7 +87,9 @@ public class RobotTwinManager {
     private static ServletContext servletContext;
     private static TrsMqttGateway mqttGateway;
     // End of user code
-
+    
+    
+    // Start of user code class_methods
     @NotNull
     public static String getTwinUUID() {
         return "twn-" + uuid.toString();
@@ -98,11 +117,26 @@ public class RobotTwinManager {
     public static ServletContext getServletContext() {
         return servletContext;
     }
+
+    private static void registerTwins() {
+        final OslcClient client = new OslcClient();
+        final TwinRegistrationClient registrationClient = new TwinRegistrationClient(
+            client, "http://sandbox-whc:8080/services/service2/registrationRequests/register");
+
+        for(String id: ImmutableList.of("r1", "r2", "r3")) {
+            registrationClient.registerTwin("robot", id);
+        }
+
+    }
+
+    private static void setStore(final Store store) {
+        RobotTwinManager.store = store;
+    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-
+        
         // Start of user code contextInitializeServletListener
         log.info("Twin {} is starting", getTwinUUID());
         servletContext = servletContextEvent.getServletContext();
@@ -132,24 +166,9 @@ public class RobotTwinManager {
         // End of user code
     }
 
-    private static void registerTwins() {
-        final OslcClient client = new OslcClient();
-        final TwinRegistrationClient registrationClient = new TwinRegistrationClient(
-            client, "http://sandbox-whc:8080/services/service2/registrationRequests/register");
-
-        for(String id: ImmutableList.of("r1", "r2", "r3")) {
-            registrationClient.registerTwin("robot", id);
-        }
-
-    }
-
-    private static void setStore(final Store store) {
-        RobotTwinManager.store = store;
-    }
-
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
     {
-
+        
         // Start of user code contextDestroyed
         log.info("Destroying the servlet");
         try {
@@ -161,17 +180,21 @@ public class RobotTwinManager {
         // End of user code
     }
 
-    @SuppressWarnings("Duplicates")
-    public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
+    public static RobotsServiceProviderInfo[] getRobotsServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
-        ServiceProviderInfo[] serviceProviderInfos = {};
-
-        // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
-        // TODO Andrew@2018-07-29: use Shelf Twin helper methods
-        final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
-        serviceProviderInfo.serviceProviderId = "default";
-        serviceProviderInfo.name = "Default Service Provider";
-        serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
+        RobotsServiceProviderInfo[] serviceProviderInfos = {};
+        
+        // Start of user code "RobotsServiceProviderInfo[] getRobotsServiceProviderInfos(...)"
+        // TODO Implement code to return the set of ServiceProviders
+        // End of user code
+        return serviceProviderInfos;
+    }
+    public static BeltsServiceProviderInfo[] getBeltsServiceProviderInfos(HttpServletRequest httpServletRequest)
+    {
+        BeltsServiceProviderInfo[] serviceProviderInfos = {};
+        
+        // Start of user code "BeltsServiceProviderInfo[] getBeltsServiceProviderInfos(...)"
+        // TODO Implement code to return the set of ServiceProviders
         // End of user code
         return serviceProviderInfos;
     }
@@ -191,6 +214,45 @@ public class RobotTwinManager {
 
 
 
+
+    public static Mission getMission(HttpServletRequest httpServletRequest, final String beltId, final String missionId)
+    {
+        Mission aResource = null;
+        
+        // Start of user code getMission
+        // TODO Implement code to return a resource
+        // End of user code
+        return aResource;
+    }
+    public static AgentRequest getAgentRequest(HttpServletRequest httpServletRequest, final String beltId, final String agentRequestId)
+    {
+        AgentRequest aResource = null;
+        
+        // Start of user code getAgentRequest
+        // TODO Implement code to return a resource
+        // End of user code
+        return aResource;
+    }
+
+
+
+
+    public static String getETagFromAgentRequest(final AgentRequest aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromAgentRequest
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
+    public static String getETagFromMission(final Mission aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromMission
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
     public static String getETagFromPlanExecutionResult(final PlanExecutionResult aResource)
     {
         String eTag = null;

@@ -52,8 +52,8 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 
-import se.ericsson.cf.scott.sandbox.twin.RobotTwinConstants;
-import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager;
+import se.ericsson.cf.scott.sandbox.twin.TwinConstants;
+import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 
 // Start of user code imports
@@ -110,13 +110,14 @@ public class ServiceProviderCatalogService
      */
     @GET
     @Path("{serviceProviderCatalogId}") // Required to distinguish from array result.  But, ignored.
-//    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    // TODO Andrew@2018-08-29: no idea why @Produces was commented out
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public ServiceProviderCatalog getServiceProviderCatalog()
     {
         ServiceProviderCatalog catalog =  ServiceProviderCatalogSingleton.getServiceProviderCatalog(httpServletRequest);
 
         if (catalog != null) {
-            httpServletResponse.addHeader(RobotTwinConstants.HDR_OSLC_VERSION,"2.0");
+            httpServletResponse.addHeader(TwinConstants.HDR_OSLC_VERSION,"2.0");
             return catalog;
         }
 

@@ -49,8 +49,10 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
-import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager;
-import se.ericsson.cf.scott.sandbox.twin.ServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.TwinManager;
+import se.ericsson.cf.scott.sandbox.twin.RobotsServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.BeltsServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.ShelvesServiceProviderInfo;
 
 // Start of user code imports
 // End of user code
@@ -71,7 +73,7 @@ import se.ericsson.cf.scott.sandbox.twin.ServiceProviderInfo;
 public class ServiceProviderCatalogSingleton
 {
     private static final ServiceProviderCatalog serviceProviderCatalog;
-    private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
+    private     static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
 
     static {
         serviceProviderCatalog = new ServiceProviderCatalog();
@@ -108,30 +110,30 @@ public class ServiceProviderCatalogSingleton
     }
 
 
-    private static URI constructServiceProviderURI(final String serviceProviderId)
+    private static URI constructRobotsServiceProviderURI(final String serviceProviderId)
     {
         String basePath = OSLC4JUtils.getServletURI();
         Map<String, Object> pathParameters = new HashMap<String, Object>();
         pathParameters.put("serviceProviderId", serviceProviderId);
-        String instanceURI = "serviceProviders/{serviceProviderId}";
+        String instanceURI = "robots/{serviceProviderId}";
 
         final UriBuilder builder = UriBuilder.fromUri(basePath);
         return builder.path(instanceURI).buildFromMap(pathParameters);
     }
 
-    private static String serviceProviderIdentifier(final String serviceProviderId)
+    private static String robotsServiceProviderIdentifier(final String serviceProviderId)
     {
         String identifier = "/" + serviceProviderId;
         return identifier;
     }
 
-    public static ServiceProvider getServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
+    public static ServiceProvider getRobotsServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
     {
         ServiceProvider serviceProvider;
 
         synchronized(serviceProviders)
         {
-            String identifier = serviceProviderIdentifier(serviceProviderId);
+            String identifier = robotsServiceProviderIdentifier(serviceProviderId);
             serviceProvider = serviceProviders.get(identifier);
 
             //One retry refreshing the service providers
@@ -150,15 +152,15 @@ public class ServiceProviderCatalogSingleton
         throw new WebApplicationException(Status.NOT_FOUND);
     }
 
-    public static ServiceProvider registerServiceProvider(final HttpServletRequest httpServletRequest,
+    public static ServiceProvider registerRobotsServiceProvider(final HttpServletRequest httpServletRequest,
                                                           final ServiceProvider serviceProvider,
                                                           final String serviceProviderId)
                                                 throws URISyntaxException
     {
         synchronized(serviceProviders)
         {
-            final URI serviceProviderURI = constructServiceProviderURI(serviceProviderId);
-            return registerServiceProviderNoSync(serviceProviderURI,
+            final URI serviceProviderURI = constructRobotsServiceProviderURI(serviceProviderId);
+            return registerRobotsServiceProviderNoSync(serviceProviderURI,
                                                  serviceProvider,
                                                  serviceProviderId);
         }
@@ -172,13 +174,13 @@ public class ServiceProviderCatalogSingleton
     * @param productId
     * @return
     */
-    private static ServiceProvider registerServiceProviderNoSync(final URI serviceProviderURI,
+    private static ServiceProvider registerRobotsServiceProviderNoSync(final URI serviceProviderURI,
                                                                  final ServiceProvider serviceProvider
                                                                  , final String serviceProviderId)
     {
         final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
 
-        String identifier = serviceProviderIdentifier(serviceProviderId);
+        String identifier = robotsServiceProviderIdentifier(serviceProviderId);
         serviceProvider.setAbout(serviceProviderURI);
         serviceProvider.setIdentifier(identifier);
         serviceProvider.setCreated(new Date());
@@ -193,23 +195,273 @@ public class ServiceProviderCatalogSingleton
     }
 
     // This version is for self-registration and thus package-protected
-    static ServiceProvider registerServiceProvider(final ServiceProvider serviceProvider, final String serviceProviderId)
+    static ServiceProvider registerRobotsServiceProvider(final ServiceProvider serviceProvider, final String serviceProviderId)
                                             throws URISyntaxException
     {
         synchronized(serviceProviders)
         {
-            final URI serviceProviderURI = constructServiceProviderURI(serviceProviderId);
+            final URI serviceProviderURI = constructRobotsServiceProviderURI(serviceProviderId);
 
-            return registerServiceProviderNoSync(serviceProviderURI, serviceProvider, serviceProviderId);
+            return registerRobotsServiceProviderNoSync(serviceProviderURI, serviceProvider, serviceProviderId);
         }
     }
 
-    public static void deregisterServiceProvider(final String serviceProviderId)
+    public static void deregisterRobotsServiceProvider(final String serviceProviderId)
     {
         synchronized(serviceProviders)
         {
             final ServiceProvider deregisteredServiceProvider =
-                serviceProviders.remove(serviceProviderIdentifier(serviceProviderId));
+                serviceProviders.remove(robotsServiceProviderIdentifier(serviceProviderId));
+
+            if (deregisteredServiceProvider != null)
+            {
+                final SortedSet<URI> remainingDomains = new TreeSet<URI>();
+
+                for (final ServiceProvider remainingServiceProvider : serviceProviders.values())
+                {
+                    remainingDomains.addAll(getServiceProviderDomains(remainingServiceProvider));
+                }
+
+                final SortedSet<URI> removedServiceProviderDomains = getServiceProviderDomains(deregisteredServiceProvider);
+
+                removedServiceProviderDomains.removeAll(remainingDomains);
+                serviceProviderCatalog.removeDomains(removedServiceProviderDomains);
+                serviceProviderCatalog.removeServiceProvider(deregisteredServiceProvider);
+            }
+            else
+            {
+                throw new WebApplicationException(Status.NOT_FOUND);
+            }
+        }
+    }
+
+    private static URI constructBeltsServiceProviderURI(final String beltId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("beltId", beltId);
+        String instanceURI = "belts/{beltId}";
+
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+
+    private static String beltsServiceProviderIdentifier(final String beltId)
+    {
+        String identifier = "/" + beltId;
+        return identifier;
+    }
+
+    public static ServiceProvider getBeltsServiceProvider(HttpServletRequest httpServletRequest, final String beltId)
+    {
+        ServiceProvider serviceProvider;
+
+        synchronized(serviceProviders)
+        {
+            String identifier = beltsServiceProviderIdentifier(beltId);
+            serviceProvider = serviceProviders.get(identifier);
+
+            //One retry refreshing the service providers
+            if (serviceProvider == null)
+            {
+                getServiceProviders(httpServletRequest);
+                serviceProvider = serviceProviders.get(identifier);
+            }
+        }
+
+        if (serviceProvider != null)
+        {
+            return serviceProvider;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    public static ServiceProvider registerBeltsServiceProvider(final HttpServletRequest httpServletRequest,
+                                                          final ServiceProvider serviceProvider,
+                                                          final String beltId)
+                                                throws URISyntaxException
+    {
+        synchronized(serviceProviders)
+        {
+            final URI serviceProviderURI = constructBeltsServiceProviderURI(beltId);
+            return registerBeltsServiceProviderNoSync(serviceProviderURI,
+                                                 serviceProvider,
+                                                 beltId);
+        }
+    }
+
+    /**
+    * Register a service provider with the OSLC catalog
+    *
+    * @param serviceProviderURI
+    * @param serviceProvider
+    * @param productId
+    * @return
+    */
+    private static ServiceProvider registerBeltsServiceProviderNoSync(final URI serviceProviderURI,
+                                                                 final ServiceProvider serviceProvider
+                                                                 , final String beltId)
+    {
+        final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
+
+        String identifier = beltsServiceProviderIdentifier(beltId);
+        serviceProvider.setAbout(serviceProviderURI);
+        serviceProvider.setIdentifier(identifier);
+        serviceProvider.setCreated(new Date());
+        serviceProvider.setDetails(new URI[] {serviceProviderURI});
+
+        serviceProviderCatalog.addServiceProvider(serviceProvider);
+        serviceProviderCatalog.addDomains(serviceProviderDomains);
+
+        serviceProviders.put(identifier, serviceProvider);
+
+        return serviceProvider;
+    }
+
+    // This version is for self-registration and thus package-protected
+    static ServiceProvider registerBeltsServiceProvider(final ServiceProvider serviceProvider, final String beltId)
+                                            throws URISyntaxException
+    {
+        synchronized(serviceProviders)
+        {
+            final URI serviceProviderURI = constructBeltsServiceProviderURI(beltId);
+
+            return registerBeltsServiceProviderNoSync(serviceProviderURI, serviceProvider, beltId);
+        }
+    }
+
+    public static void deregisterBeltsServiceProvider(final String beltId)
+    {
+        synchronized(serviceProviders)
+        {
+            final ServiceProvider deregisteredServiceProvider =
+                serviceProviders.remove(beltsServiceProviderIdentifier(beltId));
+
+            if (deregisteredServiceProvider != null)
+            {
+                final SortedSet<URI> remainingDomains = new TreeSet<URI>();
+
+                for (final ServiceProvider remainingServiceProvider : serviceProviders.values())
+                {
+                    remainingDomains.addAll(getServiceProviderDomains(remainingServiceProvider));
+                }
+
+                final SortedSet<URI> removedServiceProviderDomains = getServiceProviderDomains(deregisteredServiceProvider);
+
+                removedServiceProviderDomains.removeAll(remainingDomains);
+                serviceProviderCatalog.removeDomains(removedServiceProviderDomains);
+                serviceProviderCatalog.removeServiceProvider(deregisteredServiceProvider);
+            }
+            else
+            {
+                throw new WebApplicationException(Status.NOT_FOUND);
+            }
+        }
+    }
+
+    private static URI constructShelvesServiceProviderURI(final String serviceProviderId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("serviceProviderId", serviceProviderId);
+        String instanceURI = "shelves/{serviceProviderId}";
+
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+
+    private static String shelvesServiceProviderIdentifier(final String serviceProviderId)
+    {
+        String identifier = "/" + serviceProviderId;
+        return identifier;
+    }
+
+    public static ServiceProvider getShelvesServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
+    {
+        ServiceProvider serviceProvider;
+
+        synchronized(serviceProviders)
+        {
+            String identifier = shelvesServiceProviderIdentifier(serviceProviderId);
+            serviceProvider = serviceProviders.get(identifier);
+
+            //One retry refreshing the service providers
+            if (serviceProvider == null)
+            {
+                getServiceProviders(httpServletRequest);
+                serviceProvider = serviceProviders.get(identifier);
+            }
+        }
+
+        if (serviceProvider != null)
+        {
+            return serviceProvider;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    public static ServiceProvider registerShelvesServiceProvider(final HttpServletRequest httpServletRequest,
+                                                          final ServiceProvider serviceProvider,
+                                                          final String serviceProviderId)
+                                                throws URISyntaxException
+    {
+        synchronized(serviceProviders)
+        {
+            final URI serviceProviderURI = constructShelvesServiceProviderURI(serviceProviderId);
+            return registerShelvesServiceProviderNoSync(serviceProviderURI,
+                                                 serviceProvider,
+                                                 serviceProviderId);
+        }
+    }
+
+    /**
+    * Register a service provider with the OSLC catalog
+    *
+    * @param serviceProviderURI
+    * @param serviceProvider
+    * @param productId
+    * @return
+    */
+    private static ServiceProvider registerShelvesServiceProviderNoSync(final URI serviceProviderURI,
+                                                                 final ServiceProvider serviceProvider
+                                                                 , final String serviceProviderId)
+    {
+        final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
+
+        String identifier = shelvesServiceProviderIdentifier(serviceProviderId);
+        serviceProvider.setAbout(serviceProviderURI);
+        serviceProvider.setIdentifier(identifier);
+        serviceProvider.setCreated(new Date());
+        serviceProvider.setDetails(new URI[] {serviceProviderURI});
+
+        serviceProviderCatalog.addServiceProvider(serviceProvider);
+        serviceProviderCatalog.addDomains(serviceProviderDomains);
+
+        serviceProviders.put(identifier, serviceProvider);
+
+        return serviceProvider;
+    }
+
+    // This version is for self-registration and thus package-protected
+    static ServiceProvider registerShelvesServiceProvider(final ServiceProvider serviceProvider, final String serviceProviderId)
+                                            throws URISyntaxException
+    {
+        synchronized(serviceProviders)
+        {
+            final URI serviceProviderURI = constructShelvesServiceProviderURI(serviceProviderId);
+
+            return registerShelvesServiceProviderNoSync(serviceProviderURI, serviceProvider, serviceProviderId);
+        }
+    }
+
+    public static void deregisterShelvesServiceProvider(final String serviceProviderId)
+    {
+        synchronized(serviceProviders)
+        {
+            final ServiceProvider deregisteredServiceProvider =
+                serviceProviders.remove(shelvesServiceProviderIdentifier(serviceProviderId));
 
             if (deregisteredServiceProvider != null)
             {
@@ -266,22 +518,60 @@ public class ServiceProviderCatalogSingleton
 
             String basePath = OSLC4JUtils.getServletURI();
 
-            ServiceProviderInfo [] serviceProviderInfos = RobotTwinManager.getServiceProviderInfos(httpServletRequest);
+            RobotsServiceProviderInfo [] robotsServiceProviderInfos = TwinManager.getRobotsServiceProviderInfos(httpServletRequest);
             //Register each service provider
-            for (ServiceProviderInfo serviceProviderInfo : serviceProviderInfos) {
-                String identifier = serviceProviderIdentifier(serviceProviderInfo.serviceProviderId);
+            for (RobotsServiceProviderInfo serviceProviderInfo : robotsServiceProviderInfos) {
+                String identifier = robotsServiceProviderIdentifier(serviceProviderInfo.serviceProviderId);
                 if (!serviceProviders.containsKey(identifier)) {
                     String serviceProviderName = serviceProviderInfo.name;
                     String title = String.format("Service Provider '%s'", serviceProviderName);
                     String description = String.format("%s (id: %s; kind: %s)",
-                        "Service Provider",
+                        "A Service Provider for Robot Twins",
                         identifier,
-                        "Service Provider");
+                        "Robot SP");
                     Publisher publisher = null;
                     Map<String, Object> parameterMap = new HashMap<String, Object>();
                     parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
-                    final ServiceProvider aServiceProvider = ServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
-                    registerServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
+                    final ServiceProvider aServiceProvider = RobotsServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
+                    registerRobotsServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
+                }
+            }
+
+            BeltsServiceProviderInfo [] beltsServiceProviderInfos = TwinManager.getBeltsServiceProviderInfos(httpServletRequest);
+            //Register each service provider
+            for (BeltsServiceProviderInfo serviceProviderInfo : beltsServiceProviderInfos) {
+                String identifier = beltsServiceProviderIdentifier(serviceProviderInfo.beltId);
+                if (!serviceProviders.containsKey(identifier)) {
+                    String serviceProviderName = serviceProviderInfo.name;
+                    String title = String.format("Service Provider '%s'", serviceProviderName);
+                    String description = String.format("%s (id: %s; kind: %s)",
+                        "A Service Provider for Conveyor Belt Twins",
+                        identifier,
+                        "Conveyor Belt SP");
+                    Publisher publisher = null;
+                    Map<String, Object> parameterMap = new HashMap<String, Object>();
+                    parameterMap.put("beltId", serviceProviderInfo.beltId);
+                    final ServiceProvider aServiceProvider = BeltsServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
+                    registerBeltsServiceProvider(aServiceProvider, serviceProviderInfo.beltId);
+                }
+            }
+
+            ShelvesServiceProviderInfo [] shelvesServiceProviderInfos = TwinManager.getShelvesServiceProviderInfos(httpServletRequest);
+            //Register each service provider
+            for (ShelvesServiceProviderInfo serviceProviderInfo : shelvesServiceProviderInfos) {
+                String identifier = shelvesServiceProviderIdentifier(serviceProviderInfo.serviceProviderId);
+                if (!serviceProviders.containsKey(identifier)) {
+                    String serviceProviderName = serviceProviderInfo.name;
+                    String title = String.format("Service Provider '%s'", serviceProviderName);
+                    String description = String.format("%s (id: %s; kind: %s)",
+                        "A Service Provider for Shelf Twins",
+                        identifier,
+                        "Shelf SP");
+                    Publisher publisher = null;
+                    Map<String, Object> parameterMap = new HashMap<String, Object>();
+                    parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
+                    final ServiceProvider aServiceProvider = ShelvesServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
+                    registerShelvesServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
                 }
             }
         } catch (Exception e) {

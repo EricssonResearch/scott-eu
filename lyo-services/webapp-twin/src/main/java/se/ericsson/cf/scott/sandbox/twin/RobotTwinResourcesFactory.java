@@ -27,10 +27,13 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
-import eu.scott.warehouse.domains.pddl.PlanExecutionResult;
 import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.mission.AgentRequest;
+import eu.scott.warehouse.domains.mission.Goal;
+import eu.scott.warehouse.domains.mission.Mission;
 import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.PlanExecutionResult;
+import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
 // End of user code
@@ -46,6 +49,66 @@ public class RobotTwinResourcesFactory {
     // Start of user code class_methods
     // End of user code
 
+    //methods for AgentRequest resource
+    public static AgentRequest createAgentRequest(final String beltId, final String agentRequestId)
+           throws URISyntaxException
+    {
+        return new AgentRequest(constructURIForAgentRequest(beltId, agentRequestId));
+    }
+    
+    public static URI constructURIForAgentRequest(final String beltId, final String agentRequestId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("beltId", beltId);
+        pathParameters.put("agentRequestId", agentRequestId);
+        String instanceURI = "belts/{beltId}/resources/agentRequests/{agentRequestId}";
+    
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+    
+    public static Link constructLinkForAgentRequest(final String beltId, final String agentRequestId , final String label)
+    {
+        return new Link(constructURIForAgentRequest(beltId, agentRequestId), label);
+    }
+    
+    public static Link constructLinkForAgentRequest(final String beltId, final String agentRequestId)
+    {
+        return new Link(constructURIForAgentRequest(beltId, agentRequestId));
+    }
+    
+
+    //methods for Mission resource
+    public static Mission createMission(final String beltId, final String missionId)
+           throws URISyntaxException
+    {
+        return new Mission(constructURIForMission(beltId, missionId));
+    }
+    
+    public static URI constructURIForMission(final String beltId, final String missionId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("beltId", beltId);
+        pathParameters.put("missionId", missionId);
+        String instanceURI = "belts/{beltId}/resources/missions/{missionId}";
+    
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+    
+    public static Link constructLinkForMission(final String beltId, final String missionId , final String label)
+    {
+        return new Link(constructURIForMission(beltId, missionId), label);
+    }
+    
+    public static Link constructLinkForMission(final String beltId, final String missionId)
+    {
+        return new Link(constructURIForMission(beltId, missionId));
+    }
+    
+
     //methods for PlanExecutionResult resource
     public static PlanExecutionResult createPlanExecutionResult(final String serviceProviderId, final String planExecutionResultId)
            throws URISyntaxException
@@ -59,7 +122,7 @@ public class RobotTwinResourcesFactory {
         Map<String, Object> pathParameters = new HashMap<String, Object>();
         pathParameters.put("serviceProviderId", serviceProviderId);
         pathParameters.put("planExecutionResultId", planExecutionResultId);
-        String instanceURI = "serviceProviders/{serviceProviderId}/planExecutionResults/{planExecutionResultId}";
+        String instanceURI = "robots/{serviceProviderId}/planExecutionResults/{planExecutionResultId}";
     
         final UriBuilder builder = UriBuilder.fromUri(basePath);
         return builder.path(instanceURI).buildFromMap(pathParameters);

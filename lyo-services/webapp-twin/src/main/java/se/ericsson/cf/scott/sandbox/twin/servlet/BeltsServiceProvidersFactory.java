@@ -39,21 +39,22 @@ import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
 
-import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderService1;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
+import se.ericsson.cf.scott.sandbox.twin.services.BeltsServiceProviderService1;
 
 // Start of user code imports
 // End of user code
 
-public class ServiceProvidersFactory
+public class BeltsServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        ServiceProviderService1.class
+        BeltsServiceProviderService1.class
     };
 
-    private ServiceProvidersFactory()
+    private BeltsServiceProvidersFactory()
     {
         super();
     }
@@ -78,9 +79,11 @@ public class ServiceProvidersFactory
             new PrefixDefinition(OslcConstants.OSLC_DATA_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_DATA_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDF_NAMESPACE_PREFIX, new URI(OslcConstants.RDF_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
-            new PrefixDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE_PREFIX, new URI(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE))
+            new PrefixDefinition(RdfsDomainConstants.RDFS_NAMSPACE_PREFIX, new URI(RdfsDomainConstants.RDFS_NAMSPACE))
 ,
             new PrefixDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, new URI(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE))
+,
+            new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE))
         };
 
         serviceProvider.setPrefixDefinitions(prefixDefinitions);

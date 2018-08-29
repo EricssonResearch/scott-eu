@@ -46,15 +46,15 @@ import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 
-import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager;
+import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 
 // Start of user code imports
 // End of user code
 
 @OslcService(OslcConstants.OSLC_CORE_DOMAIN)
-@Path("serviceProviders")
-public class ServiceProviderService
+@Path("belts")
+public class BeltsServiceProviderService
 {
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
@@ -97,12 +97,12 @@ public class ServiceProviderService
      * @return
      */
     @GET
-    @Path("{serviceProviderId}")
+    @Path("{beltId}")
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-    public ServiceProvider getServiceProvider(@PathParam("serviceProviderId") final String serviceProviderId)
+    public ServiceProvider getServiceProvider(@PathParam("beltId") final String beltId)
     {
         httpServletResponse.addHeader("Oslc-Core-Version","2.0");
-        return ServiceProviderCatalogSingleton.getServiceProvider(httpServletRequest, serviceProviderId);
+        return ServiceProviderCatalogSingleton.getBeltsServiceProvider(httpServletRequest, beltId);
     }
 
     /**
@@ -113,11 +113,11 @@ public class ServiceProviderService
      * @param serviceProviderId
      */
     @GET
-    @Path("{serviceProviderId}")
+    @Path("{beltId}")
     @Produces(MediaType.TEXT_HTML)
-    public void getHtmlServiceProvider(@PathParam("serviceProviderId") final String serviceProviderId)
+    public void getHtmlServiceProvider(@PathParam("beltId") final String beltId)
     {
-        ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.getServiceProvider(httpServletRequest, serviceProviderId);
+        ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.getBeltsServiceProvider(httpServletRequest, beltId);
         Service [] services = serviceProvider.getServices();
 
         httpServletRequest.setAttribute("serviceProvider", serviceProvider);
@@ -125,7 +125,7 @@ public class ServiceProviderService
         // Start of user code getHtmlServiceProvider_setAttributes
         // End of user code
 
-        RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/twin/serviceprovider.jsp");
+        RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/twin/beltsserviceprovider.jsp");
         try {
             rd.forward(httpServletRequest, httpServletResponse);
         } catch (Exception e) {

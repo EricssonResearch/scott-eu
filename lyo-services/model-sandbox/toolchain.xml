@@ -5,12 +5,13 @@
       <serviceProviders title="Twin SP" description="Service Provider">
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0"/>
-          
           <basicCapabilities>
             <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.0"/>
           </basicCapabilities>
         </services>
-        <services domainSpecification="//@specification/@domainSpecifications.0" serviceNamespace="independantOfServiceProvider"><creationFactories title="RegistrationCF" label="Registration Creation Factory" creationURI="register" resourceTypes="//@specification/@domainSpecifications.0/@resources.11" /></services>
+        <services domainSpecification="//@specification/@domainSpecifications.0" serviceNamespace="independantOfServiceProvider">
+          <creationFactories title="RegistrationCF" label="Registration Creation Factory" creationURI="register" resourceTypes="//@specification/@domainSpecifications.0/@resources.11"/>
+        </services>
       </serviceProviders>
     </serviceProviderCatalog>
     <specification/>
@@ -28,28 +29,30 @@
     <specification/>
     <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
-  <adaptorInterfaces name="RobotTwin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twin" javaFilesBasePath="../webapp-twin/src/main/java/" jspFilesBasePath="../webapp-twin/src/main/webapp/" javascriptFilesBasePath="../webapp-twin/src/main/webapp/">
+  <adaptorInterfaces name="Twin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twin" javaFilesBasePath="../webapp-twin/src/main/java/" jspFilesBasePath="../webapp-twin/src/main/webapp/" javascriptFilesBasePath="../webapp-twin/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
-      <serviceProviders title="Service Provider" description="Service Provider">
+      <serviceProviders title="Robot SP" description="A Service Provider for Robot Twins" serviceNamespace="robots">
         <services>
-          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1"/>
-          <basicCapabilities>
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.22"/>
-          </basicCapabilities>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
+          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create">
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.1"/>
+          </creationFactories>
         </services>
       </serviceProviders>
-    </serviceProviderCatalog>
-    <specification/>
-    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
-  </adaptorInterfaces>
-  <adaptorInterfaces name="ShelfTwin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twins.shelf" javaFilesBasePath="../webapp-twin-shelf/src/main/java/" jspFilesBasePath="../webapp-twin-shelf/src/main/webapp/" javascriptFilesBasePath="../webapp-twin-shelf/src/main/webapp/">
-    <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
-      <serviceProviders title="Service Provider" description="Service Provider">
+      <serviceProviders title="Conveyor Belt SP" description="A Service Provider for Conveyor Belt Twins" serviceNamespace="belts" instanceID="{beltId}">
         <services>
-          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.1"/>
-          <basicCapabilities>
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0/@resources.22"/>
-          </basicCapabilities>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
+          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create">
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.1"/>
+          </creationFactories>
+        </services>
+      </serviceProviders>
+      <serviceProviders title="Shelf SP" description="A Service Provider for Shelf Twins" serviceNamespace="shelves">
+        <services>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
+          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create">
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.1"/>
+          </creationFactories>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>

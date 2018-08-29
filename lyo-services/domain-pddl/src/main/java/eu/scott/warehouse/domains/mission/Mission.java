@@ -123,6 +123,51 @@ public class Mission
         // End of user code
     }
     
+    /**
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twin.RobotTwinResourcesFactory} instead.
+    */
+    @Deprecated
+    public Mission(final String beltId, final String missionId)
+           throws URISyntaxException
+    {
+        this (constructURI(beltId, missionId));
+        // Start of user code constructor3
+        // End of user code
+    }
+    
+    /**
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twin.RobotTwinResourcesFactory} instead.
+    */
+    @Deprecated
+    public static URI constructURI(final String beltId, final String missionId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("beltId", beltId);
+        pathParameters.put("missionId", missionId);
+        String instanceURI = "belts/{beltId}/resources/missions/{missionId}";
+    
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+    
+    /**
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twin.RobotTwinResourcesFactory} instead.
+    */
+    @Deprecated
+    public static Link constructLink(final String beltId, final String missionId , final String label)
+    {
+        return new Link(constructURI(beltId, missionId), label);
+    }
+    
+    /**
+    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twin.RobotTwinResourcesFactory} instead.
+    */
+    @Deprecated
+    public static Link constructLink(final String beltId, final String missionId)
+    {
+        return new Link(constructURI(beltId, missionId));
+    }
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),

@@ -147,7 +147,6 @@ public class WarehouseControllerManager {
 
 
 
-
     public static Object[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
     {
         Object[] aResource = null;
