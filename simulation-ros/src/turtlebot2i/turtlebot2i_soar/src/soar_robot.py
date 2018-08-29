@@ -2,7 +2,7 @@
 import sys
 if sys.version_info[0] >= 3:
     raise "Must be using Python 2"
-
+    #raise Exception("Must be using Python 2")
 """Making sure soar library path environment is set
 Remember to set the environment variable to point to where soar build is located, e.g.:
 export LD_LIBRARY_PATH=~/Desktop/Soar/out
