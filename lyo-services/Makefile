@@ -16,3 +16,6 @@ push:
 	docker push ${CI_REGISTRY_IMAGE}/scott-webapp-twin
 	docker push ${CI_REGISTRY_IMAGE}/scott-webapp-whc
 	docker push ${CI_REGISTRY_IMAGE}/scott-webapp-executor
+
+rebuild-lyo:
+	docker build . -f lyo.Dockerfile   -t scott-lyo-deps
