@@ -79,7 +79,7 @@ import se.ericsson.cf.scott.sandbox.twin.TwinConstants;
 import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import eu.scott.warehouse.domains.twins.RegistrationMessage;
+import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 
 // Start of user code imports
 // End of user code
@@ -87,7 +87,7 @@ import eu.scott.warehouse.domains.twins.RegistrationMessage;
 // Start of user code pre_class_code
 // End of user code
 @OslcService(MissionDomainConstants.MISSIONONTOLOGY_DOMAIN)
-@Path("independent/{serviceProviderId}/registrationMessages")
+@Path("independent/{serviceProviderId}/deviceRegistrationMessages")
 public class IndependentServiceProviderService1
 {
     @Context private HttpServletRequest httpServletRequest;
@@ -106,7 +106,7 @@ public class IndependentServiceProviderService1
     }
 
     /**
-     * Create a single RegistrationMessage via RDF/XML, XML or JSON POST
+     * Create a single DeviceRegistrationMessage via RDF/XML, XML or JSON POST
      *
      * @throws IOException
      * @throws ServletException
@@ -115,22 +115,22 @@ public class IndependentServiceProviderService1
     (
          title = "Registration CF",
          label = "Twin Registration factory",
-         resourceShapes = {OslcConstants.PATH_RESOURCE_SHAPES + "/" + TwinsDomainConstants.REGISTRATIONMESSAGE_PATH},
-         resourceTypes = {TwinsDomainConstants.REGISTRATIONMESSAGE_TYPE},
+         resourceShapes = {OslcConstants.PATH_RESOURCE_SHAPES + "/" + TwinsDomainConstants.DEVICEREGISTRATIONMESSAGE_PATH},
+         resourceTypes = {TwinsDomainConstants.DEVICEREGISTRATIONMESSAGE_TYPE},
          usages = {}
     )
     @POST
     @Path("register")
     @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-    public Response createRegistrationMessage(
+    public Response createDeviceRegistrationMessage(
             @PathParam("serviceProviderId") final String serviceProviderId ,
-            final RegistrationMessage aResource
+            final DeviceRegistrationMessage aResource
         ) throws IOException, ServletException
     {
         try {
-            RegistrationMessage newResource = TwinManager.createRegistrationMessage(httpServletRequest, aResource, serviceProviderId);
-            httpServletResponse.setHeader("ETag", TwinManager.getETagFromRegistrationMessage(newResource));
+            DeviceRegistrationMessage newResource = TwinManager.createDeviceRegistrationMessage(httpServletRequest, aResource, serviceProviderId);
+            httpServletResponse.setHeader("ETag", TwinManager.getETagFromDeviceRegistrationMessage(newResource));
             return Response.created(newResource.getAbout()).entity(newResource).header(TwinConstants.HDR_OSLC_VERSION, TwinConstants.OSLC_VERSION_V2).build();
         } catch (Exception e) {
             e.printStackTrace();

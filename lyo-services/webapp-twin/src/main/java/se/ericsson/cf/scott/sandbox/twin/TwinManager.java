@@ -24,21 +24,29 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.map.listener.EntryAddedListener;
+import com.hazelcast.map.listener.MapListener;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.twin.servlet.RobotsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.RobotsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.BeltsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.ShelvesServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
@@ -84,9 +92,9 @@ public class TwinManager {
     private static ServletContext servletContext;
     private static TrsMqttGateway mqttGateway;
     private static HazelcastInstance hc;
-    private static IMap<String, Object> robotProviders;
-    private static IMap<Object, Object> shelfProviders;
-    private static IMap<Object, Object> beltProviders;
+    private static IMap<String, RobotsServiceProviderInfo> robotProviders;
+    private static IMap<String, ShelvesServiceProviderInfo> shelfProviders;
+    private static IMap<String, BeltsServiceProviderInfo> beltProviders;
     // End of user code
     
     
@@ -133,6 +141,20 @@ public class TwinManager {
     private static void setStore(final Store store) {
         TwinManager.store = store;
     }
+
+    private static void registerProvider(final RobotsServiceProviderInfo robotSPInfo) {
+        try {
+            final URI spURI = ServiceProviderCatalogSingleton.constructRobotsServiceProviderURI(
+                robotSPInfo.serviceProviderId);
+
+            final ServiceProvider robotSP = RobotsServiceProvidersFactory.createServiceProvider(
+                spURI.toString(), robotSPInfo.name, "N/A", null, new HashMap<>());
+            ServiceProviderCatalogSingleton.registerRobotsServiceProvider(
+                null, robotSP, robotSPInfo.serviceProviderId);
+        } catch (URISyntaxException | OslcCoreApplicationException e) {
+            log.error("Cannot register the Robot SP", e);
+        }
+    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -168,6 +190,19 @@ public class TwinManager {
         robotProviders = hc.getMap("twin-providers-robot");
         shelfProviders = hc.getMap("twin-providers-shelf");
         beltProviders = hc.getMap("twin-providers-belt");
+
+        robotProviders.addEntryListener(new EntryAddedListener() {
+            @Override
+            public void entryAdded(final EntryEvent event) {
+                log.info(
+                    "New Robot SP info map entry received '{}:{}'", event.getKey(),
+                    event.getValue()
+                );
+                final RobotsServiceProviderInfo robotSPInfo = (RobotsServiceProviderInfo) event.getValue();
+                registerProvider(robotSPInfo);
+
+            }
+        }, true);
 
         registerTwins();
         // End of user code
@@ -260,33 +295,40 @@ public class TwinManager {
         return newResource;
     }
 
-
-
-    public static RegistrationMessage createRegistrationMessage(HttpServletRequest httpServletRequest, final RegistrationMessage aResource, final String serviceProviderId)
+    public static DeviceRegistrationMessage createDeviceRegistrationMessage(
+        HttpServletRequest httpServletRequest, final DeviceRegistrationMessage aResource,
+        final String serviceProviderId)
     {
-        RegistrationMessage newResource = null;
-        
-        // Start of user code createRegistrationMessage
-        // TODO Implement code to create a resource
+        DeviceRegistrationMessage newResource = null;
+
+        // Start of user code createDeviceRegistrationMessage
+        log.info("Registering a twin: {}", aResource);
+        final String twinType = aResource.getTwinType();
+        if ("robot".equals(twinType)) {
+            final RobotsServiceProviderInfo robotSPInfo = new RobotsServiceProviderInfo();
+            robotSPInfo.serviceProviderId = aResource.getTwinId();
+            robotSPInfo.name = String.format("Twin '%s'", robotSPInfo.serviceProviderId);
+            registerProvider(robotSPInfo);
+            robotProviders.put(robotSPInfo.serviceProviderId, robotSPInfo);
+        }
         // End of user code
         return newResource;
     }
 
-
-
+    public static String getETagFromDeviceRegistrationMessage(
+        final DeviceRegistrationMessage aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromDeviceRegistrationMessage
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
 
     public static String getETagFromPlanExecutionRequest(final PlanExecutionRequest aResource)
     {
         String eTag = null;
         // Start of user code getETagFromPlanExecutionRequest
-        // TODO Implement code to return an ETag for a particular resource
-        // End of user code
-        return eTag;
-    }
-    public static String getETagFromRegistrationMessage(final RegistrationMessage aResource)
-    {
-        String eTag = null;
-        // Start of user code getETagFromRegistrationMessage
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

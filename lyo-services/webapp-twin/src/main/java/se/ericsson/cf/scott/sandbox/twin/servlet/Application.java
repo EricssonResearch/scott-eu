@@ -60,9 +60,9 @@ import se.ericsson.cf.scott.sandbox.twin.services.ShelvesServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
 
 import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
 import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
@@ -130,9 +130,9 @@ public class Application extends OslcWinkApplication {
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER_CATALOG, ServiceProviderCatalog.class);
 
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.ACTION_PATH, Action.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinsDomainConstants.DEVICEREGISTRATIONMESSAGE_PATH, DeviceRegistrationMessage.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PLAN_PATH, Plan.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinsDomainConstants.PLANEXECUTIONREQUEST_PATH, PlanExecutionRequest.class);
-        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinsDomainConstants.REGISTRATIONMESSAGE_PATH, RegistrationMessage.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.STEP_PATH, Step.class);
     }
 

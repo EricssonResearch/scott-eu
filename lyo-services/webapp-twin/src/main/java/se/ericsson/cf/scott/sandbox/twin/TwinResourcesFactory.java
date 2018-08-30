@@ -28,9 +28,9 @@ import javax.ws.rs.core.UriBuilder;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
@@ -47,10 +47,10 @@ public class TwinResourcesFactory {
     // Start of user code class_methods
     // End of user code
 
-    //methods for PlanExecutionRequest resource
+    //methods for DeviceRegistrationMessage resource
     
 
-    //methods for RegistrationMessage resource
+    //methods for PlanExecutionRequest resource
     
 
 }

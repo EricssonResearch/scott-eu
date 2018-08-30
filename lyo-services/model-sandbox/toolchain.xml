@@ -58,7 +58,7 @@
       <serviceProviders title="Independent" description="Generic SP for SP-independent services" serviceNamespace="independent">
         <services domainSpecification="//@specification/@domainSpecifications.0">
           <creationFactories title="Registration CF" label="Twin Registration factory" creationURI="register">
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.0"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.2"/>
           </creationFactories>
         </services>
       </serviceProviders>

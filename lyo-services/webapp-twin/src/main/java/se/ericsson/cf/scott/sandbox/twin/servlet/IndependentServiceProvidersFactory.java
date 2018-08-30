@@ -82,8 +82,6 @@ public class IndependentServiceProvidersFactory
             new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
             new PrefixDefinition(MissionDomainConstants.MISSIONONTOLOGY_NAMSPACE_PREFIX, new URI(MissionDomainConstants.MISSIONONTOLOGY_NAMSPACE))
 ,
-            new PrefixDefinition(RdfsDomainConstants.RDFS_NAMSPACE_PREFIX, new URI(RdfsDomainConstants.RDFS_NAMSPACE))
-,
             new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE))
         };
 
