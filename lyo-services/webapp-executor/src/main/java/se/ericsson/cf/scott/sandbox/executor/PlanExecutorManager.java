@@ -88,8 +88,7 @@ public class PlanExecutorManager {
         }
         mqttBroker = p("trs.mqtt.broker");
 
-        final HazelcastFactory hazelcastFactory = new HazelcastFactory();
-        hc = hazelcastFactory.getHazelcastInstance();
+        hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig("executor");
         log.debug("New instance of Hazelcast has been constructed");
         assert hc != null;
         new Thread(new PlanQueueRunnable(hc)).start();
