@@ -40,6 +40,10 @@ public interface TwinsDomainConstants
     public static String TWINS_DOMAIN_NAMSPACE = "http://ontology.cf.ericsson.net/ns/twins#";
     public static String TWINS_DOMAIN_NAMSPACE_PREFIX = "twins";
 
+    public static String DEVICEREGISTRATIONMESSAGE_PATH = "deviceRegistrationMessage";
+    public static String DEVICEREGISTRATIONMESSAGE_NAMESPACE = TWINS_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String DEVICEREGISTRATIONMESSAGE_LOCALNAME = "DeviceRegistrationMessage"; //localName of the rdfs:class the resource describes
+    public static String DEVICEREGISTRATIONMESSAGE_TYPE = DEVICEREGISTRATIONMESSAGE_NAMESPACE + DEVICEREGISTRATIONMESSAGE_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String PLANEXECUTIONREQUEST_PATH = "planExecutionRequest";
     public static String PLANEXECUTIONREQUEST_NAMESPACE = TWINS_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String PLANEXECUTIONREQUEST_LOCALNAME = "PlanExecutionRequest"; //localName of the rdfs:class the resource describes
