@@ -1,10 +1,7 @@
 package se.ericsson.cf.scott.sandbox.executor;
 
-import eu.scott.warehouse.MqttTopics;
-import eu.scott.warehouse.domains.trs.LoggingMqttCallback;
-import java.net.URI;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import eu.scott.warehouse.lib.MqttTopics;
+import eu.scott.warehouse.lib.LoggingMqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;

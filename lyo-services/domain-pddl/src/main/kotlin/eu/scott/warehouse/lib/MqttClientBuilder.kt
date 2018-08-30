@@ -1,7 +1,6 @@
-package eu.scott.warehouse
+package eu.scott.warehouse.lib
 
 import com.google.common.base.Strings
-import eu.scott.warehouse.domains.trs.LoggingMqttCallback
 import java.util.UUID
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
@@ -60,6 +59,7 @@ class MqttClientBuilder {
         if (lwtMessage != null) {
             options.setWill(lwtTopic!!, lwtMessage.payload, 1, false)
         }
-        return TrsMqttGateway(brokerURL, clientID, options, callback, registrationAgent!!)
+        return TrsMqttGateway(brokerURL, clientID, options, callback,
+            registrationAgent!!)
     }
 }

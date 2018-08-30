@@ -1,12 +1,12 @@
 package se.ericsson.cf.scott.sandbox.executor
 
-import eu.scott.warehouse.ChangeEventMqttMessageListener
-import eu.scott.warehouse.LastWillMessage
-import eu.scott.warehouse.MqttHelper
-import eu.scott.warehouse.MqttTopics
-import eu.scott.warehouse.TopicAckRegistrationAgent
-import eu.scott.warehouse.TrsMqttGateway
-import eu.scott.warehouse.domains.trs.PlanChangeEventListener
+import eu.scott.warehouse.lib.ChangeEventMqttMessageListener
+import eu.scott.warehouse.lib.LastWillMessage
+import eu.scott.warehouse.lib.MqttHelper
+import eu.scott.warehouse.lib.MqttTopics
+import eu.scott.warehouse.lib.TopicAckRegistrationAgent
+import eu.scott.warehouse.lib.TrsMqttGateway
+import eu.scott.warehouse.lib.PlanChangeEventListener
 import eu.scott.warehouse.domains.trs.TrsServerAck
 import eu.scott.warehouse.domains.trs.TrsServerAnnouncement
 import eu.scott.warehouse.domains.trs.TrsXConstants
@@ -98,8 +98,8 @@ class ExecutorTopicAckRegistrationAgent() :
     }
 
     private fun subscribeToPlans(trsTopic: String, gateway: TrsMqttGateway) {
-        gateway.subscribe(trsTopic,
-                ChangeEventMqttMessageListener(PlanChangeEventListener(gateway.executorService)))
+        gateway.subscribe(trsTopic, ChangeEventMqttMessageListener(
+            PlanChangeEventListener(gateway.executorService)))
     }
 
 }

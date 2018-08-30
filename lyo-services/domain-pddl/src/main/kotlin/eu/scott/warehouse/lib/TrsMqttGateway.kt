@@ -1,4 +1,4 @@
-package eu.scott.warehouse
+package eu.scott.warehouse.lib
 
 import eu.scott.warehouse.domains.trs.TrsXConstants
 import java.util.concurrent.ExecutorService
@@ -57,6 +57,7 @@ class TrsMqttGateway @Throws(MqttException::class) constructor(brokerURL: String
 
     @Throws(MqttException::class)
     fun publish(topic: String, messageModel: Model) {
-        publish(topic, MqttHelper.msgFromModel(TrsXConstants.rdfFormat, messageModel))
+        publish(topic,
+            MqttHelper.msgFromModel(TrsXConstants.rdfFormat, messageModel))
     }
 }

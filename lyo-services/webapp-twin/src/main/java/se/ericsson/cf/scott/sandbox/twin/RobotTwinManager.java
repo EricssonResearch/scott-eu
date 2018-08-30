@@ -26,21 +26,10 @@ package se.ericsson.cf.scott.sandbox.twin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.RobotsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.BeltsServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.mission.AgentRequest;
-import eu.scott.warehouse.domains.mission.Goal;
 import eu.scott.warehouse.domains.mission.Mission;
-import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.pddl.PlanExecutionResult;
-import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -56,19 +45,14 @@ import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import eu.scott.warehouse.MqttClientBuilder;
-import eu.scott.warehouse.MqttTopics;
-import eu.scott.warehouse.TrsMqttGateway;
-import eu.scott.warehouse.domains.trs.TrsXConstants;
-import java.net.URI;
+import eu.scott.warehouse.lib.MqttClientBuilder;
+import eu.scott.warehouse.lib.MqttTopics;
+import eu.scott.warehouse.lib.TrsMqttGateway;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 
 import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.lyo.store.Store;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-
-
 
 // End of user code
 

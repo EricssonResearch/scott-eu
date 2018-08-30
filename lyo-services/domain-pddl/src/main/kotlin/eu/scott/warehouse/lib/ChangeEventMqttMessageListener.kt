@@ -13,7 +13,7 @@
  * Xufei Ning          -  Initial implementation
  * Andrew Berezovskyi  -  Lyo contribution updates
  */
-package eu.scott.warehouse
+package eu.scott.warehouse.lib
 
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory

@@ -1,7 +1,7 @@
 package se.ericsson.cf.scott.sandbox.executor
 
-import eu.scott.warehouse.MqttHelper
-import eu.scott.warehouse.MqttTopics
+import eu.scott.warehouse.lib.MqttHelper
+import eu.scott.warehouse.lib.MqttTopics
 import eu.scott.warehouse.domains.trs.TrsServerAck
 import eu.scott.warehouse.domains.trs.TrsServerAnnouncement
 import eu.scott.warehouse.domains.trs.TrsXConstants

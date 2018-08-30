@@ -1,8 +1,8 @@
 package se.ericsson.cf.scott.sandbox.whc.managers;
 
 import com.google.common.collect.ImmutableMap;
-import eu.scott.warehouse.MqttTopics;
-import eu.scott.warehouse.domains.trs.LoggingMqttCallback;
+import eu.scott.warehouse.lib.MqttTopics;
+import eu.scott.warehouse.lib.LoggingMqttCallback;
 import java.net.URI;
 import java.util.Map;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.whc.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
-import se.ericsson.cf.scott.sandbox.whc.planning.PlanDTO;
 import se.ericsson.cf.scott.sandbox.whc.trs.TwinRegistrationListener;
 
 /**

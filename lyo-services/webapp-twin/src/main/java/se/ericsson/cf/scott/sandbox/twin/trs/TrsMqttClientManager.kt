@@ -1,8 +1,10 @@
 package se.ericsson.cf.scott.sandbox.twin.trs
 
-import eu.scott.warehouse.ChangeEventMqttMessageListener
-import eu.scott.warehouse.MqttHelper
-import eu.scott.warehouse.MqttTopics
+import eu.scott.warehouse.lib.LoggingMqttCallback
+import eu.scott.warehouse.lib.PlanChangeEventListener
+import eu.scott.warehouse.lib.ChangeEventMqttMessageListener
+import eu.scott.warehouse.lib.MqttHelper
+import eu.scott.warehouse.lib.MqttTopics
 import eu.scott.warehouse.domains.trs.*
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
@@ -55,7 +57,8 @@ class TrsMqttClientManager(private val mqttBroker: String) {
     private fun registerWithWHC(mqttClient: MqttClient) {
         val latch = CountDownLatch(1)
         try {
-            mqttClient.subscribe(MqttTopics.REGISTRATION_ACK) { topic, message ->
+            mqttClient.subscribe(
+                MqttTopics.REGISTRATION_ACK) { topic, message ->
                 completeRegistration(message, latch)
             }
         } catch (e: MqttException) {
@@ -111,7 +114,7 @@ class TrsMqttClientManager(private val mqttBroker: String) {
 
     private fun subscribeToPlans(trsTopic: String) {
         mqttClient.subscribe(trsTopic, ChangeEventMqttMessageListener(
-                PlanChangeEventListener(executorService)))
+            PlanChangeEventListener(executorService)))
         // TODO Andrew@2018-07-29: shall I ACK this too to make WHC registration deterministic?
 //        mqttClient.subscribe(trsTopic, ChangeEventMqttMessageListener(
 //                ChangeEventListener { changeEvent, trsResourceModel ->

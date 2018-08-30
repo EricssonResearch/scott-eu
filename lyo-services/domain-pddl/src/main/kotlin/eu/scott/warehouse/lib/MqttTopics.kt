@@ -1,4 +1,4 @@
-package eu.scott.warehouse
+package eu.scott.warehouse.lib
 
 /**
  * Created on 2018-07-27

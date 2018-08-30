@@ -1,4 +1,4 @@
-package eu.scott.warehouse
+package eu.scott.warehouse.lib
 
 import eu.scott.warehouse.domains.trs.TrsXConstants
 import org.apache.jena.rdf.model.Model

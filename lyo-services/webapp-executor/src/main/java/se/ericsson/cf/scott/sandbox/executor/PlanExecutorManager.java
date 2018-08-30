@@ -26,10 +26,9 @@ package se.ericsson.cf.scott.sandbox.executor;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IQueue;
-import eu.scott.warehouse.MqttClientBuilder;
-import eu.scott.warehouse.MqttTopics;
-import eu.scott.warehouse.TrsMqttGateway;
-import java.net.URI;
+import eu.scott.warehouse.lib.MqttClientBuilder;
+import eu.scott.warehouse.lib.MqttTopics;
+import eu.scott.warehouse.lib.TrsMqttGateway;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 
-import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

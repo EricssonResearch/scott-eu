@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twins.shelf.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinManager;
-import eu.scott.warehouse.domains.trs.PlanChangeEventListener;
+import eu.scott.warehouse.lib.PlanChangeEventListener;
 
 /**
  * TBD
