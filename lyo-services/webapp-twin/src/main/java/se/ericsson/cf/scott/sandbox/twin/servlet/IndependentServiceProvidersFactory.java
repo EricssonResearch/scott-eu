@@ -43,19 +43,19 @@ import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.RobotsServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 
 // Start of user code imports
 // End of user code
 
-public class RobotsServiceProvidersFactory
+public class IndependentServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        RobotsServiceProviderService1.class
+        IndependentServiceProviderService1.class
     };
 
-    private RobotsServiceProvidersFactory()
+    private IndependentServiceProvidersFactory()
     {
         super();
     }
@@ -80,9 +80,9 @@ public class RobotsServiceProvidersFactory
             new PrefixDefinition(OslcConstants.OSLC_DATA_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_DATA_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDF_NAMESPACE_PREFIX, new URI(OslcConstants.RDF_NAMESPACE)),
             new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
-            new PrefixDefinition(RdfsDomainConstants.RDFS_NAMSPACE_PREFIX, new URI(RdfsDomainConstants.RDFS_NAMSPACE))
+            new PrefixDefinition(MissionDomainConstants.MISSIONONTOLOGY_NAMSPACE_PREFIX, new URI(MissionDomainConstants.MISSIONONTOLOGY_NAMSPACE))
 ,
-            new PrefixDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, new URI(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE))
+            new PrefixDefinition(RdfsDomainConstants.RDFS_NAMSPACE_PREFIX, new URI(RdfsDomainConstants.RDFS_NAMSPACE))
 ,
             new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE))
         };

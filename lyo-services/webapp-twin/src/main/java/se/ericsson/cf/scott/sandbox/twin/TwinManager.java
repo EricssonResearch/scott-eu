@@ -34,9 +34,11 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton
 import se.ericsson.cf.scott.sandbox.twin.RobotsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.BeltsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.ShelvesServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
+import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
 
 
@@ -98,6 +100,15 @@ public class TwinManager {
         // End of user code
         return serviceProviderInfos;
     }
+    public static IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(HttpServletRequest httpServletRequest)
+    {
+        IndependentServiceProviderInfo[] serviceProviderInfos = {};
+        
+        // Start of user code "IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(...)"
+        // TODO Implement code to return the set of ServiceProviders
+        // End of user code
+        return serviceProviderInfos;
+    }
 
     public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String serviceProviderId)
     {
@@ -135,11 +146,31 @@ public class TwinManager {
 
 
 
+    public static RegistrationMessage createRegistrationMessage(HttpServletRequest httpServletRequest, final RegistrationMessage aResource, final String serviceProviderId)
+    {
+        RegistrationMessage newResource = null;
+        
+        // Start of user code createRegistrationMessage
+        // TODO Implement code to create a resource
+        // End of user code
+        return newResource;
+    }
+
+
+
 
     public static String getETagFromPlanExecutionRequest(final PlanExecutionRequest aResource)
     {
         String eTag = null;
         // Start of user code getETagFromPlanExecutionRequest
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
+    public static String getETagFromRegistrationMessage(final RegistrationMessage aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromRegistrationMessage
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

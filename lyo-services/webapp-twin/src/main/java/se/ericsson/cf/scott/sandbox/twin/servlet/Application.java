@@ -54,6 +54,7 @@ import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
 import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.twin.services.BeltsServiceProviderService;
+import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.RobotsServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.ShelvesServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
@@ -61,13 +62,16 @@ import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
 import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
+import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.services.RobotsServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.twin.services.BeltsServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.twin.services.ShelvesServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 
 // Start of user code imports
 // End of user code
@@ -95,10 +99,12 @@ public class Application extends OslcWinkApplication {
         RESOURCE_CLASSES.add(RobotsServiceProviderService1.class);
         RESOURCE_CLASSES.add(BeltsServiceProviderService1.class);
         RESOURCE_CLASSES.add(ShelvesServiceProviderService1.class);
+        RESOURCE_CLASSES.add(IndependentServiceProviderService1.class);
 
         // Catalog resources
         RESOURCE_CLASSES.add(ServiceProviderCatalogService.class);
         RESOURCE_CLASSES.add(BeltsServiceProviderService.class);
+        RESOURCE_CLASSES.add(IndependentServiceProviderService.class);
         RESOURCE_CLASSES.add(RobotsServiceProviderService.class);
         RESOURCE_CLASSES.add(ShelvesServiceProviderService.class);
         RESOURCE_CLASSES.add(ResourceShapeService.class);
@@ -126,6 +132,7 @@ public class Application extends OslcWinkApplication {
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.ACTION_PATH, Action.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PLAN_PATH, Plan.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinsDomainConstants.PLANEXECUTIONREQUEST_PATH, PlanExecutionRequest.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinsDomainConstants.REGISTRATIONMESSAGE_PATH, RegistrationMessage.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.STEP_PATH, Step.class);
     }
 

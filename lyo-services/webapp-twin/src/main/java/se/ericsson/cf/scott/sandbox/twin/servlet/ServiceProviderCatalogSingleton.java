@@ -53,6 +53,7 @@ import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.RobotsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.BeltsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.ShelvesServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 
 // Start of user code imports
 // End of user code
@@ -485,6 +486,131 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
+    private static URI constructIndependentServiceProviderURI(final String serviceProviderId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("serviceProviderId", serviceProviderId);
+        String instanceURI = "independent/{serviceProviderId}";
+
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+
+    private static String independentServiceProviderIdentifier(final String serviceProviderId)
+    {
+        String identifier = "/" + serviceProviderId;
+        return identifier;
+    }
+
+    public static ServiceProvider getIndependentServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
+    {
+        ServiceProvider serviceProvider;
+
+        synchronized(serviceProviders)
+        {
+            String identifier = independentServiceProviderIdentifier(serviceProviderId);
+            serviceProvider = serviceProviders.get(identifier);
+
+            //One retry refreshing the service providers
+            if (serviceProvider == null)
+            {
+                getServiceProviders(httpServletRequest);
+                serviceProvider = serviceProviders.get(identifier);
+            }
+        }
+
+        if (serviceProvider != null)
+        {
+            return serviceProvider;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    public static ServiceProvider registerIndependentServiceProvider(final HttpServletRequest httpServletRequest,
+                                                          final ServiceProvider serviceProvider,
+                                                          final String serviceProviderId)
+                                                throws URISyntaxException
+    {
+        synchronized(serviceProviders)
+        {
+            final URI serviceProviderURI = constructIndependentServiceProviderURI(serviceProviderId);
+            return registerIndependentServiceProviderNoSync(serviceProviderURI,
+                                                 serviceProvider,
+                                                 serviceProviderId);
+        }
+    }
+
+    /**
+    * Register a service provider with the OSLC catalog
+    *
+    * @param serviceProviderURI
+    * @param serviceProvider
+    * @param productId
+    * @return
+    */
+    private static ServiceProvider registerIndependentServiceProviderNoSync(final URI serviceProviderURI,
+                                                                 final ServiceProvider serviceProvider
+                                                                 , final String serviceProviderId)
+    {
+        final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
+
+        String identifier = independentServiceProviderIdentifier(serviceProviderId);
+        serviceProvider.setAbout(serviceProviderURI);
+        serviceProvider.setIdentifier(identifier);
+        serviceProvider.setCreated(new Date());
+        serviceProvider.setDetails(new URI[] {serviceProviderURI});
+
+        serviceProviderCatalog.addServiceProvider(serviceProvider);
+        serviceProviderCatalog.addDomains(serviceProviderDomains);
+
+        serviceProviders.put(identifier, serviceProvider);
+
+        return serviceProvider;
+    }
+
+    // This version is for self-registration and thus package-protected
+    static ServiceProvider registerIndependentServiceProvider(final ServiceProvider serviceProvider, final String serviceProviderId)
+                                            throws URISyntaxException
+    {
+        synchronized(serviceProviders)
+        {
+            final URI serviceProviderURI = constructIndependentServiceProviderURI(serviceProviderId);
+
+            return registerIndependentServiceProviderNoSync(serviceProviderURI, serviceProvider, serviceProviderId);
+        }
+    }
+
+    public static void deregisterIndependentServiceProvider(final String serviceProviderId)
+    {
+        synchronized(serviceProviders)
+        {
+            final ServiceProvider deregisteredServiceProvider =
+                serviceProviders.remove(independentServiceProviderIdentifier(serviceProviderId));
+
+            if (deregisteredServiceProvider != null)
+            {
+                final SortedSet<URI> remainingDomains = new TreeSet<URI>();
+
+                for (final ServiceProvider remainingServiceProvider : serviceProviders.values())
+                {
+                    remainingDomains.addAll(getServiceProviderDomains(remainingServiceProvider));
+                }
+
+                final SortedSet<URI> removedServiceProviderDomains = getServiceProviderDomains(deregisteredServiceProvider);
+
+                removedServiceProviderDomains.removeAll(remainingDomains);
+                serviceProviderCatalog.removeDomains(removedServiceProviderDomains);
+                serviceProviderCatalog.removeServiceProvider(deregisteredServiceProvider);
+            }
+            else
+            {
+                throw new WebApplicationException(Status.NOT_FOUND);
+            }
+        }
+    }
+
     private static SortedSet<URI> getServiceProviderDomains(final ServiceProvider serviceProvider)
     {
         final SortedSet<URI> domains = new TreeSet<URI>();
@@ -572,6 +698,25 @@ public class ServiceProviderCatalogSingleton
                     parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
                     final ServiceProvider aServiceProvider = ShelvesServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
                     registerShelvesServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
+                }
+            }
+
+            IndependentServiceProviderInfo [] independentServiceProviderInfos = TwinManager.getIndependentServiceProviderInfos(httpServletRequest);
+            //Register each service provider
+            for (IndependentServiceProviderInfo serviceProviderInfo : independentServiceProviderInfos) {
+                String identifier = independentServiceProviderIdentifier(serviceProviderInfo.serviceProviderId);
+                if (!serviceProviders.containsKey(identifier)) {
+                    String serviceProviderName = serviceProviderInfo.name;
+                    String title = String.format("Service Provider '%s'", serviceProviderName);
+                    String description = String.format("%s (id: %s; kind: %s)",
+                        "Generic SP for SP-independent services",
+                        identifier,
+                        "Independent");
+                    Publisher publisher = null;
+                    Map<String, Object> parameterMap = new HashMap<String, Object>();
+                    parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
+                    final ServiceProvider aServiceProvider = IndependentServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
+                    registerIndependentServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
                 }
             }
         } catch (Exception e) {
