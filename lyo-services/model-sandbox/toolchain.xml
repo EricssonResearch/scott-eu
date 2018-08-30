@@ -42,7 +42,7 @@
       <serviceProviders title="Conveyor Belt SP" description="A Service Provider for Conveyor Belt Twins" serviceNamespace="belts" instanceID="{beltId}">
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
-          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create">
+          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create/{cb}">
             <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.1"/>
           </creationFactories>
         </services>
@@ -50,7 +50,7 @@
       <serviceProviders title="Shelf SP" description="A Service Provider for Shelf Twins" serviceNamespace="shelves">
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
-          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create">
+          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create/{cb}/{shelf}">
             <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.1"/>
           </creationFactories>
         </services>

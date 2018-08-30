@@ -105,16 +105,13 @@ public class TwinManager {
         
         // Start of user code createPlanExecutionRequest
         // TODO Implement code to create a resource
-        // FIXME Andrew@2018-08-29: will be called for all SP kinds
         // End of user code
         return newResource;
     }
 
 
 
-/*
-
-    public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String beltId)
+    public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String beltId, final String cb)
     {
         PlanExecutionRequest newResource = null;
         
@@ -126,7 +123,7 @@ public class TwinManager {
 
 
 
-    public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String serviceProviderId)
+    public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String serviceProviderId, final String cb, final String shelf)
     {
         PlanExecutionRequest newResource = null;
         
@@ -135,7 +132,6 @@ public class TwinManager {
         // End of user code
         return newResource;
     }
-*/
 
 
 

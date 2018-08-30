@@ -73,7 +73,7 @@ import se.ericsson.cf.scott.sandbox.twin.ShelvesServiceProviderInfo;
 public class ServiceProviderCatalogSingleton
 {
     private static final ServiceProviderCatalog serviceProviderCatalog;
-    private     static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
+    private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
 
     static {
         serviceProviderCatalog = new ServiceProviderCatalog();

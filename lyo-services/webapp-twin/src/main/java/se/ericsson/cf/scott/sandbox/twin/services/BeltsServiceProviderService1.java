@@ -123,16 +123,16 @@ public class BeltsServiceProviderService1
          usages = {}
     )
     @POST
-    @Path("create")
+    @Path("create/{cb}")
     @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public Response createPlanExecutionRequest(
-            @PathParam("beltId") final String beltId ,
+            @PathParam("beltId") final String beltId, @PathParam("cb") final String cb ,
             final PlanExecutionRequest aResource
         ) throws IOException, ServletException
     {
         try {
-            PlanExecutionRequest newResource = TwinManager.createPlanExecutionRequest(httpServletRequest, aResource, beltId);
+            PlanExecutionRequest newResource = TwinManager.createPlanExecutionRequest(httpServletRequest, aResource, beltId, cb);
             httpServletResponse.setHeader("ETag", TwinManager.getETagFromPlanExecutionRequest(newResource));
             return Response.created(newResource.getAbout()).entity(newResource).header(TwinConstants.HDR_OSLC_VERSION, TwinConstants.OSLC_VERSION_V2).build();
         } catch (Exception e) {

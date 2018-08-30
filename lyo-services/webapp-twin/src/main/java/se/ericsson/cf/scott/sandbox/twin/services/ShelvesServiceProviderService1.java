@@ -123,16 +123,16 @@ public class ShelvesServiceProviderService1
          usages = {}
     )
     @POST
-    @Path("create")
+    @Path("create/{cb}/{shelf}")
     @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public Response createPlanExecutionRequest(
-            @PathParam("serviceProviderId") final String serviceProviderId ,
+            @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("cb") final String cb, @PathParam("shelf") final String shelf ,
             final PlanExecutionRequest aResource
         ) throws IOException, ServletException
     {
         try {
-            PlanExecutionRequest newResource = TwinManager.createPlanExecutionRequest(httpServletRequest, aResource, serviceProviderId);
+            PlanExecutionRequest newResource = TwinManager.createPlanExecutionRequest(httpServletRequest, aResource, serviceProviderId, cb, shelf);
             httpServletResponse.setHeader("ETag", TwinManager.getETagFromPlanExecutionRequest(newResource));
             return Response.created(newResource.getAbout()).entity(newResource).header(TwinConstants.HDR_OSLC_VERSION, TwinConstants.OSLC_VERSION_V2).build();
         } catch (Exception e) {
