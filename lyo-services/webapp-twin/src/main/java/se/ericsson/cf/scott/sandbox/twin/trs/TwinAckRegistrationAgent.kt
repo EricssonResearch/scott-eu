@@ -17,7 +17,7 @@ import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.slf4j.LoggerFactory
-import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager
+import se.ericsson.cf.scott.sandbox.twin.TwinManager
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.UriBuilder
@@ -69,7 +69,7 @@ class TwinAckRegistrationAgent(val whcTopic: String) :
     override val lastWill: LastWillMessage
         get() {
             val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
-            val announcement = TrsServerAnnouncement(RobotTwinManager.getTwinUUID(),
+            val announcement = TrsServerAnnouncement(TwinManager.getTwinUUID(),
                     TrsXConstants.TYPE_TWIN, trsUri, MqttTopics.REGISTRATION_ANNOUNCE, true)
             val model = MqttHelper.jenaModelFrom(announcement)
             return LastWillMessage(whcTopic, model)
@@ -78,7 +78,7 @@ class TwinAckRegistrationAgent(val whcTopic: String) :
 
     private fun getTwinRegistrationMessage(id: String): MqttMessage {
         val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
-        val announcement = TrsServerAnnouncement(RobotTwinManager.getTwinUUID(),
+        val announcement = TrsServerAnnouncement(TwinManager.getTwinUUID(),
                 TrsXConstants.TYPE_TWIN, trsUri, MqttTopics.REGISTRATION_ANNOUNCE, false)
         return MqttHelper.msgFromResources(TrsXConstants.rdfFormat, announcement)
     }

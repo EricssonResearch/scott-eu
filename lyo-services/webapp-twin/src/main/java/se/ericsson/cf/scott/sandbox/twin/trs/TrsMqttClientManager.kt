@@ -14,7 +14,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.slf4j.LoggerFactory
-import se.ericsson.cf.scott.sandbox.twin.RobotTwinManager
+import se.ericsson.cf.scott.sandbox.twin.TwinManager
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -123,7 +123,7 @@ class TrsMqttClientManager(private val mqttBroker: String) {
     }
     // HELPERS
 
-    private fun getTwinUUID() = RobotTwinManager.getTwinUUID()
+    private fun getTwinUUID() = TwinManager.getTwinUUID()
 
     private fun getTwinRegistrationMessage(isLeaving: Boolean = false): MqttMessage {
         val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()

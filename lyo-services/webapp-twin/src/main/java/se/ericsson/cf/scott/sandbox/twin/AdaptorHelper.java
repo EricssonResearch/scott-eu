@@ -9,10 +9,10 @@ package se.ericsson.cf.scott.sandbox.twin;
 public class AdaptorHelper {
     // Start of user code class_methods
     private static String parameterFQDN(final String s) {
-        return RobotTwinManager.PACKAGE_ROOT + "." + s;
+        return TwinManager.PACKAGE_ROOT + "." + s;
     }
 
     public static String p(final String s) {
-        return RobotTwinManager.getServletContext().getInitParameter(parameterFQDN(s));
+        return TwinManager.getServletContext().getInitParameter(parameterFQDN(s));
     }
 }

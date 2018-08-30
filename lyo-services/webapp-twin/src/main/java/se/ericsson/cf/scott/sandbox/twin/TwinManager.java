@@ -41,8 +41,32 @@ import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
 import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
 
-
 // Start of user code imports
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import se.ericsson.cf.scott.sandbox.twin.clients.TwinRegistrationClient;
+import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
+import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
+
+//import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import eu.scott.warehouse.lib.MqttClientBuilder;
+import eu.scott.warehouse.lib.MqttTopics;
+import eu.scott.warehouse.lib.TrsMqttGateway;
+import java.util.UUID;
+import javax.servlet.ServletContext;
+
+import org.eclipse.lyo.client.oslc.OslcClient;
+import org.eclipse.lyo.store.Store;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+import eu.scott.warehouse.lib.hazelcast.HazelcastFactory;
+
 // End of user code
 
 // Start of user code pre_class_code
@@ -51,17 +75,101 @@ import eu.scott.warehouse.domains.pddl.Step;
 public class TwinManager {
 
     // Start of user code class_attributes
+    public final static String PACKAGE_ROOT = TwinManager.class.getPackage().getName();
+    private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
+    private final static UUID uuid = UUID.randomUUID();
+    private static String trsTopic;
+    private static TrsMqttClientManager trsClientManager;
+    private static Store store;
+    private static ServletContext servletContext;
+    private static TrsMqttGateway mqttGateway;
+    private static HazelcastInstance hc;
+    private static IMap<String, Object> robotProviders;
+    private static IMap<Object, Object> shelfProviders;
+    private static IMap<Object, Object> beltProviders;
     // End of user code
     
     
     // Start of user code class_methods
+    @NotNull
+    public static String getTwinUUID() {
+        return "twn-" + uuid.toString();
+    }
+
+    public static String getTrsTopic() {
+        if(Strings.isNullOrEmpty(trsTopic)) {
+            log.warn("The TRS topic was requested before it was set");
+        }
+        return trsTopic;
+    }
+
+    public static void setTrsTopic(String trsTopic) {
+        TwinManager.trsTopic = trsTopic;
+    }
+
+    public static TrsMqttClientManager getTrsClientManager() {
+        return trsClientManager;
+    }
+
+    public static void setTrsClientManager(TrsMqttClientManager trsClientManager) {
+        TwinManager.trsClientManager = trsClientManager;
+    }
+
+    public static ServletContext getServletContext() {
+        return servletContext;
+    }
+
+    private static void registerTwins() {
+        final OslcClient client = new OslcClient();
+        final TwinRegistrationClient registrationClient = new TwinRegistrationClient(
+            client, "http://sandbox-whc:8080/services/service2/registrationRequests/register");
+
+        for(String id: ImmutableList.of("r1", "r2", "r3")) {
+            registrationClient.registerTwin("robot", id);
+        }
+
+    }
+
+    private static void setStore(final Store store) {
+        TwinManager.store = store;
+    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
         
         // Start of user code contextInitializeServletListener
-        // TODO Implement code to establish connection to data backbone etc ...
+        log.info("Twin {} is starting", getTwinUUID());
+        servletContext = servletContextEvent.getServletContext();
+//        final Store store = LyoStoreManager.initLyoStore();
+//        setStore(store);
+
+//        RosManager.runRosNode();
+//        new Thread(RobotTwinManager::runRosNode).run();
+//        RosManager.execMainNode();
+
+        final String mqttBroker = AdaptorHelper.p("trs.mqtt.broker");
+//        final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttBroker);
+//        setTrsClientManager(trsClientManager);
+//        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
+        // FIXME Andrew@2018-07-31: remove non-gateway based code
+        try {
+            mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
+                                                 .withId(getTwinUUID())
+                                                 .withRegistration(new TwinAckRegistrationAgent(
+                                                     MqttTopics.WHC_PLANS))
+                                                 .build();
+        } catch (MqttException e) {
+            log.error("Failed to initialise the MQTT gateway", e);
+        }
+
+        hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig("twin");
+
+        robotProviders = hc.getMap("twin-providers-robot");
+        shelfProviders = hc.getMap("twin-providers-shelf");
+        beltProviders = hc.getMap("twin-providers-belt");
+
+        registerTwins();
         // End of user code
     }
 
@@ -69,7 +177,15 @@ public class TwinManager {
     {
         
         // Start of user code contextDestroyed
-        // TODO Implement code to shutdown connections to data backbone etc...
+
+        log.info("Destroying the servlet");
+        try {
+            mqttGateway.disconnect();
+        } catch (MqttException e) {
+            log.error("Failed to disconnect from the MQTT broker");
+        }
+//        getTrsClientManager().unregisterTwinAndDisconnect();
+
         // End of user code
     }
 
