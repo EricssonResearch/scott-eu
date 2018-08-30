@@ -21,11 +21,12 @@
 package se.ericsson.cf.scott.sandbox.twin;
 
 // Start of user code imports
+import java.io.Serializable;
 // End of user code
 
 // Start of user code pre_class_code
 // End of user code
-public class BeltsServiceProviderInfo {
+public class BeltsServiceProviderInfo implements Serializable {
     public String name;
     public String beltId;
 
