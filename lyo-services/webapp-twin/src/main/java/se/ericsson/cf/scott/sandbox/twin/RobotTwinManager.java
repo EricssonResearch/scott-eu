@@ -24,6 +24,9 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+import eu.scott.warehouse.lib.hazelcast.HazelcastFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 
@@ -70,6 +73,10 @@ public class RobotTwinManager {
     private static Store store;
     private static ServletContext servletContext;
     private static TrsMqttGateway mqttGateway;
+    private static HazelcastInstance hc;
+    private static IMap<String, Object> robotProviders;
+    private static IMap<Object, Object> shelfProviders;
+    private static IMap<Object, Object> beltProviders;
     // End of user code
     
     
@@ -145,6 +152,12 @@ public class RobotTwinManager {
         } catch (MqttException e) {
             log.error("Failed to initialise the MQTT gateway", e);
         }
+
+        hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig("twin");
+
+        robotProviders = hc.getMap("twin-providers-robot");
+        shelfProviders = hc.getMap("twin-providers-shelf");
+        beltProviders = hc.getMap("twin-providers-belt");
 
         registerTwins();
         // End of user code
