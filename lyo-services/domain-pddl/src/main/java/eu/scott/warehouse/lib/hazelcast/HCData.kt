@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.executor
+package eu.scott.warehouse.lib.hazelcast
 
 import java.io.Serializable
 import java.util.*

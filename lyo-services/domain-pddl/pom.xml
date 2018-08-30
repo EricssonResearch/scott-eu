@@ -21,6 +21,18 @@
   </properties>
   <dependencies>
     <dependency>
+      <!--TODO move to the lib-->
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>3.10.4</version>
+    </dependency>
+    <dependency>
+      <!--TODO move to the lib-->
+      <groupId>org.bitsofinfo</groupId>
+      <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
+      <version>1.0-RC8</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
+    </dependency>
+    <dependency>
       <!--TODO refactor-->
       <groupId>org.eclipse.paho</groupId>
       <artifactId>org.eclipse.paho.client.mqttv3</artifactId>

@@ -29,6 +29,8 @@ import com.hazelcast.core.IQueue;
 import eu.scott.warehouse.lib.MqttClientBuilder;
 import eu.scott.warehouse.lib.MqttTopics;
 import eu.scott.warehouse.lib.TrsMqttGateway;
+import eu.scott.warehouse.lib.hazelcast.HCData;
+import eu.scott.warehouse.lib.hazelcast.HazelcastFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -152,8 +154,8 @@ public class PlanExecutorManager {
 //        throw new UnsupportedOperationException("The REST I/F is not implemented yet");
         log.warn("The REST I/F is not implemented yet");
         final HCData hcData = new HCData(httpServletRequest.getRequestURI(),
-                                    UUID.randomUUID().toString(),
-                                    Collections.list(httpServletRequest.getHeaderNames())
+                                         UUID.randomUUID().toString(),
+                                         Collections.list(httpServletRequest.getHeaderNames())
                                                .stream()
                                                .map(httpServletRequest::getHeader)
                                                .toArray(String[]::new)
