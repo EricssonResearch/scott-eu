@@ -111,7 +111,7 @@ public class ServiceProviderCatalogSingleton
     }
 
 
-    private static URI constructRobotsServiceProviderURI(final String serviceProviderId)
+    public static URI constructRobotsServiceProviderURI(final String serviceProviderId)
     {
         String basePath = OSLC4JUtils.getServletURI();
         Map<String, Object> pathParameters = new HashMap<String, Object>();
