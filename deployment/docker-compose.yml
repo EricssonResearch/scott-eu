@@ -100,7 +100,7 @@ services:
     image: ${CI_REGISTRY_IMAGE}/scott-webapp-twin
     environment:
       TWINS: "10"
-      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2"
+      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701"
     networks:
       - overlay
     ports:
