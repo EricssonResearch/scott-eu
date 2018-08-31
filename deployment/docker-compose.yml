@@ -99,18 +99,19 @@ services:
   sandbox-twin:
     image: ${CI_REGISTRY_IMAGE}/scott-webapp-twin
     environment:
-      TWINS: "10"
-      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701"
+      TWINS: "2"
+      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
     networks:
       - overlay
     ports:
       - "8081:8080"
+      - "9991:9999"
     depends_on:
       # - sandbox-whc
       - sandbox-whc
     deploy:
       # just '4' for the test
-      replicas: 1
+      replicas: 2
       resources:
         limits:
           memory: 384m
