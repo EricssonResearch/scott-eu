@@ -204,7 +204,7 @@ public class TwinManager {
             }
         }, true);
 
-        registerTwins();
+//        registerTwins();
         // End of user code
     }
 

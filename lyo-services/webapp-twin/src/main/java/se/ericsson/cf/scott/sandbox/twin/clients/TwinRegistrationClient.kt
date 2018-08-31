@@ -24,7 +24,7 @@ class TwinRegistrationClient(private val client: OslcClient, private val registr
     fun trsMqttTopic(id: String) = "scott.warehouse.todo"
 
     private fun trsURI(id: String): URI? {
-        URI.create("urn:x:todo:"+id)
-        TODO("not implemented")
+        return URI.create("urn:x:todo:"+id)
+//        TODO("not implemented")
     }
 }
