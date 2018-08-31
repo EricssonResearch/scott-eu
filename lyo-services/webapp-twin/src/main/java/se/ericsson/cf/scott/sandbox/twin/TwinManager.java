@@ -24,20 +24,12 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
-import com.hazelcast.core.EntryEvent;
-import com.hazelcast.map.listener.EntryAddedListener;
-import com.hazelcast.map.listener.MapListener;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twin.servlet.RobotsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.RobotsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.BeltsServiceProviderInfo;
@@ -48,6 +40,7 @@ import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
 import eu.scott.warehouse.domains.pddl.Step;
+
 
 // Start of user code imports
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -74,7 +67,14 @@ import org.eclipse.lyo.store.Store;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import eu.scott.warehouse.lib.hazelcast.HazelcastFactory;
-
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.map.listener.EntryAddedListener;
+import com.hazelcast.map.listener.MapListener;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
+import se.ericsson.cf.scott.sandbox.twin.servlet.RobotsServiceProvidersFactory;
 // End of user code
 
 // Start of user code pre_class_code
@@ -295,12 +295,12 @@ public class TwinManager {
         return newResource;
     }
 
-    public static DeviceRegistrationMessage createDeviceRegistrationMessage(
-        HttpServletRequest httpServletRequest, final DeviceRegistrationMessage aResource,
-        final String serviceProviderId)
+
+
+    public static DeviceRegistrationMessage createDeviceRegistrationMessage(HttpServletRequest httpServletRequest, final DeviceRegistrationMessage aResource)
     {
         DeviceRegistrationMessage newResource = null;
-
+        
         // Start of user code createDeviceRegistrationMessage
         log.info("Registering a twin: {}", aResource);
         final String twinType = aResource.getTwinType();
@@ -315,8 +315,10 @@ public class TwinManager {
         return newResource;
     }
 
-    public static String getETagFromDeviceRegistrationMessage(
-        final DeviceRegistrationMessage aResource)
+
+
+
+    public static String getETagFromDeviceRegistrationMessage(final DeviceRegistrationMessage aResource)
     {
         String eTag = null;
         // Start of user code getETagFromDeviceRegistrationMessage
@@ -324,7 +326,6 @@ public class TwinManager {
         // End of user code
         return eTag;
     }
-
     public static String getETagFromPlanExecutionRequest(final PlanExecutionRequest aResource)
     {
         String eTag = null;

@@ -87,7 +87,7 @@ import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 // Start of user code pre_class_code
 // End of user code
 @OslcService(MissionDomainConstants.MISSIONONTOLOGY_DOMAIN)
-@Path("independent/{serviceProviderId}/deviceRegistrationMessages")
+@Path("deviceRegistrationMessages")
 public class IndependentServiceProviderService1
 {
     @Context private HttpServletRequest httpServletRequest;
@@ -124,12 +124,12 @@ public class IndependentServiceProviderService1
     @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public Response createDeviceRegistrationMessage(
-            @PathParam("serviceProviderId") final String serviceProviderId ,
+            
             final DeviceRegistrationMessage aResource
         ) throws IOException, ServletException
     {
         try {
-            DeviceRegistrationMessage newResource = TwinManager.createDeviceRegistrationMessage(httpServletRequest, aResource, serviceProviderId);
+            DeviceRegistrationMessage newResource = TwinManager.createDeviceRegistrationMessage(httpServletRequest, aResource);
             httpServletResponse.setHeader("ETag", TwinManager.getETagFromDeviceRegistrationMessage(newResource));
             return Response.created(newResource.getAbout()).entity(newResource).header(TwinConstants.HDR_OSLC_VERSION, TwinConstants.OSLC_VERSION_V2).build();
         } catch (Exception e) {
