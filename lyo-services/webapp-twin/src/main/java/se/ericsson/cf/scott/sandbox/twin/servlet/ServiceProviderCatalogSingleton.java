@@ -192,6 +192,10 @@ public class ServiceProviderCatalogSingleton
         serviceProviderCatalog.addServiceProvider(serviceProvider);
         serviceProviderCatalog.addDomains(serviceProviderDomains);
 
+        if (serviceProviders.containsKey(identifier)) {
+            throw new IllegalArgumentException(
+                String.format("The SP '%s' was already registered", identifier));
+        }
         serviceProviders.put(identifier, serviceProvider);
 
         return serviceProvider;
