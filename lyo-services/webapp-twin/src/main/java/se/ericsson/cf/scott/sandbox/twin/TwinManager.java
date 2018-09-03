@@ -186,17 +186,14 @@ public class TwinManager {
 
         twinProviderInfo = hc.getMap("twin-providers");
 
-        twinProviderInfo.addEntryListener(new EntryAddedListener() {
-            @Override
-            public void entryAdded(final EntryEvent event) {
-                log.info(
-                    "New Robot SP info map entry received '{}:{}'", event.getKey(),
-                    event.getValue()
-                );
-                final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
-                registerProvider(info);
+        twinProviderInfo.addEntryListener((EntryAddedListener) event -> {
+            log.info(
+                "New Robot SP info map entry received '{}:{}'", event.getKey(),
+                event.getValue()
+            );
+            final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
+            registerProvider(info);
 
-            }
         }, true);
 
 //        registerTwins();
