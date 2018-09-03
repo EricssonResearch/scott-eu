@@ -175,7 +175,6 @@ public class ServiceProviderCatalogSingleton
      *
      * @param serviceProviderURI
      * @param serviceProvider
-     * @param productId
      * @return
      */
     private static ServiceProvider registerTwinsServiceProviderNoSync(final URI serviceProviderURI,
@@ -303,7 +302,6 @@ public class ServiceProviderCatalogSingleton
      *
      * @param serviceProviderURI
      * @param serviceProvider
-     * @param productId
      * @return
      */
     private static ServiceProvider registerIndependentServiceProviderNoSync(final URI serviceProviderURI,
