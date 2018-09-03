@@ -31,26 +31,10 @@
   </adaptorInterfaces>
   <adaptorInterfaces name="Twin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twin" javaFilesBasePath="../webapp-twin/src/main/java/" jspFilesBasePath="../webapp-twin/src/main/webapp/" javascriptFilesBasePath="../webapp-twin/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
-      <serviceProviders title="Robot SP" description="A Service Provider for Robot Twins" serviceNamespace="robots">
+      <serviceProviders title="Twin SP" description="A Service Provider for Twins" serviceNamespace="twins" instanceID="{twinKind}/{twinId}">
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
-          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create">
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.1"/>
-          </creationFactories>
-        </services>
-      </serviceProviders>
-      <serviceProviders title="Conveyor Belt SP" description="A Service Provider for Conveyor Belt Twins" serviceNamespace="belts" instanceID="{beltId}">
-        <services>
-          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
-          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create/{cb}">
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.1"/>
-          </creationFactories>
-        </services>
-      </serviceProviders>
-      <serviceProviders title="Shelf SP" description="A Service Provider for Shelf Twins" serviceNamespace="shelves">
-        <services>
-          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
-          <creationFactories title="CreationFactory1" label="CreationFactory1" creationURI="create/{cb}/{shelf}">
+          <creationFactories title="PlanFactory" label="CF to schedule new plans for execution" creationURI="create">
             <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.1"/>
           </creationFactories>
         </services>
