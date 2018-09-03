@@ -92,9 +92,7 @@ public class Application extends OslcWinkApplication {
 //        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
         // FIXME Andrew@2018-05-27: does not support returning arrays or collections
 //        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
-        RESOURCE_CLASSES.add(RobotsServiceProviderService1.class);
-        RESOURCE_CLASSES.add(BeltsServiceProviderService1.class);
-        RESOURCE_CLASSES.add(ShelvesServiceProviderService1.class);
+        RESOURCE_CLASSES.add(TwinsServiceProviderService1.class);
         RESOURCE_CLASSES.add(IndependentServiceProviderService1.class);
 
         // Catalog resources
