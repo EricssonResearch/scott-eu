@@ -15,6 +15,6 @@ indent_size = 4
 indent_style = tab
 indent_size = 8
 
-[*.{pl,js,yml,xml}]
+[*.{pl,js,yml,xml,scala,sbt}]
 indent_style = space
 indent_size = 2
