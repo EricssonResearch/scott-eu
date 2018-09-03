@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
-import org.apache.commons.lang.WordUtils;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
@@ -42,6 +41,7 @@ import eu.scott.warehouse.domains.pddl.Step;
 
 
 // Start of user code imports
+import org.apache.commons.lang.WordUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
