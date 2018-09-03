@@ -53,10 +53,8 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
 import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
 import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderCatalogService;
-import se.ericsson.cf.scott.sandbox.twin.services.BeltsServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService;
-import se.ericsson.cf.scott.sandbox.twin.services.RobotsServiceProviderService;
-import se.ericsson.cf.scott.sandbox.twin.services.ShelvesServiceProviderService;
+import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
 
 import eu.scott.warehouse.domains.pddl.Action;
@@ -68,9 +66,7 @@ import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.RobotsServiceProviderService1;
-import se.ericsson.cf.scott.sandbox.twin.services.BeltsServiceProviderService1;
-import se.ericsson.cf.scott.sandbox.twin.services.ShelvesServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 
 // Start of user code imports
@@ -103,10 +99,8 @@ public class Application extends OslcWinkApplication {
 
         // Catalog resources
         RESOURCE_CLASSES.add(ServiceProviderCatalogService.class);
-        RESOURCE_CLASSES.add(BeltsServiceProviderService.class);
         RESOURCE_CLASSES.add(IndependentServiceProviderService.class);
-        RESOURCE_CLASSES.add(RobotsServiceProviderService.class);
-        RESOURCE_CLASSES.add(ShelvesServiceProviderService.class);
+        RESOURCE_CLASSES.add(TwinsServiceProviderService.class);
         RESOURCE_CLASSES.add(ResourceShapeService.class);
 
         // Start of user code Custom Resource Classes

@@ -43,19 +43,19 @@ import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.RobotsServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 
 // Start of user code imports
 // End of user code
 
-public class RobotsServiceProvidersFactory
+public class TwinsServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        RobotsServiceProviderService1.class
+        TwinsServiceProviderService1.class
     };
 
-    private RobotsServiceProvidersFactory()
+    private TwinsServiceProvidersFactory()
     {
         super();
     }

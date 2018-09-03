@@ -53,8 +53,8 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton
 // End of user code
 
 @OslcService(OslcConstants.OSLC_CORE_DOMAIN)
-@Path("belts")
-public class BeltsServiceProviderService
+@Path("twins")
+public class TwinsServiceProviderService
 {
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
@@ -97,12 +97,12 @@ public class BeltsServiceProviderService
      * @return
      */
     @GET
-    @Path("{beltId}")
+    @Path("{twinKind}/{twinId}")
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-    public ServiceProvider getServiceProvider(@PathParam("beltId") final String beltId)
+    public ServiceProvider getServiceProvider(@PathParam("twinKind") final String twinKind, @PathParam("twinId") final String twinId)
     {
         httpServletResponse.addHeader("Oslc-Core-Version","2.0");
-        return ServiceProviderCatalogSingleton.getBeltsServiceProvider(httpServletRequest, beltId);
+        return ServiceProviderCatalogSingleton.getTwinsServiceProvider(httpServletRequest, twinKind, twinId);
     }
 
     /**
@@ -113,11 +113,11 @@ public class BeltsServiceProviderService
      * @param serviceProviderId
      */
     @GET
-    @Path("{beltId}")
+    @Path("{twinKind}/{twinId}")
     @Produces(MediaType.TEXT_HTML)
-    public void getHtmlServiceProvider(@PathParam("beltId") final String beltId)
+    public void getHtmlServiceProvider(@PathParam("twinKind") final String twinKind, @PathParam("twinId") final String twinId)
     {
-        ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.getBeltsServiceProvider(httpServletRequest, beltId);
+        ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.getTwinsServiceProvider(httpServletRequest, twinKind, twinId);
         Service [] services = serviceProvider.getServices();
 
         httpServletRequest.setAttribute("serviceProvider", serviceProvider);
@@ -125,7 +125,7 @@ public class BeltsServiceProviderService
         // Start of user code getHtmlServiceProvider_setAttributes
         // End of user code
 
-        RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/twin/beltsserviceprovider.jsp");
+        RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/twin/twinsserviceprovider.jsp");
         try {
             rd.forward(httpServletRequest, httpServletResponse);
         } catch (Exception e) {

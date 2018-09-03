@@ -110,7 +110,6 @@ public class ServiceProviderCatalogService
      */
     @GET
     @Path("{serviceProviderCatalogId}") // Required to distinguish from array result.  But, ignored.
-    // TODO Andrew@2018-08-29: no idea why @Produces was commented out
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public ServiceProviderCatalog getServiceProviderCatalog()
     {

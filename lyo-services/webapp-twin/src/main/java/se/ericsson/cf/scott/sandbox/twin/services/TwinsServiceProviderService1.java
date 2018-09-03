@@ -90,8 +90,8 @@ import eu.scott.warehouse.domains.pddl.Step;
 // Start of user code pre_class_code
 // End of user code
 @OslcService(TwinsDomainConstants.TWINS_DOMAIN_DOMAIN)
-@Path("robots/{serviceProviderId}/planExecutionRequests")
-public class RobotsServiceProviderService1
+@Path("twins/{twinKind}/{twinId}/planExecutionRequests")
+public class TwinsServiceProviderService1
 {
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
@@ -103,7 +103,7 @@ public class RobotsServiceProviderService1
     // Start of user code class_methods
     // End of user code
 
-    public RobotsServiceProviderService1()
+    public TwinsServiceProviderService1()
     {
         super();
     }
@@ -116,8 +116,8 @@ public class RobotsServiceProviderService1
      */
     @OslcCreationFactory
     (
-         title = "CreationFactory1",
-         label = "CreationFactory1",
+         title = "PlanFactory",
+         label = "CF to schedule new plans for execution",
          resourceShapes = {OslcConstants.PATH_RESOURCE_SHAPES + "/" + TwinsDomainConstants.PLANEXECUTIONREQUEST_PATH},
          resourceTypes = {TwinsDomainConstants.PLANEXECUTIONREQUEST_TYPE},
          usages = {}
@@ -127,12 +127,12 @@ public class RobotsServiceProviderService1
     @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public Response createPlanExecutionRequest(
-            @PathParam("serviceProviderId") final String serviceProviderId ,
+            @PathParam("twinKind") final String twinKind, @PathParam("twinId") final String twinId ,
             final PlanExecutionRequest aResource
         ) throws IOException, ServletException
     {
         try {
-            PlanExecutionRequest newResource = TwinManager.createPlanExecutionRequest(httpServletRequest, aResource, serviceProviderId);
+            PlanExecutionRequest newResource = TwinManager.createPlanExecutionRequest(httpServletRequest, aResource, twinKind, twinId);
             httpServletResponse.setHeader("ETag", TwinManager.getETagFromPlanExecutionRequest(newResource));
             return Response.created(newResource.getAbout()).entity(newResource).header(TwinConstants.HDR_OSLC_VERSION, TwinConstants.OSLC_VERSION_V2).build();
         } catch (Exception e) {

@@ -21,14 +21,15 @@
 package se.ericsson.cf.scott.sandbox.twin;
 
 // Start of user code imports
-import java.io.Serializable;
 // End of user code
 
 // Start of user code pre_class_code
 // End of user code
-public class ShelvesServiceProviderInfo implements Serializable {
+public class TwinsServiceProviderInfo {
     public String name;
-    public String serviceProviderId;
+    public String twinKind;
+;
+    public String twinId;
 
     // Start of user code class_attributes
     // End of user code

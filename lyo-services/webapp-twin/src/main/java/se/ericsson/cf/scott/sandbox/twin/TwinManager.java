@@ -28,12 +28,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
+import org.apache.commons.lang.WordUtils;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.RobotsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.BeltsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.ShelvesServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
@@ -49,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.ericsson.cf.scott.sandbox.twin.clients.TwinRegistrationClient;
+import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
 
@@ -74,7 +74,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import se.ericsson.cf.scott.sandbox.twin.servlet.RobotsServiceProvidersFactory;
 // End of user code
 
 // Start of user code pre_class_code
@@ -92,9 +91,7 @@ public class TwinManager {
     private static ServletContext servletContext;
     private static TrsMqttGateway mqttGateway;
     private static HazelcastInstance hc;
-    private static IMap<String, RobotsServiceProviderInfo> robotProviders;
-    private static IMap<String, ShelvesServiceProviderInfo> shelfProviders;
-    private static IMap<String, BeltsServiceProviderInfo> beltProviders;
+    private static IMap<String, TwinsServiceProviderInfo> twinProviderInfo;
     // End of user code
     
     
@@ -142,15 +139,15 @@ public class TwinManager {
         TwinManager.store = store;
     }
 
-    private static void registerProvider(final RobotsServiceProviderInfo robotSPInfo) {
+    private static void registerProvider(final TwinsServiceProviderInfo info) {
         try {
-            final URI spURI = ServiceProviderCatalogSingleton.constructRobotsServiceProviderURI(
-                robotSPInfo.serviceProviderId);
+            final URI spURI = ServiceProviderCatalogSingleton.constructTwinsServiceProviderURI(
+                info.twinKind, info.twinId);
 
-            final ServiceProvider robotSP = RobotsServiceProvidersFactory.createServiceProvider(
-                spURI.toString(), robotSPInfo.name, "N/A", null, new HashMap<>());
-            ServiceProviderCatalogSingleton.registerRobotsServiceProvider(
-                null, robotSP, robotSPInfo.serviceProviderId);
+            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createServiceProvider(
+                spURI.toString(), info.name, "N/A", null, new HashMap<>());
+            ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
+                null, robotSP, info.twinKind, info.twinId);
         } catch (URISyntaxException | OslcCoreApplicationException e) {
             log.error("Cannot register the Robot SP", e);
         }
@@ -187,19 +184,17 @@ public class TwinManager {
 
         hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig("twin");
 
-        robotProviders = hc.getMap("twin-providers-robot");
-        shelfProviders = hc.getMap("twin-providers-shelf");
-        beltProviders = hc.getMap("twin-providers-belt");
+        twinProviderInfo = hc.getMap("twin-providers");
 
-        robotProviders.addEntryListener(new EntryAddedListener() {
+        twinProviderInfo.addEntryListener(new EntryAddedListener() {
             @Override
             public void entryAdded(final EntryEvent event) {
                 log.info(
                     "New Robot SP info map entry received '{}:{}'", event.getKey(),
                     event.getValue()
                 );
-                final RobotsServiceProviderInfo robotSPInfo = (RobotsServiceProviderInfo) event.getValue();
-                registerProvider(robotSPInfo);
+                final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
+                registerProvider(info);
 
             }
         }, true);
@@ -224,29 +219,11 @@ public class TwinManager {
         // End of user code
     }
 
-    public static RobotsServiceProviderInfo[] getRobotsServiceProviderInfos(HttpServletRequest httpServletRequest)
+    public static TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
-        RobotsServiceProviderInfo[] serviceProviderInfos = {};
+        TwinsServiceProviderInfo[] serviceProviderInfos = {};
         
-        // Start of user code "RobotsServiceProviderInfo[] getRobotsServiceProviderInfos(...)"
-        // TODO Implement code to return the set of ServiceProviders
-        // End of user code
-        return serviceProviderInfos;
-    }
-    public static BeltsServiceProviderInfo[] getBeltsServiceProviderInfos(HttpServletRequest httpServletRequest)
-    {
-        BeltsServiceProviderInfo[] serviceProviderInfos = {};
-        
-        // Start of user code "BeltsServiceProviderInfo[] getBeltsServiceProviderInfos(...)"
-        // TODO Implement code to return the set of ServiceProviders
-        // End of user code
-        return serviceProviderInfos;
-    }
-    public static ShelvesServiceProviderInfo[] getShelvesServiceProviderInfos(HttpServletRequest httpServletRequest)
-    {
-        ShelvesServiceProviderInfo[] serviceProviderInfos = {};
-        
-        // Start of user code "ShelvesServiceProviderInfo[] getShelvesServiceProviderInfos(...)"
+        // Start of user code "TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(...)"
         // TODO Implement code to return the set of ServiceProviders
         // End of user code
         return serviceProviderInfos;
@@ -261,31 +238,7 @@ public class TwinManager {
         return serviceProviderInfos;
     }
 
-    public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String serviceProviderId)
-    {
-        PlanExecutionRequest newResource = null;
-        
-        // Start of user code createPlanExecutionRequest
-        // TODO Implement code to create a resource
-        // End of user code
-        return newResource;
-    }
-
-
-
-    public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String beltId, final String cb)
-    {
-        PlanExecutionRequest newResource = null;
-        
-        // Start of user code createPlanExecutionRequest
-        // TODO Implement code to create a resource
-        // End of user code
-        return newResource;
-    }
-
-
-
-    public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String serviceProviderId, final String cb, final String shelf)
+    public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String twinKind, final String twinId)
     {
         PlanExecutionRequest newResource = null;
         
@@ -303,14 +256,13 @@ public class TwinManager {
         
         // Start of user code createDeviceRegistrationMessage
         log.info("Registering a twin: {}", aResource);
-        final String twinType = aResource.getTwinType();
-        if ("robot".equals(twinType)) {
-            final RobotsServiceProviderInfo robotSPInfo = new RobotsServiceProviderInfo();
-            robotSPInfo.serviceProviderId = aResource.getTwinId();
-            robotSPInfo.name = String.format("Twin '%s'", robotSPInfo.serviceProviderId);
-            registerProvider(robotSPInfo);
-            robotProviders.put(robotSPInfo.serviceProviderId, robotSPInfo);
-        }
+        final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo();
+        spInfo.twinKind = aResource.getTwinType();
+        spInfo.twinId = aResource.getTwinId();
+        spInfo.name = String.format(
+            "%s Twin '%s'", WordUtils.capitalize(spInfo.twinKind), spInfo.twinId);
+        registerProvider(spInfo);
+        twinProviderInfo.put(spInfo.twinKind + '/' + spInfo.twinId, spInfo);
         // End of user code
         return newResource;
     }
