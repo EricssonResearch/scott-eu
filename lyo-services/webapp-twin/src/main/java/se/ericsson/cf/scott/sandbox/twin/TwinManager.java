@@ -24,6 +24,7 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
+import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
@@ -38,7 +39,6 @@ import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
 import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
 import org.apache.commons.lang.WordUtils;
@@ -92,6 +92,7 @@ public class TwinManager {
     private static TrsMqttGateway mqttGateway;
     private static HazelcastInstance hc;
     private static IMap<String, TwinsServiceProviderInfo> twinProviderInfo;
+    private static Random r;
     // End of user code
     
     
@@ -141,11 +142,7 @@ public class TwinManager {
 
     private static void registerProvider(final TwinsServiceProviderInfo info) {
         try {
-//            final URI spURI = ServiceProviderCatalogSingleton.constructTwinsServiceProviderURI(
-//                info.twinKind, info.twinId);
-//
-//            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createServiceProvider(
-//                spURI.toString(), info.name, "N/A", null, new HashMap<>());
+            log.info("Registering provider: {}", info);
             final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinServiceProvider(
                 info);
             ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
@@ -174,31 +171,42 @@ public class TwinManager {
 //        setTrsClientManager(trsClientManager);
 //        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
         // FIXME Andrew@2018-07-31: remove non-gateway based code
-        try {
-            mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
-                                                 .withId(getTwinUUID())
-                                                 .withRegistration(new TwinAckRegistrationAgent(
-                                                     MqttTopics.WHC_PLANS))
-                                                 .build();
-        } catch (MqttException e) {
-            log.error("Failed to initialise the MQTT gateway", e);
-        }
+//        try {
+//            mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
+//                                                 .withId(getTwinUUID())
+//                                                 .withRegistration(new TwinAckRegistrationAgent(
+//                                                     MqttTopics.WHC_PLANS))
+//                                                 .build();
+//        } catch (MqttException e) {
+//            log.error("Failed to initialise the MQTT gateway", e);
+//        }
 
         hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig("twin");
 
         twinProviderInfo = hc.getMap("twin-providers");
 
         twinProviderInfo.addEntryListener((EntryAddedListener) event -> {
-            log.info(
-                "New Robot SP info map entry received '{}:{}'", event.getKey(),
-                event.getValue()
-            );
-            final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
-            registerProvider(info);
+            try {
+                log.info("New Robot SP info map entry received '{}:{}'", event.getKey(),
+                         event.getValue()
+                );
+                final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
+                if (!ServiceProviderCatalogSingleton.containsTwinServiceProvider(
+                    info.twinKind, info.twinId)) {
+                    registerProvider(info);
+                } else {
+                    log.debug(
+                        "SP {}/{} is already registered, skipping", info.twinKind, info.twinId);
+                }
+            } catch (Exception e) {
+                log.warn("Unhandled exception in EntryAddedListener", e);
+            }
 
         }, true);
 
 //        registerTwins();
+
+        r = new Random();
         // End of user code
     }
 
@@ -254,14 +262,21 @@ public class TwinManager {
         DeviceRegistrationMessage newResource = null;
         
         // Start of user code createDeviceRegistrationMessage
-        log.info("Registering a twin: {}", aResource);
+        log.info("Registering a twin: {}", aResource.toString());
         final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo();
         spInfo.twinKind = aResource.getTwinType();
         spInfo.twinId = aResource.getTwinId();
+        if (spInfo.twinId == null) {
+            spInfo.twinId = String.valueOf(r.nextInt(10000));
+        }
         spInfo.name = String.format(
             "%s Twin '%s'", WordUtils.capitalize(spInfo.twinKind), spInfo.twinId);
         registerProvider(spInfo);
         twinProviderInfo.put(spInfo.twinKind + '/' + spInfo.twinId, spInfo);
+
+        newResource = aResource;
+        newResource.setTwinId(spInfo.twinId);
+
         // End of user code
         return newResource;
     }

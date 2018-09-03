@@ -170,6 +170,11 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
+    public static boolean containsTwinServiceProvider(String kind, String id) {
+        final String serviceProviderIdentifier = twinsServiceProviderIdentifier(kind, id);
+        return serviceProviders.containsKey(serviceProviderIdentifier);
+    }
+
     /**
      * Register a service provider with the OSLC catalog
      *
