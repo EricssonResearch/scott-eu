@@ -141,11 +141,13 @@ public class TwinManager {
 
     private static void registerProvider(final TwinsServiceProviderInfo info) {
         try {
-            final URI spURI = ServiceProviderCatalogSingleton.constructTwinsServiceProviderURI(
-                info.twinKind, info.twinId);
-
-            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createServiceProvider(
-                spURI.toString(), info.name, "N/A", null, new HashMap<>());
+//            final URI spURI = ServiceProviderCatalogSingleton.constructTwinsServiceProviderURI(
+//                info.twinKind, info.twinId);
+//
+//            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createServiceProvider(
+//                spURI.toString(), info.name, "N/A", null, new HashMap<>());
+            final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinServiceProvider(
+                info);
             ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
                 null, robotSP, info.twinKind, info.twinId);
         } catch (URISyntaxException | OslcCoreApplicationException e) {
