@@ -18,7 +18,8 @@ public class LoggingMqttCallback implements MqttCallbackExtended {
 
     @Override
     public void connectionLost(final Throwable cause) {
-        log.warn("Connection lost", cause);
+        log.warn("Connection lost");
+        log.trace("Connection lost", cause);
     }
 
     @Override
@@ -28,21 +29,27 @@ public class LoggingMqttCallback implements MqttCallbackExtended {
 
     @Override
     public void deliveryComplete(final IMqttDeliveryToken token) {
-        try {
-            final MqttMessage message = token.getMessage();
-            if (message != null) {
-                log.trace("Delivery complete for message {}", message.getId());
-            } else {
-                log.debug("Delivery complete (message ID could not be retrieved from the token)");
+        if (token == null) {
+            log.debug("Delivery complete (message ID could not be retrieved from the token)");
+        } else {
+            try {
+                final MqttMessage message = token.getMessage();
+                if (message != null) {
+                    log.trace("Delivery complete for message {}", message.getId());
+                } else {
+                    log.debug(
+                        "Delivery complete (message ID could not be retrieved from the token)");
+                }
+            } catch (MqttException e) {
+                log.warn("Delivery complete (message ID could not be retrieved from the token)");
             }
-        } catch (MqttException e) {
-            log.warn("Delivery complete (message ID could not be retrieved from the token)");
+
         }
     }
 
     @Override
     public void connectComplete(final boolean reconnect, final String serverURI) {
-        log.trace("{} to the MQTT broker", reconnect ? "Reconnected" : "Connected");
+        log.info("{} to the MQTT broker", reconnect ? "Reconnected" : "Connected");
     }
 
 

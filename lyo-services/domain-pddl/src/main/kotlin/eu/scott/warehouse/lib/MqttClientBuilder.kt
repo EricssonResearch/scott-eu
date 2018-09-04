@@ -6,6 +6,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.slf4j.LoggerFactory
 
 /**
  * TBD
@@ -14,6 +15,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
  * @since FIXME
  */
 class MqttClientBuilder {
+    val log = LoggerFactory.getLogger(javaClass)
     private var clientID = UUID.randomUUID().toString()
     private var callback: MqttCallbackExtended = LoggingMqttCallback()
     private val lwtTopic: String? = null
@@ -54,11 +56,14 @@ class MqttClientBuilder {
         val options = MqttConnectOptions()
         options.isAutomaticReconnect = true
         //        options.setCleanSession(true);
-        options.connectionTimeout = 1
-        options.keepAliveInterval = 5
+        // these are too lax but the client otherwise tries to reconnect like crazy
+        // TODO Andrew@2018-09-04: contribute a PR to https://github.com/eclipse/paho.mqtt.java/issues/374
+        options.connectionTimeout = 15
+        options.keepAliveInterval = 60
         if (lwtMessage != null) {
             options.setWill(lwtTopic!!, lwtMessage.payload, 1, false)
         }
+        log.debug("Initialising an MQTT client (id=$clientID)")
         return TrsMqttGateway(brokerURL, clientID, options, callback,
             registrationAgent!!)
     }

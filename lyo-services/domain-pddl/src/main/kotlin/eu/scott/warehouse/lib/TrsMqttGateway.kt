@@ -10,6 +10,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import org.slf4j.LoggerFactory
 
 /**
  * TBD
@@ -21,7 +23,11 @@ class TrsMqttGateway @Throws(MqttException::class) constructor(brokerURL: String
                                                                options: MqttConnectOptions,
                                                                callback: MqttCallbackExtended?,
                                                                private val registrationAgent: RegistrationAgent) {
-    val mqttClient: MqttClient = MqttClient(brokerURL, clientID)
+    val log = LoggerFactory.getLogger(javaClass)
+    // MqttException (0) - java.io.FileNotFoundException:
+    // /var/lib/jetty/twn-fc4a2304-a1a5-44b2-b3c0-bf70ced08f95-tcpmosquitto1883/s-2.msg
+    val memoryPersistence = MemoryPersistence()
+    val mqttClient: MqttClient = MqttClient(brokerURL, clientID, memoryPersistence)
     val executorService: ExecutorService = Executors.newSingleThreadScheduledExecutor()
 
     val clientId: String

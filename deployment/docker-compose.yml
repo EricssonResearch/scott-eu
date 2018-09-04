@@ -108,14 +108,15 @@ services:
       - "9991:9999"
     depends_on:
       # - sandbox-whc
-      # - sandbox-whc
+      - warehouse-fuseki
       - mosquitto
     deploy:
       # just '4' for the test
       replicas: 2
       resources:
         limits:
-          memory: 384m
+          cpus: '0.25'
+          memory: '384m'
       # placement:
       #   constraints: [node.role == worker]
       restart_policy:
@@ -145,20 +146,20 @@ services:
   #   networks:
   #     - overlay
   # TODO bring back, see https://github.com/EricssonResearch/scott-eu/issues/101
-  # warehouse-fuseki:
-  #   image: stain/jena-fuseki
-  #   networks:
-  #     - overlay
-  #   ports:
-  #     - "3030:3030"
-  #   volumes:
-  #     - ./fuseki_config:/fuseki/configuration
-  #   deploy:
-  #     replicas: 1
-  #     placement:
-  #       constraints: [node.role == worker]
-  #     restart_policy:
-  #       condition: on-failure
+  warehouse-fuseki:
+    image: stain/jena-fuseki
+    networks:
+      - overlay
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./fuseki_config:/fuseki/configuration
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
   mosquitto:
     image: eclipse-mosquitto
     networks:
@@ -166,6 +167,8 @@ services:
     ports:
       - "1883:1883"
       - "9001:9001"
+    volumes:
+      - ./mosquitto:/mosquitto/config
     deploy:
       replicas: 1
       # placement:
