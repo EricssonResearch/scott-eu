@@ -129,13 +129,13 @@ public class DeviceRegistrationMessage
         TwinsDomainConstants.DEVICEREGISTRATIONMESSAGE_PATH,
         DeviceRegistrationMessage.class);
     }
-    
-    
-    public String toString()
-    {
-        return toString(false);
+
+    @Override
+    public String toString() {
+        return "DeviceRegistrationMessage<"+getAbout()+">{" + "twinType='" + twinType + '\'' + ", twinId='" + twinId
+            + '\'' + ", deregister=" + deregister + '}';
     }
-    
+
     public String toString(boolean asLocalResource)
     {
         String result = "";

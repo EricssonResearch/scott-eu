@@ -12,6 +12,7 @@
     <property name="hazelcast.discovery.enabled">true</property>
     <property name="hazelcast.shutdownhook.enabled">true</property>
     <property name="hazelcast.socket.bind.any">false</property>
+    <property name="hazelcast.logging.type">slf4j</property>
   </properties>
 
   <network>
