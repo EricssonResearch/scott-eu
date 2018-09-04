@@ -68,6 +68,7 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.trs.TwinTrsServerService;
 
 // Start of user code imports
 // End of user code
@@ -90,8 +91,6 @@ public class Application extends OslcWinkApplication {
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
 //        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
-        // FIXME Andrew@2018-05-27: does not support returning arrays or collections
-//        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
         RESOURCE_CLASSES.add(TwinsServiceProviderService1.class);
         RESOURCE_CLASSES.add(IndependentServiceProviderService1.class);
 
@@ -102,6 +101,9 @@ public class Application extends OslcWinkApplication {
         RESOURCE_CLASSES.add(ResourceShapeService.class);
 
         // Start of user code Custom Resource Classes
+        // FIXME Andrew@2018-05-27: does not support returning arrays or collections
+//        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
+        RESOURCE_CLASSES.add(TwinTrsServerService.class);
         // End of user code
 
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_ALLOWED_VALUES,           AllowedValues.class);

@@ -21,7 +21,7 @@ class TrsMqttGateway @Throws(MqttException::class) constructor(brokerURL: String
                                                                options: MqttConnectOptions,
                                                                callback: MqttCallbackExtended?,
                                                                private val registrationAgent: RegistrationAgent) {
-    private val mqttClient: MqttClient = MqttClient(brokerURL, clientID)
+    val mqttClient: MqttClient = MqttClient(brokerURL, clientID)
     val executorService: ExecutorService = Executors.newSingleThreadScheduledExecutor()
 
     val clientId: String

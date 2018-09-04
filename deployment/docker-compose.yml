@@ -108,7 +108,8 @@ services:
       - "9991:9999"
     depends_on:
       # - sandbox-whc
-      - sandbox-whc
+      # - sandbox-whc
+      - mosquitto
     deploy:
       # just '4' for the test
       replicas: 2

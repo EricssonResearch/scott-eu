@@ -27,6 +27,7 @@ package se.ericsson.cf.scott.sandbox.twin;
 import eu.scott.warehouse.lib.MqttClientBuilder;
 import eu.scott.warehouse.lib.MqttTopics;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 
@@ -65,6 +66,7 @@ import com.hazelcast.map.listener.EntryAddedListener;
 import java.net.URISyntaxException;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
+import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
 // End of user code
 
 // Start of user code pre_class_code
@@ -84,6 +86,7 @@ public class TwinManager {
     private static HazelcastInstance hc;
     private static IMap<String, TwinsServiceProviderInfo> twinProviderInfo;
     private static Random r;
+    private static ChangeHistories changeHistories;
     // End of user code
     
     
@@ -114,6 +117,10 @@ public class TwinManager {
 
     public static ServletContext getServletContext() {
         return servletContext;
+    }
+
+    public static ChangeHistories getChangeHistories() {
+        return changeHistories;
     }
 
     private static void registerTwins() {
@@ -210,9 +217,13 @@ public class TwinManager {
 
 //        initRos();
 
-//        initTrsClient();
+        initTrsClient();
+
+        changeHistories = new TwinChangeHistories(
+            mqttGateway.getMqttClient(), "trs-twin", TimeUnit.SECONDS.toMillis(5));
 
         initHazelcast();
+
 
 //        registerTwins();
 
