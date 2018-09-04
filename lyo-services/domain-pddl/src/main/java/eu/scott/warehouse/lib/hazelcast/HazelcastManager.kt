@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory
 
 object HazelcastFactory {
     val log = LoggerFactory.getLogger(javaClass)
-    fun instanceFromDefaultXmlConfig(name: String): HazelcastInstance {
+    @JvmOverloads
+    fun instanceFromDefaultXmlConfig(name: String = ""): HazelcastInstance {
         fixSwarmMemberAddressProvider()
 
         val config = ClasspathXmlConfig("hazelcast.xml")

@@ -49,6 +49,8 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
@@ -71,6 +73,7 @@ import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
  */
 public class ServiceProviderCatalogSingleton
 {
+    private final static Logger log = LoggerFactory.getLogger(ServiceProviderCatalogSingleton.class);
     private static final ServiceProviderCatalog serviceProviderCatalog;
     private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
 

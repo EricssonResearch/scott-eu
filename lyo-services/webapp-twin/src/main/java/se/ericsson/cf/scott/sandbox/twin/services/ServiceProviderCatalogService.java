@@ -52,6 +52,8 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.TwinConstants;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
@@ -63,6 +65,7 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton
 @Path("catalog")
 public class ServiceProviderCatalogService
 {
+    private final static Logger log = LoggerFactory.getLogger(ServiceProviderCatalogService.class);
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
     @Context private UriInfo uriInfo;
@@ -113,6 +116,7 @@ public class ServiceProviderCatalogService
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public ServiceProviderCatalog getServiceProviderCatalog()
     {
+        log.info("SPC request");
         ServiceProviderCatalog catalog =  ServiceProviderCatalogSingleton.getServiceProviderCatalog(httpServletRequest);
 
         if (catalog != null) {
@@ -128,7 +132,6 @@ public class ServiceProviderCatalogService
      *
      * Forwards to serviceprovidercatalog_html.jsp to build the html
      *
-     * @param serviceProviderId
      */
     @GET
     @Path("{someId}")

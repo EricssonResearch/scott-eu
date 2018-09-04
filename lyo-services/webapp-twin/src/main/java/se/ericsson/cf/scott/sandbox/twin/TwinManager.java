@@ -181,7 +181,7 @@ public class TwinManager {
 //            log.error("Failed to initialise the MQTT gateway", e);
 //        }
 
-        hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig("twin");
+        hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig();
 
         twinProviderInfo = hc.getMap("twin-providers");
 
@@ -231,7 +231,8 @@ public class TwinManager {
         TwinsServiceProviderInfo[] serviceProviderInfos = {};
         
         // Start of user code "TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(...)"
-        // TODO Implement code to return the set of ServiceProviders
+        // needed if the new node joins
+        serviceProviderInfos = twinProviderInfo.values().toArray(new TwinsServiceProviderInfo[0]);
         // End of user code
         return serviceProviderInfos;
     }
