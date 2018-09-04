@@ -86,7 +86,7 @@ public class TwinManager {
     private static HazelcastInstance hc;
     private static IMap<String, TwinsServiceProviderInfo> twinProviderInfo;
     private static Random r;
-    private static ChangeHistories changeHistories;
+    private static TwinChangeHistories changeHistories;
     // End of user code
     
     
@@ -138,15 +138,18 @@ public class TwinManager {
         TwinManager.store = store;
     }
 
-    private static void registerProvider(final TwinsServiceProviderInfo info) {
+    private static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
         try {
             log.info("Registering provider: {}", info);
             final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinServiceProvider(
                 info);
-            ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
+            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
                 null, robotSP, info.twinKind, info.twinId);
+            return serviceProvider;
         } catch (URISyntaxException | OslcCoreApplicationException e) {
             log.error("Cannot register the Robot SP", e);
+            // TODO Andrew@2018-09-04: strategy w/Leo
+            return null;
         }
     }
 
@@ -292,8 +295,12 @@ public class TwinManager {
         }
         spInfo.name = String.format(
             "%s Twin '%s'", WordUtils.capitalize(spInfo.twinKind), spInfo.twinId);
-        registerProvider(spInfo);
+        final ServiceProvider serviceProvider = registerProvider(spInfo);
         twinProviderInfo.put(spInfo.twinKind + '/' + spInfo.twinId, spInfo);
+        if (serviceProvider == null) {
+            throw new IllegalStateException();
+        }
+        changeHistories.addResource(serviceProvider);
 
         newResource = aResource;
         newResource.setTwinId(spInfo.twinId);
