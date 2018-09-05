@@ -2,7 +2,8 @@
 #from graphviz import Digraph
 import pydot # sudo pip install -I pydot==1.2.4
 import re
-from turtlebot2i_safety.msg import SceneGraph
+from turtlebot2i_safety.msg import SceneGraph,SafetyZone
+import std_msgs.msg
 import rospy # ROS library
 
 def init():
@@ -15,7 +16,15 @@ def init():
     global sg_pattern,vel_pattern
     sg_pattern = '"{' + name_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'}"' #Don't forget '\' for '|'
     vel_pattern= '"{turtlebot2i\|camera_rgb\|velocity: '+float_pattern+'}"'
+def pub_zone_size(speed):
+    zone_size_message=SafetyZone() 
+    zone_size_message.header = std_msgs.msg.Header()
+    zone_size_message.header.stamp = rospy.Time.now()    
 
+    zone_size_message.clear_zone_radius = 1.02#2*speed
+    zone_size_message.warning_zone_radius= 1.01#speed
+    zone_size_message.critical_zone_radius =1.03#0.5
+    pub.publish(zone_size_message)
 def parse_dot_file(graph):
     
     node_list = graph.get_nodes()
@@ -32,6 +41,7 @@ def parse_dot_file(graph):
                 
                 if matchObj:
                     print "Robot Speed: ",float(matchObj.group(1))
+                    pub_zone_size(float(matchObj.group(1)))
                 else:
                     print "No match"
 
@@ -68,7 +78,11 @@ if __name__ == "__main__":
     ## SUBSCRIBERS
     # Creates a subscriber object for each topic
 
-    rospy.Subscriber('/turtlebot2i_safety/SceneGraph', SceneGraph, topic_callback)
+    rospy.Subscriber('/turtlebot2i/safety/scene_graph', SceneGraph, topic_callback)
+    ## PUBLISHERS
+    #
+    pub = rospy.Publisher('/turtlebot2i/safety/safety_zone', SafetyZone, queue_size=10)
+    
     rospy.spin()
 
 

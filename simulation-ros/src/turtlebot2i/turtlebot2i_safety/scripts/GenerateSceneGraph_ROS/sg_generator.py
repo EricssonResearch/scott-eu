@@ -106,7 +106,7 @@ def sgGenerate():
     robot_list = extractor.robot_obj_list
     # Get objects that are in the sensor FOV
     for robot_num in range(1):
-        obj_list = extractor.get_objects_from_vision_sensor(robot_list[robot_num].vision_sensor)
+        obj_list = extractor.get_objects_from_vision_sensor(robot_list[robot_num].vision_sensor) #NOT ROBUST HERE
 
         if (obj_list != None):
             # Remove the robot itself from the list
@@ -184,7 +184,7 @@ if __name__ == '__main__':
     time_previous = time.time()
     try:
         print('Started getting scene objects from vision sensor FOV...')
-        pub = rospy.Publisher('/turtlebot2i_safety/SceneGraph', SceneGraph, queue_size=10)
+        pub = rospy.Publisher('/turtlebot2i/safety/scene_graph', SceneGraph, queue_size=10)
         rospy.init_node('sg_generator', anonymous=True)
         rate = rospy.Rate(10) # 10 Hz
         while not rospy.is_shutdown():          
