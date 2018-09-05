@@ -21,9 +21,9 @@ def pub_zone_size(speed):
     zone_size_message.header = std_msgs.msg.Header()
     zone_size_message.header.stamp = rospy.Time.now()    
 
-    zone_size_message.clear_zone_radius = 1.02#2*speed
-    zone_size_message.warning_zone_radius= 1.01#speed
-    zone_size_message.critical_zone_radius =1.03#0.5
+    zone_size_message.clear_zone_radius = 0.7+8*speed
+    zone_size_message.warning_zone_radius= 0.6+4*speed
+    zone_size_message.critical_zone_radius =0.5#0.5
     pub.publish(zone_size_message)
 def parse_dot_file(graph):
     

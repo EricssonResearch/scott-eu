@@ -6,17 +6,17 @@ function setCirlceSize_cb(msg)
     sim.scaleObject(zoneYellow_handle,msg.warning_zone_radius/previous_warning_zone_radius,msg.warning_zone_radius/previous_warning_zone_radius,0,0)
     sim.scaleObject(zoneGreen_handle,msg.clear_zone_radius/previous_clear_zone_radius,msg.clear_zone_radius/previous_clear_zone_radius,0,0)
     --sim.scaleObject(obj_handle,scale,scale,0,0) 
-    --printf("New circle size received (seq): %d",msg.header.seq)
+    printf("New circle size received (seq): %d",msg.header.seq)
     previous_clear_zone_radius = msg.clear_zone_radius
     previous_warning_zone_radius = msg.warning_zone_radius
     previous_critical_zone_radius = msg.critical_zone_radius
 end
 --- Adjust robot speed
 function setVels_scale_cb(msg)
-   velScale = msg.data--.scale  --a number: 0-2
+   --velScale = msg.data--.scale  --a number: 0-2
    --print("setVels_scale:")
-   --print(msg.data)
-   printf("setVels_scale:%d",msg.data)
+   print("This should not be triggered.")
+   --printf("setVels_scale:%d",msg.data)
 end
 
 function setVels_cb(msg)
