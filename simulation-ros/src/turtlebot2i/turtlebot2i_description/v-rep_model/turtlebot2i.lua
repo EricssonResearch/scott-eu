@@ -21,14 +21,14 @@ end
 
 function setVels_cb(msg)
    -- not sure if a scale factor must be applied
-   local linVel = msg.linear.x/2 -- in m/s
-   local rotVel = msg.angular.z*interWheelDistance/2 -- in rad/s
+   local linVel = msg.linear.x--/2 -- in m/s
+   local rotVel = msg.angular.z*interWheelDistance--/2 -- in rad/s
    
    --  Check if motor is enabled 
    if (motor_power == 1) then
        velocityRight = (linVel+rotVel)*velScale
        velocityLeft  = (linVel-rotVel)*velScale
-       --printf("linVel=%2.2f,rotVel=%2.2f",linVel,rotVel)--print(linVel)
+       printf("linVel=%2.2f,rotVel=%2.2f",linVel,rotVel)--print(linVel)
        if (velScale>1) then
            --print("speed up!")
        end

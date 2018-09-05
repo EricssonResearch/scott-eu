@@ -13,7 +13,9 @@
 
 
 # Result
- 1.5m/s speed. 
+ 1.5m/s speed. (But from the plot, this is not the correct value. )
+
+From the plot, the speed is about 0.10 m/s.
 
 Stopping time: 8s
 

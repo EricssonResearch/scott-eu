@@ -53,7 +53,7 @@ def get_overlap_bbox(i, j):
 
 def get_velocity(j):
     # vel_j = j.vel
-    vel_j = 4 * math.sqrt(j.vel[0]*j.vel[0] + j.vel[1]*j.vel[1] + j.vel[2]*j.vel[2])
+    vel_j =  math.sqrt(j.vel[0]*j.vel[0] + j.vel[1]*j.vel[1] + j.vel[2]*j.vel[2])
     return vel_j
 
 def get_direction(i, j):
