@@ -29,11 +29,14 @@ def parse_dot_file(graph):
             matchObj = re.match(pattern, node_info,re.M|re.I) #It Works
 
             if matchObj:
+               locals()[matchObj.group(1)]=dict{'Name':matchObj.group(1),'Distance':float(matchObj.group(2)),'Orientation':float(matchObj.group(3)),'Direction':float(matchObj.group(4)),'Speed':0}
                #print "matchObj.group() : ", matchObj.group()
-               print "*Obj Name : ", matchObj.group(1)
-               print "*Distance : ", float(matchObj.group(2))
-               print "*Orientation : ", float(matchObj.group(3))
-               print "*Direction: ",float(matchObj.group(4))
+               print type(locals()[matchObj.group(1)])
+               print "*Obj Name : ", locals()[matchObj.group(1)]['Name']#matchObj.group(1)
+               print "*Distance : ", locals()[matchObj.group(1)]['Distance']#float(matchObj.group(2))
+               print "*Orientation : ", locals()[matchObj.group(1)]['Orientation']#float(matchObj.group(3))
+               print "*Direction: ",locals()[matchObj.group(1)]['Direction']#float(matchObj.group(4))
+               #Speed is missed here. 
             else:
                print "No match!!"   
 
