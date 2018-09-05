@@ -13,8 +13,9 @@ def init():
     name_pattern  = "(\w+#?\d?)"
     float_pattern = "(-?\d+\.\d+)"
     global sg_pattern,vel_pattern
-    sg_pattern = '"{' + name_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'}"'
+    sg_pattern = '"{' + name_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'}"' #Don't forget '\' for '|'
     vel_pattern= '"{turtlebot2i\|camera_rgb\|velocity: '+float_pattern+'}"'
+
 def parse_dot_file(graph):
     
     node_list = graph.get_nodes()
