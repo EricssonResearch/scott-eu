@@ -48,7 +48,13 @@ class TrsMqttGateway @Throws(MqttException::class) constructor(brokerURL: String
     @Throws(MqttException::class)
     fun disconnect() {
         registrationAgent.unregister(this)
-        mqttClient.disconnect()
+        log.info("Registration agent is shut down")
+        if(mqttClient.isConnected) {
+            mqttClient.disconnect()
+            log.info("MQTT client disconnected")
+        } else {
+            log.debug("MQTT client was already disconnected")
+        }
     }
 
     @Throws(MqttException::class)

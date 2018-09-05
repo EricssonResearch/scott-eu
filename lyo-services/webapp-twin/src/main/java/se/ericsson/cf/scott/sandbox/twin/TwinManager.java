@@ -33,6 +33,7 @@ import javax.servlet.ServletContextEvent;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
@@ -180,10 +181,6 @@ public class TwinManager {
 
     private static void initTrsClient() {
         final String mqttBroker = AdaptorHelper.p("trs.mqtt.broker");
-        final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttBroker);
-        setTrsClientManager(trsClientManager);
-        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
-        // FIXME Andrew@2018-07-31: remove non-gateway based code
         try {
             mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
                                                  .withId(getTwinUUID())
@@ -193,6 +190,12 @@ public class TwinManager {
         } catch (MqttException e) {
             log.error("Failed to initialise the MQTT gateway", e);
         }
+        final MqttClient mqttClient = mqttGateway.getMqttClient();
+        final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttClient);
+        setTrsClientManager(trsClientManager);
+        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
+        // FIXME Andrew@2018-07-31: remove non-gateway based code
+
     }
 
     private static void initRos() {
@@ -240,11 +243,11 @@ public class TwinManager {
 
         log.info("Destroying the servlet");
         try {
+            getTrsClientManager().unregisterTwinAndDisconnect();
             mqttGateway.disconnect();
         } catch (MqttException e) {
             log.error("Failed to disconnect from the MQTT broker");
         }
-//        getTrsClientManager().unregisterTwinAndDisconnect();
 
         // End of user code
     }

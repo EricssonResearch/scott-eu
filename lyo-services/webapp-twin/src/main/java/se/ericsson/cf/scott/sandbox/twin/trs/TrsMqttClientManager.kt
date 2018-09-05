@@ -27,15 +27,22 @@ import javax.ws.rs.core.UriBuilder
  * @version $version-stub$
  * @since   FIXME
  */
-class TrsMqttClientManager(private val mqttBroker: String) {
+class TrsMqttClientManager() {
     private val log = LoggerFactory.getLogger(javaClass)
     private val executorService: ScheduledExecutorService = Executors.newScheduledThreadPool(32)
     private lateinit var mqttClient: MqttClient
     private lateinit var trsTopic: String
 
+    constructor(mqttClient: MqttClient) : this() {
+        this.mqttClient = mqttClient
+    }
+
+    constructor(mqttBroker: String): this() {
+        this.mqttClient = mqttBrokerConnect(mqttBroker, getTwinUUID())
+    }
+
     fun connectAndSubscribeToPlans() {
         try {
-            mqttClient = mqttBrokerConnect(mqttBroker, getTwinUUID())
             registerWithWHC(mqttClient)
         } catch (e: MqttException) {
             log.error("Failed to connect to the MQTT broker")
