@@ -1,10 +1,15 @@
 -- Adjust circle size
 function setCirlceSize_cb(msg)
-    --sim.scaleObject(zoneRed_handle,msg.critical_zone_radius,msg.ctical_zone_radius,0,0)  
-    --sim.scaleObject(zoneYellow_handle,msg.warning_zone_radius,msg.warning_zone_radius,0,0)
-    --sim.scaleObject(zoneGreen_handle,msg.clear_zone_radius,msg.critical_zone_radius,0,0)
-    sim.scaleObject(zoneGreen_handle,msg.data,msg.data,0,0) 
-    printf("New green circle size:%2.2f",msg.data)
+    --Since 'setObjectSize' doesn't work, we have to use 'Scale', so we need to record the previous scale.
+    --BUG: if the size is not changed (or just slightly changed), the following code will waste calculation power.
+    sim.scaleObject(zoneRed_handle,msg.critical_zone_radius/previous_critical_zone_radius,msg.critical_zone_radius/previous_critical_zone_radius,0,0)  
+    sim.scaleObject(zoneYellow_handle,msg.warning_zone_radius/previous_warning_zone_radius,msg.warning_zone_radius/previous_warning_zone_radius,0,0)
+    sim.scaleObject(zoneGreen_handle,msg.clear_zone_radius/previous_clear_zone_radius,msg.clear_zone_radius/previous_clear_zone_radius,0,0)
+    --sim.scaleObject(obj_handle,scale,scale,0,0) 
+    --printf("New circle size received (seq): %d",msg.header.seq)
+    previous_clear_zone_radius = msg.clear_zone_radius
+    previous_warning_zone_radius = msg.warning_zone_radius
+    previous_critical_zone_radius = msg.critical_zone_radius
 end
 --- Adjust robot speed
 function setVels_scale_cb(msg)
@@ -61,6 +66,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     motor_power = 1 --Enable motors by default
 ------------------------Add by Enyu Cao----------------------
     velScale = 1 -- Scale is 1 by default
+    previous_clear_zone_radius = 1.0
+    previous_warning_zone_radius = 1.0
+    previous_critical_zone_radius = 1.0
 --------------------END ------------------------------------
 
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')
@@ -119,9 +127,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
     subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
 ------------------------Add by Enyu Cao----------------------
-    subCmdVelScale = simROS.subscribe(robot_id..'/commands/vel_scale','std_msgs/Float64','setVels_scale_cb')
-    subCmdCircleSize = simROS.subscribe(robot_id..'/commands/circle_size2','std_msgs/Float64','setCirlceSize_cb') 
---subCmdCircleSize = simROS.subscribe(robot_id..'/commands/circle_size','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')  
+    --subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','std_msgs/Float64','setVels_scale_cb')
+    --subCmdCircleSize = simROS.subscribe(robot_id..'/safety/circle_size2','std_msgs/Float64','setCirlceSize_cb') 
+    subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')  
 --------------------END ------------------------------------
 end 
 
