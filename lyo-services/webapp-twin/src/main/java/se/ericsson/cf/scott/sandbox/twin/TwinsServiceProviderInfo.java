@@ -29,7 +29,6 @@ import java.io.Serializable;
 public class TwinsServiceProviderInfo implements Serializable {
     public String name;
     public String twinKind;
-;
     public String twinId;
 
     // Start of user code class_attributes

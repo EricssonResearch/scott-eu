@@ -52,13 +52,13 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.TwinConstants;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 
 // Start of user code imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 // End of user code
 
 @OslcService(OslcConstants.OSLC_CORE_DOMAIN)
@@ -116,7 +116,6 @@ public class ServiceProviderCatalogService
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public ServiceProviderCatalog getServiceProviderCatalog()
     {
-        log.info("SPC request");
         ServiceProviderCatalog catalog =  ServiceProviderCatalogSingleton.getServiceProviderCatalog(httpServletRequest);
 
         if (catalog != null) {

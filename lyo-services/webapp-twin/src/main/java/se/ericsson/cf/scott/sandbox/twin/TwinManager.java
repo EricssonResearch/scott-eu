@@ -24,20 +24,21 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
-import eu.scott.warehouse.lib.MqttClientBuilder;
-import eu.scott.warehouse.lib.MqttTopics;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
+import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
+import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
+import eu.scott.warehouse.domains.pddl.Step;
+
 
 // Start of user code imports
 import org.apache.commons.lang.WordUtils;
@@ -68,6 +69,13 @@ import java.net.URISyntaxException;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
+import eu.scott.warehouse.lib.MqttClientBuilder;
+import eu.scott.warehouse.lib.MqttTopics;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
 // End of user code
 
 // Start of user code pre_class_code
@@ -142,7 +150,7 @@ public class TwinManager {
     private static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
         try {
             log.info("Registering provider: {}", info);
-            final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinServiceProvider(
+            final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinsServiceProvider(
                 info);
             final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
                 null, robotSP, info.twinKind, info.twinId);
@@ -165,7 +173,7 @@ public class TwinManager {
                          event.getValue()
                 );
                 final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
-                if (!ServiceProviderCatalogSingleton.containsTwinServiceProvider(
+                if (!ServiceProviderCatalogSingleton.containsTwinsServiceProvider(
                     info.twinKind, info.twinId)) {
                     registerProvider(info);
                 } else {

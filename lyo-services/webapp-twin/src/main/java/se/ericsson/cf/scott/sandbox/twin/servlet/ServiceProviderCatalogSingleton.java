@@ -49,24 +49,23 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 
 // Start of user code imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 // End of user code
 
 /**
- * This is the OSLC service provider catalog for the Bugzilla adapter.  Service providers are
+ * This is the OSLC service provider catalog for the adapter.  Service providers are
  * not registered with the catalog until a request comes in to access either the catalog or a
  * specific service provider.   This request could be from an external consumer or an internal
  * request triggered by a consumer accessing a change request.
  *
- * The service providers are created and registered in the initServiceProvidersFromProducts()
- * method.  A list of accessible products is retrieved from Bugzilla and a ServiceProvider is
- * created and registered for each using the Bugzilla productId as the identifier.
+ * Information about the desired list of ServiceProviders is retrieved from the Manager.getServiceProviderInfos() method.
+ * A ServiceProvider is created and registered for each entry in that list.
  *
  * The registered service providers are refreshed on each catalog or service provider collection
  * request.
@@ -111,7 +110,8 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
-    public static URI constructTwinsServiceProviderURI(final String twinKind, final String twinId)
+
+    private static URI constructTwinsServiceProviderURI(final String twinKind, final String twinId)
     {
         String basePath = OSLC4JUtils.getServletURI();
         Map<String, Object> pathParameters = new HashMap<String, Object>();
@@ -126,16 +126,11 @@ public class ServiceProviderCatalogSingleton
 
     private static String twinsServiceProviderIdentifier(final String twinKind, final String twinId)
     {
-        String identifier = "/" + twinKind + "/" + twinId;
+        String identifier = "/" + twinKind+"/" + twinId;
         return identifier;
     }
 
-    private static String twinsServiceProviderIdentifier(final TwinsServiceProviderInfo info) {
-        return twinsServiceProviderIdentifier(info.twinKind, info.twinId);
-    }
-
-    public static ServiceProvider getTwinsServiceProvider(HttpServletRequest httpServletRequest,
-        final String twinKind, final String twinId)
+    public static ServiceProvider getTwinsServiceProvider(HttpServletRequest httpServletRequest, final String twinKind, final String twinId)
     {
         ServiceProvider serviceProvider;
 
@@ -160,33 +155,50 @@ public class ServiceProviderCatalogSingleton
         throw new WebApplicationException(Status.NOT_FOUND);
     }
 
-    public static ServiceProvider registerTwinsServiceProvider(
-        final HttpServletRequest httpServletRequest, final ServiceProvider serviceProvider,
-        final String twinKind, final String twinId) throws URISyntaxException
+    public static ServiceProvider createTwinsServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo) 
+            throws OslcCoreApplicationException, URISyntaxException {
+        String basePath = OSLC4JUtils.getServletURI();
+        String serviceProviderName = serviceProviderInfo.name;
+        String identifier = twinsServiceProviderIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
+        String title = String.format("Service Provider '%s'", serviceProviderName);
+        String description = String.format("%s (id: %s; kind: %s)",
+            "A Service Provider for Twins",
+            identifier,
+            "Twin SP");
+        Publisher publisher = null;
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("twinKind", serviceProviderInfo.twinKind);
+
+        parameterMap.put("twinId", serviceProviderInfo.twinId);
+        return TwinsServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
+    }
+
+    public static ServiceProvider registerTwinsServiceProvider(final HttpServletRequest httpServletRequest,
+                                                          final ServiceProvider serviceProvider,
+                                                          final String twinKind, final String twinId)
+                                                throws URISyntaxException
     {
         synchronized(serviceProviders)
         {
             final URI serviceProviderURI = constructTwinsServiceProviderURI(twinKind, twinId);
-            return registerTwinsServiceProviderNoSync(serviceProviderURI, serviceProvider, twinKind,
-                                                      twinId
-            );
+            return registerTwinsServiceProviderNoSync(serviceProviderURI,
+                                                 serviceProvider,
+                                                 twinKind, twinId);
         }
     }
 
-    public static boolean containsTwinServiceProvider(String kind, String id) {
+    public static boolean containsTwinsServiceProvider(String kind, String id) {
         final String serviceProviderIdentifier = twinsServiceProviderIdentifier(kind, id);
         return serviceProviders.containsKey(serviceProviderIdentifier);
     }
 
     /**
-     * Register a service provider with the OSLC catalog
-     *
-     * @param serviceProviderURI
-     * @param serviceProvider
-     * @return
-     */
+    * Register a service provider with the OSLC catalog
+    *
+    */
     private static ServiceProvider registerTwinsServiceProviderNoSync(final URI serviceProviderURI,
-        final ServiceProvider serviceProvider, final String twinKind, final String twinId)
+                                                                 final ServiceProvider serviceProvider
+                                                                 , final String twinKind, final String twinId)
     {
         final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
 
@@ -199,25 +211,20 @@ public class ServiceProviderCatalogSingleton
         serviceProviderCatalog.addServiceProvider(serviceProvider);
         serviceProviderCatalog.addDomains(serviceProviderDomains);
 
-        if (serviceProviders.containsKey(identifier)) {
-            throw new IllegalArgumentException(
-                String.format("The SP '%s' was already registered", identifier));
-        }
         serviceProviders.put(identifier, serviceProvider);
 
         return serviceProvider;
     }
 
     // This version is for self-registration and thus package-protected
-    static ServiceProvider registerTwinsServiceProvider(final ServiceProvider serviceProvider,
-        final String twinKind, final String twinId) throws URISyntaxException
+    static ServiceProvider registerTwinsServiceProvider(final ServiceProvider serviceProvider, final String twinKind, final String twinId)
+                                            throws URISyntaxException
     {
         synchronized(serviceProviders)
         {
             final URI serviceProviderURI = constructTwinsServiceProviderURI(twinKind, twinId);
 
-            return registerTwinsServiceProviderNoSync(
-                serviceProviderURI, serviceProvider, twinKind, twinId);
+            return registerTwinsServiceProviderNoSync(serviceProviderURI, serviceProvider, twinKind, twinId);
         }
     }
 
@@ -225,8 +232,8 @@ public class ServiceProviderCatalogSingleton
     {
         synchronized(serviceProviders)
         {
-            final ServiceProvider deregisteredServiceProvider = serviceProviders.remove(
-                twinsServiceProviderIdentifier(twinKind, twinId));
+            final ServiceProvider deregisteredServiceProvider =
+                serviceProviders.remove(twinsServiceProviderIdentifier(twinKind, twinId));
 
             if (deregisteredServiceProvider != null)
             {
@@ -292,28 +299,43 @@ public class ServiceProviderCatalogSingleton
         throw new WebApplicationException(Status.NOT_FOUND);
     }
 
+    public static ServiceProvider createIndependentServiceProvider(final IndependentServiceProviderInfo serviceProviderInfo) 
+            throws OslcCoreApplicationException, URISyntaxException {
+        String basePath = OSLC4JUtils.getServletURI();
+        String serviceProviderName = serviceProviderInfo.name;
+        String identifier = independentServiceProviderIdentifier(serviceProviderInfo.serviceProviderId);
+        String title = String.format("Service Provider '%s'", serviceProviderName);
+        String description = String.format("%s (id: %s; kind: %s)",
+            "Generic SP for SP-independent services",
+            identifier,
+            "Independent");
+        Publisher publisher = null;
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
+        return IndependentServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
+    }
+
     public static ServiceProvider registerIndependentServiceProvider(final HttpServletRequest httpServletRequest,
-        final ServiceProvider serviceProvider, final String serviceProviderId)
-        throws URISyntaxException
+                                                          final ServiceProvider serviceProvider,
+                                                          final String serviceProviderId)
+                                                throws URISyntaxException
     {
         synchronized(serviceProviders)
         {
             final URI serviceProviderURI = constructIndependentServiceProviderURI(serviceProviderId);
-            return registerIndependentServiceProviderNoSync(serviceProviderURI, serviceProvider,
-                                                            serviceProviderId
-            );
+            return registerIndependentServiceProviderNoSync(serviceProviderURI,
+                                                 serviceProvider,
+                                                 serviceProviderId);
         }
     }
 
     /**
-     * Register a service provider with the OSLC catalog
-     *
-     * @param serviceProviderURI
-     * @param serviceProvider
-     * @return
-     */
+    * Register a service provider with the OSLC catalog
+    *
+    */
     private static ServiceProvider registerIndependentServiceProviderNoSync(final URI serviceProviderURI,
-        final ServiceProvider serviceProvider, final String serviceProviderId)
+                                                                 final ServiceProvider serviceProvider
+                                                                 , final String serviceProviderId)
     {
         final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
 
@@ -333,7 +355,7 @@ public class ServiceProviderCatalogSingleton
 
     // This version is for self-registration and thus package-protected
     static ServiceProvider registerIndependentServiceProvider(final ServiceProvider serviceProvider, final String serviceProviderId)
-        throws URISyntaxException
+                                            throws URISyntaxException
     {
         synchronized(serviceProviders)
         {
@@ -389,82 +411,40 @@ public class ServiceProviderCatalogSingleton
     }
 
     /**
-     * Retrieve a list of products from Bugzilla and construct a service provider for each.
-     *
-     * Each product ID is added to the parameter map which will be used during service provider
-     * creation to create unique URI paths for each Bugzilla product.  See @Path definition at
-     * the top of BugzillaChangeRequestService.
-     *
-     * @param httpServletRequest
-     */
-    protected static void initServiceProviders(HttpServletRequest httpServletRequest) {
+    * Retrieve the set of initial ServiceProviders as returned from the Manager.getServiceProviderInfos() method, and construct a service provider for each.
+    *
+    * Each ServiceProvider ID is added to the parameter map which will be used during service provider
+    * creation to create unique URI paths for each ServiceProvider. 
+    *
+    */
+    protected static void initServiceProviders (HttpServletRequest httpServletRequest)
+    {
         try {
             // Start of user code initServiceProviders
             // End of user code
 
-            TwinsServiceProviderInfo[] twinsServiceProviderInfos = TwinManager.getTwinsServiceProviderInfos(
-                httpServletRequest);
+            TwinsServiceProviderInfo [] twinsServiceProviderInfos = TwinManager.getTwinsServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (TwinsServiceProviderInfo serviceProviderInfo : twinsServiceProviderInfos) {
-                if (!serviceProviders.containsKey(
-                    twinsServiceProviderIdentifier(serviceProviderInfo))) {
-                    final ServiceProvider aServiceProvider = createTwinServiceProvider(
-                        serviceProviderInfo);
-                    registerTwinsServiceProvider(
-                        aServiceProvider, serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
+                String identifier = twinsServiceProviderIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
+                if (!serviceProviders.containsKey(identifier)) {
+                    ServiceProvider aServiceProvider = createTwinsServiceProvider(serviceProviderInfo);
+                    registerTwinsServiceProvider(aServiceProvider, serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
                 }
             }
-
             IndependentServiceProviderInfo [] independentServiceProviderInfos = TwinManager.getIndependentServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (IndependentServiceProviderInfo serviceProviderInfo : independentServiceProviderInfos) {
                 String identifier = independentServiceProviderIdentifier(serviceProviderInfo.serviceProviderId);
                 if (!serviceProviders.containsKey(identifier)) {
-                    final ServiceProvider aServiceProvider = createIndependentServiceProvider(
-                        serviceProviderInfo, identifier);
-                    registerIndependentServiceProvider(aServiceProvider,
-                                                       serviceProviderInfo.serviceProviderId
-                    );
+                    ServiceProvider aServiceProvider = createIndependentServiceProvider(serviceProviderInfo);
+                    registerIndependentServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+            throw new WebApplicationException(e,Status.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    public static ServiceProvider createIndependentServiceProvider(
-        final IndependentServiceProviderInfo serviceProviderInfo, final String identifier)
-        throws OslcCoreApplicationException, URISyntaxException {
-        String serviceProviderName = serviceProviderInfo.name;
-        String title = String.format("Service Provider '%s'", serviceProviderName);
-        String description = String.format("%s (id: %s; kind: %s)",
-                                           "Generic SP for SP-independent services", identifier,
-                                           "Independent"
-        );
-        Publisher publisher = null;
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
-        return IndependentServiceProvidersFactory.createServiceProvider(
-            OSLC4JUtils.getServletURI(), title, description, publisher, parameterMap);
-    }
-
-    public static ServiceProvider createTwinServiceProvider(
-        final TwinsServiceProviderInfo serviceProviderInfo)
-        throws OslcCoreApplicationException, URISyntaxException {
-        String serviceProviderName = serviceProviderInfo.name;
-        String title = String.format("Service Provider '%s'", serviceProviderName);
-        String description = String.format("%s (id: %s; kind: %s)", "A Service Provider for Twins",
-                                           twinsServiceProviderIdentifier(serviceProviderInfo),
-                                           "Twin SP"
-        );
-        Publisher publisher = null;
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put("twinKind", serviceProviderInfo.twinKind);
-
-        parameterMap.put("twinId", serviceProviderInfo.twinId);
-        return TwinsServiceProvidersFactory.createServiceProvider(
-            OSLC4JUtils.getServletURI(), title, description, publisher, parameterMap);
     }
 }
 
