@@ -9,16 +9,21 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import warnings
-warnings.filterwarnings("ignore")  #a lot of warning messages, but why?
-
+warnings.filterwarnings("ignore")  #a lot of warning messages, 'ignroe' doesn't work with ROS
+'''About numpy.dtype size change warnings 
+https://github.com/ContinuumIO/anaconda-issues/issues/6678
+https://stackoverflow.com/questions/40845304/runtimewarning-numpy-dtype-size-changed-may-indicate-binary-incompatibility
+jjhelmus: The numpy.dtype size change warnings are coming from Cython and can be safely ignored, see numpy/numpy#432. Stack overflow has a good question of the topic.
+'''
 def init_regEx():    
     '''
     regular expression
     '''
     name_pattern  = "(\w+#?\d?)"
     float_pattern = "(-?\d+\.\d+)"
+    integer_pattern = "(\d+)"
     global sg_pattern,vel_pattern
-    sg_pattern = '"{' + name_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'}"' #Don't forget '\' for '|'
+    sg_pattern = '"{' + name_pattern+'\|type: '+integer_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'\|velocity: '+float_pattern+'}"' #Don't forget '\' for '|'
     vel_pattern= '"{turtlebot2i\|camera_rgb\|velocity: '+float_pattern+'}"'
 
 def init_var():
@@ -136,25 +141,27 @@ def parse_dot_file(graph):
 
             else:  #All leave nodes     
                 node_info= x.__get_attribute__("label")
-                #print type(node_info),node_info
+                
                 print "-------------------------------"
                 print x.get_name()
-              
+                print type(node_info),node_info
                 matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
 
                 if matchObj:
-                    locals()[matchObj.group(1)]={'Name':matchObj.group(1),'Distance':float(matchObj.group(2)),'Orientation':float(matchObj.group(3)),'Direction':float(matchObj.group(4)),'Speed':0}#IF you want a dict. format
+                    locals()[matchObj.group(1)]={'Name':matchObj.group(1),'Type':int(matchObj.group(2)),'Distance':float(matchObj.group(3)),'Orientation':float(matchObj.group(4)),'Direction':float(matchObj.group(5)),'Speed':float(matchObj.group(6))}#IF you want a dict. format
                     #print "matchObj.group() : ", matchObj.group()
                     #print type(locals()[matchObj.group(1)])
                     print "*Obj Name : ", locals()[matchObj.group(1)]['Name']#matchObj.group(1)
-                    print "*Distance : ", locals()[matchObj.group(1)]['Distance']#float(matchObj.group(2))
-                    print "*Orientation : ", locals()[matchObj.group(1)]['Orientation']#float(matchObj.group(3))
-                    print "*Direction: ",locals()[matchObj.group(1)]['Direction']#float(matchObj.group(4))
+                    print "*Obj Type : ", locals()[matchObj.group(1)]['Type']#matchObj.group(2)
+                    print "*Distance : ", locals()[matchObj.group(1)]['Distance']#float(matchObj.group(3))
+                    print "*Orientation : ", locals()[matchObj.group(1)]['Orientation']#float(matchObj.group(4))
+                    print "*Direction: ",locals()[matchObj.group(1)]['Direction']#float(matchObj.group(5))
+                    print "*Speed: ",locals()[matchObj.group(1)]['Speed']#float(matchObj.group(6))
                     #Speed is missed here. 
-                    object_distance     = float(matchObj.group(2))
-                    object_direction    = float(matchObj.group(4))
-                    object_speed        = 0.0
-                    object_orientation  = float(matchObj.group(3))
+                    object_distance     = float(matchObj.group(3))
+                    object_direction    = float(matchObj.group(5))
+                    object_speed        = float(matchObj.group(6))
+                    object_orientation  = float(matchObj.group(4))
                     object_risk =   cal_risk(object_distance,object_direction,object_speed,object_orientation) #+zone size(Global Variant) 
                     #print "Risk is =",object_risk
                 else:
@@ -167,6 +174,7 @@ def topic_callback(data):
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 """ Main program """
 if __name__ == "__main__":  
+
     init_regEx()
     init_var()
     init_RA()

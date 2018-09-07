@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from SceneObjectExtractorV5 import SceneObjectExtractor
+from SceneObjectExtractor import SceneObjectExtractor
 import time
 import vrep
 import re
@@ -50,7 +50,6 @@ def get_overlap_bbox(i, j):
     pol_overl = pol_i.overlaps(pol_j)
     return pol_overl
 
-
 def get_velocity(j):
     # vel_j = j.vel
     vel_j =  math.sqrt(j.vel[0]*j.vel[0] + j.vel[1]*j.vel[1] + j.vel[2]*j.vel[2])
@@ -61,7 +60,26 @@ def get_direction(i, j):
     dy = j.pose[1] - i.pose[1]
     dire_tan = math.atan2(dy, dx) - i.ori[2]
     dire_tan = dire_tan*180/pi
-    return dire_tan
+    if dire_tan > 180:
+        dire_tan = dire_tan - 360
+    elif dire_tan < -180:
+        dire_tan = dire_tan + 360
+    else:
+        pass
+    return dire_tan #BUG might hide here.
+
+def get_type(i):
+    if re.match(r'Bill*', i.name):
+        obj_type = 1 #human
+    elif re.match(r'turtlebot*', i.name): 
+        obj_type = 0 #non-human dynamic objects
+    else:
+        obj_type = 2 # static objects
+    return obj_type
+
+def get_orientation(i, j):
+    obj_ori = j.ori[2]*180/pi - i.ori[2]*180/pi
+    return obj_ori # BUG here
 
 def init():
     global extractor 
@@ -125,7 +143,8 @@ def sgGenerate():
         # print(i.bbox_min[0], i.bbox_min[1], i.bbox_max[0], i.bbox_max[1])
         # robot_label = '{%s|%s|velocity: %.2f|orientation: %.2f}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name, robot_velocity, robot[robot_num].ori[2]*180/pi)
         robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
-        
+        #robot_label = '{%s|type: 0|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity) #Label for itself?
+         
         # robot_label = '{%s|%s}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name)
         
         dot.node('robot', label=robot_label)
@@ -137,13 +156,15 @@ def sgGenerate():
             obj_direction = get_direction(robot_list[robot_num], obj)
             obj_distance = get_distance_bbox(robot_list[robot_num], obj)
             obj_velocity = get_velocity(obj)
+            obj_type = get_type(obj)
+            obj_orientation = get_orientation(robot_list[robot_num], obj)
             # print(obj.name, '%.3f' %obj_velocity)
             # node_label = '{%s|direction: %s|distance: %.2f}'%(obj.name, obj_direction, obj_distance)  
             # if obj.name == 'Bill#3':
             #     node_label = '{%s|velocity: 0.2|distance: %.2f}'%(obj.name, obj_distance)
             # else:
             #     node_label = '{%s|Static|distance: %.2f}'%(obj.name, obj_distance)
-            node_label = '{%s|distance: %.2f|orientation: %.2f|direction: %.2f}'%( obj.name, obj_distance, obj.ori[2]*180/pi - robot_list[robot_num].ori[2]*180/pi, obj_direction)
+            node_label = '{%s|type: %s|distance: %.2f|orientation: %.2f|direction: %.2f|velocity: %.2f}'%( obj.name, obj_type, obj_distance, obj_orientation, obj_direction, obj_velocity)
             # node_label = '{%s|velocity: %.2f|distance: %.2f}'%( obj.name, obj_velocity, obj_distance)
                 
             # node_label = '{%s|distance: %.2f}'%(obj.name, obj_distance)
