@@ -72,7 +72,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ServiceProviderCatalogSingleton
 {
-    private final static Logger log = LoggerFactory.getLogger(ServiceProviderCatalogSingleton.class);
     private static final ServiceProviderCatalog serviceProviderCatalog;
     private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
 
@@ -130,6 +129,10 @@ public class ServiceProviderCatalogSingleton
         return identifier;
     }
 
+    public static boolean containsTwinsServiceProvider(final String twinKind, final String twinId) {
+        return serviceProviders.containsKey(twinsServiceProviderIdentifier(twinKind, twinId));
+    }
+
     public static ServiceProvider getTwinsServiceProvider(HttpServletRequest httpServletRequest, final String twinKind, final String twinId)
     {
         ServiceProvider serviceProvider;
@@ -156,10 +159,14 @@ public class ServiceProviderCatalogSingleton
     }
 
     public static ServiceProvider createTwinsServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo) 
-            throws OslcCoreApplicationException, URISyntaxException {
+            throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
         String basePath = OSLC4JUtils.getServletURI();
-        String serviceProviderName = serviceProviderInfo.name;
         String identifier = twinsServiceProviderIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
+        if (containsTwinsServiceProvider(serviceProviderInfo.twinKind, serviceProviderInfo.twinId)) {
+            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", identifier));
+        }
+
+        String serviceProviderName = serviceProviderInfo.name;
         String title = String.format("Service Provider '%s'", serviceProviderName);
         String description = String.format("%s (id: %s; kind: %s)",
             "A Service Provider for Twins",
@@ -185,11 +192,6 @@ public class ServiceProviderCatalogSingleton
                                                  serviceProvider,
                                                  twinKind, twinId);
         }
-    }
-
-    public static boolean containsTwinsServiceProvider(String kind, String id) {
-        final String serviceProviderIdentifier = twinsServiceProviderIdentifier(kind, id);
-        return serviceProviders.containsKey(serviceProviderIdentifier);
     }
 
     /**
@@ -274,6 +276,10 @@ public class ServiceProviderCatalogSingleton
         return identifier;
     }
 
+    public static boolean containsIndependentServiceProvider(final String serviceProviderId) {
+        return serviceProviders.containsKey(independentServiceProviderIdentifier(serviceProviderId));
+    }
+
     public static ServiceProvider getIndependentServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
     {
         ServiceProvider serviceProvider;
@@ -300,10 +306,14 @@ public class ServiceProviderCatalogSingleton
     }
 
     public static ServiceProvider createIndependentServiceProvider(final IndependentServiceProviderInfo serviceProviderInfo) 
-            throws OslcCoreApplicationException, URISyntaxException {
+            throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
         String basePath = OSLC4JUtils.getServletURI();
-        String serviceProviderName = serviceProviderInfo.name;
         String identifier = independentServiceProviderIdentifier(serviceProviderInfo.serviceProviderId);
+        if (containsIndependentServiceProvider(serviceProviderInfo.serviceProviderId)) {
+            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", identifier));
+        }
+
+        String serviceProviderName = serviceProviderInfo.name;
         String title = String.format("Service Provider '%s'", serviceProviderName);
         String description = String.format("%s (id: %s; kind: %s)",
             "Generic SP for SP-independent services",
@@ -426,8 +436,7 @@ public class ServiceProviderCatalogSingleton
             TwinsServiceProviderInfo [] twinsServiceProviderInfos = TwinManager.getTwinsServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (TwinsServiceProviderInfo serviceProviderInfo : twinsServiceProviderInfos) {
-                String identifier = twinsServiceProviderIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
-                if (!serviceProviders.containsKey(identifier)) {
+                if (!containsTwinsServiceProvider(serviceProviderInfo.twinKind, serviceProviderInfo.twinId)) {
                     ServiceProvider aServiceProvider = createTwinsServiceProvider(serviceProviderInfo);
                     registerTwinsServiceProvider(aServiceProvider, serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
                 }
@@ -435,8 +444,7 @@ public class ServiceProviderCatalogSingleton
             IndependentServiceProviderInfo [] independentServiceProviderInfos = TwinManager.getIndependentServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (IndependentServiceProviderInfo serviceProviderInfo : independentServiceProviderInfos) {
-                String identifier = independentServiceProviderIdentifier(serviceProviderInfo.serviceProviderId);
-                if (!serviceProviders.containsKey(identifier)) {
+                if (!containsIndependentServiceProvider(serviceProviderInfo.serviceProviderId)) {
                     ServiceProvider aServiceProvider = createIndependentServiceProvider(serviceProviderInfo);
                     registerIndependentServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
                 }
