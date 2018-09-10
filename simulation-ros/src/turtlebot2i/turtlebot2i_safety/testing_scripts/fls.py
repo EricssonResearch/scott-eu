@@ -24,8 +24,9 @@ def init():
 
     
 
-
-    rule1 = ctrl.Rule(quality['poor'] | service['poor'], (tip1['low'] , tip2['low']))
+    global rule1
+    #rule1 = ctrl.Rule(quality['poor'] | service['poor'], (tip1['low'] , tip2['low']))
+    rule1 = ctrl.Rule(None, (tip1['low'] , tip2['low']))
     rule2 = ctrl.Rule(service['average'], tip1['medium'])
     rule3 = ctrl.Rule(service['good'] | quality['good'], tip1['high'])
     
@@ -33,15 +34,21 @@ def init():
     rule5 = ctrl.Rule(service['average'], tip2['medium'])
     rule6 = ctrl.Rule(service['good'] | quality['good'], tip2['high'])
     
-    #quality.automf(7) ##If I put new membership function here, I will get an error
+    quality.automf(7) ##If I put new membership function here, I will get an error
+    
+    rule1.antecedent(quality['poor']) ''' BUG HERE!'''   #rule1.antecedent.setter(quality['poor'])
+    #rule3.antecedent(quality['poor'])
+    #rule5.antecedent(quality['poor'])
+    #rule6.antecedent(quality['poor'])
     '''
     #I have to define the rules again
     '''
     global tipping_ctrl
-    tipping_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule5, rule6])
+    tipping_ctrl = ctrl.ControlSystem([rule2, rule3, rule5, rule6])#([rule1, rule2, rule3, rule5, rule6])
 
 def calc(quality,service):
-
+    
+    tipping_ctrl.addrule(rule1) #We can dynamic add rules.
     tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
 
     # Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
