@@ -1,50 +1,175 @@
+pushd soar_robot
+#source soar_robot_general.soar
+#source action_move_to_waypoint.soar
+#source perception_receive_tasks_plan.soar
+
+
+##source soar_robot_perception.soar
+##source soar_robot_initialize.soar
+
+popd
+
+
+#####################################
+# Propose operators
+# Multiple productions can fire at the same time. 
+# But only one operator can be selected at each time.
+#
+
+sp {soar-robot*propose*act
+    (state <s> ^io <io>)
+    (<io> ^input-link <input>)
+    (<input> ^odom <odomnode>)
+    (<odomnode> ^pose <pose1>)
+    (<pose1> ^pose <pose2>)
+    (<pose2> ^position <pos>)
+    (<pos> ^x <x> ^y <y>)
+-->
+  	(<s> ^operator <o>  +)
+	(<o> ^name act) 
+#    (write (crlf)|===> Proposing act | (crlf))
+#    (write (crlf) |===> robot x | <x> (crlf))
+#    (write (crlf) |===> robot y | <y> (crlf))
+}
+
+
+########################################################
+# Apply*move-to-waypoint:
+# If the move-to-waypoint operator is selected, then generate an output command to 
+# move-to-waypoint.
+#
+#sp {apply*move-to-waypoint
+#   (state <s> ^operator.name act)
+#    (state <s> ^io <io>)
+#    (<io> ^output-link <ol>)
+#    (<ol> ^moveto <mto>)
+#-->
+#    (<ol> ^moveto selected-waypoint)
+#    (<ol> ^moveto <mto> -)
+#    (write (crlf) |===> Apply Moving to waypoint | (crlf))
+#}
+
+########################################################
+# TODO Apply*find-waypoint:
+# 
+
+sp {apply*find-waypoint
+    (state <s> ^operator.name act)
+    (state <s> ^io.input-link.tasks.next_task.waypoint <wp>)
+    (<s> ^self.topological_map.waypoint <tmwp>)
+    (<tmwp> ^id <wp>)
+    (<tmwp> ^location.x <x>)
+    (<tmwp> ^location.y <y>)
+    (state <s> ^io.output-link <ol>)
+    (<ol> ^target-waypoint <mto>)
+    (<ol> ^target-x <tx>)
+    (<ol> ^target-y <ty>)
+
+-->
+    (write (crlf) |===> Next task waypoint: | <wp> (crlf))
+    (write (crlf) |===> target x | <x> (crlf))
+    (write (crlf) |===> target y | <y> (crlf))
+    (<ol> ^target-waypoint <mto> -)
+    (<ol> ^target-x <tx> -)
+    (<ol> ^target-y <ty> -)
+
+
+    (<ol> ^target-waypoint <wp>)
+    (<ol> ^target-x <x>)
+    (<ol> ^target-y <y>)
+
+
+#    (<ol> ^moveto.x x-val)
+#    (<ol> ^moveto.y y-val)
+#    (write (crlf) |===> Apply Moving to waypoint | (crlf))
+}
+#TODO ^topological_map.waypoint
+
+
 ######################################
 # Initialization
 #
-
-
-sp {toy-env*propose*initialize-toy-env
-	(state <s> 	^superstate nil 
-			-^name)
+sp {soar-robot*propose*initialize-soar-robot
+	(state <s> 	^superstate nil -^name)
 -->
-	(<s> ^operator <o> +) #leaving '=' generates a tie impasse
-	(<o> ^name initialize-toy-env)}
+	(<s> ^operator <o> +! ) 
+	(<o> ^name initialize-soar-robot)
+}
 
-sp {toy-env*apply*initialize-toy-env
-	(state <s> ^operator.name initialize-toy-env)
-	(state <s> ^io <io>)
-	(<io> ^output-link <output-link>)
+sp {soar-robot*apply*initialize-soar-robot
+	(state <s> ^operator.name initialize-soar-robot)
+    (<s> ^io.output-link <ol>)
 -->
 	(<s> ^name toy-env)
-    (write (crlf)|===: Toyenv initialized | (crlf))
-    (write (crlf)|===: Soar ffffff: | <s> | | <s> (crlf))
+    (<ol> ^result 731.0)
+    (<ol> ^target-waypoint empty)
+    (<ol> ^target-x empty)
+    (<ol> ^target-y empty)
+	(<s> 	^self <self_node>)
+	(<self_node> 	^id |mobilerobot_youBot|
+					^location <location_node>
+					^cargo <cargo1> <cargo2> <cargo3>
+					^battery <battery_node>
+					^topological_map <tm>)
+	(<location_node> ^x 1.5 ^y -1.8 ^z 1.0 ^theta 3.1415 ^waypoint |Waypoint_SH|)
+	(<cargo1> ^contains empty)
+	(<cargo2> ^contains empty)
+	(<cargo3> ^contains empty)
+	(<battery_node> ^level 100)
+		
+	(<tm> 	^waypoint <wp0> <wp1> <wp2> <wp3> <wp4> <wp5> <wp6> <wp7>)
+	(<wp0> 	^id |Waypoint_SH| 	## Added || so we can use # 
+			^status free
+			^resource_type shelf
+			^location <wp0_location>
+			^link <wp1> <wp2> <wp3> <wp4> <wp5> <wp6> <wp7>)
+			(<wp0_location> ^x 1.6130 ^y 0.96486 ^z 1.252 ^theta 90)
+	(<wp1> 	^id |Waypoint_SH#0|
+			^status free
+			^resource_type shelf
+			^location <wp1_location>
+			^link <wp0> <wp2> <wp3> <wp4> <wp5> <wp6> <wp7>)
+			(<wp1_location> ^x 1.6130 ^y -0.53515 ^z 1.252 ^theta 90)
+	(<wp2> 	^id |Waypoint_SH#1|
+			^status free
+			^resource_type shelf
+			^location <wp2_location>
+			^link <wp0> <wp1> <wp3> <wp4> <wp5> <wp6> <wp7>)
+			(<wp2_location> ^x 1.6130 ^y -2.0351 ^z 1.252 ^theta 90)
+	(<wp3> 	^id |Waypoint_RS|
+			^status free
+			^resource_type recharge_station
+			^location <wp3_location>
+			^link <wp0> <wp1> <wp2> <wp4> <wp5> <wp6> <wp7>)
+			(<wp3_location> ^x 0.875 ^y 2.4648 ^z 1.252 ^theta 0)
+	(<wp4> 	^id |Waypoint_RS#0|
+			^status free
+			^resource_type recharge_station
+			^location <wp4_location>
+			^link <wp0> <wp1> <wp2> <wp3> <wp5> <wp6> <wp7>)
+			(<wp4_location> ^x 0.875 ^y -3.5352 ^z 1.252 ^theta 0)
+	(<wp5> 	^id |Waypoint_CB|
+			^status free
+			^resource_type conveyor_belt
+			^location <wp5_location>
+			^link <wp0> <wp1> <wp2> <wp3> <wp4> <wp6> <wp7>)
+			(<wp5_location> ^x 3.2750 ^y -3.5352 ^z 1.252 ^theta -90)
+	(<wp6> 	^id |Waypoint_CB#0|
+			^status free
+			^resource_type conveyor_belt
+			^location <wp6_location>
+			^link <wp0> <wp1> <wp2> <wp3> <wp4> <wp5> <wp7>)
+			(<wp6_location> ^x 3.2750 ^y -5.3515 ^z 1.252 ^theta -90)
+	(<wp7> 	^id |Waypoint_CB#1|
+			^status free
+			^resource_type conveyor_belt
+			^location <wp7_location>
+			^link <wp0> <wp1> <wp2> <wp3> <wp4> <wp5> <wp6>)
+			(<wp7_location> ^x 3.2750 ^y -2.4648 ^z 1.252 ^theta -90)
+
+    (write (crlf) |===> Soar Robot initialized| (crlf))
 }
 
-######################################
-# Add inputs
-#
-sp {toy-env*propose*addup
-    	(state <s> ^io <io>)
-    	(<io> ^input-link <input-link>)    	
-	(<input-link> ^a <aval>)
-	(<input-link> ^b <bval>)
--->
-  	(<s> ^operator <o>  =)
-	(write (crlf)|===: Soar input: | <aval> | | <bval> (crlf))
-
-}
-
-sp {toy-env*apply*addup
-    	(state <s> ^io <io>)
-	(<io> ^output-link <onode>)
-#	(<onode> ^result <currentresult>)
-	(<io> ^input-link <inode>)    #(<io> ^input-link <input-link>) 	
-	(<inode> ^a <aval>)
-	(<inode> ^b <bval>)
--->
-	(<onode> ^result (+ <aval> <bval>))
-	(write (crlf)|===: Soar output: | (+ <aval> <bval>) (crlf))
-}
 
 ######################################
 # WAIT OPERATOR
@@ -60,7 +185,4 @@ sp {top-ps*propose*wait
 -->
    (<s> ^operator <o> + <)
    (<o> ^name wait)
-   (write (crlf)|===: Wait due to state-no-change | (crlf))
 }
-
-
