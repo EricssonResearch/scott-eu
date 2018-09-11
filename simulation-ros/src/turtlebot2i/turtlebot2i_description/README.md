@@ -14,47 +14,56 @@ This package provides the resources to visualize the Turtlebot2i robot and load 
 
 To run the description for **one ore two robots**, execute the following steps:
 
-1. Run the scene containing the turtlebot2i
+1.Run the scene containing the turtlebot2i
 
 ```
-./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v3.ttt
+./vrep.sh -s /path/to/turtlebot2i_description/v-rep_model/warehouse_turtlebot2i_v3.ttt
 ```
+For example,
+```
+./vrep.sh -s ~/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_turtlebot2i_v3.ttt
+```
+Otherwise, you can manually open and run the scene with GUI.
 
 **Note:** Plese check if there is a newer version of the warehouse_turtlebot2i_v3.ttt scene file.
 
-2. Execute the roslaunch associated to the robot description
+2.Execute the roslaunch associated to the robot description
 
-* For a single robot:
+*For a single robot:
+
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_single_robot.launch
+roslaunch turtlebot2i_description turtlebot2i_description_single.launch
 ```
+**Note:** Enyu checked and corrected the launch file name.
+
+**Note:** Enyu: it is hard to find the functionality of ROS launch, because this launch file just initializes the robot. 
 
 * For multiple robots:
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_multiple_robots.launch
+roslaunch turtlebot2i_description turtlebot2i_description_multiple.launch
 ```
 
 * If want to visualize the models and the topic outputs in the rviz:
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_single_robot_rviz.launch
+roslaunch turtlebot2i_description turtlebot2i_description_single_rviz.launch
 ```
 or
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_multiple_robots_rviz.launch
+roslaunch turtlebot2i_description turtlebot2i_description_multiple_rviz.launch
 ```
 
 **Note:** The turtlebot2i_description.launch is the base script used by other scripts to launch the kobuki and the phanthon pincher arm models.
 
 # 3. Loading the Turtlebot2i model and TF using real robots 
 
-To run the description for **one ore two robots**, execute the following steps:
+To run the description for **one or two robots**, execute the following steps:
 
 1. Execute the ros launch associated to the robot description
 
 ```
 roslaunch turtlebot2i_description turtlebot2i_description_multiple_robots.launch
 ```
-
+**Note:** Enyu didn't check this section because we are currently working on simulated robots. 
 
 # 4. Customizing the launch script when using more than two robots
 
