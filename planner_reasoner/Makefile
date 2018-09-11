@@ -6,7 +6,7 @@ build:
 		--build-arg PUBLIC_PORT=3020 \
 		--build-arg PREFIX_PATH=/ \
 		--build-arg EXPOSED_PREFIXES=* \
-		-t ${CI_REGISTRY_IMAGE}/scott-planner-reasoner .
+		-t scott/planner-reasoner .
 
 push:
-	docker push ${CI_REGISTRY_IMAGE}/scott-planner-reasoner
+	docker push scott/planner-reasoner

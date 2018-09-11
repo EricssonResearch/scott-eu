@@ -1,4 +1,4 @@
-FROM berezovskyi/scott-maven-base:latest
+FROM scott/maven-base:latest
 
 WORKDIR /build/app
 

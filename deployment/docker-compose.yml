@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   planner_reasoner:
-    image: ${CI_REGISTRY_IMAGE}/scott-planner-reasoner
+    image: scott/planner-reasoner
     environment:
       - PORT=3020 # internal port
     ports:
@@ -21,7 +21,7 @@ services:
   # rename to use underscores in line with the Docker convention
   # though hostnames are not supposed to have underscores
   sandbox-whc:
-    image: ${CI_REGISTRY_IMAGE}/scott-webapp-whc
+    image: scott/webapp-whc
     environment:
       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2"
     networks:
@@ -66,7 +66,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   sandbox-executor:
-    image: ${CI_REGISTRY_IMAGE}/scott-webapp-executor
+    image: scott/webapp-executor
     environment:
       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-executor -DhazelcastPeerPort=5701"
       # JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=y -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-executor -DhazelcastPeerPort=5701"
@@ -97,7 +97,7 @@ services:
       restart_policy:
         condition: on-failure
   sandbox-twin:
-    image: ${CI_REGISTRY_IMAGE}/scott-webapp-twin
+    image: scott/webapp-twin
     environment:
       TWINS: "2"
       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
@@ -130,7 +130,7 @@ services:
   # WIP, does not do the bidirectional
   # robot-emulator:
   #   # 'ContainerSpec: image reference must be provided'
-  #   image: ${CI_REGISTRY_IMAGE}/scott-robot-emulator
+  #   image: scott/robot-emulator
   #   networks:
   #     - overlay
   #   deploy:
