@@ -22,7 +22,7 @@ end
 function setVels_cb(msg)
    -- not sure if a scale factor must be applied
    local linVel = msg.linear.x-- in m/s
-   local rotVel = msg.angular.z*interWheelDistanc -- in rad/s
+   local rotVel = msg.angular.z*interWheelDistance -- in rad/s
    
    --  Check if motor is enabled 
    if (motor_power == 1) then
