@@ -64,7 +64,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     linVel = 0
     rotVel = 0
     motor_power = 1 --Enable motors by default
-------------------------Add by Enyu Cao----------------------
+    ---------------------------------------------
     velScale = 1 -- Scale is 1 by default
     previous_clear_zone_radius = 1.0
     previous_warning_zone_radius = 1.0
@@ -86,15 +86,12 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     dock_station_handle = sim.getObjectHandle('dockstation')
 
     dock_station_ir_emitter_collection_handle = sim.getCollectionHandle('dock_station_ir_emitters')
-------------------------Add by Enyu Cao----------------------
--- Adjust circle size
+    ----------------------------------------------
+    -- Adjust circle size
     zoneRed_handle = sim.getObjectHandle('critical_zone')
     zoneYellow_handle = sim.getObjectHandle('warning_zone')
     zoneGreen_handle = sim.getObjectHandle('clear_zone')
-    --sim.scaleObject (zoneRed_handle,0.5,0.5,0,0)     --Testing is OK
-    --sim.scaleObject (zoneYellow_handle,0.5,0.5,0,0)  --Testing is OK
-    --sim.scaleObject (zoneGreen_handle,0.5,0.5,0,0)   --Testing is OK
- --------------------END ------------------------------------
+    --------------------END ------------------------------------
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
     originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)
@@ -126,10 +123,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     -- Commands
     subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
     subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
-------------------------Add by Enyu Cao----------------------
     --subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','std_msgs/Float64','setVels_scale_cb')
     subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')  
---------------------END ------------------------------------
+    --------------------END ------------------------------------
 end 
 
 if (sim_call_type == sim.childscriptcall_sensing) then 
