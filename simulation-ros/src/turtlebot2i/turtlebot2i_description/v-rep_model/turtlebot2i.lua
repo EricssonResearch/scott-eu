@@ -64,12 +64,11 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     linVel = 0
     rotVel = 0
     motor_power = 1 --Enable motors by default
-    ---------------------------------------------
     velScale = 1 -- Scale is 1 by default
     previous_clear_zone_radius = 1.0
     previous_warning_zone_radius = 1.0
     previous_critical_zone_radius = 1.0
---------------------END ------------------------------------
+
 
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')
     t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
@@ -91,7 +90,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     zoneRed_handle = sim.getObjectHandle('critical_zone')
     zoneYellow_handle = sim.getObjectHandle('warning_zone')
     zoneGreen_handle = sim.getObjectHandle('clear_zone')
-    --------------------END ------------------------------------
+
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
     originMatrix = sim.getObjectMatrix(mainBodyHandle,-1)
