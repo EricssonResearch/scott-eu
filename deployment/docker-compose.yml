@@ -101,7 +101,7 @@ services:
     environment:
       TWINS: "2"
       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-     - ROS_MASTER_URI=http://rosmaster:11311
+     ROS_MASTER_URI: "http://rosmaster:11311"
     networks:
       - overlay
     sysctls:
