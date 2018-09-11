@@ -101,15 +101,21 @@ services:
     environment:
       TWINS: "2"
       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+     - ROS_MASTER_URI=http://rosmaster:11311
     networks:
       - overlay
+    sysctls:
+    # hack https://answers.ros.org/question/245273/limit-the-ephemeral-port-range-that-ros-uses-to-make-xmlrpc-socket-connection/
+     - net.ipv4.ip_local_port_range=40000 40100
     ports:
-      - "8081:8080"
-      - "9991:9999"
+     - "8081:8080" # Jetty
+     - "9991:9999" # remote debugger
+     - "40000-40100:40000-40100" # ROS ephemeral ports
     depends_on:
       # - sandbox-whc
       - warehouse-fuseki
       - mosquitto
+      - rosmaster
     deploy:
       # just '4' for the test
       replicas: 2
@@ -178,5 +184,10 @@ services:
       resources:
         limits:
           memory: 128m
+  rosmaster:
+    image: ros
+    command: roscore -p 11311
+    ports:
+     - "11311:11311"
 networks:
   overlay:

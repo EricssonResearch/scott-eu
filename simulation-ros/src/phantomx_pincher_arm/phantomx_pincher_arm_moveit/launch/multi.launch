@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+-  <group ns="robot1">
+      <include file="$(find phantomx_pincher_arm_moveit)/launch/robot_simu.launch">
+	<arg name="joint1" value="PhantomXPincher_joint1" />
+	<arg name="joint2" value="PhantomXPincher_joint2" />
+	<arg name="joint3" value="PhantomXPincher_joint3" />
+	<arg name="joint4" value="PhantomXPincher_joint4" />
+	<arg name="gripper1" value="PhantomXPincher_gripperCenter_joint" />
+	<arg name="gripper2" value="PhantomXPincher_gripperClose_joint" />
+	<arg name="ns" value="robot1" />
+	<arg name="port" value="20001"/>
+      </include>
+  </group>
+  <group ns="robot2">
+      <include file="$(find phantomx_pincher_arm_moveit)/launch/robot_simu.launch">
+	<arg name="joint1" value="PhantomXPincher_joint1_1" />
+	<arg name="joint2" value="PhantomXPincher_joint2_1" />
+	<arg name="joint3" value="PhantomXPincher_joint3_1" />
+	<arg name="joint4" value="PhantomXPincher_joint4_1" />
+	<arg name="gripper1" value="PhantomXPincher_gripperCenter_joint_1" />
+	<arg name="gripper2" value="PhantomXPincher_gripperClose_joint_1" />
+	<arg name="ns" value="robot2" />
+      </include>
+  </group> 
+</launch>
+  
+
+

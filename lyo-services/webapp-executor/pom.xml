@@ -86,7 +86,7 @@
       <scope>test</scope>
     </dependency>
 
-    <!--
+    <!-- ROS JAVA Dependencies -->
     <dependency>
       <groupId>org.ros.rosjava_messages</groupId>
       <artifactId>turtlebot2i_warehouse</artifactId>
@@ -94,8 +94,23 @@
     </dependency>
     <dependency>
       <groupId>org.ros.rosjava_messages</groupId>
+      <artifactId>kobuki_msgs</artifactId>
+      <version>0.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ros.rosjava_messages</groupId>
       <artifactId>geometry_msgs</artifactId>
       <version>1.12.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ros.rosjava_messages</groupId>
+      <artifactId>std_msgs</artifactId>
+      <version>0.5.10</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ros.rosjava_messages</groupId>
+      <artifactId>nav_msgs</artifactId>
+      <version>1.12.6</version>
     </dependency>
     <dependency>
       <groupId>org.ros.rosjava_bootstrap</groupId>
@@ -107,7 +122,6 @@
       <artifactId>rosjava</artifactId>
       <version>0.3.5</version>
     </dependency>
--->
 
 
     <!--<dependency>

@@ -209,7 +209,6 @@ public class TwinManager {
     private static void initRos() {
                 RosManager.runRosNode();
         new Thread(RosManager::runRosNode).run();
-        RosManager.execMainNode();
     }
 
     private static void initStore() {

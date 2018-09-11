@@ -1,5 +1,13 @@
 package se.ericsson.cf.scott.sandbox.twin.ros;
 
+import java.net.URI;
+import org.jetbrains.annotations.NotNull;
+import org.ros.node.DefaultNodeMainExecutor;
+import org.ros.node.NodeConfiguration;
+import org.ros.node.NodeMainExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * TBD
  *
@@ -7,25 +15,25 @@ package se.ericsson.cf.scott.sandbox.twin.ros;
  * @since FIXME
  */
 public class RosManager {
+    private final static Logger log = LoggerFactory.getLogger(RosManager.class);
+
     public static void runRosNode() {
-//        log.warn("ROS node code is commented out");
-//        try {
-//            final NodeMainExecutor executor = DefaultNodeMainExecutor.newDefault();
-//            final URI masterUri = URI.create("http://localhost:11311");
+        log.warn("ROS node code is commented out");
+        try {
+            final NodeMainExecutor executor = DefaultNodeMainExecutor.newDefault();
+            final URI masterUri = getMasterUri();
+            log.warn("ROS functionality is off");
 //            executor.execute(new RobotClientNode(), NodeConfiguration.newPublic("localhost",
 //                                                                                masterUri));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void execMainNode() {
-//        final NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-//        final TwinNode twinNode = new TwinNode();
-//        final RobotClientNode clientNode = new RobotClientNode();
-//
-//        //TODO make at least one node public
-//        nodeMainExecutor.execute(twinNode, NodeConfiguration.newPrivate());
-//        nodeMainExecutor.execute(clientNode, NodeConfi  guration.newPrivate());
+    @NotNull
+    private static URI getMasterUri() {
+//        return URI.create("http://localhost:11311");
+        final String rosMasterUri = System.getenv("ROS_MASTER_URI");
+        return URI.create(rosMasterUri);
     }
 }
