@@ -2,7 +2,7 @@
 
 build:
 	(cd planner_reasoner 	&&	make build)
-	(cd lyo-services 	&&	make rebuild-lyo)
+	(cd lyo-services 	&&	make rebuild-base)
 	(cd lyo-services 	&&	make build)
 	(cd robot-emulator 	&&	make build)
 
