@@ -29,6 +29,7 @@ The main reason for choosing V-REP is the presence of many ready to use models, 
 
 **Note:** As V-REP does not have a native support to ROS, the [ROS Interface](http://www.coppeliarobotics.com/helpFiles/en/rosInterf.htm) plugin should be installed. 
 **Note 2:** Most of the lua scripts of the scenario are stored outside V-REP. This means that the lua scripts contained in the scenario just load these files (they are inside *vrep* folder). This was necessary for version control of the scripts and better reusability.
+**Note 3:** The V-REP will innitalize components in the A-Z order, so there will be a few error message in the V-REP console. But the initialization will loop until it succeed.
 
 # 4. ROS
 
@@ -46,7 +47,7 @@ Download the latest version of **V-REP Pro** or **V-REP Pro Edu**. The **V-REP P
 
 In the next section you will install ROS and V-REP ROS Interface.
 
-Set the following **VREP_ROOT** environment variables by running the following lines in the terminal (replace the <path_to_vrep> by the full path to the V-REP folder):
+Set the following **VREP_ROOT** environment variables by running the following lines in the terminal (replace the <path_to_vrep> by the full path to the V-REP folder), and several lines will be added to **~/.bashrc**:
 
 ```
 echo "export VREP_ROOT_DIR=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux" >> ~/.bashrc
@@ -54,7 +55,13 @@ echo "export VREP_ROOT=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux" >> ~/.bashrc
 source ~/.bashrc
 ```
 
+You can choose to add these environment variables manually. 
 
+For example, if you have V-REP under Home, add following two lines to **~/.bashrc** using vim or any other editor you like:
+```
+export VREP_ROOT_DIR=~/V-REP_PRO_EDU_V3_5_0_Linux
+export VREP_ROOT=~/V-REP_PRO_EDU_V3_5_0_Linux
+```
 ## 2. Install ROS Kinect.
 Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
@@ -64,8 +71,7 @@ Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
 1. Install Turttlebot2i packages from ROS
   ```
-  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros
-  ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
+  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
   ```
 
 2. Create the Turtlebot2i workspace by clonning the SCOTT repository
@@ -79,7 +85,9 @@ $ git checkout simulation-ros
 In the future it might not be necessary
 
 3. Setup the catkin workspace and set ROS environment variables
-  Follow these instructions: http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+
+  Read these instructions, but use the existing workspace (/scott-eu/simulation-ros): 
+http://wiki.ros.org/catkin/Tutorials/create_a_workspace
 
 * Be careful to always select the "kinetic" version of ROS
 
@@ -104,11 +112,26 @@ Go to /scott-eu/simulation-ros and run:
 
   ```
 
+Now you should have 10 packages built suceessfully.
+
 6. Install V-REP ROS Interface
-Add to .bashrc :
+
+Add this line to ~/.bashrc:
 ```
 $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simulation-ros
 ```
+
+For example,
+```
+$ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/scott-eu/simulation-ros
+```
+
+And you can check the ROS_PACKAGE_PATH in the terminal:
+
+```
+$ echo $ROS_PACKAGE_PATH
+```
+Don't forget to source it manually if you don't want to restart the terminal. Check whether you can find the ROS package **vrep_ros_interface** and now install it:
 
 ```
   $ source ~/.bashrc
@@ -131,14 +154,17 @@ $ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simul
     - All the scenes are stored in the *turtlebot2i_description/v-rep_model* folder of ROS workspace. V-REP scenes have .ttt extension.
     - Try opening the "warehouse_turtlebot2i.ttt" file from V-REP (File -> Open Scene...).
     - Press play button to start the simulation.
-
+    
+    **Note:** Without a running roscore, Vrep cannot communicate with other components. In case of that, check the terminal and make sure ROS plugin is loaded successfully.
+   
 3. Run ROS programs
     All the ROS programs are stored in the ROS package. The instructions to run the programs can be found in the README.md files located in each package.
     Example to run the keyboard teleoperation:
     ```
     $ roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
     ```
-
+    If everything is configured correctly, the terminal should show "KeyOp: connected". Otherwise, check whether roscore is running, whether V-rep scene is running and whether V-rep loaded RosInterface successfully.
+    
 ## 4. Using Python VREP Remote API (Optional)
 
 To use the python remote API provided by VREP, some adjustments are necessary:
@@ -170,7 +196,7 @@ To use the python remote API provided by VREP, some adjustments are necessary:
 ```
 
 
-2. Launch a rosfile that will open moveit and rviz
+2. Launch a rosfile that will bringout moveit and rviz to visualize and control the arm
 
 ```
 roslaunch turtlebot2i_description turtlebot2i_description_single_moveit.launch

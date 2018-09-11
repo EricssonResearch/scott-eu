@@ -51,6 +51,9 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    SafetyZone.msg
+   VelocityScale.msg
+   SceneGraph.msg
+   SceneGraphSingle.msg
  )
 
 ## Generate services in the 'srv' folder
