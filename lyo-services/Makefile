@@ -19,4 +19,6 @@ push:
 	docker push scott/webapp-executor
 
 rebuild-lyo:
+	mkdir -p m2_temp
+	docker run -it --rm -v "$$PWD":/src -v "$$PWD/m2_temp":/root/.m2/repository -w /src maven:3-jdk-8 mvn clean package -f lyo-webapp-parent/pom.xml
 	docker build . -f lyo.Dockerfile   -t scott/scott-lyo-deps
