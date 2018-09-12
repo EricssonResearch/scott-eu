@@ -1,0 +1,90 @@
+####################################################################
+## Updates perception of self robot about the world
+##
+
+
+####################################################################
+## Updates Localization of self robot in working memory.
+## TODO: Evaluate if necessary, sisnce we already have this information available at the input link.
+####################################################################
+sp {warehouse-robot*propose*update-localization
+(state <s> ^io <io>)
+(<s> ^self <self_node>)
+(<self_node> 	^location <location_node>)
+(<io> ^input-link <input-link>)
+(<io> ^output-link <output-link>)
+(<input-link> ^location <loc>)
+(<loc> ^x <xpos>)
+(<loc> ^y <ypos>)
+(<loc> ^z <zpos>)
+(<loc> ^theta <thetapos>)
+-->
+(<location_node> ^x <xpos> ^y <ypos> ^z <zpos> ^theta <thetapos>)# ^waypoint |Waypoint_SH|)
+(write (crlf) |Localization updated: x(|<xpos> |),  y(|<ypos> |),  z(|<zpos> |), theta(|<thetapos> |) |  (crlf))
+}
+
+#sp{warehouse-robot*propose*move-to-waypoint
+#(state <s> ^io <io>)
+#(<s> ^self <self_node>)
+#(<self_node> 	^location <location_node>)
+#(<location_node> ^x <xpos> )
+#-->
+#(write (crlf) |Proposing move to waypoint|)
+#(<output-link> ^move testando)
+#}
+
+
+####################################################################
+##  This rule updates the distances between the robot and all waypoints in the environment.
+## Here we use the euclidean distance between robot's x.y position and waypoints' x,y positions.
+####################################################################
+sp {warehouse-robot*apply*update-waypoint-distances
+    (state <s> ^io <io>)
+    (<s> ^self <self_node>)
+    (<self_node> 	^location <location_node>)
+    (<io> ^input-link <input-link>)
+    (<io> ^output-link <output-link>)
+    (<input-link> ^location <loc>)
+    (<loc> ^x <xpos>)
+    (<loc> ^y <ypos>)
+    (<loc> ^z <zpos>)
+    (<loc> ^theta <thetapos>)
+    (<self_node> ^topological_map <tm>)
+    (<tm> ^waypoint <wp>)
+   # (<wp> ^id {= <nodeid> |Waypoint_CB#0| })
+   # (<selectedwd> ^id <nodeid>)
+    (<wp> ^location <wploc>)
+    (<wploc> ^x <wpx>)
+    (<wploc> ^y <wpy>)
+-->
+    (<wp> ^distance  (sqrt (+ (* (- <wpx>  <xpos>) (- <wpx>  <xpos>))  (* (- <wpy>  <ypos>) (- <wpy>  <ypos>)) ) ) )
+#   (write (crlf)|WMEs under | <wp> | at depth 1:|  (crlf) (cmd print --depth 1 <wp>) (crlf) )
+}
+
+
+
+
+#sp {propose*move
+  # (state <s> ^io.input-link.blocked.forward no)
+#-->
+ #  (<s> ^operator <o> + =)
+  # (<o> ^name move
+ #       ^actions.move.direction forward)}
+
+
+
+
+#compute-range | This function takes four real-valued arguments of the form
+#(x1; y1; x2; y2), and returns the distance from (x1; y1) to (x2; y2), rounded to the nearest
+#integer.
+#For example:
+#sp {
+#...
+#-->
+#(<s> ^distance (compute-range 0 0.5 32.5 28)) }
+#After this rule fires, working memory would look like:
+#(S1 ^distance 42).
+
+
+
+

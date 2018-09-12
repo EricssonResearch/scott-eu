@@ -1,0 +1,67 @@
+############################################
+### Sends actions to output link
+############################################
+
+
+#sp {wander*propose*move
+#(state <s> ^superstate nil
+#^io.input-link.location.x <xpos>)
+#-->
+#(<s> ^operator <o> + =)
+#(<o> ^name move
+#^actions.move.direction forward)
+#(write (crlf)|GGG WMEs under | <s> | at depth 1:|  (crlf) (cmd print --depth 1 <s>) (crlf) )
+#}
+
+
+sp {warehouse-robot*propose*move
+(state <s> ^type state)
+-->
+(<s> ^operator <o> + =)
+(<o> ^name move
+^actions.move.target |Waypoint_CB#0|)
+#(write (crlf)| WMEs under | <s> | at depth 3:|  (crlf) (cmd print --depth 3 <s>) (crlf) )
+}
+
+
+#sp {warehouse-robot*propose*remove-move
+#(state <s> ^io.output-link <out>)
+#(<out> ^move.target <wp>)
+#(<out> ^move <mv>)
+#-->
+#( <mv> ^status complete)
+#(write (crlf)|WMEs under | <out> | at depth 5:|  (crlf) (cmd print --depth 5 <out>) (crlf) )
+#}
+
+
+
+#sp {propose*move-to-waypoint
+#(state <s> ^type state)
+#-->
+#(<s> ^operator <o> + =)
+#(<o> ^name move-to-waypoint)
+#(<o> ^actions move-to-waypoint)
+#(<act> ^<att> <value>)
+#(<value> ^<att2> <value2>)
+#}
+
+
+#sp {apply*move-to-waypoint
+#(state <s> ^operator <oa>) 
+#(<s> ^io <io>)
+#(<io> ^output-link <out>)
+#(<oa> ^name <aname>)
+#-->
+#(write  |###########|<aname>)
+#(<out> ^move <move>)
+#(<move> ^waypoint  |Waypoint_RS#0|)
+#}
+
+
+#sp {apply*move*remove-move
+ #  (state <s> ^io.output-link <ol>
+#              ^operator.name move)
+#   (<ol> ^move <direction>)
+#   (<direction> ^status complete)#
+#-->
+#   (<ol> ^move <direction> -)}

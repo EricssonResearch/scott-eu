@@ -1,0 +1,34 @@
+{
+    "plan":[
+	{
+	    "operation":"move",
+	    "id":"000",
+	    "par": {
+		"target":"Waypoint_SH"
+	    }
+	},
+	{
+	    "operation":"pick",
+	    "id":"B12",
+	    "par": {
+		"type": "productGreen", 
+		"source": "Shelf"
+	    }
+	},
+	{
+	    "operation":"move",
+	    "id":"000",
+	    "par": {
+		"target":"Waypoint_CB#1"
+	    }
+	},
+	{
+	    "operation":"drop",
+	    "id":"B12",
+	    "par": {
+		"type":"productGreen", 
+		"target":"ConveyorBelt#1"
+	    }
+	}
+    ]
+}

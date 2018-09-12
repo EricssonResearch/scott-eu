@@ -1,0 +1,123 @@
+###
+### Initialize the state
+###
+## Modify the following rule to change the initial state or the goal.
+## It is necessary for the initial state and the desired state to share the same
+## identifiers for the objects (<blockA>, <blockB>, <blockC>, <table>) because of
+## the way the goal is detected (in elaborations/detect-success).
+
+#sp {warehouse-robot*apply*initialize-inputs
+#(state <s> ^io <io>)
+#(<io> ^input-link <input-link>)
+#-->
+#( <input-link> ^testing TEST)
+#}
+
+
+
+sp {warehouse-robot*propose*initialize-warehouse-robot
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (<s> ^operator <o>)
+   (<o> ^name initialize-warehouse-robot)
+}
+
+sp {warehouse-robot*apply*initialize-warehouse-robot
+   	(state <s> ^operator.name initialize-warehouse-robot)
+	(state <s> ^superstate nil)
+-->
+	
+	(<s> 	^self <self_node>)
+	(<self_node> 	^id |mobilerobot_youBot|
+					^location <location_node>
+					^cargo <cargo1> <cargo2> <cargo3>
+					^battery <battery_node>
+					^topological_map <tm>)
+	(<location_node> ^x 1.5 ^y -1.8 ^z 1.0 ^theta 3.1415 ^waypoint |Waypoint_SH|)
+	(<cargo1> ^contains empty)
+	(<cargo2> ^contains empty)
+	(<cargo3> ^contains empty)
+	(<battery_node> ^level 100)
+		
+	(<tm> 	^waypoint <wp0> <wp1> <wp2> <wp3> <wp4> <wp5> <wp6> <wp7>)
+	(<wp0> 	^id |Waypoint_SH| 	## Added || so we can use # 
+			^status free
+			^resource_type shelf
+			^location <wp0_location>
+			^link <wp1> <wp2> <wp3> <wp4> <wp5> <wp6> <wp7>)
+			(<wp0_location> ^x 0.913 ^y 0.96486 ^z 1.252)
+	(<wp1> 	^id |Waypoint_SH#0|
+			^status free
+			^resource_type shelf
+			^location <wp1_location>
+			^link <wp0> <wp2> <wp3> <wp4> <wp5> <wp6> <wp7>)
+			(<wp1_location> ^x 0.913 ^y -0.53515 ^z 1.252)
+	(<wp2> 	^id |Waypoint_SH#1|
+			^status free
+			^resource_type shelf
+			^location <wp2_location>
+			^link <wp0> <wp1> <wp3> <wp4> <wp5> <wp6> <wp7>)
+			(<wp2_location> ^x 0.913 ^y -2.0351 ^z 1.252)
+	(<wp3> 	^id |Waypoint_RS|
+			^status free
+			^resource_type recharge_station
+			^location <wp3_location>
+			^link <wp0> <wp1> <wp2> <wp4> <wp5> <wp6> <wp7>)
+			(<wp3_location> ^x 0.875 ^y 2.4648 ^z 1.252)
+	(<wp4> 	^id |Waypoint_RS#0|
+			^status free
+			^resource_type recharge_station
+			^location <wp4_location>
+			^link <wp0> <wp1> <wp2> <wp3> <wp5> <wp6> <wp7>)
+			(<wp4_location> ^x 0.875 ^y -3.5352 ^z 1.252)
+	(<wp5> 	^id |Waypoint_CB|
+			^status free
+			^resource_type conveyor_belt
+			^location <wp5_location>
+			^link <wp0> <wp1> <wp2> <wp3> <wp4> <wp6> <wp7>)
+			(<wp5_location> ^x 2.975 ^y -3.5352 ^z 1.252)
+	(<wp6> 	^id |Waypoint_CB#0|
+			^status free
+			^resource_type conveyor_belt
+			^location <wp6_location>
+			^link <wp0> <wp1> <wp2> <wp3> <wp4> <wp5> <wp7>)
+			(<wp6_location> ^x 2.975 ^y -5.3515 ^z 1.252)
+	(<wp7> 	^id |Waypoint_CB#1|
+			^status free
+			^resource_type conveyor_belt
+			^location <wp7_location>
+			^link <wp0> <wp1> <wp2> <wp3> <wp4> <wp5> <wp6>)
+			(<wp7_location> ^x 2.975 ^y -2.4648 ^z 1.252)
+
+(write (crlf) |Robot initialized|)
+}
+
+
+#sp {warehouse-robot*monitor*print-self
+#	(state <s> ^self <self_node>)
+#	(<self_node> ^id |mobilerobot_youBot|)
+#-->
+#   (write (crlf)|WMEs depth 10:|  (crlf) (cmd print --depth 10 <s>) (crlf) )}
+
+
+
+
+
+
+
+#The following is an example of a substate that is created for a tie among three operators:
+#(S12 ^type state ^impasse tie ^choices multiple ^attribute operator
+#^superstate S3 ^item O9 O10 O11 ^quiescence t)
+#The following is an example of a substate that is created for a no-change impasse to apply
+#an operator:
+#(S12 ^type state ^impasse no-change ^choices none ^attribute operator
+#^superstate S3 ^quiescence t)
+#(S3 ^operator O2)
+
+
+
+
+
+
+
