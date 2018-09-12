@@ -19,6 +19,6 @@
 -->
 
 <!-- RVIZ  -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_multirobot.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_single_robot.rviz" />
     
 </launch>
