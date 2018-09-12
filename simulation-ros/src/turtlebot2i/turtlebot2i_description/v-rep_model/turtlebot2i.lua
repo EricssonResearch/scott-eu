@@ -1,12 +1,40 @@
+-- Adjust circle size
+function setCirlceSize_cb(msg)
+    --Since 'setObjectSize' doesn't work, we have to use 'Scale', so we need to record the previous scale.
+    --BUG: if the size is not changed (or just slightly changed), the following code will waste calculation power.
+    sim.scaleObject(zoneRed_handle,msg.critical_zone_radius/previous_critical_zone_radius,msg.critical_zone_radius/previous_critical_zone_radius,0,0)  
+    sim.scaleObject(zoneYellow_handle,msg.warning_zone_radius/previous_warning_zone_radius,msg.warning_zone_radius/previous_warning_zone_radius,0,0)
+    sim.scaleObject(zoneGreen_handle,msg.clear_zone_radius/previous_clear_zone_radius,msg.clear_zone_radius/previous_clear_zone_radius,0,0)
+    --sim.scaleObject(obj_handle,scale,scale,0,0) 
+    printf("New circle size received (seq): %d",msg.header.seq)
+    previous_clear_zone_radius = msg.clear_zone_radius
+    previous_warning_zone_radius = msg.warning_zone_radius
+    previous_critical_zone_radius = msg.critical_zone_radius
+end
+--- Adjust robot speed
+function setVels_scale_cb(msg)
+   --velScale = msg.data--.scale  --a number: 0-2
+   --print("setVels_scale:")
+   print("This should not be triggered.")
+   --printf("setVels_scale:%d",msg.data)
+end
+
 function setVels_cb(msg)
    -- not sure if a scale factor must be applied
-   local linVel = msg.linear.x/2 -- in m/s
-   local rotVel = msg.angular.z*interWheelDistance/2 -- in rad/s
+   local linVel = msg.linear.x-- in m/s
+   local rotVel = msg.angular.z*interWheelDistance -- in rad/s
    
    --  Check if motor is enabled 
    if (motor_power == 1) then
-       velocityRight = linVel+rotVel
-       velocityLeft  = linVel-rotVel
+       velocityRight = (linVel+rotVel)*velScale
+       velocityLeft  = (linVel-rotVel)*velScale
+       printf("linVel=%2.2f,rotVel=%2.2f",linVel,rotVel)--print(linVel)
+       if (velScale>1) then
+           --print("speed up!")
+       end
+       if (velScale<1) then
+           --print("slow down!")
+       end
    else
        velocityRight = 0 
        velocityLeft  = 0 
@@ -36,6 +64,11 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     linVel = 0
     rotVel = 0
     motor_power = 1 --Enable motors by default
+    velScale = 1 -- Scale is 1 by default
+    previous_clear_zone_radius = 1.0
+    previous_warning_zone_radius = 1.0
+    previous_critical_zone_radius = 1.0
+
 
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')
     t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
@@ -52,6 +85,11 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     dock_station_handle = sim.getObjectHandle('dockstation')
 
     dock_station_ir_emitter_collection_handle = sim.getCollectionHandle('dock_station_ir_emitters')
+    ----------------------------------------------
+    -- Adjust circle size
+    zoneRed_handle = sim.getObjectHandle('critical_zone')
+    zoneYellow_handle = sim.getObjectHandle('warning_zone')
+    zoneGreen_handle = sim.getObjectHandle('clear_zone')
 
     -- Odometry variables
     r_linear_velocity, r_angular_velocity = {0,0,0},{0,0,0}
@@ -84,7 +122,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     -- Commands
     subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
     subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
-
+    --subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','std_msgs/Float64','setVels_scale_cb')
+    subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')  
+    --------------------END ------------------------------------
 end 
 
 if (sim_call_type == sim.childscriptcall_sensing) then 

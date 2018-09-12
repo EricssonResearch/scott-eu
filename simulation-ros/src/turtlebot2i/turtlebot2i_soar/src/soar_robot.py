@@ -1,7 +1,7 @@
 """Making sure we are running the right version of python"""
 import sys
 if sys.version_info[0] >= 3:
-    raise "Must be using Python 2"
+    raise Exception("Must be using Python 2")
 
 """Making sure soar library path environment is set
 Remember to set the environment variable to point to where soar build is located, e.g.:

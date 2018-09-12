@@ -11,9 +11,9 @@ TrajectoryPlannerROS:
  acc_lim_x: 5.0
  acc_lim_y: 5.0
 
- holonomic_robot: false
-
-# recovery_behavior_enabled : false
-# clearing_rotation_allowed: false
+ holonomic_robot: true
+#TO DO:holonomic_robot: true? false # Version control problem here
+# recovery_behaviour_enabled : false
+# clearing_rotation_allowed : false
 
 # dwa: false
