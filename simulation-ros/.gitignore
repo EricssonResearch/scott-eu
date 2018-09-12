@@ -18,6 +18,7 @@ install/
 *.o
 .*.swp
 *.pyc
+!remoteApi.so #This file is needed for scene-graph generator
 
 # macOS's rubbish:
 .AppleDouble
