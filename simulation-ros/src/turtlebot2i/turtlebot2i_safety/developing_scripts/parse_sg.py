@@ -49,23 +49,33 @@ def pub_zone_size(speed):
     pub.publish(zone_size_message)
 
 
-def init_RA():
-
+def init_RA(robot_speed):
+    ''' For each scene graph, a FLS  will be created. 
+    It will be improved by creating a FLS, and mofifing the parameters.
+    Current scikit-fuzzy doesn't support this feature. Issue#194 
+    So this is not a REAL initialization function, because differernt scene cannot share it.'''
     # New Antecedent/Consequent objects hold universe variables and membership functions
-    #object_type =     
-    global object_distance_Ant
-    object_distance_Ant = ctrl.Antecedent(np.arange(0, 2, 1), 'distance')     # 0- 3  meter
-    object_direction  = ctrl.Antecedent(np.arange(-180, 180, 1), 'direction') # 0-360 degree
-    object_speed = ctrl.Antecedent(np.arange(0, 2, 1), 'speed')		#0- 2 m/s
-    object_orientation = ctrl.Antecedent(np.arange(-180, 180, 1), 'orientation')#0-360 degree
+    object_type =     ctrl.Antecedent(np.arange(0, 3, 1), 'type')     # 0, 1, 2
+
+    object_distance = ctrl.Antecedent(np.arange(0, 4, 1), 'distance')     # 0 ~ 3  meter
+    object_direction  = ctrl.Antecedent(np.arange(-180, 181, 1), 'direction') # -180 ~ 180 degree
+    object_speed = ctrl.Antecedent(np.arange(0, 2, 0.5), 'speed')		#0- 2 m/s
+    object_orientation = ctrl.Antecedent(np.arange(-180, 180, 1), 'orientation')# -180 ~ 180 degree
 
     risk = ctrl.Consequent(np.arange(0, 3, 1), 'risk')
 
     # Auto-membership function population is possible with .automf(3, 5, or 7) #poor,average,good
-    object_distance_Ant.automf(3)   	# near, midium, far
+    object_speed.automf(3)		#slow medium fast
+    # Custom membership functions can be built interactively with a familiar Pythonic API
+    # EXAMPLE    
+    #tip['low'] = fuzz.trimf(tip.universe, [0, 0, 13])
+    #tip['medium'] = fuzz.trimf(tip.universe, [0, 13, 25])
+    #tip['high'] = fuzz.trimf(tip.universe, [13, 25, 25])
+
+    object_distance.automf(3)   '''robot_speed '''	# near, midium, far
    
     object_direction.automf(3)	# left behind right 	#will be changed to custom MF
-    object_speed.automf(3)		#slow medium fast
+
     object_orientation.automf(3)	# left behind right 	#will be changed to custom MF
 
     risk.automf(3) 
@@ -77,96 +87,87 @@ def init_RA():
     rule2 = ctrl.Rule(object_distance_Ant['average'], risk['average'])
     rule3 = ctrl.Rule(object_distance_Ant['good'] | object_direction['good'] |object_direction['poor'], risk['poor'])
 
-    #ctrl.Rule.graph
-    '''
-    object_distance_Ant['poor'] = fuzz.trimf(object_distance_Ant.universe, [0, 0, 1])
-    object_distance_Ant['average'] = fuzz.trimf(object_distance_Ant.universe, [0, 1, 2])
-    object_distance_Ant['good'] = fuzz.trimf(object_distance_Ant.universe, [1, 2, 2])
-    #'''
-    #ctrl.Rule.graph
+
     #Control System Creation and Simulation
     #---------------------------------------
     #Now that we have our rules defined, we can simply create a control system
 
+    #global risk_assessment_system
     risk_assessment_system = ctrl.ControlSystem([rule1, rule2, rule3]) # this is a FL system
-    global risk_assessment_instance
-    #In order to simulate this control system, we will create a instance (Call it Agent?)
+
+    ''' Note: the ControlSystem is dynamic: modification is allowed
+    But the ControlSystemSimulation is static.
+    So later, if we change the code structure, please modify ControlSystem, NOT ControlSystemSimulation'''
+    #In order to simulate this control system, we will create a instance (Call it Agent?) 
+    global risk_assessment_system        
     risk_assessment_instance = ctrl.ControlSystemSimulation(risk_assessment_system)  # this is a FLS instance
  
 def cal_risk(object_distance,object_direction,object_speed,object_orientation):
-    
+       
+    '''Furture:Modify object_distance antecedent here, and then create a  ControlSystemSimulation
+    #In order to simulate this control system, we will create a instance 
+    risk_assessment_instance = ctrl.ControlSystemSimulation(risk_assessment_system)  # this is a FLS instance
+    '''
     risk_assessment_instance.input['distance'] = object_distance		# 0- 3  meter
     risk_assessment_instance.input['direction'] = object_direction		# 0-360 degree
     risk_assessment_instance.input['speed'] =   object_speed			#0- 2 m/s
     risk_assessment_instance.input['orientation'] = object_orientation		#0-360 degree
 
-    
-    #object_distance_Ant.automf(3)    
     risk_assessment_instance.compute()
     risk_result = risk_assessment_instance.output['risk']
-    print "3Risk is =",risk_result
-    '''
-    object_distance.automf(5)
-    risk_assessment_instance.compute()
-    risk_result = risk_assessment_instance.output['risk']
-    print "5Risk is =",object_risk
-    object_distance.automf(7)
-    risk_assessment_instance.compute()
-    risk_result = risk_assessment_instance.output['risk']
-    print "7Risk is =",object_risk   
-    ''' 
+    print "Risk is =",risk_result
+
     #print risk_assessment_instance.output['risk'] #This line can not bu run with Python3
     
     return risk_result
 
 def parse_dot_file(graph):
-    
+
+    robot_self_node = graph.get_node('robot')[0]
+    if (robot_self_node.get_name()=='robot'):
+        node_info= robot_self_node.__get_attribute__("label")
+        print "-------------------------------"
+        print "-------------------------------"
+        #print x.get_name()
+        
+        matchObj = re.match(vel_pattern, node_info,re.M|re.I) #It Works
+        
+        if matchObj:
+            print "Robot Speed: ",float(matchObj.group(1))
+            pub_zone_size(float(matchObj.group(1)))
+        else:
+            print "Error! Robot node doesn't exist!"
+
     node_list = graph.get_nodes()
     #print len(node_list)
+    highest_risk = 0 # Only consider the object with highest risk 
     for x in node_list:
-        if not ( (x.get_name()=='node') or (x.get_name()=='warehouse')or(x.get_name()=='floor') ): 
-            if (x.get_name()=='robot'):
-                node_info= x.__get_attribute__("label")
-                print "-------------------------------"
-                print "-------------------------------"
-                #print x.get_name()
-                
-                matchObj = re.match(vel_pattern, node_info,re.M|re.I) #It Works
-                
-                if matchObj:
-                    print "Robot Speed: ",float(matchObj.group(1))
-                    pub_zone_size(float(matchObj.group(1)))
-                else:
-                    print "No match"
+        if not ( (x.get_name()=='node') or (x.get_name()=='warehouse') or (x.get_name()=='floor') or (x.get_name()=='robot') ):#All leaf nodes     
+            node_info= x.__get_attribute__("label")            
+            print "-------------------------------"
+            print x.get_name()
+            #print type(node_info),node_info
+            matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
+            if matchObj:
+                locals()[matchObj.group(1)]={'Name':matchObj.group(1),'Type':int(matchObj.group(2)),'Distance':float(matchObj.group(3)),'Orientation':float(matchObj.group(4)),'Direction':float(matchObj.group(5)),'Speed':float(matchObj.group(6))}#IF you want a dict. format
+                #print "matchObj.group() : ", matchObj.group()
+                #print type(locals()[matchObj.group(1)])
+                print "*Obj Name : ", locals()[matchObj.group(1)]['Name']#matchObj.group(1)
+                print "*Obj Type : ", locals()[matchObj.group(1)]['Type']#matchObj.group(2)
+                print "*Distance : ", locals()[matchObj.group(1)]['Distance']#float(matchObj.group(3))
+                print "*Orientation : ", locals()[matchObj.group(1)]['Orientation']#float(matchObj.group(4))
+                print "*Direction: ",locals()[matchObj.group(1)]['Direction']#float(matchObj.group(5))
+                print "*Speed: ",locals()[matchObj.group(1)]['Speed']#float(matchObj.group(6))
+                #Speed is missed here. 
+                object_distance     = float(matchObj.group(3))
+                object_direction    = float(matchObj.group(5))
+                object_speed        = float(matchObj.group(6))
+                object_orientation  = float(matchObj.group(4))
+                object_risk =   cal_risk(object_distance,object_direction,object_speed,object_orientation) #+zone size(Global Variant) 
+                #print "Risk is =",object_risk
 
-            else:  #All leave nodes     
-                node_info= x.__get_attribute__("label")
-                
-                print "-------------------------------"
-                print x.get_name()
-                print type(node_info),node_info
-                matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
-
-                if matchObj:
-                    locals()[matchObj.group(1)]={'Name':matchObj.group(1),'Type':int(matchObj.group(2)),'Distance':float(matchObj.group(3)),'Orientation':float(matchObj.group(4)),'Direction':float(matchObj.group(5)),'Speed':float(matchObj.group(6))}#IF you want a dict. format
-                    #print "matchObj.group() : ", matchObj.group()
-                    #print type(locals()[matchObj.group(1)])
-                    print "*Obj Name : ", locals()[matchObj.group(1)]['Name']#matchObj.group(1)
-                    print "*Obj Type : ", locals()[matchObj.group(1)]['Type']#matchObj.group(2)
-                    print "*Distance : ", locals()[matchObj.group(1)]['Distance']#float(matchObj.group(3))
-                    print "*Orientation : ", locals()[matchObj.group(1)]['Orientation']#float(matchObj.group(4))
-                    print "*Direction: ",locals()[matchObj.group(1)]['Direction']#float(matchObj.group(5))
-                    print "*Speed: ",locals()[matchObj.group(1)]['Speed']#float(matchObj.group(6))
-                    #Speed is missed here. 
-                    object_distance     = float(matchObj.group(3))
-                    object_direction    = float(matchObj.group(5))
-                    object_speed        = float(matchObj.group(6))
-                    object_orientation  = float(matchObj.group(4))
-                    object_risk =   cal_risk(object_distance,object_direction,object_speed,object_orientation) #+zone size(Global Variant) 
-                    #print "Risk is =",object_risk
-                else:
-                   print "No match!!"   
-
+            else:
+               print "Node not match!!"   
 def topic_callback(data):
     graphs = pydot.graph_from_dot_data(data.sg_data) #From string
     (graph,) = graphs
