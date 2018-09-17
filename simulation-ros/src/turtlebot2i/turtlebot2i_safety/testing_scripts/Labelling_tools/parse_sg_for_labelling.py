@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os
+import os # we will run a screenshot software: Shutter
 import time
 import pydot # sudo pip install -I pydot==1.2.4
 import re
@@ -79,7 +79,7 @@ def parse_dot_file(graph):
             matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
             if matchObj:
                 locals()[matchObj.group(1)]={'Name':matchObj.group(1),'Type':int(matchObj.group(2)),'Distance':float(matchObj.group(3)),'Orientation':float(matchObj.group(4)),'Direction':float(matchObj.group(5)),'Speed':float(matchObj.group(6))}#IF you want a dict. format
-                #print "matchObj.group() : ", matchObj.group()
+                '''
                 #print type(locals()[matchObj.group(1)])
                 print "*Obj Name : ", locals()[matchObj.group(1)]['Name']#matchObj.group(1)
                 print "*Obj Type : ", locals()[matchObj.group(1)]['Type']#matchObj.group(2)
@@ -87,7 +87,7 @@ def parse_dot_file(graph):
                 print "*Orientation : ", locals()[matchObj.group(1)]['Orientation']#float(matchObj.group(4))
                 print "*Direction: ",locals()[matchObj.group(1)]['Direction']#float(matchObj.group(5))
                 print "*Speed: ",locals()[matchObj.group(1)]['Speed']#float(matchObj.group(6))
-
+                '''
                 object_distance     = float(matchObj.group(3))
                 object_direction    = float(matchObj.group(5))
                 object_speed        = float(matchObj.group(6))
@@ -98,8 +98,17 @@ def parse_dot_file(graph):
                 #Creat a file for each object
                 with open(sub_label_folder+'/'+matchObj.group(1)+'.csv','wb') as myFile:    
                     myWriter=csv.writer(myFile)
-                    myWriter.writerow([7,'g'])
-                    myWriter.writerow([8,'h'])
+                    '''
+                    myWriter.writerow(["Obj Name",matchObj.group(1)])
+                    myWriter.writerow(["Obj Type",matchObj.group(2)])
+                    myWriter.writerow(["Obj Distance",matchObj.group(3)])
+                    myWriter.writerow(["Obj Orientation",matchObj.group(4)])
+                    myWriter.writerow(["Obj Direction",matchObj.group(5)])
+                    myWriter.writerow(["Obj Speed",matchObj.group(6)])
+                    myWriter.writerow(["Obj Risk", 'Manual label'])
+                    ''' # We can calculate Hash to remove similar samples.
+                    myWriter.writerow(["Obj Name","Obj Type","Obj Distance","Obj Orientation","Obj Direction","Obj Speed","Obj Risk"])
+                    myWriter.writerow([matchObj.group(1),matchObj.group(2),matchObj.group(3),matchObj.group(4),matchObj.group(5),matchObj.group(6),'Manual label'])    
                     #print("CSV file created!")               
             else:
                print "Node not match!!"  
