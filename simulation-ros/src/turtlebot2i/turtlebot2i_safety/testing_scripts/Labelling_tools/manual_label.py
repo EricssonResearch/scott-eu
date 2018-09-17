@@ -24,8 +24,8 @@ def init(): #open 'labels' folder and creat a result file
         result_file = open(labels_folder+"/result.csv",'wb')
         global myWriter
         myWriter = csv.writer(result_file)
-        myWriter.writerow(["Obj Name","Obj Type","Obj Distance","Obj Orientation","Obj Direction","Obj Speed","Obj Risk"])
-        #result_file.close()
+        #myWriter.writerow(["Obj Type","Obj Distance","Obj Orientation","Obj Direction","Obj Speed","Obj Risk"])# Remove "Obj Name"
+        #result_file.close() # Don't forget to close it 
         print "Result csv file created!"
     global sample_number
     sample_number = 0 # counter
@@ -50,11 +50,11 @@ def read_csv(file_path):
         lines=csv.reader(myFile) #We want second line
         lines = list(lines) # Convert '_csv.reader' type to 'list' type
         data = lines[1] # Type: list        
-        return data[0],data[1],data[2],data[3],data[5] #label:data[6] is invalid
+        return data[0],data[1],data[2],data[3],data[4],data[5] #label:data[6] is invalid
 
 def add_label_result_to_file(object_name,object_type,object_distance,object_orientation,object_direction,object_speed,risk_label):
     #TODO
-    myWriter.writerow(object_name,object_type,object_distance,object_orientation,object_direction,object_speed,risk_label)    
+    myWriter.writerow([object_type,object_distance,object_orientation,object_direction,object_speed,risk_label])  #remove "Obj Name"  
     print("Add one line")
 
 def finish():
@@ -62,67 +62,76 @@ def finish():
 
 def label_dataset():
     folder_list = os.listdir(labels_folder)
-    print "We have",len(folder_list),"folders"
+    print "We have",len(folder_list)-1,"folders"
     print "===================================================================="
     for one_folder in folder_list: #NOTE: Not in order 0-9
+        #print folder_list
         folder_path = os.path.join(labels_folder, one_folder) 
         print "One folder:",folder_path # Path
-        # Read files
-        files = os.listdir(folder_path)
-        ''' Order here is a mess
-        for one_file in files:
-            file_path = os.path.join(folder_path, one_file) 
-            #print file_path
+        if one_folder == "result.csv":
+            folder_list.remove(one_folder)
+            #print folder_list
+        else:            
+            # Read files
+            files = os.listdir(folder_path)
+            ''' Order here is a mess
+            for one_file in files:
+                file_path = os.path.join(folder_path, one_file) 
+                #print file_path
 
-            matchObj_img = re.match(img_file_pattern, one_file,re.M|re.I) #It Works 
-            if matchObj_img:
-                print "We have a picture",file_path
-                #scene_img = mpimg.imread(file_path) 
-                #plt.imshow(scene_img)
-            else:
+                matchObj_img = re.match(img_file_pattern, one_file,re.M|re.I) #It Works 
+                if matchObj_img:
+                    print "We have a picture",file_path
+                    #scene_img = mpimg.imread(file_path) 
+                    #plt.imshow(scene_img)
+                else:
+                    matchObj_csv = re.match(data_file_pattern, one_file,re.M|re.I)   
+                    if matchObj_csv:
+                        print "We have a data file",file_path 
+                        global sample_number
+                        sample_number =  sample_number+1
+                        #print (raw_input("Give me a label"))
+                    else:
+                        print "What is this file?", file_path       
+            '''
+            
+            for one_file in files:
+                matchObj_img = re.match(img_file_pattern, one_file,re.M|re.I) #It Works 
+                if matchObj_img:
+                    file_path = os.path.join(folder_path, one_file) 
+                    print "The picture ",one_file," is showing here!"
+                    scene_img = mpimg.imread(file_path) 
+                    plt.imshow(scene_img)
+                    #plt.show()   # Since we have plt.ion, this is useless.         
+                    #raw_input()
+                    files.remove(one_file)
+
+            for one_file in files:                    
                 matchObj_csv = re.match(data_file_pattern, one_file,re.M|re.I)   
                 if matchObj_csv:
-                    print "We have a data file",file_path 
+                    file_path = os.path.join(folder_path, one_file)                 
+                    print "We have a data file",one_file,". Please label it! "
+                    print "--------------------------------------------------------------------"
+                    print "-------------------",one_file,"------------------------"
+                    print "--------------------------------------------------------------------"                        
+                    object_name,object_type,object_distance,object_orientation,object_direction,object_speed=read_csv(file_path) 
+                    valid_label = 0
+                    while not valid_label:
+                        #print "We have a data file",one_file,". Please label it! "  
+                        one_label = raw_input("Give me a label:")
+                        #print "Your label is ", one_label
+                        if (one_label=='a') or  (one_label=='w') or  (one_label=='d'):
+                            valid_label = 1                        
+                            risk_label = keyboard_label(one_label)
+                            add_label_result_to_file(object_name,object_type,object_distance,object_orientation,object_direction,object_speed,risk_label)
+                        else:
+                            print "Invalid label! Please label it again."
                     global sample_number
                     sample_number =  sample_number+1
-                    #print (raw_input("Give me a label"))
+
+
                 else:
-                    print "What is this file?", file_path       
-        '''
-        for one_file in files:
-            matchObj_img = re.match(img_file_pattern, one_file,re.M|re.I) #It Works 
-            if matchObj_img:
-                file_path = os.path.join(folder_path, one_file) 
-                print "The picture ",one_file," is showing here!"
-                scene_img = mpimg.imread(file_path) 
-                plt.imshow(scene_img)
-                #plt.show()   # Since we have plt.ion, this is useless.         
-                #raw_input()
-                files.remove(one_file)
-
-        for one_file in files:                    
-            matchObj_csv = re.match(data_file_pattern, one_file,re.M|re.I)   
-            if matchObj_csv:
-                file_path = os.path.join(folder_path, one_file)                 
-                print "We have a data file",file_path,". Please label it! "
-                object_name,object_type,object_distance,object_orientation,object_direction,object_speed=read_csv(file_path) 
-                valid_label = 0
-                while not valid_label:
-                    #print "We have a data file",one_file,". Please label it! "  
-                    one_label = raw_input("Give me a label:")
-                    print "Your label is ", one_label
-                    if (one_label=='a') or  (one_label=='w') or  (one_label=='d'):
-                        valid_label = 1                        
-                        risk_label = keyboard_label(one_label)
-                        add_label_result_to_file(object_name,object_type,object_distance,object_orientation,object_direction,object_speed,risk_label)
-                    else:
-                        print "Invalid label! Please label it again."
-                global sample_number
-                sample_number =  sample_number+1
-
-
-            else:
-                print "What is this file?", file_path 
+                    print "What is this file?", file_path 
         print "--------------------------------------------------------------------"
     print "We have ",sample_number,"samples"
 
