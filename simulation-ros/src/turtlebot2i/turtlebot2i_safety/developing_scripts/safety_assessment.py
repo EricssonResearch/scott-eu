@@ -25,7 +25,7 @@ def topic_callback(data):
 
 """ Main program """
 if __name__ == "__main__":  
-#-- RISK ASSESSMENT FLS INITIALIZATION-----------------------------------
+    #-- RISK ASSESSMENT FLS INITIALIZATION-----------------------------------
     print("Initializing Risk Assessment FLS") 
 
     # New Antecedent/Consequent objects hold universe variables and membership functions
