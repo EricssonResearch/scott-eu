@@ -69,7 +69,7 @@ null,object_orientation['Rear']  =fuzz.fuzzy_or(range_degree,rear_p1,range_degre
 object_orientation['RearRight']  = fuzz.gaussmf(range_degree,-135,15)
 object_orientation['Right']  = fuzz.gaussmf(range_degree,-90,15)
 object_orientation['FrontRight']  = fuzz.gaussmf(range_degree,-45,15) 
-object_orientation.view()
+#object_orientation.view()
 
 object_risk['VeryLow'] = fuzz.gaussmf(range_risk,0,0.3)
 object_risk['Low'] = fuzz.gaussmf(range_risk,1,0.3)
@@ -138,6 +138,10 @@ risk_assessment_instance.compute()
 Once computed, we can view the result as well as visualize it.
 """
 print risk_assessment_instance.output['risk']
+object_distance.view(sim=risk_assessment_instance)
+object_direction.view(sim=risk_assessment_instance)
+object_speed.view(sim=risk_assessment_instance)
+object_orientation.view(sim=risk_assessment_instance)
 object_risk.view(sim=risk_assessment_instance)
 raw_input()
 
