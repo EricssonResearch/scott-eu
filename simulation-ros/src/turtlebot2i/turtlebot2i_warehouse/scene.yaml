@@ -10,6 +10,7 @@
     vertices: []
     waypoint: [0.6516189575195312, 0.9648474454879761, 1.6041630506515503, 0.0, -1.5707963705062866,
       0.0]
+    mesh: meshes/shelf.stl
 - node:
     edges: []
     name: Waypoint_CB
@@ -22,6 +23,7 @@
     vertices: []
     waypoint: [4.375002861022949, -3.5351498126983643, 1.3598122596740723, -0.0, 0.0,
       -0.0]
+    mesh: meshes/conveyor.stl
 - node:
     edges: []
     name: Waypoint_CB#0
@@ -34,6 +36,7 @@
     vertices: []
     waypoint: [4.375002861022949, -0.5351498126983643, 1.3598122596740723, -0.0, 0.0,
       -0.0]
+    mesh: meshes/conveyor.stl
 - node:
     edges: []
     name: Waypoint_CB#1
@@ -46,6 +49,7 @@
     vertices: []
     waypoint: [4.375002861022949, 2.4648501873016357, 1.3598122596740723, -0.0, 0.0,
       -0.0]
+    mesh: meshes/conveyor.stl
 - node:
     edges: []
     name: stairs
@@ -64,6 +68,7 @@
     vertices: []
     waypoint: [0.6516188383102417, -0.5351524353027344, 1.6041630506515503, 0.0, -1.5707963705062866,
       0.0]
+    mesh: meshes/shelf.stl
 - node:
     edges: []
     name: TagShelf#1
@@ -88,6 +93,7 @@
     vertices: []
     waypoint: [0.6516194343566895, -2.0351526737213135, 1.604162335395813, 0.0, -1.5707963705062866,
       0.0]
+    mesh: meshes/shelf.stl
 - node:
     edges: []
     name: turtlebot2i#0
