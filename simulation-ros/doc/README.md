@@ -183,7 +183,7 @@ To use the python remote API provided by VREP, some adjustments are necessary:
     ```
 
 
-## To get things running for the mobile base + robotics arm.
+## To bring up mobile base + navigation + robotics arm + manipulation planning.
 
 1. Run the scene containing the turtlebot2i
 
@@ -196,10 +196,10 @@ To use the python remote API provided by VREP, some adjustments are necessary:
 ```
 
 
-2. Launch a rosfile that will bringout moveit and rviz to visualize and control the arm
+2. Launch a rosfile that will bring up moveit and rviz to visualize and control the whole robot
 
 ```
-roslaunch turtlebot2i_description turtlebot2i_description_single_moveit.launch
+roslaunch turtlebot2i_bringup turtlebot2i_full.launch
 ```
 
 
