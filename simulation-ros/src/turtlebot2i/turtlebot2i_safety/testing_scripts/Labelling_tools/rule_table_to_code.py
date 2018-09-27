@@ -21,48 +21,51 @@ def init(): #open 'labels' folder and creat a result file
         print "Result csv file created!"
     global rule_number
     rule_number = 0 # counter
+    global rule_list
+    rule_list = list()
 
 def finish():
+    rule_list_str = ','.join(rule_list)
+    line = "rule_list=["+str(rule_list_str)+"]"
+    rule_code_segm.write(line)
     rule_code_segm.close()    
-
-def read_dynamic_rules(file_path):
-    with open(file_path,'rb') as myFile:
-        lines=csv.reader(myFile) #We want second line
-        lines = list(lines) # Convert '_csv.reader' type to 'list' type
-        data = lines[1] # Type: list        
-        return data[0],data[1],data[2],data[3],data[4],data[5] #label:data[6] is invalid
-
 
 
 def write_static_rule():
+    global rule_list
     print("write_static_rule")
     file_path = os.path.join(rules_folder,'static_obj_rules.csv') 
     with open(file_path,'rb') as ruleFile:
         rows=csv.reader(ruleFile) #We want second line
         rows = list(rows) # Convert '_csv.reader' type to 'list' type
         for data in rows: # data Type: list # 4 Antecedent, 1 Consequent            
-            line = "rule"+data[0].zfill(3)+"= ctrl.Rule(object_type['"+data[1]+"'] & object_distance['"+data[2]+"'] & object_direction['"+data[3]+"'] , risk['"+data[4]+"'])\n"
+            line = "rule"+data[0].zfill(3)+"= ctrl.Rule(object_type['"+data[1]+"'] & object_distance['"+data[2]+"'] & object_direction['"+data[3]+"'] , object_risk['"+data[4]+"'])\n"
             rule_code_segm.write(line)
+            rule_list.append("rule"+data[0].zfill(3))
 
 def write_dynamic_rule():
+    global rule_list
     print("write_dynamic_rule")
     file_path = os.path.join(rules_folder,'dynamic_obj_rules.csv') 
     with open(file_path,'rb') as ruleFile:
         rows=csv.reader(ruleFile) #We want second line
         rows = list(rows) # Convert '_csv.reader' type to 'list' type
         for data in rows: # data Type: list # 6 Antecedent, 1 Consequent            
-            line = "rule"+data[0].zfill(3)+"= ctrl.Rule(object_type['"+data[1]+"'] & object_distance['"+data[2]+"'] & object_direction['"+data[3]+"'] & object_speed['"+data[4]+"'] & object_orientation['"+data[5]+"'] , risk['"+data[6]+"'])\n"
+            line = "rule"+data[0].zfill(3)+"= ctrl.Rule(object_type['"+data[1]+"'] & object_distance['"+data[2]+"'] & object_direction['"+data[3]+"'] & object_speed['"+data[4]+"'] & object_orientation['"+data[5]+"'] , object_risk['"+data[6]+"'])\n"
             rule_code_segm.write(line)
+            rule_list.append("rule"+data[0].zfill(3))
 
 def write_human_rule():
+    global rule_list
     print("write_human_rule")
     file_path = os.path.join(rules_folder,'human_obj_rules.csv') 
     with open(file_path,'rb') as ruleFile:
         rows=csv.reader(ruleFile) #We want second line
         rows = list(rows) # Convert '_csv.reader' type to 'list' type
         for data in rows: # data Type: list # 6 Antecedent, 1 Consequent            
-            line = "rule"+data[0].zfill(3)+"= ctrl.Rule(object_type['"+data[1]+"'] & object_distance['"+data[2]+"'] & object_direction['"+data[3]+"'] & object_speed['"+data[4]+"'] & object_orientation['"+data[5]+"'] , risk['"+data[6]+"'])\n"
+            line = "rule"+data[0].zfill(3)+"= ctrl.Rule(object_type['"+data[1]+"'] & object_distance['"+data[2]+"'] & object_direction['"+data[3]+"'] & object_speed['"+data[4]+"'] & object_orientation['"+data[5]+"'] , object_risk['"+data[6]+"'])\n"
             rule_code_segm.write(line)
+            rule_list.append("rule"+data[0].zfill(3))
 
 
 """ Main program """
