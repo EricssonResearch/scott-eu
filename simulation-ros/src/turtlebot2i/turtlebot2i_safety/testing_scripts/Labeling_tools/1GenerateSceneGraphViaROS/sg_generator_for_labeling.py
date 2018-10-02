@@ -207,13 +207,13 @@ if __name__ == '__main__':
         print('Started getting scene objects from vision sensor FOV...')
         pub = rospy.Publisher('/turtlebot2i/safety/scene_graph', SceneGraph, queue_size=10)
         rospy.init_node('sg_generator', anonymous=True)
-        rate = rospy.Rate(0.5) # 10 Hz
+        rate = rospy.Rate(0.5) # 0.5 Hz, T=2 sec
         while not rospy.is_shutdown():          
             sgGenerate()
             #''' #If one want to check execution time
             one_run_time = time.time() - time_previous
-            #print 'execute time=',one_run_time,'s'           
-            print 'execute frequency=',1/float(one_run_time),'Hz'
+            print 'execute time=',one_run_time,'sec'           
+            #print 'execute frequency=',1/float(one_run_time),'Hz'
             time_previous =time.time()
             #'''            
             rate.sleep()

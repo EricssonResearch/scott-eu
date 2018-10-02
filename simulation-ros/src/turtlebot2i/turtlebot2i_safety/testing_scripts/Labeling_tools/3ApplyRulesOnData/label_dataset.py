@@ -178,6 +178,8 @@ def read_csv(file_path):
         #print type(str_data[0]) # <type 'str'>
         name = str_data[0]
         data = str_data[1:6]
+        #hashvalue= str_data[6]
+        #robot_speed = str_data[7]    
         data = [float(i) for i in data]
         return name,data[0],data[1],data[2],data[3],data[4] #label: data[5] is invalid
 

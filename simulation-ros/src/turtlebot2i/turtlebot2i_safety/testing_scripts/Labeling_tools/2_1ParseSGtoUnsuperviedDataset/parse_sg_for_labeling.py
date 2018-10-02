@@ -25,7 +25,12 @@ def init_var():
     time_previous = time.time()
     print 'num',sub_folder_number
 
-
+    global screen_shot
+    screen_shot = False # whether you want to take screen shot
+    ''' 
+    Here we use Shutter to take screen shot.
+    But another tool for screen shot using VREP remote API is also ready. 
+    '''
 def init_regEx():
     '''
     regular expression
@@ -52,8 +57,9 @@ def parse_dot_file(graph):
     else:
         print "Folder exists"
     # Take a screen shot for each S-G
-    file_name ="'./labels/"+number_string4+"/"+"Vrep_shot"+number_string4+".png'"  
-    os.system("shutter --window=V-REP.* --output="+file_name+" --no_session")    
+    if screen_shot:
+        file_name ="'./labels/"+number_string4+"/"+"Vrep_shot"+number_string4+".png'"  
+        os.system("shutter --window=V-REP.* --output="+file_name+" --no_session")    
     # Parse the S-G
     robot_self_node = graph.get_node('robot')[0]
     if (robot_self_node.get_name()=='robot'):
@@ -88,10 +94,15 @@ def parse_dot_file(graph):
                 print "*Direction: ",locals()[matchObj.group(1)]['Direction']#float(matchObj.group(5))
                 print "*Speed: ",locals()[matchObj.group(1)]['Speed']#float(matchObj.group(6))
                 '''
+                object_name = matchObj.group(1)
+                object_type = int(matchObj.group(2))
                 object_distance     = float(matchObj.group(3))
                 object_direction    = float(matchObj.group(5))
                 object_speed        = float(matchObj.group(6))
                 object_orientation  = float(matchObj.group(4))
+                data_str = str([object_name,object_type,object_distance,object_orientation,object_direction,object_speed,'Manual label'])
+                hash_code = hash(data_str)
+
                 #object_risk =   cal_risk(object_distance,object_direction,object_speed,object_orientation) #+zone size(Global Variant) 
                 #print "Risk is =",object_risk
 
@@ -107,8 +118,8 @@ def parse_dot_file(graph):
                     myWriter.writerow(["Obj Speed",matchObj.group(6)])
                     myWriter.writerow(["Obj Risk", 'Manual label'])
                     ''' # We can calculate Hash to remove similar samples.
-                    myWriter.writerow(["Obj Name","Obj Type","Obj Distance","Obj Orientation","Obj Direction","Obj Speed","Obj Risk"])
-                    myWriter.writerow([matchObj.group(1),matchObj.group(2),matchObj.group(3),matchObj.group(4),matchObj.group(5),matchObj.group(6),'Manual label'])    
+                    myWriter.writerow(["Obj Name","Obj Type","Obj Distance","Obj Orientation","Obj Direction","Obj Speed","Obj Risk","Hash Value","Robot Speed"])
+                    myWriter.writerow([object_name,object_type,object_distance,object_orientation,object_direction,object_speed,'Manual label',hash_code,robot_speed])    
                     #print("CSV file created!")               
             else:
                print "Node not match!!"  
@@ -133,9 +144,10 @@ if __name__ == "__main__":
     rospy.init_node("prase_ros_node",anonymous=True) #Always first
     print("Initializing parse node finished")
 
-    os.system('shutter --min_at_startup --no_session') 
-    print("Initializing Shutter finished")  
-    time.sleep(2)
+    if screen_shot:
+        os.system('shutter --min_at_startup --no_session') 
+        print("Initializing Shutter finished")  
+        time.sleep(2)
 
     ## SUBSCRIBERS
     # Creates a subscriber object for each topic
