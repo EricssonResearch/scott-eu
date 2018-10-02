@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+'''-------------------------------------------
+--We will not label the data set in this way--
+-------------------------------------------'''
 import os
 import re
 import csv

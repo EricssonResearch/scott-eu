@@ -153,5 +153,5 @@ Once computed, we can view the result as well as visualize it.
 """
 print risk_assessment_instance.output['risk']
 object_risk.view(sim=risk_assessment_instance)
-raw_input()
+raw_input("Finished!")
 
