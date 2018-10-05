@@ -114,6 +114,7 @@ Control System Creation and Simulation
 
 Now that we have our rules defined, we can simply create a control system via:
 """
+import pickle
 fls_name = "fls.data"
 
 if os.path.exists(fls_name):

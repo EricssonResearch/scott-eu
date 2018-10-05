@@ -134,7 +134,21 @@ def init_rule_based_system():
     ---------------------------------------
     """
     global ra_fls
-    ra_fls = ctrl.ControlSystem(rule_list)
+
+    import pickle
+    fls_name = "fls.data"
+
+    if os.path.exists(fls_name):
+        print("FLS exists!")
+        f = open(fls_name,'rb')
+        ra_fls = pickle.load(f)
+    else:
+        print("Init FLS")
+        ra_fls = ctrl.ControlSystem(rule_list)
+        f = open(fls_name,'wb')
+        pickle.dump(ra_fls,f)
+        f.close 
+
     run_time = time.time() - time_previous         
     
 def add_label_with_complex_rules(object_type,object_distance,object_orientation,object_direction,object_speed): #Add risk label
