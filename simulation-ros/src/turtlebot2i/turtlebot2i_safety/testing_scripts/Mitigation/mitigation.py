@@ -105,21 +105,12 @@ Fuzzy rules
 multiple output format: 
  (output1['term1'], output2['term2'])
 """
-rule1 =  ctrl.Rule(object_direction['BigRear'], (left_speed['Fast'],right_speed['Fast']) ) # We ignore objects behind it.
-rule2 =  ctrl.Rule(object_distance['Near'], (left_speed['Slow'],right_speed['Slow'])  ) # Too near object is dangerous.
-rule3 =  ctrl.Rule(object_distance['Far'], (left_speed['Fast'],right_speed['Fast']) )    # Too far object is safe.
 
-rule3 =  ctrl.Rule( object_speed['Medium'] & object_direction['Front'] & object_speed['Slow']  , left_speed['Slow']  )
-rule4 =  ctrl.Rule( object_speed['Medium'] & object_direction['FrontLeft'] & object_speed['Slow']  , left_speed['Slow']  )
-rule5 =  ctrl.Rule( object_speed['Medium'] & object_direction['Left'] & object_speed['Slow']  , left_speed['Slow']  )
-rule6 =  ctrl.Rule( object_speed['Medium'] & object_direction['FrontRight'] & object_speed['Slow']  , left_speed['Slow'] )
-rule7 =  ctrl.Rule( object_speed['Medium'] & object_direction['Right'] & object_speed['Slow'] & object_orientation['Front'] & object_risk['Low'] , left_speed['Slow'] )
+from rules_demo import rule_list_generator
+#from rules import rule_list_generator
+rule_list=rule_list_generator(object_type,object_distance,object_direction, object_speed, object_orientation, object_risk)
 
 
-#rule =  ctrl.Rule( object_speed[' '] & object_direction[' '] & object_speed[' ']  , object_risk[' ']  )
-
-
-rule1.view()
 
 """
 
@@ -129,7 +120,7 @@ Control System Creation and Simulation
 Now that we have our rules defined, we can simply create a control system via:
 """
 
-risk_mitigation_fls = ctrl.ControlSystem([rule1, rule2, rule3,rule4, rule5, rule6, rule7])
+risk_mitigation_fls = ctrl.ControlSystem(rule_list)
 
 """
 In order to simulate this control system, we will create a

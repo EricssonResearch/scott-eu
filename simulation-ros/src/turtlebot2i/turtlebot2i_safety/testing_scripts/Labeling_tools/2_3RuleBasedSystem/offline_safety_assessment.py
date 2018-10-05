@@ -9,6 +9,9 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import time
+import os
+import pickle
+
 
 global IZW # Safety zone size
 IZW = 0.4  # This is an example. It will be received as a ROS topic.
@@ -97,8 +100,8 @@ Fuzzy rules
 #rule =  ctrl.Rule( object_speed[' '] & object_direction[' '] & object_speed[' ']  , object_risk[' ']  )
 time_previous = time.time()  
 
-#from rules_demo import rule_list_generator
-from rules import rule_list_generator
+from rules_demo import rule_list_generator
+#from rules import rule_list_generator
 rule_list=rule_list_generator(object_type,object_distance,object_direction, object_speed, object_orientation, object_risk)
 
 run_time = time.time() - time_previous    
@@ -111,8 +114,29 @@ Control System Creation and Simulation
 
 Now that we have our rules defined, we can simply create a control system via:
 """
+fls_name = "fls.data"
 
-ra_fls = ctrl.ControlSystem(rule_list)
+if os.path.exists(fls_name):
+    print("FLS exists!")
+    f = open(fls_name,'rb')
+    ra_fls = pickle.load(f)
+else:
+    print("Init FLS")
+    ra_fls = ctrl.ControlSystem(rule_list)
+    f = open(fls_name,'wb')
+    pickle.dump(ra_fls,f)
+    f.close 
+'''
+f = open(fls_name,'wb')
+pickle.dump(ra_fls,f)
+f.close 
+
+del ra_fls
+ 
+f = open(fls_name,'rb')
+ra_fls = pickle.load(f)
+'''
+
 run_time = time.time() - time_previous    
 #print 'execute time=',one_run_time,'s'           
 print 'creating a system time=',run_time,'sec'  
