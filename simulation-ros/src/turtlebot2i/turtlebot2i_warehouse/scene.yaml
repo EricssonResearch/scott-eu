@@ -1,101 +1,56 @@
+# * This is a yaml file that describes the warehouse scene.
+# * Structure of the scene.yaml:
+#   - node:
+#       name: "name of the object in the scene"
+#       waypoint: [x(m), y(m), z(m), r(deg), p(deg), y(deg)]
+#       mesh: "mesh file path"
+#   * waypoints follow the ROS coordenate reference
+
 - node:
-    edges: []
-    name: TagShelf
-    vertices: []
-    waypoint: [1.113000512123108, 0.9648502469062805, 1.4119999408721924, 0.0, 1.5707963705062866, 1.5707968473434448]
+    name: dockstation_body
+    waypoint: [0.7749941945075989, -2.9749913215637207, 1.2998032569885254, 0.0, 0.0, 0.0]
 - node:
-    edges: []
+    name: Waypoint_DS
+    waypoint: [1.0749683380126953, -2.974980354309082, 1.252000093460083, 0.0, 0.0, 180.0]
+- node:
     name: ShelfBody
-    vertices: []
-    waypoint: [0, 0, -1.20, 0, 0, 0, 1]
+    waypoint: [0.6516190767288208, 0.9648474454879761, 1.5239125490188599, 0.0, 0.0, 0.0]
     mesh: "meshes/shelf.stl"
 - node:
-    edges: []
-    name: Waypoint_CB
-    vertices: []
-    waypoint: [3.2749977111816406, -3.5351498126983643, 1.2519997358322144, 0.0, 0.0, -1.5707520246505737]
+    name: ShelfBody#0
+    waypoint: [0.6516190767288208, -0.5351524353027344, 1.5239125490188599, 0.0, 0.0, 0.0]
+    mesh: "meshes/shelf.stl"
 - node:
-    edges: []
+    name: ShelfBody#1
+    waypoint: [0.6516190767288208, -2.0351526737213135, 1.5239126682281494, 0.0, 0.0, 0.0]
+    mesh: "meshes/shelf.stl"
+- node:
+    name: Waypoint_SH
+    waypoint: [1.6130006313323975, 0.9648533463478088, 1.252000093460083, 0.0, 0.0, 180.0]
+- node:
+    name: Waypoint_SH#0
+    waypoint: [1.6130006313323975, -0.5351467728614807, 1.252000093460083, 0.0, 0.0, 180.0]
+- node:
+    name: Waypoint_SH#1
+    waypoint: [1.6130006313323975, -2.035146713256836, 1.252000093460083, 0.0, 0.0, 180.0]
+- node:
     name: ConveyorBeltBody
-    vertices: []
-    waypoint: [0, -3.0, -1.30, 0.0, 0.0, 0.0, 1]
+    waypoint: [4.375002861022949, -3.5351498126983643, 1.3598122596740723, 0.0, 0.0, 0.0]
     mesh: "meshes/conveyor.stl"
 - node:
-    edges: []
-    name: Waypoint_CB#0
-    vertices: []
-    waypoint: [3.2749977111816406, -0.5351498126983643, 1.2519997358322144, 0.0, 0.0, -1.5707520246505737]
-- node:
-    edges: []
     name: ConveyorBeltBody#0
-    vertices: []
-    waypoint: [0, 0.0, -1.30, 0.0, 0.0, 0.0, 1]
+    waypoint: [4.375002861022949, -0.5351498126983643, 1.3598122596740723, 0.0, 0.0, 0.0]
+    mesh: "meshes/conveyor.stl"
+- node:
+    name: ConveyorBeltBody#1
+    waypoint: [4.375002861022949, 2.4648501873016357, 1.3598122596740723, 0.0, 0.0, 0.0]
     mesh: meshes/conveyor.stl
 - node:
-    edges: []
+    name: Waypoint_CB
+    waypoint: [3.2749977111816406, -3.5351498126983643, 1.2519997358322144, 0.0, 0.0, 0.0]
+- node:
+    name: Waypoint_CB#0
+    waypoint: [3.2749977111816406, -0.5351498126983643, 1.2519997358322144, 0.0, 0.0, 0.0]
+- node:
     name: Waypoint_CB#1
-    vertices: []
-    waypoint: [3.2749977111816406, 2.4648501873016357, 1.2519997358322144, 0.0, 0.0, -1.5707520246505737]
-- node:
-    edges: []
-    name: ConveyorBeltBody#1
-    vertices: []
-    waypoint: [0, 3.05, -1.30, 0.0, 0.0, 0.0, 1]
-    mesh: "meshes/conveyor.stl"
-- node:
-    edges: []
-    name: stairs
-    vertices: []
-    waypoint: [-3.700000524520874, 5.274998188018799, 0.675017774105072, -3.5517293550668683e-09, -3.508580932907947e-15, 3.141592502593994]
-- node:
-    edges: []
-    name: TagShelf#0
-    vertices: []
-    waypoint: [1.113000512123108, -0.5351497530937195, 1.4119999408721924, 0.0, 1.5703080892562866, 1.5707966089248657]
-- node:
-    edges: []
-    name: ShelfBody#0
-    vertices: []
-    waypoint: [0, -1.5, -1.20, 0, 0, 0, 1]
-    mesh: meshes/shelf.stl
-- node:
-    edges: []
-    name: TagShelf#1
-    vertices: []
-    waypoint: [1.35, -2.03, 0, 0, 0, 1, 0]
-- node:
-    edges: []
-    name: slidingDoor
-    vertices: []
-    waypoint: [-1.59999418258667, 1.7250511646270752, 2.475001335144043, 0.0, 0.0, -1.8561002434580587e-05]
-- node:
-    edges: []
-    name: turtlebot2i
-    vertices: []
-    waypoint: [2.1250011920928955, -4.299995422363281, 1.306992769241333, -0.0006535608554258943, 0.0006535710417665541, 1.5707954168319702]
-- node:
-    edges: []
-    name: ShelfBody#1
-    vertices: []
-    waypoint: [0.01, -3.00, -1.22, 0, 0, 0, 1]
-    mesh: "meshes/shelf.stl"
-- node:
-    edges: []
-    name: turtlebot2i#0
-    vertices: []
-    waypoint: [2.1250011920928955, 3.299999952316284, 1.306992769241333, -0.0006535607972182333, 0.0006535710417665541, -1.570796251296997]
-- node:
-    edges: []
-    name: productGreen
-    vertices: []
-    waypoint: [1.04, 1.07, 1.32, 0, 0.271, 0, 0.962]
-- node:
-    edges: []
-    name: productRed
-    vertices: []
-    waypoint: [1.04, 0.97, 1.32, 0, 0.271, 0, 0.962]
-- node:
-    edges: []
-    name: productYellow
-    vertices: []
-    waypoint: [1.04, 0.87, 1.32, 0, 0.271, 0, 0.962]
+    waypoint: [3.2749977111816406, 2.4648501873016357, 1.2519997358322144, 0.0, 0.0, 0.0]

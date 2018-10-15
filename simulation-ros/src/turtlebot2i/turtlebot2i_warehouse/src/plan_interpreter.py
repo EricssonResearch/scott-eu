@@ -4,6 +4,7 @@ import json
 import yaml
 import numpy as np
 import rospy
+import rospkg
 import tf
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -11,6 +12,7 @@ import moveit_msgs.msg
 import geometry_msgs.msg
 from moveit_commander import PlanningSceneInterface
 from moveit_commander import roscpp_initialize, RobotCommander
+from tf.transformations import quaternion_from_euler
 import time
 
 
@@ -39,13 +41,15 @@ class PlanInterpreter:
         self.scene = scene
         rospy.loginfo('Load moveit_commander')
         rospy.sleep(1)
-        self.waypoints = self.load_waypoint(
-            '/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/scene.yaml')
-        json_plan = self.load_json(
-            '/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/plan.json')
+
+        rospack = rospkg.RosPack()
+        path = rospack.get_path('turtlebot2i_warehouse')
+        print(path)
+
+        self.waypoints = self.load_waypoint(path + '/scene.yaml')
+        json_plan = self.load_json(path + '/plan.json')
         self.plan = self.parse_plan(json_plan)
-        self.load_objects(
-            '/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/scene.yaml')
+        self.load_objects(path + '/scene.yaml')
 
     def load_json(self, path):
         return json.load(open(path))
@@ -170,7 +174,21 @@ class PlanInterpreter:
             # self.__check_task_status()
 
     def waypoint_to_cartesian(self, waypoint):
-        return self.waypoints[waypoint]
+        try:
+            pose = self.waypoints[waypoint]
+            # cartesian position
+            px = pose[0]
+            py = pose[1]
+            pz = pose[2]
+            # euler orientation (rad)
+            ex = pose[3] * np.pi/180.0
+            ey = pose[4] * np.pi/180.0
+            ez = pose[5] * np.pi/180.0
+            # quaternion conversion
+            q = quaternion_from_euler(ex, ey, ez)
+            return [px, py, pz, q[0], q[1], q[2], q[3]]
+        except KeyError:
+            return None
 
     # def perform_task(self, plan):
 #    def perform_task(self):
@@ -189,7 +207,15 @@ class PlanInterpreter:
         client.wait_for_server()
 
         goal = MoveBaseGoal()
-        goal.target_pose = self.to_pose(target)
+        goal.target_pose.header.frame_id = "map"
+        goal.target_pose.header.stamp = rospy.Time.now()
+        goal.target_pose.pose.position.x = target[0]
+        goal.target_pose.pose.position.y = target[1]
+        goal.target_pose.pose.position.z = target[2]
+        goal.target_pose.pose.orientation.x = target[3]
+        goal.target_pose.pose.orientation.y = target[4]
+        goal.target_pose.pose.orientation.z = target[5]
+        goal.target_pose.pose.orientation.w = target[6]
 
         client.send_goal(goal)
 
