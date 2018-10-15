@@ -1,8 +1,10 @@
 #!/usr/bin/env python
- 
+
 import json
 import yaml
+import numpy as np
 import rospy
+import tf
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import moveit_msgs.msg
@@ -10,6 +12,7 @@ import geometry_msgs.msg
 from moveit_commander import PlanningSceneInterface
 from moveit_commander import roscpp_initialize, RobotCommander
 import time
+
 
 class Plan:
     def __init__(self):
@@ -30,14 +33,19 @@ class Task:
 class PlanInterpreter:
     # TODO: remove the hard coded part
     def __init__(self, robot, scene):
+        self.shelves = dict()
+        self.products = dict()
         self.robot = robot
         self.scene = scene
         rospy.loginfo('Load moveit_commander')
         rospy.sleep(1)
-        self.waypoints = self.load_waypoint('/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/scene.yaml')
-        json_plan = self.load_json('/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/plan.json')
+        self.waypoints = self.load_waypoint(
+            '/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/scene.yaml')
+        json_plan = self.load_json(
+            '/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/plan.json')
         self.plan = self.parse_plan(json_plan)
-        self.load_objects('/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/scene.yaml')
+        self.load_objects(
+            '/home/eznasam/project/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_warehouse/scene.yaml')
 
     def load_json(self, path):
         return json.load(open(path))
@@ -56,32 +64,71 @@ class PlanInterpreter:
 
         return waypoints
 
-    def load_objects(self, path):
-        yaml = self.load_yaml(path) 
-        for line in yaml:
-            try:
-                self.scene.add_mesh(
-                    line['node']['name'],
-                    line['node']['waypoint'],
-                    line['node']['mesh'])
-                rospy.loginfo('New object added: %s',
-                      line['node']['name'])
-                rospy.sleep(1)
-            except:
-                rospy.logwarn('Failed to add object: %s',
-                      line['node']['name'])
+    def to_pose(self, waypoint, frame="/map"):
         p = geometry_msgs.msg.PoseStamped()
-        p.header.frame_id = "base_footprint"
-        p.pose.position.x = 0.165
-        p.pose.position.y = 0.
-        p.pose.position.z = 0.066 - 0.115
-        p.pose.orientation.x = 0.707106
-        p.pose.orientation.y = 0
-        p.pose.orientation.z = 0
-        p.pose.orientation.w = 0.707106
-        rospy.loginfo(p)
-        rospy.loginfo(self.scene.add_box("box", p, [0.03, 0.03, 0.03]))
-        rospy.sleep(1)
+        p.header.frame_id = frame
+        p.header.stamp = rospy.Time.now()
+        p.pose.position.x = waypoint[0]
+        p.pose.position.y = waypoint[1]
+        p.pose.position.z = waypoint[2]
+        if len(waypoint) == 7:
+            p.pose.orientation.x = waypoint[3]
+            p.pose.orientation.y = waypoint[4]
+            p.pose.orientation.z = waypoint[5]
+            p.pose.orientation.w = waypoint[6]
+        elif len(waypoint) == 6:
+            q = tf.transformations.quaternion_from_euler(waypoint[3],
+                                                         waypoint[4],
+                                                         waypoint[5])
+            p.pose.orientation.x = q[0]
+            p.pose.orientation.y = q[1]
+            p.pose.orientation.z = q[2]
+            p.pose.orientation.w = q[3]
+        return p
+
+    def add_mesh(self, node):
+        try:
+            self.scene.add_mesh(node['name'],
+                                self.to_pose(node['waypoint']),
+                                node['mesh'])
+            rospy.loginfo('New object added: %s', node['name'])
+        except:
+            rospy.logwarn('Failed to add object: %s %s',
+                          node['name'],
+                          node['mesh'])
+
+    def add_box(self, node, size=[0.03, 0.03, 0.03]):
+        try:
+            self.scene.add_box(node['name'],
+                               self.to_pose(node['waypoint']),
+                               size)
+            rospy.loginfo('New object added: %s', node['name'])
+        except:
+            rospy.logwarn('Failed to add product: %s',
+                          node['name'])
+
+    def add_product(self, shelf, product):
+        product = self.products[product]
+        pose = shelf
+        pose = np.asarray(pose[:3]) + np.asarray(product['waypoint'][:3])
+        product['waypoint'] = np.hstack(
+            (pose, product['waypoint'][3:]))
+        rospy.loginfo(product['waypoint'])
+        self.add_box(product)
+        return product['name']
+        
+    def load_objects(self, path):
+        yaml = self.load_yaml(path)
+        for line in yaml:
+            if 'mesh' in line['node'].keys():
+                self.add_mesh(line['node'])
+            if 'Shelf' in line['node']['name']:
+                self.shelves[
+                    line['node']['name']] = line['node']
+            if 'product' in line['node']['name']:
+                self.products[
+                    line['node']['name']] = line['node']
+                 
 
     # def parse_plan(self, plan):
     def parse_plan(self, json_plan):
@@ -108,12 +155,14 @@ class PlanInterpreter:
         for task in self.plan.task_list:
             if task.action == 'move':
                 print('move')
-                # self.__move_task(task.robot, task.target)
+                self.__move_task(task.robot, task.target)
 
             elif task.action == 'pick':
+                input()
                 print('pick')
-                self.__pick_task()
-
+                product_name = self.add_product(task.target, task.product)
+                self.__pick_task(product_name)
+                exit()
             elif task.action == 'drop':
                 print('drop')
                 self.__place_task([0, 0, 0])
@@ -136,31 +185,25 @@ class PlanInterpreter:
 
     def __move_task(self, robot, target):
         # TODO: The client must be retrieved by the robot name
-        client = actionlib.SimpleActionClient(
-            robot + '/move_base', MoveBaseAction)
+        client = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
         client.wait_for_server()
 
         goal = MoveBaseGoal()
-        goal.target_pose.header.frame_id = "map"
-        goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = target[0]
-        goal.target_pose.pose.position.y = target[1]
-        goal.target_pose.pose.position.z = target[2]
-        goal.target_pose.pose.orientation.w = target[3]
+        goal.target_pose = self.to_pose(target)
 
         client.send_goal(goal)
-        
+
         wait = client.wait_for_result()
         if not wait:
             rospy.logerr("Action server not available!")
             rospy.signal_shutdown("Action server not available!")
         else:
             state = client.get_state()
-        if state == GoalStatus.SUCCEEDED:
+        if state == 3:
             rospy.loginfo("Goal succeeded!")
 
     def __pick_task(self, target_obj="box"):
-        client = actionlib.SimpleActionClient('pick_custom',
+        client = actionlib.SimpleActionClient('/pick_custom',
                                               moveit_msgs.msg.PickupAction)
         client.wait_for_server()
         goal = moveit_msgs.msg.PickupActionGoal().goal
@@ -188,7 +231,8 @@ class PlanInterpreter:
         return client.get_result()
 
     def __check_task_status(self, robot):
-        client = actionlib.SimpleActionClient(robot + '/move_base', MoveBaseAction)
+        client = actionlib.SimpleActionClient(
+            robot + '/move_base', MoveBaseAction)
         client.wait_for_server()
 
         wait = client.wait_for_result()
@@ -207,14 +251,14 @@ class PlanInterpreter:
 
 
 if __name__ == "__main__":
-    rospy.sleep(30)
+    # rospy.sleep(30)
     roscpp_initialize([])
     rospy.init_node('plan_interpreter_py')
     robot = RobotCommander()
     scene = PlanningSceneInterface()
-    rospy.sleep(15)
+    # rospy.sleep(15)
     plan_int = PlanInterpreter(robot, scene)
-    #print(plan_int.plan)
-    #print(plan_int.waypoints)
-    #print(plan_int.waypoints[""])
+    # print(plan_int.plan)
+    # print(plan_int.waypoints)
+    # print(plan_int.waypoints[""])
     plan_int.task_manager()
