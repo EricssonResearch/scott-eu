@@ -11,7 +11,9 @@ from moveit_msgs.msg import RobotState
 class Phantomx_Pincher():
     def __init__(self):
         roscpp_initialize([])
-        rospy.sleep(5) #wait for moveit. TO-DO
+        rospy.sleep(8)
+        # TO-DO: wait for moveit.
+        self.listener = tf.TransformListener()
         self.robot = RobotCommander()
         self.init_planner()
 
@@ -26,10 +28,9 @@ class Phantomx_Pincher():
     def set_start_state_to_current_state(self):
         self.robot.pincher_arm.set_start_state_to_current_state()
         self.robot.pincher_gripper.set_start_state_to_current_state()
-        
 
     def openGripper(self):
-        #open gripper
+        # open gripper
         posture = dict()
         posture["PhantomXPincher_gripperClose_joint"] = 0.030
         self.robot.pincher_gripper.set_joint_value_target(posture)
@@ -48,13 +49,34 @@ class Phantomx_Pincher():
             return None
         return gplan
 
+    def target_to_frame(self, target,
+                        frame_to="/arm_base_link",
+                        frame_from="/map"):
+        pose = geometry_msgs.msg.PoseStamped()
+        pose.pose.position.x = target[0]
+        pose.pose.position.y = target[1]
+        pose.pose.position.z = target[2]
+        pose.pose.orientation.w = 1
+        pose.header.frame_id = frame_from
+        self.listener.waitForTransform(frame_from,
+                                       frame_to,
+                                       rospy.Time.now(),
+                                       rospy.Duration(4))
+        self.listener.getLatestCommonTime(frame_from, frame_to)
+        return self.listener.transformPose(frame_to, pose)
+        
     def ef_pose(self, target, attemps=10):
         # Here we try to verify if the target is in the arm range. Also, we
         # try to orient the end-effector(ef) to nice hard-coded orientation
         # Returns: planned trajectory
         self.robot.get_current_state()
+        target_r = self.target_to_frame(target)
+        target[0] = target_r.pose.position.x
+        target[1] = target_r.pose.position.y
+        target[2] = target_r.pose.position.z
+        rospy.loginfo(target)
         d = pow(pow(target[0], 2) + pow(target[1], 2), 0.5)
-        if d > 3.0:
+        if d > 0.3:
             rospy.loginfo("Too far. Out of reach")
             return None
         rp = np.pi/2.0 - np.arcsin((d-0.1)/.205)
@@ -64,22 +86,27 @@ class Phantomx_Pincher():
         again = True
         while (again and attemp < 10):
             again = False
-
             rp_a = attemp * ((0.05 + 0.05)*np.random.ranf() - 0.05) + rp
             ry_a = attemp * ((0.05 + 0.05)*np.random.ranf() - 0.05) + ry
             q = tf.transformations.quaternion_from_euler(0, rp_a, ry_a)
-            print [0, rp_a, ry_a]
+            rospy.loginfo([0, rp_a, ry_a])
 
-            p = geometry_msgs.msg.Pose()
-            p.position.x = target[0]
-            p.position.y = target[1]
-            p.position.z = target[2]
-            p.orientation.x = q[0]
-            p.orientation.y = q[1]
-            p.orientation.z = q[2]
-            p.orientation.w = q[3]
-
-            target[2] += np.abs(np.cos(rp))/250.0
+            p = geometry_msgs.msg.PoseStamped()
+            p.header.frame_id = '/arm_base_link'
+            p.pose.position.x = target[0]
+            p.pose.position.y = target[1]
+            p.pose.position.z = target[2] + np.abs(np.cos(rp))/50.0
+            p.pose.orientation.x = q[0]
+            p.pose.orientation.y = q[1]
+            p.pose.orientation.z = q[2]
+            p.pose.orientation.w = q[3]
+            rospy.loginfo("New target pose [%.2f, %.2f, %.2f] [d: %.2f, p: %.2f, y: %.2f]",
+                          p.pose.position.x,
+                          p.pose.position.y,
+                          p.pose.position.z,
+                          d,
+                          rp_a,
+                          ry_a)
 
             self.robot.pincher_arm.set_pose_target(p)
             planed = self.robot.pincher_arm.plan()
