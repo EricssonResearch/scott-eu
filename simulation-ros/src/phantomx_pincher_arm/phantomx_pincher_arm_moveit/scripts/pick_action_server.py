@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-import sys
-import numpy as np
+import tf
 import rospy
 import actionlib
 import moveit_msgs.msg
-from  geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped
 from moveit_commander import RobotCommander, roscpp_initialize
 from moveit_commander import PlanningSceneInterface
 from phantomx_pincher import Phantomx_Pincher
+
 
 class Pick(object):
     _feedback = moveit_msgs.msg.PickupActionFeedback().feedback
@@ -47,7 +47,7 @@ class Pick(object):
         self._as.publish_feedback(self._feedback)
 
         self.robot.robot.get_current_state()
-        
+        rospy.loginfo('Open Gripper Plan')
         plan = self.robot.openGripper()
         if plan is None:
             rospy.loginfo("Open Gripper plan failed")
@@ -58,12 +58,14 @@ class Pick(object):
         self._result.trajectory_descriptions.append('OpenGripper')
         self._result.trajectory_stages.append(plan)
         self._feedback.state = "Opening gripper"
+        rospy.loginfo('Opening gripper')
         print self._feedback
         self.robot.gripper_execute(plan)
         self._as.publish_feedback(self._feedback)
         rospy.sleep(1)
 
         self._feedback.state = "Planning to reach object"
+        rospy.loginfo('Planning to reach obj')
         self._as.publish_feedback(self._feedback)
         target = self.get_target(goal.target_name)
         plan = self.robot.ef_pose(target)
@@ -75,12 +77,12 @@ class Pick(object):
             return None
 
         self._feedback.state = "Going to the object"
+        rospy.loginfo('Going to Obj')
         self._as.publish_feedback(self._feedback)
         self._result.trajectory_descriptions.append("Going to grasp the object")
         self._result.trajectory_stages.append(plan)
         self.robot.arm_execute(plan)
-        rospy.sleep(7)
-        
+        rospy.sleep(15)
         self._feedback.state = "Removing obtect to be grasp from the planning scene"
         self._as.publish_feedback(self._feedback)
         obj  = self.scene.get_objects([goal.target_name])
