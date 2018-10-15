@@ -2,21 +2,26 @@
 
 ## Train Vrep dataset
 
-First, you should install the maskrcnn, follow the steps start from Introduction. Make sure that you can run [demo.ipynb](samples/demo.ipynb) correctly.
+First, you should install the maskrcnn, follow the steps start from Introduction below. Make sure that you can run [demo.ipynb](samples/demo.ipynb) correctly.
 
 ### Train and test model
-You can start training model when you get the similar train dataset with the examples in `./train_data`. If you have no idea on how to make the daaset like this, try to follow the steps in part Make train dataset. 
+You can start training model when you get the similar train dataset with the examples in `./train_data`. If you have no idea on how to make the dataset like this, try to follow the steps on part **Make train dataset**. 
 
-1. **train model**: Fist, put your train dataset in the folder `./train_data`. Then run `python train_model.py`
+1. **train model**: 
+   - put your train dataset in the folder `./train_data`,
+   - run `python train_model.py`
    
-2. **test model**: First, put the images you want to test in the folder `./test_data`. Then run `python test_model.py`
+2. **test model**: 
+   - put the images you want to test in the folder `./test_data`, 
+   - run `python test_model.py`.  
+  * After detection, it would randomly pick up one image and show the detection result image. If you want test many the images at one time and save the results, try follow the steps on part **Images detection and store** below.  
 
-You can change the parameters and config as you want in both `train_model.py` and `test_model.py`. But please note the config should be same in these two files. 
+* You can change the parameters and config as you want in both `train_model.py` and `test_model.py`. But please note the config should be same in these two files. 
 
 ### Images detection and store
 
 ### Video detection
- 
+
 ### Make train dataset
 
 ## Some useful tools
