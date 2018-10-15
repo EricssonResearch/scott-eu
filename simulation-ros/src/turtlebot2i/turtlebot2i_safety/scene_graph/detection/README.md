@@ -1,18 +1,29 @@
 # Mask R-CNN for Object Detection and Segmentation
 
-## Train vrep dataset
-### Test the trained model
-You can start testing the model I showed in lasting meeting. 
+## Train Vrep dataset
 
-1. change the path in the file `./testShapes1.py`
-2. run `python testShapes1.py`
+First, you should install the maskrcnn, follow the steps start from Introduction. Make sure that you can run [demo.ipynb](samples/demo.ipynb) correctly.
 
-Please note that because github has a limitation of 100MB for upload file. I put trained model for test `mask_rcnn_vrepdoor_0030` in teams->KTH Thesis->TrainSet. Please download it and put it to `./logs/`
+### Train and test model
+You can start training model when you get the similar train dataset with the examples in `./train_data`. If you have no idea on how to make the daaset like this, try to follow the steps in part Make train dataset. 
 
-### Train new model
+1. **train model**: Fist, put your train dataset in the folder `./train_data`. Then run `python train_model.py`
+   
+2. **test model**: First, put the images you want to test in the folder `./test_data`. Then run `python test_model.py`
+
+You can change the parameters and config as you want in both `train_model.py` and `test_model.py`. But please note the config should be same in these two files. 
+
+### Images detection and store
+
+### Video detection
+ 
+### Make train dataset
+
+## Some useful tools
+
 When you want to train new dataset, the first step is to get images from rosbag.
 
-There are some [small scripts](https://github.com/shaolei-wang/mask_rcnn/tree/master/tools) could be helpful in `./tools`. You can use them to get the train dataset as in the folder `./trainData`. Train a new model:
+There are some [small scripts](https://github.com/shaolei-wang/mask_rcnn/tree/master/tools) could be helpful in `./tools`. You can use them to get the train dataset as in the folder `./train_data`. Train a new model:
 1. Follow the steps in [readme file](https://github.com/shaolei-wang/mask_rcnn/blob/master/tools/readme.md) in `./tools` to make new train dataset.
    
 2. Change parameters in the `class ShapesConfig(Config)` in `./trainShape1.py`, this could overwrite the parameter config in `./mrcnn/config.py`.

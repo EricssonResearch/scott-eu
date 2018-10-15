@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# this script is test the model after training, 
+# random pick an image from test image directory
+# change test directory 'IMAGE_DIR' in line 48 (approximately)
+# change model path 'model_path' in line 96 (approximately)
+# Shaolei Wang, 2018-10-15
+
 import os
 import sys
 import random
@@ -38,7 +44,7 @@ if not os.path.exists(COCO_MODEL_PATH):
     print("No pretrained weights found, download now...")
 
 # Directory of images to run detection on
-IMAGE_DIR = os.path.join(ROOT_DIR, "imageTest4")
+IMAGE_DIR = os.path.join(ROOT_DIR, "test_data")
 
 class VrepConfig(Config):
     """Configuration for training on the toy shapes dataset.
@@ -88,8 +94,6 @@ model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=config)
 # Load weights trained on MS-COCO
 # model_path = model.find_last()
 model_path = os.path.join(ROOT_DIR, "logs/coco_vrepall_1002.h5")
-# model_path = os.path.join(ROOT_DIR, "logs/imagenet_vrepall_1003.h5")
-# model_path = os.path.join(ROOT_DIR, "logs/mask_rcnn_vrepall_0030.h5")
 # model.load_weights(COCO_MODEL_PATH, by_name=True)
 model.load_weights(model_path, by_name=True)
 
