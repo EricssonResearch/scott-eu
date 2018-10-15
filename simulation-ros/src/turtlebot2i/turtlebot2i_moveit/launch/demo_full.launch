@@ -1,24 +1,57 @@
 <?xml version="1.0"?>
 <launch>
-  
-  <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description_full.launch"/>
-  
-  <!-- V-REP ROS Controller -->
-  <rosparam file="$(find phantomx_pincher_arm_vrep_controller)/control/phantomXPincher.yaml" command="load"/> 
- 
-  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
+  <arg name="robot_name" default="turtlebot2i"/>
+  <arg name="joint1"        default="PhantomXPincher_joint1" />
+  <arg name="joint2"        default="PhantomXPincher_joint2" />
+  <arg name="joint3"        default="PhantomXPincher_joint3" />
+  <arg name="joint4"        default="PhantomXPincher_joint4" />
+  <arg name="gripper1"      default="PhantomXPincher_gripperCenter_joint" />
+  <arg name="gripper2"      default="PhantomXPincher_gripperClose_joint" />
 
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="/use_gui" value="false"/>
-    <rosparam param="/source_list">[/joint_states]</rosparam>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find turtlebot2i_description)/robots/kobuki_interbotix_astra.urdf.xacro'" />
+
+  <!-- The semantic description that corresponds to the URDF -->
+  <param name="robot_description_semantic" textfile="$(find turtlebot2i_moveit)/config/turtlebot2i.srdf" />
+  
+  <!-- Load updated joint limits (override information from URDF) -->
+  <rosparam command="load" file="$(find phantomx_pincher_arm_moveit)/config/joint_limits.yaml"/>
+
+  <!-- Load default settings for kinematics; these settings are overridden by settings in a node's namespace -->
+  <rosparam command="load" file="$(find phantomx_pincher_arm_moveit)/config/kinematics.yaml"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <!-- <param name="tf_prefix" type="string" value="$(arg robot_name)"/>-->
   </node>
 
-  <include file="$(find phantomx_pincher_arm_moveit)/launch/named_pose_director.launch" >
-    <arg name="load_moveit" value="true"/>
-  </include>
+  <param name="vrep_ip"     value="127.0.0.1" />
+  <param name="vrep_port"   value="20000" />
+  <rosparam param="joints" subst_value="true">
+    - $(arg joint1)
+    - $(arg joint2)
+    - $(arg joint3)
+    - $(arg joint4)
+    - $(arg gripper1)
+    - $(arg gripper2)
+  </rosparam> 
   
-  <!-- This argument disables the joint limits -->
-  <arg name="limited" value="false"/>
+  <node name="vrep_controller" pkg="phantomx_pincher_arm_vrep_controller" type="controller_remoteApi" />
 
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find phantomx_pincher_arm_moveit)/config/block_manipulation_demo.rviz" />
+  <!-- Start controllers -->
+  <!-- Joint trajectory controller (this is not a low-level controller) -->
+  <rosparam file="$(find phantomx_pincher_arm_vrep_controller)/control/phantomXPincher.yaml" command="load" /> 
+  
+  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
+
+
+  <include file="$(find phantomx_pincher_arm_moveit)/launch/move_group.launch">
+    <arg name="allow_trajectory_execution" value="true"/>  
+    <arg name="fake_execution" value="false"/>
+    <arg name="info" value="true"/>
+  </include>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_moveit)/config/moveit.rviz" />
+  
 </launch>
