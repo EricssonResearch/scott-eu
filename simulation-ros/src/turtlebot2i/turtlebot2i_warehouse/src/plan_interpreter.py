@@ -43,13 +43,13 @@ class PlanInterpreter:
         rospy.sleep(1)
 
         rospack = rospkg.RosPack()
-        path = rospack.get_path('turtlebot2i_warehouse')
-        print(path)
+        self.path = rospack.get_path('turtlebot2i_warehouse')
+        print(self.path)
 
-        self.waypoints = self.load_waypoint(path + '/scene.yaml')
-        json_plan = self.load_json(path + '/plan.json')
+        self.waypoints = self.load_waypoint(self.path + '/scene.yaml')
+        json_plan = self.load_json(self.path + '/plan.json')
         self.plan = self.parse_plan(json_plan)
-        self.load_objects(path + '/scene.yaml')
+        self.load_objects(self.path + '/scene.yaml')
 
     def load_json(self, path):
         return json.load(open(path))
@@ -81,9 +81,9 @@ class PlanInterpreter:
             p.pose.orientation.z = waypoint[5]
             p.pose.orientation.w = waypoint[6]
         elif len(waypoint) == 6:
-            q = tf.transformations.quaternion_from_euler(waypoint[3],
-                                                         waypoint[4],
-                                                         waypoint[5])
+            q = quaternion_from_euler(waypoint[3]/180.0*np.pi,
+                                      waypoint[4]/180.0*np.pi,
+                                      waypoint[5]/180.0*np.pi)
             p.pose.orientation.x = q[0]
             p.pose.orientation.y = q[1]
             p.pose.orientation.z = q[2]
@@ -93,18 +93,18 @@ class PlanInterpreter:
     def add_mesh(self, node):
         try:
             self.scene.add_mesh(node['name'],
-                                self.to_pose(node['waypoint']),
-                                node['mesh'])
+                                self.to_pose(node['obj_position']),
+                                self.path + '/' + node['mesh'])
             rospy.loginfo('New object added: %s', node['name'])
         except:
             rospy.logwarn('Failed to add object: %s %s',
                           node['name'],
-                          node['mesh'])
+                          self.path + '/' + node['mesh'])
 
     def add_box(self, node, size=[0.03, 0.03, 0.03]):
         try:
             self.scene.add_box(node['name'],
-                               self.to_pose(node['waypoint']),
+                               self.to_pose(node['obj_position']),
                                size)
             rospy.loginfo('New object added: %s', node['name'])
         except:
@@ -113,17 +113,32 @@ class PlanInterpreter:
 
     def add_product(self, shelf, product):
         product = self.products[product]
-        pose = shelf
-        pose = np.asarray(pose[:3]) + np.asarray(product['waypoint'][:3])
-        product['waypoint'] = np.hstack(
-            (pose, product['waypoint'][3:]))
-        rospy.loginfo(product['waypoint'])
+        pose = self.shelves[shelf]['obj_position']
+        pose = np.asarray(pose[:3]) + np.asarray(product['obj_position'][:3])
+        product['obj_position'] = np.hstack(
+            (pose, product['obj_position'][3:]))
+        rospy.loginfo(product['obj_position'])
         self.add_box(product)
         return product['name']
-        
+
+    def obj_position(self, waypoint, offset):
+        waypoint = np.asarray(waypoint)
+        offset = np.asarray(offset)
+        if waypoint.shape[0] != offset.shape[0]:
+            rospy.logwarn('Waypoint: [%s] and Offset: [%s] shapes don\'t match',
+                          waypoint,
+                          offset)
+            return waypoint
+        return waypoint - offset
+    
     def load_objects(self, path):
         yaml = self.load_yaml(path)
         for line in yaml:
+            if 'offset' in line['node'].keys():
+                line['node']['obj_position'] = self.obj_position(line['node']['waypoint'],
+                                                                 line['node']['offset'])
+            else:
+                line['node']['obj_position'] = line['node']['waypoint']
             if 'mesh' in line['node'].keys():
                 self.add_mesh(line['node'])
             if 'Shelf' in line['node']['name']:
@@ -134,7 +149,6 @@ class PlanInterpreter:
                     line['node']['name']] = line['node']
                  
 
-    # def parse_plan(self, plan):
     def parse_plan(self, json_plan):
         p_plan = Plan()
         p_plan.id = json_plan['id']
@@ -147,7 +161,7 @@ class PlanInterpreter:
                 p_task = Task()
                 p_task.action = task[0]
                 p_task.robot = task[1]
-                p_task.target = self.waypoint_to_cartesian(task[2])
+                p_task.target = task[2]
                 if (len(task)) == 4:
                     p_task.product = task[3]
 
@@ -158,48 +172,24 @@ class PlanInterpreter:
     def task_manager(self):
         for task in self.plan.task_list:
             if task.action == 'move':
-                print('move')
+                rospy.loginfo('Move to [%s]', task.target)
                 self.__move_task(task.robot, task.target)
 
             elif task.action == 'pick':
                 input()
-                print('pick')
+                rospy.loginfo('Picking [%s] at [%s]',
+                              task.product,
+                              task.target)
                 product_name = self.add_product(task.target, task.product)
                 self.__pick_task(product_name)
                 exit()
             elif task.action == 'drop':
-                print('drop')
+                rospy.loginfo('Dropping [%s] at [%s]',
+                              task.taget,
+                              task.product)
                 self.__place_task([0, 0, 0])
 
             # self.__check_task_status()
-
-    def waypoint_to_cartesian(self, waypoint):
-        try:
-            pose = self.waypoints[waypoint]
-            # cartesian position
-            px = pose[0]
-            py = pose[1]
-            pz = pose[2]
-            # euler orientation (rad)
-            ex = pose[3] * np.pi/180.0
-            ey = pose[4] * np.pi/180.0
-            ez = pose[5] * np.pi/180.0
-            # quaternion conversion
-            q = quaternion_from_euler(ex, ey, ez)
-            return [px, py, pz, q[0], q[1], q[2], q[3]]
-        except KeyError:
-            return None
-
-    # def perform_task(self, plan):
-#    def perform_task(self):
-#        if self.plan == 'move':
-#            __move_task()
-#
-#        elif self.plan == 'pick':
-#            __pick_task()
-#
-#        elif self.plan == 'drop':
-#            __drop_task()
 
     def __move_task(self, robot, target):
         # TODO: The client must be retrieved by the robot name
@@ -207,16 +197,7 @@ class PlanInterpreter:
         client.wait_for_server()
 
         goal = MoveBaseGoal()
-        goal.target_pose.header.frame_id = "map"
-        goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = target[0]
-        goal.target_pose.pose.position.y = target[1]
-        goal.target_pose.pose.position.z = target[2]
-        goal.target_pose.pose.orientation.x = target[3]
-        goal.target_pose.pose.orientation.y = target[4]
-        goal.target_pose.pose.orientation.z = target[5]
-        goal.target_pose.pose.orientation.w = target[6]
-
+        goal.target_pose = self.to_pose(self.waypoints[target])
         client.send_goal(goal)
 
         wait = client.wait_for_result()
@@ -234,7 +215,6 @@ class PlanInterpreter:
         client.wait_for_server()
         goal = moveit_msgs.msg.PickupActionGoal().goal
         goal.target_name = target_obj
-        print goal
         client.send_goal(goal)
         client.wait_for_result()
         return client.get_result()
