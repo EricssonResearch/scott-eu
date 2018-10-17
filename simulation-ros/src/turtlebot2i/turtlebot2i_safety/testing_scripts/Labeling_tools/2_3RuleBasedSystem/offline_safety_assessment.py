@@ -100,13 +100,16 @@ Fuzzy rules
 #rule =  ctrl.Rule( object_speed[' '] & object_direction[' '] & object_speed[' ']  , object_risk[' ']  )
 time_previous = time.time()  
 
+import cPickle as pickle # 0.44 sec to read a var:better
+#import pickle           #0.988 sec
 from rules_demo import rule_list_generator
 #from rules import rule_list_generator
 rule_list=rule_list_generator(object_type,object_distance,object_direction, object_speed, object_orientation, object_risk)
 
 run_time = time.time() - time_previous    
 #print 'execute time=',one_run_time,'s'           
-print 'setting rules time=',run_time,'sec'  
+print 'setting rules time=',run_time,'sec'
+time_previous = time.time()    
 """
 
 Control System Creation and Simulation
@@ -140,8 +143,8 @@ ra_fls = pickle.load(f)
 
 run_time = time.time() - time_previous    
 #print 'execute time=',one_run_time,'s'           
-print 'creating a system time=',run_time,'sec'  
-
+print 'creating/reading a system time=',run_time,'sec'  
+time_previous = time.time()  
 """
 In order to simulate this control system, we will create a
 ``ControlSystemSimulation``.  Think of this object representing our controller
