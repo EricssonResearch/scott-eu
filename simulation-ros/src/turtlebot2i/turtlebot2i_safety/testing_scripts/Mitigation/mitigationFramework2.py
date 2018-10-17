@@ -87,8 +87,8 @@ multiple output format:
  (output1['term1'], output2['term2'])
 """
 
-from rules_demo import rule_list_generator
-#from rules import rule_list_generator
+from mitigation_rules_demo import rule_list_generator
+#from mitigation_rules import rule_list_generator
 rule_list=rule_list_generator(object_distance,object_direction, object_risk,left_speed,right_speed)
 
 
@@ -117,7 +117,7 @@ and calling the ``compute`` method.
 """
 # Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
 # Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
-risk_mitigation_instance.input['distance'] = 1.0		
+risk_mitigation_instance.input['distance'] = 0.60		
 risk_mitigation_instance.input['direction'] = 0.3		
 risk_mitigation_instance.input['risk'] = 3.5
 # Crunch the numbers

@@ -2,8 +2,12 @@
 """
  Fuzzy logic system for risk mitigation
 
-    Input: Scene-graph content + Risk level
+    Input: Scene-graph content (All) + Risk level
     Output: Robot left/right weel speed (scale?)
+
+    Framework2 is better. So this one will not be maintained.
+
+    Note: This program cannot run because the "rule_list_generator" input has been changed!
 """
 import numpy as np
 import skfuzzy as fuzz
@@ -22,14 +26,17 @@ green_IZW = 0.4*3
 # Universe variables: Here we define the Antecedent/Consequent range 
 # We can have a input outside the range: No range check
 # np.arange(min, max, step) : step will influence accuracy (esp. curve e.g. Gaussian MF)
+
 step_meter = 0.02 # If the step are large, the Gaussian MF will regress to Triangular MF
 step_meter_per_second = 0.02
 step_risk = 0.05
+range_type = np.arange(0, 2+1, 1)
 range_degree = np.arange(-180, 180+1, 1.0)    # Range: -180 degree ~ 180 degree for direction and orientation
 range_meter  = np.arange(0, 3.0+step_meter, step_meter)         # Range:  0 meter ~ 3 meter for distance
 range_meter_per_second = np.arange(0, 2.0+step_meter_per_second, step_meter_per_second)#Range:  0 mps ~ 2 mps for speed
 range_risk = np.arange(0, 5+step_risk, step_risk)  # Range: 0,1,2,3,4 for risk
 
+object_type = ctrl.Antecedent(range_type, 'type') 
 object_distance = ctrl.Antecedent(range_meter, 'distance')     # 0- 3  meter
 object_direction  = ctrl.Antecedent(range_degree , 'direction') # -180~180 degree
 object_speed = ctrl.Antecedent(range_meter_per_second , 'speed')		#0- 3 m/s
@@ -40,9 +47,13 @@ left_speed  = ctrl.Consequent(range_meter_per_second, 'left')
 right_speed = ctrl.Consequent(range_meter_per_second, 'right')
 
 # Custom membership functions can be built interactively with a familiar Pythonic API
+object_type['StaObj'] = fuzz.trimf(range_type, [0, 0, 0.1])
+object_type['DynObj'] = fuzz.trimf(range_type, [0.9, 1, 1.1])
+object_type['Human'] = fuzz.trimf(range_type, [1.9, 2, 2])
+# Distance
 distance_p1 = fuzz.gaussmf(range_meter,IZW,0.1)
 distance_p2 = fuzz.gaussmf(range_meter,IZW,0.1) 
-# Distance
+
 object_distance['Near']  = fuzz.gaussmf(range_meter,0.5*IZW,0.1) # skfuzzy.membership.gaussmf(x, mean, sigma)
 object_distance['Medium']= fuzz.gaussmf(range_meter,IZW,0.1)     # x: range_meter or object_distance.universe
 object_distance['Far']   = fuzz.gaussmf(range_meter,2.0*IZW,0.1)
@@ -106,8 +117,11 @@ multiple output format:
  (output1['term1'], output2['term2'])
 """
 
-from rules_demo import rule_list_generator
-#from rules import rule_list_generator
+from mitigation_rules_demo import rule_list_generator
+#from mitigation_rules import rule_list_generator
+'''
+    Error here. 
+'''
 rule_list=rule_list_generator(object_type,object_distance,object_direction, object_speed, object_orientation, object_risk)
 
 
@@ -136,6 +150,7 @@ and calling the ``compute`` method.
 """
 # Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
 # Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
+risk_mitigation_instance.input['type'] = 0
 risk_mitigation_instance.input['distance'] = 0.5		
 risk_mitigation_instance.input['direction'] = 15.3		
 risk_mitigation_instance.input['speed'] =   0.2	

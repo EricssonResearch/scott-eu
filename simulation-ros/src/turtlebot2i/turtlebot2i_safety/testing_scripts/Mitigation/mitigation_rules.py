@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 from skfuzzy import control as ctrl
-def rule_list_generator(object_distance,object_direction,object_risk,left_speed,right_speed): 
+'''
+    Here are all mitigation rules. Will be checked again.
+'''
 
+def rule_list_generator(object_distance,object_direction,object_risk,left_speed,right_speed): 
+    # Mitigation Rule Format
     #rule00X= ctrl.Rule(object_distance['Near']&object_direction[]&object_risk , (left_speed['???'],right_speed['???']))
-    rule001= ctrl.Rule(object_distance['Near'], (left_speed['Slow'],right_speed['Slow']))
+    rule001= ctrl.Rule(object_distance['Near'], (left_speed['Stop'],right_speed['Stop']))
     ''' Turn left
     TODO: More here (5 Risk level)
     '''

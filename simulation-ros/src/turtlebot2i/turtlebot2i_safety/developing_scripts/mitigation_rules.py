@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 from skfuzzy import control as ctrl
-def rule_list_generator(object_distance,object_direction,object_risk,left_speed,right_speed): 
+'''
+    Here are all mitigation rules. Will be checked again.
+'''
 
+def rule_list_generator(object_distance,object_direction,object_risk,left_speed,right_speed): 
+    # Mitigation Rule Format
     #rule00X= ctrl.Rule(object_distance['Near']&object_direction[]&object_risk , (left_speed['???'],right_speed['???']))
-    rule001= ctrl.Rule(object_distance['Near'], (left_speed['Slow'],right_speed['Slow']))
+    rule001= ctrl.Rule(object_distance['Near'], (left_speed['Stop'],right_speed['Stop']))
     ''' Turn left
+    TODO: More here (5 Risk level)
     '''
     rule002= ctrl.Rule( object_distance['Medium'] & object_direction['Front'] & object_risk['VeryLow'], (left_speed['Medium'],right_speed['Fast']))
     rule003= ctrl.Rule( object_distance['Medium'] & object_direction['Front'] & object_risk['Medium'], (left_speed['Medium'],right_speed['Fast']))
@@ -26,6 +31,7 @@ def rule_list_generator(object_distance,object_direction,object_risk,left_speed,
     rule015= ctrl.Rule( object_distance['Medium'] & object_direction['Right'] & object_risk['Medium'], (left_speed['Medium'],right_speed['Medium'])) 
     rule016= ctrl.Rule( object_distance['Medium'] & object_direction['Right'] & object_risk['VeryHigh'], (left_speed['Slow'],right_speed['Slow'])) 
     ''' Reduce speed
+    TODO: More here (5 Risk level)
     '''
     rule017= ctrl.Rule( object_distance['Far'] & object_direction['Front'] & object_risk['VeryLow'], (left_speed['Fast'],right_speed['Fast']))
     rule018= ctrl.Rule( object_distance['Far'] & object_direction['Front'] & object_risk['Medium'], (left_speed['Medium'],right_speed['Slow']))
