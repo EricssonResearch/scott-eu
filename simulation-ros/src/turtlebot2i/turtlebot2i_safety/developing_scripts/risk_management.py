@@ -13,6 +13,8 @@ from skfuzzy import control as ctrl
 # Safety control MSG
 import std_msgs.msg 
 from geometry_msgs.msg import Twist,Vector3
+# Debug
+import time
 
 def init_var():
 
@@ -37,6 +39,10 @@ def init_var():
     #s=sim.getObjectSizeFactor(objHandle) -- make sure that if we scale the robot during simulation, other values are scaled too!
     interWheelDistance=0.137#*s
 
+    global navi_linVel,navi_rotVel,time_previous
+    navi_linVel = 0  #Initialization
+    navi_rotVel = 0  #Initialization
+    time_previous = time.time()        
 def init_regEx():    
     name_pattern  = "(\w+#?\d?)"
     float_pattern = "(-?\d+\.\d+)"
@@ -168,7 +174,7 @@ def cal_safe_vel(object_distance,object_direction,object_risk):
 
     risk_mitigation_instance.input['distance'] = object_distance		
     risk_mitigation_instance.input['direction'] = object_direction		
-    risk_mitigation_instance.input['risk'] = object_risk
+    risk_mitigation_instance.input['risk_input'] = object_risk
 
     risk_mitigation_instance.compute()
     #print risk_mitigation_instance.print_state()
@@ -177,13 +183,19 @@ def cal_safe_vel(object_distance,object_direction,object_risk):
 
     return risk_mitigation_instance.output['left'],risk_mitigation_instance.output['right']
 
-def pub_safe_vel(left_vel,right_vel):
+def pub_safe_vel(left_vel_scale,right_vel_scale):
+    # Global navi vel
+    navi_leftVel = (navi_linVel - navi_rotVel*interWheelDistance)*2
+    navi_rightVel= (navi_linVel + navi_rotVel*interWheelDistance)*2
+    # Apply scale
+    left_vel =navi_leftVel*left_vel_scale
+    right_vel=navi_rightVel*right_vel_scale
 
     linVel = (right_vel+left_vel)/2
     rotVel = (right_vel-left_vel)/(2*interWheelDistance)
     # NEED to check: turtlebot2i_turtlebot2i.lua
     rospy.loginfo("Publish a safety_controller topic")
-    rospy.loginfo("left_vel=%1.2f,right_vel=%1.2f",left_vel,right_vel)
+    rospy.loginfo("left_vel_scale=%1.2f,right_vel_scale=%1.2f",left_vel_scale,right_vel_scale)
 
     safe_vel_message=Twist()
     safe_vel_message.linear = Vector3()
@@ -210,11 +222,10 @@ def pub_zone_size(speed):
     pub.publish(zone_size_message)
 
 def parse_dot_file(graph):
-
     robot_self_node = graph.get_node('robot')[0]
     if (robot_self_node.get_name()=='robot'):
         node_info= robot_self_node.__get_attribute__("label")
-        print "-------------------------------"
+        print "==============================="
         print "-------------------------------"
         #print x.get_name()
         
@@ -223,7 +234,7 @@ def parse_dot_file(graph):
         if matchObj:
             robot_speed = float(matchObj.group(1))
             print "Robot Speed: ",robot_speed
-            setup_RA(robot_speed)
+            #setup_fls(robot_speed)
             pub_zone_size(robot_speed)
         else:
             print "Error! Robot node doesn't exist!"
@@ -241,14 +252,15 @@ def parse_dot_file(graph):
             #print type(node_info),node_info
             matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
             if matchObj:
-                locals()[matchObj.group(1)]={'Name':matchObj.group(1),'Type':int(matchObj.group(2)),'Distance':float(matchObj.group(3)),'Orientation':float(matchObj.group(4)),'Direction':float(matchObj.group(5)),'Speed':float(matchObj.group(6))}#IF you want a dict. format
+                #locals()[matchObj.group(1)]={'Name':matchObj.group(1),'Type':int(matchObj.group(2)),'Distance':float(matchObj.group(3)),'Orientation':float(matchObj.group(4)),'Direction':float(matchObj.group(5)),'Speed':float(matchObj.group(6))}#IF you want a dict. format
 
                 object_type         = int(matchObj.group(2))
                 object_distance     = float(matchObj.group(3))
                 object_direction    = float(matchObj.group(5))
                 object_speed        = float(matchObj.group(6))
                 object_orientation  = float(matchObj.group(4))
-                object_risk =   cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation) 
+                object_risk =   cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
+                 
                 if (object_risk>highest_risk): # Update target
                     target_object_distance =object_distance
                     target_object_direction=object_direction
@@ -258,14 +270,25 @@ def parse_dot_file(graph):
                print "Node not match!!"   
     if (highest_risk!=0):
         left_vel,right_vel=cal_safe_vel(target_object_distance,target_object_direction,highest_risk)
-        (left_vel,right_vel)
-
+        pub_safe_vel(left_vel,right_vel)
+    print "-------------------------------"
+    global    time_previous 
+    run_time = time.time() - time_previous  
+    print 'Calc. time for S-G=',run_time,'sec'   #0.0139169692993 sec for calc,
+    print 'Calc. Freq. for S-G=',1/run_time,'Hz' #max. 71.8547248681 Hz 
+    print "==============================="
+    time_previous = time.time()
 def topic_callback(data):
+    time_previous = time.time()
     graphs = pydot.graph_from_dot_data(data.sg_data) #From string
     (graph,) = graphs
     parse_dot_file(graph)
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 
+def navi_vel_callback(data):
+    #global navi_linVel,navi_rotVel
+    navi_linVel=data.linear.x
+    navi_rotVel=data.angular.z
 """ Main program """
 if __name__ == "__main__":  
 
@@ -281,7 +304,7 @@ if __name__ == "__main__":
     ## SUBSCRIBERS
     # Creates a subscriber object
     rospy.Subscriber('/turtlebot2i/safety/scene_graph', SceneGraph, topic_callback)
-
+    rospy.Subscriber('/turtlebot2i/cmd_vel_mux/navi', Twist, navi_vel_callback)
     ## PUBLISHERS
     # Creates a publisher object
     pub = rospy.Publisher('/turtlebot2i/safety/safety_zone', SafetyZone, queue_size=10)
