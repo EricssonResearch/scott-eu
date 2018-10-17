@@ -1,8 +1,10 @@
 function setVels_cb(msg)
    -- not sure if a scale factor must be applied
-   local linVel = msg.linear.x/2 -- in m/s
+   local linVel = msg.linear.x/2 -- in m/s 
    local rotVel = msg.angular.z*interWheelDistance/2 -- in rad/s
-   
+   -- ====== Which is correct?=========== 
+   --local linVel = msg.linear.x*2 -- in m/s 
+   --local rotVel = msg.angular.z*interWheelDistance*2 -- in rad/s   
    --  Check if motor is enabled 
    if (motor_power == 1) then
        velocityRight = linVel+rotVel
