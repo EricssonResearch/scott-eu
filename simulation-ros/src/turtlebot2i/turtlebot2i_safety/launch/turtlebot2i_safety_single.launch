@@ -11,6 +11,6 @@
   <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_cmd_vel_mux.launch"/>
 
 <!-- Scene Graph Generator & Parser -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_scene_graph.launch"/>
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_scene_graph_show.launch"/>
 
 </launch>
