@@ -17,18 +17,18 @@
 - node:
     name: ShelfBody
     waypoint: [0.6516190767288208, 0.9648474454879761, 1.5239125490188599, 0.0, 0.0, 0.0]
-    mesh: "meshes/shelf.stl"
-    offset: [0.65161908, 0.96484756, 2.72391255, 0, 0, 0]        
+    mesh: "meshes/shelf_2.stl"
+    offset: [0.65161908, 0.96484756, 2.77391255, 0, 0, 0]        
 - node:
     name: ShelfBody#0
     waypoint: [0.6516190767288208, -0.5351524353027344, 1.5239125490188599, 0.0, 0.0, 0.0]
-    mesh: "meshes/shelf.stl"
-    offset: [0.65161908, 0.96484756, 2.72391255, 0, 0, 0]
+    mesh: "meshes/shelf_2.stl"
+    offset: [0.65161908, 0.96484756, 2.77391255, 0, 0, 0]
 - node:
     name: ShelfBody#1
     waypoint: [0.6516190767288208, -2.0351526737213135, 1.5239126682281494, 0.0, 0.0, 0.0]
-    mesh: "meshes/shelf.stl"
-    offset : [0.65161908, 0.96484756, 2.72391255, 0, 0, 0]
+    mesh: "meshes/shelf_2.stl"
+    offset : [0.65161908, 0.96484756, 2.77391255, 0, 0, 0]
 - node:
     name: Waypoint_SH
     waypoint: [1.6130006313323975, 0.9648533463478088, 1.252000093460083, 0.0, 0.0, 180.0]
@@ -64,10 +64,19 @@
     waypoint: [3.2749977111816406, 2.4648501873016357, 1.2519997358322144, 0.0, 0.0, 0.0]
 - node:
     name: productGreen
-    waypoint: [1.04, 1.07, 1.32, 0, 0.271, 0, 0.962]
+    waypoint: [1.07, 1.07, 1.37, 0, 0.271, 0, 0.962]
 - node:
     name: productRed    
-    waypoint: [1.04, 0.97, 1.32, 0, 0.271, 0, 0.962]
+    waypoint: [1.07, 0.965, 1.37, 0, 0.271, 0, 0.962]
 - node:
     name: productYellow
-    waypoint: [1.04, 0.87, 1.32, 0, 0.271, 0, 0.962]
+    waypoint: [1.07, 0.87, 1.37, 0, 0.271, 0, 0.962]
+- node:
+    name: positionSensorGreen
+    waypoint: [1.0, 1.115, 1.38, 0, 0.271, 0, 0.962]
+- node:
+    name: positionSensorRed
+    waypoint: [1.0, 1.015, 1.38, 0, 0.271, 0, 0.962]
+- node:
+    name: positionSensorYellow
+    waypoint: [1.0, 0.915, 1.38, 0, 0.271, 0, 0.962]
