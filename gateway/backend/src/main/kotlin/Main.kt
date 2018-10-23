@@ -2,8 +2,10 @@
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import eu.scottproject.wp10.gw.api.GatewayDiscoveryService
 import org.zeromq.ZContext
 import org.zeromq.ZMQ
+import java.util.*
 
 /**
  * TBD
@@ -16,6 +18,16 @@ const val PULL_PORT = 5557
 const val CONNECT_ADDR = "tcp://127.0.0.1:$PULL_PORT"
 
 fun main(args: Array<String>) {
+    println("Registering Gateway Discovery Services")
+    val serviceLoader = ServiceLoader.load(GatewayDiscoveryService::class.java)
+    serviceLoader.forEach {
+        println("Found service: ${it.javaClass.canonicalName}")
+    }
+    val providers = serviceLoader.mapNotNull { it.marshallingProviders }.flatMap { it.entries }
+
+    // Select the first service that can (un)marshall messages of type "sample"
+    val simpleProvider = providers.first { it.key == "sample" }.value
+
     println("Pulling from $CONNECT_ADDR")
     val mapper = ObjectMapper().registerKotlinModule()
     ZContext().use { context ->
@@ -34,6 +46,10 @@ fun main(args: Array<String>) {
             // show how Jackson can automatically map the JSON to a Kotlin class
             val msg = mapper.readValue<WorkerMessage>(reply)
             println("Worker number: ${msg.num}")
+
+            simpleProvider.fromBytes(reply).ifPresent {
+                println("Unmarshalling by the loaded service: $it")
+            }
 
             // ZMQ.DEALER mode allows us to use the socket bidirectionally w/o blocking
             // but has limits on buffers (1000 msg approx)
