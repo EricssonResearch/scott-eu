@@ -118,7 +118,7 @@ Control System Creation and Simulation
 Now that we have our rules defined, we can simply create a control system via:
 """
 import pickle
-fls_name = "fls.data"
+fls_name = "fls_full_rules.data" #"fls_demo.data"#
 
 if os.path.exists(fls_name):
     print("FLS exists!")
@@ -143,7 +143,7 @@ ra_fls = pickle.load(f)
 
 run_time = time.time() - time_previous    
 #print 'execute time=',one_run_time,'s'           
-print 'creating/reading a system time=',run_time,'sec'  
+print 'creating/reading a system time=',run_time*1000,'m sec'  
 time_previous = time.time()  
 """
 In order to simulate this control system, we will create a
@@ -160,26 +160,30 @@ print 'creating a simulation time=',run_time,'sec'
 We can now simulate our control system by simply specifying the inputs
 and calling the ``compute`` method.  
 """
-# Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
-# Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
-risk_assessment_instance.input['type'] = 0
-risk_assessment_instance.input['distance'] = 0.5		
-risk_assessment_instance.input['direction'] = 15.3		
-risk_assessment_instance.input['speed'] =   0.2	
-risk_assessment_instance.input['orientation'] = 80.0
+temp = 1
+while True:
+    # Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
+    # Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
 
-# Crunch the numbers
-risk_assessment_instance.compute()
+    risk_assessment_instance.input['type'] = 0
+    risk_assessment_instance.input['distance'] = 0.5		
+    risk_assessment_instance.input['direction'] = 15.3		
+    risk_assessment_instance.input['speed'] =   0.2	
+    risk_assessment_instance.input['orientation'] = 80.0+temp
+
+    # Crunch the numbers
+    risk_assessment_instance.compute()
 
 
-run_time = time.time() - time_previous    
-#print 'execute time=',one_run_time,'s'           
-print 'execute time=',run_time,'sec' 
-
-"""
-Once computed, we can view the result as well as visualize it.
-"""
-print risk_assessment_instance.output['risk']
-object_risk.view(sim=risk_assessment_instance)
+    run_time = time.time() - time_previous    
+    #print 'execute time=',one_run_time,'s'           
+    print 'execute time=',run_time,'sec' 
+    temp = temp+1
+    time_previous = time.time()  
+    """
+    Once computed, we can view the result as well as visualize it.
+    """
+    print risk_assessment_instance.output['risk']
+    #object_risk.view(sim=risk_assessment_instance)
 raw_input("Finished!")
 
