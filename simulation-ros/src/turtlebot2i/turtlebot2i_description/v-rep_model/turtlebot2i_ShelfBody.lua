@@ -81,12 +81,18 @@ end
 
 
     if((productType=='productGreen') or (productType=='productRed') or (productType=='productYellow'))then
---        greenPosition={.30,.1,.50}
---        redPosition={.30,0,.50}
---        yellowPosition={.30,-.1,.50}
-        greenPosition={-.1,-.4,.3}
-        redPosition={0,-.4,.3}
-        yellowPosition={.1,-.4,.3}
+        greenPosition={.0,.1,.150}
+        redPosition={.0,0,.150}
+        yellowPosition={.0,-.1,.150}
+--<<<<<<< HEAD
+--        greenPosition={-.1,-.4,.3}
+--       redPosition={0,-.4,.3}
+--        yellowPosition={.1,-.4,.3}
+--=======
+--        greenPosition={.1,-.4,.3}
+--        redPosition={0,-.4,.3}
+--        yellowPosition={-.1,-.4,.3}
+-->>>>>>> make_product_pickable
 
         if(productType=='productGreen')then
             h=proximitySensorInputGreenHandle
