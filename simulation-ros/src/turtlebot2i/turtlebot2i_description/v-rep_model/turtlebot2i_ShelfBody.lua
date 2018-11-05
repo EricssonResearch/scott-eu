@@ -84,15 +84,6 @@ end
         greenPosition={.0,.1,.150}
         redPosition={.0,0,.150}
         yellowPosition={.0,-.1,.150}
---<<<<<<< HEAD
---        greenPosition={-.1,-.4,.3}
---       redPosition={0,-.4,.3}
---        yellowPosition={.1,-.4,.3}
---=======
---        greenPosition={.1,-.4,.3}
---        redPosition={0,-.4,.3}
---        yellowPosition={-.1,-.4,.3}
--->>>>>>> make_product_pickable
 
         if(productType=='productGreen')then
             h=proximitySensorInputGreenHandle
