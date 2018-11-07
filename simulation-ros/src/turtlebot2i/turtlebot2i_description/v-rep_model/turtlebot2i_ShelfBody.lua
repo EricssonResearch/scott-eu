@@ -84,9 +84,13 @@ end
 --        greenPosition={.30,.1,.50}
 --        redPosition={.30,0,.50}
 --        yellowPosition={.30,-.1,.50}
-        greenPosition={.1,-.4,.3}
-        redPosition={0,-.4,.3}
-        yellowPosition={-.1,-.4,.3}
+--        greenPosition={.1,-.4,.3}
+--       redPosition={0,-.4,.3}
+--       yellowPosition={-.1,-.4,.3}
+
+        greenPosition={-.35,.1,.3}
+        redPosition={-.35,0,.3}
+        yellowPosition={-.35,-.1,.3}
 
         if(productType=='productGreen')then
             h=proximitySensorInputGreenHandle
