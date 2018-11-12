@@ -13,16 +13,18 @@ function sysCall_sensing()
     self_handle=sim.getObjectAssociatedWithScript(sim.handle_self)
 
     joint5_pos=sim.getJointPosition(self_handle)
-    joint5_max=math.pi/2
-    joint5_min=-math.pi/2
+
+    joint5_max=0.05--math.pi/2
+    joint5_min=-0.05---math.pi/2
+
     gripleft_max=0.015 --1.500e-2
     gripleft_min=0
 
     g=((joint5_pos-joint5_min)/(joint5_max-joint5_min))*(gripleft_max-gripleft_min)
 
-    --print('------------')
-    --print('joint5_pos: '..joint5_pos)
-    --print('g: '..g)
+    print('------------')
+    print('joint5_pos: '..joint5_pos)
+    print('g: '..g)
 
 
     handle=sim.getObjectHandle('PhantomXPincher_gripperClose_joint')
