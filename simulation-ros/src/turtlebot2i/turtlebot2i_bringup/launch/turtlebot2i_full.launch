@@ -10,8 +10,8 @@
   <arg name="joint2"        default="PhantomXPincher_joint2" />
   <arg name="joint3"        default="PhantomXPincher_joint3" />
   <arg name="joint4"        default="PhantomXPincher_joint4" />
-  <arg name="gripper1"      default="PhantomXPincher_gripperClose_joint" />
-  <arg name="gripper2"      default="PhantomXPincher_joint5" />
+  <arg name="gripper1"      default="PhantomXPincher_gripperCenter_joint" />
+  <arg name="gripper2"      default="PhantomXPincher_gripperClose_joint" />
 
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find turtlebot2i_description)/robots/kobuki_interbotix_astra.urdf.xacro'" />
 
