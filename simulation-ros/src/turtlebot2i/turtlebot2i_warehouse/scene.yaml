@@ -41,18 +41,18 @@
 - node:
     name: ConveyorBeltBody
     waypoint: [4.375002861022949, -3.5351498126983643, 1.3598122596740723, 0.0, 0.0, 0.0]
-    mesh: "meshes/conveyor.stl"
-    offset: [4.37500286, -0.58514981, 2.65981226, 0, 0 , 0]
+    mesh: "meshes/conveyor2.stl"
+    offset: [4.37500286, -3.58514981, 2.61981226, 0, 0 , 0]
 - node:
     name: ConveyorBeltBody#0
     waypoint: [4.375002861022949, -0.5351498126983643, 1.3598122596740723, 0.0, 0.0, 0.0]
-    mesh: "meshes/conveyor.stl"
-    offset: [4.37500286, -0.58514981, 2.65981226, 0, 0 , 0]
+    mesh: "meshes/conveyor2.stl"
+    offset: [4.37500286, -3.58514981, 2.61981226, 0, 0 , 0]
 - node:
     name: ConveyorBeltBody#1
     waypoint: [4.375002861022949, 2.4648501873016357, 1.3598122596740723, 0.0, 0.0, 0.0]
-    mesh: meshes/conveyor.stl
-    offset: [4.37500286, -0.58514981, 2.65981226, 0, 0 , 0]
+    mesh: meshes/conveyor2.stl
+    offset: [4.37500286, -3.58514981, 2.61981226, 0, 0 , 0]
 - node:
     name: Waypoint_CB
     waypoint: [3.2749977111816406, -3.5351498126983643, 1.2519997358322144, 0.0, 0.0, 0.0]

@@ -48,7 +48,7 @@ class Place(object):
         target = [goal.place_locations[0].place_pose.pose.position.x,
                   goal.place_locations[0].place_pose.pose.position.y,
                   goal.place_locations[0].place_pose.pose.position.z]
-        plan = self.robot.ef_pose(target)
+        plan = self.robot.ef_pose(list(target))
         if plan is None:
             rospy.loginfo("Plan to place failed")
             self._as.set_preempted()
@@ -63,13 +63,6 @@ class Place(object):
         self.robot.arm_execute(plan)
         rospy.sleep(7)
         
-        self._feedback.state = "Removing object to be placed from the planning scene"
-        self._as.publish_feedback(self._feedback)
-        obj  = self.scene.get_attached_objects()
-        link = obj[obj.keys()[0]].link_name
-        obj = obj[obj.keys()[0]].object
-        self.scene.remove_attached_object(link, obj.id)
-
         self._feedback.state = "Planning to open the gripper"
         self._as.publish_feedback(self._feedback)
         plan = self.robot.openGripper()
@@ -87,17 +80,30 @@ class Place(object):
         rospy.sleep(1)
         self._as.publish_feedback(self._feedback)
 
+        self._feedback.state = "Removing object to be placed from the planning scene"
+        self._as.publish_feedback(self._feedback)
+        obj  = self.scene.get_attached_objects()
+        link = obj[obj.keys()[0]].link_name
+        obj = obj[obj.keys()[0]].object
+        self.scene.remove_attached_object(link, obj.id)
+
         self._feedback.state = "Re-adding object"
         pose = PoseStamped()
         pose.pose = obj.primitive_poses[0]
         pose.header = obj.header
-        self.scene.add_box(obj.id, pose,
-                           obj.primitives[0].dimensions)
+#        self.scene.add_box(obj.id,
+#                           pose,
+#                           obj.primitives[0].dimensions)
+        self.scene.attach_box("base_footprint",
+                              obj.id,
+                              pose,
+                              obj.primitives[0].dimensions)
         self._as.publish_feedback(self._feedback)
 
         self._feedback.state = "Planing to retreat after place"
         self._as.publish_feedback(self._feedback)
         target[2]+=0.02
+        rospy.loginfo("Retreating to [%s]",target)
         plan = self.robot.ef_pose(target)
         if plan is None:
             rospy.loginfo("Plan to retreat failed")
@@ -115,7 +121,6 @@ class Place(object):
 
         if sucess:
             self._result.error_code.val = 1
-            rospy.loginfo(self._result)
             self._as.set_succeeded(self._result)
 
 

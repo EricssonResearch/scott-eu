@@ -33,7 +33,7 @@ class Pick(object):
         pose = obj.primitive_poses[0].position
         target = [0.17, 0.005, 0.019]
         rospy.loginfo(target)
-        target = [pose.x, pose.y, pose.z]
+        target = [pose.x, pose.y, pose.z-0.01]
         rospy.loginfo(target)
         return target
 
@@ -62,6 +62,7 @@ class Pick(object):
         print self._feedback
         self.robot.gripper_execute(plan)
         self._as.publish_feedback(self._feedback)
+        self.scene.remove_attached_object('gripper_link')
         rospy.sleep(1)
 
         self._feedback.state = "Planning to reach object"
@@ -88,7 +89,7 @@ class Pick(object):
         obj  = self.scene.get_objects([goal.target_name])
         obj = obj[goal.target_name]
         self.scene.remove_world_object(goal.target_name)
-        rospy.sleep(1)
+        rospy.sleep(3)
         
         self._feedback.state = "Planning to close the gripper"
         self._as.publish_feedback(self._feedback)
@@ -104,7 +105,7 @@ class Pick(object):
         self._feedback.state = "Closing gripper"
         print self._feedback
         self.robot.gripper_execute(plan)
-        rospy.sleep(1)
+        rospy.sleep(9)
         self._as.publish_feedback(self._feedback)
 
         self._feedback.state = "Attaching object"
@@ -122,7 +123,6 @@ class Pick(object):
 
         if sucess:
             self._result.error_code.val = 1
-            rospy.loginfo(self._result)
             self._as.set_succeeded(self._result)
 
 

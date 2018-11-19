@@ -32,7 +32,7 @@ class Phantomx_Pincher():
     def openGripper(self):
         # open gripper
         posture = dict()
-        posture["PhantomXPincher_gripperClose_joint"] = 0.030
+        posture["PhantomXPincher_gripperClose_joint"] = 0.03
         self.robot.pincher_gripper.set_joint_value_target(posture)
         gplan = self.robot.pincher_gripper.plan()
         if len(gplan.joint_trajectory.points) == 0:
@@ -42,7 +42,7 @@ class Phantomx_Pincher():
     def closeGripper(self):
         # close gripper
         posture = dict()
-        posture["PhantomXPincher_gripperClose_joint"] = 0.015
+        posture["PhantomXPincher_gripperClose_joint"] = 0.002
         self.robot.pincher_gripper.set_joint_value_target(posture)
         gplan = self.robot.pincher_gripper.plan()
         if len(gplan.joint_trajectory.points) == 0:
@@ -74,7 +74,7 @@ class Phantomx_Pincher():
         target[0] = target_r.pose.position.x
         target[1] = target_r.pose.position.y
         target[2] = target_r.pose.position.z
-        rospy.loginfo(target)
+        rospy.loginfo("Planing to [%s] on arm_frame", target)
         d = pow(pow(target[0], 2) + pow(target[1], 2), 0.5)
         if d > 0.3:
             rospy.loginfo("Too far. Out of reach")

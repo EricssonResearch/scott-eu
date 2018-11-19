@@ -14,7 +14,7 @@ from moveit_commander import PlanningSceneInterface
 from moveit_commander import roscpp_initialize, RobotCommander
 from tf.transformations import quaternion_from_euler
 import time
-
+# TODO: refactor classes
 
 class Plan:
     def __init__(self):
@@ -33,7 +33,6 @@ class Task:
 
 
 class PlanInterpreter:
-    # TODO: remove the hard coded part
     def __init__(self, robot, scene):
         self.shelves = dict()
         self.products = dict()
@@ -50,6 +49,10 @@ class PlanInterpreter:
         json_plan = self.load_json(self.path + '/plan.json')
         self.plan = self.parse_plan(json_plan)
         self.load_objects(self.path + '/scene.yaml')
+
+        self.storage = list(( [[1.35, 1.02, 0.20], 0],
+                            [[1.35, 0.96, 0.20], 0],
+                            [[1.35, 0.90, 0.20], 0] ))
 
     def load_json(self, path):
         return json.load(open(path))
@@ -101,7 +104,7 @@ class PlanInterpreter:
                           node['name'],
                           self.path + '/' + node['mesh'])
 
-    def add_box(self, node, size=[0.03, 0.03, 0.03]):
+    def add_box(self, node, size=[0.035, 0.035, 0.030]):
         try:
             self.scene.add_box(node['name'],
                                self.to_pose(node['obj_position']),
@@ -111,13 +114,13 @@ class PlanInterpreter:
             rospy.logwarn('Failed to add product: %s',
                           node['name'])
 
-    def add_product(self, shelf, product):
-        product = self.products[product]
+    def add_product(self, shelf, product, idx=''):
+        product = dict(self.products[product])
+        product['name'] += idx
         pose = self.shelves[shelf]['obj_position']
         pose = np.asarray(pose[:3]) + np.asarray(product['obj_position'][:3])
         product['obj_position'] = np.hstack(
             (pose, product['obj_position'][3:]))
-        rospy.loginfo(product['obj_position'])
         self.add_box(product)
         return product['name']
 
@@ -132,6 +135,7 @@ class PlanInterpreter:
         return waypoint - offset
     
     def load_objects(self, path):
+        shelf_item = list()
         yaml = self.load_yaml(path)
         for line in yaml:
             if 'offset' in line['node'].keys():
@@ -141,13 +145,17 @@ class PlanInterpreter:
                 line['node']['obj_position'] = line['node']['waypoint']
             if 'mesh' in line['node'].keys():
                 self.add_mesh(line['node'])
+            if 'position' in line['node']['name']:
+                shelf_item.append(line['node'])
             if 'Shelf' in line['node']['name']:
                 self.shelves[
                     line['node']['name']] = line['node']
-            if 'product' in line['node']['name']:
+            if ('product' in line['node']['name']) | ('position' in line['node']['name']):
                 self.products[
                     line['node']['name']] = line['node']
-                 
+#        for i in shelf_item:
+#            for j in self.shelves:
+#                self.add_product(j, i['name'], idx=j)
 
     def parse_plan(self, json_plan):
         p_plan = Plan()
@@ -176,20 +184,37 @@ class PlanInterpreter:
                 self.__move_task(task.robot, task.target)
 
             elif task.action == 'pick':
-                input()
                 rospy.loginfo('Picking [%s] at [%s]',
                               task.product,
                               task.target)
                 product_name = self.add_product(task.target, task.product)
+                input()
                 self.__pick_task(product_name)
-                exit()
+                store = self.__available_storage()
+                if not store:
+                    rospy.info("No available Store")
+                else:
+                    rospy.loginfo("Storing product on [%s]", store[0])
+                    res = self.__place_task(store[0])
+                    store[1] = 1
+                
             elif task.action == 'drop':
                 rospy.loginfo('Dropping [%s] at [%s]',
-                              task.taget,
-                              task.product)
-                self.__place_task([0, 0, 0])
+                              task.product,
+                              task.target)
+                # self.scene.remove_attached_object('base_footprint', task.product)
+                # self.__pick_task(task.product)
+                rospy.loginfo('Dropping at position: [%s]',
+                              self.drop_position(task.target))
+                self.__place_task(self.drop_position(task.target))
 
             # self.__check_task_status()
+
+    def drop_position(self, place_handle, offset=[-0.8, 0.03, -1.18]):
+        return np.asarray(self.waypoints[place_handle][:3]) + np.asarray(offset)
+
+    def get_attached_product(self, product_name):
+        return 'productRed'
 
     def __move_task(self, robot, target):
         # TODO: The client must be retrieved by the robot name
@@ -231,10 +256,15 @@ class PlanInterpreter:
         goal.place_locations[0].place_pose.pose.position.z = target[2]
         print goal
         client.send_goal(goal)
-
+        
         client.wait_for_result()
-
         return client.get_result()
+
+    def __available_storage(self):
+        for store in self.storage:
+            if store[1] == 0:
+                return store
+        return False
 
     def __check_task_status(self, robot):
         client = actionlib.SimpleActionClient(
