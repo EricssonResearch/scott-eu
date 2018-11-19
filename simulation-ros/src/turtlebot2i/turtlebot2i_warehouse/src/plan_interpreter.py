@@ -50,9 +50,9 @@ class PlanInterpreter:
         self.plan = self.parse_plan(json_plan)
         self.load_objects(self.path + '/scene.yaml')
 
-        self.storage = list(( [[1.35, 1.02, 0.20], 0],
-                            [[1.35, 0.96, 0.20], 0],
-                            [[1.35, 0.90, 0.20], 0] ))
+        self.storage = list(([[1.35, 1.02, 0.21], 0],
+                             [[1.35, 0.96, 0.21], 0],
+                             [[1.35, 0.90, 0.21], 0]))
 
     def load_json(self, path):
         return json.load(open(path))
@@ -178,16 +178,27 @@ class PlanInterpreter:
         return p_plan
 
     def task_manager(self):
+        lastWp = []
         for task in self.plan.task_list:
             if task.action == 'move':
                 rospy.loginfo('Move to [%s]', task.target)
                 self.__move_task(task.robot, task.target)
-
+                lastWP = self.waypoints[task.target]
             elif task.action == 'pick':
+                rospy.loginfo('Moving to [%s] at [%s]',
+                              task.product,
+                              task.target)
+                rospy.loginfo('From [%s] \n to [%s]',
+                              lastWP,
+                              self.waypoint2pick(lastWP, task.product)
+                              )            
+                self.__move_pose(
+                    self.waypoint2pick(lastWP, task.product)
+                )
+                product_name = self.add_product(task.target, task.product)
                 rospy.loginfo('Picking [%s] at [%s]',
                               task.product,
                               task.target)
-                product_name = self.add_product(task.target, task.product)
                 input()
                 self.__pick_task(product_name)
                 store = self.__available_storage()
@@ -202,20 +213,50 @@ class PlanInterpreter:
                 rospy.loginfo('Dropping [%s] at [%s]',
                               task.product,
                               task.target)
-                # self.scene.remove_attached_object('base_footprint', task.product)
-                # self.__pick_task(task.product)
+                self.scene.remove_attached_object('base_footprint', task.product)
+                self.__pick_task(task.product)
                 rospy.loginfo('Dropping at position: [%s]',
                               self.drop_position(task.target))
                 self.__place_task(self.drop_position(task.target))
 
             # self.__check_task_status()
 
-    def drop_position(self, place_handle, offset=[-0.8, 0.03, -1.18]):
+    def drop_position(self, place_handle, offset=[-0.7, 0.03, -1.15]):
         return np.asarray(self.waypoints[place_handle][:3]) + np.asarray(offset)
 
     def get_attached_product(self, product_name):
         return 'productRed'
 
+    def waypoint2pick(self, waypoint, product):
+        ''' waypoint information is always infront of productRed
+        '''
+        waypoint = np.asarray(waypoint)
+        productRed_position = np.asarray(
+            self.products['productRed']['obj_position'])
+        product_position = np.asarray(
+            self.products[product]['obj_position'])
+        delta = (productRed_position - product_position)[:3]
+        waypoint[:3] -= delta[:3]
+        return waypoint
+
+    def __move_pose(self, pose):
+        # TODO: The client must be retrieved by the robot name
+        client = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
+        client.wait_for_server()
+
+        goal = MoveBaseGoal()
+        goal.target_pose = self.to_pose(pose)
+        client.send_goal(goal)
+
+        wait = client.wait_for_result()
+        if not wait:
+            rospy.logerr("Action server not available!")
+            rospy.signal_shutdown("Action server not available!")
+        else:
+            state = client.get_state()
+        if state == 3:
+            rospy.loginfo("Goal succeeded!")    
+        
     def __move_task(self, robot, target):
         # TODO: The client must be retrieved by the robot name
         client = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
