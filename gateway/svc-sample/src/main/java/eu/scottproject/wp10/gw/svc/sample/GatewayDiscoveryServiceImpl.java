@@ -14,18 +14,22 @@ import org.eclipse.lyo.oslc4j.core.model.IResource;
  * @since FIXME
  */
 public class GatewayDiscoveryServiceImpl implements GatewayDiscoveryService {
+
+    @Override
     public Map<String, Marshaller<? extends IResource>> getMarshallingProviders() {
         final HashMap<String, Marshaller<? extends IResource>> m = new HashMap<>();
         m.put("sample", new SampleMarshaller());
         return m;
     }
 
-    public Collection<IResource> getTrackedResourceClasses() {
+    @Override
+    public Collection<Class<IResource>> getTrackedResourceClasses() {
         // TODO Andrew@2018-10-23: better than returning NULL but needs to be fixed later
         throw new UnsupportedOperationException();
     }
 
-    public Collection<IResource> getAllResourceClasses() {
+    @Override
+    public Collection<Class<IResource>> getAllResourceClasses() {
         throw new UnsupportedOperationException();
     }
 }

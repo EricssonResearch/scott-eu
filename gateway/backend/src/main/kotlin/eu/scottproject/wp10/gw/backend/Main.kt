@@ -1,4 +1,4 @@
-
+package eu.scottproject.wp10.gw.backend
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -25,6 +25,11 @@ fun main(args: Array<String>) {
     }
     val providers = serviceLoader.mapNotNull { it.marshallingProviders }.flatMap { it.entries }
 
+    if (providers.isEmpty()) {
+        println("No JARs have been placed on the classpath with a ServiceLoader definition for\n" +
+                "\tsvc-sample/src/main/resources/META-INF/services/eu.scottproject.wp10.gw.api.GatewayDiscoveryService")
+        System.exit(-1);
+    }
     // Select the first service that can (un)marshall messages of type "sample"
     val simpleProvider = providers.first { it.key == "sample" }.value
 

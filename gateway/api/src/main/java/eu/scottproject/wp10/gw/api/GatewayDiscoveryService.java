@@ -21,11 +21,11 @@ public interface GatewayDiscoveryService {
      * set of all generic types used by the marshallers shown above. I am planning to use it for
      * defining simple Service Providers to form a set of Tracked Resources.
      */
-    Collection<IResource> getTrackedResourceClasses();
+    Collection<Class<IResource>> getTrackedResourceClasses();
 
     /**
      * Should allow us to avoid scanning should any specific filtering need arise. For example,
      * Ricardo's patch would require this if inheritance is used (we'd need to supply subclasses).
      */
-    Collection<IResource> getAllResourceClasses();
+    Collection<Class<IResource>> getAllResourceClasses();
 }
