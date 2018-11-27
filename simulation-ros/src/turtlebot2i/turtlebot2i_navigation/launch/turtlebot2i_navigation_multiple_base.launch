@@ -40,6 +40,9 @@
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
 
+    <!--Static TF from /map to robot /odom -->
+    <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 -1.24 0 0 0 1 /map /$(arg robot_name)/odom 100" />
+
     <!-- Navigation  -->
     <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
 <!--      <param name="controller_frequency" value="5.0" />-->
@@ -56,16 +59,14 @@
           global_costmap/laser_scan_sensor/sensor_frame: /$(arg robot_name)/lidar/scan
           global_costmap/laser_scan_sensor/topic: /$(arg robot_name)/lidar/scan
           global_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
-          local_costmap/global_frame: /$(arg robot_name)/odom
+          <!--local_costmap/global_frame: /$(arg robot_name)/odom-->
+          local_costmap/global_frame: /$(arg robot_name)/base_footprint
           local_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
       </rosparam>
 
       <remap from="map" to="/map" />
 
     </node>
-
-    <!--Static TF from /map to robot /odom -->
-    <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 1 /map /$(arg robot_name)/odom 100" />
 
     <!-- Include only if $moveit==true -->
     <group if="$(arg moveit)">
