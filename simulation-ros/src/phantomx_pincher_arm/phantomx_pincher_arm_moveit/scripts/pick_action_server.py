@@ -31,9 +31,7 @@ class Pick(object):
         obj = self.scene.get_objects([target_name])
         obj = obj[target_name]
         pose = obj.primitive_poses[0].position
-        target = [0.17, 0.005, 0.019]
-        rospy.loginfo(target)
-        target = [pose.x, pose.y, pose.z-0.01]
+        target = [pose.x, pose.y, pose.z]
         rospy.loginfo(target)
         return target
 
@@ -89,7 +87,7 @@ class Pick(object):
         obj  = self.scene.get_objects([goal.target_name])
         obj = obj[goal.target_name]
         self.scene.remove_world_object(goal.target_name)
-        rospy.sleep(3)
+        rospy.sleep(4)
         
         self._feedback.state = "Planning to close the gripper"
         self._as.publish_feedback(self._feedback)

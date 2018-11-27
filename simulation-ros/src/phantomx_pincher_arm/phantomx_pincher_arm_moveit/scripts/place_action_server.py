@@ -87,6 +87,7 @@ class Place(object):
         obj = obj[obj.keys()[0]].object
         self.scene.remove_attached_object(link, obj.id)
 
+        rospy.sleep(1)
         self._feedback.state = "Re-adding object"
         pose = PoseStamped()
         pose.pose = obj.primitive_poses[0]
@@ -99,25 +100,6 @@ class Place(object):
                               pose,
                               obj.primitives[0].dimensions)
         self._as.publish_feedback(self._feedback)
-
-        self._feedback.state = "Planing to retreat after place"
-        self._as.publish_feedback(self._feedback)
-        target[2]+=0.02
-        rospy.loginfo("Retreating to [%s]",target)
-        plan = self.robot.ef_pose(target)
-        if plan is None:
-            rospy.loginfo("Plan to retreat failed")
-            self._as.set_preempted()
-            self._result.error_code.val = -1
-            sucess = False
-            return None
-
-        self._feedback.state = "Retreating"
-        self._as.publish_feedback(self._feedback)
-        self._result.trajectory_descriptions.append("Retreat")
-        self._result.trajectory_stages.append(plan)
-        self.robot.arm_execute(plan)
-        rospy.sleep(7)
 
         if sucess:
             self._result.error_code.val = 1
