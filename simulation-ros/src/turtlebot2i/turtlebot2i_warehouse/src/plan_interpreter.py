@@ -36,6 +36,7 @@ class PlanInterpreter:
     def __init__(self, robot, scene):
         self.shelves = dict()
         self.products = dict()
+        self.listener = tf.TransformListener()
         self.robot = robot
         self.scene = scene
         rospy.loginfo('Load moveit_commander')
@@ -50,9 +51,10 @@ class PlanInterpreter:
         self.plan = self.parse_plan(json_plan)
         self.load_objects(self.path + '/scene.yaml')
 
-        self.storage = list(([[1.35, 1.02, 0.21], 0],
-                             [[1.35, 0.96, 0.21], 0],
-                             [[1.35, 0.90, 0.21], 0]))
+        # TODO, check these positions
+        self.storage = list(([[0.00, 0.1, 0.23], 0],
+                             [[0.00, 0.0, 0.23], 0],
+                             [[0.00, -0.1, 0.23], 0]))
 
     def load_json(self, path):
         return json.load(open(path))
@@ -205,24 +207,47 @@ class PlanInterpreter:
                 if not store:
                     rospy.info("No available Store")
                 else:
-                    rospy.loginfo("Storing product on [%s]", store[0])
-                    res = self.__place_task(store[0])
+                    rospy.loginfo("Storing product on [%s]",
+                                  store[0])
+                    rospy.loginfo("Storing product on [%s] MAP_FRAME",
+                                  self.target_to_frame(store[0]))
+                    self.__place_task(self.target_to_frame(store[0]))
                     store[1] = 1
                 
             elif task.action == 'drop':
                 rospy.loginfo('Dropping [%s] at [%s]',
                               task.product,
                               task.target)
-                self.scene.remove_attached_object('base_footprint', task.product)
+                self.scene.remove_attached_object('base_footprint',
+                                                  task.product)
                 self.__pick_task(task.product)
                 rospy.loginfo('Dropping at position: [%s]',
-                              self.drop_position(task.target))
-                self.__place_task(self.drop_position(task.target))
+                              self.drop_position())
+                self.__place_task(self.drop_position())
 
             # self.__check_task_status()
 
-    def drop_position(self, place_handle, offset=[-0.7, 0.03, -1.15]):
-        return np.asarray(self.waypoints[place_handle][:3]) + np.asarray(offset)
+    def drop_position(self, offset=[0.42, 0, 0.20]):
+        return self.target_to_frame(np.asarray(offset))
+
+    def target_to_frame(self, target,
+                        frame_to="/map",
+                        frame_from="/base_footprint"):
+        pose = geometry_msgs.msg.PoseStamped()
+        pose.pose.position.x = target[0]
+        pose.pose.position.y = target[1]
+        pose.pose.position.z = target[2]
+        pose.pose.orientation.w = 1
+        pose.header.frame_id = frame_from
+        self.listener.waitForTransform(frame_from,
+                                       frame_to,
+                                       rospy.Time.now(),
+                                       rospy.Duration(4))
+        self.listener.getLatestCommonTime(frame_from, frame_to)
+        pose = self.listener.transformPose(frame_to, pose)
+        return [pose.pose.position.x,
+                pose.pose.position.y,
+                pose.pose.position.z]
 
     def get_attached_product(self, product_name):
         return 'productRed'

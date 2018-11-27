@@ -65,12 +65,12 @@ class Phantomx_Pincher():
         self.listener.getLatestCommonTime(frame_from, frame_to)
         return self.listener.transformPose(frame_to, pose)
         
-    def ef_pose(self, target, attemps=10):
+    def ef_pose(self, target, attemps=10, frame='/map'):
         # Here we try to verify if the target is in the arm range. Also, we
         # try to orient the end-effector(ef) to nice hard-coded orientation
         # Returns: planned trajectory
         self.robot.get_current_state()
-        target_r = self.target_to_frame(target)
+        target_r = self.target_to_frame(target, frame_from=frame)
         target[0] = target_r.pose.position.x
         target[1] = target_r.pose.position.y
         target[2] = target_r.pose.position.z
