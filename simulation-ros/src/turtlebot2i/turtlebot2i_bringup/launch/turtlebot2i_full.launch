@@ -44,7 +44,7 @@
       global_costmap/laser_scan_sensor/sensor_frame: /$(arg robot_name)/lidar/scan
       global_costmap/laser_scan_sensor/topic: /$(arg robot_name)/lidar/scan
       global_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
-      local_costmap/global_frame: /$(arg robot_name)/odom
+      local_costmap/global_frame: /map
       local_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
     </rosparam>
 
