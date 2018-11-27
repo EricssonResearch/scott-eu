@@ -81,7 +81,7 @@
 <!-- gripper_link -->
     <link name="gripper_link"/>
     <joint name="PhantomXPincher_gripperCenter_joint" type="revolute">
-      <origin xyz="0.110 0 0" rpy="0 0 0"/>
+      <origin xyz="0.085 0 0" rpy="0 0 0"/>
       <parent link="arm_wrist_flex_link"/>
       <child link="gripper_link"/>
       <limit effort="6" velocity="1" lower="-3.14" upper="3.14"/>
