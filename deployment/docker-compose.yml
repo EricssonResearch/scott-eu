@@ -59,7 +59,7 @@ services:
     #TODO depend on it
     image: bobrik/socat:latest
     command: TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
-    deployment:
+    deploy:
       placement:
         constraints: [node.role == worker]
     networks:
