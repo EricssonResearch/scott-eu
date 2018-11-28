@@ -29,7 +29,7 @@ deploy_to_swarm:
   script:
     - cd deployment
     - echo "$CI_REGISTRY_PASSWORD" | docker -H $SWARM_MANAGER login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    - docker -H $SWARM_MANAGER stack deploy -c docker-compose.yml --with-registry-auth scott
+    - docker -H $SWARM_MANAGER stack deploy -c stack-deploy.yml --with-registry-auth scott
   # only:
   #   - master
 
@@ -38,7 +38,7 @@ deploy_to_swarm_erdc:
   script:
     - cd deployment
     - echo "$CI_REGISTRY_PASSWORD" | docker -H $SWARM_MANAGER_ERDC login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    - docker -H $SWARM_MANAGER_ERDC stack deploy -c docker-compose.yml --with-registry-auth scott
+    - docker -H $SWARM_MANAGER_ERDC stack deploy -c stack-deploy.yml --with-registry-auth scott
   # only:
   #   - master
   tags:
