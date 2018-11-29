@@ -25,6 +25,8 @@ limitations under the License.
 :- rdf_load_library(pddl).
 :- rdf_load_library(planner).
 :- rdf_load_library(pddl_example).
+:- rdf_load_library(warehouse_domain).
+:- rdf_load_library(warehouse_problem).
 
 :- use_module(library(pddl_generator)).
 :- use_module(library(metric_ff)).
