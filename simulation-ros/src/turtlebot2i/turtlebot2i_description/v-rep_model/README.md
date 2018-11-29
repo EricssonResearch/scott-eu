@@ -37,4 +37,7 @@ The Lua files are:
 6. turtlebot2i_lidar.lua
 7. turtlebot2i_turtlebot2i.lua
 
+** Some files seem not useful.**
 
+1. NewScriptForDockStation.lua
+2. turtlebot2i_turtlebot2i.lua
