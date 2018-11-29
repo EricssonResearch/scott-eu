@@ -8,3 +8,9 @@
 2. vrepConst.py
 3. the appropriate remote API library: "remoteApi.so" (Linux)
 
+- Note:
+The files' names might be different from those in Shaolei's repo.
+
+SceneObjectExtractor.py = SceneObjectExtractorV6.py
+
+sg_generator.py = robotSGstreamV6.py
