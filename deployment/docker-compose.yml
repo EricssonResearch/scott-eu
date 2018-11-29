@@ -31,7 +31,7 @@ services:
     deploy:
       # not ready for scaling yet
       replicas: 1
-      placement
+      placement:
         constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
@@ -59,8 +59,9 @@ services:
     #TODO depend on it
     image: bobrik/socat:latest
     command: TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
-    placement:
-      constraints: [node.role == worker]
+    deploy:
+      placement:
+        constraints: [node.role == worker]
     networks:
       - overlay
     ports:
@@ -103,7 +104,7 @@ services:
     environment:
       TWINS: "2"
       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-     ROS_MASTER_URI: "http://rosmaster:11311"
+      ROS_MASTER_URI: "http://rosmaster:11311"
     networks:
       - overlay
     sysctls:
@@ -189,9 +190,10 @@ services:
   rosmaster:
     image: ros
     command: roscore -p 11311
-    placement:
-      constraints: [node.role == worker]
+    deploy:
+      placement:
+        constraints: [node.role == worker]
     ports:
-     - "11311:11311"
+      - "11311:11311"
 networks:
   overlay:
