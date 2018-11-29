@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+
+<!-- Navigation Single Robot  -->
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_navigation_single.launch"/>
+
+<!-- KeyOp  -->
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_keyop.launch"/>
+
+<!-- Cmd_vel_mux  -->
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_cmd_vel_mux.launch"/>
+
+<!-- Scene Graph Generator & Parser -->
+  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_scene_graph_labeling.launch"/>
+
+</launch>
