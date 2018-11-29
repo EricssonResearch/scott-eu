@@ -13,10 +13,10 @@ function setCirlceSize_cb(msg)
 end
 --- Adjust robot speed
 function setVels_scale_cb(msg)
-   velScale = msg.data--.scale  --a number: 0-2
+   --velScale = msg.data--.scale  --a number: 0-2
    --print("setVels_scale:")
-   --print("This should not be triggered.")
-   printf("setVels_scale:%d",msg.data)
+   print("This should not be triggered.")
+   --printf("setVels_scale:%d",msg.data)
 end
 
 function setVels_cb(msg)
@@ -30,10 +30,10 @@ function setVels_cb(msg)
        velocityLeft  = (linVel-rotVel)*velScale
        printf("linVel=%2.2f,rotVel=%2.2f",linVel,rotVel)--print(linVel)
        if (velScale>1) then
-           print("speed up!")
+           --print("speed up!")
        end
        if (velScale<1) then
-           print("slow down!")
+           --print("slow down!")
        end
    else
        velocityRight = 0 
@@ -122,7 +122,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     -- Commands
     subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
     subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
-    subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','std_msgs/Float64','setVels_scale_cb')
+    --subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','std_msgs/Float64','setVels_scale_cb')
     subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')  
     --------------------END ------------------------------------
 end 
