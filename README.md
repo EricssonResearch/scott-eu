@@ -81,5 +81,7 @@ Planner Reasoner (`/planner_reasoner`) uses an [internal planning ontology](plan
 .
 
 > :point_right: Start by reading about the [`generate_pddl/3`](planner_reasoner/lib/pddl_generator.pl) predicate.
+> :point_right: A plan is generated using [`generate_plan/6`, `generate_plan/8`](planner_reasoner/lib/metric_ff.pl) predicates.
+> :point_right: The plan is validated using [`validate_plan/8`](planner_reasoner/lib/validate.pl) predicate.
 
 > **NB!** The project is called a *reasoner* because it is using Prolog reasoning facilities, it does not do any reasoning over the ontology and does not produce any inferred triples (as of now).
