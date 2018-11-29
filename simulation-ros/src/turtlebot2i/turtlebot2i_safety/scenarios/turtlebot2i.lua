@@ -125,6 +125,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','std_msgs/Float64','setVels_scale_cb')
     subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')  
     --------------------END ------------------------------------
+    print("robot_childscriptcall_initialization_done")
 end 
 
 if (sim_call_type == sim.childscriptcall_sensing) then 
