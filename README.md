@@ -2,7 +2,7 @@
 
 <a href="https://travis-ci.org/EricssonResearch/scott-eu"><img src="https://travis-ci.org/EricssonResearch/scott-eu.svg?branch=master"/></a>
 
-This repository contains all projects that are part of the *SCOTT Warehouse Sandbox* as described in the [SCOTT WP10](https://projects.avl.com/16/0094/WP10/default.aspx).
+This repository contains all projects that are part of the *SCOTT Warehouse Sandbox* as described in the [SCOTT WP10](https://projects.avl.com/16/0094/WP10/default.aspx). SCOTT (www.scottproject.eu)  has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 737422.
 
 The repository consists of 9 projects that use Docker images individually and are orchestrated using Docker Compose (as of now). Below is a brief summary of each project.
 
