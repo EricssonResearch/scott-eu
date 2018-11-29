@@ -2,15 +2,15 @@
 <launch>
 
 <!-- Navigation Single Robot  -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_navigation_single.launch"/>
+  <include file="$(find turtlebot2i_safety)/launch/single/turtlebot2i_navigation_single.launch"/>
 
 <!-- KeyOp  -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_keyop.launch"/>
+  <include file="$(find turtlebot2i_safety)/launch/single/turtlebot2i_keyop.launch"/>
 
 <!-- Cmd_vel_mux  -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_cmd_vel_mux.launch"/>
+  <include file="$(find turtlebot2i_safety)/launch/single/turtlebot2i_cmd_vel_mux.launch"/>
 
 <!-- Scene Graph Generator & Parser -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_scene_graph_labeling.launch"/>
+  <include file="$(find turtlebot2i_safety)/launch/labeling/turtlebot2i_scene_graph_labeling.launch"/>
 
 </launch>

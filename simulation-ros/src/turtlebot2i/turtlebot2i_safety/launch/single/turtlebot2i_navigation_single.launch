@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
-<launch>
+<launch> 
 <!-- MAP  -->
   <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
     <param name="frame_id" value="map"/>
   </node>
 <!-- Robot  navigation -->
 
- <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_navigation_multiple_base.launch">
+ <include file="$(find turtlebot2i_safety)/launch/single/turtlebot2i_navigation_multiple_base.launch">
     <arg name="robot_name" value="turtlebot2i"/>
     <arg name="moveit" value="false"/>    
   </include>
