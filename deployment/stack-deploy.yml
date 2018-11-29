@@ -41,20 +41,6 @@ services:
     depends_on:
       # - warehouse-fuseki
       - mosquitto
-  # hazelcast:
-  #   image: hazelcast/hazelcast
-  #   networks:
-  #     - overlay
-  #   deploy:
-  #     # just '4' for the test
-  #     replicas: 4
-  #     resources:
-  #       limits:
-  #         memory: 384m
-  #     # placement:
-  #     #   constraints: [node.role == worker]
-  #     restart_policy:
-  #       condition: on-failure
   swarm-manager:
     #TODO depend on it
     image: bobrik/socat:latest
@@ -72,22 +58,12 @@ services:
     image: scott/webapp-executor
     environment:
       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-executor -DhazelcastPeerPort=5701"
-      # JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=y -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-executor -DhazelcastPeerPort=5701"
-      # JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-      # https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi#how-it-works
-      # swarmMgrUri: "http://192.168.65.3:2377"
-      # dockerNetworkNames: "overlay"
-      # dockerServiceNames: "sandbox-executor"
-      # hazelcastPeerPort: "5701"
     networks:
       - overlay
     ports:
       - "8083:8080"
       - "9999:9999"
-      # - "5701"
-      # - "54327"
     depends_on:
-      # - sandbox-whc
       - sandbox-whc
       - swarm-manager
     deploy:
@@ -132,28 +108,6 @@ services:
         condition: on-failure
   # WIP, does not do the bidirectional
   # robot-emulator:
-  #   # 'ContainerSpec: image reference must be provided'
-  #   image: scott/robot-emulator
-  #   networks:
-  #     - overlay
-  #   deploy:
-  #     replicas: 2
-  #     # placement:
-  #     #   constraints: [node.role == worker]
-  #     restart_policy:
-  #       condition: on-failure
-  #   depends_on:
-  #     # - sandbox-twin
-  #     - mosquitto
-  # sandbox-twin-shelf:
-  #   build: ../webapp-twin-shelf
-  #   ports:
-  #    - "8082:8080"
-  #   depends_on:
-  #   - sandbox-whc
-  #   - mosquitto
-  #   networks:
-  #     - overlay
   # TODO bring back, see https://github.com/EricssonResearch/scott-eu/issues/101
   warehouse-fuseki:
     image: stain/jena-fuseki

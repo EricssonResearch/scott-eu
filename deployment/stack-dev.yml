@@ -11,8 +11,6 @@ services:
     deploy:
       # should be stateless
       replicas: 2
-      placement:
-        constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
       resources:
@@ -31,8 +29,6 @@ services:
     deploy:
       # not ready for scaling yet
       replicas: 1
-      placement:
-        constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
       resources:
@@ -59,9 +55,6 @@ services:
     #TODO depend on it
     image: bobrik/socat:latest
     command: TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
-    deploy:
-      placement:
-        constraints: [node.role == worker]
     networks:
       - overlay
     ports:
@@ -95,8 +88,6 @@ services:
       resources:
         limits:
           memory: 384m
-      placement:
-        constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
   sandbox-twin:
@@ -126,8 +117,6 @@ services:
         limits:
           cpus: '0.25'
           memory: '384m'
-      placement:
-        constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
   # WIP, does not do the bidirectional
@@ -165,8 +154,6 @@ services:
       - ./fuseki_config:/fuseki/configuration
     deploy:
       replicas: 1
-      placement:
-        constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
   mosquitto:
@@ -180,8 +167,6 @@ services:
       - ./mosquitto:/mosquitto/config
     deploy:
       replicas: 1
-      placement:
-        constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
       resources:
@@ -190,9 +175,6 @@ services:
   rosmaster:
     image: ros
     command: roscore -p 11311
-    deploy:
-      placement:
-        constraints: [node.role == worker]
     ports:
       - "11311:11311"
 networks:
