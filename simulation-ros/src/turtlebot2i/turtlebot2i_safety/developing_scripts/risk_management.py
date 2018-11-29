@@ -17,7 +17,12 @@ from geometry_msgs.msg import Twist,Vector3
 import time
 
 def init_var():
-
+    '''
+    Here we initialize the global variables.
+    '''
+    global time_previous
+    time_previous = time.time()
+    
     #global critical_zone_radius = 0.5 #constant 
     global warning_zone_radius  
     warning_zone_radius = 0.5 #Initialization
@@ -39,40 +44,44 @@ def init_var():
     #s=sim.getObjectSizeFactor(objHandle) -- make sure that if we scale the robot during simulation, other values are scaled too!
     interWheelDistance=0.137#*s
 
-    global navi_linVel,navi_rotVel,time_previous
+    global navi_linVel,navi_rotVel
     navi_linVel = 0  #Initialization
     navi_rotVel = 0  #Initialization
-    time_previous = time.time()        
-def init_regEx():    
+ 
+       
+def init_regEx(): 
+    '''
+    Here we initialize the regluar experssion pattern.
+    '''   
     name_pattern  = "(\w+#?\d?)"
     float_pattern = "(-?\d+\.\d+)"
     integer_pattern = "(\d+)"
     global sg_pattern,vel_pattern
     sg_pattern = '"{' + name_pattern+'\|type: '+integer_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'\|velocity: '+float_pattern+'}"' 
     vel_pattern= '"{turtlebot2i\|camera_rgb\|velocity: '+float_pattern+'}"'
+
 def init_fls_common_part():
     global object_distance,object_direction
      # New Antecedent objects
     object_distance = ctrl.Antecedent(range_meter, 'distance') 
     object_direction  = ctrl.Antecedent(range_degree , 'direction')
 
-    # Custom membership functions 
-    distance_p1 = fuzz.gaussmf(range_meter,IZW,0.1)
-    distance_p2 = fuzz.gaussmf(range_meter,IZW,0.1) 
-    # Distance
-    object_distance['Near']  = fuzz.gaussmf(range_meter,0.5*IZW,0.1) #0.2
-    object_distance['Medium']= fuzz.gaussmf(range_meter,IZW,0.1)     #0.4
-    object_distance['Far']   = fuzz.gaussmf(range_meter,2.0*IZW,0.2) #0.8
-    # Direction
-    object_direction['Front']  = fuzz.gaussmf(range_degree,0,15)
-    object_direction['FrontLeft']= fuzz.gaussmf(range_degree,45,15)
-    object_direction['Left']= fuzz.gaussmf(range_degree,90,15)
-    object_direction['FrontRight']  = fuzz.gaussmf(range_degree,-45,15)
-    object_direction['Right']  = fuzz.gaussmf(range_degree,-90,15)
-    rear_d_p1 = fuzz.gaussmf(range_degree,180,60)
-    rear_d_p2 = fuzz.gaussmf(range_degree,-180,60) 
-    null,object_direction['BigRear']  =fuzz.fuzzy_or(range_degree,rear_d_p1,range_degree,rear_d_p2)
+    # Membership functions 
 
+    # Distance
+    object_distance['Near']  = fuzz.trapmf(range_meter, [0, 0, IZW, 2*IZW])
+    object_distance['Medium']= fuzz.trimf(range_meter, [IZW, 2*IZW, 4*IZW])
+    object_distance['Far']   = fuzz.trapmf(range_meter, [2*IZW, 4*IZW, 3, 3])
+    # Direction -180~180
+    rear_d_p2 = fuzz.trapmf(range_degree, [-180, -180, -135, -90])
+    object_direction['Right']  = fuzz.trimf(range_degree, [-135, -90, -45])
+    object_direction['FrontRight']  = fuzz.trimf(range_degree, [-90, -45, 0])
+    object_direction['Front']  =  fuzz.trimf(range_degree, [-45, 0, 45])
+    object_direction['FrontLeft']= fuzz.trimf(range_degree, [0, 45, 90])
+    object_direction['Left']= fuzz.trimf(range_degree, [45, 90, 135])
+    rear_d_p1 = fuzz.trapmf(range_degree, [90, 135, 180,180]) 
+    null,object_direction['BigRear']  =fuzz.fuzzy_or(range_degree,rear_d_p1,range_degree,rear_d_p2)
+    print("init_fls_common_part")
 def init_risk_assessment():
     range_type = np.arange(0, 2+1, 1)
     # New Antecedent/Consequent objects
@@ -85,26 +94,26 @@ def init_risk_assessment():
     object_type['DynObj'] = fuzz.trimf(range_type, [0.9, 1, 1.1])
     object_type['Human'] = fuzz.trimf(range_type, [1.9, 2, 2])
     # Speed 
-    object_speed['Slow']  = fuzz.gaussmf(range_meter_per_second,0.5,0.2)
-    object_speed['Medium']= fuzz.gaussmf(range_meter_per_second,1.0,0.2)
-    object_speed['Fast']  = fuzz.gaussmf(range_meter_per_second,1.5,0.2)
+    object_speed['Slow']  = fuzz.trapmf(range_meter_per_second, [0, 0, 0.5, 1.0])
+    object_speed['Medium']= fuzz.trapmf(range_meter_per_second, [0.5, 1.0, 1.0, 1.5])
+    object_speed['Fast']  = fuzz.trimf(range_meter_per_second,[1.0,1.5,1.5])
     # Orientation
-    object_orientation['Front']  = fuzz.gaussmf(range_degree,0,15)
-    object_orientation['FrontLeft']= fuzz.gaussmf(range_degree,45,15)
-    object_orientation['Left']= fuzz.gaussmf(range_degree,90,15)
-    object_orientation['RearLeft']= fuzz.gaussmf(range_degree,135,15)
-    rear_p1 = fuzz.gaussmf(range_degree,180,15)
-    rear_p2 = fuzz.gaussmf(range_degree,-180,15) 
+    object_orientation['Front']  = fuzz.trimf(range_degree, [-45, 0, 45])
+    object_orientation['FrontLeft']=fuzz.trimf(range_degree, [0, 45, 90])
+    object_orientation['Left']=  fuzz.trimf(range_degree, [45, 90, 135]) 
+    object_orientation['RearLeft']= fuzz.trimf(range_degree, [90, 135, 180]) 
+    rear_p1 = fuzz.trimf(range_degree, [135, 180,180]) 
+    rear_p2 = fuzz.trimf(range_degree, [-180,-180,-135]) 
     null,object_orientation['Rear']  =fuzz.fuzzy_or(range_degree,rear_p1,range_degree,rear_p2)
-    object_orientation['RearRight']  = fuzz.gaussmf(range_degree,-135,15)
-    object_orientation['Right']  = fuzz.gaussmf(range_degree,-90,15)
-    object_orientation['FrontRight']  = fuzz.gaussmf(range_degree,-45,15) 
+    object_orientation['RearRight']  = fuzz.trimf(range_degree, [-180,-135,-90]) 
+    object_orientation['Right']  = fuzz.trimf(range_degree, [-135,-90,-45]) 
+    object_orientation['FrontRight']  = fuzz.trimf(range_degree, [-90,-45, 0]) 
     # Risk
-    object_risk['VeryLow'] = fuzz.gaussmf(range_risk,0,0.3)
-    object_risk['Low'] = fuzz.gaussmf(range_risk,1,0.3)
-    object_risk['Medium'] = fuzz.gaussmf(range_risk,2,0.3)
-    object_risk['High'] = fuzz.gaussmf(range_risk,3,0.3)
-    object_risk['VeryHigh'] = fuzz.gaussmf(range_risk,4,0.3)
+    object_risk['VeryLow'] = fuzz.trimf(range_risk, [0, 0, 1]) 
+    object_risk['Low'] =  fuzz.trimf(range_risk, [0, 1, 2]) 
+    object_risk['Medium'] =  fuzz.trimf(range_risk, [1, 2, 3]) 
+    object_risk['High'] =  fuzz.trimf(range_risk, [2, 3, 4]) 
+    object_risk['VeryHigh'] =  fuzz.trimf(range_risk, [3, 4, 4]) 
     
     import os
     import cPickle as pickle 
@@ -252,8 +261,6 @@ def parse_dot_file(graph):
             #print type(node_info),node_info
             matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
             if matchObj:
-                #locals()[matchObj.group(1)]={'Name':matchObj.group(1),'Type':int(matchObj.group(2)),'Distance':float(matchObj.group(3)),'Orientation':float(matchObj.group(4)),'Direction':float(matchObj.group(5)),'Speed':float(matchObj.group(6))}#IF you want a dict. format
-
                 object_type         = int(matchObj.group(2))
                 object_distance     = float(matchObj.group(3))
                 object_direction    = float(matchObj.group(5))
@@ -261,7 +268,7 @@ def parse_dot_file(graph):
                 object_orientation  = float(matchObj.group(4))
                 object_risk =   cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
                  
-                if (object_risk>highest_risk): # Update target
+                if ( object_risk>highest_risk): # Update target
                     target_object_distance =object_distance
                     target_object_direction=object_direction
                     highest_risk=object_risk
@@ -278,6 +285,7 @@ def parse_dot_file(graph):
     print 'Calc. Freq. for S-G=',1/run_time,'Hz' #max. 71.8547248681 Hz 
     print "==============================="
     time_previous = time.time()
+
 def topic_callback(data):
     time_previous = time.time()
     graphs = pydot.graph_from_dot_data(data.sg_data) #From string
@@ -289,6 +297,7 @@ def navi_vel_callback(data):
     #global navi_linVel,navi_rotVel
     navi_linVel=data.linear.x
     navi_rotVel=data.angular.z
+
 """ Main program """
 if __name__ == "__main__":  
 
