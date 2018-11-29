@@ -89,8 +89,8 @@ def init():
     extractor.set_static_obj_names(['stairs', 'slidingDoor',      
                                     'dockstation_body',\
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1', 
-                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
-    extractor.set_dynamic_obj_names(['Bill#2'])
+                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1','Bill_base#2'])
+    extractor.set_dynamic_obj_names(['Bill'])
     extractor.set_robot_names(['turtlebot2i'])
 
     print('Connected to remote API server')
