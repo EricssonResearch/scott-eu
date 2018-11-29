@@ -1,0 +1,19 @@
+TrajectoryPlannerROS:
+ max_vel_x: 1.0
+ min_vel_x: 0.1
+ max_vel_theta: 0.5
+ min_in_place_vel_theta: 0.1
+
+# acc_lim_theta: 3.2
+# acc_lim_x: 2.5
+# acc_lim_y: 2.5
+ acc_lim_theta: 10.0
+ acc_lim_x: 5.0
+ acc_lim_y: 5.0
+
+ holonomic_robot: true
+#TO DO:holonomic_robot: true? false # Version control problem here
+# recovery_behaviour_enabled : false
+# clearing_rotation_allowed : false
+
+# dwa: false

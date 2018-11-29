@@ -2,7 +2,7 @@
 
 <a href="https://travis-ci.org/EricssonResearch/scott-eu"><img src="https://travis-ci.org/EricssonResearch/scott-eu.svg?branch=master"/></a>
 
-This repository contains all projects that are part of the *SCOTT Warehouse Sandbox* as described in the [SCOTT WP10](https://projects.avl.com/16/0094/WP10/default.aspx).
+This repository contains all projects that are part of the *SCOTT Warehouse Sandbox* as described in the [SCOTT WP10](https://projects.avl.com/16/0094/WP10/default.aspx). SCOTT (www.scottproject.eu)  has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 737422.
 
 The repository consists of 9 projects that use Docker images individually and are orchestrated using Docker Compose (as of now). Below is a brief summary of each project.
 
@@ -24,7 +24,7 @@ When the problem & domain PDDL files are ready, they are uploaded to the [Metric
 
 ## Simulated Environment
 
-This contains simulations required by the sandbox. It currently consists of the automated warehouse simulated in [VREP](http://www.coppeliarobotics.com/downloads.html) with all its elements and robots. 
+This contains simulations required by the sandbox. It currently consists of the automated warehouse simulated in [VREP](http://www.coppeliarobotics.com/downloads.html) with all its elements and robots.
 Until the multi-objective optimisation (MOO) service is present, its results should be provided by the [mission.json](warehousecontroller/mission.json) file.
 Until it contains the discret event simulations for modeling the supply chain dynamics, all required information should be provided  by the [mission.json](warehousecontroller/mission.json) file.
 
@@ -61,13 +61,6 @@ Optic Docker (`/optic-docker`) is a project that packages an alternative [OPTIC 
 > **NB!** This project does not expose OPTIC via REST (yet)!
 
 > :point_right: Start by reading the [README](optic-docker/README.md).
-
-
-## OSLC Prolog
-
-OSLC Prolog (`/oslc_prolog`) is a Prolog library designed to help developing OSLC-compliant REST services. Just ask Leo if you want to build one.
-
-> :point_right: Start by reading the [README](oslc_prolog/README.md).
 
 
 ## PDDL Examples

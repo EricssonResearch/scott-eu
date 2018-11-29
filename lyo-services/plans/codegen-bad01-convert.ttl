@@ -1,0 +1,232 @@
+@prefix :      <http://ontology.cf.ericsson.net/pddl_example/> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix pddl:  <http://ontology.cf.ericsson.net/pddl/> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
+
+:clear-x  a                 pddl:Parameter ;
+        rdfs:label          "x" ;
+        pddl:type           :location-or-block ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:on     a                   rdfs:Class ;
+        rdfs:label          "on" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :on-x , :on-y ;
+        oslc:instanceShape  pddl:PredicateShape .
+
+:table  a                   :location ;
+        rdfs:label          "table" ;
+        oslc:instanceShape  pddl:Constant .
+
+:location-or-block  a       rdfs:Class ;
+        rdfs:member         :location , :block ;
+        rdfs:subClassOf     pddl:EitherType ;
+        oslc:instanceShape  pddl:EitherTypeShape .
+
+:on-y   a                   pddl:Parameter ;
+        rdfs:label          "y" ;
+        pddl:type           :location-or-block ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:c      a           :block ;
+        rdfs:label  "c" .
+
+:on-x   a                   pddl:Parameter ;
+        rdfs:label          "x" ;
+        pddl:type           :location-or-block ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:total-moved  a             rdfs:Class ;
+        rdfs:label          "total-moved" ;
+        rdfs:subClassOf     pddl:Function ;
+        oslc:instanceShape  pddl:FunctionShape .
+
+:b      a           :block ;
+        rdfs:label  "b" .
+
+:adl-blocksworld-problem
+        a              pddl:Problem ;
+        rdfs:label     "adl-blocksworld-problem" ;
+        pddl:domain    :adl-blocksworld ;
+        pddl:goal      [ a              pddl:Or ;
+                         pddl:argument  [a       :on ;
+                                          :on-x   :b ;
+                                          :on-y   :c ]  ;
+                         pddl:argument  [ a       :on ;
+                                          :on-x   :c ;
+                                          :on-y   :b
+                                        ]
+                       ] ;
+        pddl:init      [ a         :clear ;
+                         :clear-x  :c
+                       ] ;
+        pddl:init      [ a         :clear ;
+                         :clear-x  :table
+                       ] ;
+        pddl:init      [ a           pddl:EQ ;
+                         pddl:left   [ a         :moved ;
+                                       :moved-m  :b
+                                     ] ;
+                         pddl:right  0
+                       ] ;
+       pddl:init           [ a           pddl:EQ ;
+                             pddl:left   [ a   :total-moved ] ;
+                             pddl:right  0
+                           ] ;
+
+        pddl:init      [ a         :clear ;
+                         :clear-x  :b
+                       ] ;
+        pddl:init      [ a           pddl:EQ ;
+                         pddl:left   [ a         :moved ;
+                                       :moved-m  :a
+                                     ] ;
+                         pddl:right  0
+                       ] ;
+        pddl:init      [ a       :on ;
+                         :on-x   :a ;
+                         :on-y   :table
+                       ] ;
+        pddl:init      [ a       :on ;
+                         :on-x   :b ;
+                         :on-y   :table
+                       ] ;
+        pddl:init      [ a           pddl:EQ ;
+                         pddl:left   [ a         :moved ;
+                                       :moved-m  :c
+                                     ] ;
+                         pddl:right  0
+                       ] ;
+        pddl:init      [ a       :on ;
+                         :on-x   :c ;
+                         :on-y   :a
+                       ] ;
+        pddl:minimize  [ a  pddl:total-time ] ;
+        pddl:object    :c , :table , :a , :b .
+
+:moved  a                   rdfs:Class ;
+        rdfs:label          "moved" ;
+        rdfs:subClassOf     pddl:Function ;
+        pddl:parameter      :moved-m ;
+        oslc:instanceShape  pddl:FunctionShape .
+
+:location  a                rdfs:Class ;
+        rdfs:label          "location" ;
+        rdfs:subClassOf     pddl:PrimitiveType ;
+        oslc:instanceShape  pddl:PrimitiveTypeShape .
+
+:block  a                   rdfs:Class ;
+        rdfs:label          "block" ;
+        rdfs:subClassOf     pddl:PrimitiveType ;
+        oslc:instanceShape  pddl:PrimitiveTypeShape .
+
+:adl-blocksworld  a         pddl:Domain ;
+        rdfs:label          "adl-blocksworld" ;
+        pddl:action         :move ;
+        pddl:constant       :table ;
+        pddl:function       :total-moved , :moved ;
+        pddl:predicate      :on , :clear ;
+        pddl:type           :block , :location ;
+        oslc:instanceShape  pddl:DomainShape .
+
+:a      a           :block ;
+        rdfs:label  "a" .
+
+:move-y  a                  pddl:Parameter ;
+        rdfs:label          "y" ;
+        pddl:type           :location-or-block ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            3 .
+
+:move-b  a                  pddl:Parameter ;
+        rdfs:label          "b" ;
+        pddl:type           :block ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .
+
+:clear  a                   rdfs:Class ;
+        rdfs:label          "clear" ;
+        rdfs:subClassOf     pddl:Predicate ;
+        pddl:parameter      :clear-x ;
+        oslc:instanceShape  pddl:PredicateShape .
+
+:move-x  a                  pddl:Parameter ;
+        rdfs:label          "x" ;
+        pddl:type           :location-or-block ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            2 .
+
+:move   a                   rdfs:Class ;
+        rdfs:label          "move" ;
+        rdfs:subClassOf     pddl:Action ;
+        pddl:effect         [ a              pddl:And ;
+                              pddl:argument  [ a       :on ;
+                                               :on-x   :move-b ;
+                                               :on-y   :move-y
+                                             ] ;
+                              pddl:argument  [ a              pddl:Not ;
+                                               pddl:argument  [ a       :on ;
+                                                                :on-x   :move-b ;
+                                                                :on-y   :move-x
+                                                              ]
+                                             ] ;
+                              pddl:argument  [ a         :clear ;
+                                               :clear-x  :move-x
+                                             ] ;
+                              pddl:argument  [ a               pddl:Increase ;
+                                               pddl:argument   1 ;
+                                               pddl:parameter  [ a         :moved ;
+                                                                 :moved-m  :move-b
+                                                               ]
+                                             ] ;
+                              pddl:argument  [ a               pddl:Increase ;
+                                               pddl:argument   1 ;
+                                               pddl:parameter  [ a  :total-moved ]
+                                             ] ;
+                              pddl:argument  [ a               pddl:When ;
+                                               pddl:argument   [ a              pddl:Not ;
+                                                                 pddl:argument  [ a         :clear ;
+                                                                                  :clear-x  :move-y
+                                                                                ]
+                                                               ] ;
+                                               pddl:parameter  [ a              pddl:Not ;
+                                                                 pddl:argument  [ a           pddl:Equality ;
+                                                                                  pddl:left   :move-y ;
+                                                                                  pddl:right  :table
+                                                                                ]
+                                                               ]
+                                             ]
+                            ] ;
+        pddl:parameter      :move-b , :move-x , :move-y ;
+        pddl:precondition   [ a              pddl:And ;
+                              pddl:argument  [ a              pddl:Not ;
+                                               pddl:argument  [ a           pddl:Equality ;
+                                                                pddl:left   :move-b ;
+                                                                pddl:right  :move-y
+                                                              ]
+                                             ] ;
+                              pddl:argument  [ a         :clear ;
+                                               :clear-x  :move-b
+                                             ] ;
+                              pddl:argument  [ a       :on ;
+                                               :on-x   :move-b ;
+                                               :on-y   :move-x
+                                             ] ;
+                              pddl:argument  [ a         :clear ;
+                                               :clear-x  :move-y
+                                             ]
+                            ] ;
+        oslc:instanceShape  pddl:ActionShape .
+
+:moved-m  a                 pddl:Parameter ;
+        rdfs:label          "m" ;
+        pddl:type           :block ;
+        oslc:instanceShape  pddl:ParameterShape ;
+        sh:order            1 .

@@ -1,0 +1,29 @@
+{
+  "name": "eliot",
+  "version": "0.0.0",
+  "description": "Emulated IoT platform based on coap-node and leshan",
+  "dependencies": {
+    "coap-node": "https://github.com/Alliasd/coap-node/tarball/master",
+    "openweathermap": "^1.0.0",
+    "shortid": "^2.2.6",
+    "promise": "^7.1.1",
+    "suncalc": "^1.8.0"
+  },
+  "devDependencies": {
+    "tracer": "^0.7.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Alliasd/ELIOT.git"
+  },
+  "keywords": [
+    "coap", "lwm2m", "leshan", "eliot", "device management", "IoT-emulator"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Alliasd/ELIOT/issues"
+  },
+  "homepage": "https://github.com/Alliasd/ELIOT"
+}
+

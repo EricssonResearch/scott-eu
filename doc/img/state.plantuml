@@ -1,0 +1,110 @@
+@startuml
+scale 3
+!pragma teoz true
+
+participant Controller
+participant "Robot R1" as R1
+participant "Robot R2" as R2
+participant "Shelf SH1" as S1
+
+== Initialisation ==
+
+Controller -> Controller : Create Plan
+
+== Task T1 on R1 == 
+
+Controller -> R1 : Assign Task T1
+
+note left Controller
+State S1
+end note
+/note over R1
+	""holding=nil""
+	task=T1
+	location=base
+end note
+/note over R2
+	holding=nil
+	task=nil
+	location=base
+	status=idle
+end note
+/note over S1
+	holding=B2,B3,B4
+end note
+
+R1 -> R1 : Pick up Box B1
+
+note left Controller
+State S2
+end note
+/note over R1
+	holding=B1
+	task=T1
+	location=base
+end note
+R1 -> R1 : Move to A1,1
+note left Controller
+State S3
+end note
+/note over R1
+	holding=B1
+	task=T1
+	location=A1,1
+end note
+
+R1 -> Controller : Failure
+note left Controller
+State S4
+end note
+/note over R1
+	holding=B1
+	task=T1
+	location=A1,1
+	status=down
+end note
+Controller -> Controller : Replan
+
+== Task T1 on R2 == 
+
+Controller -> R2 : Reassign T1 to R2
+note left Controller
+State S5
+end note
+/note over R1
+	holding=B1
+	task=nil
+	location=A1,1
+  status=down
+end note
+/note over R2
+	holding=nil
+	task=T1
+	location=base
+  status=executing
+end note
+R2 -> R2: Pick B1 from R1
+note left Controller
+State S6
+end note
+/note over R2
+	holding=B1
+	task=T1
+	location=A1,1
+  status=executing
+end note
+R2 -> R2: ...
+R2 -> S1: Offload B1 to SH1
+note left Controller
+State S7
+end note
+/note over S1
+	holding=B1,B2,B3,B4
+end note
+/note over R2
+	holding=nil
+	task=nil
+	location=S1
+  	status=idle
+end note
+@enduml

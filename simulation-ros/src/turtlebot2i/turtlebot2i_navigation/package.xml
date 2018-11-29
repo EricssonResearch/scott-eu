@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package>
+  <name>turtlebot2i_navigation</name>
+  <version>0.0.0</version>
+  <description>The turtlebot2i_navigation package</description>
+  <maintainer email="alberto.hata@ericsson.com">Alberto Hata</maintainer>
+  <license>apache</license>
+
+  <!-- Url tags are optional, but multiple are allowed, one per tag -->
+  <!-- Optional attribute type can be: website, bugtracker, or repository -->
+  <!-- Example: -->
+  <!-- <url type="website">http://wiki.ros.org/turtlebot2i_description</url> -->
+
+
+  <!-- Author tags are optional, multiple are allowed, one per tag -->
+  <!-- Authors do not have to be maintainers, but could be -->
+  <!-- Example: -->
+  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+    <!-- Other tools can request additional information be placed here -->
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>kobuki_auto_docking</build_depend>
+  <run_depend>kobuki_auto_docking</run_depend>
+
+
+</package>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>se.ericsson.cf.scott.sandbox</groupId>
+  <artifactId>sandbox-parent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <!--TODO upgrade to 1.2.60-->
+    <kotlin.version>1.2.51</kotlin.version>
+  </properties>
+
+  <modules>
+    <module>../domain-pddl</module>
+
+    <module>../webapp-whc</module>
+    <module>../webapp-executor</module>
+    <module>../webapp-twin</module>
+    <!-- <module>../webapp-twin-shelf</module> -->
+
+    <!--<module>cli-whc</module>-->
+  </modules>
+
+  <repositories>
+    <repository>
+      <id>scott</id>
+      <name>SCOTT sandbox</name>
+      <url>https://aide.md.kth.se/artifactory/scott</url>
+    </repository>
+    <repository>
+      <id>rosjava</id>
+      <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
+    </repository>
+    <repository>
+      <id>jfrog</id>
+      <url>http://repo.jfrog.org/artifactory/libs-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>central</id>
+      <name>bintray</name>
+      <url>http://jcenter.bintray.com</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>lyo-releases</id>
+      <name>Eclipse Lyo Releases</name>
+      <url>https://repo.eclipse.org/content/repositories/lyo-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>lyo-snapshots</id>
+      <name>Eclipse Lyo Snapshots</name>
+      <url>https://repo.eclipse.org/content/repositories/lyo-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+</project>

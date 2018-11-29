@@ -1,5 +1,21 @@
 This project contains a PDDL generator, a Planner OSLC Service (based on Metric-FF planner and VAL validator).
 
+## Getting started
+
+To start the server, run inside current directory:
+
+    $ docker-compose up
+
+Now you can open http://localhost:3020/home
+
+Next, install Postman and import `postman-collection.json`:
+
+![](img/2018-02-15-17-43-06.png)
+
+If you run the _Generate PDDL_ request, you should see the following response:
+
+![](img/2018-02-15-17-48-11.png)
+
 ## Few design points:
 
 * This document was used as a reference for a PDDL dialect:
@@ -20,21 +36,22 @@ This project contains a PDDL generator, a Planner OSLC Service (based on Metric-
 Here is the current PDDL ontology (see pddl.ttl):
 ![diagram-3](https://user-images.githubusercontent.com/3233957/30367188-db806ef0-986d-11e7-9b20-341fa28da619.png)
 
-## Usage:
+## Endpoint reference
 
-### Generate PDDL text:
+### Generate PDDL text
+
 Base URI:  `http://<host>/planner/pddlCreationFactory`
 
 Do `POST` with `Accept: text/x-pddl` header and body containing either `pddl:Domain`, `pddl:Problem` or `pddl:Plan` resources or any combination of them.
 
-### Generate plan:
+### Generate plan
 Base URI:  `http://<host>/planner/planCreationFactory`
 
 Do `POST` with `Accept: application/turtle` or `application/rdf+xml` header and body containing both `pddl:Domain` and `pddl:Problem` resources. The returned resource is of type `pddl:Plan` containing steps as resources of type `pddl:Step` ordered using `sh:order` property.
 
 For plan generation Metric-FF planner binary `ff` should be where `run.pl` is or in `$PATH`.
 
-### Generate validated plan:
+### Generate validated plan
 Base URI:  `http://<host>/planner/validatedPlanCreationFactory`
 
 Do `POST` with `Accept: application/turtle` or `application/rdf+xml` header and body containing both `pddl:Domain` and `pddl:Problem` resources. The returned resource is of type `pddl:Plan` (as in the above case), each `pddl:Step` of which is annotated with `pddl:adding`, `pddl:removing`, `pddl:updating` properties.

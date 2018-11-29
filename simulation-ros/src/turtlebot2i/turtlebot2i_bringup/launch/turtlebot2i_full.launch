@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
+    <param name="frame_id" value="map"/>
+  </node>
+
+  <arg name="robot_name" default="turtlebot2i"/>
+  <arg name="joint1"        default="PhantomXPincher_joint1" />
+  <arg name="joint2"        default="PhantomXPincher_joint2" />
+  <arg name="joint3"        default="PhantomXPincher_joint3" />
+  <arg name="joint4"        default="PhantomXPincher_joint4" />
+  <arg name="gripper1"      default="PhantomXPincher_gripperCenter_joint" />
+  <arg name="gripper2"      default="PhantomXPincher_gripperClose_joint" />
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find turtlebot2i_description)/robots/kobuki_interbotix_astra.urdf.xacro'" />
+
+  <!-- The semantic description that corresponds to the URDF -->
+  <param name="robot_description_semantic" textfile="$(find turtlebot2i_moveit)/config/turtlebot2i.srdf" />
+  
+  <!-- Load updated joint limits (override information from URDF) -->
+  <rosparam command="load" file="$(find phantomx_pincher_arm_moveit)/config/joint_limits.yaml"/>
+
+  <!-- Load default settings for kinematics; these settings are overridden by settings in a node's namespace -->
+  <rosparam command="load" file="$(find phantomx_pincher_arm_moveit)/config/kinematics.yaml"/>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+  </node>
+  
+  <!-- Navigation  -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+    <!--      <param name="controller_frequency" value="5.0" />-->
+    <remap from="cmd_vel" to="/$(arg robot_name)/commands/velocity"/>
+    <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find turtlebot2i_navigation)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot2i_navigation)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot2i_navigation)/config/base_local_planner_params.yaml" command="load" />
+    
+    <rosparam subst_value="true">
+      local_costmap/laser_scan_sensor/sensor_frame: /$(arg robot_name)/lidar/scan
+      local_costmap/laser_scan_sensor/topic: /$(arg robot_name)/lidar/scan
+      global_costmap/laser_scan_sensor/sensor_frame: /$(arg robot_name)/lidar/scan
+      global_costmap/laser_scan_sensor/topic: /$(arg robot_name)/lidar/scan
+      global_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
+      local_costmap/global_frame: /$(arg robot_name)/odom
+      local_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
+    </rosparam>
+
+    <remap from="map" to="/map" />
+
+  </node>
+
+  <!--Static TF from /map to robot /odom -->
+  <!-- The value of -1.3 on this TF is cope with elevated floor on the scene /turtlebot2i/turtlebot2i_description/vrep-model/warehouse_turtlebot2i_v3_recharge -->
+  <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 -1.3 0 0 0 1 /map /turtlebot2i/odom 100" />
+
+  <!-- To be fixed - Static TF from /turtlebot2i/base_footprint to robot /base_footprint -->
+  <node pkg="tf" type="static_transform_publisher" name="correct_vrep_broadcaster" args="0 0 0 0 0 0 1 /turtlebot2i/base_footprint /base_footprint 100" />
+
+  <!-- To be fixed - Static TF from /lidar/scan to /turtlebot2i/lidar/scan -->
+  <node pkg="tf" type="static_transform_publisher" name="correct_vrep_broadcaster2" args="0 0 0 0 0 0 1 /lidar/scan /turtlebot2i/lidar/scan 100" />
+
+
+  <param name="vrep_ip"     value="127.0.0.1" />
+  <param name="vrep_port"   value="20000" />
+  <rosparam param="joints" subst_value="true">
+    - $(arg joint1)
+    - $(arg joint2)
+    - $(arg joint3)
+    - $(arg joint4)
+    - $(arg gripper1)
+    - $(arg gripper2)
+  </rosparam> 
+  
+  <node name="vrep_controller" pkg="phantomx_pincher_arm_vrep_controller" type="controller_remoteApi" />
+
+  <!-- Start controllers -->
+  <!-- Joint trajectory controller (this is not a low-level controller) -->
+  <rosparam file="$(find turtlebot2i_moveit)/config/turtlebot2i_controllers.yaml" command="load" /> 
+  
+  <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
+
+
+  <include file="$(find turtlebot2i_moveit)/launch/move_group.launch">
+    <arg name="allow_trajectory_execution" value="true"/>  
+    <arg name="fake_execution" value="false"/>
+    <arg name="info" value="true"/>
+  </include>
+
+  <node pkg="phantomx_pincher_arm_moveit" name="pick_custom" type="pick_action_server.py" output="screen" />
+  
+  <node pkg="phantomx_pincher_arm_moveit" name="place_custom" type="place_action_server.py" output="screen" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_bringup)/config/rviz_nav_arm.rviz" />
+  
+</launch>
