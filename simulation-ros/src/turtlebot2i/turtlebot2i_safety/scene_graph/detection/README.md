@@ -23,6 +23,15 @@ You can start training model when you get the similar train dataset with the exa
 ### Video detection
 
 ### Make train dataset
+1. Label image with Labelme
+The first step is using the tool of [Labelme](https://github.com/wkentaro/labelme) python version to make polygonal annotation in the image. You also can consider using other different annotation tools, such as . 
+
+2. Uncompree JSON file 
+After labeling the image by Labelme, we get JSON file as the result for each single image. Then we use the script offered by Labelme to uncompress this JSON file to get the mask image and label name. Use command `labelme_json_to_dataset <file_name>.json` to get a folder with 5 files: img.png, info.yaml, label.png, label_names.txt and label_viz.png. What we need in our training dataset is the mask image (label.png) and label names (info.yaml).
+
+3. Convert to 8-bit depth image 
+ X50 for visualization
+
 
 ## Some useful tools
 
