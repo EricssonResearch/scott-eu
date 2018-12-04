@@ -12,7 +12,7 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
-def topic_callback(data):
+def topic_callback(data): # Previous S-G format
     risk_assessment_instance.input['distance'] = data.object_distance		# 0- 3  meter
     risk_assessment_instance.input['direction'] = data.object_direction		# 0-360 degree
     risk_assessment_instance.input['speed'] =   data.object_speed			#0- 2 m/s
