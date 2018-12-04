@@ -27,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: LaserScan - R0
 Visualization Manager:
   Class: ""
   Displays:
@@ -186,7 +186,114 @@ Visualization Manager:
       Tree:
         map:
           turtlebot2i/odom:
-            {}
+            turtlebot2i/base_footprint:
+              turtlebot2i/base_link:
+                turtlebot2i/arm_base_link:
+                  turtlebot2i/arm_shoulder_pan_link:
+                    turtlebot2i/arm_bicep_link:
+                      turtlebot2i/arm_forearm_link:
+                        turtlebot2i/arm_wrist_flex_link:
+                          turtlebot2i/gripper_active2_link:
+                            {}
+                          turtlebot2i/gripper_active_link:
+                            {}
+                          turtlebot2i/gripper_link:
+                            {}
+                turtlebot2i/camera_rgb_frame:
+                  turtlebot2i/camera_depth_frame:
+                    turtlebot2i/camera_depth_optical_frame:
+                      {}
+                  turtlebot2i/camera_link:
+                    {}
+                  turtlebot2i/camera_rgb_optical_frame:
+                    {}
+                turtlebot2i/camera_sr300:
+                  turtlebot2i/camera_sr300_rgb_frame:
+                    turtlebot2i/camera_sr300_depth_frame:
+                      turtlebot2i/camera_sr300_depth_optical_frame:
+                        {}
+                    turtlebot2i/camera_sr300_rgb_optical_frame:
+                      {}
+                turtlebot2i/caster_back_link:
+                  {}
+                turtlebot2i/caster_front_link:
+                  {}
+                turtlebot2i/cliff_sensor_front_link:
+                  {}
+                turtlebot2i/cliff_sensor_left_link:
+                  {}
+                turtlebot2i/cliff_sensor_right_link:
+                  {}
+                turtlebot2i/gyro_link:
+                  {}
+                turtlebot2i/lidar/scan:
+                  {}
+                turtlebot2i/plate_bottom_link:
+                  {}
+                turtlebot2i/plate_middle_link:
+                  {}
+                turtlebot2i/plate_top_link:
+                  {}
+                turtlebot2i/plate_utility_lower_link:
+                  {}
+                turtlebot2i/plate_utility_upper_link:
+                  {}
+                turtlebot2i/standoff_251mm_0_link:
+                  {}
+                turtlebot2i/standoff_251mm_1_link:
+                  {}
+                turtlebot2i/standoff_38mm_0_link:
+                  {}
+                turtlebot2i/standoff_38mm_1_link:
+                  {}
+                turtlebot2i/standoff_38mm_2_link:
+                  {}
+                turtlebot2i/standoff_38mm_3_link:
+                  {}
+                turtlebot2i/standoff_38mm_4_link:
+                  {}
+                turtlebot2i/standoff_38mm_5_link:
+                  {}
+                turtlebot2i/standoff_51mm_0_link:
+                  {}
+                turtlebot2i/standoff_51mm_1_link:
+                  {}
+                turtlebot2i/standoff_51mm_2_link:
+                  {}
+                turtlebot2i/standoff_51mm_3_link:
+                  {}
+                turtlebot2i/standoff_51mm_4_link:
+                  {}
+                turtlebot2i/standoff_51mm_5_link:
+                  {}
+                turtlebot2i/standoff_81mm_0_link:
+                  {}
+                turtlebot2i/standoff_81mm_10_link:
+                  {}
+                turtlebot2i/standoff_81mm_11_link:
+                  {}
+                turtlebot2i/standoff_81mm_12_link:
+                  {}
+                turtlebot2i/standoff_81mm_13_link:
+                  {}
+                turtlebot2i/standoff_81mm_1_link:
+                  {}
+                turtlebot2i/standoff_81mm_2_link:
+                  {}
+                turtlebot2i/standoff_81mm_3_link:
+                  {}
+                turtlebot2i/standoff_81mm_6_link:
+                  {}
+                turtlebot2i/standoff_81mm_7_link:
+                  {}
+                turtlebot2i/standoff_81mm_8_link:
+                  {}
+                turtlebot2i/standoff_81mm_9_link:
+                  {}
+                turtlebot2i/wheel_left_link:
+                  {}
+                turtlebot2i/wheel_right_link:
+                  {}
       Update Interval: 0
       Value: true
     - Alpha: 0.5
@@ -625,6 +732,16 @@ Visualization Manager:
       Shape: Arrow (Flat)
       Topic: ""
       Unreliable: false
+      Value: true
+    - Alpha: 0.699999988
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /turtlebot2i/move_base_node/local_costmap/costmap
+      Unreliable: false
+      Use Timestamp: false
       Value: true
   Enabled: true
   Global Options:

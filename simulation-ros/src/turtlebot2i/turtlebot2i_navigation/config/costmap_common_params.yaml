@@ -1,10 +1,23 @@
 obstacle_range: 2.5
-raytrace_range: 3.0
+raytrace_range: 5.0
 #footprint: [[x0, y0], [x1, y1], ... [xn, yn]]
 robot_radius: 0.2
-inflation_radius: 0.15
+#inflation_radius: 1.0
+inflation_radius: 0.3
+#cost_scaling_factor: 40
 transform_tolerance: 10.0
 
 observation_sources: laser_scan_sensor
 
-laser_scan_sensor: {sensor_frame: /turtlebot2i/lidar/scan, data_type: LaserScan, topic: /turtlebot2i/lidar/scan, marking: true, clearing: true}
+laser_scan_sensor: {sensor_frame: /turtlebot2i/lidar/scan, data_type: LaserScan, topic: /turtlebot2i/lidar/scan, marking: true, clearing: true, inf_is_valid: true}
+
+#obstacle_layer:
+# observation_sources: scan
+# scan:
+# data_type: LaserScan
+# topic: scan # Your LaserScan topic
+# marking: true
+# clearing: true
+# inf_is_valid: true # This parameter does the trick!
+# min_obstacle_height: 0.8
+# max_obstacle_height: 1.2

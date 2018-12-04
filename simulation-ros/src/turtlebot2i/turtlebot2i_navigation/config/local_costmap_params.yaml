@@ -8,3 +8,7 @@ local_costmap:
  width: 1.5
  height: 1.5
  resolution: 0.1
+# inf_is_valid: true
+# plugins:
+#  - {name: obstacle_layer,  type: "costmap_2d::VoxelLayer"}
+#  - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
