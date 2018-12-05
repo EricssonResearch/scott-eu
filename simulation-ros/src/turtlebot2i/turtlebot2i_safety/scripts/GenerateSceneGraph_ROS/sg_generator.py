@@ -89,8 +89,8 @@ def init():
     extractor.set_static_obj_names(['stairs', 'slidingDoor',      
                                     'dockstation_body',\
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1', 
-                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1','Bill_base#2'])
-    extractor.set_dynamic_obj_names(['Bill'])
+                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
+    extractor.set_dynamic_obj_names(['Bill_base#2'])
     extractor.set_robot_names(['turtlebot2i'])
 
     print('Connected to remote API server')
@@ -201,22 +201,22 @@ def sgGenerate():
 if __name__ == '__main__':
     init()
     # Update rate in seconds
-    rate = 0.1 #0.5
+    
     time_previous = time.time()
     try:
         print('Started getting scene objects from vision sensor FOV...')
         pub = rospy.Publisher('/turtlebot2i/safety/scene_graph', SceneGraph, queue_size=10)
         rospy.init_node('sg_generator', anonymous=True)
-        rate = rospy.Rate(10) # 10 Hz
+        rate = rospy.Rate(0.5) # 0.5 Hz, T=2 sec
         while not rospy.is_shutdown():          
             sgGenerate()
-            #rate.sleep()
             #''' #If one want to check execution time
             one_run_time = time.time() - time_previous
-            #print 'execute time=',one_run_time,'s'           
-            print 'execute frequency=',1/float(one_run_time),'Hz'
+            print 'execute time=',one_run_time,'sec'           
+            #print 'execute frequency=',1/float(one_run_time),'Hz'
             time_previous =time.time()
-            #'''
+            #'''            
+            rate.sleep()
     except rospy.ROSInterruptException:
         # Close the connection to V-REP
         extractor.close_connection() 

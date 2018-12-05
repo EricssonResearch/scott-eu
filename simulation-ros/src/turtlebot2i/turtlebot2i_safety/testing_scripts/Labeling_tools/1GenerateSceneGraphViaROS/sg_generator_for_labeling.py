@@ -90,7 +90,7 @@ def init():
                                     'dockstation_body',\
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1', 
                                     'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
-    extractor.set_dynamic_obj_names(['Bill#2'])
+    extractor.set_dynamic_obj_names(['Bill_base#2'])
     extractor.set_robot_names(['turtlebot2i'])
 
     print('Connected to remote API server')
@@ -207,7 +207,7 @@ if __name__ == '__main__':
         print('Started getting scene objects from vision sensor FOV...')
         pub = rospy.Publisher('/turtlebot2i/safety/scene_graph', SceneGraph, queue_size=10)
         rospy.init_node('sg_generator', anonymous=True)
-        rate = rospy.Rate(0.5) # 0.5 Hz, T=2 sec
+        rate = rospy.Rate(2) # 2 Hz, T=1/rate
         while not rospy.is_shutdown():          
             sgGenerate()
             #''' #If one want to check execution time
