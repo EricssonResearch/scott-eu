@@ -79,6 +79,12 @@ def get_type(i):
 
 def get_orientation(i, j):
     obj_ori = j.ori[2]*180/pi - i.ori[2]*180/pi
+    if obj_ori > 180:
+        obj_ori = obj_ori - 360
+    elif obj_ori < -180:
+        obj_ori = obj_ori + 360
+    else:
+        pass
     return obj_ori # BUG here
 
 def init():
@@ -207,7 +213,7 @@ if __name__ == '__main__':
         print('Started getting scene objects from vision sensor FOV...')
         pub = rospy.Publisher('/turtlebot2i/safety/scene_graph', SceneGraph, queue_size=10)
         rospy.init_node('sg_generator', anonymous=True)
-        rate = rospy.Rate(0.5) # 0.5 Hz, T=2 sec
+        rate = rospy.Rate(1.0) #Hz, T=1/Rate
         while not rospy.is_shutdown():          
             sgGenerate()
             #''' #If one want to check execution time
