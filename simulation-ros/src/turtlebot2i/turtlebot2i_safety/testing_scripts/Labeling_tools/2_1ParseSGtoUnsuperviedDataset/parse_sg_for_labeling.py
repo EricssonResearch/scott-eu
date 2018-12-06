@@ -20,7 +20,7 @@ def init_var():
     else:
         print "Label folder exists"
     global sub_folder_number
-    sub_folder_number = 0 # counter
+    sub_folder_number = 0 #If one wants to add more, change this.
     global time_previous
     time_previous = time.time()
     print 'num',sub_folder_number
@@ -48,7 +48,7 @@ def parse_dot_file(graph):
     # Creat a folder for one scene graph
     global sub_folder_number
     sub_folder_number = sub_folder_number+1
-    number_string4 = str(sub_folder_number).zfill(4)  #Display number with leading zeros
+    number_string4 = str(sub_folder_number).zfill(6)  #Display number with leading zeros
 
     sub_label_folder = os.path.join(labels_folder,number_string4)
     if not os.path.exists(sub_label_folder):
