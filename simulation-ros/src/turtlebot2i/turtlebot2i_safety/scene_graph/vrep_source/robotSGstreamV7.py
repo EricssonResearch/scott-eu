@@ -39,13 +39,17 @@ def get_support_bbox(i, j):
     pol_i = box(i.bbox_min[0], i.bbox_min[1], i.bbox_max[0], i.bbox_max[1])
     pol_j = box(j.bbox_min[0], j.bbox_min[1], j.bbox_max[0], j.bbox_max[1])
     pol_support = pol_i.intersects(pol_j)
+    print(pol_support)
     return pol_support
 
 def get_overlap_bbox(i, j):
     pol_i = box(i.bbox_min[0], i.bbox_min[1], i.bbox_max[0], i.bbox_max[1])
     pol_j = box(j.bbox_min[0], j.bbox_min[1], j.bbox_max[0], j.bbox_max[1])
-    pol_overl = pol_i.overlaps(pol_j)
-    return pol_overl
+    pol_overlap = pol_i.overlaps(pol_j)
+    pol_intersect = pol_i.intersects(pol_j)
+    pol_support = pol_overlap | pol_intersect
+    # print(pol_support)
+    return pol_support
 
 def get_velocity(j):
     # vel_j = j.vel
@@ -106,19 +110,23 @@ extractor = SceneObjectExtractor('127.0.0.1', 19997)
 
 # List of object names to retrieve information
 # For now it is hardcoded
-# extractor.set_static_obj_names(['fake_obj', 'stairs', 'slidingDoor',      
-#                                 'DockStationBody', 'DockStationBody#0',\
+extractor.set_static_obj_names(['stairs', 'slidingDoor#0',
+                                'Wall_Corner', 'Wall_Door', 'Wall_Window', 
+                                'dockStation#0', 'dockStation#1',\
+                                'conveyorBelt#0', 'conveyorBelt#1','conveyorBelt#2', #'ConveyorBeltBody#0', 
+                                'shelf#0', 'shelf#1','shelf#2'])
+extractor.set_dynamic_obj_names(['Bill_base#2',
+                                'productGreen#0', 'productGreen#1', 'productGreen#2',
+                                'productYellow#0', 'productYellow#1', 'productYellow#2',
+                                'productRed#0', 'productRed#1', 'productRed#2'])
+extractor.set_robot_names(['turtlebot2i', 'turtlebot2i#0'])
+
+# extractor.set_static_obj_names(['stairs', 'slidingDoor',      
+#                                 'dockstation_body',\
 #                                 'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1', 
 #                                 'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
-# extractor.set_dynamic_obj_names(['Bill#3', 'product', 'fake_obj'])
-# extractor.set_robot_names(['turtlebot2i', 'turtlebot2i#0'])
-
-extractor.set_static_obj_names(['stairs', 'slidingDoor',      
-                                'dockstation_body',\
-                                'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1', 
-                                'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
-extractor.set_dynamic_obj_names(['Bill#2'])
-extractor.set_robot_names(['turtlebot2i'])
+# extractor.set_dynamic_obj_names(['Bill#2'])
+# extractor.set_robot_names(['turtlebot2i'])
 
 print('Connected to remote API server')
 
@@ -146,6 +154,8 @@ print('Started getting scene objects from vision sensor FOV...')
 # tt = 1
 while True:
     # tt = 2
+    time_start = time.time()
+
     # Get dynamic object info (pose and vel) periodically
     extractor.update_dynamic_obj_info() 
 
@@ -167,7 +177,7 @@ while True:
         #############################################
         # generate scene graph
         #############################################
-        dot = Digraph(comment='warehouse', format='svg')
+        dot = Digraph(comment='warehouse', format='png')
         dot.node_attr['shape']='record'
         robot_velocity = get_velocity(robot_list[robot_num])
         i = robot_list[robot_num]
@@ -194,23 +204,28 @@ while True:
             #     node_label = '{%s|velocity: 0.2|distance: %.2f}'%(obj.name, obj_distance)
             # else:
             #     node_label = '{%s|Static|distance: %.2f}'%(obj.name, obj_distance)
-            node_label = '{%s|type: %s|distance: %.2f|orientation: %.2f|direction: %.2f|velocity: %.2f}'%( obj.name, obj_type, obj_distance, obj_orientation, obj_direction, obj_velocity)
+            node_label = '{%s|type: %s|distance: %.2f|orientation: %.2f|direction: %.2f|velocity: %.2f|size: x %.2f, y %.2f, z %.2f}'%( obj.name, obj_type, obj_distance, obj_orientation, obj_direction, obj_velocity, obj.size[0], obj.size[1], obj.size[2])
             # node_label = '{%s|velocity: %.2f|distance: %.2f}'%( obj.name, obj_velocity, obj_distance)
                 
             # node_label = '{%s|distance: %.2f}'%(obj.name, obj_distance)
             
             dot.node(obj.name, label=node_label)
+            support_flg = 0
             if re.match(r'wall*', obj.name):
                 dot.edge('warehouse', obj.name, label='on')
             elif re.match(r'product*', obj.name):
+                # obj_list = obj_list.remove(obj)
                 for obj_support in obj_list:
+                    if obj_support.name[0:5] != obj.name[0:5]:
                     # if get_support_bbox(obj, obj_support):
-                    if get_overlap_bbox(obj, obj_support):                    
-                        dot.edge(obj_support.name, obj.name, label='on')
-                        break
-                    else:
-                        dot.edge('floor', obj.name, label='on')
-                        break
+                        if get_overlap_bbox(obj, obj_support):                    
+                            dot.edge(obj_support.name, obj.name, label='on')
+                            support_flg = 1
+                            break
+
+                if support_flg == 0:        
+                    dot.edge('floor', obj.name, label='on')
+
             else:
                 dot.edge('floor', obj.name, label='on')
         '''
@@ -233,6 +248,11 @@ while True:
         #output scene graph as .svg file in 
         sg_name = 'sg_robot/robot%d' %robot_num
         dot.render(sg_name, view=True)
+
+    time_end = time.time()
+    time_cost = time_end - time_start   
+    scene_graph_fps = 1.0/time_cost
+    # print("Scene graph generating fps is %.2f" % scene_graph_fps)
 
     #time.sleep(rate)
 clientID=extractor.clientID # first method
