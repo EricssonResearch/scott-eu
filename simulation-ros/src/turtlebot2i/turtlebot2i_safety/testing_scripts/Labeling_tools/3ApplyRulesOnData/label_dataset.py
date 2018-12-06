@@ -61,82 +61,84 @@ def init_rule_based_system():
     range_risk = np.arange(0, 5+step_risk, step_risk)  # Range: 0,1,2,3,4 for risk
 
     object_type = ctrl.Antecedent(range_type, 'type') 
-    object_distance = ctrl.Antecedent(range_meter, 'distance')     # 0- 3  meter
+    object_distance = ctrl.Antecedent(range_meter, 'distance') 
+    object_orientation = ctrl.Antecedent(range_degree , 'orientation')#-180~180 degree
     object_direction  = ctrl.Antecedent(range_degree , 'direction') # -180~180 degree
     object_speed = ctrl.Antecedent(range_meter_per_second , 'speed')		#0- 3 m/s
-    object_orientation = ctrl.Antecedent(range_degree , 'orientation')#-180~180 degree
 
     object_risk = ctrl.Consequent(range_risk, 'risk')
 
     # Custom membership functions can be built interactively with a familiar Pythonic API
+    # Type
     object_type['StaObj'] = fuzz.trimf(range_type, [0, 0, 0.1])
     object_type['DynObj'] = fuzz.trimf(range_type, [0.9, 1, 1.1])
     object_type['Human'] = fuzz.trimf(range_type, [1.9, 2, 2])
-    # Distance
-    distance_p1 = fuzz.gaussmf(range_meter,IZW,0.1)
-    distance_p2 = fuzz.gaussmf(range_meter,IZW,0.1) 
 
-    object_distance['Near']  = fuzz.gaussmf(range_meter,0.5*IZW,0.1) # skfuzzy.membership.gaussmf(x, mean, sigma)
-    object_distance['Medium']= fuzz.gaussmf(range_meter,IZW,0.1)     # x: range_meter or object_distance.universe
-    object_distance['Far']   = fuzz.gaussmf(range_meter,2.0*IZW,0.1)
+    # Distance
+    object_distance['Near']  = fuzz.trapmf(range_meter, [0, 0, IZW, 2*IZW])
+    object_distance['Medium']= fuzz.trimf(range_meter, [IZW, 2*IZW, 4*IZW])
+    object_distance['Far']   = fuzz.trapmf(range_meter, [2*IZW, 4*IZW, 3, 3])
     #object_distance.view()
 
-    # Speed 
-    object_speed['Slow']  = fuzz.gaussmf(range_meter_per_second,0.5,0.2)
-    object_speed['Medium']= fuzz.gaussmf(range_meter_per_second,1.0,0.2)
-    object_speed['Fast']  = fuzz.gaussmf(range_meter_per_second,1.5,0.2)
-    #object_speed.view()
-
-    # Direction
-    object_direction['Front']  = fuzz.gaussmf(range_degree,0,15)
-    object_direction['FrontLeft']= fuzz.gaussmf(range_degree,45,15)
-    object_direction['Left']= fuzz.gaussmf(range_degree,90,15)
-    object_direction['FrontRight']  = fuzz.gaussmf(range_degree,-45,15)
-    object_direction['Right']  = fuzz.gaussmf(range_degree,-90,15)
-    rear_d_p1 = fuzz.gaussmf(range_degree,180,60)
-    rear_d_p2 = fuzz.gaussmf(range_degree,-180,60) 
+    # Direction -180~180
+    rear_d_p2 = fuzz.trapmf(range_degree, [-180, -180, -135, -90])
+    object_direction['Right']  = fuzz.trimf(range_degree, [-135, -90, -45])
+    object_direction['FrontRight']  = fuzz.trimf(range_degree, [-90, -45, 0])
+    object_direction['Front']  =  fuzz.trimf(range_degree, [-45, 0, 45])
+    object_direction['FrontLeft']= fuzz.trimf(range_degree, [0, 45, 90])
+    object_direction['Left']= fuzz.trimf(range_degree, [45, 90, 135])
+    rear_d_p1 = fuzz.trapmf(range_degree, [90, 135, 180,180]) 
     null,object_direction['BigRear']  =fuzz.fuzzy_or(range_degree,rear_d_p1,range_degree,rear_d_p2)
+    print("init_fls_common_part")
     #object_direction.view()
 
+    # Speed 
+    object_speed['Slow']  = fuzz.trapmf(range_meter_per_second, [0, 0, 0.5, 1.0])
+    object_speed['Medium']= fuzz.trapmf(range_meter_per_second, [0.5, 1.0, 1.0, 1.5])
+    object_speed['Fast']  = fuzz.trimf(range_meter_per_second,[1.0,1.5,1.5])
+    #object_speed.view()
+
     # Orientation
-    object_orientation['Front']  = fuzz.gaussmf(range_degree,0,15)
-    object_orientation['FrontLeft']= fuzz.gaussmf(range_degree,45,15)
-    object_orientation['Left']= fuzz.gaussmf(range_degree,90,15)
-    object_orientation['RearLeft']= fuzz.gaussmf(range_degree,135,15)
-    rear_p1 = fuzz.gaussmf(range_degree,180,15)
-    rear_p2 = fuzz.gaussmf(range_degree,-180,15) 
+    object_orientation['Front']  = fuzz.trimf(range_degree, [-45, 0, 45])
+    object_orientation['FrontLeft']=fuzz.trimf(range_degree, [0, 45, 90])
+    object_orientation['Left']=  fuzz.trimf(range_degree, [45, 90, 135]) 
+    object_orientation['RearLeft']= fuzz.trimf(range_degree, [90, 135, 180]) 
+    rear_p1 = fuzz.trimf(range_degree, [135, 180,180]) 
+    rear_p2 = fuzz.trimf(range_degree, [-180,-180,-135]) 
     null,object_orientation['Rear']  =fuzz.fuzzy_or(range_degree,rear_p1,range_degree,rear_p2)
-    object_orientation['RearRight']  = fuzz.gaussmf(range_degree,-135,15)
-    object_orientation['Right']  = fuzz.gaussmf(range_degree,-90,15)
-    object_orientation['FrontRight']  = fuzz.gaussmf(range_degree,-45,15) 
+    object_orientation['RearRight']  = fuzz.trimf(range_degree, [-180,-135,-90]) 
+    object_orientation['Right']  = fuzz.trimf(range_degree, [-135,-90,-45]) 
+    object_orientation['FrontRight']  = fuzz.trimf(range_degree, [-90,-45, 0]) 
     #object_orientation.view()
 
-    object_risk['VeryLow'] = fuzz.gaussmf(range_risk,0,0.3)
-    object_risk['Low'] = fuzz.gaussmf(range_risk,1,0.3)
-    object_risk['Medium'] = fuzz.gaussmf(range_risk,2,0.3)
-    object_risk['High'] = fuzz.gaussmf(range_risk,3,0.3)
-    object_risk['VeryHigh'] = fuzz.gaussmf(range_risk,4,0.3)
+    # Risk
+    object_risk['VeryLow'] = fuzz.trimf(range_risk, [0, 0, 1]) 
+    object_risk['Low'] =  fuzz.trimf(range_risk, [0, 1, 2]) 
+    object_risk['Medium'] =  fuzz.trimf(range_risk, [1, 2, 3]) 
+    object_risk['High'] =  fuzz.trimf(range_risk, [2, 3, 4]) 
+    object_risk['VeryHigh'] =  fuzz.trimf(range_risk, [3, 4, 4]) 
     """
     Fuzzy rules
     -----------
     """
-    time_previous = time.time()  
+
+    #time_previous = time.time()  
 
     #from rules_demo import rule_list_generator
-    from rules import rule_list_generator
-    rule_list=rule_list_generator(object_type,object_distance,object_direction, object_speed, object_orientation, object_risk)
+    #from rules import rule_list_generator
+    #rule_list=rule_list_generator(object_type,object_distance,object_direction, object_speed, object_orientation, object_risk)
 
-    run_time = time.time() - time_previous    
+    #run_time = time.time() - time_previous    
     #print 'execute time=',one_run_time,'s'           
-    print 'setting rules time=',run_time,'sec'  
+    #print 'setting rules time=',run_time,'sec'  
     """
     Control System Creation and Simulation
     ---------------------------------------
     """
     global ra_fls
 
-    import pickle
-    fls_name = "fls.data"
+    import cPickle as pickle 
+    fls_name = "ra_full.data"
 
     if os.path.exists(fls_name):
         print("FLS exists!")
@@ -144,33 +146,37 @@ def init_rule_based_system():
         ra_fls = pickle.load(f)
     else:
         print("Init FLS")
-        ra_fls = ctrl.ControlSystem(rule_list)
+        from assessment_rules import rule_list_generator
+        assessment_rule_list=rule_list_generator(object_type,object_distance,object_direction, object_speed, object_orientation, object_risk)
+        ra_fls = ctrl.ControlSystem(assessment_rule_list)
         f = open(fls_name,'wb')
         pickle.dump(ra_fls,f)
         f.close 
-
-    run_time = time.time() - time_previous         
-    
-def add_label_with_complex_rules(object_type,object_distance,object_orientation,object_direction,object_speed): #Add risk label
-    global ra_fls
-    time_previous = time.time()
     """
     In order to simulate this control system, we will create a
     ``ControlSystemSimulation``.  Think of this object representing our controller
     applied to a specific set of cirucmstances. 
     """
-
-    risk_assessment_instance = ctrl.ControlSystemSimulation(ra_fls) 
+    global risk_assessment_instance 
+    risk_assessment_instance = ctrl.ControlSystemSimulation(ra_fls)
+  
+def add_label_with_complex_rules(object_type,object_distance,object_orientation,object_direction,object_speed): #Add risk label
+    global risk_assessment_instance
+    time_previous = time.time()
+    
     """
     We can now simulate our control system by simply specifying the inputs
     and calling the ``compute`` method.  
     """
     # Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
     risk_assessment_instance.input['type'] = object_type
-    risk_assessment_instance.input['distance'] = object_distance		
-    risk_assessment_instance.input['direction'] = object_direction	
-    risk_assessment_instance.input['speed'] =   object_speed	
+    risk_assessment_instance.input['distance'] = object_distance
+    risk_assessment_instance.input['direction'] = object_direction
+    if object_speed>1.5:
+        object_speed = 1.5
+    risk_assessment_instance.input['speed'] =   object_speed
     risk_assessment_instance.input['orientation'] = object_orientation
+
     # Crunch the numbers
     risk_assessment_instance.compute()
 
@@ -247,12 +253,16 @@ def label_dataset():
                     print "We have a data file",one_file,". Now label it! "
 
                     object_name,object_type,object_distance,object_orientation,object_direction,object_speed=read_csv(file_path) 
-                    risk_label = add_label_with_complex_rules(object_type,object_distance,object_orientation,object_direction,object_speed)
-                    #print "Risk = ",risk_label
-                    add_label_result_to_file(object_name,object_type,object_distance,object_orientation,object_direction,object_speed,risk_label)
-                    
-                    global sample_number
-                    sample_number =  sample_number+1
+                    try:
+                        risk_label = add_label_with_complex_rules(object_type,object_distance,object_orientation,object_direction,object_speed)
+                    except ValueError:
+                        print "Value error with:",object_type,object_distance,object_orientation,object_direction,object_speed
+                    else:
+                        #print "Risk = ",risk_label
+                        add_label_result_to_file(object_name,object_type,object_distance,object_orientation,object_direction,object_speed,risk_label)
+                        
+                        global sample_number
+                        sample_number =  sample_number+1
 
                 else:
                     #raise Exception("No match! What is this file?", one_file)
