@@ -23,7 +23,7 @@ class Phantomx_Pincher():
         self.robot.pincher_arm.set_num_planning_attempts(10000)
         self.robot.pincher_arm.set_planning_time(5)
         self.robot.pincher_arm.set_goal_position_tolerance(0.01)
-        self.robot.pincher_arm.set_goal_orientation_tolerance(0.5)
+        self.robot.pincher_arm.set_goal_orientation_tolerance(0.1)
 
     def set_start_state_to_current_state(self):
         self.robot.pincher_arm.set_start_state_to_current_state()
@@ -65,7 +65,7 @@ class Phantomx_Pincher():
         self.listener.getLatestCommonTime(frame_from, frame_to)
         return self.listener.transformPose(frame_to, pose)
         
-    def ef_pose(self, target, attemps=10, frame='/map'):
+    def ef_pose(self, target, orientation=[], attemps=10, frame='/map'):
         # Here we try to verify if the target is in the arm range. Also, we
         # try to orient the end-effector(ef) to nice hard-coded orientation
         # Returns: planned trajectory
@@ -79,8 +79,14 @@ class Phantomx_Pincher():
         if d > 0.3:
             rospy.loginfo("Too far. Out of reach")
             return None
-        rp = np.pi/2.0 - np.arcsin((d-0.1)/.205)
-        ry = np.arctan2(target[1], target[0])
+        if len(orientation) > 0:
+            rpy = tf.transformations.euler_from_quaternion(orientation)
+            rospy.loginfo('Robot target quaternion [%s]', orientation)
+            rp = rpy[1]
+            ry = np.arctan2(target[1], target[0])
+        else:
+            rp = np.pi/2.0 - np.arcsin((d-0.1)/.205)
+            ry = np.arctan2(target[1], target[0])
 
         attemp = 0
         again = True
@@ -119,8 +125,8 @@ class Phantomx_Pincher():
         return planed
 
     def arm_execute(self, plan):
-        self.robot.pincher_arm.execute(plan)
+        return self.robot.pincher_arm.execute(plan)
 
     def gripper_execute(self, plan):
-        self.robot.pincher_gripper.execute(plan)
+        return self.robot.pincher_gripper.execute(plan)
     

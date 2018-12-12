@@ -58,16 +58,28 @@ class Pick(object):
         self._feedback.state = "Opening gripper"
         rospy.loginfo('Opening gripper')
         print self._feedback
-        self.robot.gripper_execute(plan)
+        ex_status = self.robot.gripper_execute(plan)
+        if not ex_status:
+            rospy.loginfo("Execution to open gripper failed: [%s]", ex_status)
+            self._as.set_preempted()
+            self._result.error_code.val = -4
+            sucess = False
+            return None
         self._as.publish_feedback(self._feedback)
         self.scene.remove_attached_object('gripper_link')
-        rospy.sleep(1)
 
         self._feedback.state = "Planning to reach object"
         rospy.loginfo('Planning to reach obj')
         self._as.publish_feedback(self._feedback)
         target = self.get_target(goal.target_name)
-        plan = self.robot.ef_pose(target)
+        quat = []
+        if len(goal.possible_grasps) > 0:
+            quat = [goal.possible_grasps[0].grasp_pose.pose.orientation.x,
+                   goal.possible_grasps[0].grasp_pose.pose.orientation.y,
+                   goal.possible_grasps[0].grasp_pose.pose.orientation.z,
+                   goal.possible_grasps[0].grasp_pose.pose.orientation.w]
+        rospy.loginfo('Pick Quaternion [%s]', quat)
+        plan = self.robot.ef_pose(target, orientation=quat)
         if plan is None:
             rospy.loginfo("Plan to grasp failed")
             self._as.set_preempted()
@@ -80,15 +92,20 @@ class Pick(object):
         self._as.publish_feedback(self._feedback)
         self._result.trajectory_descriptions.append("Going to grasp the object")
         self._result.trajectory_stages.append(plan)
-        self.robot.arm_execute(plan)
-        rospy.sleep(15)
+        ex_status = self.robot.arm_execute(plan)
+        if not ex_status:
+            rospy.loginfo("Execution to grasp failed: [%s]", ex_status)
+            self._as.set_preempted()
+            self._result.error_code.val = -4
+            sucess = False
+            return None
+
         self._feedback.state = "Removing obtect to be grasp from the planning scene"
         self._as.publish_feedback(self._feedback)
         obj  = self.scene.get_objects([goal.target_name])
         obj = obj[goal.target_name]
         self.scene.remove_world_object(goal.target_name)
-        rospy.sleep(4)
-        
+        rospy.sleep(1)
         self._feedback.state = "Planning to close the gripper"
         self._as.publish_feedback(self._feedback)
         plan = self.robot.closeGripper()
@@ -102,8 +119,13 @@ class Pick(object):
         self._result.trajectory_stages.append(plan)
         self._feedback.state = "Closing gripper"
         print self._feedback
-        self.robot.gripper_execute(plan)
-        rospy.sleep(9)
+        ex_status = self.robot.gripper_execute(plan)
+        if not ex_status:
+            rospy.loginfo("Execution to grasp failed: [%s]", ex_status)
+            self._as.set_preempted()
+            self._result.error_code.val = -4
+            sucess = False
+            return None
         self._as.publish_feedback(self._feedback)
 
         self._feedback.state = "Attaching object"
@@ -117,11 +139,12 @@ class Pick(object):
                               ['gripper_link',
                                'gripper_active_link',
                                'gripper_active2_link'])
+        rospy.sleep(1)
         self._as.publish_feedback(self._feedback)
-
         if sucess:
             self._result.error_code.val = 1
             self._as.set_succeeded(self._result)
+        return self._result
 
 
 if __name__ == '__main__':
