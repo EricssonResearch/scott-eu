@@ -52,9 +52,9 @@ class PlanInterpreter:
         self.load_objects(self.path + '/scene.yaml')
 
         # TODO, check these positions
-        self.storage = list(([[0.00, 0.1, 0.23], 0],
-                             [[0.00, 0.0, 0.23], 0],
-                             [[0.00, -0.1, 0.23], 0]))
+        self.storage = list(([[0.00, 0.1, 0.22], 0],
+                             [[0.00, 0.0, 0.22], 0],
+                             [[0.00, -0.1, 0.22], 0]))
 
     def load_json(self, path):
         return json.load(open(path))
@@ -202,18 +202,28 @@ class PlanInterpreter:
                               task.product,
                               task.target)
                 input()
-                self.__pick_task(product_name)
+                result = self.__pick_task(product_name,
+                                 rpy=[0, np.pi/4.0, 0])
+                rospy.loginfo(result)
+                if result is None:
+                    rospy.loginfo("Pick has failed")
+                    #retreat arm
+                    continue
                 store = self.__available_storage()
                 if not store:
-                    rospy.info("No available Store")
+                    rospy.loginfo("No available Store")
                 else:
                     rospy.loginfo("Storing product on [%s]",
                                   store[0])
                     rospy.loginfo("Storing product on [%s] MAP_FRAME",
                                   self.target_to_frame(store[0]))
-                    self.__place_task(self.target_to_frame(store[0]))
+                    result = self.__place_task(self.target_to_frame(store[0]),
+                                      rpy=[0, 0, 0])
+                    if result is None:
+                        rospy.loginfo("Place has failed")
+                        #drop object or try again
+                        continue
                     store[1] = 1
-                
             elif task.action == 'drop':
                 rospy.loginfo('Dropping [%s] at [%s]',
                               task.product,
@@ -300,17 +310,25 @@ class PlanInterpreter:
         if state == 3:
             rospy.loginfo("Goal succeeded!")
 
-    def __pick_task(self, target_obj="box"):
+    def __pick_task(self, target_obj="box", rpy=[]):
         client = actionlib.SimpleActionClient('/pick_custom',
                                               moveit_msgs.msg.PickupAction)
         client.wait_for_server()
         goal = moveit_msgs.msg.PickupActionGoal().goal
         goal.target_name = target_obj
+        if len(rpy) > 0:
+            goal.possible_grasps = [moveit_msgs.msg.Grasp()]
+            q = quaternion_from_euler(rpy[0], rpy[1], rpy[2])
+            goal.possible_grasps[0].grasp_pose = geometry_msgs.msg.PoseStamped()
+            goal.possible_grasps[0].grasp_pose.pose.orientation.x = q[0]
+            goal.possible_grasps[0].grasp_pose.pose.orientation.y = q[1]
+            goal.possible_grasps[0].grasp_pose.pose.orientation.z = q[2]
+            goal.possible_grasps[0].grasp_pose.pose.orientation.w = q[3]
         client.send_goal(goal)
         client.wait_for_result()
         return client.get_result()
 
-    def __place_task(self, target):
+    def __place_task(self, target, rpy=[]):
         client = actionlib.SimpleActionClient('place_custom',
                                               moveit_msgs.msg.PlaceAction)
         client.wait_for_server()
@@ -320,6 +338,12 @@ class PlanInterpreter:
         goal.place_locations[0].place_pose.pose.position.x = target[0]
         goal.place_locations[0].place_pose.pose.position.y = target[1]
         goal.place_locations[0].place_pose.pose.position.z = target[2]
+        if len(rpy) > 0:
+            q = quaternion_from_euler(rpy[0], rpy[1], rpy[2])
+            goal.place_locations[0].place_pose.pose.orientation.x = q[0]
+            goal.place_locations[0].place_pose.pose.orientation.y = q[1]
+            goal.place_locations[0].place_pose.pose.orientation.z = q[2]
+            goal.place_locations[0].place_pose.pose.orientation.w = q[3]
         print goal
         client.send_goal(goal)
         
