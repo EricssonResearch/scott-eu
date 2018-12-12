@@ -67,33 +67,17 @@
     <disable_collisions link1="arm_bicep_link" link2="camera_sr300" reason="Never" />
     <disable_collisions link1="arm_bicep_link" link2="caster_back_link" reason="Never" />
     <disable_collisions link1="arm_bicep_link" link2="caster_front_link" reason="Never" />
-    <disable_collisions link1="arm_bicep_link" link2="plate_top_link" reason="Never" />
-    <disable_collisions link1="arm_bicep_link" link2="plate_utility_lower_link" reason="Never" />
-    <disable_collisions link1="arm_bicep_link" link2="plate_utility_upper_link" reason="Never" />
     <disable_collisions link1="arm_bicep_link" link2="wheel_left_link" reason="Never" />
     <disable_collisions link1="arm_bicep_link" link2="wheel_right_link" reason="Never" />
     <disable_collisions link1="arm_forearm_link" link2="arm_wrist_flex_link" reason="Adjacent" />
-    <disable_collisions link1="arm_forearm_link" link2="camera_link" reason="Never" />
-    <disable_collisions link1="arm_forearm_link" link2="camera_sr300" reason="Never" />
     <disable_collisions link1="arm_forearm_link" link2="caster_back_link" reason="Never" />
     <disable_collisions link1="arm_forearm_link" link2="caster_front_link" reason="Never" />
-    <disable_collisions link1="arm_forearm_link" link2="gripper_active2_link" reason="Never" />
-    <disable_collisions link1="arm_forearm_link" link2="gripper_active_link" reason="Never" />
-    <disable_collisions link1="arm_forearm_link" link2="plate_top_link" reason="Never" />
-    <disable_collisions link1="arm_forearm_link" link2="plate_utility_upper_link" reason="Never" />
     <disable_collisions link1="arm_forearm_link" link2="wheel_left_link" reason="Never" />
     <disable_collisions link1="arm_forearm_link" link2="wheel_right_link" reason="Never" />
     <disable_collisions link1="arm_shoulder_pan_link" link2="arm_base_link" reason="Adjacent" />
     <disable_collisions link1="arm_shoulder_pan_link" link2="base_link" reason="Never" />
-    <disable_collisions link1="arm_shoulder_pan_link" link2="camera_link" reason="Never" />
-    <disable_collisions link1="arm_shoulder_pan_link" link2="camera_sr300" reason="Never" />
     <disable_collisions link1="arm_shoulder_pan_link" link2="caster_back_link" reason="Never" />
     <disable_collisions link1="arm_shoulder_pan_link" link2="caster_front_link" reason="Never" />
-    <disable_collisions link1="arm_shoulder_pan_link" link2="plate_bottom_link" reason="Never" />
-    <disable_collisions link1="arm_shoulder_pan_link" link2="plate_middle_link" reason="Never" />
-    <disable_collisions link1="arm_shoulder_pan_link" link2="plate_top_link" reason="Never" />
-    <disable_collisions link1="arm_shoulder_pan_link" link2="plate_utility_lower_link" reason="Never" />
-    <disable_collisions link1="arm_shoulder_pan_link" link2="plate_utility_upper_link" reason="Never" />
     <disable_collisions link1="arm_shoulder_pan_link" link2="wheel_left_link" reason="Never" />
     <disable_collisions link1="arm_shoulder_pan_link" link2="wheel_right_link" reason="Never" />
     <disable_collisions link1="arm_wrist_flex_link" link2="caster_back_link" reason="Never" />
