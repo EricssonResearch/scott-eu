@@ -213,7 +213,7 @@ def topic_callback(odom_data, scan_data,tasks_data):
     #run_result=agent.RunSelf(1)    #Run agent for one step (should run until output?)
     run_result=agent.RunSelfTilOutput() #TODO see why so many substates are being created
     
-    ## 4) get results from soar
+    ## 4) TODO get results from soar
     output_link=agent.GetOutputLink()## returns an Identifier
     if output_link!= None:
         result_output_wme = output_link.FindByAttribute("result", 0) # returns a WMElement of the form (<output_link> ^result <val>)
@@ -390,14 +390,14 @@ if __name__ == "__main__":
 #    tasks_list_topic=rospy.Subscriber("soar_tasks_list_topic", String, topic_callback)
 #    dummy_tasks_list_topic=rospy.Publisher("soar_tasks_list_topic",String, queue_size=10) #used for inputing debug data to soar_tasks_list_topic
 
-
+    
 
 #-- INPUT UPDATE LOOP (for debug purposes)-----------------------------------
     rate = rospy.Rate(1)
 
     while not rospy.is_shutdown(): #loop that updates agent's inputs
-        
 
+        print(".")
  #       sense=te.get_sensors()
  #       new_input=dict()
  #       new_input['a_value']=str(sense[0])

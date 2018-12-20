@@ -1,9 +1,0 @@
-# Request
-time stamp
-string robot
----
-# Response
-time stamp
-string task
-string object
-geometry_msgs/Pose waypoint

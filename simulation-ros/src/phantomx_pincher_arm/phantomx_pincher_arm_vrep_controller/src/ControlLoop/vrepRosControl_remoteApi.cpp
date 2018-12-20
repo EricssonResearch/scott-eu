@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
   MR::Phantom_vrepHW * sm_myRobot = NULL;
   sm_myRobot = new MR::Phantom_vrepHW(vrep_ip, vrep_port, &joints);
-  sm_myRobot->init();
+  if (!sm_myRobot->init()) return -1;
   
   ros::CallbackQueue * sm_rosControlCallbackQueue = NULL;
   sm_rosControlCallbackQueue = new ros::CallbackQueue();

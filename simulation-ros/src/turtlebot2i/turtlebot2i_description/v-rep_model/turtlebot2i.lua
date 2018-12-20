@@ -54,7 +54,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 
     sim.setIntegerSignal(robot_name .. '_charger_state', 0)  -- Battery is discharging
 
-    mainBodyHandle = sim.getObjectHandle("turtlebot_body_visual")
+    mainBodyHandle = sim.getObjectHandle("turtlebot_reference")
 
     leftJoint = sim.getObjectHandle("turtlebot_leftWheelJoint_")
     rightJoint = sim.getObjectHandle("turtlebot_rightWheelJoint_")

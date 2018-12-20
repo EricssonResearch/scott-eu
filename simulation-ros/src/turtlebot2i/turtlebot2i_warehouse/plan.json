@@ -3,7 +3,7 @@
     "init": "initURI",
     "goal": "finalURI",
     "plan":[
-                ["move", "turtlebot2i", "TagShelf#1"],
+                ["move", "turtlebot2i", "Waypoint_SH#1"],
                 ["pick", "turtlebot2i", "ShelfBody#1", "productRed"],
                 ["pick", "turtlebot2i", "ShelfBody#1", "productGreen"],
                 ["move", "turtlebot2i", "Waypoint_CB"],

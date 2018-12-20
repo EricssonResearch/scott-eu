@@ -9,7 +9,7 @@ controller_list:
       - PhantomXPincher_joint4
       - PhantomXPincher_gripperCenter_joint
   - name: gripper_controller
-    action_ns: gripper_cmd
-    type: GripperCommand
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
     joints:
       - PhantomXPincher_gripperClose_joint

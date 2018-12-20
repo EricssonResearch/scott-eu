@@ -55,10 +55,15 @@ namespace MR
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   bool Phantom_vrepHW::init_vrep(){
     vrepClientId = simxStart(ip.c_str(),port,1,1,2000,5);
-    if (vrepClientId == -1) {
+    int attemp = 0;
+    while (vrepClientId == -1 && attemp < 10) {
       ROS_ERROR("Remote Api not connected at [%s] port [%d]",ip.c_str(),port);
-      return false;
+      vrepClientId = simxStart(ip.c_str(),port,1,1,2000,5);
+      usleep(500);
+      attemp++;
     }
+
+    if (vrepClientId == -1) return false;
 
     // Get joint handles.
     for (int i = 0; i < MR_JOINTS_NUM; ++i){
