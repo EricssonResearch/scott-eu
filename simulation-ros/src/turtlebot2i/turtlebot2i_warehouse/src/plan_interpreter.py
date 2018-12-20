@@ -16,6 +16,7 @@ from tf.transformations import quaternion_from_euler
 import time
 # TODO: refactor classes
 
+
 class Plan:
     def __init__(self):
         self.id = 0
@@ -52,9 +53,9 @@ class PlanInterpreter:
         self.load_objects(self.path + '/scene.yaml')
 
         # TODO, check these positions
-        self.storage = list(([[0.00, 0.1, 0.22], 0],
-                             [[0.00, 0.0, 0.22], 0],
-                             [[0.00, -0.1, 0.22], 0]))
+        self.storage = list(([[0.00, 0.1, 0.215], 0],
+                             [[0.00, 0.0, 0.215], 0],
+                             [[0.00, -0.1, 0.215], 0]))
 
     def load_json(self, path):
         return json.load(open(path))
@@ -80,6 +81,7 @@ class PlanInterpreter:
         p.pose.position.x = waypoint[0]
         p.pose.position.y = waypoint[1]
         p.pose.position.z = waypoint[2]
+        p.pose.orientation.w = 1
         if len(waypoint) == 7:
             p.pose.orientation.x = waypoint[3]
             p.pose.orientation.y = waypoint[4]
@@ -106,7 +108,7 @@ class PlanInterpreter:
                           node['name'],
                           self.path + '/' + node['mesh'])
 
-    def add_box(self, node, size=[0.035, 0.035, 0.030]):
+    def add_box(self, node, size=[0.03, 0.03, 0.03]):
         try:
             self.scene.add_box(node['name'],
                                self.to_pose(node['obj_position']),
@@ -201,13 +203,14 @@ class PlanInterpreter:
                 rospy.loginfo('Picking [%s] at [%s]',
                               task.product,
                               task.target)
-                input()
                 result = self.__pick_task(product_name,
-                                 rpy=[0, np.pi/4.0, 0])
+                                          rpy=[0, 1.0, 0])
                 rospy.loginfo(result)
-                if result is None:
-                    rospy.loginfo("Pick has failed")
-                    #retreat arm
+                if result.error_code.val < 0:
+                    rospy.logerr("Pick has failed")
+                    rospy.logerr("Last sccessful step was: %s",
+                                 result.trajectory_descriptions[-1])
+                    self.__retreat_arm()
                     continue
                 store = self.__available_storage()
                 if not store:
@@ -218,43 +221,94 @@ class PlanInterpreter:
                     rospy.loginfo("Storing product on [%s] MAP_FRAME",
                                   self.target_to_frame(store[0]))
                     result = self.__place_task(self.target_to_frame(store[0]),
-                                      rpy=[0, 0, 0])
-                    if result is None:
-                        rospy.loginfo("Place has failed")
+                                               rpy=[0, 0, 0])
+                    if result.error_code.val < 0:
+                        rospy.logerr("Place has failed")
+                        rospy.logerr("Last successful step was: %s",
+                                     result.trajectory_descriptions[-1])
                         #drop object or try again
                         continue
                     store[1] = 1
+                    # add here the stored object reposition
+                    self.reposition_stored_obj(product_name,
+                                               '/plate_middle_link')
             elif task.action == 'drop':
                 rospy.loginfo('Dropping [%s] at [%s]',
                               task.product,
                               task.target)
                 self.scene.remove_attached_object('base_footprint',
                                                   task.product)
-                self.__pick_task(task.product)
+                result = self.__pick_task(task.product,
+                                          rpy=[0, 0, 0])
+                
+                if result.error_code.val < 0:
+                    rospy.logerr("Pick product at robot tray has failed")
+                    rospy.logerr("Last successful step was: %s",
+                                 result.trajectory_descriptions[-1])
+                    continue
                 rospy.loginfo('Dropping at position: [%s]',
                               self.drop_position())
-                self.__place_task(self.drop_position())
+                result = self.__place_task(self.drop_position(),
+                                           rpy=[0, 0, 0])
+                if result.error_code.val < 0:
+                    rospy.logerr("Drop has failed")
+                    rospy.logerr("Last successful step was: %s",
+                                 result.trajectory_descriptions[-1])
+                    continue
+                self.scene.remove_world_object(task.product)
 
             # self.__check_task_status()
 
-    def drop_position(self, offset=[0.42, 0, 0.20]):
+    def reposition_stored_obj(self, obj_id, store):
+        '''
+        The arm not always will extacly place the object on the robot's tray,
+        thus we need to reposition the object to match the tray height
+        Inputs:
+        - obj_id: product id
+        - store: robot link where is located the reference of storeage plate
+        '''
+        obj = self.scene.get_attached_objects()
+        if obj_id in obj.keys():
+            obj = obj[obj_id].object
+        else:
+            rospy.loginfo('No object attached with this the id, %s', obj_id)
+            return -1
+        store = self.target_to_frame([0, 0, 0.01], frame_from=store)
+        pose = obj.primitive_poses[0].position
+        target = [pose.x, pose.y, pose.y]
+        frame = obj.header.frame_id
+        pose = self.target_to_frame(target, frame_from=frame, orientation=True)
+        pose[2] = store[2] + 0.01
+        pose = self.to_pose(pose)
+        self.scene.attach_box("base_footprint",
+                              obj.id,
+                              pose,
+                              obj.primitives[0].dimensions)
+        return 1
+        
+    def drop_position(self, offset=[0.415, 0, 0.22]):
         return self.target_to_frame(np.asarray(offset))
 
     def target_to_frame(self, target,
                         frame_to="/map",
-                        frame_from="/base_footprint"):
-        pose = geometry_msgs.msg.PoseStamped()
-        pose.pose.position.x = target[0]
-        pose.pose.position.y = target[1]
-        pose.pose.position.z = target[2]
-        pose.pose.orientation.w = 1
-        pose.header.frame_id = frame_from
+                        frame_from="/base_footprint",
+                        orientation=False):
+        pose = self.to_pose(target, frame=frame_from)
         self.listener.waitForTransform(frame_from,
                                        frame_to,
                                        rospy.Time.now(),
                                        rospy.Duration(4))
         self.listener.getLatestCommonTime(frame_from, frame_to)
         pose = self.listener.transformPose(frame_to, pose)
+        if orientation:
+            return [pose.pose.position.x,
+                    pose.pose.position.y,
+                    pose.pose.position.z,
+                    pose.pose.orientation.x,
+                    pose.pose.orientation.y,
+                    pose.pose.orientation.z,
+                    pose.pose.orientation.w]
+        
         return [pose.pose.position.x,
                 pose.pose.position.y,
                 pose.pose.position.z]
@@ -297,6 +351,8 @@ class PlanInterpreter:
         client = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
         client.wait_for_server()
 
+        self.__retreat_arm()
+
         goal = MoveBaseGoal()
         goal.target_pose = self.to_pose(self.waypoints[target])
         client.send_goal(goal)
@@ -310,6 +366,14 @@ class PlanInterpreter:
         if state == 3:
             rospy.loginfo("Goal succeeded!")
 
+    def __retreat_arm(self, home=[1.5, -1.5, -3.1, 0, 0]):
+        self.robot.pincher_arm.set_joint_value_target(home)
+        gplan = self.robot.pincher_arm.plan()
+        if len(gplan.joint_trajectory.points) == 0:
+            return -1
+        else:
+            self.robot.pincher_arm.execute(gplan)
+        
     def __pick_task(self, target_obj="box", rpy=[]):
         client = actionlib.SimpleActionClient('/pick_custom',
                                               moveit_msgs.msg.PickupAction)
