@@ -230,7 +230,7 @@
       <collision>
         <xacro:insert_block name="origin"/>
         <geometry>
-          <mesh filename="package://phantomx_pincher_arm_description/meshes/PincherFinger.stl" scale="1.05 1.05 1.05"/>
+          <mesh filename="package://phantomx_pincher_arm_description/meshes/PincherFinger.stl" scale="1.1 1.1 1.1"/>
         </geometry>
       </collision>
     </link>
