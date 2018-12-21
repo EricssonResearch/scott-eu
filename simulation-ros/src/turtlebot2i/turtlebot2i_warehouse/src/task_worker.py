@@ -56,11 +56,14 @@ class TaskWorker:
 
         self.task_queue = queue.Queue()
         self.stopped = threading.Event()
+        self.thread_interval = 1 # seconds
 
-        t = threading.Thread(target=self.plan_callback, args=('turtlebot2i',))
+        t = threading.Thread(target=self.plan_callback, args=(self.robot, self.thread_interval))
+        t1 = threading.Thread(target=self.run_task, args=(self.thread_interval,))
+        #t1 = threading.Thread(target=self.run_task)
         #t = threading.Timer(1, self.plan_callback, args=('turtlebot2i',))
         t.start()
-        print('test')
+        t1.start()
 
     def load_yaml(self, path):
         stream = file(path, 'r')
@@ -303,28 +306,36 @@ class TaskWorker:
             print "Service call failed: %s"%e
             return None
 
-    def plan_callback(self, robot):
-        """Client side of the plan_service to add in the queue
+    def plan_callback(self, robot, interval):
+        """Client side of the plan_service to add in the queue each `interval` seconds
     
         """
-        while not self.stopped.wait(5):
+        while not self.stopped.wait(interval):
             print('plan_callback')
             task_list = self.get_plan(robot)
             self.task_queue.queue = deque(task_list)
 
-    def run_task(self): ## move this function to robot's task worker
+    def run_task(self, interval): ## move this function to robot's task worker
         """Access the task queue and execute in the robot
             
         """
 
-        # Request task list
-
         lastWp = []
-        # TODO: Make it a infinity loop
-        for task in self.plan.task_list:
+
+        while not self.stopped.wait(interval):
+        #while not self.stopped.wait(1):
+            print('run callback')
+
+            # TODO: check if the task was already retrieved (must check timestamp)
+            try:
+                task = self.task_queue.get(False)
+            except queue.Empty:
+                continue
+
+            print('task: ' + task.action)
             if task.action == 'move':
                 rospy.loginfo('Move to [%s]', task.target)
-                self.__move_task(task.robot, task.target)
+                self.__move_task(self.robot, task.target)
                 lastWP = self.waypoints[task.target]
             elif task.action == 'pick':
                 rospy.loginfo('Moving to [%s] at [%s]',
@@ -361,6 +372,7 @@ class TaskWorker:
                               self.drop_position(task.target))
                 self.__place_task(self.drop_position(task.target))
 
+            # TODO: mark the plan as executed
             # self.__check_task_status()
 
 if __name__ == "__main__":
@@ -376,6 +388,6 @@ if __name__ == "__main__":
 #    # print(plan_int.waypoints[""])
 #    plan_int.task_manager()
 
-    task_worker = TaskWorker(None, None)
+    task_worker = TaskWorker('turtlebot2i', None)
 
     rospy.spin()
