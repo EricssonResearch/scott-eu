@@ -47,6 +47,7 @@ class TaskList:
     
     """
     def __init__(self):
+        self.stamp = None
         self.robot_tasks = {}
 
 # Used in the TaskWorker
@@ -71,8 +72,9 @@ class PlanInterpreter:
         p_task_list = TaskList()
         json_plan = self.load_json(path)
 
+        p_task_list.stamp = float(json_plan['stamp'])
         for p_plan in json_plan['plan']:
-            if (len(p_plan)) >= 3:
+            if len(p_plan) >= 3:
 
                 robot = p_plan[1]
 
@@ -123,6 +125,12 @@ class TaskManager:
         # TODO: use a timestamp in the plan file?
         # TODO: get the plan from a callback not from a file
         plan_list = self.interpreter.parse_plan(self.plan_path)
+
+        response = TaskArrayResponse()
+       
+        if plan_list.stamp < request.stamp.to_sec():    # plan_list.stamp already comes in sec format
+            return response
+        
         #robot_plan_list = plan_list.robot_tasks[request.robot]
         robot_plan_list = plan_list.robot_tasks.get(request.robot, [])
 
@@ -134,8 +142,12 @@ class TaskManager:
             action.product = t.product
             action.target = t.target
             robot_plan_list_msg.append(action)
+            #robot_plan_list_msg.append(t)  # test this approach
 
-        return TaskArrayResponse(robot_plan_list_msg)
+        response.stamp = rospy.Time(plan_list.stamp)
+        response.task_array = robot_plan_list_msg
+
+        return response
 
 
     # TODO: check robot status each X seconds

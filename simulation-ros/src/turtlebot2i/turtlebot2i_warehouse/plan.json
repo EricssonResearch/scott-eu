@@ -2,6 +2,7 @@
     "id": "xyz",
     "init": "initURI",
     "goal": "finalURI",
+    "stamp":"1546961753.30413",
     "plan":[
                 ["move", "turtlebot2i", "Waypoint_SH#1"],
                 ["pick", "turtlebot2i", "ShelfBody#1", "productRed"],

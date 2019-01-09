@@ -1,6 +1,7 @@
 # Request
-#time stamp
+time stamp
 string robot
 ---
 # Response
+time stamp
 turtlebot2i_warehouse/Action[] task_array

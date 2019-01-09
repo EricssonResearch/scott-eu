@@ -58,6 +58,8 @@ class TaskWorker:
         self.stopped = threading.Event()
         self.thread_interval = 1 # seconds
 
+        self.prev_stamp = 0.0
+
         t = threading.Thread(target=self.plan_callback, args=(self.robot, self.thread_interval))
         t1 = threading.Thread(target=self.run_task, args=(self.thread_interval,))
         #t1 = threading.Thread(target=self.run_task)
@@ -298,7 +300,8 @@ class TaskWorker:
         rospy.wait_for_service('plan_service')
         try:
             get_plan = rospy.ServiceProxy('plan_service', TaskArray)
-            resp = get_plan(robot)
+            resp = get_plan(rospy.Time(self.prev_stamp), robot)
+            self.prev_stamp = resp.stamp.to_sec()        # TODO: Check wether is empty (i.e. None)
 
             return resp.task_array
 
@@ -307,13 +310,15 @@ class TaskWorker:
             return None
 
     def plan_callback(self, robot, interval):
-        """Client side of the plan_service to add in the queue each `interval` seconds
+        """Add tasks in the queue each `interval` seconds
     
         """
         while not self.stopped.wait(interval):
             print('plan_callback')
             task_list = self.get_plan(robot)
-            self.task_queue.queue = deque(task_list)
+
+            if task_list is not None:
+                self.task_queue.queue = deque(task_list)
 
     def run_task(self, interval): ## move this function to robot's task worker
         """Access the task queue and execute in the robot
@@ -337,6 +342,9 @@ class TaskWorker:
                 rospy.loginfo('Move to [%s]', task.target)
                 self.__move_task(self.robot, task.target)
                 lastWP = self.waypoints[task.target]
+                #if (client.getState() == actionlib::SimpleClientGoalState::SUCCEEDED):
+                #    status = 'SUCCEEDED'
+
             elif task.action == 'pick':
                 rospy.loginfo('Moving to [%s] at [%s]',
                               task.product,
