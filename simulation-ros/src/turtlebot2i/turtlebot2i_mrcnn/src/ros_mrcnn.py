@@ -31,7 +31,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 
 import numpy as np
-from visualize_cv2 import model, display_instances, class_names
+from visualize_cv import model, display_instances, class_names
 
 class ros_mask_rcnn:
 
