@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from visualize_cv2 import model, display_instances, class_names
+from visualize_cv import model, display_instances, class_names
 import time
 
 capture = cv2.VideoCapture('rosbag_video.mpg')
