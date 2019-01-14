@@ -62,6 +62,18 @@
     <specification/>
     <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
+  <adaptorInterfaces name="LocationService" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.svc.location" javaFilesBasePath="../webapp-svc-location/src/main/java/" jspFilesBasePath="../webapp-svc-location/src/main/webapp/" javascriptFilesBasePath="../webapp-svc-location/src/main/webapp/">
+    <serviceProviderCatalog title="LocationServiceSPC" description="Service Provider Catalog of the Services at the LocationService OSLC Server">
+      <serviceProviders title="LocationServiceSP" description="Service Provider for Twin Locations" serviceNamespace="twins" instanceID="{twinKind}/{twinId}">
+        <services>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
+          <basicCapabilities/>
+        </services>
+      </serviceProviders>
+    </serviceProviderCatalog>
+    <specification/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
+  </adaptorInterfaces>
   <specification>
     <domainSpecifications name="MissionOntology" namespaceURI="http://ontology.cf.ericsson.net/mission_ontology/" namespacePrefix="//@specification/@domainPrefixes.0">
       <resources name="Goal"/>
