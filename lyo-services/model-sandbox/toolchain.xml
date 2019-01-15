@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<oslc4j_tc:Toolchain xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oslc4j_ai="http://org.eclipse.lyo/oslc4j/adaptorInterface" xmlns:oslc4j_tc="http://org.eclipse.lyo/oslc4j/toolChain">
+<oslc4j_tc:Toolchain xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oslc4j_ai="http://org.eclipse.lyo/oslc4j/adaptorInterface" xmlns:oslc4j_tc="http://org.eclipse.lyo/oslc4j/toolChain" name="SCOTT Sandbox">
   <adaptorInterfaces name="Warehouse Controller" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.whc" javaFilesBasePath="../webapp-whc/src/main/java/" jspFilesBasePath="../webapp-whc/src/main/webapp/" javascriptFilesBasePath="../webapp-whc/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Twin SP" description="Service Provider">
@@ -55,6 +55,18 @@
       <serviceProviders title="Service Provider" description="Service Provider">
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.0"/>
+          <basicCapabilities/>
+        </services>
+      </serviceProviders>
+    </serviceProviderCatalog>
+    <specification/>
+    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
+  </adaptorInterfaces>
+  <adaptorInterfaces name="LocationService" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.svc.location" javaFilesBasePath="../webapp-svc-location/src/main/java/" jspFilesBasePath="../webapp-svc-location/src/main/webapp/" javascriptFilesBasePath="../webapp-svc-location/src/main/webapp/">
+    <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
+      <serviceProviders title="Service Provider" description="Service Provider">
+        <services>
+          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5"/>
           <basicCapabilities/>
         </services>
       </serviceProviders>
