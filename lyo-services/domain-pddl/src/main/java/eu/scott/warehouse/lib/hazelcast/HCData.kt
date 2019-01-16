@@ -3,6 +3,7 @@ package eu.scott.warehouse.lib.hazelcast
 import java.io.Serializable
 import java.util.*
 
+@Deprecated("Phasing Hazelcast out of the SCOTT sandbox")
 data class HCData(val url: String, val uuid: String, val headers: Array<String>) :
     Serializable {
     override fun equals(other: Any?): Boolean {

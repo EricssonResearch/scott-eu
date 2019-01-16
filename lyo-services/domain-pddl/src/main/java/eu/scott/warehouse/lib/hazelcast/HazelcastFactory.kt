@@ -6,7 +6,7 @@ import com.hazelcast.instance.DefaultNodeContext
 import com.hazelcast.instance.HazelcastInstanceFactory
 import org.slf4j.LoggerFactory
 
-
+@Deprecated("Phasing Hazelcast out of the SCOTT sandbox")
 object HazelcastFactory {
     val log = LoggerFactory.getLogger(javaClass)
     @JvmOverloads

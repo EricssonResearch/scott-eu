@@ -16,7 +16,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.lyo>2.4.0-SNAPSHOT</version.lyo>
+    <version.lyo>4.0.0-SNAPSHOT</version.lyo>
     <kotlin.version>1.2.51</kotlin.version>
   </properties>
   <dependencies>
@@ -26,12 +26,12 @@
       <artifactId>hazelcast</artifactId>
       <version>3.10.4</version>
     </dependency>
-    <dependency>
-      <!--TODO move to the lib-->
-      <groupId>org.bitsofinfo</groupId>
-      <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-      <version>1.0-RC8</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
-    </dependency>
+    <!--<dependency>-->
+      <!--&lt;!&ndash;TODO move to the lib&ndash;&gt;-->
+      <!--<groupId>org.bitsofinfo</groupId>-->
+      <!--<artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>-->
+      <!--<version>1.0-RC8</version> &lt;!&ndash;  Use 1.0.RC3 for Hazelcast < 3.8.x &ndash;&gt;-->
+    <!--</dependency>-->
     <dependency>
       <!--TODO refactor-->
       <groupId>org.eclipse.paho</groupId>
@@ -42,7 +42,7 @@
       <!--TODO refactor-->
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-jena-provider</artifactId>
-      <version>2.4.0-SNAPSHOT</version>
+      <version>${version.lyo}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.trs</groupId>
