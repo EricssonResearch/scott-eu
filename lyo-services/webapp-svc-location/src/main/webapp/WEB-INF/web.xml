@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  id="WebApp_ID"
+  version="3.0">
+  <display-name>SCOTT Location Service</display-name>
+
+  <context-param>
+    <description>Base URI for the adaptor.</description>
+    <param-name>se.ericsson.cf.scott.sandbox.svc.location.servlet.baseurl</param-name>
+    <param-value>http://sandbox-location:8091</param-value>
+  </context-param>
+  <!-- <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.svc.location.store.query</param-name>
+    <param-value>http://warehouse-fuseki:3030/sandbox-twin/query</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.svc.location.store.update</param-name>
+    <param-value>http://warehouse-fuseki:3030/sandbox-twin/update</param-value>
+  </context-param>
+  <context-param>
+    <description>seconds</description>
+    <param-name>se.ericsson.cf.scott.sandbox.svc.location.update.interval</param-name>
+    <param-value>10</param-value>
+  </context-param> -->
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.svc.location.trs.mqtt.broker</param-name>
+    <param-value>tcp://mosquitto:1883</param-value>
+  </context-param>
+
+  <listener>
+    <description>Listener for ServletContext lifecycle changes</description>
+    <listener-class>se.ericsson.cf.scott.sandbox.svc.location.servlet.ServletListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>JAX-RS Servlet</servlet-name>
+    <servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>se.ericsson.cf.scott.sandbox.svc.location.servlet.Application</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>JAX-RS Servlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+</web-app>

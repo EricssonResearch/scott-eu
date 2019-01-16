@@ -21,6 +21,8 @@
     <module>../webapp-twin</module>
     <!-- <module>../webapp-twin-shelf</module> -->
 
+    <module>../webapp-svc-location</module>
+
     <!--<module>cli-whc</module>-->
   </modules>
 
