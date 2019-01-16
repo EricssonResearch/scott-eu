@@ -27,8 +27,8 @@ import org.eclipse.lyo.core.trs.Deletion
 import org.eclipse.lyo.core.trs.Modification
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
-import org.eclipse.lyo.trs.consumer.handlers.ChangeEventListener
-import org.eclipse.lyo.trs.consumer.mqtt.ChangeEventMessage
+import org.eclipse.lyo.oslc4j.trs.client.handlers.ChangeEventListener
+import org.eclipse.lyo.oslc4j.trs.client.mqtt.ChangeEventMessage
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.slf4j.LoggerFactory
