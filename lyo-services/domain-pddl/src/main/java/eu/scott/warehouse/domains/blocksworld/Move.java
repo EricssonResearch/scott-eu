@@ -162,11 +162,13 @@ public class Move
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -191,8 +193,8 @@ public class Move
     
     // Start of user code getterAnnotation:moveB
     // End of user code
-    @OslcName("moveB")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveB")
+    @OslcName("move-b")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-b")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.BLOCK_TYPE})
@@ -206,8 +208,8 @@ public class Move
     
     // Start of user code getterAnnotation:moveX
     // End of user code
-    @OslcName("moveX")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveX")
+    @OslcName("move-x")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.LOCATION_OR_BLOCK_TYPE})
@@ -221,8 +223,8 @@ public class Move
     
     // Start of user code getterAnnotation:moveY
     // End of user code
-    @OslcName("moveY")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveY")
+    @OslcName("move-y")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.LOCATION_OR_BLOCK_TYPE})
@@ -272,6 +274,7 @@ public class Move
     }
     
     
+    @Deprecated
     static public String moveBToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -290,6 +293,7 @@ public class Move
         return s;
     }
     
+    @Deprecated
     static public String moveXToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -308,6 +312,7 @@ public class Move
         return s;
     }
     
+    @Deprecated
     static public String moveYToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -327,6 +332,7 @@ public class Move
     }
     
     
+    @Deprecated
     public String moveBToHtml()
     {
         String s = "";
@@ -351,6 +357,7 @@ public class Move
         return s;
     }
     
+    @Deprecated
     public String moveXToHtml()
     {
         String s = "";
@@ -375,6 +382,7 @@ public class Move
         return s;
     }
     
+    @Deprecated
     public String moveYToHtml()
     {
         String s = "";

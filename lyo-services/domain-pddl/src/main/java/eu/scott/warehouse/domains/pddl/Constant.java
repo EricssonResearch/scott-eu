@@ -151,11 +151,13 @@ public class Constant
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -207,6 +209,7 @@ public class Constant
     }
     
     
+    @Deprecated
     static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -227,6 +230,7 @@ public class Constant
     }
     
     
+    @Deprecated
     public String labelToHtml()
     {
         String s = "";

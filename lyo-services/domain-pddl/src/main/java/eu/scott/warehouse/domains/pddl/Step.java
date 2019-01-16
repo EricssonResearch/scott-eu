@@ -167,11 +167,13 @@ public class Step
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -300,7 +302,7 @@ public class Step
     
     // Start of user code setterAnnotation:adding
     // End of user code
-    public void setAdding(final HashSet<Link> adding )
+    public void setAdding(final Set<Link> adding )
     {
         // Start of user code setterInit:adding
         // End of user code
@@ -316,7 +318,7 @@ public class Step
     
     // Start of user code setterAnnotation:deleting
     // End of user code
-    public void setDeleting(final HashSet<Link> deleting )
+    public void setDeleting(final Set<Link> deleting )
     {
         // Start of user code setterInit:deleting
         // End of user code
@@ -332,7 +334,7 @@ public class Step
     
     // Start of user code setterAnnotation:updating
     // End of user code
-    public void setUpdating(final HashSet<Link> updating )
+    public void setUpdating(final Set<Link> updating )
     {
         // Start of user code setterInit:updating
         // End of user code
@@ -359,6 +361,7 @@ public class Step
     }
     
     
+    @Deprecated
     static public String actionToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -377,6 +380,7 @@ public class Step
         return s;
     }
     
+    @Deprecated
     static public String addingToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -395,6 +399,7 @@ public class Step
         return s;
     }
     
+    @Deprecated
     static public String deletingToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -413,6 +418,7 @@ public class Step
         return s;
     }
     
+    @Deprecated
     static public String updatingToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -431,6 +437,7 @@ public class Step
         return s;
     }
     
+    @Deprecated
     static public String orderToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -451,6 +458,7 @@ public class Step
     }
     
     
+    @Deprecated
     public String actionToHtml()
     {
         String s = "";
@@ -475,6 +483,7 @@ public class Step
         return s;
     }
     
+    @Deprecated
     public String addingToHtml()
     {
         String s = "";
@@ -505,6 +514,7 @@ public class Step
         return s;
     }
     
+    @Deprecated
     public String deletingToHtml()
     {
         String s = "";
@@ -535,6 +545,7 @@ public class Step
         return s;
     }
     
+    @Deprecated
     public String updatingToHtml()
     {
         String s = "";
@@ -565,6 +576,7 @@ public class Step
         return s;
     }
     
+    @Deprecated
     public String orderToHtml()
     {
         String s = "";

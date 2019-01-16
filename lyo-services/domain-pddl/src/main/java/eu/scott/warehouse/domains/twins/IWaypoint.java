@@ -24,7 +24,7 @@
  *******************************************************************************/
 // End of user code
 
-package eu.scott.warehouse.domains.pddl;
+package eu.scott.warehouse.domains.twins;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,38 +64,35 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(PddlDomainConstants.WHEN_NAMESPACE)
-@OslcName(PddlDomainConstants.WHEN_LOCALNAME)
-@OslcResourceShape(title = "When Resource Shape", describes = PddlDomainConstants.WHEN_TYPE)
-public interface IWhen
+@OslcNamespace(TwinsDomainConstants.WAYPOINT_NAMESPACE)
+@OslcName(TwinsDomainConstants.WAYPOINT_LOCALNAME)
+@OslcResourceShape(title = "Waypoint Resource Shape", describes = TwinsDomainConstants.WAYPOINT_TYPE)
+public interface IWaypoint
 {
 
-    public void addArgument(final Link argument );
 
-    @OslcName("argument")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "argument")
-    @OslcDescription("Conditional effect.")
-    @OslcOccurs(Occurs.OneOrMany)
-    @OslcValueType(ValueType.Resource)
-    @OslcReadOnly(false)
-    public HashSet<Link> getArgument();
-
-    @OslcName("parameter")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "parameter")
-    @OslcDescription("Condition (same as precondition).")
+    @OslcName("waypointX")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "waypointX")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.Resource)
+    @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
-    public Link getParameter();
+    public Integer getWaypointX();
+
+    @OslcName("waypointY")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "waypointY")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Integer)
+    @OslcReadOnly(false)
+    public Integer getWaypointY();
 
 
-    public void setArgument(final Set<Link> argument );
-    public void setParameter(final Link parameter );
+    public void setWaypointX(final Integer waypointX );
+    public void setWaypointY(final Integer waypointY );
 }
 

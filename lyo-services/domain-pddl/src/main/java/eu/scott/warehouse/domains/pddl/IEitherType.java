@@ -89,6 +89,6 @@ public interface IEitherType
     public HashSet<Link> getMember();
 
 
-    public void setMember(final HashSet<Link> member );
+    public void setMember(final Set<Link> member );
 }
 

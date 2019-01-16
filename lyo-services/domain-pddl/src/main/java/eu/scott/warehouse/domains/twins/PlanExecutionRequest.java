@@ -152,11 +152,13 @@ public class PlanExecutionRequest
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -208,6 +210,7 @@ public class PlanExecutionRequest
     }
     
     
+    @Deprecated
     static public String planToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -227,6 +230,7 @@ public class PlanExecutionRequest
     }
     
     
+    @Deprecated
     public String planToHtml()
     {
         String s = "";

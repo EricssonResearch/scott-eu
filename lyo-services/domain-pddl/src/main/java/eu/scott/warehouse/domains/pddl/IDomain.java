@@ -137,9 +137,9 @@ public interface IDomain
 
 
     public void setAction(final Link action );
-    public void setConstant(final HashSet<Link> constant );
-    public void setFunction(final HashSet<Link> function );
-    public void setPredicate(final HashSet<Link> predicate );
+    public void setConstant(final Set<Link> constant );
+    public void setFunction(final Set<Link> function );
+    public void setPredicate(final Set<Link> predicate );
     public void setType(final Link type );
     public void setLabel(final String label );
 }

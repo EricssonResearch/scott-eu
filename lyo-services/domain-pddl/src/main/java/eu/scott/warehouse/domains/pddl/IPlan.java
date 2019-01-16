@@ -106,7 +106,7 @@ public interface IPlan
 
 
     public void setCost(final Float cost );
-    public void setStep(final HashSet<Step> step );
+    public void setStep(final Set<Step> step );
     public void setTime(final Float time );
 }
 

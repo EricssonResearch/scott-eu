@@ -170,11 +170,13 @@ public class Domain
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -320,7 +322,7 @@ public class Domain
     
     // Start of user code setterAnnotation:constant
     // End of user code
-    public void setConstant(final HashSet<Link> constant )
+    public void setConstant(final Set<Link> constant )
     {
         // Start of user code setterInit:constant
         // End of user code
@@ -336,7 +338,7 @@ public class Domain
     
     // Start of user code setterAnnotation:function
     // End of user code
-    public void setFunction(final HashSet<Link> function )
+    public void setFunction(final Set<Link> function )
     {
         // Start of user code setterInit:function
         // End of user code
@@ -352,7 +354,7 @@ public class Domain
     
     // Start of user code setterAnnotation:predicate
     // End of user code
-    public void setPredicate(final HashSet<Link> predicate )
+    public void setPredicate(final Set<Link> predicate )
     {
         // Start of user code setterInit:predicate
         // End of user code
@@ -391,6 +393,7 @@ public class Domain
     }
     
     
+    @Deprecated
     static public String actionToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -409,6 +412,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     static public String constantToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -427,6 +431,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     static public String functionToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -445,6 +450,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     static public String predicateToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -463,6 +469,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     static public String typeToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -481,6 +488,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -501,6 +509,7 @@ public class Domain
     }
     
     
+    @Deprecated
     public String actionToHtml()
     {
         String s = "";
@@ -525,6 +534,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     public String constantToHtml()
     {
         String s = "";
@@ -550,6 +560,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     public String functionToHtml()
     {
         String s = "";
@@ -580,6 +591,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     public String predicateToHtml()
     {
         String s = "";
@@ -610,6 +622,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     public String typeToHtml()
     {
         String s = "";
@@ -634,6 +647,7 @@ public class Domain
         return s;
     }
     
+    @Deprecated
     public String labelToHtml()
     {
         String s = "";

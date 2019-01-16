@@ -152,11 +152,13 @@ public class EitherType
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -203,7 +205,7 @@ public class EitherType
     
     // Start of user code setterAnnotation:member
     // End of user code
-    public void setMember(final HashSet<Link> member )
+    public void setMember(final Set<Link> member )
     {
         // Start of user code setterInit:member
         // End of user code
@@ -218,6 +220,7 @@ public class EitherType
     }
     
     
+    @Deprecated
     static public String memberToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -237,6 +240,7 @@ public class EitherType
     }
     
     
+    @Deprecated
     public String memberToHtml()
     {
         String s = "";

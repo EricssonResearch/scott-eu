@@ -48,8 +48,20 @@ public interface TwinsDomainConstants
     public static String PLANEXECUTIONREQUEST_NAMESPACE = TWINS_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String PLANEXECUTIONREQUEST_LOCALNAME = "PlanExecutionRequest"; //localName of the rdfs:class the resource describes
     public static String PLANEXECUTIONREQUEST_TYPE = PLANEXECUTIONREQUEST_NAMESPACE + PLANEXECUTIONREQUEST_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String RFC3339TIMESTAMP_PATH = "rFC3339Timestamp";
+    public static String RFC3339TIMESTAMP_NAMESPACE = TWINS_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String RFC3339TIMESTAMP_LOCALNAME = "RFC3339Timestamp"; //localName of the rdfs:class the resource describes
+    public static String RFC3339TIMESTAMP_TYPE = RFC3339TIMESTAMP_NAMESPACE + RFC3339TIMESTAMP_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String REGISTRATIONMESSAGE_PATH = "registrationMessage";
     public static String REGISTRATIONMESSAGE_NAMESPACE = TWINS_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String REGISTRATIONMESSAGE_LOCALNAME = "RegistrationMessage"; //localName of the rdfs:class the resource describes
     public static String REGISTRATIONMESSAGE_TYPE = REGISTRATIONMESSAGE_NAMESPACE + REGISTRATIONMESSAGE_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String TWINSTATUS_PATH = "twinStatus";
+    public static String TWINSTATUS_NAMESPACE = TWINS_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String TWINSTATUS_LOCALNAME = "TwinStatus"; //localName of the rdfs:class the resource describes
+    public static String TWINSTATUS_TYPE = TWINSTATUS_NAMESPACE + TWINSTATUS_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String WAYPOINT_PATH = "waypoint";
+    public static String WAYPOINT_NAMESPACE = TWINS_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String WAYPOINT_LOCALNAME = "Waypoint"; //localName of the rdfs:class the resource describes
+    public static String WAYPOINT_TYPE = WAYPOINT_NAMESPACE + WAYPOINT_LOCALNAME; //fullname of the rdfs:class the resource describes
 }

@@ -171,11 +171,13 @@ public class Box
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -200,8 +202,8 @@ public class Box
     
     // Start of user code getterAnnotation:atX
     // End of user code
-    @OslcName("atX")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "atX")
+    @OslcName("at-x")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.COORD_TYPE})
@@ -215,8 +217,8 @@ public class Box
     
     // Start of user code getterAnnotation:atY
     // End of user code
-    @OslcName("atY")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "atY")
+    @OslcName("at-y")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.COORD_TYPE})
@@ -230,8 +232,8 @@ public class Box
     
     // Start of user code getterAnnotation:onBelt
     // End of user code
-    @OslcName("onBelt")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "onBelt")
+    @OslcName("on-belt")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "on-belt")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.CONVEYORBELT_TYPE})
@@ -245,8 +247,8 @@ public class Box
     
     // Start of user code getterAnnotation:onShelf
     // End of user code
-    @OslcName("onShelf")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "onShelf")
+    @OslcName("on-shelf")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "on-shelf")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.SHELF_TYPE})
@@ -260,8 +262,8 @@ public class Box
     
     // Start of user code getterAnnotation:onRobot
     // End of user code
-    @OslcName("onRobot")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "onRobot")
+    @OslcName("on-robot")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "on-robot")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.ROBOT_TYPE})
@@ -275,8 +277,8 @@ public class Box
     
     // Start of user code getterAnnotation:isFree
     // End of user code
-    @OslcName("isFree")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "isFree")
+    @OslcName("is-free")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "is-free")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)
@@ -361,6 +363,7 @@ public class Box
     }
     
     
+    @Deprecated
     static public String atXToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -379,6 +382,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     static public String atYToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -397,6 +401,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     static public String onBeltToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -415,6 +420,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     static public String onShelfToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -433,6 +439,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     static public String onRobotToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -451,6 +458,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     static public String isFreeToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -471,6 +479,7 @@ public class Box
     }
     
     
+    @Deprecated
     public String atXToHtml()
     {
         String s = "";
@@ -495,6 +504,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     public String atYToHtml()
     {
         String s = "";
@@ -519,6 +529,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     public String onBeltToHtml()
     {
         String s = "";
@@ -543,6 +554,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     public String onShelfToHtml()
     {
         String s = "";
@@ -567,6 +579,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     public String onRobotToHtml()
     {
         String s = "";
@@ -591,6 +604,7 @@ public class Box
         return s;
     }
     
+    @Deprecated
     public String isFreeToHtml()
     {
         String s = "";

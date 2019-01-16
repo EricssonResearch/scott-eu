@@ -172,11 +172,13 @@ public class Problem
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -288,12 +290,9 @@ public class Problem
     }
     
     // Start of user code getterAnnotation:pddlObject
-    // TODO Andrew@2018-08-16: rename the pddlObject field into object OR provide a codegen workaround
+    // End of user code
     @OslcName("object")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "object")
-    // End of user code
-//    @OslcName("pddlObject")
-//    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "pddlObject")
     @OslcDescription("Problem objects.")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
@@ -348,7 +347,7 @@ public class Problem
     
     // Start of user code setterAnnotation:init
     // End of user code
-    public void setInit(final HashSet<Link> init )
+    public void setInit(final Set<Link> init )
     {
         // Start of user code setterInit:init
         // End of user code
@@ -388,7 +387,7 @@ public class Problem
     
     // Start of user code setterAnnotation:pddlObject
     // End of user code
-    public void setPddlObject(final HashSet<Link> pddlObject )
+    public void setPddlObject(final Set<Link> pddlObject )
     {
         // Start of user code setterInit:pddlObject
         // End of user code
@@ -415,6 +414,7 @@ public class Problem
     }
     
     
+    @Deprecated
     static public String domainToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -433,6 +433,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     static public String goalToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -451,6 +452,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     static public String initToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -469,6 +471,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     static public String maximizeToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -487,6 +490,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     static public String minimizeToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -505,6 +509,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     static public String pddlObjectToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -523,6 +528,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -543,6 +549,7 @@ public class Problem
     }
     
     
+    @Deprecated
     public String domainToHtml()
     {
         String s = "";
@@ -567,6 +574,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     public String goalToHtml()
     {
         String s = "";
@@ -591,6 +599,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     public String initToHtml()
     {
         String s = "";
@@ -621,6 +630,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     public String maximizeToHtml()
     {
         String s = "";
@@ -645,6 +655,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     public String minimizeToHtml()
     {
         String s = "";
@@ -669,6 +680,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     public String pddlObjectToHtml()
     {
         String s = "";
@@ -694,6 +706,7 @@ public class Problem
         return s;
     }
     
+    @Deprecated
     public String labelToHtml()
     {
         String s = "";

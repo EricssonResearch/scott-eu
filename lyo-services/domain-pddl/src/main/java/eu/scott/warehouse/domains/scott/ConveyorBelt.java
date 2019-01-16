@@ -156,11 +156,13 @@ public class ConveyorBelt
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -185,8 +187,8 @@ public class ConveyorBelt
     
     // Start of user code getterAnnotation:atX
     // End of user code
-    @OslcName("atX")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "atX")
+    @OslcName("at-x")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.COORD_TYPE})
@@ -200,8 +202,8 @@ public class ConveyorBelt
     
     // Start of user code getterAnnotation:atY
     // End of user code
-    @OslcName("atY")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "atY")
+    @OslcName("at-y")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.COORD_TYPE})
@@ -239,6 +241,7 @@ public class ConveyorBelt
     }
     
     
+    @Deprecated
     static public String atXToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -257,6 +260,7 @@ public class ConveyorBelt
         return s;
     }
     
+    @Deprecated
     static public String atYToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -276,6 +280,7 @@ public class ConveyorBelt
     }
     
     
+    @Deprecated
     public String atXToHtml()
     {
         String s = "";
@@ -300,6 +305,7 @@ public class ConveyorBelt
         return s;
     }
     
+    @Deprecated
     public String atYToHtml()
     {
         String s = "";

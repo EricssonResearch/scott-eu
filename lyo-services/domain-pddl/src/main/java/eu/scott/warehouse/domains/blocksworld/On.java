@@ -154,11 +154,13 @@ public class On
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -183,8 +185,8 @@ public class On
     
     // Start of user code getterAnnotation:onX
     // End of user code
-    @OslcName("onX")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onX")
+    @OslcName("on-x")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "on-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
@@ -197,8 +199,8 @@ public class On
     
     // Start of user code getterAnnotation:onY
     // End of user code
-    @OslcName("onY")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onY")
+    @OslcName("on-y")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "on-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
@@ -235,6 +237,7 @@ public class On
     }
     
     
+    @Deprecated
     static public String onXToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -253,6 +256,7 @@ public class On
         return s;
     }
     
+    @Deprecated
     static public String onYToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -272,6 +276,7 @@ public class On
     }
     
     
+    @Deprecated
     public String onXToHtml()
     {
         String s = "";
@@ -296,6 +301,7 @@ public class On
         return s;
     }
     
+    @Deprecated
     public String onYToHtml()
     {
         String s = "";

@@ -177,11 +177,13 @@ public class Plan
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -270,7 +272,7 @@ public class Plan
     
     // Start of user code setterAnnotation:step
     // End of user code
-    public void setStep(final HashSet<Step> step )
+    public void setStep(final Set<Step> step )
     {
         // Start of user code setterInit:step
         // End of user code
@@ -297,6 +299,7 @@ public class Plan
     }
     
     
+    @Deprecated
     static public String costToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -316,6 +319,7 @@ public class Plan
         return s;
     }
     
+    @Deprecated
     static public String stepToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -334,6 +338,7 @@ public class Plan
         return s;
     }
     
+    @Deprecated
     static public String timeToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -354,6 +359,7 @@ public class Plan
     }
     
     
+    @Deprecated
     public String costToHtml()
     {
         String s = "";
@@ -378,6 +384,7 @@ public class Plan
         return s;
     }
     
+    @Deprecated
     public String stepToHtml()
     {
         String s = "";
@@ -403,6 +410,7 @@ public class Plan
         return s;
     }
     
+    @Deprecated
     public String timeToHtml()
     {
         String s = "";

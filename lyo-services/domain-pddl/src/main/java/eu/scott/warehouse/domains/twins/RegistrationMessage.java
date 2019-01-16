@@ -164,11 +164,13 @@ public class RegistrationMessage
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -323,6 +325,7 @@ public class RegistrationMessage
     }
     
     
+    @Deprecated
     static public String twinTypeToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -342,6 +345,7 @@ public class RegistrationMessage
         return s;
     }
     
+    @Deprecated
     static public String deregisterToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -361,6 +365,7 @@ public class RegistrationMessage
         return s;
     }
     
+    @Deprecated
     static public String trsUriToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -380,6 +385,7 @@ public class RegistrationMessage
         return s;
     }
     
+    @Deprecated
     static public String trsMqttTopicToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -399,6 +405,7 @@ public class RegistrationMessage
         return s;
     }
     
+    @Deprecated
     static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -419,6 +426,7 @@ public class RegistrationMessage
     }
     
     
+    @Deprecated
     public String twinTypeToHtml()
     {
         String s = "";
@@ -443,6 +451,7 @@ public class RegistrationMessage
         return s;
     }
     
+    @Deprecated
     public String deregisterToHtml()
     {
         String s = "";
@@ -467,6 +476,7 @@ public class RegistrationMessage
         return s;
     }
     
+    @Deprecated
     public String trsUriToHtml()
     {
         String s = "";
@@ -491,6 +501,7 @@ public class RegistrationMessage
         return s;
     }
     
+    @Deprecated
     public String trsMqttTopicToHtml()
     {
         String s = "";
@@ -515,6 +526,7 @@ public class RegistrationMessage
         return s;
     }
     
+    @Deprecated
     public String labelToHtml()
     {
         String s = "";

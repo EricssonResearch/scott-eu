@@ -26,7 +26,7 @@
  *******************************************************************************/
 // End of user code
 
-package eu.scott.warehouse.domains.scott;
+package eu.scott.warehouse.domains.twins;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -70,12 +70,12 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
-import eu.scott.warehouse.domains.scott.ScottDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 
 
-import eu.scott.warehouse.domains.scott.ScottDomainConstants;
-import eu.scott.warehouse.domains.scott.Coord;
-import eu.scott.warehouse.domains.scott.Coord;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
+import eu.scott.warehouse.domains.twins.Waypoint;
+import eu.scott.warehouse.domains.twins.RFC3339Timestamp;
 
 // Start of user code imports
 // End of user code
@@ -85,25 +85,28 @@ import eu.scott.warehouse.domains.scott.Coord;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(ScottDomainConstants.SHELF_NAMESPACE)
-@OslcName(ScottDomainConstants.SHELF_LOCALNAME)
-@OslcResourceShape(title = "Shelf Resource Shape", describes = ScottDomainConstants.SHELF_TYPE)
-public class Shelf
+@OslcNamespace(TwinsDomainConstants.TWINSTATUS_NAMESPACE)
+@OslcName(TwinsDomainConstants.TWINSTATUS_LOCALNAME)
+@OslcResourceShape(title = "TwinStatus Resource Shape", describes = TwinsDomainConstants.TWINSTATUS_TYPE)
+public class TwinStatus
     extends AbstractResource
-    implements IShelf
+    implements ITwinStatus
 {
-    // Start of user code attributeAnnotation:atX
+    // Start of user code attributeAnnotation:position
     // End of user code
-    private Link atX = new Link();
-    // Start of user code attributeAnnotation:atY
+    private Waypoint position = new Waypoint();
+    // Start of user code attributeAnnotation:timestamp
     // End of user code
-    private Link atY = new Link();
+    private RFC3339Timestamp timestamp = new RFC3339Timestamp();
+    // Start of user code attributeAnnotation:twinId
+    // End of user code
+    private String twinId;
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
-    public Shelf()
+    public TwinStatus()
            throws URISyntaxException
     {
         super();
@@ -112,7 +115,7 @@ public class Shelf
         // End of user code
     }
     
-    public Shelf(final URI about)
+    public TwinStatus(final URI about)
            throws URISyntaxException
     {
         super(about);
@@ -125,8 +128,8 @@ public class Shelf
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        ScottDomainConstants.SHELF_PATH,
-        Shelf.class);
+        TwinsDomainConstants.TWINSTATUS_PATH,
+        TwinStatus.class);
     }
     
     
@@ -142,7 +145,7 @@ public class Shelf
         // End of user code
     
         if (asLocalResource) {
-            result = result + "{a Local Shelf Resource} - update Shelf.toString() to present resource as desired.";
+            result = result + "{a Local TwinStatus Resource} - update TwinStatus.toString() to present resource as desired.";
             // Start of user code toString_bodyForLocalResource
             // End of user code
         }
@@ -185,95 +188,143 @@ public class Shelf
     }
     
     
-    // Start of user code getterAnnotation:atX
+    // Start of user code getterAnnotation:position
     // End of user code
-    @OslcName("at-x")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-x")
+    @OslcName("position")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "position")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.Resource)
-    @OslcRange({ScottDomainConstants.COORD_TYPE})
+    @OslcValueType(ValueType.LocalResource)
+    @OslcRepresentation(Representation.Inline)
+    @OslcRange({TwinsDomainConstants.WAYPOINT_TYPE})
     @OslcReadOnly(false)
-    public Link getAtX()
+    public Waypoint getPosition()
     {
-        // Start of user code getterInit:atX
+        // Start of user code getterInit:position
         // End of user code
-        return atX;
+        return position;
     }
     
-    // Start of user code getterAnnotation:atY
+    // Start of user code getterAnnotation:timestamp
     // End of user code
-    @OslcName("at-y")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-y")
+    @OslcName("timestamp")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "timestamp")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.Resource)
-    @OslcRange({ScottDomainConstants.COORD_TYPE})
+    @OslcValueType(ValueType.LocalResource)
+    @OslcRepresentation(Representation.Inline)
+    @OslcRange({TwinsDomainConstants.RFC3339TIMESTAMP_TYPE})
     @OslcReadOnly(false)
-    public Link getAtY()
+    public RFC3339Timestamp getTimestamp()
     {
-        // Start of user code getterInit:atY
+        // Start of user code getterInit:timestamp
         // End of user code
-        return atY;
+        return timestamp;
+    }
+    
+    // Start of user code getterAnnotation:twinId
+    // End of user code
+    @OslcName("twinId")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "twinId")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.String)
+    @OslcReadOnly(false)
+    public String getTwinId()
+    {
+        // Start of user code getterInit:twinId
+        // End of user code
+        return twinId;
     }
     
     
-    // Start of user code setterAnnotation:atX
+    // Start of user code setterAnnotation:position
     // End of user code
-    public void setAtX(final Link atX )
+    public void setPosition(final Waypoint position )
     {
-        // Start of user code setterInit:atX
+        // Start of user code setterInit:position
         // End of user code
-        this.atX = atX;
+        this.position = position;
     
-        // Start of user code setterFinalize:atX
+        // Start of user code setterFinalize:position
         // End of user code
     }
     
-    // Start of user code setterAnnotation:atY
+    // Start of user code setterAnnotation:timestamp
     // End of user code
-    public void setAtY(final Link atY )
+    public void setTimestamp(final RFC3339Timestamp timestamp )
     {
-        // Start of user code setterInit:atY
+        // Start of user code setterInit:timestamp
         // End of user code
-        this.atY = atY;
+        this.timestamp = timestamp;
     
-        // Start of user code setterFinalize:atY
+        // Start of user code setterFinalize:timestamp
+        // End of user code
+    }
+    
+    // Start of user code setterAnnotation:twinId
+    // End of user code
+    public void setTwinId(final String twinId )
+    {
+        // Start of user code setterInit:twinId
+        // End of user code
+        this.twinId = twinId;
+    
+        // Start of user code setterFinalize:twinId
         // End of user code
     }
     
     
     @Deprecated
-    static public String atXToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    static public String positionToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
     
-        // Start of user code "Init:atXToHtmlForCreation(...)"
+        // Start of user code "Init:positionToHtmlForCreation(...)"
         // End of user code
     
-        s = s + "<label for=\"at-x\">at-x: </LABEL>";
+        s = s + "<label for=\"position\">position: </LABEL>";
     
-        // Start of user code "Mid:atXToHtmlForCreation(...)"
+        // Start of user code "Mid:positionToHtmlForCreation(...)"
         // End of user code
     
-        // Start of user code "Finalize:atXToHtmlForCreation(...)"
+        // Start of user code "Finalize:positionToHtmlForCreation(...)"
         // End of user code
     
         return s;
     }
     
     @Deprecated
-    static public String atYToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    static public String timestampToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
     
-        // Start of user code "Init:atYToHtmlForCreation(...)"
+        // Start of user code "Init:timestampToHtmlForCreation(...)"
         // End of user code
     
-        s = s + "<label for=\"at-y\">at-y: </LABEL>";
+        s = s + "<label for=\"timestamp\">timestamp: </LABEL>";
     
-        // Start of user code "Mid:atYToHtmlForCreation(...)"
+        // Start of user code "Mid:timestampToHtmlForCreation(...)"
         // End of user code
     
-        // Start of user code "Finalize:atYToHtmlForCreation(...)"
+        // Start of user code "Finalize:timestampToHtmlForCreation(...)"
+        // End of user code
+    
+        return s;
+    }
+    
+    @Deprecated
+    static public String twinIdToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    {
+        String s = "";
+    
+        // Start of user code "Init:twinIdToHtmlForCreation(...)"
+        // End of user code
+    
+        s = s + "<label for=\"twinId\">twinId: </LABEL>";
+    
+        // Start of user code "Mid:twinIdToHtmlForCreation(...)"
+        // End of user code
+    
+        s= s + "<input name=\"twinId\" type=\"text\" style=\"width: 400px\" id=\"twinId\" >";
+        // Start of user code "Finalize:twinIdToHtmlForCreation(...)"
         // End of user code
     
         return s;
@@ -281,50 +332,75 @@ public class Shelf
     
     
     @Deprecated
-    public String atXToHtml()
+    public String positionToHtml()
     {
         String s = "";
     
-        // Start of user code atXtoHtml_mid
+        // Start of user code positiontoHtml_mid
         // End of user code
     
         try {
-            if ((atX == null) || (atX.getValue() == null)) {
+            if (position == null) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + (new Coord (atX.getValue())).toHtml(false);
+                s = s + position.toHtml(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     
-        // Start of user code atXtoHtml_finalize
+        // Start of user code positiontoHtml_finalize
         // End of user code
     
         return s;
     }
     
     @Deprecated
-    public String atYToHtml()
+    public String timestampToHtml()
     {
         String s = "";
     
-        // Start of user code atYtoHtml_mid
+        // Start of user code timestamptoHtml_mid
         // End of user code
     
         try {
-            if ((atY == null) || (atY.getValue() == null)) {
+            if (timestamp == null) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + (new Coord (atY.getValue())).toHtml(false);
+                s = s + timestamp.toHtml(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     
-        // Start of user code atYtoHtml_finalize
+        // Start of user code timestamptoHtml_finalize
+        // End of user code
+    
+        return s;
+    }
+    
+    @Deprecated
+    public String twinIdToHtml()
+    {
+        String s = "";
+    
+        // Start of user code twinIdtoHtml_mid
+        // End of user code
+    
+        try {
+            if (twinId == null) {
+                s = s + "<em>null</em>";
+            }
+            else {
+                s = s + twinId.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        // Start of user code twinIdtoHtml_finalize
         // End of user code
     
         return s;

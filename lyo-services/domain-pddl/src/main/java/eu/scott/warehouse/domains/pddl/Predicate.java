@@ -155,11 +155,13 @@ public class Predicate
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -238,6 +240,7 @@ public class Predicate
     }
     
     
+    @Deprecated
     static public String parameterToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -256,6 +259,7 @@ public class Predicate
         return s;
     }
     
+    @Deprecated
     static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -276,6 +280,7 @@ public class Predicate
     }
     
     
+    @Deprecated
     public String parameterToHtml()
     {
         String s = "";
@@ -300,6 +305,7 @@ public class Predicate
         return s;
     }
     
+    @Deprecated
     public String labelToHtml()
     {
         String s = "";

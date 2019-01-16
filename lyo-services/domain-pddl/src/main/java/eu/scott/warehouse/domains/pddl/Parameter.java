@@ -159,11 +159,13 @@ public class Parameter
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -270,6 +272,7 @@ public class Parameter
     }
     
     
+    @Deprecated
     static public String typeToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -288,6 +291,7 @@ public class Parameter
         return s;
     }
     
+    @Deprecated
     static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -307,6 +311,7 @@ public class Parameter
         return s;
     }
     
+    @Deprecated
     static public String orderToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -327,6 +332,7 @@ public class Parameter
     }
     
     
+    @Deprecated
     public String typeToHtml()
     {
         String s = "";
@@ -351,6 +357,7 @@ public class Parameter
         return s;
     }
     
+    @Deprecated
     public String labelToHtml()
     {
         String s = "";
@@ -375,6 +382,7 @@ public class Parameter
         return s;
     }
     
+    @Deprecated
     public String orderToHtml()
     {
         String s = "";
