@@ -88,11 +88,19 @@
     <resources name="RegistrationMessage" resourceProperties="//@domainSpecifications.5/@resourceProperties.0 //@domainSpecifications.5/@resourceProperties.1 //@domainSpecifications.5/@resourceProperties.2 //@domainSpecifications.5/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0"/>
     <resources name="PlanExecutionRequest" resourceProperties="//@domainSpecifications.0/@resourceProperties.24"/>
     <resources name="DeviceRegistrationMessage" resourceProperties="//@domainSpecifications.5/@resourceProperties.0 //@domainSpecifications.5/@resourceProperties.4 //@domainSpecifications.5/@resourceProperties.1"/>
+    <resources name="Waypoint" resourceProperties="//@domainSpecifications.5/@resourceProperties.5 //@domainSpecifications.5/@resourceProperties.6"/>
+    <resources name="TwinStatus" resourceProperties="//@domainSpecifications.5/@resourceProperties.7 //@domainSpecifications.5/@resourceProperties.8 //@domainSpecifications.5/@resourceProperties.4"/>
+    <resources name="RFC3339Timestamp" resourceProperties="//@domainSpecifications.5/@resourceProperties.9"/>
     <resourceProperties name="twinType" valueType="String"/>
     <resourceProperties name="deregister"/>
     <resourceProperties name="trsUri" valueType="URI"/>
     <resourceProperties name="trsMqttTopic" valueType="String"/>
     <resourceProperties name="twinId" valueType="String"/>
+    <resourceProperties name="waypointX" valueType="Integer"/>
+    <resourceProperties name="waypointY" valueType="Integer"/>
+    <resourceProperties name="position" valueType="LocalResource" representation="inline" range="//@domainSpecifications.5/@resources.3"/>
+    <resourceProperties name="timestamp" valueType="LocalResource" representation="inline" range="//@domainSpecifications.5/@resources.5"/>
+    <resourceProperties name="formattedTimestamp" valueType="String"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.twins" javaFilesPath=""/>
   </domainSpecifications>
   <domainPrefixes name="pddl"/>
