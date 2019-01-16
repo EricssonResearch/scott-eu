@@ -46,22 +46,22 @@ public interface BworldDomainConstants
 
     public static String BLOCK_PATH = "block";
     public static String BLOCK_NAMESPACE = BLOCKSWORLD_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
-    public static String BLOCK_LOCALNAME = "Block"; //localName of the rdfs:class the resource describes
+    public static String BLOCK_LOCALNAME = "block"; //localName of the rdfs:class the resource describes
     public static String BLOCK_TYPE = BLOCK_NAMESPACE + BLOCK_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String LOCATION_PATH = "location";
     public static String LOCATION_NAMESPACE = BLOCKSWORLD_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
-    public static String LOCATION_LOCALNAME = "Location"; //localName of the rdfs:class the resource describes
+    public static String LOCATION_LOCALNAME = "location"; //localName of the rdfs:class the resource describes
     public static String LOCATION_TYPE = LOCATION_NAMESPACE + LOCATION_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String LOCATION_OR_BLOCK_PATH = "locationOrBlock";
     public static String LOCATION_OR_BLOCK_NAMESPACE = BLOCKSWORLD_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
-    public static String LOCATION_OR_BLOCK_LOCALNAME = "LocationOrBlock"; //localName of the rdfs:class the resource describes
+    public static String LOCATION_OR_BLOCK_LOCALNAME = "location-or-block"; //localName of the rdfs:class the resource describes
     public static String LOCATION_OR_BLOCK_TYPE = LOCATION_OR_BLOCK_NAMESPACE + LOCATION_OR_BLOCK_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String MOVE_PATH = "move";
     public static String MOVE_NAMESPACE = BLOCKSWORLD_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
-    public static String MOVE_LOCALNAME = "Move"; //localName of the rdfs:class the resource describes
+    public static String MOVE_LOCALNAME = "move"; //localName of the rdfs:class the resource describes
     public static String MOVE_TYPE = MOVE_NAMESPACE + MOVE_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String ON_PATH = "on";
     public static String ON_NAMESPACE = BLOCKSWORLD_DOMAIN_NAMSPACE; //namespace of the rdfs:class the resource describes
-    public static String ON_LOCALNAME = "On"; //localName of the rdfs:class the resource describes
+    public static String ON_LOCALNAME = "on"; //localName of the rdfs:class the resource describes
     public static String ON_TYPE = ON_NAMESPACE + ON_LOCALNAME; //fullname of the rdfs:class the resource describes
 }

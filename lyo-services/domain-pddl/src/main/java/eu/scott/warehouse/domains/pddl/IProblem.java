@@ -125,8 +125,8 @@ public interface IProblem
     @OslcReadOnly(false)
     public Link getMinimize();
 
-    @OslcName("pddlObject")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "pddlObject")
+    @OslcName("object")
+    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "object")
     @OslcDescription("Problem objects.")
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
@@ -145,10 +145,10 @@ public interface IProblem
 
     public void setDomain(final Link domain );
     public void setGoal(final Link goal );
-    public void setInit(final HashSet<Link> init );
+    public void setInit(final Set<Link> init );
     public void setMaximize(final Link maximize );
     public void setMinimize(final Link minimize );
-    public void setPddlObject(final HashSet<Link> pddlObject );
+    public void setPddlObject(final Set<Link> pddlObject );
     public void setLabel(final String label );
 }
 

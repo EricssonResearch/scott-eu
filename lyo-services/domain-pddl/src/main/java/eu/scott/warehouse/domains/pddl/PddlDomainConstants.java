@@ -88,9 +88,9 @@ public interface PddlDomainConstants
     public static String NOT_NAMESPACE = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String NOT_LOCALNAME = "Not"; //localName of the rdfs:class the resource describes
     public static String NOT_TYPE = NOT_NAMESPACE + NOT_LOCALNAME; //fullname of the rdfs:class the resource describes
-    public static String OBJECT_PATH = "pddlObject";
+    public static String OBJECT_PATH = "object";
     public static String OBJECT_NAMESPACE = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE; //namespace of the rdfs:class the resource describes
-    public static String OBJECT_LOCALNAME = "PddlObject"; //localName of the rdfs:class the resource describes
+    public static String OBJECT_LOCALNAME = "Object"; //localName of the rdfs:class the resource describes
     public static String OBJECT_TYPE = OBJECT_NAMESPACE + OBJECT_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String OR_PATH = "or";
     public static String OR_NAMESPACE = SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE; //namespace of the rdfs:class the resource describes

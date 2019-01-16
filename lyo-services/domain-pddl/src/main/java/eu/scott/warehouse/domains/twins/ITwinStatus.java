@@ -24,7 +24,7 @@
  *******************************************************************************/
 // End of user code
 
-package eu.scott.warehouse.domains.pddl;
+package eu.scott.warehouse.domains.twins;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,38 +64,49 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
+import eu.scott.warehouse.domains.twins.IWaypoint;
+import eu.scott.warehouse.domains.twins.IRFC3339Timestamp;
 
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(PddlDomainConstants.WHEN_NAMESPACE)
-@OslcName(PddlDomainConstants.WHEN_LOCALNAME)
-@OslcResourceShape(title = "When Resource Shape", describes = PddlDomainConstants.WHEN_TYPE)
-public interface IWhen
+@OslcNamespace(TwinsDomainConstants.TWINSTATUS_NAMESPACE)
+@OslcName(TwinsDomainConstants.TWINSTATUS_LOCALNAME)
+@OslcResourceShape(title = "TwinStatus Resource Shape", describes = TwinsDomainConstants.TWINSTATUS_TYPE)
+public interface ITwinStatus
 {
 
-    public void addArgument(final Link argument );
 
-    @OslcName("argument")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "argument")
-    @OslcDescription("Conditional effect.")
-    @OslcOccurs(Occurs.OneOrMany)
-    @OslcValueType(ValueType.Resource)
-    @OslcReadOnly(false)
-    public HashSet<Link> getArgument();
-
-    @OslcName("parameter")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "parameter")
-    @OslcDescription("Condition (same as precondition).")
+    @OslcName("position")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "position")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.Resource)
+    @OslcValueType(ValueType.LocalResource)
+    @OslcRepresentation(Representation.Inline)
+    @OslcRange({TwinsDomainConstants.WAYPOINT_TYPE})
     @OslcReadOnly(false)
-    public Link getParameter();
+    public Waypoint getPosition();
+
+    @OslcName("timestamp")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "timestamp")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.LocalResource)
+    @OslcRepresentation(Representation.Inline)
+    @OslcRange({TwinsDomainConstants.RFC3339TIMESTAMP_TYPE})
+    @OslcReadOnly(false)
+    public RFC3339Timestamp getTimestamp();
+
+    @OslcName("twinId")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "twinId")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.String)
+    @OslcReadOnly(false)
+    public String getTwinId();
 
 
-    public void setArgument(final Set<Link> argument );
-    public void setParameter(final Link parameter );
+    public void setPosition(final Waypoint position );
+    public void setTimestamp(final RFC3339Timestamp timestamp );
+    public void setTwinId(final String twinId );
 }
 

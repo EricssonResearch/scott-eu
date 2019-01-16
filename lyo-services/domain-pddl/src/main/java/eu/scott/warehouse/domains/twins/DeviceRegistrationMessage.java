@@ -129,13 +129,13 @@ public class DeviceRegistrationMessage
         TwinsDomainConstants.DEVICEREGISTRATIONMESSAGE_PATH,
         DeviceRegistrationMessage.class);
     }
-
-    @Override
-    public String toString() {
-        return "DeviceRegistrationMessage<"+getAbout()+">{" + "twinType='" + twinType + '\'' + ", twinId='" + twinId
-            + '\'' + ", deregister=" + deregister + '}';
+    
+    
+    public String toString()
+    {
+        return toString(false);
     }
-
+    
     public String toString(boolean asLocalResource)
     {
         String result = "";
@@ -157,11 +157,13 @@ public class DeviceRegistrationMessage
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -264,6 +266,7 @@ public class DeviceRegistrationMessage
     }
     
     
+    @Deprecated
     static public String twinTypeToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -283,6 +286,7 @@ public class DeviceRegistrationMessage
         return s;
     }
     
+    @Deprecated
     static public String twinIdToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -302,6 +306,7 @@ public class DeviceRegistrationMessage
         return s;
     }
     
+    @Deprecated
     static public String deregisterToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -322,6 +327,7 @@ public class DeviceRegistrationMessage
     }
     
     
+    @Deprecated
     public String twinTypeToHtml()
     {
         String s = "";
@@ -346,6 +352,7 @@ public class DeviceRegistrationMessage
         return s;
     }
     
+    @Deprecated
     public String twinIdToHtml()
     {
         String s = "";
@@ -370,6 +377,7 @@ public class DeviceRegistrationMessage
         return s;
     }
     
+    @Deprecated
     public String deregisterToHtml()
     {
         String s = "";

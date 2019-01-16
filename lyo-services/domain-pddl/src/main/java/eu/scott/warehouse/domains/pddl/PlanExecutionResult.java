@@ -158,11 +158,13 @@ public class PlanExecutionResult
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -266,6 +268,7 @@ public class PlanExecutionResult
     }
     
     
+    @Deprecated
     static public String planToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -284,6 +287,7 @@ public class PlanExecutionResult
         return s;
     }
     
+    @Deprecated
     static public String isSuccessfulToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -303,6 +307,7 @@ public class PlanExecutionResult
         return s;
     }
     
+    @Deprecated
     static public String durationSecondsToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -323,6 +328,7 @@ public class PlanExecutionResult
     }
     
     
+    @Deprecated
     public String planToHtml()
     {
         String s = "";
@@ -347,6 +353,7 @@ public class PlanExecutionResult
         return s;
     }
     
+    @Deprecated
     public String isSuccessfulToHtml()
     {
         String s = "";
@@ -371,6 +378,7 @@ public class PlanExecutionResult
         return s;
     }
     
+    @Deprecated
     public String durationSecondsToHtml()
     {
         String s = "";

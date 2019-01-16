@@ -154,11 +154,13 @@ public class ForAll
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -219,7 +221,7 @@ public class ForAll
     
     // Start of user code setterAnnotation:argument
     // End of user code
-    public void setArgument(final HashSet<Link> argument )
+    public void setArgument(final Set<Link> argument )
     {
         // Start of user code setterInit:argument
         // End of user code
@@ -246,6 +248,7 @@ public class ForAll
     }
     
     
+    @Deprecated
     static public String argumentToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -264,6 +267,7 @@ public class ForAll
         return s;
     }
     
+    @Deprecated
     static public String parameterToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -283,6 +287,7 @@ public class ForAll
     }
     
     
+    @Deprecated
     public String argumentToHtml()
     {
         String s = "";
@@ -313,6 +318,7 @@ public class ForAll
         return s;
     }
     
+    @Deprecated
     public String parameterToHtml()
     {
         String s = "";

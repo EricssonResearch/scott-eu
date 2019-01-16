@@ -82,48 +82,48 @@ public interface IBox
 {
 
 
-    @OslcName("atX")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "atX")
+    @OslcName("at-x")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.COORD_TYPE})
     @OslcReadOnly(false)
     public Link getAtX();
 
-    @OslcName("atY")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "atY")
+    @OslcName("at-y")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.COORD_TYPE})
     @OslcReadOnly(false)
     public Link getAtY();
 
-    @OslcName("onBelt")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "onBelt")
+    @OslcName("on-belt")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "on-belt")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.CONVEYORBELT_TYPE})
     @OslcReadOnly(false)
     public Link getOnBelt();
 
-    @OslcName("onShelf")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "onShelf")
+    @OslcName("on-shelf")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "on-shelf")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.SHELF_TYPE})
     @OslcReadOnly(false)
     public Link getOnShelf();
 
-    @OslcName("onRobot")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "onRobot")
+    @OslcName("on-robot")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "on-robot")
     @OslcOccurs(Occurs.ZeroOrOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.ROBOT_TYPE})
     @OslcReadOnly(false)
     public Link getOnRobot();
 
-    @OslcName("isFree")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "isFree")
+    @OslcName("is-free")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "is-free")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Boolean)
     @OslcReadOnly(false)

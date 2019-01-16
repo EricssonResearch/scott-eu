@@ -151,11 +151,13 @@ public class BinaryOperator
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -201,7 +203,7 @@ public class BinaryOperator
     
     // Start of user code setterAnnotation:argument
     // End of user code
-    public void setArgument(final HashSet<Link> argument )
+    public void setArgument(final Set<Link> argument )
     {
         // Start of user code setterInit:argument
         // End of user code
@@ -216,6 +218,7 @@ public class BinaryOperator
     }
     
     
+    @Deprecated
     static public String argumentToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -235,6 +238,7 @@ public class BinaryOperator
     }
     
     
+    @Deprecated
     public String argumentToHtml()
     {
         String s = "";

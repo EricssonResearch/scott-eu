@@ -154,11 +154,13 @@ public class AssignmentOperator
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -237,6 +239,7 @@ public class AssignmentOperator
     }
     
     
+    @Deprecated
     static public String argumentToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -256,6 +259,7 @@ public class AssignmentOperator
         return s;
     }
     
+    @Deprecated
     static public String parameterToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -275,6 +279,7 @@ public class AssignmentOperator
     }
     
     
+    @Deprecated
     public String argumentToHtml()
     {
         String s = "";
@@ -299,6 +304,7 @@ public class AssignmentOperator
         return s;
     }
     
+    @Deprecated
     public String parameterToHtml()
     {
         String s = "";

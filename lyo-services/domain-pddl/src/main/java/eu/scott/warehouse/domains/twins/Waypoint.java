@@ -26,7 +26,7 @@
  *******************************************************************************/
 // End of user code
 
-package eu.scott.warehouse.domains.pddl;
+package eu.scott.warehouse.domains.twins;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -70,10 +70,10 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 
 
-import eu.scott.warehouse.domains.RdfsDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 
 // Start of user code imports
 // End of user code
@@ -83,22 +83,25 @@ import eu.scott.warehouse.domains.RdfsDomainConstants;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(PddlDomainConstants.OBJECT_NAMESPACE)
-@OslcName(PddlDomainConstants.OBJECT_LOCALNAME)
-@OslcResourceShape(title = "Object Resource Shape", describes = PddlDomainConstants.OBJECT_TYPE)
-public class PddlObject
+@OslcNamespace(TwinsDomainConstants.WAYPOINT_NAMESPACE)
+@OslcName(TwinsDomainConstants.WAYPOINT_LOCALNAME)
+@OslcResourceShape(title = "Waypoint Resource Shape", describes = TwinsDomainConstants.WAYPOINT_TYPE)
+public class Waypoint
     extends AbstractResource
-    implements IPddlObject
+    implements IWaypoint
 {
-    // Start of user code attributeAnnotation:label
+    // Start of user code attributeAnnotation:waypointX
     // End of user code
-    private String label;
+    private Integer waypointX;
+    // Start of user code attributeAnnotation:waypointY
+    // End of user code
+    private Integer waypointY;
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
-    public PddlObject()
+    public Waypoint()
            throws URISyntaxException
     {
         super();
@@ -107,7 +110,7 @@ public class PddlObject
         // End of user code
     }
     
-    public PddlObject(final URI about)
+    public Waypoint(final URI about)
            throws URISyntaxException
     {
         super(about);
@@ -120,8 +123,8 @@ public class PddlObject
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        PddlDomainConstants.OBJECT_PATH,
-        PddlObject.class);
+        TwinsDomainConstants.WAYPOINT_PATH,
+        Waypoint.class);
     }
     
     
@@ -137,7 +140,7 @@ public class PddlObject
         // End of user code
     
         if (asLocalResource) {
-            result = result + "{a Local Object Resource} - update Object.toString() to present resource as desired.";
+            result = result + "{a Local Waypoint Resource} - update Waypoint.toString() to present resource as desired.";
             // Start of user code toString_bodyForLocalResource
             // End of user code
         }
@@ -180,50 +183,95 @@ public class PddlObject
     }
     
     
-    // Start of user code getterAnnotation:label
+    // Start of user code getterAnnotation:waypointX
     // End of user code
-    @OslcName("label")
-    @OslcPropertyDefinition(RdfsDomainConstants.RDFS_NAMSPACE + "label")
-    @OslcDescription("Parameter name.")
+    @OslcName("waypointX")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "waypointX")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.String)
+    @OslcValueType(ValueType.Integer)
     @OslcReadOnly(false)
-    public String getLabel()
+    public Integer getWaypointX()
     {
-        // Start of user code getterInit:label
+        // Start of user code getterInit:waypointX
         // End of user code
-        return label;
+        return waypointX;
+    }
+    
+    // Start of user code getterAnnotation:waypointY
+    // End of user code
+    @OslcName("waypointY")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "waypointY")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Integer)
+    @OslcReadOnly(false)
+    public Integer getWaypointY()
+    {
+        // Start of user code getterInit:waypointY
+        // End of user code
+        return waypointY;
     }
     
     
-    // Start of user code setterAnnotation:label
+    // Start of user code setterAnnotation:waypointX
     // End of user code
-    public void setLabel(final String label )
+    public void setWaypointX(final Integer waypointX )
     {
-        // Start of user code setterInit:label
+        // Start of user code setterInit:waypointX
         // End of user code
-        this.label = label;
+        this.waypointX = waypointX;
     
-        // Start of user code setterFinalize:label
+        // Start of user code setterFinalize:waypointX
+        // End of user code
+    }
+    
+    // Start of user code setterAnnotation:waypointY
+    // End of user code
+    public void setWaypointY(final Integer waypointY )
+    {
+        // Start of user code setterInit:waypointY
+        // End of user code
+        this.waypointY = waypointY;
+    
+        // Start of user code setterFinalize:waypointY
         // End of user code
     }
     
     
     @Deprecated
-    static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    static public String waypointXToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
     
-        // Start of user code "Init:labelToHtmlForCreation(...)"
+        // Start of user code "Init:waypointXToHtmlForCreation(...)"
         // End of user code
     
-        s = s + "<label for=\"label\">label: </LABEL>";
+        s = s + "<label for=\"waypointX\">waypointX: </LABEL>";
     
-        // Start of user code "Mid:labelToHtmlForCreation(...)"
+        // Start of user code "Mid:waypointXToHtmlForCreation(...)"
         // End of user code
     
-        s= s + "<input name=\"label\" type=\"text\" style=\"width: 400px\" id=\"label\" >";
-        // Start of user code "Finalize:labelToHtmlForCreation(...)"
+        s= s + "<input name=\"waypointX\" type=\"text\" style=\"width: 400px\" id=\"waypointX\" >";
+        // Start of user code "Finalize:waypointXToHtmlForCreation(...)"
+        // End of user code
+    
+        return s;
+    }
+    
+    @Deprecated
+    static public String waypointYToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    {
+        String s = "";
+    
+        // Start of user code "Init:waypointYToHtmlForCreation(...)"
+        // End of user code
+    
+        s = s + "<label for=\"waypointY\">waypointY: </LABEL>";
+    
+        // Start of user code "Mid:waypointYToHtmlForCreation(...)"
+        // End of user code
+    
+        s= s + "<input name=\"waypointY\" type=\"text\" style=\"width: 400px\" id=\"waypointY\" >";
+        // Start of user code "Finalize:waypointYToHtmlForCreation(...)"
         // End of user code
     
         return s;
@@ -231,25 +279,50 @@ public class PddlObject
     
     
     @Deprecated
-    public String labelToHtml()
+    public String waypointXToHtml()
     {
         String s = "";
     
-        // Start of user code labeltoHtml_mid
+        // Start of user code waypointXtoHtml_mid
         // End of user code
     
         try {
-            if (label == null) {
+            if (waypointX == null) {
                 s = s + "<em>null</em>";
             }
             else {
-                s = s + label.toString();
+                s = s + waypointX.toString();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     
-        // Start of user code labeltoHtml_finalize
+        // Start of user code waypointXtoHtml_finalize
+        // End of user code
+    
+        return s;
+    }
+    
+    @Deprecated
+    public String waypointYToHtml()
+    {
+        String s = "";
+    
+        // Start of user code waypointYtoHtml_mid
+        // End of user code
+    
+        try {
+            if (waypointY == null) {
+                s = s + "<em>null</em>";
+            }
+            else {
+                s = s + waypointY.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        // Start of user code waypointYtoHtml_finalize
         // End of user code
     
         return s;
