@@ -1,6 +1,0 @@
-_background_
-ConveyorBelt-1
-Human-1
-Product-1
-Product-2
-Product-3

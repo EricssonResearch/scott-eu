@@ -1,221 +1,111 @@
 # Mask R-CNN for Object Detection and Segmentation
 
-## Train Vrep dataset
+This ROS package makes possible perform object detection and segmentation using Mask R-CNN method.   
 
-First, you should install the maskrcnn, follow the steps start from Introduction below. Make sure that you can run [demo.ipynb](samples/demo.ipynb) correctly.
-
-### Train and test model
-You can start training model when you get the similar train dataset with the examples in `./train_data`. If you have no idea on how to make the dataset like this, try to follow the steps on part **Make train dataset**. 
-
-1. **train model**: 
-   - put your train dataset in the folder `./train_data`,
-   - run `python train_model.py`
-   
-2. **test model**: 
-   - put the images you want to test in the folder `./test_data`, 
-   - run `python test_model.py`.  
-  * After detection, it would randomly pick up one image and show the detection result image. If you want test many the images at one time and save the results, try follow the steps on part **Images detection and store** below.  
-
-* You can change the parameters and config as you want in both `train_model.py` and `test_model.py`. But please note the config should be same in these two files. 
-
-### Images detection and store
-
-### Video detection
-
-### Make train dataset
-1. Label image with Labelme
-The first step is using the tool of [Labelme](https://github.com/wkentaro/labelme) python version to make polygonal annotation in the image. You also can consider using other different annotation tools, such as . 
-
-2. Uncompree JSON file 
-After labeling the image by Labelme, we get JSON file as the result for each single image. Then we use the script offered by Labelme to uncompress this JSON file to get the mask image and label name. Use command `labelme_json_to_dataset <file_name>.json` to get a folder with 5 files: img.png, info.yaml, label.png, label_names.txt and label_viz.png. What we need in our training dataset is the mask image (label.png) and label names (info.yaml).
-
-3. Convert to 8-bit depth image 
- X50 for visualization
-
-
-## Some useful tools
-
-When you want to train new dataset, the first step is to get images from rosbag.
-
-There are some [small scripts](https://github.com/shaolei-wang/mask_rcnn/tree/master/tools) could be helpful in `./tools`. You can use them to get the train dataset as in the folder `./train_data`. Train a new model:
-1. Follow the steps in [readme file](https://github.com/shaolei-wang/mask_rcnn/blob/master/tools/readme.md) in `./tools` to make new train dataset.
-   
-2. Change parameters in the `class ShapesConfig(Config)` in `./trainShape1.py`, this could overwrite the parameter config in `./mrcnn/config.py`.
-   
-3. Modify the parameters in `./mrcnn/config.py` if necessary. For example, you can change BACKBONE in line56. Now I use resnet50, which is faster than resnet101, but the accurancy is not that good.
-
-4. Donot forget to change the dataset path in `./trainShape1.py` to your own dataset.
-
-5. Run `python trainShape1.py` to start training.
-   
 ## Introduction
 
-This is an implementation of [Mask R-CNN](https://arxiv.org/abs/1703.06870) on Python 3, Keras, and TensorFlow. The model generates bounding boxes and segmentation masks for each instance of an object in the image. It's based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
+Mask R-CNN is the state-of-art method for obstacle detection and recognition. It is based on the region-based convolutional neural network (R-CNN) and has the main characteristic of returning the boundary of the detected object (mask).
+The network is based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
 
-![Instance Segmentation Sample](assets/street.png)
+The original Mask R-CNN repository can be found in this link: https://github.com/matterport/Mask_RCNN
+The Mask R-CNN paper can be accessed through this link: https://arxiv.org/abs/1703.06870
 
-The repository includes:
-* Source code of Mask R-CNN built on FPN and ResNet101.
-* Training code for MS COCO
-* Pre-trained weights for MS COCO
-* Jupyter notebooks to visualize the detection pipeline at every step
-* ParallelModel class for multi-GPU training
-* Evaluation on MS COCO metrics (AP)
-* Example of training on your own dataset
+## Running ROS node
 
+This package makes possible running Mask R-CNN through a ROS node.
+Before running it, some instructions should have to follow.
 
-The code is documented and designed to be easy to extend. If you use it in your research, please consider referencing this repository. If you work on 3D vision, you might find our recently released [Matterport3D](https://matterport.com/blog/2017/09/20/announcing-matterport3d-research-dataset/) dataset useful as well.
-This dataset was created from 3D-reconstructed spaces captured by our customers who agreed to make them publicly available for academic use. You can see more examples [here](https://matterport.com/gallery/).
+### Porting MRCNN to ROS
 
-# Getting Started
-* [demo.ipynb](samples/demo.ipynb) Is the easiest way to start. It shows an example of using a model pre-trained on MS COCO to segment objects in your own images.
-It includes code to run object detection and instance segmentation on arbitrary images.
+The following guideline is intended to make the Mask R-CNN run inside ROS. The approch shown here makes MRCNN node run using python 3.5, so basically all ROS imports are adapted to support python 3.5.
 
-* [train_shapes.ipynb](samples/shapes/train_shapes.ipynb) shows how to train Mask R-CNN on your own dataset. This notebook introduces a toy dataset (Shapes) to demonstrate training on a new dataset.
-
-* ([model.py](mrcnn/model.py), [utils.py](mrcnn/utils.py), [config.py](mrcnn/config.py)): These files contain the main Mask RCNN implementation. 
-
-
-* [inspect_data.ipynb](samples/coco/inspect_data.ipynb). This notebook visualizes the different pre-processing steps
-to prepare the training data.
-
-* [inspect_model.ipynb](samples/coco/inspect_model.ipynb) This notebook goes in depth into the steps performed to detect and segment objects. It provides visualizations of every step of the pipeline.
-
-* [inspect_weights.ipynb](samples/coco/inspect_weights.ipynb)
-This notebooks inspects the weights of a trained model and looks for anomalies and odd patterns.
-
-
-# Step by Step Detection
-To help with debugging and understanding the model, there are 3 notebooks 
-([inspect_data.ipynb](samples/inspect_data.ipynb), [inspect_model.ipynb](samples/inspect_model.ipynb),
-[inspect_weights.ipynb](samples/inspect_weights.ipynb)) that provide a lot of visualizations and allow running the model step by step to inspect the output at each point. Here are a few examples:
-
-
-
-## 1. Anchor sorting and filtering
-Visualizes every step of the first stage Region Proposal Network and displays positive and negative anchors along with anchor box refinement.
-![](assets/detection_anchors.png)
-
-## 2. Bounding Box Refinement
-This is an example of final detection boxes (dotted lines) and the refinement applied to them (solid lines) in the second stage.
-![](assets/detection_refinement.png)
-
-## 3. Mask Generation
-Examples of generated masks. These then get scaled and placed on the image in the right location.
-
-![](assets/detection_masks.png)
-
-## 4.Layer activations
-Often it's useful to inspect the activations at different layers to look for signs of trouble (all zeros or random noise).
-
-![](assets/detection_activations.png)
-
-## 5. Weight Histograms
-Another useful debugging tool is to inspect the weight histograms. These are included in the inspect_weights.ipynb notebook.
-
-![](assets/detection_histograms.png)
-
-## 6. Logging to TensorBoard
-TensorBoard is another great debugging and visualization tool. The model is configured to log losses and save weights at the end of every epoch.
-
-![](assets/detection_tensorboard.png)
-
-## 6. Composing the different pieces into a final result
-
-![](assets/detection_final.png)
-
-
-# Training on MS COCO
-We're providing pre-trained weights for MS COCO to make it easier to start. You can
-use those weights as a starting point to train your own variation on the network.
-Training and evaluation code is in `samples/coco/coco.py`. You can import this
-module in Jupyter notebook (see the provided notebooks for examples) or you
-can run it directly from the command line as such:
+1. Prepare ROS for python 3.5
 
 ```
-# Train a new model starting from pre-trained COCO weights
-python3 samples/coco/coco.py train --dataset=/path/to/coco/ --model=coco
-
-# Train a new model starting from ImageNet weights
-python3 samples/coco/coco.py train --dataset=/path/to/coco/ --model=imagenet
-
-# Continue training a model that you had trained earlier
-python3 samples/coco/coco.py train --dataset=/path/to/coco/ --model=/path/to/weights.h5
-
-# Continue training the last model you trained. This will find
-# the last trained weights in the model directory.
-python3 samples/coco/coco.py train --dataset=/path/to/coco/ --model=last
+sudo apt-get install python3-yaml
+sudo pip3 install rospkg catkin_pkg
 ```
 
-You can also run the COCO evaluation code with:
+2. Install OpenCV for python 3.5
+
 ```
-# Run COCO evaluation on the last trained model
-python3 samples/coco/coco.py evaluate --dataset=/path/to/coco/ --model=last
+pip3 install opencv-python
 ```
 
-The training schedule, learning rate, and other parameters should be set in `samples/coco/coco.py`.
+3. Install cv_bridge
+Follow the instructions in https://stackoverflow.com/questions/49221565/unable-to-use-cv-bridge-with-ros-kinetic-and-python3
+
+4. Install MRCNN library
+
+```
+sudo pip3 install tensorflow
+```
+
+**For the previous steps, install the required depences, if necessary.**
+
+5. Download the pretrained MRCNN models (TODO)
+
+```
+wget https://www.dropbox.com/s/xunaa1idwcmdyz5/coco_vrepall_1002.h5 -P models
+wget https://www.dropbox.com/s/5foyklp3azy2wi0/mask_rcnn_coco.h5  -P models
+```
+
+### Running Mask R-CNN node
+
+Run the following in the terminal
+
+```
+rosrun turtlebot2i_mrcnn ros_mrcnn.py 
+```
+
+## Training the Model
+
+If want to train new model, first, get images from rosbag or manually get a set of images.
+
+1. (Optional step) If you want to create a training dataset from rosbag
+
+    - Create the rosbag by recording camera topic
+    ```
+    rosbag record camera_topic_name -O output_bag.bag
+    ```
+
+    - Run `bag2cv.py` to extract images from a image topic. 
+    *It may be necessary to change bag name, topic name, etc. in this script.*
+
+2. Annotate images with labelme tool
+
+    - From the set of images, use the [labelme](https://github.com/wkentaro/labelme) tool to draw polygons around the target object. The accuracy of the trained model depends on the quality of the annotation. (It is possible to use another annotation tooll, but different procedures may be necessary to obtain the final training dataset.)
+   
+    - After labeling the images through labelme, we get JSON files as the result for each single image. Then we use the script offered by labelme to convert the JSON file to get the mask image and the corresponding labels. Use the command `labelme_json_to_dataset <file_name>.json` to get a folder with 5 files: img.png, info.yaml, label.png, label_names.txt and label_viz.png. What we need in our training dataset is the mask image (label.png) and label names (info.yaml).
+
+    - Convert the mask image into 8-bit depth image. 
+    Use the following command to convert the mask images into 8 bits in order to make it possible to feed in the Mask R-CNN method.
+    (Would necessary to manually set the input and output paths in the mask2cv.py code.)
+    ```
+    python mrcnn/tools/mask2cv.py
+    ```
+
+3. Change parameters in the `class VrepConfig` in `train_model.py`. The complete list of parametes can be found the in the Config class: https://github.com/matterport/Mask_RCNN/blob/master/mrcnn/config.py
+
+5. Change the dataset path in `train_model.py` to your own dataset.
+
+6. Run `python train_model.py` to start training.
+
+## Testing the Model
 
 
-# Training on Your Own Dataset
+1. Change parameters in the `class VrepConfig` in `test_model.py`. The complete list of parametes can be found the in the Config class: https://github.com/matterport/Mask_RCNN/blob/master/mrcnn/config.py
 
-Start by reading this [blog post about the balloon color splash sample](https://engineering.matterport.com/splash-of-color-instance-segmentation-with-mask-r-cnn-and-tensorflow-7c761e238b46). It covers the process starting from annotating images to training to using the results in a sample application.
+2. Set the model path on `test_model.py`.
 
-In summary, to train the model on your own dataset you'll need to extend two classes:
+3. Run the test script:
+    ```
+    python mrcnn/test_model.py
+    ```
+    * During the inferences, it would randomly pick up one image and show the detection result. 
 
-```Config```
-This class contains the default configuration. Subclass it and modify the attributes you need to change.
+## Installation (content extracted from Mask R-CNN repository)
 
-```Dataset```
-This class provides a consistent way to work with any dataset. 
-It allows you to use new datasets for training without having to change 
-the code of the model. It also supports loading multiple datasets at the
-same time, which is useful if the objects you want to detect are not 
-all available in one dataset. 
-
-See examples in `samples/shapes/train_shapes.ipynb`, `samples/coco/coco.py`, `samples/balloon/balloon.py`, and `samples/nucleus/nucleus.py`.
-
-## Differences from the Official Paper
-This implementation follows the Mask RCNN paper for the most part, but there are a few cases where we deviated in favor of code simplicity and generalization. These are some of the differences we're aware of. If you encounter other differences, please do let us know.
-
-* **Image Resizing:** To support training multiple images per batch we resize all images to the same size. For example, 1024x1024px on MS COCO. We preserve the aspect ratio, so if an image is not square we pad it with zeros. In the paper the resizing is done such that the smallest side is 800px and the largest is trimmed at 1000px.
-* **Bounding Boxes**: Some datasets provide bounding boxes and some provide masks only. To support training on multiple datasets we opted to ignore the bounding boxes that come with the dataset and generate them on the fly instead. We pick the smallest box that encapsulates all the pixels of the mask as the bounding box. This simplifies the implementation and also makes it easy to apply image augmentations that would otherwise be harder to apply to bounding boxes, such as image rotation.
-
-    To validate this approach, we compared our computed bounding boxes to those provided by the COCO dataset.
-We found that ~2% of bounding boxes differed by 1px or more, ~0.05% differed by 5px or more, 
-and only 0.01% differed by 10px or more.
-
-* **Learning Rate:** The paper uses a learning rate of 0.02, but we found that to be
-too high, and often causes the weights to explode, especially when using a small batch
-size. It might be related to differences between how Caffe and TensorFlow compute 
-gradients (sum vs mean across batches and GPUs). Or, maybe the official model uses gradient
-clipping to avoid this issue. We do use gradient clipping, but don't set it too aggressively.
-We found that smaller learning rates converge faster anyway so we go with that.
-
-## Contributing
-Contributions to this repository are welcome. Examples of things you can contribute:
-* Speed Improvements. Like re-writing some Python code in TensorFlow or Cython.
-* Training on other datasets.
-* Accuracy Improvements.
-* Visualizations and examples.
-
-You can also [join our team](https://matterport.com/careers/) and help us build even more projects like this one.
-
-## Requirements
-Python 3.4, TensorFlow 1.3, Keras 2.0.8 and other common packages listed in `requirements.txt`.
-
-### MS COCO Requirements:
-To train or test on MS COCO, you'll also need:
-* pycocotools (installation instructions below)
-* [MS COCO Dataset](http://cocodataset.org/#home)
-* Download the 5K [minival](https://dl.dropboxusercontent.com/s/o43o90bna78omob/instances_minival2014.json.zip?dl=0)
-  and the 35K [validation-minus-minival](https://dl.dropboxusercontent.com/s/s3tw5zcg7395368/instances_valminusminival2014.json.zip?dl=0)
-  subsets. More details in the original [Faster R-CNN implementation](https://github.com/rbgirshick/py-faster-rcnn/blob/master/data/README.md).
-
-If you use Docker, the code has been verified to work on
-[this Docker container](https://hub.docker.com/r/waleedka/modern-deep-learning/).
-
-
-## Installation
 1. Install dependencies
    ```bash
    pip3 install -r requirements.txt
