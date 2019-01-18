@@ -91,7 +91,7 @@ class ros_mask_rcnn:
         # Set topics
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/turtlebot2i/camera/rgb/raw_image", Image, self.callback)
-        self.image_pub = rospy.Publisher("mrcnn_out", Image, queue_size=1)
+        self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
 
         # Load model
         config = InferenceConfig()

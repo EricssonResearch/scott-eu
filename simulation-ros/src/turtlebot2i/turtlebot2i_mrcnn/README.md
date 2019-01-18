@@ -1,32 +1,33 @@
-# Mask R-CNN for Object Detection and Segmentation
+# 1. Overview 
 
 This ROS package makes possible perform object detection and segmentation using Mask R-CNN method.   
 
-## Introduction
+# 2. Mask R-CNN for Object Detection and Segmentation
 
 Mask R-CNN is the state-of-art method for obstacle detection and recognition. It is based on the region-based convolutional neural network (R-CNN) and has the main characteristic of returning the boundary of the detected object (mask).
 The network is based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
 
 The original Mask R-CNN repository can be found in this link: https://github.com/matterport/Mask_RCNN
+
 The Mask R-CNN paper can be accessed through this link: https://arxiv.org/abs/1703.06870
 
-## Running ROS node
+# 3. Running ROS node
 
 This package makes possible running Mask R-CNN through a ROS node.
-Before running it, some instructions should have to follow.
+Before running it, some instructions should have to be followed.
 
-### Porting MRCNN to ROS
+## 3.1 Porting MRCNN to ROS
 
 The following guideline is intended to make the Mask R-CNN run inside ROS. The approch shown here makes MRCNN node run using python 3.5, so basically all ROS imports are adapted to support python 3.5.
 
-1. Prepare ROS for python 3.5
+1. Prepare ROS for python 3.5:
 
 ```
 sudo apt-get install python3-yaml
 sudo pip3 install rospkg catkin_pkg
 ```
 
-2. Install OpenCV for python 3.5
+2. Install OpenCV for python 3.5:
 
 ```
 pip3 install opencv-python
@@ -35,30 +36,37 @@ pip3 install opencv-python
 3. Install cv_bridge
 Follow the instructions in https://stackoverflow.com/questions/49221565/unable-to-use-cv-bridge-with-ros-kinetic-and-python3
 
-4. Install MRCNN library
+4. Install MRCNN library (install the required depences):
 
 ```
 sudo pip3 install tensorflow
 ```
 
-**For the previous steps, install the required depences, if necessary.**
-
-5. Download the pretrained MRCNN models (TODO)
+5. Download the pretrained MRCNN models (one of the following two):
 
 ```
 wget https://www.dropbox.com/s/xunaa1idwcmdyz5/coco_vrepall_1002.h5 -P models
 wget https://www.dropbox.com/s/5foyklp3azy2wi0/mask_rcnn_coco.h5  -P models
 ```
 
-### Running Mask R-CNN node
+## 3.2. Running Mask R-CNN node
 
-Run the following in the terminal
+Set the model path in the ros_mrcnn.py code. To do so, change the `MODEL_DIR` and `MODEL_PATH` variables:
+
+```
+rosed turtlebot2i_mrcnn ros_mrcnn.py 
+```
+
+Run the following in a terminal:
 
 ```
 rosrun turtlebot2i_mrcnn ros_mrcnn.py 
 ```
 
-## Training the Model
+The detection output will be available in the `/turtlebot2i/mrcnn_out` topic.
+
+
+# 4. Training the Model
 
 If want to train new model, first, get images from rosbag or manually get a set of images.
 
@@ -91,7 +99,7 @@ If want to train new model, first, get images from rosbag or manually get a set 
 
 6. Run `python train_model.py` to start training.
 
-## Testing the Model
+# 5. Testing the Model
 
 
 1. Change parameters in the `class VrepConfig` in `test_model.py`. The complete list of parametes can be found the in the Config class: https://github.com/matterport/Mask_RCNN/blob/master/mrcnn/config.py
@@ -104,7 +112,7 @@ If want to train new model, first, get images from rosbag or manually get a set 
     ```
     * During the inferences, it would randomly pick up one image and show the detection result. 
 
-## Installation (content extracted from Mask R-CNN repository)
+# 6. Installation (content extracted from Mask R-CNN repository)
 
 1. Install dependencies
    ```bash
