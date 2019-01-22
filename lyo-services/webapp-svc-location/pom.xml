@@ -10,19 +10,22 @@
   </parent>
   <artifactId>webapp-svc-location</artifactId>
   <packaging>war</packaging>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.lyo>4.0.0-SNAPSHOT</version.lyo>
-    <powermock.version>1.7.1</powermock.version>
+
     <http.port>8091</http.port>
     <!-- no need to have something like sandbox-location-svc -->
     <http.path>/</http.path>
-  </properties>
-  <dependencies>
 
+    <version.lyo>4.0.0-SNAPSHOT</version.lyo>
+    <powermock.version>1.7.1</powermock.version>
+  </properties>
+
+  <dependencies>
     <dependency>
       <groupId>se.ericsson.cf.scott.sandbox</groupId>
       <artifactId>domain-pddl</artifactId>

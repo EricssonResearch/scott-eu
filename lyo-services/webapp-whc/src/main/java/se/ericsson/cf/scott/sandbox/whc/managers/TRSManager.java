@@ -28,10 +28,10 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.eclipse.lyo.oslc4j.core.model.IResource;
-import org.eclipse.lyo.trs.consumer.config.TrsConsumerConfiguration;
-import org.eclipse.lyo.trs.consumer.config.TrsProviderConfiguration;
-import org.eclipse.lyo.trs.consumer.util.TrsBasicAuthOslcClient;
-import org.eclipse.lyo.trs.consumer.util.TrsConsumerUtils;
+import org.eclipse.lyo.oslc4j.trs.client.config.TrsConsumerConfiguration;
+import org.eclipse.lyo.oslc4j.trs.client.config.TrsProviderConfiguration;
+import org.eclipse.lyo.oslc4j.trs.client.util.TrsBasicAuthOslcClient;
+import org.eclipse.lyo.oslc4j.trs.client.util.TrsConsumerUtils;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -76,9 +76,9 @@ public class TRSManager {
 
     public static void initTRSClient(final MqttClient mqttClient) {
         final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
-                AdaptorHelper.SPARQL_QUERY_URI, AdaptorHelper.SPARQL_UPDATE_URI, null, null,
-                new TrsBasicAuthOslcClient(), AdaptorHelper.MQTT_CLIENT_ID,
-                Executors.newSingleThreadScheduledExecutor()
+            AdaptorHelper.SPARQL_QUERY_URI, AdaptorHelper.SPARQL_UPDATE_URI, null, null,
+            new TrsBasicAuthOslcClient(), AdaptorHelper.MQTT_CLIENT_ID,
+            Executors.newSingleThreadScheduledExecutor()
         );
         final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
                 TrsProviderConfiguration.forMQTT(mqttClient, AdaptorHelper.MQTT_TOPIC));

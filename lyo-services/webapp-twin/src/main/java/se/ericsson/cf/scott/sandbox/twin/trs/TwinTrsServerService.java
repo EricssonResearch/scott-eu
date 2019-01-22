@@ -3,7 +3,7 @@ package se.ericsson.cf.scott.sandbox.twin.trs;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
-import se.ericsson.cf.scott.sandbox.twin.TwinManager;
+import se.ericsson.cf.scott.sandbox.twin.TwinAdaptorHelper;
 
 /**
  * TBD
@@ -15,7 +15,7 @@ public class TwinTrsServerService extends TrackedResourceSetService {
 
     @Override
     protected ChangeHistories getChangeHistories() {
-        return TwinManager.getChangeHistories();
+        return TwinAdaptorHelper.getChangeHistories();
     }
 
     @Override

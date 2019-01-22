@@ -36,26 +36,21 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
-import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
-
+import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 
 // Start of user code imports
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 // End of user code
 
 /**
@@ -158,7 +153,7 @@ public class ServiceProviderCatalogSingleton
         throw new WebApplicationException(Status.NOT_FOUND);
     }
 
-    public static ServiceProvider createTwinsServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo) 
+        public static ServiceProvider createTwinsServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo)
             throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
         String basePath = OSLC4JUtils.getServletURI();
         String identifier = twinsServiceProviderIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
@@ -446,7 +441,7 @@ public class ServiceProviderCatalogSingleton
             for (IndependentServiceProviderInfo serviceProviderInfo : independentServiceProviderInfos) {
                 if (!containsIndependentServiceProvider(serviceProviderInfo.serviceProviderId)) {
                     ServiceProvider aServiceProvider = createIndependentServiceProvider(serviceProviderInfo);
-                    registerIndependentServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
+                    registerIndependentServiceProvider(aServiceProvider,    serviceProviderInfo.serviceProviderId);
                 }
             }
         } catch (Exception e) {
