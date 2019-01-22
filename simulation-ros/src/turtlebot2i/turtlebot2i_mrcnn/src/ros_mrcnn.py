@@ -30,20 +30,23 @@ from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 
 import numpy as np
-from visualize_cv import model, display_instances, class_names
+from visualize_cv import display_instances, class_names
 
 # Root directory of the project
+import os
+import sys
 ROOT_DIR = os.path.abspath("../")
-sys.path.append(ROOT_DIR + 'mrcnn/lib')
+LIB_PATH = os.path.join(ROOT_DIR, "mrcnn/lib")
+sys.path.append(LIB_PATH)
 
 # Import Mask RCNN
 from mrcnn import model as modellib
 from mrcnn.config import Config
 
 # Path to trained weights file 
-MODEL_DIR = os.path.join(ROOT_DIR, "processVideo/logs")
-#MODEL_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
-MODEL_PATH = os.path.join(ROOT_DIR, "logs/imagenet_vrepall_1003.h5")
+LOG_DIR = os.path.join(ROOT_DIR, "logs")
+#MODEL_PATH = os.path.join(ROOT_DIR, "models/mask_rcnn_coco.h5")
+MODEL_PATH = os.path.join(ROOT_DIR, "models/coco_vrepall_1002.h5")
 
 class ShapesConfig(Config):
     """Configuration for training on the toy shapes dataset.
@@ -98,7 +101,7 @@ class ros_mask_rcnn:
         config.display()
         
         model = modellib.MaskRCNN(
-            mode="inference", model_dir=MODEL_DIR, config=config
+            mode="inference", model_dir=LOG_DIR, config=config
         )
         
         model.load_weights(MODEL_PATH, by_name=True)

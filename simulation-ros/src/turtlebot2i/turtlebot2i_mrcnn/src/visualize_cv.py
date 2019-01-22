@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import os
 import sys
 
 class_names = ['BG', 'SlidingDoor', 'Wall', 'Shelf', 'Robot', 'Human', 'ConveyorBelt', 'Dockstation', 'Product']
