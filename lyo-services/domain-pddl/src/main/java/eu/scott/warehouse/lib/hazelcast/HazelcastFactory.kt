@@ -1,11 +1,6 @@
 package eu.scott.warehouse.lib.hazelcast
 
-import com.hazelcast.core.HazelcastInstance
-import com.hazelcast.config.ClasspathXmlConfig
-import com.hazelcast.instance.DefaultNodeContext
-import com.hazelcast.instance.HazelcastInstanceFactory
-import org.slf4j.LoggerFactory
-
+/*
 @Deprecated("Phasing Hazelcast out of the SCOTT sandbox")
 object HazelcastFactory {
     val log = LoggerFactory.getLogger(javaClass)
@@ -29,3 +24,4 @@ object HazelcastFactory {
     }
 }
 
+*/

@@ -1,5 +1,7 @@
 package se.ericsson.cf.scott.sandbox.twin.ros;
 
+// TODO Andrew@2019-01-22: clean up
+/*
 import java.net.URI;
 import org.jetbrains.annotations.NotNull;
 import org.ros.node.DefaultNodeMainExecutor;
@@ -8,12 +10,14 @@ import org.ros.node.NodeMainExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+*/
 /**
  * TBD
  *
  * @version $version-stub$
  * @since FIXME
- */
+ *//*
+
 public class RosManager {
     private final static Logger log = LoggerFactory.getLogger(RosManager.class);
 
@@ -37,3 +41,4 @@ public class RosManager {
         return URI.create(rosMasterUri);
     }
 }
+*/

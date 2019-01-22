@@ -24,13 +24,12 @@
 
 package se.ericsson.cf.scott.sandbox.executor;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IQueue;
-import eu.scott.warehouse.lib.MqttClientBuilder;
-import eu.scott.warehouse.lib.MqttTopics;
+// TODO Andrew@2019-01-22: clean up
+//import com.hazelcast.core.HazelcastInstance;
+//import com.hazelcast.core.IQueue;
 import eu.scott.warehouse.lib.TrsMqttGateway;
-import eu.scott.warehouse.lib.hazelcast.HCData;
-import eu.scott.warehouse.lib.hazelcast.HazelcastFactory;
+//import eu.scott.warehouse.lib.hazelcast.HCData;
+//import eu.scott.warehouse.lib.hazelcast.HazelcastFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +53,13 @@ public class PlanExecutorManager {
     // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(PlanExecutorManager.class);
     private static String adaptorId = "exec-" + UUID.randomUUID();
+    // TODO Andrew@2019-01-22: init 
     private static String mqttBroker;
     private static TrsMqttGateway mqttGateway;
     private static ServletContext servletContext;
-    private static IQueue<Object> dummyQueue;
-    private static HazelcastInstance hc;
+    // TODO Andrew@2019-01-22: remove
+//    private static IQueue<Object> dummyQueue;
+//    private static HazelcastInstance hc;
     // End of user code
     
     
@@ -90,6 +91,15 @@ public class PlanExecutorManager {
         }
         mqttBroker = p("trs.mqtt.broker");
 
+        // TODO Andrew@2019-01-22: remove
+//        hcInit();
+//        final MqttClient mqttClient = MqttManager.initMqttClient(mqttBroker, adaptorId);
+        // End of user code
+    }
+
+    // TODO Andrew@2019-01-22: remove
+/*
+    private static void hcInit() {
         hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig("executor");
         log.debug("New instance of Hazelcast has been constructed");
         assert hc != null;
@@ -110,9 +120,8 @@ public class PlanExecutorManager {
         }
 
         dummyQueue = hc.getQueue("dummy");
-//        final MqttClient mqttClient = MqttManager.initMqttClient(mqttBroker, adaptorId);
-        // End of user code
     }
+*/
 
     private static void dumpEnvVars() {
         final Map<String, String> getenv = System.getenv();
@@ -142,10 +151,15 @@ public class PlanExecutorManager {
             log.error("The MQTT gateway could not shut down cleanly");
             log.debug("The MQTT gateway could not shut down cleanly", e);
         }
-        hc.shutdown();
+//        hcDestroy();
         // End of user code
     }
 
+    // TODO Andrew@2019-01-22: remove
+    /*private static void hcDestroy() {
+        hc.shutdown();
+    }
+*/
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
             throws InterruptedException {
         ServiceProviderInfo[] serviceProviderInfos = {};
@@ -153,39 +167,23 @@ public class PlanExecutorManager {
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
 //        throw new UnsupportedOperationException("The REST I/F is not implemented yet");
         log.warn("The REST I/F is not implemented yet");
-        final HCData hcData = new HCData(httpServletRequest.getRequestURI(),
-                                         UUID.randomUUID().toString(),
-                                         Collections.list(httpServletRequest.getHeaderNames())
-                                               .stream()
-                                               .map(httpServletRequest::getHeader)
-                                               .toArray(String[]::new)
-        );
-        log.debug("Testing the dummy queue with {}", hcData.getUuid());
-        dummyQueue.put(hcData);
+//        hcQueueTest(httpServletRequest);
 
         // End of user code
         return serviceProviderInfos;
     }
 
-    private static class PlanQueueRunnable implements Runnable {
-        private final IQueue<Object> hcQueue;
+    // TODO Andrew@2019-01-22: remove
+    /*private static void hcQueueTest(final HttpServletRequest httpServletRequest) {
+        final HCData hcData = new HCData(httpServletRequest.getRequestURI(),
+                                         UUID.randomUUID().toString(),
+                                         Collections.list(httpServletRequest.getHeaderNames())
+                                                    .stream()
+                                                    .map(httpServletRequest::getHeader)
+                                                    .toArray(String[]::new)
+        );
+        log.debug("Testing the dummy queue with {}", hcData.getUuid());
+        dummyQueue.put(hcData);
+    }*/
 
-        PlanQueueRunnable(final HazelcastInstance hc) {
-            hcQueue = hc.getQueue("dummy");
-        }
-
-        @Override
-        public void run() {
-            log.debug("Starting a thread to process Hazelcast queue items");
-            try {
-                //noinspection InfiniteLoopStatement
-                while (true) {
-                    final Object object = hcQueue.take();
-                    log.info("New object to process: {}", object);
-                }
-            } catch (InterruptedException e) {
-                log.warn("Queue processing was interrupted, shutting down the bg thread");
-            }
-        }
-    }
 }

@@ -1,6 +1,7 @@
 package se.ericsson.cf.scott.sandbox.twin.ros;
 
-import org.ros.exception.RemoteException;
+// TODO Andrew@2019-01-22: clean up
+/*import org.ros.exception.RemoteException;
 import org.ros.exception.RosRuntimeException;
 import org.ros.exception.ServiceNotFoundException;
 import org.ros.message.Time;
@@ -33,9 +34,9 @@ public class RobotClientNode extends AbstractNodeMain {
     public void onStart(final ConnectedNode connectedNode) {
             log.info("RobotClientNode started");
 
-	    /*
+	    *//*
 	     * Subscribers
-	     */
+	     *//*
 
 	     //  EVENTS
 
@@ -121,7 +122,7 @@ public class RobotClientNode extends AbstractNodeMain {
 	    //  ACTIONS
 
 	    // Velocity
-	    /*	    final Subscriber<geometry_msgs.Twist> velSubscriber =
+	    *//*	    final Subscriber<geometry_msgs.Twist> velSubscriber =
 		connectedNode.newSubscriber("/turtlebot2i/commands/velocity",
 					    geometry_msgs.Twist._TYPE);
 	    velSubscriber.addMessageListener(new MessageListener<geometry_msgs.Twist>() {
@@ -140,11 +141,11 @@ public class RobotClientNode extends AbstractNodeMain {
 		    public void onNewMessage(kobuki_msgs.MotorPower message) {
 			log.info("Motor: \"" + message.getState() + "\"");
 		    }
-		    });*/
+		    });*//*
 
-	    /*
+	    *//*
 	     * Publishers
-	     */
+	     *//*
 
 	    // velocity
 	    	    final Publisher<geometry_msgs.Twist> velPub =
@@ -175,7 +176,7 @@ public class RobotClientNode extends AbstractNodeMain {
 			velPub.publish(twt);
 		    }
 		});
-	    /*serviceClient = connectedNode.newServiceClient(TASK_SVC_NAME, TaskRequest._TYPE);
+	    *//*serviceClient = connectedNode.newServiceClient(TASK_SVC_NAME, TaskRequest._TYPE);
             final TaskRequestRequest request = serviceClient.newMessage();
             request.setRobot("RobotA");
             request.setStamp(new Time());
@@ -196,10 +197,10 @@ public class RobotClientNode extends AbstractNodeMain {
                 public void onFailure(RemoteException e) {
                     throw new RosRuntimeException(e);
                 }
-		}); */
-	    /*} catch (ServiceNotFoundException e) {
+		}); *//*
+	    *//*} catch (ServiceNotFoundException e) {
             log.error("ROS exception", e);
-	    }*/
+	    }*//*
     }
 
     @Override
@@ -213,4 +214,4 @@ public class RobotClientNode extends AbstractNodeMain {
     @Override
     public void onError(Node node, Throwable throwable) {
     }
-}
+}*/
