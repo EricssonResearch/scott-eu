@@ -1,0 +1,191 @@
+package se.ericsson.cf.scott.sandbox.twin;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import eu.scott.warehouse.lib.MqttClientBuilder;
+import eu.scott.warehouse.lib.MqttTopics;
+import eu.scott.warehouse.lib.TrsMqttGateway;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
+import javax.servlet.ServletContext;
+import org.eclipse.lyo.client.oslc.OslcClient;
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
+import org.eclipse.lyo.store.Store;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twin.clients.TwinRegistrationClient;
+import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
+import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.twin.trs.LyoStoreManager;
+import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
+import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
+import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
+
+/**
+ * TBD
+ *
+ * @version $version-stub$
+ * @since FIXME
+ */
+public class TwinAdaptorHelper {
+    private final static Logger log = LoggerFactory.getLogger(TwinAdaptorHelper.class);
+    private final static UUID uuid = UUID.randomUUID();
+    static String trsTopic;
+    static TrsMqttClientManager trsClientManager;
+    static Store store;
+    static TrsMqttGateway mqttGateway;
+//    private static HazelcastInstance hc;
+//    static IMap<String, TwinsServiceProviderInfo> twinProviderInfo;
+    static TwinChangeHistories changeHistories;
+    static ServletContext servletContext;
+
+    // Start of user code class_methods
+    @NotNull
+    public static String getTwinUUID() {
+        return "twn-" + uuid.toString();
+    }
+
+    public static String getTrsTopic() {
+        if(Strings.isNullOrEmpty(trsTopic)) {
+            log.warn("The TRS topic was requested before it was set");
+        }
+        return trsTopic;
+    }
+
+    public static void setTrsTopic(String trsTopic) {
+        TwinAdaptorHelper.trsTopic = trsTopic;
+    }
+
+    public static TrsMqttClientManager getTrsClientManager() {
+        return trsClientManager;
+    }
+
+    public static void setTrsClientManager(TrsMqttClientManager trsClientManager) {
+        TwinAdaptorHelper.trsClientManager = trsClientManager;
+    }
+
+    public static ChangeHistories getChangeHistories() {
+        return changeHistories;
+    }
+
+    public static ServletContext getServletContext() {
+        return servletContext;
+    }
+
+    public static TwinRepository getTwins() {
+        // FIXME Andrew@2019-01-21: persist a single instance
+        return new TwinRepository(getStore(), getTwinsGraphURI());
+    }
+
+    private static URI getTwinsGraphURI() {
+        return URI.create("http://scott.example.com/g/twinSPs");
+    }
+
+    private static Store getStore() {
+//        return StoreFactory.inMemory();
+        // TODO Andrew@2019-01-21: cache to optimise perf
+        initStore();
+        return store;
+    }
+
+    private static void setStore(final Store store) {
+        TwinAdaptorHelper.store = store;
+    }
+
+    // Start of user code class_methods
+    private static String parameterFQDN(final String s) {
+        return TwinManager.PACKAGE_ROOT + "." + s;
+    }
+
+    public static String p(final String s) {
+        return getServletContext().getInitParameter(parameterFQDN(s));
+    }
+
+    private static void registerTwins() {
+        // FIXME Andrew@2018-09-04: rewrite & call from the CF handler
+        final OslcClient client = new OslcClient();
+        final TwinRegistrationClient registrationClient = new TwinRegistrationClient(
+            client, "http://sandbox-whc:8080/services/service2/registrationRequests/register");
+
+        for(String id: ImmutableList.of("r1", "r2", "r3")) {
+            registrationClient.registerTwin("robot", id);
+        }
+    }
+
+    static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
+        try {
+            log.info("Registering provider: {}", info);
+            final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinsServiceProvider(
+                info);
+            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
+                null, robotSP, info.twinKind, info.twinId);
+            return serviceProvider;
+        } catch (URISyntaxException | OslcCoreApplicationException e) {
+            log.error("Cannot register the Robot SP", e);
+            // TODO Andrew@2018-09-04: strategy w/Leo
+            return null;
+        }
+    }
+
+/*
+    static void initHazelcast() {
+        hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig();
+
+        twinProviderInfo = hc.getMap("twin-providers");
+
+        twinProviderInfo.addEntryListener((EntryAddedListener) event -> {
+            try {
+                log.info("New Robot SP info map entry received '{}:{}'", event.getKey(),
+                                     event.getValue()
+                );
+                final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
+                if (!ServiceProviderCatalogSingleton.containsTwinsServiceProvider(
+                    info.twinKind, info.twinId)) {
+                    registerProvider(info);
+                } else {
+                    log.debug(
+                        "SP {}/{} is already registered, skipping", info.twinKind, info.twinId);
+                }
+            } catch (Exception e) {
+                log.warn("Unhandled exception in EntryAddedListener", e);
+            }
+
+        }, true);
+    }
+*/
+
+    static void initTrsClient() {
+        final String mqttBroker = p("trs.mqtt.broker");
+        try {
+            mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
+                                                 .withId(getTwinUUID())
+                                                 .withRegistration(new TwinAckRegistrationAgent(
+                                                     MqttTopics.WHC_PLANS))
+                                                 .build();
+        } catch (MqttException e) {
+            log.error("Failed to initialise the MQTT gateway", e);
+        }
+        final MqttClient mqttClient = mqttGateway.getMqttClient();
+        final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttClient);
+        setTrsClientManager(trsClientManager);
+        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
+        // FIXME Andrew@2018-07-31: remove non-gateway based code
+
+    }
+
+    private static void initRos() {
+                RosManager.runRosNode();
+        new Thread(RosManager::runRosNode).run();
+    }
+
+    private static void initStore() {
+        final Store store = LyoStoreManager.initLyoStore();
+        setStore(store);
+    }
+}

@@ -24,58 +24,21 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletContextEvent;
-import java.util.List;
-
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
-import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.pddl.Step;
-
-
-// Start of user code imports
-import org.apache.commons.lang.WordUtils;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import se.ericsson.cf.scott.sandbox.twin.clients.TwinRegistrationClient;
-import se.ericsson.cf.scott.sandbox.twin.trs.LyoStoreManager;
-import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
-
-//import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import eu.scott.warehouse.lib.TrsMqttGateway;
-import java.util.UUID;
-import javax.servlet.ServletContext;
-
-import org.eclipse.lyo.client.oslc.OslcClient;
-import org.eclipse.lyo.store.Store;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import eu.scott.warehouse.lib.hazelcast.HazelcastFactory;
-import com.hazelcast.map.listener.EntryAddedListener;
-import java.net.URISyntaxException;
-import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
-import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
-import eu.scott.warehouse.lib.MqttClientBuilder;
-import eu.scott.warehouse.lib.MqttTopics;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang.WordUtils;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
+
+// Start of user code imports
+//import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
 // End of user code
 
 // Start of user code pre_class_code
@@ -86,135 +49,9 @@ public class TwinManager {
     // Start of user code class_attributes
     public final static String PACKAGE_ROOT = TwinManager.class.getPackage().getName();
     private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
-    private final static UUID uuid = UUID.randomUUID();
-    private static String trsTopic;
-    private static TrsMqttClientManager trsClientManager;
-    private static Store store;
-    private static ServletContext servletContext;
-    private static TrsMqttGateway mqttGateway;
-    private static HazelcastInstance hc;
-    private static IMap<String, TwinsServiceProviderInfo> twinProviderInfo;
     private static Random r;
-    private static TwinChangeHistories changeHistories;
     // End of user code
-    
-    
-    // Start of user code class_methods
-    @NotNull
-    public static String getTwinUUID() {
-        return "twn-" + uuid.toString();
-    }
 
-    public static String getTrsTopic() {
-        if(Strings.isNullOrEmpty(trsTopic)) {
-            log.warn("The TRS topic was requested before it was set");
-        }
-        return trsTopic;
-    }
-
-    public static void setTrsTopic(String trsTopic) {
-        TwinManager.trsTopic = trsTopic;
-    }
-
-    public static TrsMqttClientManager getTrsClientManager() {
-        return trsClientManager;
-    }
-
-    public static void setTrsClientManager(TrsMqttClientManager trsClientManager) {
-        TwinManager.trsClientManager = trsClientManager;
-    }
-
-    public static ServletContext getServletContext() {
-        return servletContext;
-    }
-
-    public static ChangeHistories getChangeHistories() {
-        return changeHistories;
-    }
-
-    private static void registerTwins() {
-        // FIXME Andrew@2018-09-04: rewrite & call from the CF handler
-        final OslcClient client = new OslcClient();
-        final TwinRegistrationClient registrationClient = new TwinRegistrationClient(
-            client, "http://sandbox-whc:8080/services/service2/registrationRequests/register");
-
-        for(String id: ImmutableList.of("r1", "r2", "r3")) {
-            registrationClient.registerTwin("robot", id);
-        }
-    }
-
-    private static void setStore(final Store store) {
-        TwinManager.store = store;
-    }
-
-    private static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
-        try {
-            log.info("Registering provider: {}", info);
-            final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinsServiceProvider(
-                info);
-            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
-                null, robotSP, info.twinKind, info.twinId);
-            return serviceProvider;
-        } catch (URISyntaxException | OslcCoreApplicationException e) {
-            log.error("Cannot register the Robot SP", e);
-            // TODO Andrew@2018-09-04: strategy w/Leo
-            return null;
-        }
-    }
-
-    private static void initHazelcast() {
-        hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig();
-
-        twinProviderInfo = hc.getMap("twin-providers");
-
-        twinProviderInfo.addEntryListener((EntryAddedListener) event -> {
-            try {
-                log.info("New Robot SP info map entry received '{}:{}'", event.getKey(),
-                         event.getValue()
-                );
-                final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
-                if (!ServiceProviderCatalogSingleton.containsTwinsServiceProvider(
-                    info.twinKind, info.twinId)) {
-                    registerProvider(info);
-                } else {
-                    log.debug(
-                        "SP {}/{} is already registered, skipping", info.twinKind, info.twinId);
-                }
-            } catch (Exception e) {
-                log.warn("Unhandled exception in EntryAddedListener", e);
-            }
-
-        }, true);
-    }
-
-    private static void initTrsClient() {
-        final String mqttBroker = AdaptorHelper.p("trs.mqtt.broker");
-        try {
-            mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
-                                                 .withId(getTwinUUID())
-                                                 .withRegistration(new TwinAckRegistrationAgent(
-                                                     MqttTopics.WHC_PLANS))
-                                                 .build();
-        } catch (MqttException e) {
-            log.error("Failed to initialise the MQTT gateway", e);
-        }
-        final MqttClient mqttClient = mqttGateway.getMqttClient();
-        final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttClient);
-        setTrsClientManager(trsClientManager);
-        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
-        // FIXME Andrew@2018-07-31: remove non-gateway based code
-
-    }
-
-    private static void initRos() {
-                RosManager.runRosNode();
-        new Thread(RosManager::runRosNode).run();
-    }
-
-    private static void initStore() {
-        final Store store = LyoStoreManager.initLyoStore();
-        setStore(store);
-    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -222,21 +59,20 @@ public class TwinManager {
         
         // Start of user code contextInitializeServletListener
 
-        log.info("Twin {} is starting", getTwinUUID());
-        servletContext = servletContextEvent.getServletContext();
+        log.info("Twin {} is starting", TwinAdaptorHelper.getTwinUUID());
+        TwinAdaptorHelper.servletContext = servletContextEvent.getServletContext();
         r = new Random();
 
 //        initStore();
 
 //        initRos();
 
-        initTrsClient();
+        TwinAdaptorHelper.initTrsClient();
 
-        changeHistories = new TwinChangeHistories(
-            mqttGateway.getMqttClient(), "trs-twin", TimeUnit.SECONDS.toMillis(5));
-
-        initHazelcast();
-
+        TwinAdaptorHelper.changeHistories = new TwinChangeHistories(
+            TwinAdaptorHelper.mqttGateway.getMqttClient(), "trs-twin",
+            TimeUnit.SECONDS.toMillis(5)
+        );
 
 //        registerTwins();
 
@@ -250,8 +86,8 @@ public class TwinManager {
 
         log.info("Destroying the servlet");
         try {
-            getTrsClientManager().unregisterTwinAndDisconnect();
-            mqttGateway.disconnect();
+            TwinAdaptorHelper.getTrsClientManager().unregisterTwinAndDisconnect();
+            TwinAdaptorHelper.mqttGateway.disconnect();
         } catch (MqttException e) {
             log.error("Failed to disconnect from the MQTT broker");
         }
@@ -264,11 +100,10 @@ public class TwinManager {
         TwinsServiceProviderInfo[] serviceProviderInfos = {};
         
         // Start of user code "TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(...)"
-        // needed if the new node joins
-        serviceProviderInfos = twinProviderInfo.values().toArray(new TwinsServiceProviderInfo[0]);
         // End of user code
         return serviceProviderInfos;
     }
+
     public static IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         IndependentServiceProviderInfo[] serviceProviderInfos = {};
@@ -305,12 +140,10 @@ public class TwinManager {
         }
         spInfo.name = String.format(
             "%s Twin '%s'", WordUtils.capitalize(spInfo.twinKind), spInfo.twinId);
-        final ServiceProvider serviceProvider = registerProvider(spInfo);
-        twinProviderInfo.put(spInfo.twinKind + '/' + spInfo.twinId, spInfo);
+        final ServiceProvider serviceProvider = TwinAdaptorHelper.getTwins().registerTwinSP(spInfo);
         if (serviceProvider == null) {
             throw new IllegalStateException();
         }
-        changeHistories.addResource(serviceProvider);
 
         newResource = aResource;
         newResource.setTwinId(spInfo.twinId);

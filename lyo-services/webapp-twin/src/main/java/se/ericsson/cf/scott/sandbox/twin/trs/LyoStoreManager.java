@@ -7,7 +7,7 @@ import org.eclipse.lyo.store.StoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static se.ericsson.cf.scott.sandbox.twin.AdaptorHelper.p;
+import static se.ericsson.cf.scott.sandbox.twin.TwinAdaptorHelper.p;
 
 /**
  * TBD

@@ -1,22 +1,22 @@
 package se.ericsson.cf.scott.sandbox.twins.shelf.manager;
 
 import com.google.common.collect.Lists;
+import eu.scott.warehouse.lib.PlanChangeEventListener;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.lyo.trs.consumer.config.TrsConsumerConfiguration;
-import org.eclipse.lyo.trs.consumer.config.TrsProviderConfiguration;
-import org.eclipse.lyo.trs.consumer.handlers.TrsProviderHandler;
-import org.eclipse.lyo.trs.consumer.util.TrsBasicAuthOslcClient;
-import org.eclipse.lyo.trs.consumer.util.TrsConsumerUtils;
+import org.eclipse.lyo.oslc4j.trs.client.config.TrsConsumerConfiguration;
+import org.eclipse.lyo.oslc4j.trs.client.config.TrsProviderConfiguration;
+import org.eclipse.lyo.oslc4j.trs.client.handlers.TrsProviderHandler;
+import org.eclipse.lyo.oslc4j.trs.client.util.TrsBasicAuthOslcClient;
+import org.eclipse.lyo.oslc4j.trs.client.util.TrsConsumerUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twins.shelf.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinManager;
-import eu.scott.warehouse.lib.PlanChangeEventListener;
 
 /**
  * TBD

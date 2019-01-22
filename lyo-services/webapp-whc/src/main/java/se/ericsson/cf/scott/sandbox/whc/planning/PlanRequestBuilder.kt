@@ -26,10 +26,9 @@ import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.nsSh
 import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.u
 import java.math.BigInteger
 import java.net.URI
-import java.util.*
+import java.util.UUID
 import javax.ws.rs.core.UriBuilder
 import javax.xml.namespace.QName
-import kotlin.collections.HashSet
 
 /**
  * REALLY useful method
@@ -696,7 +695,7 @@ class PlanRequestBuilder {
         val initResources = initResourcesBuilder.build()
         val allResources = allResourcesBuilder.build()
 
-        return InstanceMultiWithResources<IResource>(initResources, allResources)
+        return InstanceMultiWithResources(initResources, allResources)
     }
 
 
@@ -720,7 +719,7 @@ class PlanRequestBuilder {
 
         val bONc = on(u("b"), u("c"))
         val cONb = on(u("c"), u("b"))
-        goal.argument = hashSetOf(bONc.link, cONb.link)
+        goal.setArgument(hashSetOf(bONc.link, cONb.link))
 
         val instanceWithResources: InstanceWithResources<IResource> = InstanceWithResources(goal,
                 ImmutableList.of(goal, bONc, cONb))

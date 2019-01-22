@@ -15,7 +15,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.lyo>2.4.0-SNAPSHOT</version.lyo>
+    <version.lyo>4.0.0-SNAPSHOT</version.lyo>
     <!--<version.leshan>0.1.11-M4</version.leshan>-->
     <version.leshan>0.1.11-M5-SNAPSHOT</version.leshan>
     <version.log4j>2.8.2</version.log4j>
