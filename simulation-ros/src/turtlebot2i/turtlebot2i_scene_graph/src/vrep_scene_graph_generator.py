@@ -110,11 +110,10 @@ extractor = VrepObjectExtractor('127.0.0.1', 19997)
 
 # List of object names to retrieve information
 # For now it is hardcoded
-extractor.set_static_obj_names(['stairs', 'slidingDoor#0',
-                                'Wall_Corner', 'Wall_Door', 'Wall_Window', 
-                                'dockStation#0', 'dockStation#1',\
-                                'conveyorBelt#0', 'conveyorBelt#1','conveyorBelt#2', #'ConveyorBeltBody#0', 
-                                'shelf#0', 'shelf#1','shelf#2'])
+extractor.set_static_obj_names(['stairs', 'slidingDoor',      
+                                'dockstation_body',\
+                                'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1', 
+                                'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
 extractor.set_dynamic_obj_names(['Bill_base#2',
                                 'productGreen#0', 'productGreen#1', 'productGreen#2',
                                 'productYellow#0', 'productYellow#1', 'productYellow#2',
@@ -161,9 +160,9 @@ while True:
     # Update vision sensor info
     extractor.update_all_robots_vision_sensors_fov()
 
-    #robot_list = extractor.robot_obj_list
+    robot_list = extractor.robot_obj_list
     # Get objects that are in the sensor FOV
-    for robot_num in range(1):
+    for robot_num in range(len(robot_list)):
         obj_list = extractor.get_objects_from_vision_sensor(robot_list[robot_num].vision_sensor)
 
         if (obj_list != None):
