@@ -20,7 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.clients.TwinRegistrationClient;
-import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
+// TODO Andrew@2019-01-22: clean up
+//import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.trs.LyoStoreManager;
 import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
@@ -179,10 +180,13 @@ public class TwinAdaptorHelper {
 
     }
 
+    // TODO Andrew@2019-01-22: clean up
+/*
     private static void initRos() {
                 RosManager.runRosNode();
         new Thread(RosManager::runRosNode).run();
     }
+*/
 
     private static void initStore() {
         final Store store = LyoStoreManager.initLyoStore();

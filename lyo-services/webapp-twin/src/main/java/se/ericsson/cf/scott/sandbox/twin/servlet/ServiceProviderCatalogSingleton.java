@@ -47,7 +47,6 @@ import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 
 // Start of user code imports
@@ -424,7 +423,8 @@ public class ServiceProviderCatalogSingleton
     */
     protected static void initServiceProviders (HttpServletRequest httpServletRequest)
     {
-        try {
+        throw new IllegalStateException("This is method is being removed");
+        /*try {
             // Start of user code initServiceProviders
             // End of user code
 
@@ -447,7 +447,7 @@ public class ServiceProviderCatalogSingleton
         } catch (Exception e) {
             e.printStackTrace();
             throw new WebApplicationException(e,Status.INTERNAL_SERVER_ERROR);
-        }
+        }*/
     }
 }
 

@@ -95,7 +95,7 @@ public class TwinManager {
         // End of user code
     }
 
-    public static TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(HttpServletRequest httpServletRequest)
+/*    public static TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         TwinsServiceProviderInfo[] serviceProviderInfos = {};
         
@@ -112,7 +112,7 @@ public class TwinManager {
         // TODO Implement code to return the set of ServiceProviders
         // End of user code
         return serviceProviderInfos;
-    }
+    }*/
 
     public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String twinKind, final String twinId)
     {

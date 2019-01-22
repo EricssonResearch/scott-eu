@@ -92,7 +92,8 @@
     </dependency>
 
     <!-- ROS JAVA Dependencies -->
-    <dependency>
+    <!--TODO clean up-->
+<!--    <dependency>
       <groupId>org.ros.rosjava_messages</groupId>
       <artifactId>turtlebot2i_warehouse</artifactId>
       <version>0.0.1</version>
@@ -126,9 +127,10 @@
       <groupId>org.ros.rosjava_core</groupId>
       <artifactId>rosjava</artifactId>
       <version>0.3.5</version>
-    </dependency>
+    </dependency>-->
 
 
+    <!--TODO update to 4.0-->
     <!--<dependency>
   <groupId>org.eclipse.lyo.clients</groupId>
   <artifactId>oslc-java-client</artifactId>
@@ -228,6 +230,7 @@
     </dependency>
 
 
+    <!--TODO clean up-->
     <!--
         <dependency>
           <groupId>org.eclipse.lyo.server</groupId>

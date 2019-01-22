@@ -20,18 +20,20 @@
     <kotlin.version>1.2.51</kotlin.version>
   </properties>
   <dependencies>
+<!--
     <dependency>
-      <!--TODO move to the lib-->
+      &lt;!&ndash;TODO move to the lib&ndash;&gt;
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast</artifactId>
       <version>3.10.4</version>
     </dependency>
-    <!--<dependency>-->
-      <!--&lt;!&ndash;TODO move to the lib&ndash;&gt;-->
-      <!--<groupId>org.bitsofinfo</groupId>-->
-      <!--<artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>-->
-      <!--<version>1.0-RC8</version> &lt;!&ndash;  Use 1.0.RC3 for Hazelcast < 3.8.x &ndash;&gt;-->
-    <!--</dependency>-->
+    <dependency>
+      &lt;!&ndash;TODO move to the lib&ndash;&gt;
+      <groupId>org.bitsofinfo</groupId>
+      <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
+      <version>1.0-RC8</version> &lt;!&ndash;  Use 1.0.RC3 for Hazelcast < 3.8.x &ndash;&gt;
+    </dependency>
+-->
     <dependency>
       <!--TODO refactor-->
       <groupId>org.eclipse.paho</groupId>
@@ -61,7 +63,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
 
 
     <dependency>
