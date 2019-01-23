@@ -27,22 +27,24 @@
 
 package se.ericsson.cf.scott.sandbox.twin.servlet;
 
+import eu.scott.warehouse.domains.RdfsDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-
+import javax.ws.rs.core.UriBuilder;
 import org.eclipse.lyo.oslc4j.client.ServiceProviderRegistryURIs;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
 import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
-
-import eu.scott.warehouse.domains.mission.MissionDomainConstants;
-import eu.scott.warehouse.domains.RdfsDomainConstants;
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
+import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 
 // Start of user code imports
@@ -90,5 +92,57 @@ public class TwinsServiceProvidersFactory
         serviceProvider.setPrefixDefinitions(prefixDefinitions);
 
         return serviceProvider;
+    }
+
+    public static ServiceProvider createTwinsServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo)
+            throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
+        String basePath = OSLC4JUtils.getServletURI();
+        String identifier = twinsServiceProviderIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
+        if (ServiceProviderCatalogSingleton.containsTwinsServiceProvider(serviceProviderInfo.twinKind, serviceProviderInfo.twinId)) {
+            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", identifier));
+        }
+
+        String serviceProviderName = serviceProviderInfo.name;
+        String title = String.format("Service Provider '%s'", serviceProviderName);
+        String description = String.format("%s (id: %s; kind: %s)",
+            "A Service Provider for Twins",
+            identifier,
+            "Twin SP");
+        Publisher publisher = null;
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("twinKind", serviceProviderInfo.twinKind);
+
+        parameterMap.put("twinId", serviceProviderInfo.twinId);
+
+        final ServiceProvider serviceProvider = createServiceProvider(
+            basePath, title, description, publisher, parameterMap);
+        final URI serviceProviderURI = constructTwinsServiceProviderURI(
+            serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
+
+        serviceProvider.setAbout(serviceProviderURI);
+        serviceProvider.setIdentifier(identifier);
+        serviceProvider.setCreated(new Date());
+        serviceProvider.setDetails(new URI[] {serviceProviderURI});
+
+
+        return serviceProvider;
+    }
+
+    private static URI constructTwinsServiceProviderURI(final String twinKind, final String twinId)
+    {
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("twinKind", twinKind);
+
+        pathParameters.put("twinId", twinId);
+        String instanceURI = "twins/{twinKind}/{twinId}";
+
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+
+    static String twinsServiceProviderIdentifier(final String twinKind, final String twinId)
+    {
+        return "/" + twinKind+"/" + twinId;
     }
 }

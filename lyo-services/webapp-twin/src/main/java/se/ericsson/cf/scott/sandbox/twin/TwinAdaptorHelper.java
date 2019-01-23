@@ -23,6 +23,7 @@ import se.ericsson.cf.scott.sandbox.twin.clients.TwinRegistrationClient;
 // TODO Andrew@2019-01-22: clean up
 //import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.trs.LyoStoreManager;
 import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
@@ -81,7 +82,7 @@ public class TwinAdaptorHelper {
 
     public static TwinRepository getTwins() {
         // FIXME Andrew@2019-01-21: persist a single instance
-        return new TwinRepository(getStore(), getTwinsGraphURI());
+        return new TwinRepositoryStoreImpl(getStore(), getTwinsGraphURI());
     }
 
     private static URI getTwinsGraphURI() {
@@ -122,11 +123,10 @@ public class TwinAdaptorHelper {
     static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
         try {
             log.info("Registering provider: {}", info);
-            final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinsServiceProvider(
+            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createTwinsServiceProvider(
                 info);
-            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.registerTwinsServiceProvider(
-                null, robotSP, info.twinKind, info.twinId);
-            return serviceProvider;
+            ServiceProviderCatalogSingleton.registerTwinsServiceProvider(robotSP);
+            return robotSP;
         } catch (URISyntaxException | OslcCoreApplicationException e) {
             log.error("Cannot register the Robot SP", e);
             // TODO Andrew@2018-09-04: strategy w/Leo
