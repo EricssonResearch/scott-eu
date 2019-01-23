@@ -91,26 +91,26 @@ class ros_mask_rcnn:
 
     def __init__(self):
 
+        # Load model
+        config = InferenceConfig()
+        config.display()
+        
+        self.model = modellib.MaskRCNN(
+            mode="inference", model_dir=LOG_DIR, config=config
+        )
+        
+        self.model.load_weights(MODEL_PATH, by_name=True)
+
         # Set topics
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/turtlebot2i/camera/rgb/raw_image", Image, self.callback)
         self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
 
-        # Load model
-        config = InferenceConfig()
-        config.display()
-        
-        model = modellib.MaskRCNN(
-            mode="inference", model_dir=LOG_DIR, config=config
-        )
-        
-        model.load_weights(MODEL_PATH, by_name=True)
-
     def callback(self, data):
 
         try:
             cv_image = self.bridge.imgmsg_to_cv2(data, "rgb8")
-            results = model.detect([cv_image], verbose=1)
+            results = self.model.detect([cv_image], verbose=1)
             r = results[0]
 
             img_out = display_instances(

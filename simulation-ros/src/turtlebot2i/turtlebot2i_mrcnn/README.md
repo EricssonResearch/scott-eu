@@ -51,17 +51,25 @@ wget https://www.dropbox.com/s/5foyklp3azy2wi0/mask_rcnn_coco.h5  -P models
 
 ## 3.2. Running Mask R-CNN node
 
-Set the model path in the ros_mrcnn.py code. To do so, change the `MODEL_DIR` and `MODEL_PATH` variables:
+1. Set the model path in the ros_mrcnn.py code. To do so, change the `LOG_DIR` and `MODEL_PATH` variables:
 
 ```
 rosed turtlebot2i_mrcnn ros_mrcnn.py 
 ```
 
-Run the following in a terminal:
+2. In the terminal that the ros_mrcnn will run, it must be unloaded the ROS environment setup. It is necessary to prevent loading python2.7 in this terminal.
+To do so, it is necessary to edit the `~/.bashrc` file and comment the lines similar as this: `source /opt/ros/kinetic/setup.bash`.
+Save the file and execute `source ~/.bashrc` in this terminal.
+After that it is necessary to load the python 3.5 version of cv_bridge. In this case, it is necessary to load the cv_bridge installation as in the step 3 of  Section 3.1.
+In this case, it is necessary to execute `source /path/to/cv_bridge_workspace/install/setup.bash`.
+
+3. Run the following in a terminal:
 
 ```
 rosrun turtlebot2i_mrcnn ros_mrcnn.py 
 ```
+
+**If any problem occurs in this step, check again the step 3 of Section 3.1**
 
 The detection output will be available in the `/turtlebot2i/mrcnn_out` topic.
 
