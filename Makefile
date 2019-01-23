@@ -12,13 +12,6 @@ push:
 	(cd lyo-services		&&	make push)
 	(cd robot-emulator		&&	make push)
 
-#up: build
-#	(cd deployment	&& docker-compose up)
-#
-#up-quick:
-#	(cd deployment	&& docker-compose build)
-#	(cd deployment	&& docker-compose up)
-
 swarm-restart:
 	(cd deployment	&& docker swarm init) || true
 	(cd deployment	&& docker service rm `docker service ls --filter name=scott -q`; sleep 5) || true
@@ -31,5 +24,5 @@ build-twin:
 	(cd lyo-services 		&&	make build-twin)
 
 restart-twin:
-	#	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin -q`; sleep 1) || true
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin -q`; sleep 1) || true
 	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)

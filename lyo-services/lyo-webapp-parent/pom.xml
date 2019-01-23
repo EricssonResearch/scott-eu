@@ -32,10 +32,13 @@
       <name>SCOTT sandbox</name>
       <url>https://aide.md.kth.se/artifactory/scott</url>
     </repository>
-    <repository>
+<!--    <repository>
       <id>rosjava</id>
       <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
-    </repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>-->
     <repository>
       <id>jfrog</id>
       <url>http://repo.jfrog.org/artifactory/libs-releases/</url>

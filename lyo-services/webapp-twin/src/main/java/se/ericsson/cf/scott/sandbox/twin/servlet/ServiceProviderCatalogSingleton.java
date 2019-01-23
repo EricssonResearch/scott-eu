@@ -41,6 +41,8 @@ import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.TwinRepository;
@@ -64,6 +66,7 @@ import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
  */
 public class ServiceProviderCatalogSingleton
 {
+    private final static Logger log = LoggerFactory.getLogger(ServiceProviderCatalogSingleton.class);
     private static final ServiceProviderCatalog serviceProviderCatalog;
     private static final Map<String, ServiceProvider> serviceProviders = new TreeMap<>();
 
@@ -290,9 +293,11 @@ public class ServiceProviderCatalogSingleton
 
         try {
             // Start of user code initServiceProviders
+            log.trace("User code in initServiceProviders START");
             final TwinRepository twinRepository = getTwinRepository();
             final Collection<ServiceProvider> serviceProviders = twinRepository.getServiceProviders();
             serviceProviders.forEach(sp -> registerServiceProviderOrSkip(sp));
+            log.trace("User code in initServiceProviders END");
             // End of user code
 
 
@@ -312,6 +317,8 @@ public class ServiceProviderCatalogSingleton
                     registerIndependentServiceProvider(aServiceProvider);
                 }
             }
+            log.trace("initServiceProviders COMPLETE");
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new WebApplicationException(e,Status.INTERNAL_SERVER_ERROR);
