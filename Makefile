@@ -21,6 +21,7 @@ push:
 
 swarm-restart:
 	(cd deployment	&& docker swarm init) || true
-	(cd deployment	&& docker service rm `docker service ls --filter name=scott -q`; sleep 3) || true
-	(cd deployment	&& docker stack rm scott) || true
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott -q`; sleep 5) || true
+	# only use it if you got net problems, and restart twice
+	# (cd deployment && docker stack rm scott ; sleep 5) || true
 	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)
