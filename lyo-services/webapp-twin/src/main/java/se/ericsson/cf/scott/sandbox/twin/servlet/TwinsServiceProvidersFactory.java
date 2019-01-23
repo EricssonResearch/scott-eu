@@ -98,9 +98,6 @@ public class TwinsServiceProvidersFactory
             throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
         String basePath = OSLC4JUtils.getServletURI();
         String identifier = twinsServiceProviderIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
-        if (ServiceProviderCatalogSingleton.containsTwinsServiceProvider(serviceProviderInfo.twinKind, serviceProviderInfo.twinId)) {
-            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", identifier));
-        }
 
         String serviceProviderName = serviceProviderInfo.name;
         String title = String.format("Service Provider '%s'", serviceProviderName);
