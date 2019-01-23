@@ -27,7 +27,6 @@ package se.ericsson.cf.scott.sandbox.twin;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.WordUtils;
@@ -35,7 +34,6 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
 
 // Start of user code imports
 //import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
@@ -67,12 +65,15 @@ public class TwinManager {
 
 //        initRos();
 
+        // TODO Andrew@2019-01-23: start it on a separate thread 
+/*
         TwinAdaptorHelper.initTrsClient();
 
         TwinAdaptorHelper.changeHistories = new TwinChangeHistories(
             TwinAdaptorHelper.mqttGateway.getMqttClient(), "trs-twin",
             TimeUnit.SECONDS.toMillis(5)
         );
+*/
 
 //        registerTwins();
 
