@@ -161,6 +161,10 @@ public class ServiceProviderCatalogSingleton
     }
 
     private static void registerServiceProviderNoSync(final ServiceProvider serviceProvider) {
+        if (containsServiceProvider(serviceProvider)) {
+            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", serviceProvider.getIdentifier()));
+        }
+
         final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
 
         serviceProviderCatalog.addServiceProvider(serviceProvider);
