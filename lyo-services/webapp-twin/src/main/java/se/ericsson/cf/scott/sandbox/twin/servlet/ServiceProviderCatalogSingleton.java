@@ -102,13 +102,21 @@ public class ServiceProviderCatalogSingleton
     }
 
     public static boolean containsTwinsServiceProvider(final String twinKind, final String twinId) {
-        return serviceProviders.containsKey(
-            TwinsServiceProvidersFactory.twinsServiceProviderIdentifier(twinKind, twinId));
+        final String id = TwinsServiceProvidersFactory.twinsServiceProviderIdentifier(twinKind, twinId);
+        return containsServiceProviderById(id);
     }
 
     public static boolean containsIndependentServiceProvider(final String serviceProviderId) {
-        return serviceProviders.containsKey(
-            IndependentServiceProvidersFactory.independentServiceProviderIdentifier(serviceProviderId));
+        final String id = IndependentServiceProvidersFactory.independentServiceProviderIdentifier(serviceProviderId);
+        return containsServiceProviderById(id);
+    }
+
+    public static boolean containsServiceProvider(final ServiceProvider sp) {
+        return serviceProviders.containsKey(sp.getIdentifier());
+    }
+
+    public static boolean containsServiceProviderById(final String id) {
+        return serviceProviders.containsKey(id);
     }
 
     public static ServiceProvider getTwinsServiceProvider(HttpServletRequest httpServletRequest, final String twinKind, final String twinId)
@@ -142,18 +150,40 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
-    /**
-     * Register a service provider with the OSLC catalog
-     */
-    private static void registerTwinsServiceProviderNoSync(final ServiceProvider serviceProvider) {
+    public static void registerServiceProviderOrSkip(final ServiceProvider serviceProvider) {
+        if (!containsServiceProvider(serviceProvider)) {
+            synchronized (serviceProviders) {
+                if (!containsServiceProvider(serviceProvider)) { // prevent a race cond
+                    registerServiceProviderNoSync(serviceProvider);
+                }
+            }
+        }
+    }
+
+    private static void registerServiceProviderNoSync(final ServiceProvider serviceProvider) {
         final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
 
         serviceProviderCatalog.addServiceProvider(serviceProvider);
         serviceProviderCatalog.addDomains(serviceProviderDomains);
 
         serviceProviders.put(serviceProvider.getIdentifier(), serviceProvider);
+    }
+
+    /**
+     * Register a service provider with the OSLC catalog
+     */
+    private static void registerTwinsServiceProviderNoSync(final ServiceProvider serviceProvider) {
+        registerServiceProviderNoSync(serviceProvider);
 
     }
+
+    /**
+     * Register a service provider with the OSLC catalog
+     */
+    private static void registerIndependentServiceProviderNoSync(final ServiceProvider serviceProvider) {
+        registerServiceProviderNoSync(serviceProvider);
+    }
+
 
 
     private static void deregisterServiceProvider(final String serviceProviderIdentifier) {
@@ -224,18 +254,6 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
-    /**
-     * Register a service provider with the OSLC catalog
-     */
-    private static void registerIndependentServiceProviderNoSync(
-        final ServiceProvider serviceProvider) {
-        final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
-
-        serviceProviderCatalog.addServiceProvider(serviceProvider);
-        serviceProviderCatalog.addDomains(serviceProviderDomains);
-
-        serviceProviders.put(serviceProvider.getIdentifier(), serviceProvider);
-    }
 
     // TODO Andrew@2019-01-23: move to the Core
     // TODO Andrew@2019-01-23: use unsorted Set
@@ -270,7 +288,7 @@ public class ServiceProviderCatalogSingleton
             // Start of user code initServiceProviders
             final TwinRepository twinRepository = getTwinRepository();
             final Collection<ServiceProvider> serviceProviders = twinRepository.getServiceProviders();
-            serviceProviders.forEach(sp -> registerTwinsServiceProvider(sp));
+            serviceProviders.forEach(sp -> registerServiceProviderOrSkip(sp));
             // End of user code
 
 
