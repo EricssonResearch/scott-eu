@@ -27,14 +27,23 @@ import java.io.Serializable;
 // Start of user code pre_class_code
 // End of user code
 public class TwinsServiceProviderInfo implements Serializable {
-    public String name;
-    public String twinKind;
-    public String twinId;
+    public final String name;
+    public final String twinKind;
+    public final String twinId;
 
     // Start of user code class_attributes
     // End of user code
 
     // Start of user code class_methods
+
+//    public TwinsServiceProviderInfo() {
+//    }
+
+    public TwinsServiceProviderInfo(final String name, final String twinKind, final String twinId) {
+        this.name = name;
+        this.twinKind = twinKind;
+        this.twinId = twinId;
+    }
 
     @Override
     public String toString() {

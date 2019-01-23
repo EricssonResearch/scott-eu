@@ -95,7 +95,7 @@ public class TwinManager {
         // End of user code
     }
 
-/*    public static TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(HttpServletRequest httpServletRequest)
+    public static TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         TwinsServiceProviderInfo[] serviceProviderInfos = {};
         
@@ -109,10 +109,9 @@ public class TwinManager {
         IndependentServiceProviderInfo[] serviceProviderInfos = {};
         
         // Start of user code "IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(...)"
-        // TODO Implement code to return the set of ServiceProviders
         // End of user code
         return serviceProviderInfos;
-    }*/
+    }
 
     public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String twinKind, final String twinId)
     {
@@ -132,14 +131,13 @@ public class TwinManager {
         
         // Start of user code createDeviceRegistrationMessage
         log.info("Registering a twin: {}", aResource.toString());
-        final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo();
-        spInfo.twinKind = aResource.getTwinType();
-        spInfo.twinId = aResource.getTwinId();
-        if (spInfo.twinId == null) {
-            spInfo.twinId = String.valueOf(r.nextInt(10000));
+        final String twinKind = aResource.getTwinType();
+        String twinId = aResource.getTwinId();
+        if (twinId == null) {
+            twinId = String.valueOf(r.nextInt(10000));
         }
-        spInfo.name = String.format(
-            "%s Twin '%s'", WordUtils.capitalize(spInfo.twinKind), spInfo.twinId);
+        final String name = String.format("%s Twin '%s'", WordUtils.capitalize(twinKind), twinId);
+        final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo(name, twinKind, twinId);
         final ServiceProvider serviceProvider = TwinAdaptorHelper.getTwins().registerTwinSP(spInfo);
         if (serviceProvider == null) {
             throw new IllegalStateException();
