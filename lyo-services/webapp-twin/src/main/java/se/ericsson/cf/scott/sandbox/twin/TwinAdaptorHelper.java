@@ -46,6 +46,7 @@ public class TwinAdaptorHelper {
 //    static IMap<String, TwinsServiceProviderInfo> twinProviderInfo;
     static TwinChangeHistories changeHistories;
     static ServletContext servletContext;
+    private static ServiceProviderRepository serviceProviderRepository;
 
     // Start of user code class_methods
     @NotNull
@@ -80,9 +81,9 @@ public class TwinAdaptorHelper {
         return servletContext;
     }
 
-    public static TwinRepository getTwins() {
+    public static ServiceProviderRepository getTwins() {
         // FIXME Andrew@2019-01-21: persist a single instance
-        return new TwinRepositoryStoreImpl(getStore(), getTwinsGraphURI());
+        return new ServiceProviderRepositoryStoreImpl(getStore(), getTwinsGraphURI());
     }
 
     private static URI getTwinsGraphURI() {
@@ -91,9 +92,19 @@ public class TwinAdaptorHelper {
 
     private static Store getStore() {
 //        return StoreFactory.inMemory();
-        // TODO Andrew@2019-01-21: cache to optimise perf
-        initStore();
+        if (store == null) {
+            log.warn("Lyo Store was not initialised properly");
+            initStore(false);
+        }
         return store;
+    }
+
+    // TODO Andrew@2019-01-23: move to some other singleton, ideally use DI
+    public static ServiceProviderRepository getServiceProviderRepository() {
+        if(serviceProviderRepository == null) {
+            serviceProviderRepository = new ServiceProviderRepositoryStoreImpl(getStore(), getTwinsGraphURI());
+        }
+        return serviceProviderRepository;
     }
 
     private static void setStore(final Store store) {
@@ -188,8 +199,8 @@ public class TwinAdaptorHelper {
     }
 */
 
-    private static void initStore() {
-        final Store store = LyoStoreManager.initLyoStore();
+    public static void initStore(boolean wipeOnStartup) {
+        final Store store = LyoStoreManager.initLyoStore(wipeOnStartup);
         setStore(store);
     }
 }
