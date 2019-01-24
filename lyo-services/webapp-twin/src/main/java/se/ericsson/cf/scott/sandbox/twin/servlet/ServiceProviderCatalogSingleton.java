@@ -44,9 +44,9 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
-import se.ericsson.cf.scott.sandbox.twin.TwinRepository;
-import se.ericsson.cf.scott.sandbox.twin.TwinRepositoryFakeImpl;
+import se.ericsson.cf.scott.sandbox.twin.ServiceProviderRepository;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 
 // Start of user code imports
@@ -294,8 +294,8 @@ public class ServiceProviderCatalogSingleton
         try {
             // Start of user code initServiceProviders
             log.trace("User code in initServiceProviders START");
-            final TwinRepository twinRepository = getTwinRepository();
-            final Collection<ServiceProvider> serviceProviders = twinRepository.getServiceProviders();
+            final ServiceProviderRepository serviceProviderRepository = TwinAdaptorHelper.getServiceProviderRepository();
+            final Collection<ServiceProvider> serviceProviders = serviceProviderRepository.getServiceProviders();
             serviceProviders.forEach(sp -> registerServiceProviderOrSkip(sp));
             log.trace("User code in initServiceProviders END");
             // End of user code
@@ -325,9 +325,5 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
-    // TODO Andrew@2019-01-23: move to some other singleton, ideally use DI
-    private static TwinRepository getTwinRepository() {
-        return new TwinRepositoryFakeImpl();
-    }
 }
 

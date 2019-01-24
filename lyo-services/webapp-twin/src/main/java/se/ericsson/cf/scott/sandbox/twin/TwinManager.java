@@ -26,14 +26,17 @@ package se.ericsson.cf.scott.sandbox.twin;
 
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
+import java.net.URISyntaxException;
 import java.util.Random;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.WordUtils;
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 
 // Start of user code imports
 //import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
@@ -61,11 +64,23 @@ public class TwinManager {
         TwinAdaptorHelper.servletContext = servletContextEvent.getServletContext();
         r = new Random();
 
-//        initStore();
+        // TODO Andrew@2019-01-24: add a wipe endpoint
+        TwinAdaptorHelper.initStore(false);
+
+        final TwinsServiceProviderInfo twinInfo = new TwinsServiceProviderInfo("Fake Twin", "robot", "r-1");
+        try {
+            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(
+                twinInfo);
+            TwinAdaptorHelper.getServiceProviderRepository().addServiceProvider(serviceProvider);
+        } catch (OslcCoreApplicationException | URISyntaxException e) {
+            log.error("Can't init a dummy ServiceProvider", e);
+        }
+
 
 //        initRos();
 
-        // TODO Andrew@2019-01-23: start it on a separate thread 
+
+        // TODO Andrew@2019-01-23: start it on a separate thread
 /*
         TwinAdaptorHelper.initTrsClient();
 
@@ -139,9 +154,11 @@ public class TwinManager {
         }
         final String name = String.format("%s Twin '%s'", WordUtils.capitalize(twinKind), twinId);
         final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo(name, twinKind, twinId);
-        final ServiceProvider serviceProvider = TwinAdaptorHelper.getTwins().registerTwinSP(spInfo);
-        if (serviceProvider == null) {
-            throw new IllegalStateException();
+        try {
+            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(spInfo);
+            TwinAdaptorHelper.getTwins().addServiceProvider(serviceProvider);
+        } catch (OslcCoreApplicationException | URISyntaxException e) {
+            log.error("Failed to create an SP", e);
         }
 
         newResource = aResource;

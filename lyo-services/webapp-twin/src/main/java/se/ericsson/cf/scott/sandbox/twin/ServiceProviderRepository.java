@@ -8,10 +8,10 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
  *
  * @since FIXME
  */
-public interface TwinRepository {
+public interface ServiceProviderRepository {
     Collection<ServiceProvider> getServiceProviders();
 
     ServiceProvider[] asSpArray();
 
-    ServiceProvider registerTwinSP(TwinsServiceProviderInfo spInfo);
+    void addServiceProvider(ServiceProvider sp);
 }
