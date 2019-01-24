@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(turtlebot2i_safety)
+project(turtlebot2i_scene_graph)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -47,13 +47,10 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * uncomment the generate_messages entry below
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
-## Generate messages in the 'msg' folder
+# Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   SafetyZone.msg
-   VelocityScale.msg
-#   SceneGraph.msg
-#   SceneGraphSingle.msg
+   SceneGraph.msg
  )
 
 ## Generate services in the 'srv' folder

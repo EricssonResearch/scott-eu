@@ -79,7 +79,7 @@ class Robot:
         return self.name
 
 
-class SceneObjectExtractor:
+class VrepObjectExtractor:
     def __init__(self, ip, port):
         # TODO: return error if could not connect
         # start connection
@@ -122,6 +122,11 @@ class SceneObjectExtractor:
 
         return clientID
 
+    # Close remote api connection with V-REP
+    def close_connection(self):
+        #clientID = vrep.simxStart(ip, port, True, True, 5000, 5)
+        vrep.simxFinish(self.clientID)
+        return 0
 
     # Get information of all objects
     def get_all_objects_info(self):

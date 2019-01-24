@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
-from SceneObjectExtractor import SceneObjectExtractor
 import time
 import vrep
 import re
-from graphviz import Digraph
 import math   
-pi = math.pi
-from shapely.geometry import box
 import rospy
-from turtlebot2i_safety.msg import SceneGraph 
 import std_msgs.msg
+from graphviz import Digraph
+from shapely.geometry import box
+from turtlebot2i_safety.msg import SceneGraph 
+from vrep_object_extractor import VrepObjectExtractor
+
+pi = math.pi
 
 # some functions for label message in scene graph nodes
 def get_distance(i, j):
@@ -89,7 +90,7 @@ def get_orientation(i, j):
 
 def init():
     global extractor 
-    extractor= SceneObjectExtractor('127.0.0.1', 19997)
+    extractor= VrepObjectExtractor('127.0.0.1', 19997)
     # List of object names to retrieve information
     # For now it is hardcoded
     extractor.set_static_obj_names(['stairs', 'slidingDoor',      
@@ -99,9 +100,9 @@ def init():
     extractor.set_dynamic_obj_names(['Bill_base#2'])
     extractor.set_robot_names(['turtlebot2i'])
 
-    print('Connected to remote API server')
+    rospy.loginfo("Connected to remote API server")
 
-    print('Getting scene properties (this can take a while)...') 
+    rospy.loginfo('Getting scene properties (this can take a while)...') 
 
     # Get all objects info once (for static properties) and
     #  prepare the callback for the streaming mode
@@ -118,9 +119,9 @@ def init():
     extractor.update_all_robots_vision_sensors_fov()
 
 
-    print('Finished getting scene properties!\n')
+    rospy.loginfo('Finished getting scene properties!\n')
 
-def sgGenerate():
+def sg_generate():
     # Get dynamic object info (pose and vel) periodically
     extractor.update_dynamic_obj_info() 
 
@@ -129,7 +130,8 @@ def sgGenerate():
 
     robot_list = extractor.robot_obj_list
     # Get objects that are in the sensor FOV
-    for robot_num in range(1):
+    #for robot_num in range(1):
+    for robot_num in range(len(robot_list)):
         obj_list = extractor.get_objects_from_vision_sensor(robot_list[robot_num].vision_sensor) #NOT ROBUST HERE
 
         if (obj_list != None):
@@ -137,7 +139,8 @@ def sgGenerate():
             obj_list = [i for i in obj_list if i.name!=robot_list[robot_num].name]
 
         # Print detected objects of the vision sensor
-        print(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, obj_list)
+        # TODO: print just in debug mode
+        #print(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, obj_list)
 
         #############################################
         # generate scene graph
@@ -190,12 +193,6 @@ def sgGenerate():
             else:
                 dot.edge('floor', obj.name, label='on')
 
-        #output scene graph as .svg file in 
-        #sg_name = 'sg_robot/robot%d' %robot_num
-        #dot.render(sg_name, view=True)
-
-        #output scene graph as string
-        #print dot.source
         sg_message=SceneGraph()
         sg_message.header = std_msgs.msg.Header()
         sg_message.header.stamp = rospy.Time.now()
@@ -205,36 +202,20 @@ def sgGenerate():
         pub.publish(sg_message)
 
 if __name__ == '__main__':
-    init()
-    # Update rate in seconds
     
-    time_previous = time.time()
+    rospy.init_node('sg_generator', anonymous=True)
+
     try:
-        print('Started getting scene objects from vision sensor FOV...')
-        pub = rospy.Publisher('/turtlebot2i/safety/scene_graph', SceneGraph, queue_size=10)
-        rospy.init_node('sg_generator', anonymous=True)
+        init()
+        rospy.loginfo('Started getting scene objects from vision sensor FOV...')
+        pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
         rate = rospy.Rate(1.0) #Hz, T=1/Rate
         while not rospy.is_shutdown():          
-            sgGenerate()
-            #''' #If one want to check execution time
-            one_run_time = time.time() - time_previous
-            print 'execute time=',one_run_time,'sec'           
-            #print 'execute frequency=',1/float(one_run_time),'Hz'
-            time_previous =time.time()
-            #'''            
+            sg_generate()
             rate.sleep()
     except rospy.ROSInterruptException:
         # Close the connection to V-REP
         extractor.close_connection() 
         #vrep.simxFinish(clientID)       
         pass
-
-
-
-
-
-
-
-
-
 

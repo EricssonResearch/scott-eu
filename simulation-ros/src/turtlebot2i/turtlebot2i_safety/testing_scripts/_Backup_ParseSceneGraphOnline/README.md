@@ -1,1 +1,0 @@
-**NOTE**: The files here uses a previous format of scene graph.

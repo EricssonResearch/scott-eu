@@ -2,7 +2,7 @@
 <launch>
 
 <!-- Scene Graph Generator  -->
-  <node pkg="turtlebot2i_safety" name="sg_generator" type="sg_generator.py" output="log"/>
+  <node pkg="turtlebot2i_safety" name="sg_generator" type="ros_scene_graph_generator.py" output="log"/>
 
 <!-- Scene Graph Parser+ Risk management  --> 
   <node pkg="turtlebot2i_safety" name="risk_management" type="risk_management.py" output="screen"/>
