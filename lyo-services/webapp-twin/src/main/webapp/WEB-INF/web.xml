@@ -13,15 +13,15 @@
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twin.store.query</param-name>
-    <param-value>http://warehouse-fuseki:3030/sandbox-twin/query</param-value>
+    <param-value>http://warehouse-fuseki:3030/warehouse-twin/query</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twin.store.update</param-name>
-    <param-value>http://warehouse-fuseki:3030/sandbox-twin/update</param-value>
+    <param-value>http://warehouse-fuseki:3030/warehouse-twin/update</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twin.update.interval</param-name>
-    <param-value>10</param-value><!--seconds-->
+    <param-value>60</param-value><!--seconds-->
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twin.trs.mqtt.broker</param-name>
