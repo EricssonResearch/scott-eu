@@ -67,15 +67,6 @@ public class TwinManager {
         // TODO Andrew@2019-01-24: add a wipe endpoint
         TwinAdaptorHelper.initStore(false);
 
-        final TwinsServiceProviderInfo twinInfo = new TwinsServiceProviderInfo("Fake Twin", "robot", "r-1");
-        try {
-            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(
-                twinInfo);
-            TwinAdaptorHelper.getServiceProviderRepository().addServiceProvider(serviceProvider);
-        } catch (OslcCoreApplicationException | URISyntaxException e) {
-            log.error("Can't init a dummy ServiceProvider", e);
-        }
-
 
 //        initRos();
 
