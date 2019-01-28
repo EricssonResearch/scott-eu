@@ -1,5 +1,6 @@
 package se.ericsson.cf.scott.sandbox.twin;
 
+import com.google.common.collect.Lists;
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -72,7 +73,7 @@ public class ServiceProviderRepositoryStoreImpl implements ServiceProviderReposi
         if (newProvider.getAbout() == null) {
             throw new IllegalArgumentException("The about URI of the ServiceProvider cannot be NULL");
         }
-        Collection<ServiceProvider> providers = serviceProviders;
+        Collection<ServiceProvider> providers = Lists.newArrayList(serviceProviders);
         if (providers.stream().anyMatch(p -> Objects.equals(p.getAbout(), newProvider.getAbout()))) {
             log.debug("Replacing an existing ServiceProvider <{}> ", newProvider.getAbout());
             // TODO Andrew@2019-01-24: put a printing tracer for equality
