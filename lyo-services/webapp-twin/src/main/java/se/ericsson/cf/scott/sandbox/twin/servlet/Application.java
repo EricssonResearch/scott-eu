@@ -23,51 +23,30 @@
 
 package se.ericsson.cf.scott.sandbox.twin.servlet;
 
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
+import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-
 import org.eclipse.lyo.oslc4j.application.OslcWinkApplication;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import org.eclipse.lyo.oslc4j.core.model.AllowedValues;
-import org.eclipse.lyo.oslc4j.core.model.Compact;
-import org.eclipse.lyo.oslc4j.core.model.CreationFactory;
-import org.eclipse.lyo.oslc4j.core.model.Dialog;
 import org.eclipse.lyo.oslc4j.core.model.Error;
-import org.eclipse.lyo.oslc4j.core.model.ExtendedError;
-import org.eclipse.lyo.oslc4j.core.model.OAuthConfiguration;
-import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
-import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
-import org.eclipse.lyo.oslc4j.core.model.Preview;
-import org.eclipse.lyo.oslc4j.core.model.Property;
-import org.eclipse.lyo.oslc4j.core.model.Publisher;
-import org.eclipse.lyo.oslc4j.core.model.QueryCapability;
-import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
-import org.eclipse.lyo.oslc4j.core.model.Service;
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
+import org.eclipse.lyo.oslc4j.core.model.*;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
-import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
-
-import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderCatalogService;
+import se.ericsson.cf.scott.sandbox.twin.services.AdaptorAdminService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService;
-import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService;
-import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
-
-import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
-import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.pddl.Step;
-import eu.scott.warehouse.domains.mission.MissionDomainConstants;
-import eu.scott.warehouse.domains.RdfsDomainConstants;
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
+import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderCatalogService;
+import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService;
+import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 
 // Start of user code imports
 // End of user code
@@ -103,6 +82,7 @@ public class Application extends OslcWinkApplication {
         // FIXME Andrew@2018-05-27: does not support returning arrays or collections
 //        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
 //        RESOURCE_CLASSES.add(TwinTrsServerService.class);
+        RESOURCE_CLASSES.add(AdaptorAdminService.class);
         // End of user code
 
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_ALLOWED_VALUES,           AllowedValues.class);
