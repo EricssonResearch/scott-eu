@@ -45,25 +45,17 @@ fun IExtendedResource.setProperty(name: String, p: Any) {
     this.extendedProperties[QName.valueOf(name)] = p
 }
 
-fun IExtendedResource.setProperty(name: URI, p: Any) {
-    setProperty(name.toString(), p)
-}
+fun IExtendedResource.setProperty(name: URI, p: Any) = setProperty(name.toString(), p)
 
 class RawResource(about: URI) : AbstractResource(about) {
     constructor() : this(u(UUID.randomUUID()))
 }
 
-fun IExtendedResource.setInstanceShape(cl: Class<*>) {
-    this.setProperty(ns(OSLC, "instanceShape"), nsSh(cl))
-}
+fun IExtendedResource.setInstanceShape(cl: Class<*>) = this.setProperty(ns(OSLC, "instanceShape"), nsSh(cl))
 
-fun IExtendedResource.setSuperclass(cl: Class<*>) {
-    this.setProperty(ns(RDFS, "subClassOf"), ns(cl))
-}
+fun IExtendedResource.setSuperclass(cl: Class<*>) = this.setProperty(ns(RDFS, "subClassOf"), ns(cl))
 
-fun IExtendedResource.setLabel(l: String) {
-    this.setProperty(ns(RDFS, "label"), l)
-}
+fun IExtendedResource.setLabel(l: String) = this.setProperty(ns(RDFS, "label"), l)
 
 data class InstanceWithResources<T : IResource>(val instance: T,
                                                 val resources: Collection<IResource>)
@@ -72,7 +64,7 @@ data class InstanceMultiWithResources<T : IResource>(val instance: Collection<T>
                                                 val resources: Collection<IResource>)
 
 class PlanRequestBuilder {
-    // TODO Andrew@2018-08-27: does not seem to support #
+    // FIXME Andrew@2018-08-27: fix support for # in the URIs
     private val base = URI.create("http://ontology.cf.ericsson.net/ns/scott-warehouse/")
 
     init {

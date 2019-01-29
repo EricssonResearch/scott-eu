@@ -41,8 +41,6 @@ import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
 import java.net.URI;
-import javax.servlet.ServletContext;
-//import org.eclipse.lyo.store.Store;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +53,6 @@ import java.util.concurrent.Executors;
 //import org.eclipse.lyo.store.StoreFactory;
 import se.ericsson.cf.scott.sandbox.whc.managers.MqttManager;
 import se.ericsson.cf.scott.sandbox.whc.managers.TRSManager;
-import se.ericsson.cf.scott.sandbox.whc.planning.PlanDTO;
 import se.ericsson.cf.scott.sandbox.whc.trs.WhcChangeHistories;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -64,12 +61,14 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 // Start of user code pre_class_code
 // End of user code
 
+
+
+
 public class WarehouseControllerManager {
 
     // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
     private final static UUID whcUUID = UUID.randomUUID();
-    private static ServletContext context;
     private static WhcChangeHistories changeHistoriesInstance;
     private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
     // End of user code
@@ -78,10 +77,6 @@ public class WarehouseControllerManager {
     // Start of user code class_methods
     private static UUID getUUID() {
         return whcUUID;
-    }
-
-    public static String p(final String s) {
-        return context.getInitParameter(AdaptorHelper.parameterFQDN(s));
     }
 
     public static WhcChangeHistories getChangeHistories() {
@@ -105,22 +100,20 @@ public class WarehouseControllerManager {
 
         AdaptorHelper.initLogger();
         log.info("WHC instance '{}' is initialising", whcUUID.toString());
-
-        context = servletContextEvent.getServletContext();
-        // TODO Andrew@2018-07-30: https://github.com/EricssonResearch/scott-eu/issues/101
-//        StoreManager.initLyoStore();
-
-        final MqttClient mqttClient = MqttManager.initMqttClient();
+        AdaptorHelper.context = servletContextEvent.getServletContext();
 
         execService.schedule(() -> {
-            log.debug("Can now begin the execution of the planner");
-            TRSManager.fetchPlanForProblem("sample-problem-request.ttl");
-//            final Object[] resources = new PlanRequestBuilder().build();
-//            MqttManager.triggerPlan(new PlanDTO(resources));
-        }, 30, TimeUnit.SECONDS);
+            log.debug("Initialising the MqttManager");
+            final MqttClient mqttClient = MqttManager.initMqttClient();
 
-//        TRSManager.initTRSServer(mqttClient);
-        TRSManager.initTRSClient(mqttClient);
+            log.debug("Initialising the TRS Client");
+            TRSManager.initTRSClient(mqttClient);
+            log.debug("Initialising the TRS Server");
+            TRSManager.initTRSServer(mqttClient);
+
+            log.debug("Triggering planning");
+            TRSManager.fetchPlanForProblem("sample-problem-request.ttl");
+        }, 5, TimeUnit.SECONDS);
 
         // End of user code
     }

@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
+import javax.servlet.ServletContext;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -34,14 +35,18 @@ public class AdaptorHelper {
     // Start of user code class_attributes
     private final static String PACKAGE_ROOT = WarehouseControllerManager.class.getPackage().getName();
     // FIXME Andrew@2018-07-30: extract into AdaptorConfig (non-static)
-    public static final String MQTT_TOPIC = "trs.mqtt.broker";
+    public static final String MQTT_BROKER_PNAME = "trs.mqtt.broker";
     public static final String DEFAULT_SP_ID = "default";
     public static final String NS_SHACL = "http://www.w3.org/ns/shacl#";
-    public static final String SPARQL_QUERY_URI = "https://aide.md.kth.se/fuseki/trs-everywhere/sparql";
-    public static final String SPARQL_UPDATE_URI = "https://aide.md.kth.se/fuseki/trs-everywhere/update";
-    public static final String MQTT_CLIENT_ID = "trs-consumer-whc";
-    public static final String PLAN_CF_URI = "http://aide.md.kth.se:3020/planner/planCreationFactory";
     public static final String MIME_TURTLE = "text/turtle";
+
+    // TODO Andrew@2019-01-29: clean up
+    //    public static final String SPARQL_QUERY_URI = "https://aide.md.kth.se/fuseki/trs-everywhere/sparql";
+//    public static final String SPARQL_UPDATE_URI = "https://aide.md.kth.se/fuseki/trs-everywhere/update";
+//    public static final String PLAN_CF_URI = "http://aide.md.kth.se:3020/planner/planCreationFactory";
+    // TODO Andrew@2019-01-29: comment out
+    public static final String MQTT_CLIENT_ID = "trs-consumer-whc";
+    static ServletContext context;
 
     // TODO Andrew@2018-02-07: submit to the JenaModelHelper
     // TODO Andrew@2018-07-30: replace with 2.4.0 calls
@@ -87,6 +92,19 @@ public class AdaptorHelper {
         final StringWriter stringWriter = new StringWriter();
         RDFDataMgr.write(stringWriter, responsePlan, RDFFormat.TURTLE_PRETTY);
         return stringWriter.toString();
+    }
+
+    public static String p(final String s) {
+        final String parameterFQDN = parameterFQDN(s);
+        log.debug("Retrieving the context init param '{}'", parameterFQDN);
+        final String value = context.getInitParameter(parameterFQDN);
+        log.trace("{}={}", parameterFQDN, value);
+        return value;
+    }
+
+    public static String getMqttClientId() {
+        // FIXME Andrew@2019-01-29: what about the generated UUID?!
+        return MQTT_CLIENT_ID;
     }
 
     // TODO Andrew@2018-02-23: move to JMH

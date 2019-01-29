@@ -43,15 +43,18 @@ public class MqttManager {
      */
     public static MqttClient initMqttClient() {
         try {
-            final String mqttBroker = WarehouseControllerManager.p(AdaptorHelper.MQTT_TOPIC);
+            final String mqttBroker = AdaptorHelper.p(AdaptorHelper.MQTT_BROKER_PNAME);
             mqttClient = new MqttClient(mqttBroker, WarehouseControllerManager.getWhcId());
+
             final MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setAutomaticReconnect(true);
             mqttClient.setCallback(new LoggingMqttCallback());
             // TODO Andrew@2018-03-13: set highest QoS
             mqttClient.connect(mqttConnectOptions);
+
             registrationListener = new TwinRegistrationListener(mqttClient, MqttTopics.WHC_PLANS);
             mqttClient.subscribe(MqttTopics.REGISTRATION_ANNOUNCE, registrationListener);
+
             return mqttClient;
         } catch (MqttException e) {
             log.error("MQTT connection failed", e);

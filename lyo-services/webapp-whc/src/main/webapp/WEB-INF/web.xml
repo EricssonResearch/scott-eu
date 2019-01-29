@@ -11,12 +11,16 @@
     <param-value>http://sandbox-whc:8080</param-value>
   </context-param>
   <context-param>
-    <param-name>se.ericsson.cf.scott.sandbox.whc.store.query</param-name>
+    <param-name>se.ericsson.cf.scott.sandbox.whc.kb.query_uri</param-name>
     <param-value>http://warehouse-fuseki:3030/sandbox-whc/query</param-value>
   </context-param>
   <context-param>
-    <param-name>se.ericsson.cf.scott.sandbox.whc.store.update</param-name>
+    <param-name>se.ericsson.cf.scott.sandbox.whc.kb.update_uri</param-name>
     <param-value>http://warehouse-fuseki:3030/sandbox-whc/update</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.whc.planner.cf_uri</param-name>
+    <param-value>http://planner-reasoner:3020/planner/planCreationFactory</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.whc.trs.mqtt.broker</param-name>
