@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 
 // Start of user code imports
-//import se.ericsson.cf.scott.sandbox.twin.ros.RobotClientNode;
 // End of user code
 
 // Start of user code pre_class_code
