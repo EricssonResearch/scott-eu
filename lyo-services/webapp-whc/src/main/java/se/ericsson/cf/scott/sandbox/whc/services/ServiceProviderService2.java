@@ -109,8 +109,6 @@ public class ServiceProviderService2
     /**
      * Create a single RegistrationRequest via RDF/XML, XML or JSON POST
      *
-     * @throws IOException
-     * @throws ServletException
      */
     @OslcCreationFactory
     (

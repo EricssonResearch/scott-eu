@@ -47,6 +47,7 @@ public class PlanChangeEventListener implements ChangeEventListener {
         return stringWriter.toString();
     }
 
+/*
     // FIXME Andrew@2018-03-04: hangs infinitely with a Plan
     private static String lyoResourceToString(final IResource... resources)
             throws JenaModelException {
@@ -57,6 +58,7 @@ public class PlanChangeEventListener implements ChangeEventListener {
             throw new JenaModelException(e);
         }
     }
+*/
 
     @Override
     public void handleChangeEvent(final ChangeEvent changeEvent, final Model trsResourceModel) {
