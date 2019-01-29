@@ -91,9 +91,6 @@ public class RegistrationMessage
     extends AbstractResource
     implements IRegistrationMessage
 {
-    // Start of user code attributeAnnotation:twinType
-    // End of user code
-    private String twinType;
     // Start of user code attributeAnnotation:deregister
     // End of user code
     private Boolean deregister;
@@ -106,6 +103,9 @@ public class RegistrationMessage
     // Start of user code attributeAnnotation:label
     // End of user code
     private String label;
+    // Start of user code attributeAnnotation:serviceProvider
+    // End of user code
+    private Link serviceProvider = new Link();
     
     // Start of user code classAttributes
     // End of user code
@@ -193,20 +193,6 @@ public class RegistrationMessage
     }
     
     
-    // Start of user code getterAnnotation:twinType
-    // End of user code
-    @OslcName("twinType")
-    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "twinType")
-    @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.String)
-    @OslcReadOnly(false)
-    public String getTwinType()
-    {
-        // Start of user code getterInit:twinType
-        // End of user code
-        return twinType;
-    }
-    
     // Start of user code getterAnnotation:deregister
     // End of user code
     @OslcName("deregister")
@@ -263,18 +249,21 @@ public class RegistrationMessage
         return label;
     }
     
-    
-    // Start of user code setterAnnotation:twinType
+    // Start of user code getterAnnotation:serviceProvider
     // End of user code
-    public void setTwinType(final String twinType )
+    @OslcName("serviceProvider")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "serviceProvider")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Resource)
+    @OslcRepresentation(Representation.Reference)
+    @OslcReadOnly(true)
+    public Link getServiceProvider()
     {
-        // Start of user code setterInit:twinType
+        // Start of user code getterInit:serviceProvider
         // End of user code
-        this.twinType = twinType;
-    
-        // Start of user code setterFinalize:twinType
-        // End of user code
+        return serviceProvider;
     }
+    
     
     // Start of user code setterAnnotation:deregister
     // End of user code
@@ -324,26 +313,18 @@ public class RegistrationMessage
         // End of user code
     }
     
-    
-    @Deprecated
-    static public String twinTypeToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    // Start of user code setterAnnotation:serviceProvider
+    // End of user code
+    public void setServiceProvider(final Link serviceProvider )
     {
-        String s = "";
-    
-        // Start of user code "Init:twinTypeToHtmlForCreation(...)"
+        // Start of user code setterInit:serviceProvider
         // End of user code
+        this.serviceProvider = serviceProvider;
     
-        s = s + "<label for=\"twinType\">twinType: </LABEL>";
-    
-        // Start of user code "Mid:twinTypeToHtmlForCreation(...)"
+        // Start of user code setterFinalize:serviceProvider
         // End of user code
-    
-        s= s + "<input name=\"twinType\" type=\"text\" style=\"width: 400px\" id=\"twinType\" >";
-        // Start of user code "Finalize:twinTypeToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
     }
+    
     
     @Deprecated
     static public String deregisterToHtmlForCreation (final HttpServletRequest httpServletRequest)
@@ -425,31 +406,25 @@ public class RegistrationMessage
         return s;
     }
     
-    
     @Deprecated
-    public String twinTypeToHtml()
+    static public String serviceProviderToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
     
-        // Start of user code twinTypetoHtml_mid
+        // Start of user code "Init:serviceProviderToHtmlForCreation(...)"
         // End of user code
     
-        try {
-            if (twinType == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + twinType.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        s = s + "<label for=\"serviceProvider\">serviceProvider: </LABEL>";
     
-        // Start of user code twinTypetoHtml_finalize
+        // Start of user code "Mid:serviceProviderToHtmlForCreation(...)"
+        // End of user code
+    
+        // Start of user code "Finalize:serviceProviderToHtmlForCreation(...)"
         // End of user code
     
         return s;
     }
+    
     
     @Deprecated
     public String deregisterToHtml()
@@ -546,6 +521,31 @@ public class RegistrationMessage
         }
     
         // Start of user code labeltoHtml_finalize
+        // End of user code
+    
+        return s;
+    }
+    
+    @Deprecated
+    public String serviceProviderToHtml()
+    {
+        String s = "";
+    
+        // Start of user code serviceProvidertoHtml_mid
+        // End of user code
+    
+        try {
+            if ((serviceProvider == null) || (serviceProvider.getValue() == null)) {
+                s = s + "<em>null</em>";
+            }
+            else {
+                s = s + serviceProvider.getValue().toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        // Start of user code serviceProvidertoHtml_finalize
         // End of user code
     
         return s;

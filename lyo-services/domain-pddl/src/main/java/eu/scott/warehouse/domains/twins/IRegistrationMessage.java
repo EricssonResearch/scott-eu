@@ -78,13 +78,6 @@ public interface IRegistrationMessage
 {
 
 
-    @OslcName("twinType")
-    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "twinType")
-    @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.String)
-    @OslcReadOnly(false)
-    public String getTwinType();
-
     @OslcName("deregister")
     @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "deregister")
     @OslcOccurs(Occurs.ExactlyOne)
@@ -113,11 +106,19 @@ public interface IRegistrationMessage
     @OslcReadOnly(false)
     public String getLabel();
 
+    @OslcName("serviceProvider")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "serviceProvider")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Resource)
+    @OslcRepresentation(Representation.Reference)
+    @OslcReadOnly(true)
+    public Link getServiceProvider();
 
-    public void setTwinType(final String twinType );
+
     public void setDeregister(final Boolean deregister );
     public void setTrsUri(final URI trsUri );
     public void setTrsMqttTopic(final String trsMqttTopic );
     public void setLabel(final String label );
+    public void setServiceProvider(final Link serviceProvider );
 }
 

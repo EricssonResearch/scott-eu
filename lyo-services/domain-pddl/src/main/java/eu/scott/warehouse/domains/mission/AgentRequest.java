@@ -157,11 +157,13 @@ public class AgentRequest
         return result;
     }
     
+    @Deprecated
     public String toHtml()
     {
         return toHtml(false);
     }
     
+    @Deprecated
     public String toHtml(boolean asLocalResource)
     {
         String result = "";
@@ -264,6 +266,7 @@ public class AgentRequest
     }
     
     
+    @Deprecated
     static public String adaptor_idToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -283,6 +286,7 @@ public class AgentRequest
         return s;
     }
     
+    @Deprecated
     static public String trs_topicToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -302,6 +306,7 @@ public class AgentRequest
         return s;
     }
     
+    @Deprecated
     static public String trs_serverToHtmlForCreation (final HttpServletRequest httpServletRequest)
     {
         String s = "";
@@ -322,6 +327,7 @@ public class AgentRequest
     }
     
     
+    @Deprecated
     public String adaptor_idToHtml()
     {
         String s = "";
@@ -346,6 +352,7 @@ public class AgentRequest
         return s;
     }
     
+    @Deprecated
     public String trs_topicToHtml()
     {
         String s = "";
@@ -370,6 +377,7 @@ public class AgentRequest
         return s;
     }
     
+    @Deprecated
     public String trs_serverToHtml()
     {
         String s = "";

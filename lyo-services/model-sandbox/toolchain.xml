@@ -10,7 +10,9 @@
           </basicCapabilities>
         </services>
         <services domainSpecification="//@specification/@domainSpecifications.0" serviceNamespace="independantOfServiceProvider">
-          <creationFactories title="RegistrationCF" label="Registration Creation Factory" creationURI="register" resourceTypes="//@specification/@domainSpecifications.0/@resources.11"/>
+          <creationFactories title="RegistrationCF" label="Registration Creation Factory" creationURI="register">
+            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.0"/>
+          </creationFactories>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>
