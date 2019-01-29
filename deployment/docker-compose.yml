@@ -1,10 +1,12 @@
 version: '3.3'
 
 services:
-  planner_reasoner:
+  planner-reasoner:
     image: scott/planner-reasoner
     environment:
       - PORT=3020 # internal port
+    networks:
+      - overlay
     ports:
       - "3021:3020" # mapping of external port to internal port
     stdin_open: true
