@@ -20,9 +20,9 @@ import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 
 /**
- * TBD
+ * TODO
  *
- * @since FIXME
+ * @since   TODO
  */
 @Path("admin")
 public class AdaptorAdminService {

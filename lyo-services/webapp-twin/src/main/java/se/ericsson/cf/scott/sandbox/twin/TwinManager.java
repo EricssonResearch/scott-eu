@@ -39,6 +39,8 @@ import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 
 // Start of user code imports
+import java.util.concurrent.TimeUnit;
+import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
 // End of user code
 
 // Start of user code pre_class_code
@@ -71,14 +73,12 @@ public class TwinManager {
 
 
         // TODO Andrew@2019-01-23: start it on a separate thread
-/*
         TwinAdaptorHelper.initTrsClient();
 
         TwinAdaptorHelper.changeHistories = new TwinChangeHistories(
             TwinAdaptorHelper.mqttGateway.getMqttClient(), "trs-twin",
             TimeUnit.SECONDS.toMillis(5)
         );
-*/
 
 //        registerTwins();
 

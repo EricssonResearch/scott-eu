@@ -9,10 +9,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.slf4j.LoggerFactory
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 class MqttClientBuilder {
     val log = LoggerFactory.getLogger(javaClass)

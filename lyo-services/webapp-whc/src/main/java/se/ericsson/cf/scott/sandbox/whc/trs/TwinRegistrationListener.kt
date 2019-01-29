@@ -15,10 +15,10 @@ import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since   FIXME
+ * @since   TODO
  */
 class TwinRegistrationListener(val mqttClient: MqttClient,
                                val mqttTopic: String): IMqttMessageListener {

@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.UriBuilder
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since   FIXME
+ * @since   TODO
  */
 class ExecutorTopicAckRegistrationAgent() :
         TopicAckRegistrationAgent<TrsServerAnnouncement, TrsServerAck>() {

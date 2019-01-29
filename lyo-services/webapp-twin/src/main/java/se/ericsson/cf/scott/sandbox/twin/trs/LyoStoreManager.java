@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 import static se.ericsson.cf.scott.sandbox.twin.TwinAdaptorHelper.p;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class LyoStoreManager {
     private final static Logger log = LoggerFactory.getLogger(LyoStoreManager.class);

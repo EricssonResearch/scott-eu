@@ -7,7 +7,7 @@ import org.apache.jena.riot.RDFFormat
  * TODO
  *
  * @version $version-stub$
- * @since   FIXME
+ * @since   TODO
  */
 object TrsXConstants {
     const val NS: String = "http://ontology.cf.ericsson.net/ns/trs-x#"

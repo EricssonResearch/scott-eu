@@ -4,9 +4,9 @@ import java.util.Collection;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 
 /**
- * TBD
+ * TODO
  *
- * @since FIXME
+ * @since   TODO
  */
 public interface ServiceProviderRepository {
     Collection<ServiceProvider> getServiceProviders();

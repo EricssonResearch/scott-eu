@@ -27,10 +27,10 @@ class RegistrationMessageFactory {
 
 
 /**
-  * TBD
+  * TODO
   *
   * @version $version-stub$
-  * @since FIXME
+  * @since   TODO
   */
 object Orchestrator extends App with LazyLogging {
   private val registrationCF = "http://sandbox-twin:8081/services/deviceRegistrationMessages/register"

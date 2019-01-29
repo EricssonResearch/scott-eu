@@ -10,10 +10,10 @@ import se.ericsson.cf.scott.sandbox.twins.shelf.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinManager;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class LyoStoreManager {
     private final static Logger log = LoggerFactory.getLogger(LyoStoreManager.class);

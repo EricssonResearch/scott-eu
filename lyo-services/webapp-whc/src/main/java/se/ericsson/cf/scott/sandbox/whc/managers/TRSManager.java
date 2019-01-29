@@ -42,10 +42,10 @@ import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerResourcesFactory;
 import se.ericsson.cf.scott.sandbox.whc.trs.WhcChangeHistories;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class TRSManager {
 

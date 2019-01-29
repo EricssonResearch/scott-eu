@@ -15,10 +15,10 @@ import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.whc.trs.TwinRegistrationListener;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class MqttManager {
     private final static Logger log = LoggerFactory.getLogger(MqttManager.class);
