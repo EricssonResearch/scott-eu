@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory
 import java.net.URI
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since   FIXME
+ * @since   TODO
  */
 class TwinRegistrationListener(val twins: MutableMap<String, URI>, val mqttClient: MqttClient,
                                val mqttTopic: String): IMqttMessageListener {

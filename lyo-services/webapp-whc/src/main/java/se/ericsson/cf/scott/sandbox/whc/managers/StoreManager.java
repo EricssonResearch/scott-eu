@@ -11,10 +11,10 @@ import org.slf4j.LoggerFactory;
 import static se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager.p;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class StoreManager {
     private final static Logger log = LoggerFactory.getLogger(StoreManager.class);

@@ -3,10 +3,10 @@ package se.ericsson.cf.scott.sandbox.twins.shelf;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class AdaptorHelper {
     private static String parameterFQDN(final String s) {

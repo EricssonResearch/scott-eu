@@ -30,10 +30,10 @@ import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class TwinAdaptorHelper {
     private final static Logger log = LoggerFactory.getLogger(TwinAdaptorHelper.class);

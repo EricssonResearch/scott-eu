@@ -9,16 +9,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.eclipse.lyo.core.trs.ChangeEvent;
-import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import org.eclipse.lyo.oslc4j.core.model.IResource;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
 import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
@@ -30,10 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class WhcChangeHistories extends ChangeHistories {
 

@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class AdaptorHelper {
     private final static Logger log = LoggerFactory.getLogger(AdaptorHelper.class);

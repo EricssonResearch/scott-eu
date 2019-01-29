@@ -8,7 +8,7 @@ import org.eclipse.lyo.oslc4j.core.model.ValueType
 import java.net.URI
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
  * @since   0.0.1

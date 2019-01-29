@@ -9,10 +9,10 @@ data class LastWillMessage(val topic: String, val message: Model) {
 }
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since   FIXME
+ * @since   TODO
  */
 interface RegistrationAgent {
     val lastWill: LastWillMessage?

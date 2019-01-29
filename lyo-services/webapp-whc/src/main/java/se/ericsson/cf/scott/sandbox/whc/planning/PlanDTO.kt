@@ -1,9 +1,9 @@
 package se.ericsson.cf.scott.sandbox.whc.planning
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since   FIXME
+ * @since   TODO
  */
 data class PlanDTO(val resources: Array<Any>)

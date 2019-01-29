@@ -6,10 +6,10 @@ import org.eclipse.lyo.oslc4j.core.model.OslcMediaType
 import java.net.URI
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since   FIXME
+ * @since   TODO
  */
 class TwinRegistrationClient(private val client: OslcClient, private val registrationCFUri: String) {
     fun registerTwin(type: String, id: String) {
@@ -21,6 +21,7 @@ class TwinRegistrationClient(private val client: OslcClient, private val registr
             OslcMediaType.TEXT_TURTLE)
     }
 
+    // TODO Andrew@2019-01-29: do not hardcode
     fun trsMqttTopic(id: String) = "scott.warehouse.todo"
 
     private fun trsURI(id: String): URI? {

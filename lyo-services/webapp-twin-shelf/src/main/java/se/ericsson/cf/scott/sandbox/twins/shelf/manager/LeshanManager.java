@@ -1,10 +1,10 @@
 package se.ericsson.cf.scott.sandbox.twins.shelf.manager;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class LeshanManager {
     public static void buildTheLwm2mServer() {

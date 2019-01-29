@@ -6,10 +6,10 @@ import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
 import se.ericsson.cf.scott.sandbox.twin.TwinAdaptorHelper;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 public class TwinTrsServerService extends TrackedResourceSetService {
 

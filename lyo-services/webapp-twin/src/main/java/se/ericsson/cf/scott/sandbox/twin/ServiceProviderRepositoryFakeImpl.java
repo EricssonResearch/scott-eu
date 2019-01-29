@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 
 /**
- * TBD
+ * TODO
  *
- * @since FIXME
+ * @since   TODO
  */
 public class ServiceProviderRepositoryFakeImpl implements ServiceProviderRepository {
     private final static Logger log = LoggerFactory.getLogger(ServiceProviderRepositoryFakeImpl.class);

@@ -14,10 +14,10 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.slf4j.LoggerFactory
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since   TODO
  */
 class TrsMqttGateway @Throws(MqttException::class) constructor(brokerURL: String, clientID: String,
                                                                options: MqttConnectOptions,
