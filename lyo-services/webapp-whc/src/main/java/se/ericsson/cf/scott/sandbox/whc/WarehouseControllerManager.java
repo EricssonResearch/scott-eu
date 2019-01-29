@@ -33,9 +33,8 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.mission.AgentRequest;
 import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.mission.RegistrationRequest;
+import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
 
 
@@ -60,9 +59,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 
 // Start of user code pre_class_code
 // End of user code
-
-
-
 
 public class WarehouseControllerManager {
 
@@ -163,12 +159,17 @@ public class WarehouseControllerManager {
 
 
 
-    public static RegistrationRequest createRegistrationRequest(HttpServletRequest httpServletRequest, final RegistrationRequest aResource)
+    public static RegistrationMessage createRegistrationMessage(HttpServletRequest httpServletRequest, final RegistrationMessage aResource)
     {
-        RegistrationRequest newResource = null;
+        RegistrationMessage newResource = null;
         
-        // Start of user code createRegistrationRequest
-        // TODO Implement code to create a resource
+        // Start of user code createRegistrationMessage
+        if(aResource != null) {
+            log.info("Registering Twin {} ({})", aResource.getLabel(), aResource.getServiceProvider().getValue());
+            newResource = aResource;
+        } else {
+            throw new IllegalArgumentException("The input must be of type twins:RegistrationMessage");
+        }
         // End of user code
         return newResource;
     }
@@ -184,10 +185,10 @@ public class WarehouseControllerManager {
         // End of user code
         return eTag;
     }
-    public static String getETagFromRegistrationRequest(final RegistrationRequest aResource)
+    public static String getETagFromRegistrationMessage(final RegistrationMessage aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromRegistrationRequest
+        // Start of user code getETagFromRegistrationMessage
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
