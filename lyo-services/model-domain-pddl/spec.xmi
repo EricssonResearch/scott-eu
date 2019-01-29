@@ -85,7 +85,7 @@
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.scott"/>
   </domainSpecifications>
   <domainSpecifications name="Twins Domain" namespaceURI="http://ontology.cf.ericsson.net/ns/twins#" namespacePrefix="//@domainPrefixes.5">
-    <resources name="RegistrationMessage" resourceProperties="//@domainSpecifications.5/@resourceProperties.0 //@domainSpecifications.5/@resourceProperties.1 //@domainSpecifications.5/@resourceProperties.2 //@domainSpecifications.5/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0"/>
+    <resources name="RegistrationMessage" resourceProperties="//@domainSpecifications.5/@resourceProperties.1 //@domainSpecifications.5/@resourceProperties.2 //@domainSpecifications.5/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0 //@domainSpecifications.5/@resourceProperties.10"/>
     <resources name="PlanExecutionRequest" resourceProperties="//@domainSpecifications.0/@resourceProperties.24"/>
     <resources name="DeviceRegistrationMessage" resourceProperties="//@domainSpecifications.5/@resourceProperties.0 //@domainSpecifications.5/@resourceProperties.4 //@domainSpecifications.5/@resourceProperties.1"/>
     <resources name="Waypoint" resourceProperties="//@domainSpecifications.5/@resourceProperties.5 //@domainSpecifications.5/@resourceProperties.6"/>
@@ -101,6 +101,7 @@
     <resourceProperties name="position" valueType="LocalResource" representation="inline" range="//@domainSpecifications.5/@resources.3"/>
     <resourceProperties name="timestamp" valueType="LocalResource" representation="inline" range="//@domainSpecifications.5/@resources.5"/>
     <resourceProperties name="formattedTimestamp" valueType="String"/>
+    <resourceProperties name="serviceProvider" readOnly="true" valueType="Resource" representation="reference"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.twins" javaFilesPath=""/>
   </domainSpecifications>
   <domainPrefixes name="pddl"/>
