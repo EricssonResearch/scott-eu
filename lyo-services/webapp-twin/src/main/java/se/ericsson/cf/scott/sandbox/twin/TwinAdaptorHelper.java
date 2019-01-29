@@ -126,7 +126,7 @@ public class TwinAdaptorHelper {
         final OslcClient client = new OslcClient();
         // TODO Andrew@2019-01-29: remove hardcoded URI
         return new TwinRegistrationClient(
-            client, "http://sandbox-whc:8080/services/service2/registrationRequests/register");
+            client, "http://sandbox-whc:8080/services/service2/registrationMessages/register");
     }
 
     static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {

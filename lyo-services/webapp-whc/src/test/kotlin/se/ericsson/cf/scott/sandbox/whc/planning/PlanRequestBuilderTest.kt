@@ -1,6 +1,7 @@
 package se.ericsson.cf.scott.sandbox.whc.planning
 
 import eu.scott.warehouse.domains.pddl.PrimitiveType
+import eu.scott.warehouse.lib.OslcRdfHelper.modelFrom
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.Lang
 import org.apache.jena.riot.RDFDataMgr
@@ -9,7 +10,6 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Test
-import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.modelFrom
 import java.io.ByteArrayOutputStream
 import java.net.URI
 
