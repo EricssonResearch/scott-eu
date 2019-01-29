@@ -42,7 +42,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-import org.eclipse.lyo.oslc4j.client.ServiceProviderRegistryURIs;
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
@@ -56,14 +56,13 @@ import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 // End of user code
 
 /**
- * This is the OSLC service provider catalog for the Bugzilla adapter.  Service providers are
+ * This is the OSLC service provider catalog for the adapter.  Service providers are
  * not registered with the catalog until a request comes in to access either the catalog or a
  * specific service provider.   This request could be from an external consumer or an internal
  * request triggered by a consumer accessing a change request.
  *
- * The service providers are created and registered in the initServiceProvidersFromProducts()
- * method.  A list of accessible products is retrieved from Bugzilla and a ServiceProvider is
- * created and registered for each using the Bugzilla productId as the identifier.
+ * Information about the desired list of ServiceProviders is retrieved from the Manager.getServiceProviderInfos() method.
+ * A ServiceProvider is created and registered for each entry in that list.
  *
  * The registered service providers are refreshed on each catalog or service provider collection
  * request.
@@ -125,6 +124,10 @@ public class ServiceProviderCatalogSingleton
         return identifier;
     }
 
+    public static boolean containsServiceProvider(final String serviceProviderId) {
+        return serviceProviders.containsKey(serviceProviderIdentifier(serviceProviderId));
+    }
+
     public static ServiceProvider getServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
     {
         ServiceProvider serviceProvider;
@@ -150,6 +153,26 @@ public class ServiceProviderCatalogSingleton
         throw new WebApplicationException(Status.NOT_FOUND);
     }
 
+    public static ServiceProvider createServiceProvider(final ServiceProviderInfo serviceProviderInfo) 
+            throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
+        String basePath = OSLC4JUtils.getServletURI();
+        String identifier = serviceProviderIdentifier(serviceProviderInfo.serviceProviderId);
+        if (containsServiceProvider(serviceProviderInfo.serviceProviderId)) {
+            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", identifier));
+        }
+
+        String serviceProviderName = serviceProviderInfo.name;
+        String title = String.format("Service Provider '%s'", serviceProviderName);
+        String description = String.format("%s (id: %s; kind: %s)",
+            "Service Provider",
+            identifier,
+            "Twin SP");
+        Publisher publisher = null;
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
+        return ServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
+    }
+
     public static ServiceProvider registerServiceProvider(final HttpServletRequest httpServletRequest,
                                                           final ServiceProvider serviceProvider,
                                                           final String serviceProviderId)
@@ -167,10 +190,6 @@ public class ServiceProviderCatalogSingleton
     /**
     * Register a service provider with the OSLC catalog
     *
-    * @param serviceProviderURI
-    * @param serviceProvider
-    * @param productId
-    * @return
     */
     private static ServiceProvider registerServiceProviderNoSync(final URI serviceProviderURI,
                                                                  final ServiceProvider serviceProvider
@@ -250,37 +269,23 @@ public class ServiceProviderCatalogSingleton
     }
 
     /**
-     * Retrieve a list of products from Bugzilla and construct a service provider for each.
-     *
-     * Each product ID is added to the parameter map which will be used during service provider
-     * creation to create unique URI paths for each Bugzilla product.  See @Path definition at
-     * the top of BugzillaChangeRequestService.
-     *
-     * @param httpServletRequest
-     */
+    * Retrieve the set of initial ServiceProviders as returned from the Manager.getServiceProviderInfos() method, and construct a service provider for each.
+    *
+    * Each ServiceProvider ID is added to the parameter map which will be used during service provider
+    * creation to create unique URI paths for each ServiceProvider. 
+    *
+    */
     protected static void initServiceProviders (HttpServletRequest httpServletRequest)
     {
         try {
             // Start of user code initServiceProviders
             // End of user code
 
-            String basePath = OSLC4JUtils.getServletURI();
-
             ServiceProviderInfo [] serviceProviderInfos = WarehouseControllerManager.getServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (ServiceProviderInfo serviceProviderInfo : serviceProviderInfos) {
-                String identifier = serviceProviderIdentifier(serviceProviderInfo.serviceProviderId);
-                if (!serviceProviders.containsKey(identifier)) {
-                    String serviceProviderName = serviceProviderInfo.name;
-                    String title = String.format("Service Provider '%s'", serviceProviderName);
-                    String description = String.format("%s (id: %s; kind: %s)",
-                        "Service Provider",
-                        identifier,
-                        "Twin SP");
-                    Publisher publisher = null;
-                    Map<String, Object> parameterMap = new HashMap<String, Object>();
-                    parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
-                    final ServiceProvider aServiceProvider = ServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
+                if (!containsServiceProvider(serviceProviderInfo.serviceProviderId)) {
+                    ServiceProvider aServiceProvider = createServiceProvider(serviceProviderInfo);
                     registerServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
                 }
             }

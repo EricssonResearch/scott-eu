@@ -30,7 +30,8 @@
     @OslcNamespaceDefinition(prefix = OslcConstants.RDFS_NAMESPACE_PREFIX,                namespaceURI = OslcConstants.RDFS_NAMESPACE),
     @OslcNamespaceDefinition(prefix = MissionDomainConstants.MISSIONONTOLOGY_NAMSPACE_PREFIX, namespaceURI = MissionDomainConstants.MISSIONONTOLOGY_NAMSPACE),
     @OslcNamespaceDefinition(prefix = RdfsDomainConstants.RDFS_NAMSPACE_PREFIX, namespaceURI = RdfsDomainConstants.RDFS_NAMSPACE),
-    @OslcNamespaceDefinition(prefix = PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, namespaceURI = PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE)
+    @OslcNamespaceDefinition(prefix = PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, namespaceURI = PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE),
+    @OslcNamespaceDefinition(prefix = TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, namespaceURI = TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE)
 })
 package se.ericsson.cf.scott.sandbox.whc.resources;
 
@@ -41,4 +42,5 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 

@@ -42,6 +42,7 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
 import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 
@@ -85,6 +86,8 @@ public class ServiceProvidersFactory
             new PrefixDefinition(RdfsDomainConstants.RDFS_NAMSPACE_PREFIX, new URI(RdfsDomainConstants.RDFS_NAMSPACE))
 ,
             new PrefixDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, new URI(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE))
+,
+            new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE))
         };
 
         serviceProvider.setPrefixDefinitions(prefixDefinitions);
