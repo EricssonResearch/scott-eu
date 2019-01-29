@@ -120,17 +120,13 @@ public class TwinAdaptorHelper {
         return getServletContext().getInitParameter(parameterFQDN(s));
     }
 
-    private static void registerTwins() {
+    @NotNull
+    public static TwinRegistrationClient createTwinRegistrationClient() {
         // FIXME Andrew@2018-09-04: rewrite & call from the CF handler
         final OslcClient client = new OslcClient();
         // TODO Andrew@2019-01-29: remove hardcoded URI
-        final TwinRegistrationClient registrationClient = new TwinRegistrationClient(
+        return new TwinRegistrationClient(
             client, "http://sandbox-whc:8080/services/service2/registrationRequests/register");
-
-        // TODO Andrew@2019-01-29: take correct arguments
-        for(String id: ImmutableList.of("r1", "r2", "r3")) {
-            registrationClient.registerTwin("robot", id);
-        }
     }
 
     static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
