@@ -14,21 +14,20 @@ push:
 
 restart-swarm:
 	(cd deployment	&& docker swarm init) || true
-	(cd deployment	&& docker service rm `docker service ls --filter name=scott -q`; sleep 5) || true
-	# only use it if you got net problems, and restart twice
-	# (cd deployment && docker stack rm scott ; sleep 5) || true
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott -q` && sleep 1) || true
+	(cd deployment  && docker stack rm scott && sleep 15) || true
 	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)
 
 build-twin:
 	(cd lyo-services 		&&	make build-twin)
 
 restart-twin:
-	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin -q`; sleep 1) || true
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin -q` && sleep 1) || true
 	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)
 
 build-whc:
 	(cd lyo-services 		&&	make build-whc)
 
 restart-whc:
-	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-whc -q`; sleep 1) || true
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-whc -q` && sleep 1) || true
 	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)
