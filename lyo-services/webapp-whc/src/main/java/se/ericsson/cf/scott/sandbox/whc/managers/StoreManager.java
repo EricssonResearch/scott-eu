@@ -8,7 +8,7 @@ import org.eclipse.lyo.store.StoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager.p;
+import static se.ericsson.cf.scott.sandbox.whc.AdaptorHelper.p;
 
 /**
  * TODO

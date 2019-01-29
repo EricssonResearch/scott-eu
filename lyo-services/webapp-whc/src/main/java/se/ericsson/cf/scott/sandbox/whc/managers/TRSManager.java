@@ -70,26 +70,23 @@ public class TRSManager {
         WarehouseControllerManager.getChangeHistories().addResource(plan);
     }
 
-    private static Model getProblem(final String resourceName) {
-        return AdaptorHelper.loadJenaModelFromResource(resourceName, Lang.TURTLE);
-    }
-
     public static void initTRSClient(final MqttClient mqttClient) {
         final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
-            AdaptorHelper.SPARQL_QUERY_URI, AdaptorHelper.SPARQL_UPDATE_URI, null, null,
-            new TrsBasicAuthOslcClient(), AdaptorHelper.MQTT_CLIENT_ID,
+            AdaptorHelper.p("kb.query_uri"), AdaptorHelper.p("kb.update_uri"), null, null,
+            new TrsBasicAuthOslcClient(), AdaptorHelper.getMqttClientId(),
             Executors.newSingleThreadScheduledExecutor()
         );
+        // FIXME Andrew@2019-01-29: MQTT_BROKER_PNAME is not an MQTT topic!!!
         final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
-                TrsProviderConfiguration.forMQTT(mqttClient, AdaptorHelper.MQTT_TOPIC));
+                TrsProviderConfiguration.forMQTT(mqttClient, AdaptorHelper.MQTT_BROKER_PNAME));
         TrsConsumerUtils.buildHandlersSequential(consumerConfig, providerConfigs);
     }
 
     public static void initTRSServer(final MqttClient mqttClient) {
         // TODO Andrew@2018-07-18: figure out how the change history works over MQTT
         WarehouseControllerManager.setChangeHistories(new WhcChangeHistories(mqttClient,
-                                                                             WarehouseControllerManager
-                                                                                     .p(AdaptorHelper.MQTT_TOPIC),
+                                                                             AdaptorHelper
+                                                                                     .p(AdaptorHelper.MQTT_BROKER_PNAME),
                                                                              Duration.ofMinutes(5)
                                                                                      .toMillis()
         ));
@@ -100,6 +97,11 @@ public class TRSManager {
     }
 
     // TODO Andrew@2018-07-30: move to PlanManager
+
+    private static Model getProblem(final String resourceName) {
+        return AdaptorHelper.loadJenaModelFromResource(resourceName, Lang.TURTLE);
+    }
+
     private static Model planForProblem(final Model problemModel) {
         log.trace("Problem request\n{}", AdaptorHelper.jenaModelToString(problemModel));
         try {
@@ -121,7 +123,7 @@ public class TRSManager {
         RDFDataMgr.write(out, problemModel, RDFFormat.TURTLE_BLOCKS);
 
         HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost(AdaptorHelper.PLAN_CF_URI);
+        HttpPost post = new HttpPost(AdaptorHelper.p("planner.cf_uri"));
 
         post.setHeader("Content-type", AdaptorHelper.MIME_TURTLE);
         post.setHeader("Accept", AdaptorHelper.MIME_TURTLE);
