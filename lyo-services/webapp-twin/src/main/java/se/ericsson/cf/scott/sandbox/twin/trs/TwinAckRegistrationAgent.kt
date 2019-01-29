@@ -76,7 +76,7 @@ class TwinAckRegistrationAgent(val whcTopic: String) :
             return LastWillMessage(whcTopic, model)
         }
 
-
+    // TODO Andrew@2019-01-29: fix duplication
     private fun getTwinRegistrationMessage(id: String): MqttMessage {
         val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
         val announcement = TrsServerAnnouncement(

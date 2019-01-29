@@ -58,8 +58,8 @@ class MqttClientBuilder {
         //        options.setCleanSession(true);
         // these are too lax but the client otherwise tries to reconnect like crazy
         // TODO Andrew@2018-09-04: contribute a PR to https://github.com/eclipse/paho.mqtt.java/issues/374
-        options.connectionTimeout = 15
-        options.keepAliveInterval = 60
+        options.connectionTimeout = 3
+        options.keepAliveInterval = 5
         if (lwtMessage != null) {
             options.setWill(lwtTopic!!, lwtMessage.payload, 1, false)
         }

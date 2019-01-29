@@ -103,12 +103,12 @@ public class WarehouseControllerManager {
         AdaptorHelper.context = servletContextEvent.getServletContext();
 
         execService.schedule(() -> {
-            log.debug("Initialising the MqttManager");
+            log.debug("Initialising an MQTT client");
             final MqttClient mqttClient = MqttManager.initMqttClient();
 
-            log.debug("Initialising the TRS Client");
+            log.debug("Initialising a TRS Client");
             TRSManager.initTRSClient(mqttClient);
-            log.debug("Initialising the TRS Server");
+            log.debug("Initialising a TRS Server");
             TRSManager.initTRSServer(mqttClient);
 
             log.debug("Triggering planning");

@@ -147,59 +147,23 @@ public class TwinAdaptorHelper {
         }
     }
 
-/*
-    static void initHazelcast() {
-        hc = HazelcastFactory.INSTANCE.instanceFromDefaultXmlConfig();
-
-        twinProviderInfo = hc.getMap("twin-providers");
-
-        twinProviderInfo.addEntryListener((EntryAddedListener) event -> {
-            try {
-                log.info("New Robot SP info map entry received '{}:{}'", event.getKey(),
-                                     event.getValue()
-                );
-                final TwinsServiceProviderInfo info = (TwinsServiceProviderInfo) event.getValue();
-                if (!ServiceProviderCatalogSingleton.containsTwinsServiceProvider(
-                    info.twinKind, info.twinId)) {
-                    registerProvider(info);
-                } else {
-                    log.debug(
-                        "SP {}/{} is already registered, skipping", info.twinKind, info.twinId);
-                }
-            } catch (Exception e) {
-                log.warn("Unhandled exception in EntryAddedListener", e);
-            }
-
-        }, true);
-    }
-*/
-
     static void initTrsClient() {
         final String mqttBroker = p("trs.mqtt.broker");
+        // TODO Andrew@2018-07-31: remove non-gateway based code
         try {
+            log.debug("Connecting to the MQTT broker: {}", mqttBroker);
             mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
                                                  .withId(getTwinUUID())
-                                                 .withRegistration(new TwinAckRegistrationAgent(
-                                                     MqttTopics.WHC_PLANS))
+                                                 .withRegistration(new TwinAckRegistrationAgent(MqttTopics.WHC_PLANS))
                                                  .build();
+            final MqttClient mqttClient = mqttGateway.getMqttClient();
+            final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttClient);
+            setTrsClientManager(trsClientManager);
+            new Thread(trsClientManager::connectAndSubscribeToPlans).run();
         } catch (MqttException e) {
             log.error("Failed to initialise the MQTT gateway", e);
         }
-        final MqttClient mqttClient = mqttGateway.getMqttClient();
-        final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttClient);
-        setTrsClientManager(trsClientManager);
-        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
-        // FIXME Andrew@2018-07-31: remove non-gateway based code
-
     }
-
-    // TODO Andrew@2019-01-22: clean up
-/*
-    private static void initRos() {
-                RosManager.runRosNode();
-        new Thread(RosManager::runRosNode).run();
-    }
-*/
 
     public static void initStore(boolean wipeOnStartup) {
         final Store store = LyoStoreManager.initLyoStore(wipeOnStartup);
