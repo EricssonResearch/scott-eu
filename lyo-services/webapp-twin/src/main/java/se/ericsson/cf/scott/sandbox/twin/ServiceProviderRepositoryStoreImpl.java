@@ -1,13 +1,9 @@
 package se.ericsson.cf.scott.sandbox.twin;
 
-import com.google.common.collect.Lists;
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.store.ModelUnmarshallingException;
 import org.eclipse.lyo.store.Store;
@@ -16,10 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TBD
+ * TODO
  *
  * @version $version-stub$
- * @since FIXME
+ * @since TODO
  */
 public class ServiceProviderRepositoryStoreImpl implements ServiceProviderRepository {
     private final static Logger log = LoggerFactory.getLogger(ServiceProviderRepositoryStoreImpl.class);
@@ -57,44 +53,13 @@ public class ServiceProviderRepositoryStoreImpl implements ServiceProviderReposi
 
     @Override
     public void addServiceProvider(final ServiceProvider sp) {
-        log.trace("Adding a ServiceProvider");
-        final Collection<ServiceProvider> serviceProviders = getServiceProviders();
+        log.info("Persisting a ServiceProvider in the KB");
         try {
-            log.trace("Persisting the newly added ServiceProvider...");
-            store.putResources(twinsGraphURI, addOrReplaceProvider(serviceProviders, sp));
-            log.trace("Persisting the newly added ServiceProvider... SUCCESS!");
+            store.updateResources(twinsGraphURI, sp);
+            log.debug("Persisting COMPLETE");
         } catch (StoreAccessException e) {
             throw new IllegalStateException("Unable to persist the new SP in the KB");
         }
     }
 
-    private Collection<ServiceProvider> addOrReplaceProvider(
-        @NonNull final Collection<ServiceProvider> serviceProviders, @NonNull final ServiceProvider newProvider) {
-        if (newProvider.getAbout() == null) {
-            throw new IllegalArgumentException("The about URI of the ServiceProvider cannot be NULL");
-        }
-        Collection<ServiceProvider> providers = Lists.newArrayList(serviceProviders);
-        if (providers.stream().anyMatch(p -> Objects.equals(p.getAbout(), newProvider.getAbout()))) {
-            log.debug("Replacing an existing ServiceProvider <{}> ", newProvider.getAbout());
-            // TODO Andrew@2019-01-24: put a printing tracer for equality
-            providers = serviceProviders.stream()
-                                        .filter(p -> !eqURI(newProvider, p))
-                                        .collect(Collectors.toList());
-        }
-        log.trace("Adding a new ServiceProvider to the list");
-        providers.add(newProvider);
-        return providers;
-
-        // TODO Andrew@2019-01-24: later https://github.com/eclipse/lyo.core/issues/64#issuecomment-457157158
-        /*if (!serviceProviders.add(sp)) {
-            serviceProviders.remove(sp);
-            serviceProviders.add(sp);
-        }*/
-    }
-
-    private boolean eqURI(final @NonNull ServiceProvider newProvider, final @NonNull ServiceProvider p) {
-        final boolean sameURI = Objects.equals(p.getAbout(), newProvider.getAbout());
-        log.trace("SP '{}' == '{}': {}", p.getAbout(), newProvider.getAbout(), sameURI);
-        return sameURI;
-    }
 }
