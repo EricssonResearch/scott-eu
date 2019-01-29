@@ -25,3 +25,10 @@ build-twin:
 restart-twin:
 	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin -q`; sleep 1) || true
 	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)
+
+build-whc:
+	(cd lyo-services 		&&	make build-whc)
+
+restart-whc:
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-whc -q`; sleep 1) || true
+	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)

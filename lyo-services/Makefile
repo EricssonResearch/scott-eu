@@ -10,6 +10,10 @@ build-twin:
 	docker build -f sandbox.Dockerfile -t scott/sandbox-base .
 	docker build -f twin.Dockerfile -t scott/webapp-twin .
 
+build-whc:
+	docker build -f sandbox.Dockerfile -t scott/sandbox-base .
+	docker build -f whc.Dockerfile -t scott/webapp-whc .
+
 push:
 	# docker push scott/sandbox-base
 	docker push scott/webapp-twin
