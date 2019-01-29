@@ -6,56 +6,26 @@ import eu.scott.warehouse.domains.blocksworld.Block
 import eu.scott.warehouse.domains.pddl.Or
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import eu.scott.warehouse.domains.pddl.Problem
+import eu.scott.warehouse.lib.OslcRdfHelper
+import eu.scott.warehouse.lib.OslcRdfHelper.OSLC
+import eu.scott.warehouse.lib.OslcRdfHelper.PDDL
+import eu.scott.warehouse.lib.OslcRdfHelper.RDFS
+import eu.scott.warehouse.lib.OslcRdfHelper.ns
+import eu.scott.warehouse.lib.OslcRdfHelper.nsSh
+import eu.scott.warehouse.lib.OslcRdfHelper.u
+import eu.scott.warehouse.lib.link
+import eu.scott.warehouse.lib.setLabel
+import eu.scott.warehouse.lib.setProperty
 import org.apache.jena.rdf.model.Model
-import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.riot.Lang
-import org.apache.jena.riot.RDFParser
-import org.eclipse.lyo.oslc4j.core.annotation.OslcName
-import org.eclipse.lyo.oslc4j.core.annotation.OslcNamespace
-import org.eclipse.lyo.oslc4j.core.annotation.OslcResourceShape
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource
 import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
 import org.eclipse.lyo.oslc4j.core.model.IResource
 import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
-import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.OSLC
-import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.PDDL
-import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.RDFS
-import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.ns
-import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.nsSh
-import se.ericsson.cf.scott.sandbox.whc.planning.OslcRdfHelper.u
 import java.math.BigInteger
 import java.net.URI
 import java.util.UUID
-import javax.ws.rs.core.UriBuilder
-import javax.xml.namespace.QName
-
-/**
- * REALLY useful method
- */
-val IResource.link: Link
-    get() {
-        return Link(this.about)
-    }
-
-/**
- * I think the QName part is XML heritage
- */
-fun IExtendedResource.setProperty(name: String, p: Any) {
-    this.extendedProperties[QName.valueOf(name)] = p
-}
-
-fun IExtendedResource.setProperty(name: URI, p: Any) = setProperty(name.toString(), p)
-
-class RawResource(about: URI) : AbstractResource(about) {
-    constructor() : this(u(UUID.randomUUID()))
-}
-
-fun IExtendedResource.setInstanceShape(cl: Class<*>) = this.setProperty(ns(OSLC, "instanceShape"), nsSh(cl))
-
-fun IExtendedResource.setSuperclass(cl: Class<*>) = this.setProperty(ns(RDFS, "subClassOf"), ns(cl))
-
-fun IExtendedResource.setLabel(l: String) = this.setProperty(ns(RDFS, "label"), l)
 
 data class InstanceWithResources<T : IResource>(val instance: T,
                                                 val resources: Collection<IResource>)
@@ -788,64 +758,6 @@ class PlanRequestBuilder {
     }
 }
 
-
-object OslcRdfHelper {
-
-    const val RDFS = "http://www.w3.org/2000/01/rdf-schema#"
-    const val PDDL = "http://ontology.cf.ericsson.net/pddl/"
-    const val OSLC = "http://open-services.net/ns/core#"
-    const val SH_ORDER = "http://www.w3.org/ns/shacl#order"
-
-
-    private lateinit var base: URI
-
-    fun setBase(b: URI) {
-        this.base = b
-    }
-
-    /**
-     * URI of the Resource
-     */
-    fun ns(clazz: Class<*>): URI {
-        val resourceShape = clazz.getAnnotation(OslcResourceShape::class.java)
-                ?: throw IllegalArgumentException(
-                        "The class does not have an OslcResourceShape annotation")
-        // TODO Andrew@2018-08-13: think what do when there is more than one OSLC class described by a shape
-        // FIXME Andrew@2018-08-13: think
-        return URI.create(resourceShape.describes.single())
-    }
-
-    /**
-     * URI of the Resource Shape
-     */
-    fun nsSh(clazz: Class<*>): URI {
-        val oslcNamespace = clazz.getAnnotation(OslcNamespace::class.java)
-        val oslcName = clazz.getAnnotation(OslcName::class.java)
-        if (oslcNamespace == null || oslcName == null) {
-            throw IllegalArgumentException("The class does not have OSLC annotations")
-        }
-        return URI.create(oslcNamespace.value + oslcName.value)
-    }
-
-    /**
-     * URI from an arbitrary namespace and resource/property name
-     */
-    fun ns(ns: String, name: String): URI {
-        return URI.create(ns + name)
-    }
-
-
-    fun u(p: String): URI {
-        return UriBuilder.fromUri(base).path(p).build()
-    }
-
-    fun u(p: UUID?): URI {
-        return u("blnk_" + p.toString())
-    }
-
-    fun modelFrom(str: String, l: Lang): Model {
-        val model = ModelFactory.createDefaultModel()
-        RDFParser.fromString(str.trimIndent()).lang(l).parse(model.graph)
-        return model
-    }
+class RawResource(about: URI) : AbstractResource(about) {
+    constructor() : this(u(UUID.randomUUID()))
 }
