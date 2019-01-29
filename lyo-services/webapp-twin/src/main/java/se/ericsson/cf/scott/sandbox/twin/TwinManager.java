@@ -41,6 +41,8 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 // Start of user code imports
 import java.util.concurrent.TimeUnit;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 // End of user code
 
 // Start of user code pre_class_code
@@ -52,6 +54,7 @@ public class TwinManager {
     public final static String PACKAGE_ROOT = TwinManager.class.getPackage().getName();
     private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
     private static Random r;
+    private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
     // End of user code
 
     // End of user code
@@ -65,22 +68,23 @@ public class TwinManager {
         TwinAdaptorHelper.servletContext = servletContextEvent.getServletContext();
         r = new Random();
 
-        // TODO Andrew@2019-01-24: add a wipe endpoint
-        TwinAdaptorHelper.initStore(false);
+        execService.schedule(() -> {
+            // TODO Andrew@2019-01-24: add a wipe endpoint
+            log.debug("Initialising the KB");
+            TwinAdaptorHelper.initStore(false);
 
+            log.debug("Initialising the TRS Client");
+            TwinAdaptorHelper.initTrsClient();
 
-//        initRos();
+            final long updateInterval = TimeUnit.SECONDS.toMillis(5);
+            log.debug("Initialising the TRS Server (Tupd={}ms)", updateInterval);
+            TwinAdaptorHelper.changeHistories = new TwinChangeHistories(TwinAdaptorHelper.mqttGateway.getMqttClient(),
+                                                                        "trs-twin", updateInterval
+            );
 
+//            registerTwins();
+        }, 5, TimeUnit.SECONDS);
 
-        // TODO Andrew@2019-01-23: start it on a separate thread
-        TwinAdaptorHelper.initTrsClient();
-
-        TwinAdaptorHelper.changeHistories = new TwinChangeHistories(
-            TwinAdaptorHelper.mqttGateway.getMqttClient(), "trs-twin",
-            TimeUnit.SECONDS.toMillis(5)
-        );
-
-//        registerTwins();
 
         // End of user code
     }
