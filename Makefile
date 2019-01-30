@@ -1,6 +1,6 @@
 .PHONY: build up build-twin restart-twin
 
-STACK ?= docker-compose.yml
+STACK ?= docker-compose.dev.yml
 
 build:
 	(cd planner_reasoner 		&&	make build)
