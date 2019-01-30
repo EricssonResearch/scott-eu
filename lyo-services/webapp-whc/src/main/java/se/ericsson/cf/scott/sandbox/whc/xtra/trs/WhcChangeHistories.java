@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.trs;
+package se.ericsson.cf.scott.sandbox.whc.xtra.trs;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;

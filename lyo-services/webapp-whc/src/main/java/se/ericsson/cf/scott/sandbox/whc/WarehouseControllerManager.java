@@ -1,5 +1,5 @@
 // Start of user code Copyright
-/*******************************************************************************
+/*!*****************************************************************************
  * Copyright (c) 2011, 2012 IBM Corporation and others.
  *
  *  All rights reserved. This program and the accompanying materials
@@ -26,17 +26,9 @@ package se.ericsson.cf.scott.sandbox.whc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.RegistrationMessage;
-import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
 import java.net.URI;
@@ -50,11 +42,12 @@ import java.util.concurrent.Executors;
 
 
 //import org.eclipse.lyo.store.StoreFactory;
-import se.ericsson.cf.scott.sandbox.whc.managers.MqttManager;
-import se.ericsson.cf.scott.sandbox.whc.managers.TRSManager;
-import se.ericsson.cf.scott.sandbox.whc.trs.WhcChangeHistories;
+import se.ericsson.cf.scott.sandbox.whc.xtra.managers.MqttManager;
+import se.ericsson.cf.scott.sandbox.whc.xtra.managers.TRSManager;
+import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
 // End of user code
 
 // Start of user code pre_class_code
@@ -96,7 +89,7 @@ public class WarehouseControllerManager {
 
         AdaptorHelper.initLogger();
         log.info("WHC instance '{}' is initialising", whcUUID.toString());
-        AdaptorHelper.context = servletContextEvent.getServletContext();
+        AdaptorHelper.setContext(servletContextEvent.getServletContext());
 
         execService.schedule(() -> {
             log.debug("Initialising an MQTT client");

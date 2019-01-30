@@ -75,7 +75,7 @@ class ChangeEventMqttMessageListener(private val changeEventListener: ChangeEven
         val payloadModel = ModelFactory.createDefaultModel()
         val inputStream = ByteArrayInputStream(payload.toByteArray(StandardCharsets.UTF_8))
         RDFDataMgr.read(payloadModel, inputStream, Lang.JSONLD)
-        try {1
+        try {
             changeEvent = JenaModelHelper.unmarshalSingle(payloadModel, Modification::class.java)
         } catch (e: LyoJenaModelException) {
             try {

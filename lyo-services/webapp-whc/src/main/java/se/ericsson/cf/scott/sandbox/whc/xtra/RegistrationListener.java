@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc;
+package se.ericsson.cf.scott.sandbox.whc.xtra;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +12,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 
 /**
  * Created on 2018-07-18

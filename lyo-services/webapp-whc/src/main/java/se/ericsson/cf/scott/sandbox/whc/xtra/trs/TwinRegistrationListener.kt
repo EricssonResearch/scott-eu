@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.trs
+package se.ericsson.cf.scott.sandbox.whc.xtra.trs
 
 import eu.scott.warehouse.lib.MqttHelper
 import eu.scott.warehouse.lib.MqttTopics

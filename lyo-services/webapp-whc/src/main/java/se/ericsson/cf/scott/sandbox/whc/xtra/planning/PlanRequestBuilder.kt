@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.planning
+package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
