@@ -9,6 +9,7 @@
     <relativePath>../lyo-webapp-parent</relativePath>
   </parent>
   <artifactId>webapp-executor</artifactId>
+  <name>Sandbox :: Service :: Plan Execution Monitoring</name>
   <packaging>war</packaging>
 
   <properties>

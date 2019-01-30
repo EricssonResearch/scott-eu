@@ -9,6 +9,7 @@
     <relativePath>../lyo-webapp-parent</relativePath>
   </parent>
   <artifactId>webapp-svc-location</artifactId>
+  <name>Sandbox :: Service :: Location</name>
   <packaging>war</packaging>
 
   <properties>
