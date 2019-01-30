@@ -17,18 +17,28 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <http.port>8091</http.port>
-    <!-- no need to have something like sandbox-location-svc -->
-    <http.path>/</http.path>
+    <kotlin.version>1.3.20</kotlin.version>
+    <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+    <kotlin.compiler.languageVersion>1.3</kotlin.compiler.languageVersion>
+    <kotlin.compiler.apiVersion>1.3</kotlin.compiler.apiVersion>
 
     <version.lyo>4.0.0-SNAPSHOT</version.lyo>
     <powermock.version>1.7.1</powermock.version>
+
+    <http.port>8091</http.port>
+    <!-- no need to have something like sandbox-location-svc -->
+    <http.path>/</http.path>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>se.ericsson.cf.scott.sandbox</groupId>
       <artifactId>domain-pddl</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>se.ericsson.cf.scott.sandbox</groupId>
+      <artifactId>lib-common</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
@@ -229,6 +239,11 @@
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
     </dependency>
 
 

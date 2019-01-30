@@ -1,7 +1,7 @@
 package eu.scott.warehouse.lib;
 
-import eu.scott.warehouse.domains.containers.ActionContainer;
-import eu.scott.warehouse.domains.containers.PlanContainer;
+import eu.scott.warehouse.domainx.containers.ActionContainer;
+import eu.scott.warehouse.domainx.containers.PlanContainer;
 import eu.scott.warehouse.domains.pddl.Plan;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -16,10 +16,8 @@ import org.apache.jena.riot.RDFFormat;
 import org.eclipse.lyo.core.trs.ChangeEvent;
 import org.eclipse.lyo.core.trs.Deletion;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import org.eclipse.lyo.oslc4j.core.model.IResource;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
 import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException;
-import org.eclipse.lyo.oslc4j.trs.client.exceptions.JenaModelException;
 import org.eclipse.lyo.oslc4j.trs.client.handlers.ChangeEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

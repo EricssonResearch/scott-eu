@@ -27,6 +27,13 @@
       <artifactId>domain-pddl</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>se.ericsson.cf.scott.sandbox</groupId>
+      <artifactId>lib-common</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+
 
     <dependency>
       <groupId>org.eclipse.lyo.trs</groupId>

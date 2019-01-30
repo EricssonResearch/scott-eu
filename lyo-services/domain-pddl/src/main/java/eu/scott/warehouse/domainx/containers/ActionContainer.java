@@ -1,4 +1,4 @@
-package eu.scott.warehouse.domains.containers;
+package eu.scott.warehouse.domainx.containers;
 
 import eu.scott.warehouse.domains.pddl.Action;
 import java.util.Collection;
