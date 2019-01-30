@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import rospy # ROS library
 # Scene Graph
-from turtlebot2i_safety.msg import SceneGraph,SafetyZone
+from turtlebot2i_scene_graph.msg import SceneGraph
+from turtlebot2i_safety.msg import SafetyZone
 import std_msgs.msg
 # Parse S-G
 import pydot # Default pydot doesn't work. pip install -I pydot==1.2.4
