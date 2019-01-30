@@ -1,5 +1,7 @@
 .PHONY: build up build-twin restart-twin
 
+STACK ?= docker-compose.yml
+
 build:
 	(cd planner_reasoner 		&&	make build)
 	(cd deployment/maven-base 	&&	make build)
@@ -16,18 +18,18 @@ restart-swarm:
 	(cd deployment	&& docker swarm init) || true
 	(cd deployment	&& docker service rm `docker service ls --filter name=scott -q` && sleep 1) || true
 	(cd deployment  && docker stack rm scott && sleep 15) || true
-	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)
+	(cd deployment	&& docker stack deploy -c $(STACK) --prune scott)
 
-build-twin:
-	(cd lyo-services 		&&	make build-twin)
+build-twin-robot:
+	(cd lyo-services 		&&	make build-twin-robot)
 
-restart-twin:
-	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin -q` && sleep 1) || true
-	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)
+restart-twin-robot:
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin-robot -q` && sleep 1) || true
+	(cd deployment	&& docker stack deploy -c $(STACK) --prune scott)
 
 build-whc:
 	(cd lyo-services 		&&	make build-whc)
 
 restart-whc:
 	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-whc -q` && sleep 1) || true
-	(cd deployment	&& docker stack deploy -c docker-compose.yml --prune scott)
+	(cd deployment	&& docker stack deploy -c $(STACK) --prune scott)

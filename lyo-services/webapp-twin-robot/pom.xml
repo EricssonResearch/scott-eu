@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>../lyo-webapp-parent</relativePath>
   </parent>
-  <artifactId>webapp-twin</artifactId>
+  <artifactId>webapp-twin-robot</artifactId>
   <name>Sandbox :: Twin :: Robot</name>
   <packaging>war</packaging>
   <properties>

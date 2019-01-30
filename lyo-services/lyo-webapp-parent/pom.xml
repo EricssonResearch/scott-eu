@@ -29,7 +29,7 @@
     <module>../webapp-executor</module>
     <module>../webapp-svc-location</module>
 
-    <module>../webapp-twin</module>
+    <module>../webapp-twin-robot</module>
     <module>../webapp-twin-shelf</module>
   </modules>
 
