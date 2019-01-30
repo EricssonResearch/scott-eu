@@ -1,19 +1,21 @@
 package se.ericsson.cf.scott.sandbox.twin;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import eu.scott.warehouse.lib.MqttClientBuilder;
 import eu.scott.warehouse.lib.MqttTopics;
 import eu.scott.warehouse.lib.TrsMqttGateway;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 import javax.servlet.ServletContext;
+import org.apache.jena.sparql.ARQException;
 import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.store.Store;
+import org.eclipse.lyo.store.StoreFactory;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.jetbrains.annotations.NotNull;
@@ -162,7 +164,22 @@ public class TwinAdaptorHelper {
     }
 
     public static void initStore(boolean wipeOnStartup) {
-        final Store store = LyoStoreManager.initLyoStore(wipeOnStartup);
-        setStore(store);
+        final String query_endpoint = p("store.query");
+        final String update_endpoint = p("store.update");
+        log.info("Initialising Lyo Store");
+        log.debug("SPARQL endpoints: query={}; update={}", query_endpoint, update_endpoint);
+        try {
+            final Store store = StoreFactory.sparql(query_endpoint, update_endpoint);
+            if (wipeOnStartup) {
+                log.warn("Erasing the whole dataset");
+                store.removeAll();
+            }
+            setStore(store);
+        } catch (IOException | ARQException e) {
+            log.error("SPARQL Store failed to initialise with the URIs query={};update={}", query_endpoint,
+                                      update_endpoint, e);
+            // TODO Andrew@2018-07-29: rethink exception management
+            throw new IllegalStateException(e);
+        }
     }
 }
