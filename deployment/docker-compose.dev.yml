@@ -1,0 +1,198 @@
+version: '3.3'
+
+services:
+  planner-reasoner:
+    image: scott/planner-reasoner
+    environment:
+      - PORT=3020 # internal port
+    networks:
+      - overlay
+    ports:
+      - "3021:3020" # mapping of external port to internal port
+    stdin_open: true # TODO why?
+    deploy:
+      # should be stateless
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 256m
+  sandbox-whc:
+    image: scott/webapp-whc
+    environment:
+      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2"
+    networks:
+      - overlay
+    ports:
+      - "8080:8080"
+    deploy:
+      # not ready for scaling yet
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 512m
+    depends_on:
+      # - warehouse-fuseki
+      - mosquitto
+  sandbox-executor:
+    image: scott/webapp-executor
+    environment:
+      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-executor -DhazelcastPeerPort=5701"
+      # JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=y -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-executor -DhazelcastPeerPort=5701"
+      # JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      # https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi#how-it-works
+      # swarmMgrUri: "http://192.168.65.3:2377"
+      # dockerNetworkNames: "overlay"
+      # dockerServiceNames: "sandbox-executor"
+      # hazelcastPeerPort: "5701"
+    networks:
+      - overlay
+    ports:
+      - "8083:8080"
+      - "9999:9999"
+      # - "5701"
+      # - "54327"
+    depends_on:
+      # - sandbox-whc
+      - sandbox-whc
+#      - swarm-manager
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 256m
+#      placement:
+#        constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
+  sandbox-twin:
+    image: scott/webapp-twin-robot
+    environment:
+      #TWINS: "2"
+      JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      ROS_MASTER_URI: "http://rosmaster:11311" # TODO remove
+    networks:
+      - overlay
+    sysctls:
+    # TODO remove
+    # hack https://answers.ros.org/question/245273/limit-the-ephemeral-port-range-that-ros-uses-to-make-xmlrpc-socket-connection/
+     - net.ipv4.ip_local_port_range=40000 40100
+    ports:
+     - "8081:8080" # Jetty
+     - "9991:9999" # remote debugger
+     - "40000-40100:40000-40100" # ROS ephemeral ports TODO remove
+    depends_on:
+      # - sandbox-whc
+      - warehouse-fuseki
+      - mosquitto
+#      - rosmaster
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+#          cpus: '0.25'
+          memory: 256m
+      restart_policy:
+        condition: on-failure
+  warehouse-fuseki:
+    # TODO bring back, see https://github.com/EricssonResearch/scott-eu/issues/101
+    image: stain/jena-fuseki
+    networks:
+      - overlay
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./fuseki_config:/fuseki/configuration
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 768m
+  mosquitto:
+    image: eclipse-mosquitto
+    networks:
+      - overlay
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto:/mosquitto/config
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 128m
+
+#  rosmaster:
+#    # TODO add deploy key
+#    image: ros
+#    command: roscore -p 11311
+#    deploy:
+#      placement:
+#        constraints: [node.role == worker]
+#    ports:
+#      - "11311:11311"
+
+#    swarm-manager:
+#      #TODO depend on it
+#      image: bobrik/socat:latest
+#      command: TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
+#      deploy:
+#        placement:
+#          constraints: [node.role == worker]
+#      networks:
+#        - overlay
+#      ports:
+#        - "2376:2375"
+#      volumes:
+#        - /var/run/docker.sock:/var/run/docker.sock
+#
+#   hazelcast:
+#     image: hazelcast/hazelcast
+#     networks:
+#       - overlay
+#     deploy:
+#       # just '4' for the test
+#       replicas: 4
+#       resources:
+#         limits:
+#           memory: 384m
+#       # placement:
+#       #   constraints: [node.role == worker]
+#       restart_policy:
+#         condition: on-failure
+#
+#   WIP, does not do the bidirectional
+#   robot-emulator:
+#     # 'ContainerSpec: image reference must be provided'
+#     image: scott/robot-emulator
+#     networks:
+#       - overlay
+#     deploy:
+#       replicas: 2
+#       # placement:
+#       #   constraints: [node.role == worker]
+#       restart_policy:
+#         condition: on-failure
+#     depends_on:
+#       # - sandbox-twin
+#       - mosquitto
+#   sandbox-twin-shelf:
+#     build: ../webapp-twin-shelf
+#     ports:
+#      - "8082:8080"
+#     depends_on:
+#     - sandbox-whc
+#     - mosquitto
+#     networks:
+#       - overlay
+
+networks:
+  overlay:
