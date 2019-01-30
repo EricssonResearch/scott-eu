@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.planning
+package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
 /**
  * TODO

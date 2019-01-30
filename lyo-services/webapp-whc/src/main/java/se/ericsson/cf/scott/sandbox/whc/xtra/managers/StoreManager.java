@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.managers;
+package se.ericsson.cf.scott.sandbox.whc.xtra.managers;
 
 import java.io.IOException;
 import org.apache.jena.atlas.web.HttpException;
@@ -8,7 +8,7 @@ import org.eclipse.lyo.store.StoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static se.ericsson.cf.scott.sandbox.whc.AdaptorHelper.p;
+import static se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper.p;
 
 /**
  * TODO

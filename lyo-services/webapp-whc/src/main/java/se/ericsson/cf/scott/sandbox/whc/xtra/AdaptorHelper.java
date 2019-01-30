@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc;
+package se.ericsson.cf.scott.sandbox.whc.xtra;
 
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 
 /**
  * TODO
@@ -46,6 +48,16 @@ public class AdaptorHelper {
 //    public static final String PLAN_CF_URI = "http://aide.md.kth.se:3020/planner/planCreationFactory";
     // TODO Andrew@2019-01-29: comment out
     public static final String MQTT_CLIENT_ID = "trs-consumer-whc";
+
+    public static ServletContext getContext() {
+        return context;
+    }
+
+    public static void setContext(final ServletContext context) {
+        AdaptorHelper.context = context;
+    }
+
+    // TODO Andrew@2019-01-30: make private
     static ServletContext context;
 
     // TODO Andrew@2018-02-07: submit to the JenaModelHelper
@@ -148,7 +160,7 @@ public class AdaptorHelper {
         return problemModel;
     }
 
-    static void initLogger() {
+    public static void initLogger() {
         // TODO Andrew@2018-07-28: document this
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
@@ -156,7 +168,7 @@ public class AdaptorHelper {
     }
 
     @NotNull
-    static ServiceProviderInfo[] defaultSPInfo() {
+    public static ServiceProviderInfo[] defaultSPInfo() {
         final ServiceProviderInfo[] serviceProviderInfos;
         final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
         serviceProviderInfo.serviceProviderId = DEFAULT_SP_ID;
@@ -165,7 +177,7 @@ public class AdaptorHelper {
         return serviceProviderInfos;
     }
 
-    static String hexHashCodeFor(final IResource aResource) {
+    public static String hexHashCodeFor(final IResource aResource) {
         return Integer.toHexString(aResource.hashCode());
     }
 }

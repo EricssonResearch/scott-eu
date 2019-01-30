@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.managers;
+package se.ericsson.cf.scott.sandbox.whc.xtra.managers;
 
 import com.google.common.collect.ImmutableMap;
 import eu.scott.warehouse.lib.MqttTopics;
@@ -10,9 +10,9 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.whc.AdaptorHelper;
+import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
-import se.ericsson.cf.scott.sandbox.whc.trs.TwinRegistrationListener;
+import se.ericsson.cf.scott.sandbox.whc.xtra.trs.TwinRegistrationListener;
 
 /**
  * TODO

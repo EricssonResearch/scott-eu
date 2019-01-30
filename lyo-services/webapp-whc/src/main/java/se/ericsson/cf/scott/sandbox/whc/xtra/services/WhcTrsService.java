@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.services;
+package se.ericsson.cf.scott.sandbox.whc.xtra.services;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;

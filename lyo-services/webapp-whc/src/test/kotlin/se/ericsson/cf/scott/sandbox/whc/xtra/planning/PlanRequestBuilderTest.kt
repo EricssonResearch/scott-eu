@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.planning
+package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import eu.scott.warehouse.lib.OslcRdfHelper.modelFrom

@@ -60,15 +60,13 @@ import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
-import eu.scott.warehouse.domains.mission.MissionDomainConstants;
-import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 
 // Start of user code imports
-import se.ericsson.cf.scott.sandbox.whc.services.WhcTrsService;
+import se.ericsson.cf.scott.sandbox.whc.xtra.services.WhcTrsService;
 // End of user code
 
 // Start of user code pre_class_code

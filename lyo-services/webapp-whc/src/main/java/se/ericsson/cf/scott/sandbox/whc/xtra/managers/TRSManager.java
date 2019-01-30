@@ -1,4 +1,4 @@
-package se.ericsson.cf.scott.sandbox.whc.managers;
+package se.ericsson.cf.scott.sandbox.whc.xtra.managers;
 
 import com.google.common.collect.Lists;
 import eu.scott.warehouse.domains.blocksworld.Move;
@@ -36,10 +36,10 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.whc.AdaptorHelper;
+import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerResourcesFactory;
-import se.ericsson.cf.scott.sandbox.whc.trs.WhcChangeHistories;
+import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
 /**
  * TODO
