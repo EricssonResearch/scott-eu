@@ -40,6 +40,13 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 
     robot_id = sim.getStringSignal("robot_id")
 
+    -- Disable camera sensor (comment the lines below to enable) 
+    object_camera_rgb = sim.getObjectHandle('camera_rgb')
+    object_camera_depth = sim.getObjectHandle('camera_depth')
+    sim.setExplicitHandling(object_camera_rgb, 1) -- disable camera rgb
+    sim.setExplicitHandling(object_camera_depth, 1) -- disable camera depth
+
+    -- Get object handler
     modelHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
     object_name = sim.getObjectName(modelHandle)
     sensor_number, sensor_name = sim.getNameSuffix(object_name)

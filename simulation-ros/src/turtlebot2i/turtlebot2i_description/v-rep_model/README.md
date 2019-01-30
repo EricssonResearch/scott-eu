@@ -4,12 +4,7 @@ This folder contains the scene files e.g. **turtlebot2i.ttt** and Lua files for 
 
 The scene files are:
 
-1. mapir_lab_turtlebot2i.ttt
-2. turtlebot2i.ttt
-3. turtlebot2i_multirobot.ttt
-4. warehouse_turtlebot2i.ttt
-5. warehouse_turtlebot2i_v2.ttt
-6. warehouse_turtlebot2i_v3.ttt
+1. warehouse_turtlebot2i_v(xxx).ttt
 
 **Comment from Andrew: **
 
@@ -32,7 +27,7 @@ The Lua files are:
 1. turtlebot2i.lua 
 2. turtlebot2i_camera.lua
 3. turtlebot2i_dockstation.lua
-4. turtlebot2i_GPS.lua
+4. turtlebot2i_GPS.lua (Deprecated)
 5. turtlebot2i_IMU.lua
 6. turtlebot2i_lidar.lua
 7. turtlebot2i_turtlebot2i.lua
