@@ -1,6 +1,7 @@
 package se.ericsson.cf.scott.sandbox.executor;
 
 import org.junit.Test;
+import se.ericsson.cf.scott.sandbox.executor.xtra.ExecutorServiceHelper;
 
 import static org.assertj.core.api.Assertions.*;
 

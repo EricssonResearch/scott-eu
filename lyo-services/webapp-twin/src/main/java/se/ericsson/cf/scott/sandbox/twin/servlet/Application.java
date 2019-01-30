@@ -40,7 +40,7 @@ import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.Error;
 import org.eclipse.lyo.oslc4j.core.model.*;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
-import se.ericsson.cf.scott.sandbox.twin.services.AdaptorAdminService;
+import se.ericsson.cf.scott.sandbox.twin.xtra.services.AdaptorAdminService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;

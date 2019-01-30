@@ -1,5 +1,5 @@
 // Start of user code Copyright
-/*******************************************************************************
+/*!******************************************************************************
  * Copyright (c) 2011, 2012 IBM Corporation and others.
  *
  *  All rights reserved. This program and the accompanying materials
@@ -40,9 +40,10 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 
 // Start of user code imports
 import java.util.concurrent.TimeUnit;
-import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 // End of user code
 
 // Start of user code pre_class_code
@@ -65,7 +66,7 @@ public class TwinManager {
         // Start of user code contextInitializeServletListener
 
         log.info("Twin {} is starting", TwinAdaptorHelper.getTwinUUID());
-        TwinAdaptorHelper.servletContext = servletContextEvent.getServletContext();
+        TwinAdaptorHelper.setServletContext(servletContextEvent.getServletContext());
         r = new Random();
 
         execService.schedule(() -> {
@@ -78,9 +79,8 @@ public class TwinManager {
 
             final long updateInterval = TimeUnit.SECONDS.toMillis(5);
             log.debug("Initialising the TRS Server (Tupd={}ms)", updateInterval);
-            TwinAdaptorHelper.changeHistories = new TwinChangeHistories(TwinAdaptorHelper.mqttGateway.getMqttClient(),
-                                                                        "trs-twin", updateInterval
-            );
+            TwinAdaptorHelper.setChangeHistories(
+                new TwinChangeHistories(TwinAdaptorHelper.getMqttGateway().getMqttClient(), "trs-twin", updateInterval));
 
 //            registerTwins();
         }, 5, TimeUnit.SECONDS);
@@ -97,7 +97,7 @@ public class TwinManager {
         log.info("Destroying the servlet");
         try {
             TwinAdaptorHelper.getTrsClientManager().unregisterTwinAndDisconnect();
-            TwinAdaptorHelper.mqttGateway.disconnect();
+            TwinAdaptorHelper.getMqttGateway().disconnect();
         } catch (MqttException e) {
             log.error("Failed to disconnect from the MQTT broker");
         }

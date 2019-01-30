@@ -36,9 +36,10 @@ import javax.servlet.ServletContext;
 import org.eclipse.lyo.store.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.twins.shelf.manager.LeshanManager;
-import se.ericsson.cf.scott.sandbox.twins.shelf.manager.LyoStoreManager;
-import se.ericsson.cf.scott.sandbox.twins.shelf.manager.TrsConsumerManager;
+import se.ericsson.cf.scott.sandbox.twins.shelf.xtra.manager.LeshanManager;
+import se.ericsson.cf.scott.sandbox.twins.shelf.xtra.manager.LyoStoreManager;
+import se.ericsson.cf.scott.sandbox.twins.shelf.xtra.manager.TrsConsumerManager;
+import se.ericsson.cf.scott.sandbox.twins.shelf.xtra.AdaptorHelper;
 // End of user code
 
 // Start of user code pre_class_code
