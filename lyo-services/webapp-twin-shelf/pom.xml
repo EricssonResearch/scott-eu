@@ -9,6 +9,7 @@
     <relativePath>../lyo-webapp-parent</relativePath>
   </parent>
   <artifactId>webapp-twin-shelf</artifactId>
+  <name>Sandbox :: Twin :: Shelf</name>
   <packaging>war</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
