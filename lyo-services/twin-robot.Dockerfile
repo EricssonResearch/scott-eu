@@ -8,4 +8,4 @@ FROM jetty:9.3-jre8-alpine
 # WARNING DO NOT CHANGE WORKDIR or set it back to what it was before
 # $JETTY_BASE must be correct before starting Jetty
 
-COPY --from=build /build/app/webapp-twin/target/*.war /var/lib/jetty/webapps/ROOT.war
+COPY --from=build /build/app/webapp-twin-robot/target/*.war /var/lib/jetty/webapps/ROOT.war
