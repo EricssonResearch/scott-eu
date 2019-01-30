@@ -22,11 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.clients.TwinRegistrationClient;
-// TODO Andrew@2019-01-22: clean up
-//import se.ericsson.cf.scott.sandbox.twin.ros.RosManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
-import se.ericsson.cf.scott.sandbox.twin.trs.LyoStoreManager;
 import se.ericsson.cf.scott.sandbox.twin.trs.TrsMqttClientManager;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinAckRegistrationAgent;
 import se.ericsson.cf.scott.sandbox.twin.trs.TwinChangeHistories;
@@ -44,8 +41,6 @@ public class TwinAdaptorHelper {
     static TrsMqttClientManager trsClientManager;
     static Store store;
     static TrsMqttGateway mqttGateway;
-//    private static HazelcastInstance hc;
-//    static IMap<String, TwinsServiceProviderInfo> twinProviderInfo;
     static TwinChangeHistories changeHistories;
     static ServletContext servletContext;
     private static ServiceProviderRepository serviceProviderRepository;
@@ -124,7 +119,6 @@ public class TwinAdaptorHelper {
 
     @NotNull
     public static TwinRegistrationClient createTwinRegistrationClient() {
-        // FIXME Andrew@2018-09-04: rewrite & call from the CF handler
         final OslcClient client = new OslcClient();
         // TODO Andrew@2019-01-29: remove hardcoded URI
         return new TwinRegistrationClient(
@@ -166,6 +160,11 @@ public class TwinAdaptorHelper {
     public static void initStore(boolean wipeOnStartup) {
         final String query_endpoint = p("store.query");
         final String update_endpoint = p("store.update");
+        initStoreGeneric(query_endpoint, update_endpoint, wipeOnStartup);
+    }
+
+    private static void initStoreGeneric(final String query_endpoint, final String update_endpoint,
+        final boolean wipeOnStartup) {
         log.info("Initialising Lyo Store");
         log.debug("SPARQL endpoints: query={}; update={}", query_endpoint, update_endpoint);
         try {
@@ -176,8 +175,9 @@ public class TwinAdaptorHelper {
             }
             setStore(store);
         } catch (IOException | ARQException e) {
-            log.error("SPARQL Store failed to initialise with the URIs query={};update={}", query_endpoint,
-                                      update_endpoint, e);
+            log.error("Failed to initialise Lyo Store with SPARQL endpoints: query={}; update={}", query_endpoint,
+                      update_endpoint
+            );
             // TODO Andrew@2018-07-29: rethink exception management
             throw new IllegalStateException(e);
         }

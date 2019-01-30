@@ -15,6 +15,7 @@
 
   <modules>
     <module>../domain-pddl</module>
+    <module>../lib-common</module>
 
     <module>../webapp-whc</module>
     <module>../webapp-executor</module>

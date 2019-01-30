@@ -1,4 +1,4 @@
-package eu.scott.warehouse.domains.containers;
+package eu.scott.warehouse.domainx.containers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
