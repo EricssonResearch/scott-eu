@@ -38,6 +38,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import eu.scott.warehouse.lib.TrsMqttGateway;
+import se.ericsson.cf.scott.sandbox.executor.xtra.ExecutorServiceHelper;
+import se.ericsson.cf.scott.sandbox.executor.xtra.mqtt.MqttManager;
 // End of user code
 
 // Start of user code pre_class_code

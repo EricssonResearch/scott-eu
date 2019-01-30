@@ -44,9 +44,9 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.TwinAdaptorHelper;
+import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
-import se.ericsson.cf.scott.sandbox.twin.ServiceProviderRepository;
+import se.ericsson.cf.scott.sandbox.twin.xtra.ServiceProviderRepository;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 
 // Start of user code imports

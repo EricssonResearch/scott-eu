@@ -1,15 +1,11 @@
 package se.ericsson.cf.scott.sandbox.twin;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.twin.trs.MqttManager;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  *
