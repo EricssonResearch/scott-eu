@@ -34,7 +34,35 @@ pip3 install opencv-python
 ```
 
 3. Install cv_bridge
-Follow the instructions in https://stackoverflow.com/questions/49221565/unable-to-use-cv-bridge-with-ros-kinetic-and-python3
+
+### Go to Workspace
+e.g ```cd scott-eu/simulation-ros```
+run ```catkin init``` to see if the catkin is initialized
+### Instruct catkin to set cmake variables
+```catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so```
+### Instruct catkin to install built packages into install place. It is $CATKIN_WORKSPACE/install folder
+```catkin config --install```
+### Clone cv_bridge src
+```git clone https://github.com/ros-perception/vision_opencv.git src/vision_opencv```
+### Find version of cv_bridge in your repository
+```apt-cache show ros-kinetic-cv-bridge | grep Version```
+    You will see something like: ```Version: 1.12.8-0xenial-20180416-143935-0800```
+### Checkout right version in git repo. In our case it is 1.12.8
+```cd src/vision_opencv/```
+```git checkout 1.12.8```
+```cd ../../```
+### Build
+```catkin build cv_bridge```
+    1. if the build fails due to the configuration differences clean the build by running ```catkin clean -b```
+    2. Run the build command.
+    3. If the build fails due to boost_python3 library
+        a. Run ```cd /usr/lib/x86_64-linux-gnu/```.
+        b. Check if boast python 3.5 exists by running ```test -e libboost_python-py35.so && echo file exisits || echo file missing```
+        c. If file exists, Create a symbolic link by running ```sudo ln -s libboost_python-py35.so libboost_python3.socd /usr/lib/x86_64-linux-gnu/``` and run the build command.
+### Extend environment with new package
+source install/setup.bash --extend
+
+Instruction taken from https://stackoverflow.com/questions/49221565/unable-to-use-cv-bridge-with-ros-kinetic-and-python3
 
 4. Install MRCNN library (install the required depences):
 
