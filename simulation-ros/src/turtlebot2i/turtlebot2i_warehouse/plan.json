@@ -3,11 +3,15 @@
     "init": "initURI",
     "goal": "finalURI",
     "plan":[
-                ["move", "turtlebot2i", "Waypoint_SH#1"],
-                ["pick", "turtlebot2i", "ShelfBody#1", "productRed"],
-                ["pick", "turtlebot2i", "ShelfBody#1", "productGreen"],
+                ["move", "turtlebot2i", "Waypoint_SH"],
+                ["pick", "turtlebot2i", "ShelfBody", "productRed"],
+                ["pick", "turtlebot2i", "ShelfBody", "productGreen"],
+	        ["pick", "turtlebot2i", "ShelfBody", "productYellow"],
                 ["move", "turtlebot2i", "Waypoint_CB"],
-                ["drop", "turtlebot2i", "ConveyorBeltBody", "productRed"]
+                ["drop", "turtlebot2i", "ConveyorBeltBody", "productRed"],
+                ["drop", "turtlebot2i", "ConveyorBeltBody", "productGreen"],
+         	["drop", "turtlebot2i", "ConveyorBeltBody", "productYellow"]
+	
            ]
 }
 

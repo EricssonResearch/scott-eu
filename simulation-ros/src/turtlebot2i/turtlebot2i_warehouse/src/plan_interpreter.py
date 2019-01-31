@@ -324,6 +324,7 @@ class PlanInterpreter:
                 rospy.sleep(1)
                 self.scene.remove_world_object(task.product)
                 rospy.sleep(1)
+
             # self.__check_task_status()
 
     def reposition_stored_obj(self, obj_id, prod_id, store):
@@ -400,6 +401,7 @@ class PlanInterpreter:
             self.products[product]['obj_position'])
         delta = (productRed_position - product_position)[:3]
         waypoint[:3] -= delta[:3]
+        # waypoint[0] -= 0.05
         return waypoint
 
     def __move_pose(self, pose):
