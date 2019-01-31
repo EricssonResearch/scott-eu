@@ -49,6 +49,33 @@ end
 if (sim_call_type==sim.childscriptcall_initialization) then 
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
 
+    -- docs.ros.org/indigo/api/kobuki_msgs/html/msg/SensorState.html
+    --DISCHARGING      = 0
+    --DOCKING_CHARGED  = 2
+    --DOCKING_CHARGING = 6
+    --ADAPTER_CHARGED  = 18
+    --ADAPTER_CHARGING = 22
+    sim.setIntegerSignal(robot_name .. '_charger_state', 0)  -- specify whether robot is charging
+
+
+    -- Get proximity sensor handlers
+    object_cliff_sensor_front = sim.getObjectHandle('cliff_sensor_front')
+    object_cliff_sensor_left = sim.getObjectHandle('cliff_sensor_left')
+    object_cliff_sensor_right = sim.getObjectHandle('cliff_sensor_right')
+    object_dock_station_ir_sensor = sim.getObjectHandle('dock_station_ir_sensor')
+    object_wheel_drop_sensor_left = sim.getObjectHandle('wheel_drop_sensor_left')
+    object_wheel_drop_sensor_right = sim.getObjectHandle('wheel_drop_sensor_right')
+
+
+    -- Disable proximity sensors (Comment the lines below if want to enable some sensor)
+    sim.setExplicitHandling(object_cliff_sensor_front, 1)   
+    sim.setExplicitHandling(object_cliff_sensor_left, 1) 
+    sim.setExplicitHandling(object_cliff_sensor_right, 1)  
+    --sim.setExplicitHandling(object_dock_station_ir_sensor, 1) 
+    sim.setExplicitHandling(object_wheel_drop_sensor_left, 1) 
+sim.setExplicitHandling(object_wheel_drop_sensor_right, 1) 
+
+
     robot_id = sim.getStringSignal('robot_id')
     robot_name = sim.getStringSignal('robot_name')
 
