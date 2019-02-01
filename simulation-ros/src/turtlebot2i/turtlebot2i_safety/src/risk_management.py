@@ -1,21 +1,29 @@
 #!/usr/bin/env python
 import rospy # ROS library
+import rospkg
+
 # Scene Graph
 from turtlebot2i_scene_graph.msg import SceneGraph
 from turtlebot2i_safety.msg import SafetyZone
 import std_msgs.msg
+
 # Parse S-G
 import pydot # Default pydot doesn't work. pip install -I pydot==1.2.4
 import re
+
 # Fuzzy logic packages
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
+
 # Safety control MSG
 import std_msgs.msg 
 from geometry_msgs.msg import Twist,Vector3
+
 # Debug
 import time
+import os
+import cPickle as pickle 
 
 def init_var():
     '''
@@ -49,6 +57,9 @@ def init_var():
     navi_linVel = 0  #Initialization
     navi_rotVel = 0  #Initialization
  
+    global package_path
+    rospack = rospkg.RosPack()
+    package_path = rospack.get_path('turtlebot2i_safety')
        
 def init_regEx(): 
     '''
@@ -83,6 +94,7 @@ def init_fls_common_part():
     rear_d_p1 = fuzz.trapmf(range_degree, [90, 135, 180,180]) 
     null,object_direction['BigRear']  =fuzz.fuzzy_or(range_degree,rear_d_p1,range_degree,rear_d_p2)
     print("init_fls_common_part")
+
 def init_risk_assessment():
     range_type = np.arange(0, 2+1, 1)
     # New Antecedent/Consequent objects
@@ -116,20 +128,23 @@ def init_risk_assessment():
     object_risk['High'] =  fuzz.trimf(range_risk, [2, 3, 4]) 
     object_risk['VeryHigh'] =  fuzz.trimf(range_risk, [3, 4, 4]) 
     
-    import os
-    import cPickle as pickle 
-    fls_name = "ra_full.data"
+    fls_name = "/rules/ra_full.data"
+    fls_data_path = package_path + fls_name
+    print(fls_data_path)
 
-    if os.path.exists(fls_name):
+    #if os.path.exists(fls_name):
+    if os.path.exists(fls_data_path):
         print("FLS exists!")
-        f = open(fls_name,'rb')
+        #f = open(fls_name,'rb')
+        f = open(fls_data_path,'rb')
         ra_fls = pickle.load(f)
     else:
         print("Init FLS")
         from assessment_rules import rule_list_generator
         assessment_rule_list=rule_list_generator(object_type,object_distance,object_direction, object_speed, object_orientation, object_risk)
         ra_fls = ctrl.ControlSystem(assessment_rule_list)
-        f = open(fls_name,'wb')
+        #f = open(fls_name,'wb')
+        f = open(fls_data_path,'wb')
         pickle.dump(ra_fls,f)
         f.close 
     global risk_assessment_instance 
@@ -289,8 +304,9 @@ def parse_dot_file(graph):
 
 def topic_callback(data):
     time_previous = time.time()
-    graphs = pydot.graph_from_dot_data(data.sg_data) #From string
-    (graph,) = graphs
+    #graphs = pydot.graph_from_dot_data(data.sg_data) #From string
+    graph = pydot.graph_from_dot_data(data.sg_data) #From string
+    #(graph,) = graphs
     parse_dot_file(graph)
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 
@@ -302,19 +318,25 @@ def navi_vel_callback(data):
 """ Main program """
 if __name__ == "__main__":  
 
-    init_var()
-    init_regEx()
-    init_fls_common_part()
-    init_risk_assessment()
-    init_risk_mitigation()
+    rospy.init_node("risk_management",anonymous=True)
 
-    rospy.init_node("prase_ros_node",anonymous=True) #Always first
+    init_var()
+    print("init_var ok")
+    init_regEx()
+    print("init_regEx ok")
+    init_fls_common_part()
+    print("init_fls_common_part ok")
+    init_risk_assessment()
+    print("init_risk_assessment ok")
+    init_risk_mitigation()
+    print("init_risk_mitigation ok")
+
     print("Initializing parse node finished")
 
     ## SUBSCRIBERS
     # Creates a subscriber object
-    rospy.Subscriber('/turtlebot2i/safety/scene_graph', SceneGraph, topic_callback)
-    rospy.Subscriber('/turtlebot2i/cmd_vel_mux/navi', Twist, navi_vel_callback)
+    rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)
+    rospy.Subscriber('/turtlebot2i/cmd_vel_mux/navigation', Twist, navi_vel_callback)
     ## PUBLISHERS
     # Creates a publisher object
     pub = rospy.Publisher('/turtlebot2i/safety/safety_zone', SafetyZone, queue_size=10)
