@@ -14,6 +14,7 @@ from moveit_commander import PlanningSceneInterface
 from moveit_commander import roscpp_initialize, RobotCommander
 from tf.transformations import quaternion_from_euler
 import time
+import vrep
 # TODO: refactor classes
 
 
@@ -52,11 +53,62 @@ class PlanInterpreter:
         self.plan = self.parse_plan(json_plan)
         self.load_objects(self.path + '/scene.yaml')
 
-        # TODO, check these positions
         self.storage = list(([[0.00, 0.1, 0.215], 0],
                              [[0.00, 0.0, 0.215], 0],
                              [[0.00, -0.1, 0.215], 0]))
 
+        # Init remote API
+        self.clientID = self.init_remote_api('127.0.0.1')
+
+
+    def init_remote_api(self, address, port=20001):
+        address = str(address)
+        port = int(port)
+        clientID = vrep.simxStart(address, port, True, True, 5000, 5)
+        attemp = 0 
+        while clientID == -1 and attemp < 20:
+            clientID = vrep.simxStart(address, port, True, True, 5000, 5)
+            rospy.loginfo('Connecting to Vrep, attemp #%s', attemp)
+            attemp += 1
+        if clientID != -1:
+            rospy.loginfo('Connected to Vrep')
+        else:
+            rospy.logerr('Vrep connection Failed')
+            exit()
+        return clientID
+
+    def get_object_position(self, shelf, product):
+        clientID = self.clientID
+        matching_prods = []
+        childs = []
+        # _, shelfHandle = vrep.simxGetObjectHandle(clientID, shelf, vrep.simx_opmode_blocking)
+        # c = vrep.simxCallScriptFunction(clientID, shelf, vrep.sim_scripttype_childscript, 'doSome',
+        #                                [], [], [], bytearray([]), vrep.simx_opmode_blocking)
+        #print(c)
+        '''name = vrep.simxGetObjectGroupData(clientID, shelfHandle, 1, vrep.simx_opmode_blocking)
+        print(name)
+        for i in range(0, 9):
+            _, child = vrep.simxGetObjectChild(clientID, shelfHandle, i, vrep.simx_opmode_blocking)
+            if child == -1:
+                break
+            childs.append(child)
+
+        print(childs)
+        for i in childs:
+            name = vrep.simxGetObjectGroupData(clientID, i, 0, vrep.simx_opmode_blocking)
+            print(name)
+            if product in name:
+                code = int(name.split('#')[1])
+                matching_prods.append((code, i))
+
+        matching_prods.sort(key=lambda tup: tup[0])
+        productHandle =  matching_prods[0][1]'''
+        # TO-DO: add orientation info
+        _, productHandle = vrep.simxGetObjectHandle(clientID, 'productRed#1', vrep.simx_opmode_blocking)
+        _, pos = vrep.simxGetObjectPosition(clientID, productHandle, -1, vrep.simx_opmode_blocking)
+        _, qt = vrep.simxGetObjectQuaternion(clientID, productHandle, -1, vrep.simx_opmode_blocking)
+        return list(pos)+list(qt)
+        
     def load_json(self, path):
         return json.load(open(path))
 
@@ -125,6 +177,11 @@ class PlanInterpreter:
         pose = np.asarray(pose[:3]) + np.asarray(product['obj_position'][:3])
         product['obj_position'] = np.hstack(
             (pose, product['obj_position'][3:]))
+        rospy.loginfo('Old product signature: %s', product)
+        rospy.loginfo('New product signature: %s', self.get_object_position(shelf, product))
+        product['obj_position'] = self.get_object_position(shelf, product)
+        print(product['obj_position'])
+        product['obj_position'][2] -= 1.246
         self.add_box(product)
         return product['name']
 
@@ -278,6 +335,15 @@ class PlanInterpreter:
         target = [pose.x, pose.y, pose.y]
         frame = obj.header.frame_id
         pose = self.target_to_frame(target, frame_from=frame, orientation=True)
+
+        # posicao do object no frame map; projetar no frame;
+        _, productHandle = vrep.simxGetObjectHandle(self.clientID, 'productRed#1', vrep.simx_opmode_blocking)
+        v_pose =  vrep.simxGetObjectPosition(self.clientID, productHandle, -1, vrep.simx_opmode_blocking)
+        v_qt =  vrep.simxGetObjectQuaternion(self.clientID, productHandle, -1, vrep.simx_opmode_blocking)
+        v_pose = list(v_pose) + list(v_qt)
+        v_pose = self.to_pose(target, frame='/map')
+        rospy.loginfo('Pose1 [%s]/n Pose2 [%s]', pose, v_pose)
+
         pose[2] = store[2] + 0.01
         pose = self.to_pose(pose)
         self.scene.attach_box("base_footprint",
