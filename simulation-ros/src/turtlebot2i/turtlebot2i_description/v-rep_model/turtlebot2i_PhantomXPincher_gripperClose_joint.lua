@@ -15,12 +15,13 @@ function sysCall_sensing()
     joint5_pos=sim.getJointPosition(self_handle)
 
     joint5_max=0.032--math.pi/2
-    joint5_min=-0.002---math.pi/2
+    joint5_min=-0.05---math.pi/2
 
     gripleft_max=0.015 --1.500e-2
     gripleft_min=0
 
-    g=((joint5_pos-joint5_min)/(joint5_max-joint5_min))*(gripleft_max-gripleft_min)
+    -- g=((joint5_pos-joint5_min)/(joint5_max-joint5_min))*(gripleft_max-gripleft_min)
+    g = sim.getJointPosition(self_handle)
 
     handle=sim.getObjectHandle('PhantomXPincher_gripperCenter_joint0')
     handle0=sim.getObjectHandle('PhantomXPincher_gripperCenter_joint')
@@ -28,7 +29,7 @@ function sysCall_sensing()
 
     --f=sim.getJointForce(handle)
     sim.setJointTargetPosition(handle,g)
-    sim.setJointTargetPosition(handle0,g)
+    sim.setJointTargetPosition(handle0,0.008)
 
     prox_sense_left_handle=sim.getObjectHandle('Proximity_sensor_left')
     prox_sense_right_handle=sim.getObjectHandle('Proximity_sensor_right')
