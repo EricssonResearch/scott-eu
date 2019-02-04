@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 
+  <arg name="cmd_vel_mux" default="false"/>
+
   <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
     <param name="frame_id" value="map"/>
   </node>
@@ -8,6 +10,7 @@
   <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
     <arg name="robot_name" value="turtlebot2i"/>
     <arg name="moveit" value="false"/>
+    <arg name="cmd_vel_mux" value="$(arg cmd_vel_mux)"/>
   </include>
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_single_robot.rviz" />

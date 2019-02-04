@@ -1,2 +1,0 @@
-pydot==1.2.4
-pyparsing==2.2.0

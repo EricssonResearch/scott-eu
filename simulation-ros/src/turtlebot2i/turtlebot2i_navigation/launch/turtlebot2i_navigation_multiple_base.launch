@@ -24,6 +24,8 @@
   <arg name="moveit"        default="false" /> 
   <!--<rosparam param="joints"  subst_value="true" />-->
 
+  <!-- Command Velocity Multiplexer -->
+  <arg name="cmd_vel_mux"   default="false"     doc="cmd_vel_mux enabled (1) or disabled (0)"/>
   
   <!-- Spawn Robots (Turtlebot2i + Pincher Arm) -->
   <arg name="robot_name" default="turtlebot2i"/>
@@ -41,9 +43,11 @@
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
 
     <!-- Navigation  -->
-    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="log">
 <!--      <param name="controller_frequency" value="5.0" />-->
       <remap from="cmd_vel" to="/$(arg robot_name)/commands/velocity"/>
+      <remap from="cmd_vel" to="/$(arg robot_name)/cmd_vel_mux/navigation" if="$(arg cmd_vel_mux)"/>
+
       <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
       <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
       <rosparam file="$(find turtlebot2i_navigation)/config/global_costmap_params.yaml" command="load" />
