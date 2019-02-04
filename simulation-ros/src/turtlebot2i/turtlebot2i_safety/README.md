@@ -61,3 +61,9 @@ A custom message *safety_zone_msg* that informs the size of safety zones is prov
 - **warning_safety_zone_radius:** Radius size of the robot's intermediary safety zone.
 - **critical_safety_zone_radius:** Radius size of the robot's most internal safety zone.
 
+# 6. V-REP Scenarios
+
+In `scenarios` folder there are a set of v-rep scenarios to test the risk management.
+- Files with SXX.ttt: Scenario for risk management for single robot.
+- Files with MXX.ttt: Scenario for risk management for multiple robots.
+- Files with HRC_XX.ttt: Human-robot collaboration scenarios.
