@@ -11,7 +11,6 @@
                 ["drop", "turtlebot2i", "ConveyorBeltBody", "productRed"],
                 ["drop", "turtlebot2i", "ConveyorBeltBody", "productGreen"],
          	["drop", "turtlebot2i", "ConveyorBeltBody", "productYellow"]
-	
            ]
 }
 
