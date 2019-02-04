@@ -6,6 +6,12 @@
 
 -- List all products on this shelf
 
+getObjectName = function(intArg, fltArg, strArg, byteArg)
+    objectHandle = intArg[1]
+    objectName=sim.getObjectName(objectHandle)
+    return {},{},{objectName},''
+end
+
 getListOfProducts = function ()
 
     shelfHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
@@ -128,7 +134,7 @@ end
                 sim.setObjectOrientation(copiedObjectHandle,shelfHandle,{0,0,0})
                 sim.setObjectPosition(copiedObjectHandle,shelfHandle,position)
                 sim.setObjectInt32Parameter(copiedObjectHandle,sim.shapeintparam_static,0) -- ,0) for dynamic and ,1) for static
-                
+		sim.setObjectParent(copiedObjectHandle, shelfHandle, true)                
             end
         else   
             print("Product creation error. There are too many (",counter_of_product_type,") ",productType," units in this shelf.")
