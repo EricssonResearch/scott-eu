@@ -22,16 +22,17 @@ The **trained rules** are stored in the following files:
 
 # 3. Running the Risk Assessment and Mitigation (Risk Management)
 
-The risk assessment can be run by executing the following:
+The risk management can be run by executing the following:
 ```
 rosrun turtlebot2i_safety risk_management.py
 ```
 
 Alternatively it is possible to run the launch script:
 ```
-roslaunch turtlebot2i_safety 
+roslaunch turtlebot2i_safety turtlebot2i_safety_single.launch 
 ```
 
+**The use case scenarios compatible to this package is located in the scenario folder. It is also possible to use the `warehouse_turtlebot2i.ttt` located in the `turtlebot2i_description/v-rep_model` folder.**
 
 # 4. Generating Rules for Risk Assessment or Management
 
