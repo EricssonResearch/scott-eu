@@ -9,4 +9,5 @@ build:
 		-t scott/planner-reasoner .
 
 push:
-	docker push scott/planner-reasoner
+	docker image tag scott/planner-reasoner ${CI_REGISTRY}/scott/planner-reasoner
+	docker push ${CI_REGISTRY}/scott/planner-reasoner
