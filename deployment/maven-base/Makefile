@@ -5,4 +5,5 @@ build:
 	docker build -f maven.Dockerfile -t scott/maven-base .
 
 push:
-	docker push scott/maven-base
+	docker image tag scott/maven-base ${CI_REGISTRY}/scott/maven-base
+	docker push ${CI_REGISTRY}/scott/maven-base
