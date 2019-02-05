@@ -10,6 +10,7 @@ function sysCall_init()
 	-- Initialization ------------------------
 	--sim.setBoolParameter(sim.boolparam_display_enabled,false)-- Disables rendering to increase simulation speed
 	simRemoteApi.start(20000) -- Start the remote API
+	simRemoteApi.start(20001) -- Start the remote API	
 	
 	-- Building the scene ------------------------
 	
