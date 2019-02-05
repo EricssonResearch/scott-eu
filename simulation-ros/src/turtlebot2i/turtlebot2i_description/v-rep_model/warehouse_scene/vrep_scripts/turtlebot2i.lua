@@ -47,6 +47,24 @@ function setMotor_cb(msg)
 end
 
 if (sim_call_type==sim.childscriptcall_initialization) then 
+
+
+    -- Build file name
+    local sceneFullName = sim.getStringParameter(sim.stringparam_scene_name)
+    local objectHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
+    root_name = sim.getObjectName(objectHandle)
+   
+    -- Set robot name to enable multiple robots in the scene
+    robot_number, robot_name = sim.getNameSuffix(root_name)
+
+    robot_id = robot_name .. ((robot_number >= 0) and "_" .. robot_number or "")
+    sim.setStringSignal('robot_id', robot_id)
+    sim.setStringSignal('root_name', robot_name)
+    sim.setStringSignal('robot_name', robot_name)
+    sim.setIntegerSignal('robot_number', robot_number)
+
+
+
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
 
     -- docs.ros.org/indigo/api/kobuki_msgs/html/msg/SensorState.html
