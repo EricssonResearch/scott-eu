@@ -15,9 +15,9 @@ build-whc:
 	docker build -f whc.Dockerfile -t scott/webapp-whc .
 
 push:
-	docker image tag scott/webapp-twin-robot ${CI_REGISTRY}/scott/webapp-twin-robot
-	docker push ${CI_REGISTRY}/scott/webapp-twin-robot
-	docker image tag scott/webapp-whc ${CI_REGISTRY}/scott/webapp-whc
-	docker push ${CI_REGISTRY}/scott/webapp-whc
-	docker image tag scott/webapp-executor ${CI_REGISTRY}/scott/webapp-executor
-	docker push ${CI_REGISTRY}/scott/webapp-executor
+	docker image tag scott/webapp-twin-robot ${CI_REGISTRY_IMAGE}/scott/webapp-twin-robot:$(CI_COMMIT_REF_NAME)
+	docker push ${CI_REGISTRY_IMAGE}/scott/webapp-twin-robot:$(CI_COMMIT_REF_NAME)
+	docker image tag scott/webapp-whc ${CI_REGISTRY_IMAGE}/scott/webapp-whc:$(CI_COMMIT_REF_NAME)
+	docker push ${CI_REGISTRY_IMAGE}/scott/webapp-whc:$(CI_COMMIT_REF_NAME)
+	docker image tag scott/webapp-executor ${CI_REGISTRY_IMAGE}/scott/webapp-executor:$(CI_COMMIT_REF_NAME)
+	docker push ${CI_REGISTRY_IMAGE}/scott/webapp-executor:$(CI_COMMIT_REF_NAME)
