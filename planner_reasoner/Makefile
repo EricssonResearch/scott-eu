@@ -9,5 +9,5 @@ build:
 		-t scott/planner-reasoner .
 
 push:
-	docker image tag scott/planner-reasoner ${CI_REGISTRY}/scott/planner-reasoner
-	docker push ${CI_REGISTRY}/scott/planner-reasoner
+	docker image tag scott/planner-reasoner ${CI_REGISTRY_IMAGE}/scott/planner-reasoner:$(CI_COMMIT_REF_NAME)
+	docker push ${CI_REGISTRY_IMAGE}/scott/planner-reasoner:$(CI_COMMIT_REF_NAME)
