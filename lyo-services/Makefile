@@ -15,7 +15,9 @@ build-whc:
 	docker build -f whc.Dockerfile -t scott/webapp-whc .
 
 push:
-	# docker push scott/sandbox-base
-	docker push scott/webapp-twin-robot
-	docker push scott/webapp-whc
-	docker push scott/webapp-executor
+	docker image tag scott/webapp-twin-robot ${CI_REGISTRY}/scott/webapp-twin-robot
+	docker push ${CI_REGISTRY}/scott/webapp-twin-robot
+	docker image tag scott/webapp-whc ${CI_REGISTRY}/scott/webapp-whc
+	docker push ${CI_REGISTRY}/scott/webapp-whc
+	docker image tag scott/webapp-executor ${CI_REGISTRY}/scott/webapp-executor
+	docker push ${CI_REGISTRY}/scott/webapp-executor
