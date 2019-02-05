@@ -7,10 +7,10 @@ if (sim_call_type == sim.childscriptcall_initialization) then
 
     -- Disable camera sensor (comment the lines below to enable)
     object_fastHokuyo_sensor1 = sim.getObjectHandle('fastHokuyo_sensor1')
-    sim.setExplicitHandling(object_fastHokuyo_sensor1, 1)
+    -- sim.setExplicitHandling(object_fastHokuyo_sensor1, 1)
 
     object_fastHokuyo_sensor2 = sim.getObjectHandle('fastHokuyo_sensor2')
-    sim.setExplicitHandling(object_fastHokuyo_sensor2, 1)
+    -- sim.setExplicitHandling(object_fastHokuyo_sensor2, 1)
 
     modelHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
     object_name = sim.getObjectName(modelHandle)

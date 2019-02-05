@@ -71,7 +71,7 @@ Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
 1. Install Turttlebot2i packages from ROS
   ```
-  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0
+  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0 ros-kinetic-joint-* ros-kinetic-position-controllers ros-kinetic-effort-controllers
   ```
 
 2. Create the Turtlebot2i workspace by clonning the SCOTT repository

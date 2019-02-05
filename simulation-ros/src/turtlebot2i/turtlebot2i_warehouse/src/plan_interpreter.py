@@ -14,6 +14,7 @@ from moveit_commander import PlanningSceneInterface
 from moveit_commander import roscpp_initialize, RobotCommander
 from tf.transformations import quaternion_from_euler
 import time
+import vrep
 # TODO: refactor classes
 
 
@@ -52,11 +53,68 @@ class PlanInterpreter:
         self.plan = self.parse_plan(json_plan)
         self.load_objects(self.path + '/scene.yaml')
 
-        # TODO, check these positions
         self.storage = list(([[0.00, 0.1, 0.215], 0],
                              [[0.00, 0.0, 0.215], 0],
                              [[0.00, -0.1, 0.215], 0]))
 
+        # Init remote API
+        self.clientID = self.init_remote_api('127.0.0.1')
+
+
+    def init_remote_api(self, address, port=20001):
+        address = str(address)
+        port = int(port)
+        clientID = vrep.simxStart(address, port, True, True, 5000, 5)
+        attemp = 0 
+        while clientID == -1 and attemp < 20:
+            clientID = vrep.simxStart(address, port, True, True, 5000, 5)
+            rospy.loginfo('Connecting to Vrep, attemp #%s', attemp)
+            attemp += 1
+        if clientID != -1:
+            rospy.loginfo('Connected to Vrep')
+        else:
+            rospy.logerr('Vrep connection Failed')
+            exit()
+        return clientID
+
+    def get_object_id(self, shelf, product):
+        clientID = self.clientID
+        matching_prods = []
+        childs = []
+        c, shelfHandle = vrep.simxGetObjectHandle(clientID, shelf, vrep.simx_opmode_blocking)
+       
+        for i in range(0, 9):
+            _, child = vrep.simxGetObjectChild(clientID, shelfHandle, i, vrep.simx_opmode_blocking)
+            if child == -1:
+                break
+            childs.append(child)
+
+
+        for i in childs:
+            code, _, _, name, _ = vrep.simxCallScriptFunction(clientID, shelf, vrep.sim_scripttype_childscript, 'getObjectName', [i], [], [], bytearray(), vrep.simx_opmode_blocking)
+            name = name[0]
+            if code != 0:
+                continue
+            if product['name'] in name:
+                code = int(name.split('#')[1])
+                matching_prods.append((code, name))
+
+        if len(matching_prods) == 0:
+            rospy.logerr('No [%s] in [%s]', product['name'], shelf)
+            return 
+        matching_prods.sort(key=lambda tup: tup[0])
+        return  matching_prods[0][1]
+
+        
+    def get_object_pose(self, product_id):
+        clientID = self.clientID
+        c, productHandle = vrep.simxGetObjectHandle(clientID, product_id, vrep.simx_opmode_blocking)
+        _, pos = vrep.simxGetObjectPosition(clientID, productHandle, -1, vrep.simx_opmode_blocking)
+        _, ori = vrep.simxGetObjectOrientation(clientID, productHandle, -1, vrep.simx_opmode_blocking)
+        ori = np.asarray(ori)/np.pi*180        
+        return list(pos)+list(ori)
+
+        
     def load_json(self, path):
         return json.load(open(path))
 
@@ -125,8 +183,13 @@ class PlanInterpreter:
         pose = np.asarray(pose[:3]) + np.asarray(product['obj_position'][:3])
         product['obj_position'] = np.hstack(
             (pose, product['obj_position'][3:]))
+
+        product['id'] = self.get_object_id(shelf, product)
+        product['obj_position'] = self.get_object_pose(product['id'])
+        print(product['obj_position'])
+        product['obj_position'][2] -= 1.246
         self.add_box(product)
-        return product['name']
+        return product['name'], product['id']
 
     def obj_position(self, waypoint, offset):
         waypoint = np.asarray(waypoint)
@@ -199,7 +262,7 @@ class PlanInterpreter:
                 self.__move_pose(
                     self.waypoint2pick(lastWP, task.product)
                 )
-                product_name = self.add_product(task.target, task.product)
+                product_name, product_id = self.add_product(task.target, task.product)
                 rospy.loginfo('Picking [%s] at [%s]',
                               task.product,
                               task.target)
@@ -231,6 +294,7 @@ class PlanInterpreter:
                     store[1] = 1
                     # add here the stored object reposition
                     self.reposition_stored_obj(product_name,
+                                               product_id,
                                                '/plate_middle_link')
             elif task.action == 'drop':
                 rospy.loginfo('Dropping [%s] at [%s]',
@@ -255,11 +319,15 @@ class PlanInterpreter:
                     rospy.logerr("Last successful step was: %s",
                                  result.trajectory_descriptions[-1])
                     continue
+                self.scene.remove_attached_object('gripper_link',
+                                                  task.product)
+                rospy.sleep(1)
                 self.scene.remove_world_object(task.product)
+                rospy.sleep(1)
 
             # self.__check_task_status()
 
-    def reposition_stored_obj(self, obj_id, store):
+    def reposition_stored_obj(self, obj_id, prod_id, store):
         '''
         The arm not always will extacly place the object on the robot's tray,
         thus we need to reposition the object to match the tray height
@@ -279,7 +347,17 @@ class PlanInterpreter:
         frame = obj.header.frame_id
         pose = self.target_to_frame(target, frame_from=frame, orientation=True)
         pose[2] = store[2] + 0.01
-        pose = self.to_pose(pose)
+
+        v_pose = self.get_object_pose(prod_id)
+        v_pose[2] = store[2] + 0.01
+
+        # shame on you...
+        pose[:3] = v_pose[:3]
+        print(v_pose, pose)
+        v_pose = self.to_pose(v_pose)
+        pose = self.to_pose(pose)        
+
+        
         self.scene.attach_box("base_footprint",
                               obj.id,
                               pose,
@@ -313,9 +391,6 @@ class PlanInterpreter:
                 pose.pose.position.y,
                 pose.pose.position.z]
 
-    def get_attached_product(self, product_name):
-        return 'productRed'
-
     def waypoint2pick(self, waypoint, product):
         ''' waypoint information is always infront of productRed
         '''
@@ -326,6 +401,7 @@ class PlanInterpreter:
             self.products[product]['obj_position'])
         delta = (productRed_position - product_position)[:3]
         waypoint[:3] -= delta[:3]
+        # waypoint[0] -= 0.05
         return waypoint
 
     def __move_pose(self, pose):
