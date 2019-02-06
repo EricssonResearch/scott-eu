@@ -64,13 +64,13 @@
     waypoint: [3.2749977111816406, 2.4648501873016357, 1.2519997358322144, 0.0, 0.0, 0.0]
 - node:
     name: productGreen
-    waypoint: [1.07, 1.07, 1.368, 0, 0.271, 0, 0.962]
+    waypoint: [1.07, 1.068, 1.368, 0, 0.271, 0, 0.962]
 - node:
     name: productRed    
     waypoint: [1.07, 0.965, 1.368, 0, 0.271, 0, 0.962]
 - node:
     name: productYellow
-    waypoint: [1.07, 0.87, 1.368, 0, 0.271, 0, 0.962]
+    waypoint: [1.07, 0.86, 1.368, 0, 0.271, 0, 0.962]
 - node:
     name: positionSensorGreen
     waypoint: [1.0, 1.12, 1.38, 0, 0.271, 0, 0.962]

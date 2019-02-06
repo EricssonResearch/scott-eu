@@ -33,7 +33,7 @@ class Phantomx_Pincher():
     def openGripper(self):
         # open gripper
         posture = dict()
-        posture["PhantomXPincher_gripperClose_joint"] = 0.035
+        posture["PhantomXPincher_gripperClose_joint"] = 0.030
         self.robot.pincher_gripper.set_joint_value_target(posture)
         gplan = self.robot.pincher_gripper.plan()
         if len(gplan.joint_trajectory.points) == 0:
@@ -43,7 +43,7 @@ class Phantomx_Pincher():
     def closeGripper(self):
         # close gripper
         posture = dict()
-        posture["PhantomXPincher_gripperClose_joint"] = 0.008
+        posture["PhantomXPincher_gripperClose_joint"] = 0.010
         self.robot.pincher_gripper.set_joint_value_target(posture)
         gplan = self.robot.pincher_gripper.plan()
         if len(gplan.joint_trajectory.points) == 0:
