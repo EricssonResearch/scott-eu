@@ -3,7 +3,7 @@ local_costmap:
  robot_base_frame: /turtlebot2i/base_footprint
  update_frequency: 5
  publish_frequency: 10
- static_map: false
+ static_map: true
  rolling_window: true
  width: 1.5
  height: 1.5
