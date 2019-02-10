@@ -6,7 +6,7 @@ build:
 	docker build -f whc.Dockerfile  -t scott/webapp-whc .
 	docker build -f executor.Dockerfile  -t scott/webapp-executor .
 
-build-twin:
+build-twin-robot:
 	docker build -f sandbox.Dockerfile -t scott/sandbox-base .
 	docker build -f twin-robot.Dockerfile -t scott/webapp-twin-robot .
 
