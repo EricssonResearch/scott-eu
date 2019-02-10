@@ -1,4 +1,4 @@
-.PHONY: build up build-twin restart-twin
+.PHONY: build up build-twin-robot restart-twin
 
 STACK ?= docker-compose.dev.yml
 
@@ -24,7 +24,7 @@ build-twin-robot:
 	(cd lyo-services 		&&	make build-twin-robot)
 
 restart-twin-robot:
-	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin-robot -q` && sleep 1) || true
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott_sandbox-twin -q` && sleep 1) || true
 	(cd deployment	&& docker stack deploy -c $(STACK) --prune scott)
 
 build-whc:
