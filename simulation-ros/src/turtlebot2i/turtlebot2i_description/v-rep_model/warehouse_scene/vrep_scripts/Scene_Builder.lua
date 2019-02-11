@@ -15,6 +15,7 @@ function sysCall_init()
 	-- Building the scene ------------------------
 	
 	addModel('Floor10x10m',{0,0,0},{0,0,0})
+	addModel('Floor10x10m',{10,0,0},{0,0,0})
 	
 	addModel('Shelf',{0,-2,0.063},{0,0,-math.pi/2}) -- TODO: check why shelf rotation here is not compatible with what happens in the sim
 	addModel('Shelf',{0,0,0.063},{0,0,-math.pi/2})
@@ -32,14 +33,15 @@ function sysCall_init()
 	--addModel('Walking_Bill',{4,4,0},{0,0,math.pi/2})
 	
 	
-	addModel('80cmHighWall1000cm',{5,0,0},{0,0,0})
-	addModel('80cmHighWall1000cm',{-5,0,0},{0,0,0})
-	addModel('80cmHighWall1000cm',{0,5,0},{0,0,math.pi/2})
-	addModel('80cmHighWall1000cm',{0,-5,0},{0,0,math.pi/2})
+	addModel('80cmHighWall1000cm',{5,0,.4},{0,0,0})
+	addModel('80cmHighWall1000cm',{-5,0,.4},{0,0,0})
+	addModel('80cmHighWall1000cm',{0,5,.4},{0,0,math.pi/2})
+	addModel('80cmHighWall1000cm',{0,-5,.4},{0,0,math.pi/2})
 	
 
-	addModel('turtlebot2i',{1,1,0},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+	addModel('turtlebot2i',{1,1,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
 	
+	--addModel('Walking_Bill',{4,0,0},{0,0,0})
 	
 end
 
@@ -49,6 +51,7 @@ function addModel(name,position,orientation)
     objectHandle=sim.loadModel(scenePath..file)
 	result=sim.setObjectPosition(objectHandle,-1,position)
 	result=sim.setObjectOrientation(objectHandle,-1,orientation)
+	return objectHandle
 end
 
 function sysCall_actuation()
