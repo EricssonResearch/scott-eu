@@ -194,7 +194,7 @@ public class Or
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getArgument()
+    public Set<Link> getArgument()
     {
         // Start of user code getterInit:argument
         // End of user code

@@ -195,7 +195,7 @@ public class EitherType
     @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.PRIMITIVETYPE_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Link> getMember()
+    public Set<Link> getMember()
     {
         // Start of user code getterInit:member
         // End of user code

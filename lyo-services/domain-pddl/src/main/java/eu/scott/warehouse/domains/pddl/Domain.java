@@ -239,7 +239,7 @@ public class Domain
     @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.CONSTANT_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Link> getConstant()
+    public Set<Link> getConstant()
     {
         // Start of user code getterInit:constant
         // End of user code
@@ -254,7 +254,7 @@ public class Domain
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getFunction()
+    public Set<Link> getFunction()
     {
         // Start of user code getterInit:function
         // End of user code
@@ -269,7 +269,7 @@ public class Domain
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getPredicate()
+    public Set<Link> getPredicate()
     {
         // Start of user code getterInit:predicate
         // End of user code

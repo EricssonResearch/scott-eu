@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import javax.xml.namespace.QName;
@@ -138,7 +139,7 @@ public class TRSManager {
         final ArrayList<IResource> planResources = new ArrayList<>();
         planResources.add(plan);
         // TODO Andrew@2018-02-23: why not getSteps?
-        final HashSet<Step> planSteps = plan.getStep();
+        final Set<Step> planSteps = plan.getStep();
         for (Step step : planSteps) {
             step.setOrder((Integer) step.getExtendedProperties()
                                         .getOrDefault(new QName(AdaptorHelper.NS_SHACL, "order"),

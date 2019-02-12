@@ -84,7 +84,7 @@ public interface IImply
     @OslcOccurs(Occurs.OneOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getArgument();
+    public Set<Link> getArgument();
 
 
     public void setArgument(final Set<Link> argument );

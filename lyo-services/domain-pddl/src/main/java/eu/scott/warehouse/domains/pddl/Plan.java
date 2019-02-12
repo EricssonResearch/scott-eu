@@ -235,7 +235,7 @@ public class Plan
     @OslcValueType(ValueType.LocalResource)
     @OslcRange({PddlDomainConstants.STEP_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Step> getStep()
+    public Set<Step> getStep()
     {
         // Start of user code getterInit:step
         // End of user code
