@@ -64,6 +64,10 @@ public class WarehouseControllerManager {
     
     
     // Start of user code class_methods
+    public static ScheduledExecutorService getExecService() {
+        return execService;
+    }
+
     private static UUID getUUID() {
         return whcUUID;
     }
@@ -91,7 +95,7 @@ public class WarehouseControllerManager {
         log.info("WHC instance '{}' is initialising", whcUUID.toString());
         AdaptorHelper.setContext(servletContextEvent.getServletContext());
 
-        execService.schedule(() -> {
+        getExecService().schedule(() -> {
             log.debug("Initialising an MQTT client");
             final MqttClient mqttClient = MqttManager.initMqttClient();
 
