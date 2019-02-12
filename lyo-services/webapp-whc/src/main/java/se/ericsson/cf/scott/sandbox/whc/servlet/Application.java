@@ -66,6 +66,7 @@ import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 
 // Start of user code imports
+import se.ericsson.cf.scott.sandbox.whc.xtra.services.AdminResource;
 import se.ericsson.cf.scott.sandbox.whc.xtra.services.WhcTrsService;
 // End of user code
 
@@ -97,6 +98,7 @@ public class Application extends OslcWinkApplication {
 
         // Start of user code Custom Resource Classes
         RESOURCE_CLASSES.add(WhcTrsService.class);
+        RESOURCE_CLASSES.add(AdminResource.class);
         // TODO Andrew@2018-03-13: switch to Jersey then to Wildfly then try this
 //        RESOURCE_CLASSES.add(TrackedResourceSetServiceDI.class);
         // End of user code
