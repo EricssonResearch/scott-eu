@@ -99,9 +99,6 @@ public class WarehouseControllerManager {
             TRSManager.initTRSClient(mqttClient);
             log.debug("Initialising a TRS Server");
             TRSManager.initTRSServer(mqttClient);
-
-            log.debug("Triggering planning");
-            TRSManager.fetchPlanForProblem("sample-problem-request.ttl");
         }, 5, TimeUnit.SECONDS);
 
         // End of user code
