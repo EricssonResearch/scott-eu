@@ -100,7 +100,7 @@ public interface IDomain
     @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.CONSTANT_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Link> getConstant();
+    public Set<Link> getConstant();
 
     @OslcName("function")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "function")
@@ -108,7 +108,7 @@ public interface IDomain
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getFunction();
+    public Set<Link> getFunction();
 
     @OslcName("predicate")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "predicate")
@@ -116,7 +116,7 @@ public interface IDomain
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getPredicate();
+    public Set<Link> getPredicate();
 
     @OslcName("type")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "type")

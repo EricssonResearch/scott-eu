@@ -96,7 +96,7 @@ public interface IStep
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getAdding();
+    public Set<Link> getAdding();
 
     @OslcName("deleting")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "deleting")
@@ -104,7 +104,7 @@ public interface IStep
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getDeleting();
+    public Set<Link> getDeleting();
 
     @OslcName("updating")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "updating")
@@ -112,7 +112,7 @@ public interface IStep
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getUpdating();
+    public Set<Link> getUpdating();
 
     @OslcName("order")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "order")

@@ -86,7 +86,7 @@ public interface IEitherType
     @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.PRIMITIVETYPE_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Link> getMember();
+    public Set<Link> getMember();
 
 
     public void setMember(final Set<Link> member );

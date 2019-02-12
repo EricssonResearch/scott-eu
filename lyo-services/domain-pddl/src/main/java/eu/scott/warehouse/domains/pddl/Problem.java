@@ -252,7 +252,7 @@ public class Problem
     @OslcValueType(ValueType.Resource)
     @OslcRepresentation(Representation.Inline)
     @OslcReadOnly(false)
-    public HashSet<Link> getInit()
+    public Set<Link> getInit()
     {
         // Start of user code getterInit:init
         // End of user code
@@ -298,7 +298,7 @@ public class Problem
     @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.OBJECT_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Link> getPddlObject()
+    public Set<Link> getPddlObject()
     {
         // Start of user code getterInit:pddlObject
         // End of user code

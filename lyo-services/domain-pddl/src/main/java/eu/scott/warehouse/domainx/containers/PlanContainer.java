@@ -6,9 +6,9 @@ import eu.scott.warehouse.domains.pddl.Step;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 import org.apache.jena.rdf.model.Model;
@@ -33,7 +33,7 @@ public class PlanContainer implements Container<Plan> {
         // FIXME Andrew@2018-03-04: this membership loop originated not from Leo but our SDK!!!
         cleanUpMembership(this.plan);
 
-        final HashSet<Step> steps = plan.getStep();
+        final Set<Step> steps = plan.getStep();
         final List<Step> stepList = steps.stream()
                                          .sorted(Comparator.comparingInt(Step::getOrder))
                                          .collect(Collectors.toList());

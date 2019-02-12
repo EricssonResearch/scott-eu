@@ -235,7 +235,7 @@ public class Step
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getAdding()
+    public Set<Link> getAdding()
     {
         // Start of user code getterInit:adding
         // End of user code
@@ -250,7 +250,7 @@ public class Step
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getDeleting()
+    public Set<Link> getDeleting()
     {
         // Start of user code getterInit:deleting
         // End of user code
@@ -265,7 +265,7 @@ public class Step
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getUpdating()
+    public Set<Link> getUpdating()
     {
         // Start of user code getterInit:updating
         // End of user code

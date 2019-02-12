@@ -107,7 +107,7 @@ public interface IProblem
     @OslcValueType(ValueType.Resource)
     @OslcRepresentation(Representation.Inline)
     @OslcReadOnly(false)
-    public HashSet<Link> getInit();
+    public Set<Link> getInit();
 
     @OslcName("maximize")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "maximize")
@@ -132,7 +132,7 @@ public interface IProblem
     @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.OBJECT_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Link> getPddlObject();
+    public Set<Link> getPddlObject();
 
     @OslcName("label")
     @OslcPropertyDefinition(RdfsDomainConstants.RDFS_NAMSPACE + "label")

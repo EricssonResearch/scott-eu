@@ -94,7 +94,7 @@ public interface IPlan
     @OslcValueType(ValueType.LocalResource)
     @OslcRange({PddlDomainConstants.STEP_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Step> getStep();
+    public Set<Step> getStep();
 
     @OslcName("time")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "time")
