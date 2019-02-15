@@ -187,8 +187,7 @@ class PlanInterpreter:
         product['id'] = self.get_object_id(shelf, product)
         product['obj_position'] = self.get_object_pose(product['id'])
         print(product['obj_position'])
-        product['obj_position'][2] -= 1.246
-        self.add_box(product)
+        sB1elf.add_box(product)
         return product['name'], product['id']
 
     def obj_position(self, waypoint, offset):

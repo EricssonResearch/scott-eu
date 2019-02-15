@@ -39,8 +39,8 @@ function sysCall_init()
 	addModel('80cmHighWall1000cm',{2,-5,.4},{0,0,math.pi/2})
 	
 
+
 	addModel('turtlebot2i',{2.2230,0.96485,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
-	
 	--addModel('Walking_Bill',{4,0,0},{0,0,0})
 	
 end
