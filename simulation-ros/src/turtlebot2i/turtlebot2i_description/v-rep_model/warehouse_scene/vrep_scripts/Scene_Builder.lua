@@ -14,32 +14,32 @@ function sysCall_init()
 	
 	-- Building the scene ------------------------
 	
-	addModel('Floor10x10m',{0,0,0},{0,0,0})
-	addModel('Floor10x10m',{10,0,0},{0,0,0})
+	addModel('Floor10x10m',{2,0,0},{0,0,0})
+	--addModel('Floor10x10m',{10,0,0},{0,0,0})
 	
-	addModel('Shelf',{0,-2,0.063},{0,0,-math.pi/2}) -- TODO: check why shelf rotation here is not compatible with what happens in the sim
-	addModel('Shelf',{0,0,0.063},{0,0,-math.pi/2})
-	addModel('Shelf',{0,2,0.063},{0,0,-math.pi/2})
-	
-
-	addModel('ConveyorBelt',{3,-2,0.113},{0,0,0}) -- TODO: check why we need to add these values in z
-	addModel('ConveyorBelt',{3,0,0.113},{0,0,0})
-	addModel('ConveyorBelt',{3,2,0.113},{0,0,0})
+	addModel('Shelf',{1.1,0.96485,0.063},{0,0,-math.pi/2}) -- TODO: check why shelf rotation here is not compatible with what happens in the sim
+	addModel('Shelf',{1.1,-0.53515,0.063},{0,0,-math.pi/2})
+	addModel('Shelf',{1.1,-2.0351,0.063},{0,0,-math.pi/2})
 	
 
-	addModel('dockstation',{0,4,0.063},{0,0,math.pi/2})
+	addModel('ConveyorBelt',{4.3750,2.4649,0.113},{0,0,0}) -- TODO: check why we need to add these values in z
+	addModel('ConveyorBelt',{4.3750,-0.53515,0.113},{0,0,0})
+	addModel('ConveyorBelt',{4.3750,-3.5351,0.113},{0,0,0})
+	
+
+	addModel('dockstation',{0.77497,-2.9750,0.063},{0,0,math.pi/2})
 	
 
 	--addModel('Walking_Bill',{4,4,0},{0,0,math.pi/2})
 	
 	
-	addModel('80cmHighWall1000cm',{5,0,.4},{0,0,0})
-	addModel('80cmHighWall1000cm',{-5,0,.4},{0,0,0})
-	addModel('80cmHighWall1000cm',{0,5,.4},{0,0,math.pi/2})
-	addModel('80cmHighWall1000cm',{0,-5,.4},{0,0,math.pi/2})
+	addModel('80cmHighWall1000cm',{7,0,.4},{0,0,0})
+	addModel('80cmHighWall1000cm',{-3,0,.4},{0,0,0})
+	addModel('80cmHighWall1000cm',{2,5,.4},{0,0,math.pi/2})
+	addModel('80cmHighWall1000cm',{2,-5,.4},{0,0,math.pi/2})
 	
 
-	addModel('turtlebot2i',{1,1,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+	addModel('turtlebot2i',{2.2230,0.96485,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
 	
 	--addModel('Walking_Bill',{4,0,0},{0,0,0})
 	
