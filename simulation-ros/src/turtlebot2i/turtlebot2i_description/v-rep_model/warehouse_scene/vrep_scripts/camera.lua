@@ -37,48 +37,71 @@ function pointCloud()
 end
 
 if (sim_call_type==sim.childscriptcall_initialization) then 
+	
+	rgb_enabled=false
+	depth_enabled=false
+	
+	camera_handle=sim.getObjectAssociatedWithScript(sim.handle_self)
+	camera_name=sim.getObjectName(camera_handle)
+	
+	
+	
+    object_camera_rgb = sim.getObjectHandle(camera_name..'_rgb')
+    object_camera_depth = sim.getObjectHandle(camera_name..'_depth')
+	
 
-    robot_id = sim.getStringSignal("robot_id")
+	robot_id = sim.getStringSignal("robot_id")
+	-- Get object handler
+	modelHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
+	object_name = sim.getObjectName(modelHandle)
+	sensor_number, sensor_name = sim.getNameSuffix(object_name)
+	
+	if(depth_enabled)then 
+		-- Depth camera handler
+		depthCam = sim.getObjectHandle(sensor_name..'_depth')
+		depthView = sim.floatingViewAdd(0.9,0.9,0.2,0.2,0)
+		sim.adjustView(depthView,depthCam,64)
+		-- ROS Stuff
+		if(not(simROS==nil))then
+			pubKinectDepth = simROS.advertise(robot_id..'/'..sensor_name..'/depth/raw_image','sensor_msgs/Image')
+			simROS.publisherTreatUInt8ArrayAsString(pubKinectDepth)
+			pubKinectCloud = simROS.advertise(robot_id..'/'..sensor_name..'/cloud','sensor_msgs/PointCloud2')
+			simROS.publisherTreatUInt8ArrayAsString(pubKinectCloud)			
+		end
+	else
+		result2=sim.setExplicitHandling(object_camera_depth, 1) -- disable camera depth
+	end
+	
+	if(rgb_enabled)then  
+		-- Color camera handler
+		colorCam = sim.getObjectHandle(sensor_name..'_rgb')
+		colorView = sim.floatingViewAdd(0.69,0.9,0.2,0.2,0)
+		sim.adjustView(colorView,colorCam,64)
+		-- ROS Stuff
+		if(not(simROS==nil))then
+			pubKinectRgb = simROS.advertise(robot_id..'/'..sensor_name..'/rgb/raw_image','sensor_msgs/Image')
+			simROS.publisherTreatUInt8ArrayAsString(pubKinectRgb) 	
+		end
+	else
+		result1=sim.setExplicitHandling(object_camera_rgb, 1) -- disable camera rgb
+	end
+		
+		
 
-    -- Disable camera sensor (comment the lines below to enable) 
-    object_camera_rgb = sim.getObjectHandle('camera_rgb')
-    object_camera_depth = sim.getObjectHandle('camera_depth')
-    sim.setExplicitHandling(object_camera_rgb, 1) -- disable camera rgb
-    sim.setExplicitHandling(object_camera_depth, 1) -- disable camera depth
-
-    -- Get object handler
-    modelHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
-    object_name = sim.getObjectName(modelHandle)
-    sensor_number, sensor_name = sim.getNameSuffix(object_name)
-
-    -- Depth camera handler
-    depthCam = sim.getObjectHandle(sensor_name..'_depth')
-    depthView = sim.floatingViewAdd(0.9,0.9,0.2,0.2,0)
-    sim.adjustView(depthView,depthCam,64)
-
-    -- Color camera handler
-    colorCam = sim.getObjectHandle(sensor_name..'_rgb')
-    colorView = sim.floatingViewAdd(0.69,0.9,0.2,0.2,0)
-    sim.adjustView(colorView,colorCam,64)
+	
     
-    -- ROS Stuff
-	pubKinectRgb = simROS.advertise(robot_id..'/'..sensor_name..'/rgb/raw_image','sensor_msgs/Image')
-	simROS.publisherTreatUInt8ArrayAsString(pubKinectRgb) 
-	pubKinectDepth = simROS.advertise(robot_id..'/'..sensor_name..'/depth/raw_image','sensor_msgs/Image')
-	simROS.publisherTreatUInt8ArrayAsString(pubKinectDepth)
-    pubKinectCloud = simROS.advertise(robot_id..'/'..sensor_name..'/cloud','sensor_msgs/PointCloud2')
-	simROS.publisherTreatUInt8ArrayAsString(pubKinectCloud)
 end 
 
 if (sim_call_type==sim.childscriptcall_cleanup) then 
-    simROS.shutdownPublisher(pubKinectRgb)
-    simROS.shutdownPublisher(pubKinectDepth)
-    simROS.shutdownPublisher(pubKinectCloud)
+	if(not(simROS==nil))then
+		simROS.shutdownPublisher(pubKinectRgb)
+		simROS.shutdownPublisher(pubKinectDepth)
+		simROS.shutdownPublisher(pubKinectCloud)
+	end
 end 
 
 if (sim_call_type==sim.childscriptcall_sensing) then
-    if(sim.getBoolParameter(sim.boolparam_vision_sensor_handling_enabled) == true) then
-
+	if(sim.getExplicitHandling(object_camera_rgb) == false) then
         local data,w,h = sim.getVisionSensorCharImage(colorCam)
 
         -- Publish camera RGB image to ROS
@@ -91,7 +114,8 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 	    d['step'] = w*3
 	    d['data'] = data
 	    simROS.publish(pubKinectRgb,d)
-
+	end
+	if(sim.getExplicitHandling(object_camera_depth) == false) then
         -- Publish camera depth image to ROS
         data,w,h = sim.getVisionSensorCharImage(depthCam)
 	    d = {}
