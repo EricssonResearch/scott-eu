@@ -1,19 +1,23 @@
 <?xml version="1.0"?>
 <launch>
 
-<!-- Navigation Single Robot  -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_navigation_single.launch"/>
+  <!-- Navigation Single Robot  -->
+  <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch">
+    <arg name="cmd_vel_mux" value="true"/>
+  </include>
 
-<!-- KeyOp  -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_keyop.launch"/>
+  <!-- KeyOp  -->
+  <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_keyop.launch">
+    <arg name="cmd_vel_mux" value="true"/>
+  </include>
 
-<!-- Cmd_vel_mux  -->
-  <include file="$(find turtlebot2i_safety)/launch/turtlebot2i_cmd_vel_mux.launch"/>
+  <!-- Cmd_vel_mux  -->
+  <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_cmd_vel_mux.launch"/>
 
-<!-- Scene Graph Generator  -->
-  <node pkg="turtlebot2i_safety" name="sg_generator" type="sg_generator.py" output="log"/>
+  <!-- Scene Graph Generator  -->
+  <node pkg="turtlebot2i_scene_graph" name="sg_generator" type="scene_graph_generator.py" output="log"/>
 
-<!-- Scene Graph Parser  --> 
-  <node pkg="turtlebot2i_safety" name="parse_sg" type="parse_sg.py" output="screen"/>
+  <!-- Scene Graph Parser+ Risk management  --> 
+  <node pkg="turtlebot2i_safety" name="risk_management" type="risk_management.py" output="screen"/>
 
 </launch>
