@@ -24,7 +24,7 @@ class AdminResource {
         log.warn("Planning trigger not implemented yet.")
         // FIXME Andrew@2019-02-12: replace with the impl discussed in W6'19
         WarehouseControllerManager.getExecService()
-            .schedule({ TRSManager.fetchPlanForProblem("sample-problem-request.ttl") }, 0, TimeUnit.MILLISECONDS)
+            .schedule({ TRSManager.triggerPlanningForRegisteredTwins() }, 0, TimeUnit.MILLISECONDS)
         return Response.noContent().build()
     }
 }
