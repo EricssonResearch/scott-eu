@@ -19,11 +19,11 @@ import java.net.URI
  * @version $version-stub$
  * @since   TODO
  */
-class PlanRequestBuilderTest {
+class PlanRequestHelperTest {
 
     @Test
     fun outputTurtleForManualTesting() {
-        val planRequestComplete = PlanRequestBuilder().getPlanRequestComplete()
+        val planRequestComplete = PlanRequestHelper().getPlanRequestComplete()
         println(planRequestComplete.turtle)
     }
 
@@ -45,7 +45,7 @@ class PlanRequestBuilderTest {
               rdfs:label "location" .
         """, Lang.TURTLE)
 
-        val location = PlanRequestBuilder().buildLocation()
+        val location = PlanRequestHelper().buildLocation()
         val locationModelActual = JenaModelHelper.createJenaModel(arrayOf(location))
 
         assertIsomorphic("Location object is incorrect", locationModelExpected, locationModelActual)
