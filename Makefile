@@ -5,6 +5,8 @@ STACK ?= docker-compose.dev.yml
 build:
 	(cd planner_reasoner 		&&	make build)
 	(cd deployment/maven-base 	&&	make build)
+	(cd deployment/eclipse-mosquitto &&	make build)
+	(cd deployment/jena-fuseki 	&&	make build)
 	(cd lyo-services 		&&	make build)
 	(cd robot-emulator 		&&	make build)
 
