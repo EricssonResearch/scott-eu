@@ -98,14 +98,11 @@ services:
       restart_policy:
         condition: on-failure
   warehouse-fuseki:
-    # TODO bring back, see https://github.com/EricssonResearch/scott-eu/issues/101
-    image: stain/jena-fuseki
+    image: scott/jena-fuseki
     networks:
       - overlay
     ports:
       - "3030:3030"
-    volumes:
-      - ./fuseki_config:/fuseki/configuration
     deploy:
       replicas: 1
       restart_policy:
@@ -114,14 +111,12 @@ services:
         limits:
           memory: 768m
   mosquitto:
-    image: eclipse-mosquitto
+    image: scott/eclipse-mosquitto
     networks:
       - overlay
     ports:
       - "1883:1883"
       - "9001:9001"
-    volumes:
-      - ./mosquitto:/mosquitto/config
     deploy:
       replicas: 1
       restart_policy:
