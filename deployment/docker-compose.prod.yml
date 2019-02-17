@@ -19,27 +19,27 @@ services:
       resources:
         limits:
           memory: 256m
-#   sandbox-whc:
-#     image: "${CI_REGISTRY_IMAGE}/webapp-whc:${CI_COMMIT_REF_NAME}"
-#     environment:
-#       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2"
-#     networks:
-#       - overlay
-#     ports:
-#       - "8080:8080"
-#     deploy:
-#       # not ready for scaling yet
-#       replicas: 1
-#       placement:
-#         constraints: [node.role == worker]
-#       restart_policy:
-#         condition: on-failure
-#       resources:
-#         limits:
-#           memory: 512m
-#     depends_on:
-#       # - warehouse-fuseki
-#       - mosquitto
+  sandbox-whc:
+    image: "${CI_REGISTRY_IMAGE}/webapp-whc:${CI_COMMIT_REF_NAME}"
+    environment:
+      JAVA_OPTIONS: ""
+    networks:
+      - overlay
+    ports:
+      - "8080:8080"
+    deploy:
+      # not ready for scaling yet
+      replicas: 1
+      placement:
+        constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 512m
+    depends_on:
+      - warehouse-fuseki
+      - mosquitto
 #   sandbox-executor:
 #     image: "${CI_REGISTRY_IMAGE}/webapp-executor:${CI_COMMIT_REF_NAME}"
 #     environment:
@@ -60,30 +60,30 @@ services:
 #         constraints: [node.role == worker]
 #       restart_policy:
 #         condition: on-failure
-#   sandbox-twin:
-#     image: "${CI_REGISTRY_IMAGE}/webapp-twin-robot:${CI_COMMIT_REF_NAME}"
-#     environment:
-#       JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -DswarmMgrUri=http://swarm-manager:2375 -DdockerNetworkNames=scott_overlay -DdockerServiceNames=scott_sandbox-twin -DhazelcastPeerPort=5701 -Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-#       ROS_MASTER_URI: "http://rosmaster:11311" # TODO remove
-#     networks:
-#       - overlay
-#     ports:
-#      - "8081:8080" # Jetty
-#      - "9991:9999" # remote debugger
-#      - "40000-40100:40000-40100" # ROS ephemeral ports TODO remove
-#     depends_on:
-#       - warehouse-fuseki
-#       - mosquitto
-#     deploy:
-#       replicas: 3
-#       resources:
-#         limits:
-# #          cpus: '0.25'
-#           memory: 256m
-#       placement:
-#         constraints: [node.role == worker]
-#       restart_policy:
-#         condition: on-failure
+  sandbox-twin:
+    image: "${CI_REGISTRY_IMAGE}/webapp-twin-robot:${CI_COMMIT_REF_NAME}"
+    environment:
+      JAVA_OPTIONS: ""
+      # ROS_MASTER_URI: "http://rosmaster:11311" # TODO remove
+    networks:
+      - overlay
+    ports:
+     - "8081:8080" # Jetty
+    #  - "9991:9999" # remote debugger
+    #  - "40000-40100:40000-40100" # ROS ephemeral ports TODO remove
+    depends_on:
+      - warehouse-fuseki
+      - mosquitto
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+#          cpus: '0.25'
+          memory: 256m
+      placement:
+        constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
   warehouse-fuseki:
     image: "${CI_REGISTRY_IMAGE}/jena-fuseki:${CI_COMMIT_REF_NAME}"
     networks:
