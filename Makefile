@@ -13,6 +13,8 @@ build:
 push:
 	(cd planner_reasoner		&&	make push)
 	(cd deployment/maven-base 	&&	make push)
+	(cd deployment/eclipse-mosquitto &&	make push)
+	(cd deployment/jena-fuseki 	&&	make push)
 	(cd lyo-services		&&	make push)
 	(cd robot-emulator		&&	make push)
 
