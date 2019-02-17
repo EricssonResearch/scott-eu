@@ -85,7 +85,7 @@ services:
 #       restart_policy:
 #         condition: on-failure
   warehouse-fuseki:
-    image: scott/jena-fuseki
+    image: "${CI_REGISTRY_IMAGE}/jena-fuseki:${CI_COMMIT_REF_NAME}"
     networks:
       - overlay
     ports:
@@ -100,7 +100,7 @@ services:
         limits:
           memory: 768m
   mosquitto:
-    image: scott/eclipse-mosquitto
+    image: "${CI_REGISTRY_IMAGE}/eclipse-mosquitto:${CI_COMMIT_REF_NAME}"
     networks:
       - overlay
     ports:
