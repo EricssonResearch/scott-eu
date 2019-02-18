@@ -34,7 +34,7 @@ data class InstanceMultiWithResources<T : IResource>(val instance: Collection<T>
                                                 val resources: Collection<IResource>)
 
 class PlanRequestHelper {
-    // FIXME Andrew@2018-08-27: fix support for # in the URIs
+    // Don't use #, see https://github.com/EricssonResearch/scott-eu/issues/154
     private val base = URI.create("http://ontology.cf.ericsson.net/ns/scott-warehouse/")
 
     init {
@@ -697,7 +697,7 @@ class PlanRequestHelper {
     }
 
     fun eq(l: IResource, r: Any): IExtendedResource {
-        // FIXME Andrew@2018-08-14: EQ class
+        // TODO Andrew@2019-02-18: https://github.com/EricssonResearch/scott-eu/issues/155
         val equal = RawResource(u(UUID.randomUUID()))
         equal.addType(ns(PDDL, "EQ"))
         equal.setProperty(ns(PDDL, "left"), l.about)

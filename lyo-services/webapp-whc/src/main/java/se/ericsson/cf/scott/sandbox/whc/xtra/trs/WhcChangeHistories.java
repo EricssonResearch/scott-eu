@@ -66,7 +66,6 @@ public class WhcChangeHistories extends ChangeHistories {
         log.info("New ChangeEvent: {}", ce);
 
         IResource resource = getResourceForChangeEvent(ce);
-        // FIXME Andrew@2018-03-13: inline
         MqttMessage message = buildMqttMessage(ce, resource);
         try {
             if (!client.isConnected()) {

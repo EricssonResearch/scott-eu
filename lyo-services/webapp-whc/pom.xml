@@ -13,7 +13,7 @@
   <packaging>war</packaging>
   <properties>
     <version.lyo>4.0.0-SNAPSHOT</version.lyo>
-    <version.jersey>2.28</version.jersey>
+    <version.jersey>2.26</version.jersey>
   </properties>
   <dependencies>
     <dependency>
@@ -25,13 +25,6 @@
       <groupId>se.ericsson.cf.scott.sandbox</groupId>
       <artifactId>lib-common</artifactId>
       <version>0.0.1-SNAPSHOT</version>
-      <!--<exclusions>
-        <exclusion>
-          &lt;!&ndash;TODO remove after https://github.com/EricssonResearch/scott-eu/issues/150 is fixed&ndash;&gt;
-          <groupId>org.eclipse.lyo.trs</groupId>
-          <artifactId>trs-client</artifactId>
-        </exclusion>
-      </exclusions>-->
     </dependency>
 
     <dependency>
@@ -68,10 +61,9 @@
       <version>${version.lyo}</version>
     </dependency>
     <dependency>
-      <!--TODO replace after fixing https://github.com/eclipse/lyo.client/issues/40-->
       <groupId>org.eclipse.lyo.clients</groupId>
-      <artifactId>oslc-java-client</artifactId>
-      <version>4.0.0-SNAPSHOT</version>
+      <artifactId>oslc4j-client</artifactId>
+      <version>${version.lyo}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
@@ -140,13 +132,6 @@
       <artifactId>jersey-container-servlet</artifactId>
       <version>${version.jersey}</version>
     </dependency>
-<!--
-    <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-common</artifactId>
-      <version>${version.jersey}</version>
-    </dependency>
--->
     <dependency>
       <groupId>org.glassfish.jersey.inject</groupId>
       <artifactId>jersey-hk2</artifactId>
@@ -178,23 +163,10 @@
       <scope>test</scope>
     </dependency>
 
-<!--
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <version>1.1</version>
-      <scope>provided</scope>
-    </dependency>
--->
 
   </dependencies>
   <build>
     <plugins>
-<!--      <plugin>
-        <groupId>org.wildfly.plugins</groupId>
-        <artifactId>wildfly-maven-plugin</artifactId>
-        <version>1.2.1.Final</version>
-      </plugin>-->
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
@@ -214,14 +186,6 @@
           <stopKey/>
           <stopPort/>
         </configuration>
-        <dependencies>
-         <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet &ndash;&gt;
-          <dependency>
-            <groupId>org.jboss.weld.servlet</groupId>
-            <artifactId>weld-servlet</artifactId>
-            <version>2.2.16.Final</version>
-          </dependency>-->
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

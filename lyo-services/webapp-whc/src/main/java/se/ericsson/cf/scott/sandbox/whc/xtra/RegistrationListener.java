@@ -47,7 +47,7 @@ public class RegistrationListener implements IMqttMessageListener {
                 log.info("Responding to the registration request from the device");
                 final ObjectNode objectNode = om.createObjectNode();
                 objectNode.put("device", twinId);
-                objectNode.put("whc", WarehouseControllerManager.getWhcId());
+                objectNode.put("whc", WarehouseControllerManager.getMqttClientId());
                 final ObjectWriter writer = om.writer();
                 final byte[] payloadBytes = writer.writeValueAsBytes(objectNode);
                 final MqttMessage responseMessage = new MqttMessage(payloadBytes);
