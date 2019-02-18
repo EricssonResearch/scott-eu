@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.core.UriBuilder;
-import org.eclipse.lyo.oslc4j.client.ServiceProviderRegistryURIs;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
@@ -66,7 +65,7 @@ public class TwinsServiceProvidersFactory
            throws OslcCoreApplicationException, URISyntaxException
     {
         final ServiceProvider serviceProvider = ServiceProviderFactory.createServiceProvider(baseURI,
-                                                    ServiceProviderRegistryURIs.getUIURI(),
+                                                    null,
                                                     title,
                                                     description,
                                                     publisher,

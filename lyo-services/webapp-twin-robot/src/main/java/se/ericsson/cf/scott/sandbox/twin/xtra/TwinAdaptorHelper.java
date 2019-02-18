@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 import org.apache.jena.sparql.ARQException;
-import org.eclipse.lyo.client.oslc.OslcClient;
+import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
