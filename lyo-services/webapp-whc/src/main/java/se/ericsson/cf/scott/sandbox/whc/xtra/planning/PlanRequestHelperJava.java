@@ -21,6 +21,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.eclipse.lyo.oslc4j.core.model.IResource;
+import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,8 @@ public class PlanRequestHelperJava {
     }
 
     @NotNull
-    public static Object[] getPlanResources(final Model planModel, final Plan plan) {
+    public static Object[] getPlanResources(final Model planModel, final Plan plan)
+        throws LyoJenaModelException {
         final ArrayList<IResource> planResources = new ArrayList<>();
         planResources.add(plan);
         // TODO Andrew@2018-02-23: why not getSteps?

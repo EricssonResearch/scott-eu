@@ -43,8 +43,8 @@ public class MqttManager {
      */
     public static MqttClient initMqttClient() {
         try {
-            final String mqttBroker = AdaptorHelper.p(AdaptorHelper.MQTT_BROKER_PNAME);
-            mqttClient = new MqttClient(mqttBroker, WarehouseControllerManager.getWhcId());
+            final String mqttBroker = AdaptorHelper.p(AdaptorHelper.MQTT_TOPIC_PROP);
+            mqttClient = new MqttClient(mqttBroker, WarehouseControllerManager.getMqttClientId());
 
             final MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setAutomaticReconnect(true);
@@ -64,4 +64,13 @@ public class MqttManager {
         }
     }
 
+    public static void disconnect() {
+        if(mqttClient != null) {
+            try {
+                mqttClient.disconnect();
+            } catch (MqttException e) {
+                log.warn("Unable to cleanly terminate the MQTT connection: ", e);
+            }
+        }
+    }
 }

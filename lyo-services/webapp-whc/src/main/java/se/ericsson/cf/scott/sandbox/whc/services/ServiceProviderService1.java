@@ -124,7 +124,7 @@ public class ServiceProviderService1
             // Start of user code getPlan
             // End of user code
             httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
-            // FIXME Andrew@2018-06-19: performance issue
+            // TODO Andrew@2018-06-19: avoid copying the array fully, switch to collections
             return Arrays.copyOf(aPlan, aPlan.length, Object[].class);
         }
 
@@ -145,7 +145,6 @@ public class ServiceProviderService1
                                                              serviceProviderId, planId);
 
         if (aPlan != null) {
-            // FIXME Andrew@2018-02-26: replace with the strongly typed wrapper class with main field for the plan and the rest of objects
             httpServletRequest.setAttribute("aPlan", aPlan[0]);
             // Start of user code getPlanAsHtml_setAttributes
             // End of user code

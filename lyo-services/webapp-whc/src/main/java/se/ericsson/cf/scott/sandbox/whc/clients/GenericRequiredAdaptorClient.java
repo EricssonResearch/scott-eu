@@ -20,8 +20,6 @@
 package se.ericsson.cf.scott.sandbox.whc.clients;
 
 import javax.ws.rs.core.Response;
-import org.eclipse.lyo.client.oslc.OSLCConstants;
-import org.eclipse.lyo.client.oslc.OslcClient;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 
 // Start of user code imports
@@ -40,7 +38,7 @@ public class GenericRequiredAdaptorClient
     // Start of user code class_methods
     // End of user code
 
-    static String serviceProviderCatalogURI = "http://your.host.com/adaptor/services/catalog/singleton";
+//    static String serviceProviderCatalogURI = "http://your.host.com/adaptor/services/catalog/singleton";
 
 /*    public static ServiceProviderCatalog getServiceProviderCatalog() throws Exception {
         OslcClient client = new OslcClient();

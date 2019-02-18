@@ -81,7 +81,7 @@ public class WarehouseControllerManager {
     }
 
     @NotNull
-    public static String getWhcId() {
+    public static String getMqttClientId() {
         return "whc-" + getUUID();
     }
     // End of user code
@@ -112,9 +112,8 @@ public class WarehouseControllerManager {
     {
         
         // Start of user code contextDestroyed
-        // TODO Implement code to shutdown connections to data backbone etc...
         log.info("Shutting down the adaptor");
-        // FIXME Andrew@2018-07-30: disconnect from the MQTT broker
+        MqttManager.disconnect();
         // End of user code
     }
 

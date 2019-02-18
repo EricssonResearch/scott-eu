@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import org.apache.jena.rdf.model.Model;
+import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
+import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException;
 import org.eclipse.lyo.oslc4j.trs.client.config.TrsConsumerConfiguration;
 import org.eclipse.lyo.oslc4j.trs.client.config.TrsProviderConfiguration;
 import org.eclipse.lyo.oslc4j.trs.client.util.TrsBasicAuthOslcClient;
@@ -38,19 +40,19 @@ public class TRSManager {
 
     public static void initTRSClient(final MqttClient mqttClient) {
         final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
-            AdaptorHelper.p("kb.query_uri"), AdaptorHelper.p("kb.update_uri"), null, null,
-            new TrsBasicAuthOslcClient(), AdaptorHelper.getMqttClientId(),
-            Executors.newSingleThreadScheduledExecutor());
-        // FIXME Andrew@2019-01-29: MQTT_BROKER_PNAME is not an MQTT topic!!!
+            AdaptorHelper.p(AdaptorHelper.KB_QUERY_PROP),
+            AdaptorHelper.p(AdaptorHelper.KB_UPDATE_PROP), null, null, new TrsBasicAuthOslcClient(),
+            AdaptorHelper.getMqttClientId(), Executors.newSingleThreadScheduledExecutor());
         final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
-            TrsProviderConfiguration.forMQTT(mqttClient, AdaptorHelper.MQTT_BROKER_PNAME));
+            TrsProviderConfiguration.forMQTT(mqttClient,
+                AdaptorHelper.p(AdaptorHelper.MQTT_TOPIC_PROP)));
         TrsConsumerUtils.buildHandlersSequential(consumerConfig, providerConfigs);
     }
 
     public static void initTRSServer(final MqttClient mqttClient) {
         // TODO Andrew@2018-07-18: figure out how the change history works over MQTT
         WarehouseControllerManager.setChangeHistories(
-            new WhcChangeHistories(mqttClient, AdaptorHelper.p(AdaptorHelper.MQTT_BROKER_PNAME),
+            new WhcChangeHistories(mqttClient, AdaptorHelper.p(AdaptorHelper.MQTT_TOPIC_PROP),
                 Duration.ofMinutes(5).toMillis()));
     }
 
@@ -59,6 +61,7 @@ public class TRSManager {
     }
 
     public static void triggerPlanningForRegisteredTwins() {
+        // FIXME Andrew@2019-02-18: implement
         log.warn("New planning is not implemented yet");
 
         final PlanRequestHelper planRequestHelper = new PlanRequestHelper();
@@ -78,23 +81,27 @@ public class TRSManager {
         final Model problemModel = PlanRequestHelperJava.getProblem(resourceName);
 
         Model planModel = PlanRequestHelperJava.requestPlan(problemModel);
-        final Plan plan = extractPlan(planModel);
-        log.debug("Received plan: {}", plan);
-        final Object[] planResources = PlanRequestHelperJava.getPlanResources(planModel, plan);
-        final URI key = plan.getAbout();
-        if (plans.containsKey(key)) {
-            throw new IllegalStateException("The plan with the same URI has already been fetched");
+        final Plan plan;
+        try {
+            plan = extractPlan(planModel);
+            log.debug("Received plan: {}", plan);
+            final Object[] planResources = PlanRequestHelperJava.getPlanResources(planModel, plan);
+            final URI key = plan.getAbout();
+            if (plans.containsKey(key)) {
+                throw new IllegalStateException("The plan with the same URI has already been fetched");
+            }
+            getPlans().put(key, planResources);
+            // TODO: check the hack from Yash
+            // TODO Andrew@2018-02-23: here the plan needs to be put through lyo store update
+            WarehouseControllerManager.getChangeHistories().addResource(plan);
+        } catch (LyoJenaModelException e) {
+            log.error("Cannot unmarshal the Plan");
         }
-        getPlans().put(key, planResources);
-        // TODO: check the hack from Yash
-        // TODO Andrew@2018-02-23: here the plan needs to be put through lyo store update
-
-        WarehouseControllerManager.getChangeHistories().addResource(plan);
     }
 
     @NotNull
-    private static Plan extractPlan(final Model planModel) {
-        final Plan plan = AdaptorHelper.fromJenaModelSingle(planModel, Plan.class);
+    private static Plan extractPlan(final Model planModel) throws LyoJenaModelException {
+        final Plan plan = JenaModelHelper.unmarshalSingle(planModel, Plan.class);
         // TODO Andrew@2018-02-26: extract method
         final String planId = String.valueOf(getPlans().size() + 1);
         plan.setAbout(
