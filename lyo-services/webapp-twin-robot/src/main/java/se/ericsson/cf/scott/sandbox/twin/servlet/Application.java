@@ -35,11 +35,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.lyo.oslc4j.application.OslcWinkApplication;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.Error;
 import org.eclipse.lyo.oslc4j.core.model.*;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
+import org.glassfish.jersey.server.ResourceConfig;
 import se.ericsson.cf.scott.sandbox.twin.xtra.services.AdaptorAdminService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
@@ -54,7 +54,7 @@ import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 // Start of user code pre_class_code
 // End of user code
 
-public class Application extends OslcWinkApplication {
+public class Application extends ResourceConfig {
 
     private static final Set<Class<?>>         RESOURCE_CLASSES                          = new HashSet<Class<?>>();
     private static final Map<String, Class<?>> RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP = new HashMap<String, Class<?>>();
@@ -79,7 +79,8 @@ public class Application extends OslcWinkApplication {
         RESOURCE_CLASSES.add(ResourceShapeService.class);
 
         // Start of user code Custom Resource Classes
-        // FIXME Andrew@2018-05-27: does not support returning arrays or collections
+        // TODO Andrew@2018-05-27: UniversalResourceSingleProvider does not support returning arrays
+        //  or collections
 //        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
 //        RESOURCE_CLASSES.add(TwinTrsServerService.class);
         RESOURCE_CLASSES.add(AdaptorAdminService.class);
@@ -113,9 +114,12 @@ public class Application extends OslcWinkApplication {
            throws OslcCoreApplicationException,
                   URISyntaxException
     {
-        super(RESOURCE_CLASSES,
-              OslcConstants.PATH_RESOURCE_SHAPES,
-              RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP);
+        registerClasses(RESOURCE_CLASSES);
+        final String BASE_URI = "http://localhost/validatingResourceShapes";
+        for (final Map.Entry<String, Class<?>> entry : RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.entrySet()) {
+            ResourceShapeFactory.createResourceShape(BASE_URI, OslcConstants.PATH_RESOURCE_SHAPES,
+                entry.getKey(), entry.getValue());
+        }
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {

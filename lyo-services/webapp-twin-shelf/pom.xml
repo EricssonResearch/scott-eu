@@ -11,6 +11,7 @@
   <artifactId>webapp-twin-shelf</artifactId>
   <name>Sandbox :: Twin :: Shelf</name>
   <packaging>war</packaging>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -18,12 +19,10 @@
     <maven.compiler.target>1.8</maven.compiler.target>
 
     <version.lyo>4.0.0-SNAPSHOT</version.lyo>
-    <!--<version.leshan>0.1.11-M4</version.leshan>-->
-    <version.leshan>0.1.11-M5-SNAPSHOT</version.leshan>
-    <version.log4j>2.8.2</version.log4j>
+    <version.jersey>2.26</version.jersey>
   </properties>
-  <dependencies>
 
+  <dependencies>
     <dependency>
       <groupId>se.ericsson.cf.scott.sandbox</groupId>
       <artifactId>domain-pddl</artifactId>
@@ -46,49 +45,6 @@
       <version>${version.lyo}</version>
     </dependency>
 
-    <!--TODO remove-->
-<!--
-    <dependency>
-      <groupId>org.eclipse.leshan</groupId>
-      <artifactId>leshan-core</artifactId>
-      <version>${version.leshan}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.leshan</groupId>
-      <artifactId>leshan-server-core</artifactId>
-      <version>${version.leshan}</version>
-      <exclusions>
-        &lt;!&ndash; FIXME Log4j2 uses java 9 modules, not supported by Jetty 9.2 &ndash;&gt;
-        <exclusion>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-core</artifactId>
-        </exclusion>
-        &lt;!&ndash;because we are using Log4j back to SLF4j bridge below&ndash;&gt;
-        <exclusion>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-slf4j-impl</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      &lt;!&ndash;NB: added to fix ClassNotFoundException due to Log4J2 exclusions&ndash;&gt;
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-to-slf4j</artifactId>
-      <version>${version.log4j}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.leshan</groupId>
-      <artifactId>leshan-server-cf</artifactId>
-      <version>${version.leshan}</version>
-    </dependency>
--->
-
-
-
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-core</artifactId>
@@ -97,11 +53,6 @@
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-jena-provider</artifactId>
-      <version>${version.lyo}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
-      <artifactId>oslc4j-wink</artifactId>
       <version>${version.lyo}</version>
     </dependency>
 
@@ -120,6 +71,17 @@
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
       <version>1.7.25</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet</artifactId>
+      <version>${version.jersey}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
+      <version>${version.jersey}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

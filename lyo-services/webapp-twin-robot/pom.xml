@@ -13,6 +13,7 @@
   <packaging>war</packaging>
   <properties>
     <version.lyo>4.0.0-SNAPSHOT</version.lyo>
+    <version.jersey>2.28</version.jersey>
     <powermock.version>1.7.1</powermock.version>
 
     <kotlin.version>1.3.20</kotlin.version>
@@ -32,11 +33,6 @@
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
-    </dependency>
 
     <dependency>
       <groupId>org.eclipse.lyo.trs</groupId>
@@ -72,81 +68,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>3.9.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>2.20.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-junit4</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito2</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- ROS JAVA Dependencies -->
-    <!--TODO clean up-->
-<!--    <dependency>
-      <groupId>org.ros.rosjava_messages</groupId>
-      <artifactId>turtlebot2i_warehouse</artifactId>
-      <version>0.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ros.rosjava_messages</groupId>
-      <artifactId>kobuki_msgs</artifactId>
-      <version>0.7.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ros.rosjava_messages</groupId>
-      <artifactId>geometry_msgs</artifactId>
-      <version>1.12.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ros.rosjava_messages</groupId>
-      <artifactId>std_msgs</artifactId>
-      <version>0.5.10</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ros.rosjava_messages</groupId>
-      <artifactId>nav_msgs</artifactId>
-      <version>1.12.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ros.rosjava_bootstrap</groupId>
-      <artifactId>message_generation</artifactId>
-      <version>0.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ros.rosjava_core</groupId>
-      <artifactId>rosjava</artifactId>
-      <version>0.3.5</version>
-    </dependency>-->
-
-
-    <!--TODO update to 4.0-->
-    <!--<dependency>
-  <groupId>org.eclipse.lyo.clients</groupId>
-  <artifactId>oslc-java-client</artifactId>
-  <version>${version.lyo}</version>
-</dependency>-->
-
-
-
-
-    <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-core</artifactId>
       <version>${version.lyo}</version>
@@ -172,22 +93,16 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
-      <artifactId>oslc4j-wink</artifactId>
-      <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>stax</groupId>
-          <artifactId>stax-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-json4j-provider</artifactId>
       <version>${version.lyo}</version>
     </dependency>
 
 
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -214,7 +129,22 @@
       <artifactId>guava</artifactId>
       <version>21.0</version>
     </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+    </dependency>
 
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet</artifactId>
+      <version>${version.jersey}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
+      <version>${version.jersey}</version>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -235,9 +165,29 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jdk8</artifactId>
-      <version>${kotlin.version}</version>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.9.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.20.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>${powermock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <version>${powermock.version}</version>
+      <scope>test</scope>
     </dependency>
 
 
