@@ -2,7 +2,7 @@ package se.ericsson.cf.scott.sandbox.whc.xtra.services
 
 import org.slf4j.LoggerFactory
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager
-import se.ericsson.cf.scott.sandbox.whc.xtra.managers.TRSManager
+import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.POST
 import javax.ws.rs.Path
@@ -23,7 +23,7 @@ class AdminResource {
     fun triggerPlanning(): Response {
         log.warn("Planning trigger not implemented yet.")
         WarehouseControllerManager.getExecService()
-            .schedule({ TRSManager.triggerPlanningForRegisteredTwins() }, 0, TimeUnit.MILLISECONDS)
+            .schedule({ PlanningManager.triggerSamplePlanning() }, 0, TimeUnit.MILLISECONDS)
         return Response.noContent().build()
     }
 }

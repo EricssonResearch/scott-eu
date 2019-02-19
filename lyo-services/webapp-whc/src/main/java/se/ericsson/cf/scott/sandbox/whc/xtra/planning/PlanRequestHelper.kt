@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
 import com.google.common.collect.ImmutableList
@@ -20,22 +22,206 @@ import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.Lang
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource
 import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
-import org.eclipse.lyo.oslc4j.core.model.IResource
 import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import java.math.BigInteger
 import java.net.URI
 import java.util.UUID
 
-data class InstanceWithResources<T : IResource>(val instance: T,
-                                                val resources: Collection<IResource>)
+class RawResource(about: URI) : AbstractResource(about) {
+    constructor() : this(u(UUID.randomUUID()))
+}
 
-data class InstanceMultiWithResources<T : IResource>(val instance: Collection<T>,
-                                                val resources: Collection<IResource>)
 
+data class InstanceWithResources<T : IExtendedResource>(val instance: T,
+                                                        val resources: Collection<IExtendedResource>)
+
+data class InstanceMultiWithResources<T : IExtendedResource>(val instance: Collection<T>,
+                                                             val resources: Collection<IExtendedResource>)
+
+@Suppress("MemberVisibilityCanBePrivate")
 class PlanRequestHelper {
     // Don't use #, see https://github.com/EricssonResearch/scott-eu/issues/154
     private val base = URI.create("http://ontology.cf.ericsson.net/ns/scott-warehouse/")
+
+    companion object {
+        fun minFn(): RawResource {
+            val minFn = RawResource(u(UUID.randomUUID()))
+            minFn.addType(ns(PDDL, "total-time"))
+            return minFn
+        }
+
+        fun freeRobot(robot: IExtendedResource): InstanceWithResources<IExtendedResource> {
+            val r = RawResource(u(UUID.randomUUID()))
+            r.addType(u("free-robot"))
+            r.setProperty(u("free-robot-rb"), robot.about)
+            return InstanceWithResources(r, ImmutableSet.of(r, robot))
+        }
+
+        fun and(
+            vararg predicates: InstanceWithResources<IExtendedResource>): InstanceWithResources<IExtendedResource> {
+            // I don't want to use Kotlin spread operator '*predicates' because it only works with arrays.
+            return and(predicates.asList())
+        }
+
+        fun and(
+            predicates: Collection<InstanceWithResources<IExtendedResource>>): InstanceWithResources<IExtendedResource> {
+            val r = RawResource(u(UUID.randomUUID()))
+            r.addType(ns(PDDL, "And"))
+            r.setProperty(ns(PDDL, "argument"), predicates.map { it.instance.about })
+            val resources = HashSet(predicates.flatMap { it.resources })
+            resources.add(r)
+            return InstanceWithResources(r, resources)
+        }
+
+        fun robotAt(robot: IExtendedResource, x: IExtendedResource,
+                    y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+            val r = RawResource(u(UUID.randomUUID()))
+            r.addType(u("robot-at"))
+            r.setProperty(u("robot-at-rb"), robot.about)
+            r.setProperty(u("robot-at-x"), x.about)
+            r.setProperty(u("robot-at-y"), y.about)
+            return InstanceWithResources(r, ImmutableSet.of(r, robot, x, y))
+        }
+
+        fun beltAt(belt: IExtendedResource, x: IExtendedResource,
+                   y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+            val r = RawResource(u(UUID.randomUUID()))
+            r.addType(u("belt-at"))
+            r.setProperty(u("belt-at-cb"), belt.about)
+            r.setProperty(u("belt-at-x"), x.about)
+            r.setProperty(u("belt-at-y"), y.about)
+            return InstanceWithResources(r, ImmutableSet.of(r, belt, x, y))
+
+        }
+
+        fun shelfAt(shelf: IExtendedResource, x: IExtendedResource,
+                    y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+            val r = RawResource(u(UUID.randomUUID()))
+            r.addType(u("shelf-at"))
+            r.setProperty(u("shelf-at-sh"), shelf.about)
+            r.setProperty(u("shelf-at-x"), x.about)
+            r.setProperty(u("shelf-at-y"), y.about)
+            return InstanceWithResources(r, ImmutableSet.of(r, shelf, x, y))
+        }
+
+
+        fun onShelf(box: IExtendedResource,
+                    shelf: IExtendedResource): InstanceWithResources<IExtendedResource> {
+            val r = RawResource(u(UUID.randomUUID()))
+            r.addType(u("on-shelf"))
+            r.setProperty(u("on-shelf-b"), box.about)
+            r.setProperty(u("on-shelf-sh"), shelf.about)
+            return InstanceWithResources(r, ImmutableSet.of(r, shelf, box))
+        }
+
+        fun onBelt(box: IExtendedResource,
+                   belt: IExtendedResource): InstanceWithResources<IExtendedResource> {
+            val r = RawResource(u(UUID.randomUUID()))
+            r.addType(u("on-belt"))
+            r.setProperty(u("on-belt-cb"), belt.about)
+            r.setProperty(u("on-belt-b"), box.about)
+            return InstanceWithResources(r, ImmutableSet.of(r, belt, box))
+        }
+
+        fun shelf(id: String): IExtendedResource {
+            return pddlInstance(id, "Shelf")
+        }
+
+        fun box(id: String): IExtendedResource {
+            return pddlInstance(id, "Box")
+        }
+
+        fun robot(id: String): IExtendedResource {
+            return pddlInstance(id, "Robot")
+        }
+
+        fun belt(id: String): IExtendedResource {
+            return pddlInstance(id, "ConveyorBelt")
+        }
+
+        fun coord(id: String): IExtendedResource {
+            return pddlInstance(id, "Coord")
+        }
+
+        fun pddlInstance(id: String, type: String): IExtendedResource {
+            val pddlResource = RawResource(u(id))
+            pddlResource.setLabel(id)
+            pddlResource.addType(u(type))
+
+            return pddlResource
+        }
+
+        fun clear(what: URI): IExtendedResource {
+            val clear = RawResource(u(UUID.randomUUID()))
+            clear.addType(u("clear"))
+            clear.setProperty(u("clear-x"), what)
+            return clear
+        }
+
+        fun moved(b: Block): InstanceWithResources<IExtendedResource> {
+            val m = RawResource(u(UUID.randomUUID()))
+            m.addType(u("moved"))
+            m.setProperty(u("moved-m"), b.about)
+
+            return InstanceWithResources(m, ImmutableSet.of(m, b))
+        }
+
+        fun buildLocation(): RawResource {
+            /**
+            :location
+            a rdfs:Class ;
+            rdfs:subClassOf pddl:PrimitiveType ;
+            oslc:instanceShape pddl:PrimitiveTypeShape ;
+            rdfs:label "location" .
+             */
+            val location = RawResource(u("location"))
+            location.types.add(ns(RDFS, "Class"))
+            location.setProperty(ns(RDFS, "subClassOf"), ns(PrimitiveType::class.java))
+            location.setProperty(ns(OSLC, "instanceShape"), nsSh(PrimitiveType::class.java))
+            location.setProperty(ns(RDFS, "label"), "location")
+            return location
+        }
+
+        fun on(x: URI, y: URI): IExtendedResource {
+            val r = RawResource(u(UUID.randomUUID()))
+            r.addType(u("on"))
+            r.setProperty(u("on-x"), x)
+            r.setProperty(u("on-y"), y)
+            return r
+        }
+
+        fun eq(l: IExtendedResource, r: Any): IExtendedResource {
+            // TODO Andrew@2019-02-18: https://github.com/EricssonResearch/scott-eu/issues/155
+            val equal = RawResource(u(UUID.randomUUID()))
+            equal.addType(ns(PDDL, "EQ"))
+            equal.setProperty(ns(PDDL, "left"), l.about)
+            equal.setProperty(ns(PDDL, "right"), r)
+
+            return equal
+        }
+
+        fun eq(l: InstanceWithResources<IExtendedResource>,
+               r: Any): InstanceWithResources<IExtendedResource> {
+            val eqResource = eq(l.instance, r)
+            val builder = ImmutableSet.builder<IExtendedResource>()
+            builder.add(eqResource)
+            builder.addAll(l.resources)
+            builder.addAll(filterResources(r))
+            return InstanceWithResources(eqResource, builder.build())
+        }
+
+        private fun filterResources(r: Any): Collection<IExtendedResource> {
+            return when (r) {
+                is IExtendedResource -> ImmutableSet.of(r)
+                is Collection<*>     -> ImmutableSet.copyOf(
+                    r.filterIsInstance(IExtendedResource::class.java))
+                is Array<*>          -> ImmutableSet.copyOf(
+                    r.filterIsInstance(IExtendedResource::class.java))
+                else                 -> ImmutableSet.of()
+            }
+        }
+    }
 
     init {
         OslcRdfHelper.setBase(base)
@@ -418,7 +604,7 @@ class PlanRequestHelper {
     }
 
     fun genProblem(): Model {
-        val resources = HashSet<IResource>()
+        val resources = HashSet<IExtendedResource>()
         val problem = Problem(u("scott-warehouse-problem"))
         resources.add(problem)
 
@@ -438,7 +624,7 @@ class PlanRequestHelper {
         val y10 = coord("y10")
         val y20 = coord("y20")
 
-        val pddlObjects = hashSetOf(sh1, rb1, cb1, b1, x0, y0, y10, y20);
+        val pddlObjects = hashSetOf(sh1, rb1, cb1, b1, x0, y0, y10, y20)
         problem.pddlObject.addAll(pddlObjects.map { it.link })
         resources += pddlObjects
 
@@ -465,7 +651,7 @@ class PlanRequestHelper {
 
         // misc
 
-        val minFn = this.minFn()
+        val minFn = PlanRequestHelper.minFn()
         problem.minimize = minFn.link
         resources += minFn
 
@@ -473,161 +659,61 @@ class PlanRequestHelper {
     }
 
 
-    private fun minFn(): RawResource {
-        val minFn = RawResource(u(UUID.randomUUID()))
-        minFn.addType(ns(PDDL, "total-time"))
-        return minFn
-    }
-
-    private fun freeRobot(robot: IExtendedResource): InstanceWithResources<IExtendedResource> {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(u("free-robot"))
-        r.setProperty(u("free-robot-rb"), robot.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, robot))
-    }
-
-    private fun and(
-            vararg predicates: InstanceWithResources<IExtendedResource>): InstanceWithResources<IExtendedResource> {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(ns(PDDL, "And"))
-        r.setProperty(ns(PDDL, "argument"), predicates.map { it.instance.about })
-        val resources = HashSet(predicates.flatMap { it.resources })
-        resources.add(r)
-        return InstanceWithResources(r, resources)
-    }
-
-    private fun robotAt(robot: IExtendedResource, x: IExtendedResource,
-                        y: IExtendedResource): InstanceWithResources<IExtendedResource> {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(u("robot-at"))
-        r.setProperty(u("robot-at-rb"), robot.about)
-        r.setProperty(u("robot-at-x"), x.about)
-        r.setProperty(u("robot-at-y"), y.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, robot, x, y))
-    }
-
-    private fun beltAt(belt: IExtendedResource, x: IExtendedResource,
-                       y: IExtendedResource): InstanceWithResources<IExtendedResource> {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(u("belt-at"))
-        r.setProperty(u("belt-at-cb"), belt.about)
-        r.setProperty(u("belt-at-x"), x.about)
-        r.setProperty(u("belt-at-y"), y.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, belt, x, y))
-
-    }
-
-    private fun shelfAt(shelf: IExtendedResource, x: IExtendedResource,
-                        y: IExtendedResource): InstanceWithResources<IExtendedResource> {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(u("shelf-at"))
-        r.setProperty(u("shelf-at-sh"), shelf.about)
-        r.setProperty(u("shelf-at-x"), x.about)
-        r.setProperty(u("shelf-at-y"), y.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, shelf, x, y))
-    }
-
-
-    private fun onShelf(box: IExtendedResource,
-                        shelf: IExtendedResource): InstanceWithResources<IExtendedResource> {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(u("on-shelf"))
-        r.setProperty(u("on-shelf-b"), box.about)
-        r.setProperty(u("on-shelf-sh"), shelf.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, shelf, box))
-    }
-
-    private fun onBelt(box: IExtendedResource,
-                       belt: IExtendedResource): InstanceWithResources<IExtendedResource> {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(u("on-belt"))
-        r.setProperty(u("on-belt-cb"), belt.about)
-        r.setProperty(u("on-belt-b"), box.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, belt, box))
-    }
-
-    fun shelf(id: String): IExtendedResource {
-        return pddlInstance(id, "Shelf")
-    }
-
-    fun box(id: String): IExtendedResource {
-        return pddlInstance(id, "Box")
-    }
-
-    fun robot(id: String): IExtendedResource {
-        return pddlInstance(id, "Robot")
-    }
-
-    fun belt(id: String): IExtendedResource {
-        return pddlInstance(id, "ConveyorBelt")
-    }
-
-    fun coord(id: String): IExtendedResource {
-        return pddlInstance(id, "Coord")
-    }
-
-    fun pddlInstance(id: String, type: String): IExtendedResource {
-        val pddlResource = RawResource(u(id))
-        pddlResource.setLabel(id)
-        pddlResource.addType(u(type))
-
-        return pddlResource
-    }
-
-    private fun buildInitState(tables: List<IResource>,
-                               blocks: List<Block>): InstanceMultiWithResources<IResource> {
-        /*
-          pddl:init [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :a
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :b
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :c
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :total-moved ] ;
-              pddl:right 0
-            ] , */
-        val values: Collection<InstanceWithResources<IResource>> = blocks.map { b -> eq(moved(b), BigInteger.ZERO) }
+    private fun buildInitState(tables: List<IExtendedResource>,
+                               blocks: List<Block>): InstanceMultiWithResources<IExtendedResource> {
+        /**
+        pddl:init [ a pddl:EQ ;
+        pddl:left [ a :moved ;
+        :moved-m :a
+        ] ;
+        pddl:right 0
+        ] ,
+        [ a pddl:EQ ;
+        pddl:left [ a :moved ;
+        :moved-m :b
+        ] ;
+        pddl:right 0
+        ] ,
+        [ a pddl:EQ ;
+        pddl:left [ a :moved ;
+        :moved-m :c
+        ] ;
+        pddl:right 0
+        ] ,
+        [ a pddl:EQ ;
+        pddl:left [ a :total-moved ] ;
+        pddl:right 0
+        ] , */
+        val values: Collection<InstanceWithResources<IExtendedResource>> = blocks.map { b ->
+            eq(moved(b), BigInteger.ZERO)
+        }
         val totalMoved = RawResource()
         totalMoved.addType(u("total-moved"))
         val totalMovedEq = eq(totalMoved, BigInteger.ZERO)
 
-        /*
-            [ a :on ;
-              :on-x :b ;
-              :on-y :table
-            ] ,
-            [ a :on ;
-              :on-x :a ;
-              :on-y :table
-            ] ,
-            [ a :on ;
-              :on-x :c ;
-              :on-y :a
-            ] ,
-            [ a :clear ;
-              :clear-x :b
-            ] ,
-            [ a :clear ;
-              :clear-x :c
-            ] ,
-            [ a :clear ;
-              :clear-x :table
-            ] ;
+        /**
+        [ a :on ;
+        :on-x :b ;
+        :on-y :table
+        ] ,
+        [ a :on ;
+        :on-x :a ;
+        :on-y :table
+        ] ,
+        [ a :on ;
+        :on-x :c ;
+        :on-y :a
+        ] ,
+        [ a :clear ;
+        :clear-x :b
+        ] ,
+        [ a :clear ;
+        :clear-x :c
+        ] ,
+        [ a :clear ;
+        :clear-x :table
+        ] ;
          */
-
         val allButLastBlocks = blocks.subList(0, blocks.size - 1)
         val onBlocks = allButLastBlocks.map { b -> on(b.about, tables.first().about) }
         val bONb = on(blocks.last().about, blocks.first().about)
@@ -635,7 +721,7 @@ class PlanRequestHelper {
         val clearBlocks = blocks.subList(1, blocks.size).map { b -> clear(b.about) }
         val clearTable = clear(tables.first().about)
 
-        val initResourcesBuilder = ImmutableSet.builder<IResource>()
+        val initResourcesBuilder = ImmutableSet.builder<IExtendedResource>()
         initResourcesBuilder.addAll(values.map { v -> v.instance })
         initResourcesBuilder.addAll(onBlocks)
         initResourcesBuilder.addAll(clearBlocks)
@@ -643,7 +729,7 @@ class PlanRequestHelper {
         initResourcesBuilder.add(clearTable)
         initResourcesBuilder.add(totalMovedEq)
 
-        val allResourcesBuilder = ImmutableSet.builder<IResource>()
+        val allResourcesBuilder = ImmutableSet.builder<IExtendedResource>()
         allResourcesBuilder.addAll(tables)
         allResourcesBuilder.addAll(blocks)
         allResourcesBuilder.addAll(values.flatMap { v -> v.resources })
@@ -661,19 +747,18 @@ class PlanRequestHelper {
     }
 
 
-    private fun buildGoalState(tables: ImmutableList<IResource>,
-                               blocks: ImmutableList<Block>?): InstanceWithResources<IResource> {
-        /*
-          pddl:goal [ a pddl:Or ;
-              pddl:argument [ a :on ;
-                              :on-x :b ;
-                              :on-y :c
-                            ] ,
-                            [ a :on ;
-                              :on-x :c ;
-                              :on-y :b
-                            ]
-            ] ;
+    private fun buildGoalState(): InstanceWithResources<IExtendedResource> {
+        /**
+        pddl:goal [ a pddl:Or ;
+        pddl:argument [ a :on ;
+        :on-x :b ;
+        :on-y :c
+        ] ,
+        [ a :on ;
+        :on-x :c ;
+        :on-y :b
+        ]
+        ] ;
          */
 
         // FIXME Andrew@2018-08-16: one of the goals is empty when serialised
@@ -681,87 +766,9 @@ class PlanRequestHelper {
 
         val bONc = on(u("b"), u("c"))
         val cONb = on(u("c"), u("b"))
-        goal.setArgument(hashSetOf(bONc.link, cONb.link))
+        goal.argument = hashSetOf(bONc.link, cONb.link)
 
-        val instanceWithResources: InstanceWithResources<IResource> = InstanceWithResources(goal,
-                ImmutableList.of(goal, bONc, cONb))
-        return instanceWithResources
+        return InstanceWithResources(goal, ImmutableList.of(goal, bONc, cONb))
     }
 
-    fun on(x: URI, y: URI): IResource {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(u("on"))
-        r.setProperty(u("on-x"), x)
-        r.setProperty(u("on-y"), y)
-        return r
-    }
-
-    fun eq(l: IResource, r: Any): IExtendedResource {
-        // TODO Andrew@2019-02-18: https://github.com/EricssonResearch/scott-eu/issues/155
-        val equal = RawResource(u(UUID.randomUUID()))
-        equal.addType(ns(PDDL, "EQ"))
-        equal.setProperty(ns(PDDL, "left"), l.about)
-        equal.setProperty(ns(PDDL, "right"), r)
-
-        return equal
-    }
-
-    fun eq(l: InstanceWithResources<IResource>, r: Any): InstanceWithResources<IResource> {
-        val eqResource = eq(l.instance, r)
-        val builder = ImmutableSet.builder<IResource>()
-        builder.add(eqResource)
-        builder.addAll(l.resources)
-        builder.addAll(filterResources(r))
-        return InstanceWithResources(eqResource, builder.build())
-    }
-
-    private fun filterResources(r: Any): Collection<IResource> {
-        return when (r) {
-            is IResource     -> ImmutableSet.of(r)
-            is Collection<*> -> ImmutableSet.copyOf(r.filterIsInstance(IResource::class.java))
-            is Array<*>      -> ImmutableSet.copyOf(r.filterIsInstance(IResource::class.java))
-            else             -> ImmutableSet.of()
-        }
-    }
-
-    fun clear(what: URI): IExtendedResource {
-        val clear = RawResource(u(UUID.randomUUID()))
-        clear.addType(u("clear"))
-        clear.setProperty(u("clear-x"), what)
-        return clear
-    }
-
-
-    private fun moved(b: Block): InstanceWithResources<IResource> {
-        val m = RawResource(u(UUID.randomUUID()))
-        m.addType(u("moved"))
-        m.setProperty(u("moved-m"), b.about)
-
-        return InstanceWithResources(m, ImmutableSet.of(m, b))
-    }
-
-
-    fun buildLocation(): RawResource {
-        /*
-        :location
-          a rdfs:Class ;
-          rdfs:subClassOf pddl:PrimitiveType ;
-          oslc:instanceShape pddl:PrimitiveTypeShape ;
-          rdfs:label "location" .
-         */
-        val location = RawResource(u("location"))
-        location.types.add(ns(RDFS, "Class"))
-        location.setProperty(ns(RDFS, "subClassOf"), ns(PrimitiveType::class.java))
-        location.setProperty(ns(OSLC, "instanceShape"), nsSh(PrimitiveType::class.java))
-        location.setProperty(ns(RDFS, "label"), "location")
-        return location
-    }
-
-    fun warehouseSize(i: Int, i1: Int) {
-
-    }
-}
-
-class RawResource(about: URI) : AbstractResource(about) {
-    constructor() : this(u(UUID.randomUUID()))
 }

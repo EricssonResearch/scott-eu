@@ -43,6 +43,7 @@ import java.util.concurrent.Executors;
 
 //import org.eclipse.lyo.store.StoreFactory;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.MqttManager;
+import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.TRSManager;
 import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
@@ -139,8 +140,8 @@ public class WarehouseControllerManager {
         if (serviceProviderId.equals(AdaptorHelper.DEFAULT_SP_ID)) {
             final URI planURI = WarehouseControllerResourcesFactory.constructURIForPlan(
                     serviceProviderId, planId);
-            if (TRSManager.getPlans().containsKey(planURI)) {
-                aResource = TRSManager.getPlans().get(planURI);
+            if (PlanningManager.INSTANCE.getPlans().containsKey(planURI)) {
+                aResource = PlanningManager.INSTANCE.getPlans().get(planURI);
                 log.info("found a plan", aResource);
             } else {
                 log.warn("a plan {} was not found", planId);

@@ -45,7 +45,7 @@ class PlanRequestHelperTest {
               rdfs:label "location" .
         """, Lang.TURTLE)
 
-        val location = PlanRequestHelper().buildLocation()
+        val location = PlanRequestHelper.buildLocation()
         val locationModelActual = JenaModelHelper.createJenaModel(arrayOf(location))
 
         assertIsomorphic("Location object is incorrect", locationModelExpected, locationModelActual)
