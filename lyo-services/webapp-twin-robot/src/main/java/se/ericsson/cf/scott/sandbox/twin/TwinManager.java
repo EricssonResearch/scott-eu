@@ -24,19 +24,21 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
-import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
-import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import java.net.URISyntaxException;
-import java.util.Random;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.WordUtils;
-import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
+import javax.servlet.ServletContextEvent;
+import java.util.List;
+
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
+import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
+import eu.scott.warehouse.domains.pddl.Step;
+
 
 // Start of user code imports
 import java.util.concurrent.TimeUnit;
@@ -44,6 +46,14 @@ import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
+import java.net.URISyntaxException;
+import java.util.Random;
+import org.apache.commons.lang.WordUtils;
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 // End of user code
 
 // Start of user code pre_class_code
@@ -57,7 +67,9 @@ public class TwinManager {
     private static Random r;
     private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
     // End of user code
-
+    
+    
+    // Start of user code class_methods
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -113,7 +125,6 @@ public class TwinManager {
         // End of user code
         return serviceProviderInfos;
     }
-
     public static IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         IndependentServiceProviderInfo[] serviceProviderInfos = {};

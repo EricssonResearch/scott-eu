@@ -91,9 +91,8 @@ public class WarehouseControllerManager {
     {
         
         // Start of user code contextInitializeServletListener
-
         AdaptorHelper.initLogger();
-        log.info("WHC instance '{}' is initialising", whcUUID.toString());
+        log.debug("WHC contextInitializeServletListener START");
         AdaptorHelper.setContext(servletContextEvent.getServletContext());
 
         getExecService().schedule(() -> {
@@ -105,7 +104,7 @@ public class WarehouseControllerManager {
             log.debug("Initialising a TRS Server");
             TRSManager.initTRSServer(mqttClient);
         }, 5, TimeUnit.SECONDS);
-
+        log.debug("WHC contextInitializeServletListener COMPLETE");
         // End of user code
     }
 

@@ -19,6 +19,10 @@ push:
 	(cd robot-emulator		&&	make push)
 
 restart-swarm:
+	(cd deployment	&& docker service rm `docker service ls --filter name=scott -q`) || true
+	(cd deployment	&& docker stack deploy -c $(STACK) --prune scott)
+
+restart-swarm-full:
 	(cd deployment	&& docker swarm init) || true
 	(cd deployment	&& docker service rm `docker service ls --filter name=scott -q` && sleep 1) || true
 	(cd deployment  && docker stack rm scott && sleep 10) || true

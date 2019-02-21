@@ -27,25 +27,29 @@
 
 package se.ericsson.cf.scott.sandbox.twin.servlet;
 
-import eu.scott.warehouse.domains.mission.MissionDomainConstants;
-import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import javax.ws.rs.core.UriBuilder;
-import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
 import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
-import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
+
+import eu.scott.warehouse.domains.mission.MissionDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 
 // Start of user code imports
+import java.util.Date;
+import java.util.HashMap;
+import javax.ws.rs.core.UriBuilder;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 // End of user code
 
 public class IndependentServiceProvidersFactory
@@ -90,6 +94,8 @@ public class IndependentServiceProvidersFactory
         return serviceProvider;
     }
 
+    // move back to the SPCSingleton for now
+    @Deprecated
     public static ServiceProvider createIndependentServiceProvider(
         final IndependentServiceProviderInfo serviceProviderInfo)
         throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
@@ -125,6 +131,8 @@ public class IndependentServiceProvidersFactory
         return serviceProvider;
     }
 
+    // move back to the SPCSingleton for now
+    @Deprecated
     static URI constructIndependentServiceProviderURI(final String serviceProviderId) {
         String basePath = OSLC4JUtils.getServletURI();
         Map<String, Object> pathParameters = new HashMap<String, Object>();
@@ -135,6 +143,8 @@ public class IndependentServiceProvidersFactory
         return builder.path(instanceURI).buildFromMap(pathParameters);
     }
 
+    // move back to the SPCSingleton for now
+    @Deprecated
     static String independentServiceProviderIdentifier(final String serviceProviderId) {
         String identifier = "/" + serviceProviderId;
         return identifier;
