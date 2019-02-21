@@ -25,10 +25,12 @@ public class MqttManager {
     private static MqttClient mqttClient;
     private static TwinRegistrationListener registrationListener;
 
+    // TODO Andrew@2019-02-21: move to the repository
     public static Map<String, URI> getTwins() {
         return ImmutableMap.copyOf(registrationListener.getTwins());
     }
 
+    // FIXME Andrew@2019-02-21: delete in favour of se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager.getExecService
     public static ImmutableMap<String, URI> getExecutors() {
         return ImmutableMap.copyOf(registrationListener.getExecutors());
     }

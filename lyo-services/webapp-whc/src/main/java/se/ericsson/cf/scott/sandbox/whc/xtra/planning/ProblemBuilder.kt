@@ -1,7 +1,8 @@
 package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
 import eu.scott.warehouse.domains.pddl.Problem
-import eu.scott.warehouse.lib.OslcRdfHelper
+import eu.scott.warehouse.lib.InstanceWithResources
+import eu.scott.warehouse.lib.OslcHelpers
 import eu.scott.warehouse.lib.link
 import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
 import org.eclipse.lyo.oslc4j.core.model.Link
@@ -59,11 +60,11 @@ class ProblemBuilder {
         val resources: MutableSet<IExtendedResource> = resources
 
         // TODO Andrew@2019-02-20: make it a class ctor param
-        OslcRdfHelper.setBase(baseURI)
+        OslcHelpers.setBase(baseURI)
 
-        problem = Problem(OslcRdfHelper.u("scott-warehouse-problem"))
+        problem = Problem(OslcHelpers.u("scott-warehouse-problem"))
         problem.label = "scott-warehouse-problem"
-        problem.domain = Link(OslcRdfHelper.u("scott-warehouse"))
+        problem.domain = Link(OslcHelpers.u("scott-warehouse"))
 
         resources.add(problem)
 
@@ -230,7 +231,7 @@ class ProblemBuilder {
     }
 
     private fun lookupNaive(label: String): IExtendedResource {
-        return resources.single { r -> r.about == OslcRdfHelper.u(label) }
+        return resources.single { r -> r.about == OslcHelpers.u(label) }
     }
 
     fun warehouseSize(_width: Int, _height: Int): ProblemBuilder {

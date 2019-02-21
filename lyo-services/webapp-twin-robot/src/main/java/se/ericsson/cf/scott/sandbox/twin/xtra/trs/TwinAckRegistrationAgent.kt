@@ -10,6 +10,7 @@ import eu.scott.warehouse.lib.PlanChangeEventListener
 import eu.scott.warehouse.domains.trs.TrsServerAck
 import eu.scott.warehouse.domains.trs.TrsServerAnnouncement
 import eu.scott.warehouse.domains.trs.TrsXConstants
+import eu.scott.warehouse.lib.RdfHelpers
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
@@ -72,7 +73,7 @@ class TwinAckRegistrationAgent(val whcTopic: String) :
             val announcement = TrsServerAnnouncement(
                 TwinAdaptorHelper.getTwinUUID(),
                     TrsXConstants.TYPE_TWIN, trsUri, MqttTopics.REGISTRATION_ANNOUNCE, true)
-            val model = MqttHelper.jenaModelFrom(announcement)
+            val model = RdfHelpers.modelFromResources(announcement)
             return LastWillMessage(whcTopic, model)
         }
 

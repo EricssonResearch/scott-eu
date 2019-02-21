@@ -4,6 +4,8 @@ import eu.scott.warehouse.domains.blocksworld.Move;
 import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.lib.OslcHelpers;
+import eu.scott.warehouse.lib.RdfHelpers;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,12 +42,12 @@ public class PlanRequestHelperJava {
     }
 
     private static Model planForProblem(final Model problemModel) {
-        log.trace("Problem request\n{}", AdaptorHelper.jenaModelToString(problemModel));
+        log.trace("Problem request\n{}", RdfHelpers.modelToString(problemModel));
         try {
             final InputStream response = requestPlanManually(problemModel);
             final Model responsePlan = ModelFactory.createDefaultModel();
             RDFDataMgr.read(responsePlan, response, Lang.TURTLE);
-            log.info("Plan response\n{}", AdaptorHelper.jenaModelToString(responsePlan));
+            log.info("Plan response\n{}", RdfHelpers.modelToString(responsePlan));
             return responsePlan;
         } catch (IOException e) {
             log.error("Something went wrong", e);
@@ -80,7 +82,7 @@ public class PlanRequestHelperJava {
                                         .getOrDefault(new QName(AdaptorHelper.NS_SHACL, "order"),
                                                       null
                                         ));
-            final IResource action = AdaptorHelper.navTry(
+            final IResource action = OslcHelpers.navTry(
                     planModel, step.getAction(), Action.class, Move.class);
             planResources.add(step);
             planResources.add(action);
@@ -92,7 +94,7 @@ public class PlanRequestHelperJava {
     @NotNull
     public static Model requestPlan(final Model problemModel) {
         Model planModel = planForProblem(problemModel);
-        AdaptorHelper.skolemize(planModel);
+        RdfHelpers.skolemize(planModel);
         return planModel;
     }
 }

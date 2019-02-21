@@ -2,7 +2,7 @@ package se.ericsson.cf.scott.sandbox.whc.xtra.managers
 
 import com.google.common.collect.ImmutableMap
 import eu.scott.warehouse.domains.pddl.Plan
-import eu.scott.warehouse.lib.OslcRdfHelper
+import eu.scott.warehouse.lib.OslcHelpers
 import org.apache.jena.rdf.model.Model
 import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
@@ -41,7 +41,9 @@ object PlanningManager {
     }
 
     fun triggerSamplePlanning() {
+        log.info("Performing sample planning")
         val requestModel = buildSamplePlanRequest()
+
         val planModel = PlanRequestHelperJava.requestPlan(requestModel)
         tryRegisterPlan(planModel)
     }
@@ -61,9 +63,9 @@ object PlanningManager {
         var requestBuilder = PlanRequestBuilder()
         val stateBuilder = ProblemBuilder()
         // TODO Andrew@2019-02-19: set OslcRdfHelper base or use a real URI
-        requestBuilder = requestBuilder.problemUri(OslcRdfHelper.u("scott-warehouse-problem"))
+        requestBuilder = requestBuilder.problemUri(OslcHelpers.u("scott-warehouse-problem"))
             .genLabel("TRS-Safety prototype plan request")
-            .problemDomain(Link(OslcRdfHelper.u("scott-warehouse")))
+            .problemDomain(Link(OslcHelpers.u("scott-warehouse")))
             .domainFromModel(planRequestHelper.genDomain()).withStateBuilder(stateBuilder)
 
         stateBuilder.warehouseSize(10, 10).robotsActive(Arrays.asList("rb1", "rb2", "rb3", "rb4"))

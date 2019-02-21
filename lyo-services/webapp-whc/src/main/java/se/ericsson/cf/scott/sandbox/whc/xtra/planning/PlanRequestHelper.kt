@@ -8,36 +8,28 @@ import eu.scott.warehouse.domains.blocksworld.Block
 import eu.scott.warehouse.domains.pddl.Or
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import eu.scott.warehouse.domains.pddl.Problem
-import eu.scott.warehouse.lib.OslcRdfHelper
-import eu.scott.warehouse.lib.OslcRdfHelper.OSLC
-import eu.scott.warehouse.lib.OslcRdfHelper.PDDL
-import eu.scott.warehouse.lib.OslcRdfHelper.RDFS
-import eu.scott.warehouse.lib.OslcRdfHelper.ns
-import eu.scott.warehouse.lib.OslcRdfHelper.nsSh
-import eu.scott.warehouse.lib.OslcRdfHelper.u
+import eu.scott.warehouse.lib.InstanceMultiWithResources
+import eu.scott.warehouse.lib.InstanceWithResources
+import eu.scott.warehouse.lib.OslcHelpers
+import eu.scott.warehouse.lib.OslcHelpers.OSLC
+import eu.scott.warehouse.lib.OslcHelpers.PDDL
+import eu.scott.warehouse.lib.OslcHelpers.RDFS
+import eu.scott.warehouse.lib.OslcHelpers.ns
+import eu.scott.warehouse.lib.OslcHelpers.nsSh
+import eu.scott.warehouse.lib.OslcHelpers.u
+import eu.scott.warehouse.lib.RawResource
+import eu.scott.warehouse.lib.RdfHelpers
 import eu.scott.warehouse.lib.link
 import eu.scott.warehouse.lib.setLabel
 import eu.scott.warehouse.lib.setProperty
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.Lang
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource
 import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
 import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import java.math.BigInteger
 import java.net.URI
 import java.util.UUID
-
-class RawResource(about: URI) : AbstractResource(about) {
-    constructor() : this(u(UUID.randomUUID()))
-}
-
-
-data class InstanceWithResources<T : IExtendedResource>(val instance: T,
-                                                        val resources: Collection<IExtendedResource>)
-
-data class InstanceMultiWithResources<T : IExtendedResource>(val instance: Collection<T>,
-                                                             val resources: Collection<IExtendedResource>)
 
 @Suppress("MemberVisibilityCanBePrivate")
 class PlanRequestHelper {
@@ -224,7 +216,7 @@ class PlanRequestHelper {
     }
 
     init {
-        OslcRdfHelper.setBase(base)
+        OslcHelpers.setBase(base)
     }
 
     fun getPlanRequestComplete(): Model {
@@ -599,7 +591,7 @@ class PlanRequestHelper {
         sh:order            5 .
         """.trimIndent()
 
-        val model = OslcRdfHelper.modelFrom(ttl, Lang.TURTLE)
+        val model = RdfHelpers.modelFromIndentedString(ttl, Lang.TURTLE)
         return model
     }
 
