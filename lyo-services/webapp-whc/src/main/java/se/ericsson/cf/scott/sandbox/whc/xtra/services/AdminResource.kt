@@ -1,5 +1,6 @@
 package se.ericsson.cf.scott.sandbox.whc.xtra.services
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager
@@ -15,15 +16,17 @@ import javax.ws.rs.core.Response
 @Path("admin")
 class AdminResource {
     companion object {
-        val log = LoggerFactory.getLogger(AdminResource::class.java)
+        val log: Logger = LoggerFactory.getLogger(AdminResource::class.java)
     }
 
     @POST
     @Path("plan_trigger")
     fun triggerPlanning(): Response {
-        log.warn("Planning trigger not implemented yet.")
         WarehouseControllerManager.getExecService()
-            .schedule({ PlanningManager.triggerSamplePlanning() }, 0, TimeUnit.MILLISECONDS)
+            .schedule({
+                log.trace("Scheduling triggerSamplePlanning() w/o delay")
+                PlanningManager.triggerSamplePlanning()
+            }, 0, TimeUnit.MILLISECONDS)
         return Response.noContent().build()
     }
 }

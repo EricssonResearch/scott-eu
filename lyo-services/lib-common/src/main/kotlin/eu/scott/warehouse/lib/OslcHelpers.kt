@@ -1,9 +1,6 @@
 package eu.scott.warehouse.lib
 
 import org.apache.jena.rdf.model.Model
-import org.apache.jena.rdf.model.ModelFactory
-import org.apache.jena.riot.Lang
-import org.apache.jena.riot.RDFParser
 import org.eclipse.lyo.oslc4j.core.annotation.OslcName
 import org.eclipse.lyo.oslc4j.core.annotation.OslcNamespace
 import org.eclipse.lyo.oslc4j.core.annotation.OslcResourceShape
@@ -11,6 +8,10 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource
 import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
 import org.eclipse.lyo.oslc4j.core.model.IResource
 import org.eclipse.lyo.oslc4j.core.model.Link
+import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
+import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.UUID
 import javax.ws.rs.core.UriBuilder
@@ -40,13 +41,27 @@ fun IExtendedResource.setProperty(name: String, p: Any) {
 
 fun IExtendedResource.setProperty(name: URI, p: Any) = setProperty(name.toString(), p)
 
-fun IExtendedResource.setInstanceShape(cl: Class<*>) = this.setProperty(OslcRdfHelper.ns(OslcRdfHelper.OSLC, "instanceShape"), OslcRdfHelper.nsSh(cl))
+fun IExtendedResource.setInstanceShape(cl: Class<*>) = this.setProperty(OslcHelpers.ns(OslcHelpers.OSLC, "instanceShape"), OslcHelpers.nsSh(cl))
 
-fun IExtendedResource.setSuperclass(cl: Class<*>) = this.setProperty(OslcRdfHelper.ns(OslcRdfHelper.RDFS, "subClassOf"), OslcRdfHelper.ns(cl))
+fun IExtendedResource.setSuperclass(cl: Class<*>) = this.setProperty(OslcHelpers.ns(OslcHelpers.RDFS, "subClassOf"), OslcHelpers.ns(cl))
 
-fun IExtendedResource.setLabel(l: String) = this.setProperty(OslcRdfHelper.ns(OslcRdfHelper.RDFS, "label"), l)
+fun IExtendedResource.setLabel(l: String) = this.setProperty(OslcHelpers.ns(OslcHelpers.RDFS, "label"), l)
 
-object OslcRdfHelper {
+class RawResource(about: URI) : AbstractResource(about) {
+    constructor() : this(OslcHelpers.u(UUID.randomUUID()))
+}
+
+
+data class InstanceWithResources<T : IExtendedResource>(val instance: T,
+                                                        val resources: Collection<IExtendedResource>)
+
+data class InstanceMultiWithResources<T : IExtendedResource>(val instance: Collection<T>,
+                                                             val resources: Collection<IExtendedResource>)
+
+
+object OslcHelpers {
+
+    val log: Logger = LoggerFactory.getLogger(OslcHelpers::class.java)
 
     const val RDFS = "http://www.w3.org/2000/01/rdf-schema#"
     const val PDDL = "http://ontology.cf.ericsson.net/pddl/"
@@ -100,9 +115,39 @@ object OslcRdfHelper {
         return u("blnk_" + p.toString())
     }
 
-    fun modelFrom(str: String, l: Lang): Model {
-        val model = ModelFactory.createDefaultModel()
-        RDFParser.fromString(str.trimIndent()).lang(l).parse(model.graph)
-        return model
+
+    // TODO Andrew@2018-02-23: move to JMH
+    // TODO Andrew@2018-02-23: create a stateful JMH that would keep resources hashed by URI
+    @Throws(LyoJenaModelException::class)
+    @JvmStatic
+    private fun <R : IResource> nav(m: Model, l: Link, rClass: Class<R>): R {
+        val rs = JenaModelHelper.unmarshal(m, rClass)
+        for (r in rs) {
+            if (l.value == r.about) {
+                return r
+            }
+        }
+        throw IllegalArgumentException("Link cannot be followed in this model")
+    }
+
+    // TODO Andrew@2019-02-21: make sure we catch all exceptions here
+    @SafeVarargs
+    @JvmStatic
+    fun navTry(m: Model, l: Link, vararg rClass: Class<out IResource>): IResource {
+        for (aClass in rClass) {
+            try {
+                return nav(m, l, aClass)
+            } catch (e: IllegalArgumentException) {
+                log.warn("Fix RDFS reasoning in JMH!!!")
+            }
+
+        }
+        // give up
+        throw IllegalArgumentException("Link cannot be followed in this model")
+    }
+
+    @JvmStatic
+    fun hexHashCodeFor(aResource: IResource): String {
+        return Integer.toHexString(aResource.hashCode())
     }
 }

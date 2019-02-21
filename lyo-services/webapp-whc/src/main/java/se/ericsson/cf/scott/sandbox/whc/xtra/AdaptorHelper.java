@@ -1,21 +1,12 @@
 package se.ericsson.cf.scott.sandbox.whc.xtra;
 
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.util.ResourceUtils;
-import org.eclipse.lyo.oslc4j.core.model.IResource;
-import org.eclipse.lyo.oslc4j.core.model.Link;
-import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
-import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,24 +44,6 @@ public class AdaptorHelper {
 
     private static ServletContext context;
 
-    public static void skolemize(final Model m) {
-        final ResIterator resIterator = m.listSubjects();
-        while(resIterator.hasNext()) {
-            final Resource resource = resIterator.nextResource();
-            if(resource != null && resource.isAnon()) {
-                final String skolemURI = "urn:skolem:" + resource.getId()
-                        .getBlankNodeId()
-                        .getLabelString();
-                ResourceUtils.renameResource(resource, skolemURI);
-            }
-        }
-    }
-
-    public static String jenaModelToString(final Model responsePlan) {
-        final StringWriter stringWriter = new StringWriter();
-        RDFDataMgr.write(stringWriter, responsePlan, RDFFormat.TURTLE_PRETTY);
-        return stringWriter.toString();
-    }
 
     public static String p(final String s) {
         final String parameterFQDN = parameterFQDN(s);
@@ -91,34 +64,6 @@ public class AdaptorHelper {
         return MQTT_CLIENT_ID;
     }
 
-    // TODO Andrew@2018-02-23: move to JMH
-    // TODO Andrew@2018-02-23: create a stateful JMH that would keep resources hashed by URI
-    // TODO Andrew@2018-07-30: move to LyoHelper
-    private static <R extends IResource> R nav(final Model m, final Link l,
-            final Class<R> rClass) throws LyoJenaModelException {
-        final R[] rs = JenaModelHelper.unmarshal(m, rClass);
-        for (R r : rs) {
-            if(l.getValue().equals(r.getAbout())) {
-                return r;
-            }
-        }
-        throw new IllegalArgumentException("Link cannot be followed in this model");
-    }
-
-    // TODO Andrew@2018-07-30: move to LyoHelper
-    @SafeVarargs
-    public static IResource navTry(final Model m, final Link l,
-            final Class<? extends IResource>... rClass) throws LyoJenaModelException {
-        for (Class<? extends IResource> aClass : rClass) {
-            try {
-                return nav(m, l, aClass);
-            } catch (IllegalArgumentException e) {
-                log.warn("Fix RDFS reasoning in JMH!!!");
-            }
-        }
-        // give up
-        throw new IllegalArgumentException("Link cannot be followed in this model");
-    }
 
     static String parameterFQDN(final String s) {
         return PACKAGE_ROOT + "." + s;
@@ -148,7 +93,4 @@ public class AdaptorHelper {
         return serviceProviderInfos;
     }
 
-    public static String hexHashCodeFor(final IResource aResource) {
-        return Integer.toHexString(aResource.hashCode());
-    }
 }

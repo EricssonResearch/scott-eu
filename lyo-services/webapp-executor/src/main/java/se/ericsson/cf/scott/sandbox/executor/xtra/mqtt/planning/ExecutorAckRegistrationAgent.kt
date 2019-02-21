@@ -10,6 +10,7 @@ import eu.scott.warehouse.lib.PlanChangeEventListener
 import eu.scott.warehouse.domains.trs.TrsServerAck
 import eu.scott.warehouse.domains.trs.TrsServerAnnouncement
 import eu.scott.warehouse.domains.trs.TrsXConstants
+import eu.scott.warehouse.lib.RdfHelpers
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
@@ -70,7 +71,7 @@ class ExecutorAckRegistrationAgent(private val adaptorId: String,
             val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
             val announcement = TrsServerAnnouncement(adaptorId, TrsXConstants.TYPE_EXECUTOR, trsUri,
                     MqttTopics.REGISTRATION_ANNOUNCE, true)
-            val model = MqttHelper.jenaModelFrom(announcement)
+            val model = RdfHelpers.modelFromResources(announcement)
             return LastWillMessage(lastWillTopic, model)
         }
 

@@ -24,6 +24,8 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
+import eu.scott.warehouse.lib.OslcHelpers;
+import eu.scott.warehouse.lib.RdfHelpers;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 
@@ -32,6 +34,7 @@ import eu.scott.warehouse.domains.twins.RegistrationMessage;
 
 // Start of user code imports
 import java.net.URI;
+import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,7 +177,7 @@ public class WarehouseControllerManager {
     {
         String eTag = null;
         // Start of user code getETagFromPlan
-        eTag = AdaptorHelper.hexHashCodeFor(aResource);
+        eTag = OslcHelpers.hexHashCodeFor(aResource);
         // End of user code
         return eTag;
     }
