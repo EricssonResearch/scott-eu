@@ -27,26 +27,29 @@
 
 package se.ericsson.cf.scott.sandbox.twin.servlet;
 
-import eu.scott.warehouse.domains.RdfsDomainConstants;
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import javax.ws.rs.core.UriBuilder;
-import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
 import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
-import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
+
+import eu.scott.warehouse.domains.mission.MissionDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 
 // Start of user code imports
+import java.util.Date;
+import java.util.HashMap;
+import javax.ws.rs.core.UriBuilder;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 // End of user code
 
 public class TwinsServiceProvidersFactory
@@ -93,6 +96,8 @@ public class TwinsServiceProvidersFactory
         return serviceProvider;
     }
 
+    // move back to the SPCSingleton for now
+    @Deprecated
     public static ServiceProvider createTwinsServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo)
             throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
         String basePath = OSLC4JUtils.getServletURI();
@@ -124,6 +129,8 @@ public class TwinsServiceProvidersFactory
         return serviceProvider;
     }
 
+    // move back to the SPCSingleton for now
+    @Deprecated
     private static URI constructTwinsServiceProviderURI(final String twinKind, final String twinId)
     {
         String basePath = OSLC4JUtils.getServletURI();
@@ -137,6 +144,8 @@ public class TwinsServiceProvidersFactory
         return builder.path(instanceURI).buildFromMap(pathParameters);
     }
 
+    // move back to the SPCSingleton for now
+    @Deprecated
     static String twinsServiceProviderIdentifier(final String twinKind, final String twinId)
     {
         return "/" + twinKind+"/" + twinId;

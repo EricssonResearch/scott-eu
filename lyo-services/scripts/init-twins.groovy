@@ -12,6 +12,8 @@ import org.apache.jena.riot.RDFFormat
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 
+println("Running twin initialisation script...")
+
 HttpBuilder client = HttpBuilder.configure {
     request.uri = 'http://localhost:8081/'
     request.encoder('text/turtle') { ChainedHttpConfig config, ToServer req ->

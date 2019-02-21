@@ -9,11 +9,17 @@ import groovyx.net.http.ToServer
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.RDFFormat
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 
+println("Running planning script...")
+
+String endpoint = 'http://localhost:8080/'
+if (args.length > 0 && args[0] == "debug") {
+    endpoint = 'http://localhost:8180/'
+}
+
 HttpBuilder client = HttpBuilder.configure {
-    request.uri = 'http://localhost:8080/'
+    request.uri = endpoint
     request.encoder('text/turtle') { ChainedHttpConfig config, ToServer req ->
         // TODO optimise directly to bytes
         // TODO deduplicate
@@ -33,7 +39,7 @@ private static triggerPlanning(client) {
         request.contentType = 'text/turtle'
         request.body = null
         response.success {
-            println("Triggered default planning mode '$serviceProvider.identifier'")
+            println("Triggered default planning mode")
         }
     }
     result
