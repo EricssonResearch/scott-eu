@@ -5,7 +5,10 @@ package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import eu.scott.warehouse.domains.blocksworld.Block
+import eu.scott.warehouse.domains.blocksworld.Move
+import eu.scott.warehouse.domains.pddl.Action
 import eu.scott.warehouse.domains.pddl.Or
+import eu.scott.warehouse.domains.pddl.Plan
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import eu.scott.warehouse.domains.pddl.Problem
 import eu.scott.warehouse.lib.InstanceMultiWithResources
@@ -22,21 +25,38 @@ import eu.scott.warehouse.lib.RdfHelpers
 import eu.scott.warehouse.lib.link
 import eu.scott.warehouse.lib.setLabel
 import eu.scott.warehouse.lib.setProperty
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.ByteArrayEntity
+import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.riot.Lang
+import org.apache.jena.riot.RDFDataMgr
+import org.apache.jena.riot.RDFFormat
 import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
+import org.eclipse.lyo.oslc4j.core.model.IResource
 import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
+import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.math.BigInteger
 import java.net.URI
+import java.util.ArrayList
 import java.util.UUID
+import javax.xml.namespace.QName
 
 @Suppress("MemberVisibilityCanBePrivate")
 class PlanRequestHelper {
-    // Don't use #, see https://github.com/EricssonResearch/scott-eu/issues/154
-    private val base = URI.create("http://ontology.cf.ericsson.net/ns/scott-warehouse/")
 
     companion object {
+
+        val log: Logger = LoggerFactory.getLogger(PlanRequestHelper::class.java)
+
         fun minFn(): RawResource {
             val minFn = RawResource(u(UUID.randomUUID()))
             minFn.addType(ns(PDDL, "total-time"))
@@ -213,10 +233,77 @@ class PlanRequestHelper {
                 else                 -> ImmutableSet.of()
             }
         }
+
+        fun getProblem(resourceName: String): Model {
+            return AdaptorHelper.loadJenaModelFromResource(resourceName, Lang.TURTLE)
+        }
+
+        private fun planForProblem(problemModel: Model): Model {
+            log.trace("Problem request\n{}", RdfHelpers.modelToString(problemModel))
+            try {
+                val response = requestPlanManually(problemModel)
+                val responsePlan = ModelFactory.createDefaultModel()
+                RDFDataMgr.read(responsePlan, response, Lang.TURTLE)
+                log.info("Plan response\n{}", RdfHelpers.modelToString(responsePlan))
+                return responsePlan
+            } catch (e: IOException) {
+                log.error("Something went wrong", e)
+                throw IllegalStateException(e)
+            }
+
+        }
+
+        @Throws(IOException::class)
+        private fun requestPlanManually(problemModel: Model): InputStream {
+            val out = ByteArrayOutputStream()
+            RDFDataMgr.write(out, problemModel, RDFFormat.TURTLE_BLOCKS)
+
+            val client = HttpClientBuilder.create().build()
+            val uri = AdaptorHelper.p("planner.cf_uri")
+            log.debug("Using $uri as a Planner CF endpoint")
+            val post = HttpPost(uri)
+
+            post.setHeader("Content-type", AdaptorHelper.MIME_TURTLE)
+            post.setHeader("Accept", AdaptorHelper.MIME_TURTLE)
+            post.entity = ByteArrayEntity(out.toByteArray())
+
+            val response = client.execute(post)
+            val statusCode = response.statusLine.statusCode
+            log.debug("Status code from the Planner CF endpoint response: $statusCode")
+            if (statusCode >= 400) {
+                throw IllegalStateException("Planning request on $uri failed with the code $statusCode")
+            }
+            return response.entity.content
+        }
+
+        @Throws(LyoJenaModelException::class)
+        fun getPlanResources(planModel: Model, plan: Plan): Array<Any> {
+            val planResources = ArrayList<IResource>()
+            planResources.add(plan)
+            // TODO Andrew@2018-02-23: why not getSteps?
+            val planSteps = plan.step
+            for (step in planSteps) {
+                step.order = (step.extendedProperties as Map<QName, Any>).getOrDefault(
+                    QName(AdaptorHelper.NS_SHACL, "order"), null) as Int
+                val action = OslcHelpers.navTry(planModel, step.action, Action::class.java,
+                    Move::class.java)
+                planResources.add(step)
+                planResources.add(action)
+                log.info("Step {}: {}", step.order, action)
+            }
+            return planResources.toTypedArray()
+        }
+
+        fun requestPlan(problemModel: Model): Model {
+            val planModel = planForProblem(problemModel)
+            RdfHelpers.skolemize(planModel)
+            return planModel
+        }
     }
 
     init {
-        OslcHelpers.setBase(base)
+        // Don't use #, see https://github.com/EricssonResearch/scott-eu/issues/154
+        OslcHelpers.base = URI.create("http://ontology.cf.ericsson.net/ns/scott-warehouse/")
     }
 
     fun getPlanRequestComplete(): Model {
@@ -595,6 +682,7 @@ class PlanRequestHelper {
         return model
     }
 
+    @Deprecated("Use builders instead")
     fun genProblem(): Model {
         val resources = HashSet<IExtendedResource>()
         val problem = Problem(u("scott-warehouse-problem"))
@@ -631,7 +719,7 @@ class PlanRequestHelper {
 
 
         val initObjects = hashSetOf(robotAt, shelfAt, beltAt, onShelf, freeRobot)
-        problem.setInit(initObjects.map { it.instance.link }.toHashSet())
+        problem.init = initObjects.map { it.instance.link }.toHashSet()
         resources += initObjects.flatMap { it.resources }
 
         // GOAL STATE

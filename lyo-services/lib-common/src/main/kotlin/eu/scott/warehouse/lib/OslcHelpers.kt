@@ -69,11 +69,12 @@ object OslcHelpers {
     const val SH_ORDER = "http://www.w3.org/ns/shacl#order"
 
 
-    private lateinit var base: URI
+    // TODO Andrew@2019-02-20: make it a class ctor param
+    lateinit var base: URI
 
-    fun setBase(b: URI) {
-        this.base = b
-    }
+//    fun setBase(b: URI) {
+//        this.base = b
+//    }
 
     /**
      * URI of the Resource

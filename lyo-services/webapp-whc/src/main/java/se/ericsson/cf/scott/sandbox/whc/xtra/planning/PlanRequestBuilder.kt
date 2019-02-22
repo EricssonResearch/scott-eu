@@ -3,6 +3,7 @@ package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.eclipse.lyo.oslc4j.core.model.Link
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
 
@@ -13,7 +14,7 @@ import java.net.URI
  */
 class PlanRequestBuilder {
     companion object {
-        val log = LoggerFactory.getLogger(javaClass)
+        val log: Logger = LoggerFactory.getLogger(PlanRequestBuilder::class.java)
     }
 
     private lateinit var problemBuilder: ProblemBuilder
@@ -32,6 +33,8 @@ class PlanRequestBuilder {
 
         // FIXME Andrew@2019-02-20: where is the min fn added?
 
+        log.debug("Completed building a planning request")
+
         return m
     }
 
@@ -45,21 +48,5 @@ class PlanRequestBuilder {
         return this
     }
 
-    fun problemUri(uri: URI): PlanRequestBuilder {
-        TODO("not implemented")
-        return this
-    }
-
-    fun genLabel(s: String): PlanRequestBuilder {
-        // TODO Andrew@2019-02-19: append the details about the plan here, eg size and no. robots
-        TODO("not implemented")
-        return this
-    }
-
-    fun problemDomain(link: Link): PlanRequestBuilder {
-        // TODO Andrew@2019-02-19: why do we need this? can we just read it from the domain model?
-        TODO("not implement")
-        return this
-    }
 
 }

@@ -37,24 +37,24 @@ services:
     # depends_on:
       # - warehouse-fuseki
       # - mosquitto
-  sandbox-executor:
-    image: scott/webapp-executor
-    # environment:
-      # JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-    networks:
-      - overlay
-    ports:
-      - "8083:8080"
-      # - "9999:9999"
-    # depends_on:
-      # - sandbox-whc
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 384m
-      restart_policy:
-        condition: on-failure
+  # sandbox-executor:
+  #   image: scott/webapp-executor
+  #   # environment:
+  #     # JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+  #   networks:
+  #     - overlay
+  #   ports:
+  #     - "8083:8080"
+  #     # - "9999:9999"
+  #   # depends_on:
+  #     # - sandbox-whc
+  #   deploy:
+  #     replicas: 1
+  #     resources:
+  #       limits:
+  #         memory: 384m
+  #     restart_policy:
+  #       condition: on-failure
   sandbox-twin:
     image: scott/webapp-twin-robot
     environment:
@@ -74,44 +74,44 @@ services:
           memory: 384m
       restart_policy:
         condition: on-failure
-  twin-shelf:
-    image: scott/webapp-twin-shelf
-    # environment:
-    #   JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-    networks:
-      - overlay
-    ports:
-     - "8082:8080" # Jetty
-    #  - "9991:9999" # remote debugger
-    # depends_on:
-      # - warehouse-fuseki
-      # - mosquitto
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 384m
-      restart_policy:
-        condition: on-failure
-  svc-location:
-    image: scott/webapp-svc-location
-    # environment:
-    #   JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-    networks:
-      - overlay
-    ports:
-     - "8090:8080" # Jetty
-    #  - "9991:9999" # remote debugger
-    # depends_on:
-      # - warehouse-fuseki
-      # - mosquitto
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 384m
-      restart_policy:
-        condition: on-failure
+  # twin-shelf:
+  #   image: scott/webapp-twin-shelf
+  #   # environment:
+  #   #   JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+  #   networks:
+  #     - overlay
+  #   ports:
+  #    - "8082:8080" # Jetty
+  #   #  - "9991:9999" # remote debugger
+  #   # depends_on:
+  #     # - warehouse-fuseki
+  #     # - mosquitto
+  #   deploy:
+  #     replicas: 1
+  #     resources:
+  #       limits:
+  #         memory: 384m
+  #     restart_policy:
+  #       condition: on-failure
+  # svc-location:
+  #   image: scott/webapp-svc-location
+  #   # environment:
+  #   #   JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+  #   networks:
+  #     - overlay
+  #   ports:
+  #    - "8090:8080" # Jetty
+  #   #  - "9991:9999" # remote debugger
+  #   # depends_on:
+  #     # - warehouse-fuseki
+  #     # - mosquitto
+  #   deploy:
+  #     replicas: 1
+  #     resources:
+  #       limits:
+  #         memory: 384m
+  #     restart_policy:
+  #       condition: on-failure
   warehouse-fuseki:
     image: scott/jena-fuseki
     networks:

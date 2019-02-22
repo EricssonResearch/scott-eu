@@ -22,11 +22,25 @@ class AdminResource {
     @POST
     @Path("plan_trigger")
     fun triggerPlanning(): Response {
-        WarehouseControllerManager.getExecService()
-            .schedule({
-                log.trace("Scheduling triggerSamplePlanning() w/o delay")
-                PlanningManager.triggerSamplePlanning()
-            }, 0, TimeUnit.MILLISECONDS)
+        triggerPlanningDirect()
+//        runAsync(this::triggerPlanningDirect)
         return Response.noContent().build()
+    }
+
+    private fun runAsync(function: () -> Unit) {
+        log.trace("Scheduling function execution w/o delay")
+        WarehouseControllerManager.getExecService().schedule({
+            try {
+                function.invoke()
+            } catch (e: Throwable) {
+                log.warn("PlanningManager threw an exception: $e")
+            }
+        }, 0, TimeUnit.MILLISECONDS)
+    }
+
+    private fun triggerPlanningDirect() {
+        log.trace("triggerSamplePlanning() called")
+        PlanningManager.triggerSamplePlanning()
+        log.trace("triggerSamplePlanning() finished")
     }
 }
