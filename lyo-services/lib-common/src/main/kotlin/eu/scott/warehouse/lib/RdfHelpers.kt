@@ -33,14 +33,6 @@ object RdfHelpers {
         return writer.toString()
     }
 
-//    @JvmStatic
-//    @Deprecated("use modelToString with overloads")
-//    fun jenaModelToString(responsePlan: Model): String {
-//        val stringWriter = StringWriter()
-//        RDFDataMgr.write(stringWriter, responsePlan, RDFFormat.TURTLE_PRETTY)
-//        return stringWriter.toString()
-//    }
-
     @JvmStatic
     fun modelFromResources(vararg objects: IResource): Model {
         try {

@@ -50,7 +50,8 @@ class ProblemBuilder {
 
     private val resources: MutableSet<IExtendedResource> = LinkedHashSet()
 
-    private lateinit var problem: Problem
+    private var problem: Problem = Problem(OslcHelpers.u("scott-warehouse-problem"))
+
 
     fun build(baseURI: URI): ProblemRequestState {
         if (width == 0 || height == 0) {
@@ -59,10 +60,6 @@ class ProblemBuilder {
 
         val resources: MutableSet<IExtendedResource> = resources
 
-        // TODO Andrew@2019-02-20: make it a class ctor param
-        OslcHelpers.setBase(baseURI)
-
-        problem = Problem(OslcHelpers.u("scott-warehouse-problem"))
         problem.label = "scott-warehouse-problem"
         problem.domain = Link(OslcHelpers.u("scott-warehouse"))
 
@@ -75,8 +72,21 @@ class ProblemBuilder {
 
         val model = JenaModelHelper.createJenaModel(resources.toTypedArray())
         return ProblemRequestState(model)
+    }
 
-        TODO("not implemented")
+    fun problemUri(uri: URI): ProblemBuilder {
+        problem.about = uri
+        return this
+    }
+
+    fun genLabel(s: String): ProblemBuilder {
+        problem.label = s
+        return this
+    }
+
+    fun problemDomain(link: Link): ProblemBuilder {
+        problem.domain = link
+        return this
     }
 
     private fun buildMinimisationFn() {
@@ -87,11 +97,11 @@ class ProblemBuilder {
 
     private fun buildObjects() {
         // Shop floor
-        for (i in 1..width) {
+        for (i in 0..width) {
             val xCoord = PlanRequestHelper.coord("x$i")
             addObject(xCoord)
         }
-        for (i in 1..height) {
+        for (i in 0..height) {
             val yCoord = PlanRequestHelper.coord("y$i")
             addObject(yCoord)
         }
@@ -110,11 +120,6 @@ class ProblemBuilder {
             addObject(robot)
         }
 
-        freeRobots.forEach { label: String ->
-            val freeRobot = PlanRequestHelper.freeRobot(lookupRobot(label))
-            addObject(freeRobot)
-        }
-
         boxOnShelfInit.forEach { pair: Pair<BoxLabel, ShelfLabel> ->
             val box = PlanRequestHelper.box(pair.first.value)
             addObject(box)
@@ -122,6 +127,11 @@ class ProblemBuilder {
     }
 
     private fun buildInitState() {
+        freeRobots.forEach { label: String ->
+            val freeRobot = PlanRequestHelper.freeRobot(lookupRobot(label))
+            addInit(freeRobot)
+        }
+
         initPositions.forEach { coord, label ->
             val x = lookupCoordX(coord.first)
             val y = lookupCoordY(coord.second)

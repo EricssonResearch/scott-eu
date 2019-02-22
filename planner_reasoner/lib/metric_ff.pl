@@ -64,6 +64,10 @@ read_lines(Out) :-
 
 read_lines(end_of_file, _) :- !.
 read_lines(Codes, Out) :-
+  % remove after debugging
+  atom_codes(A, Codes),
+  format(user_error, '~w~n', [A]),
+  % remove after debugging
   ignore(phrase(parse, Codes, [])),
   read_line_to_codes(Out, Line),
   read_lines(Line, Out).

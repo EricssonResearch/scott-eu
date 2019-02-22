@@ -23,6 +23,8 @@ limitations under the License.
 :- use_module(library(metric_ff)).
 :- use_module(library(validate)).
 
+:- debug(http(request)) .
+
 :- oslc_post(planner:pddlCreationFactory, pddl_creation_factory).
 :- oslc_post(planner:planCreationFactory, plan_creation_factory).
 :- oslc_post(planner:validatedPlanCreationFactory, validated_plan_creation_factory).

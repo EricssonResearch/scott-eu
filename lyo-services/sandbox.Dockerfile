@@ -18,4 +18,4 @@ COPY ./webapp-twin-shelf/pom.xml ./webapp-twin-shelf/pom.xml
 RUN mvn -f lyo-webapp-parent/pom.xml --fail-at-end dependency:go-offline -B -q || true
 
 COPY . .
-RUN mvn -f lyo-webapp-parent/pom.xml --no-snapshot-updates -Dmaven.test.skip=true package -B -q
+RUN mvn -f lyo-webapp-parent/pom.xml --no-snapshot-updates -Dmaven.test.skip=true install -B
