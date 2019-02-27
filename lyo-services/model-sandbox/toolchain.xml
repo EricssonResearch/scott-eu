@@ -31,7 +31,7 @@
     <specification/>
     <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
-  <adaptorInterfaces name="Twin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twin" javaFilesBasePath="../webapp-twin/src/main/java/" jspFilesBasePath="../webapp-twin/src/main/webapp/" javascriptFilesBasePath="../webapp-twin/src/main/webapp/">
+  <adaptorInterfaces name="Twin" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.twin" javaFilesBasePath="../webapp-twin-robot/src/main/java/" jspFilesBasePath="../webapp-twin-robot/src/main/webapp/" javascriptFilesBasePath="../webapp-twin-robot/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Twin SP" description="A Service Provider for Twins" serviceNamespace="twins" instanceID="{twinKind}/{twinId}">
         <services>
@@ -50,7 +50,6 @@
       </serviceProviders>
     </serviceProviderCatalog>
     <specification/>
-    <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
   <adaptorInterfaces name="PlanExecutor" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.executor" javaFilesBasePath="../webapp-executor/src/main/java/" jspFilesBasePath="../webapp-executor/src/main/webapp/" javascriptFilesBasePath="../webapp-executor/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
