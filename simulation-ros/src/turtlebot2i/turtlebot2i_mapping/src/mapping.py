@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Make sure to have the server side running in V-REP: 
+# Make sure to have the server side running in V-REP:
 # in a child script of a V-REP scene, add following command
 # to be executed just once, at simulation start:
 #
@@ -70,28 +70,30 @@ if clientID!=-1:
     if res==vrep.simx_return_ok:
         print ('Number of objects in the scene: ',len(objs))
         #http://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm#simxGetStringParameter
-        
-        objectType=vrep.sim_appobj_object_type 
+
+        objectType=vrep.sim_appobj_object_type
         operationMode=vrep.simx_opmode_blocking
 
         # retrieves the object names
         dataType = 0
-        returnCode, objects_handles, intData, floatData, objects_names=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)   
-        
+        returnCode, objects_handles, intData, floatData, objects_names=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)
+
         # retrieves the object types
         dataType = 1
-        returnCode, objects_handles, objects_types, floatData, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)  
-        
+        returnCode, objects_handles, objects_types, floatData, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)
+
         # retrieves the absolute object positions
         dataType = 3
-        returnCode, objects_handles,  intData, objects_poses, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode) 
+        returnCode, objects_handles,  intData, objects_poses, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)
 
         # retrieves the object orientations
         dataType = 5
-        returnCode, objects_handles,  intData, objects_orientations, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode) 
+        returnCode, objects_handles,  intData, objects_orientations, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)
 
         # get indexes of relevant elements in the warehouse
-        obj_list = ['ResizableFloor_5_25', 'stairs', 'slidingDoor', 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcretBlock']
+        obj_list = ['Floor10x10m', 'stairs', 'slidingDoor', 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcretBlock']
+        #obj_list = ['ResizableFloor_5_25', 'stairs', 'slidingDoor', 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcretBlock']
+
         obj_index_list = [objects_names.index(i) for i in objects_names if re.match(r'(#\d|)\b|'.join(obj_list)+'*', i)]
 
         obj_index_list += [objects_names.index(i) for i in objects_names if re.match('.*HighWall.*', i)]
@@ -145,7 +147,7 @@ if clientID!=-1:
                                               size, vel, bbox_min, bbox_max, objects_handles[i])
 
 
-            #print(obj_node_list[objects_names[i]].name)
+            print(obj_node_list[objects_names[i]].name)
 
     else:
         print ('Remote API function call returned with error code: ', res)
@@ -155,34 +157,42 @@ if clientID!=-1:
     ################
 
     # Get scenario pose and size from floor object
-    map_origin = obj_node_list['ResizableFloor_5_25'].bbox_min[0:2] 
-    map_width = obj_node_list['ResizableFloor_5_25'].size[0]
-    map_height = obj_node_list['ResizableFloor_5_25'].size[1]
+    #map_origin = obj_node_list['ResizableFloor_5_25'].bbox_min[0:2]
+    #map_width = obj_node_list['ResizableFloor_5_25'].size[0]
+    #map_height = obj_node_list['ResizableFloor_5_25'].size[1]
+    map_origin = obj_node_list['Floor10x10m'].bbox_min[0:2]
+    #map_origin = [7.0,-5.0] # it should be [-3.-5]
+    print("map_origin: ",map_origin)
+    map_width = obj_node_list['Floor10x10m'].size[0]+0.1
+    map_height = obj_node_list['Floor10x10m'].size[1]+0.1
+
     map_resolution = 0.10
 
     map_cells_x = int(round(map_width / map_resolution))
     map_cells_y = int(round(map_height / map_resolution))
 
-    obj_node_list.pop('ResizableFloor_5_25')
-  
-    # Get top floor polygon
-    floor_bbox_min = obj_node_list['ConcretBlock'].bbox_min[0:2]
-    floor_bbox_max = obj_node_list['ConcretBlock'].bbox_max[0:2]
-    floor_pol = box(floor_bbox_min[0], floor_bbox_min[1], floor_bbox_max[0], floor_bbox_max[1])
+    #obj_node_list.pop('ResizableFloor_5_25')
+    obj_node_list.pop('Floor10x10m')
 
-    obj_node_list.pop('ConcretBlock')
+
+    # Get top floor polygon
+    #floor_bbox_min = obj_node_list['ConcretBlock'].bbox_min[0:2]
+    #floor_bbox_max = obj_node_list['ConcretBlock'].bbox_max[0:2]
+    #floor_pol = box(floor_bbox_min[0], floor_bbox_min[1], floor_bbox_max[0], floor_bbox_max[1])
+    floor_pol = box(-3, -5, 7, 5)
+    #obj_node_list.pop('ConcretBlock')
 
     # PGM file header
     map_pgm = 'P2\n' + str(map_cells_x) + ' ' + str(map_cells_y) + '\n255\n'
-   
+
     # Create a empty matrix
     map_grid = np.zeros((map_cells_y, map_cells_x))
-    
+
     # Iterate through objects list to create a MultiPolygon
     # containing bounding boxes of all objects
     # Note that all objects will be represented by a box
     obj_pol_list = list()
-    
+
     for obj in obj_node_list:
         #obj_pol_list.append(box(obj.bbox_min[0], obj.bbox_min[1], obj.bbox_max[0], obj.bbox_max[1]))
         obj_pol_list.append(box(obj_node_list[obj].bbox_min[0], obj_node_list[obj].bbox_min[1], obj_node_list[obj].bbox_max[0], obj_node_list[obj].bbox_max[1]))
@@ -191,8 +201,8 @@ if clientID!=-1:
     obj_pol = cascaded_union(obj_pol_list)
 
     # Populate occupied point from MultiPolygon
-    for i in range(map_cells_x):
-        for j in range(map_cells_y):
+    for j in range(map_cells_x-1,-1,-1):
+        for i in range(map_cells_y):
             px = map_origin[0] + i*map_resolution
             py = map_origin[1] + j*map_resolution
 
@@ -204,21 +214,21 @@ if clientID!=-1:
 
         map_pgm += '\n'
 
-
+    #print(map_pgm)
     # Persists the PGM map
-    file = open('map.pgm', 'w')
+    file = open('map_1.pgm', 'w')
     file.write(map_pgm)
     file.close()
 
     # Persists the yaml object
-    file = open('scene.yaml', 'w')
+    file = open('scene_1.yaml', 'w')
     file.write(yaml.dump(yaml_node_list))
     file.close()
 
-    
+
     print(yaml.dump(yaml_node_list))
 
-#--------------------------------------------------- 
+#---------------------------------------------------
     # Now send some data to V-REP in a non-blocking fashion:
     vrep.simxAddStatusbarMessage(clientID,'Finished generating scene graph.',vrep.simx_opmode_oneshot)
 

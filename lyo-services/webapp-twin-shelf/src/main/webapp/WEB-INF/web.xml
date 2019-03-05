@@ -11,6 +11,7 @@
     <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.servlet.baseurl</param-name>
     <param-value>http://localhost:8082</param-value>
   </context-param>
+<!--
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.store.query</param-name>
     <param-value>https://fuseki.aide.md.kth.se/trs-everywhere/query</param-value>
@@ -19,6 +20,7 @@
     <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.store.update</param-name>
     <param-value>https://fuseki.aide.md.kth.se/trs-everywhere/update</param-value>
   </context-param>
+-->
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twins.shelf.update.interval</param-name>
     <param-value>10</param-value><!--seconds-->
@@ -39,7 +41,7 @@
   </listener>
   <servlet>
     <servlet-name>oslc-servlet</servlet-name>
-    <servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>javax.ws.rs.Application</param-name>
       <param-value>se.ericsson.cf.scott.sandbox.twins.shelf.servlet.Application</param-value>

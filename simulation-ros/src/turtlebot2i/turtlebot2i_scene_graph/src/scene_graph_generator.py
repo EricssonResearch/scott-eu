@@ -3,12 +3,12 @@
 import time
 import vrep
 import re
-import math   
+import math
 import rospy
 import std_msgs.msg
 from graphviz import Digraph
 from shapely.geometry import box
-from turtlebot2i_safety.msg import SceneGraph 
+from turtlebot2i_scene_graph.msg import SceneGraph
 from vrep_object_extractor import VrepObjectExtractor
 
 pi = math.pi
@@ -20,7 +20,7 @@ def get_distance(i, j):
     if not re.match(r'wall*', j.name):
         ri = math.sqrt(i.size[0]*i.size[0] + i.size[1]*i.size[1])
         rj = math.sqrt(j.size[0]*j.size[0] + j.size[1]*j.size[1])
-        temp_ij = dx*dx + dy*dy 
+        temp_ij = dx*dx + dy*dy
         dist_ij = math.sqrt(temp_ij) #- ri - rj
     else:
         if posi_ix < (posi_wx + size_wx/2) and posi_ix > (posi_wx - size_wx/2):
@@ -72,7 +72,7 @@ def get_direction(i, j):
 def get_type(i):
     if re.match(r'Bill*', i.name):
         obj_type = 2 #human
-    elif re.match(r'turtlebot*', i.name): 
+    elif re.match(r'turtlebot*', i.name):
         obj_type = 1 # robot # non-human dynamic objects
     else:
         obj_type = 0 # static objects
@@ -89,32 +89,32 @@ def get_orientation(i, j):
     return obj_ori # BUG here
 
 def init():
-    global extractor 
+    global extractor
     extractor= VrepObjectExtractor('127.0.0.1', 19997)
     # List of object names to retrieve information
     # For now it is hardcoded
-    extractor.set_static_obj_names(['stairs', 'slidingDoor',      
+    extractor.set_static_obj_names(['stairs', 'slidingDoor',
                                     'dockstation_body',\
-                                    'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1', 
-                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1'])
-    extractor.set_dynamic_obj_names(['Bill_base#2'])
+                                    'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1',
+                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1','indoorPlant','sofa','ConcretBlock'])
+    extractor.set_dynamic_obj_names(['Bill_base#2','Bill'])
     extractor.set_robot_names(['turtlebot2i'])
 
     rospy.loginfo("Connected to remote API server")
 
-    rospy.loginfo('Getting scene properties (this can take a while)...') 
+    rospy.loginfo('Getting scene properties (this can take a while)...')
 
     # Get all objects info once (for static properties) and
     #  prepare the callback for the streaming mode
 
     extractor.operation_mode = vrep.simx_opmode_streaming
-    extractor.get_all_objects_info() 
+    extractor.get_all_objects_info()
     extractor.update_robots_vision_sensor_info()
     extractor.update_all_robots_vision_sensors_fov()
     time.sleep(0.3) # streaming takes a while to get ready
 
     extractor.operation_mode = vrep.simx_opmode_buffer
-    extractor.get_all_objects_info() 
+    extractor.get_all_objects_info()
     extractor.update_robots_vision_sensor_info()
     extractor.update_all_robots_vision_sensors_fov()
 
@@ -123,7 +123,7 @@ def init():
 
 def sg_generate():
     # Get dynamic object info (pose and vel) periodically
-    extractor.update_dynamic_obj_info() 
+    extractor.update_dynamic_obj_info()
 
     # Update vision sensor info
     extractor.update_all_robots_vision_sensors_fov()
@@ -153,9 +153,9 @@ def sg_generate():
         # robot_label = '{%s|%s|velocity: %.2f|orientation: %.2f}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name, robot_velocity, robot[robot_num].ori[2]*180/pi)
         robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
         #robot_label = '{%s|type: 0|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity) #Label for itself?
-         
+
         # robot_label = '{%s|%s}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name)
-        
+
         dot.node('robot', label=robot_label)
         dot.node('warehouse', label='warehouse')
         dot.node('floor', label='{floor|size: 25*25}')
@@ -168,23 +168,23 @@ def sg_generate():
             obj_type = get_type(obj)
             obj_orientation = get_orientation(robot_list[robot_num], obj)
             # print(obj.name, '%.3f' %obj_velocity)
-            # node_label = '{%s|direction: %s|distance: %.2f}'%(obj.name, obj_direction, obj_distance)  
+            # node_label = '{%s|direction: %s|distance: %.2f}'%(obj.name, obj_direction, obj_distance)
             # if obj.name == 'Bill#3':
             #     node_label = '{%s|velocity: 0.2|distance: %.2f}'%(obj.name, obj_distance)
             # else:
             #     node_label = '{%s|Static|distance: %.2f}'%(obj.name, obj_distance)
             node_label = '{%s|type: %s|distance: %.2f|orientation: %.2f|direction: %.2f|velocity: %.2f}'%( obj.name, obj_type, obj_distance, obj_orientation, obj_direction, obj_velocity)
             # node_label = '{%s|velocity: %.2f|distance: %.2f}'%( obj.name, obj_velocity, obj_distance)
-                
+
             # node_label = '{%s|distance: %.2f}'%(obj.name, obj_distance)
-            
+
             dot.node(obj.name, label=node_label)
             if re.match(r'wall*', obj.name):
                 dot.edge('warehouse', obj.name, label='on')
             elif re.match(r'product*', obj.name):
                 for obj_support in obj_list:
                     # if get_support_bbox(obj, obj_support):
-                    if get_overlap_bbox(obj, obj_support):                    
+                    if get_overlap_bbox(obj, obj_support):
                         dot.edge(obj_support.name, obj.name, label='on')
                         break
                     else:
@@ -202,7 +202,7 @@ def sg_generate():
         pub.publish(sg_message)
 
 if __name__ == '__main__':
-    
+
     rospy.init_node('sg_generator', anonymous=True)
 
     try:
@@ -210,12 +210,11 @@ if __name__ == '__main__':
         rospy.loginfo('Started getting scene objects from vision sensor FOV...')
         pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
         rate = rospy.Rate(1.0) #Hz, T=1/Rate
-        while not rospy.is_shutdown():          
+        while not rospy.is_shutdown():
             sg_generate()
             rate.sleep()
     except rospy.ROSInterruptException:
         # Close the connection to V-REP
-        extractor.close_connection() 
-        #vrep.simxFinish(clientID)       
+        extractor.close_connection()
+        #vrep.simxFinish(clientID)
         pass
-
