@@ -20,6 +20,8 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.UriBuilder
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 /**
  * TODO
@@ -73,12 +75,23 @@ class TrsMqttClientManager() {
         }
 
         try {
+            var n = 1
             while (latch.count > 0) {
+                // back off exponentially but no more than 30s
+                val backoffDelay = (Math.exp(n+2.0)*2).coerceAtMost(30000.0)
                 log.trace("Posting the registration message")
                 mqttClient.publish(MqttTopics.REGISTRATION_ANNOUNCE, getTwinRegistrationMessage())
-                latch.await(5, TimeUnit.SECONDS)
+                latch.await(backoffDelay.roundToLong(), TimeUnit.MILLISECONDS)
                 if (latch.count > 0) {
                     log.warn("Failed to register the twin with the WHC, attempting again")
+                }
+
+                // give up after 10 attempts
+                if(n <= 10) {
+                    n += 1
+                } else {
+                    log.error("Give up on registration with the WHC")
+                    break
                 }
             }
         } catch (e: MqttException) {
