@@ -70,7 +70,9 @@ object PlanningManager {
         var requestBuilder = PlanRequestBuilder()
         val stateBuilder = ProblemBuilder()
         // TODO Andrew@2019-02-19: set OslcRdfHelper base or use a real URI
-        requestBuilder = requestBuilder.domainFromModel(planRequestHelper.genDomain())
+        requestBuilder = requestBuilder.domainFromModel(
+            RdfHelpers.modelFromTurtleResource(PlanningManager.javaClass,
+                "pddl/dom-connectivity.ttl"))
             .withStateBuilder(stateBuilder)
 
         stateBuilder//.problemUri(OslcHelpers.u("scott-warehouse-problem"))

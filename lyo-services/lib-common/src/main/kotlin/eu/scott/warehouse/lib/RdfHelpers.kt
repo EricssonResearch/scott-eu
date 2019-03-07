@@ -49,6 +49,8 @@ object RdfHelpers {
         }
     }
 
+
+
     @JvmStatic
     fun modelFromIndentedString(str: String, l: Lang): Model {
         val model = ModelFactory.createDefaultModel()
@@ -71,8 +73,21 @@ object RdfHelpers {
         }
     }
 
+    fun modelFromTurtleResource(clazz: Class<Any>, path: String): Model {
+        return modelFromResourceFile(clazz, path, Lang.TURTLE)
+    }
 
-
+    private fun modelFromResourceFile(clazz: Class<Any>, path: String, lang: Lang): Model {
+        val inputStream = clazz.classLoader.getResourceAsStream(path)
+        if(inputStream == null) {
+            val message = "'$path' cannot be loaded from JAR resources, file not found."
+            log.error(message)
+            throw IllegalArgumentException(message)
+        }
+        val model = ModelFactory.createDefaultModel()
+        RDFDataMgr.read(model, inputStream, lang)
+        return model
+    }
 
 
 }
