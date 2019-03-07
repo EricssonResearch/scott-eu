@@ -36,9 +36,9 @@ def talker():
     goal_message.goal.target_pose.header.frame_id="map"#"map"
     ''' #Position information
     ''' #Check Map in Rviz to understand X,Y axis
-    goal_message.goal.target_pose.pose.position.x=2.2230#-0.8  #4.8
-    goal_message.goal.target_pose.pose.position.y=-3.96485 #0.5
-    goal_message.goal.target_pose.pose.position.z=0.063
+    goal_message.goal.target_pose.pose.position.x= 2.2230 #-0.8  #4.8
+    goal_message.goal.target_pose.pose.position.y= -3.96485 #0.5
+    goal_message.goal.target_pose.pose.position.z= 0.063
 
     ''' Orientation info.
     #This part now from function quaternion_from_euler_conventor()

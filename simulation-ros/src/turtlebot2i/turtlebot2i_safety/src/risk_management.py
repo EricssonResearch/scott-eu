@@ -4,7 +4,7 @@ import rospkg
 
 # Scene Graph
 from turtlebot2i_scene_graph.msg import SceneGraph
-from turtlebot2i_safety.msg import SafetyZone
+from turtlebot2i_safety.msg import SafetyZone, VelocityScale
 import std_msgs.msg
 
 # Parse S-G
@@ -70,6 +70,10 @@ def init_var():
     safe_vel_message=Twist()
     safe_vel_message.linear = Vector3()
     safe_vel_message.angular = Vector3()
+
+    global vel_scale_message, zone_size_message
+    vel_scale_message = VelocityScale()
+    zone_size_message = SafetyZone()
 
 def init_regEx():
     '''
@@ -219,31 +223,15 @@ def cal_safe_vel(object_distance,object_direction,object_risk):
     return risk_mitigation_instance.output['left'],risk_mitigation_instance.output['right']
 
 def pub_safe_vel(left_vel_scale,right_vel_scale):
-    # Global navi vel
-    # navi_leftVel = (navi_linVel - navi_rotVel*interWheelDistance)*2.0
-    # navi_rightVel= (navi_linVel + navi_rotVel*interWheelDistance)*2.0
-    # Apply scale
-    # left_vel =navi_leftVel*left_vel_scale
-    # right_vel=navi_rightVel*right_vel_scale
+    vel_scale_message.header = std_msgs.msg.Header()
+    vel_scale_message.header.stamp = rospy.Time.now()
 
-    left_vel = (navi_linVel - navi_rotVel*interWheelDistance) * left_vel_scale  # * 2.0
-    right_vel= (navi_linVel + navi_rotVel*interWheelDistance) * right_vel_scale # * 2.0
+    vel_scale_message.left_vel_scale  = left_vel_scale
+    vel_scale_message.right_vel_scale = right_vel_scale
 
-    linVel = (right_vel+left_vel) #/2.0
-    rotVel = (right_vel-left_vel)/(interWheelDistance) #was (right_vel-left_vel)/(2.0*interWheelDistance)
-    # linVel = (((navi_linVel + navi_rotVel*interWheelDistance) * right_vel_scale))+((navi_linVel - navi_rotVel*interWheelDistance)  * left_vel_scale)))
-    # rotVel = (((navi_linVel + navi_rotVel*interWheelDistance) * right_vel_scale))-((navi_linVel - navi_rotVel*interWheelDistance) * left_vel_scale)))/(interWheelDistance)
-    # NEED to check: turtlebot2i_turtlebot2i.lua
-    rospy.loginfo("Publish a safety_controller topic")
-    rospy.loginfo("left_vel_scale=%1.2f,right_vel_scale=%1.2f",left_vel_scale,right_vel_scale)
-
-    safe_vel_message.linear.x = linVel #linear
-    safe_vel_message.angular.z= rotVel#angular
-
-    safe_vel_pub.publish(safe_vel_message)
+    safe_vel_pub.publish(vel_scale_message)
 
 def pub_zone_size(speed):
-    zone_size_message=SafetyZone()
     zone_size_message.header = std_msgs.msg.Header()
     zone_size_message.header.stamp = rospy.Time.now()
 
@@ -264,7 +252,6 @@ def parse_dot_file(graph):
         node_info= robot_self_node.__get_attribute__("label")
         print "==============================="
         print "-------------------------------"
-        #print x.get_name()
 
         matchObj = re.match(vel_pattern, node_info,re.M|re.I) #It Works
 
@@ -303,31 +290,25 @@ def parse_dot_file(graph):
                     print "update target with risk=",highest_risk
             else:
                print "Node not match!!"
+    #'''
     if (highest_risk!=0.0):
-        left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance,target_object_direction,highest_risk)
-        #pub_safe_vel(left_vel_scale,right_vel_scale)
-    #else:
-        #left_vel_scale  = 1.0
-        #right_vel_scale = 1.0
+        left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance, target_object_direction, highest_risk)
+        pub_safe_vel(left_vel_scale,right_vel_scale)
+        #pub_safe_vel(1.0, 1.0) #to test without risk mitigation
+    else:
+        pub_safe_vel(1.0, 1.0) #TO DO: create a monitoring node, when this module doesnt publish scale speed for some time, publish scale 1.0
+    #'''
     print "-------------------------------"
     global    time_previous
     run_time = time.time() - time_previous
     print 'Calc. time for S-G=',run_time,'sec'   #0.0139169692993 sec for calc,
     print 'Calc. Freq. for S-G=',1/run_time,'Hz' #max. 71.8547248681 Hz
-    print "==============================="
-    print "==============================="
-    print "==============================="
-    print "==============================="
-    print "==============================="
-    print "==============================="
-    print "==============================="
     time_previous = time.time()
 
 def topic_callback(data):
     time_previous = time.time()
     #graphs = pydot.graph_from_dot_data(data.sg_data) #From string
     graph = pydot.graph_from_dot_data(data.sg_data) #From string
-    #(graph,) = graphs
     parse_dot_file(graph)
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 
@@ -335,9 +316,9 @@ def navi_vel_callback(data):
     global navi_linVel, navi_rotVel
     navi_linVel=data.linear.x
     navi_rotVel=data.angular.z
-    rospy.loginfo("NAVIGATION UPDATED: navi_linVel=%1.2f,navi_rotVel=%1.2f",navi_linVel,navi_rotVel)
-    if (highest_risk!=0.0):
-        pub_safe_vel(left_vel_scale,right_vel_scale)
+    #rospy.loginfo("NAVIGATION UPDATED: navi_linVel=%1.2f,navi_rotVel=%1.2f",navi_linVel,navi_rotVel)
+    #if (highest_risk!=0.0):
+    #    pub_safe_vel(left_vel_scale,right_vel_scale)
 
 """ Main program """
 if __name__ == "__main__":
@@ -360,18 +341,13 @@ if __name__ == "__main__":
     ## SUBSCRIBERS
     # Creates a subscriber object
     rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)
-    rospy.Subscriber('/turtlebot2i/cmd_vel_mux/navigation', Twist, navi_vel_callback)
+    #rospy.Subscriber('/turtlebot2i/cmd_vel_mux/navigation', Twist, navi_vel_callback)
     ## PUBLISHERS
     # Creates a publisher object
     pub = rospy.Publisher('/turtlebot2i/safety/safety_zone', SafetyZone, queue_size=10)
 
-    safe_vel_pub = rospy.Publisher('/turtlebot2i/cmd_vel_mux/safety_controller', Twist, queue_size=10)
+    safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10)
     # Dont't use "/turtlebot2i/commands/velocity'
     # Use "/turtlebot2i/cmd_vel_mux/safety_controller" with "vel_mux" package.
 
-    rospy.spin() # it is better than below codes
-
-    #rate = rospy.Rate(100.0) #Hz, T=1/Rate
-    #while not rospy.is_shutdown():
-    #    safe_vel_pub.publish(safe_vel_message)
-    #    rate.sleep()
+    rospy.spin()

@@ -178,3 +178,4 @@ kobuki_msgs/Sound
 kobuki_msgs/VersionInfo
 kobuki_msgs/WheelDropEvent
 turtlebot2i_safety/SafetyZone
+turtlebot2i_safety/VelocityScale

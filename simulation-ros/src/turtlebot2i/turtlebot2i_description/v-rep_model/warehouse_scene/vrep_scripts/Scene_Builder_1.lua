@@ -31,10 +31,10 @@ function sysCall_init()
 
 
 	--addModel('Walking_Bill',{4,4,0},{0,0,math.pi/2})
-	addModel('Working_Bill',{2.0,0.0,0},{0,0,math.pi/2})
+	--addModel('Working_Bill',{2.0,0.0,0},{0,0,math.pi/2})
 	addModel('sofa',{-2.0,0,0.25},{0,-math.pi/2,0})
 	--addModel('indoorPlant',{2.0,0.0,0},{0,0,0})
-	addModel('ConcreteBox',{2.0,-3.0,0.25},{0,0,0})
+	--addModel('ConcreteBox',{2.0,-3.0,0.25},{0,0,0})
 
 	addModel('80cmHighWall1000cm',{7,0,.4},{0,0,0})
 	addModel('80cmHighWall1000cm',{-3,0,.4},{0,0,0})--dont have any effect on map
@@ -43,7 +43,7 @@ function sysCall_init()
 
 
 
-	addModel('turtlebot2i',{-2.0,4.0,0.063},{0,0,-math.pi/2}) --TODO: check why the robot is moving by itself
+	addModel('turtlebot2i',{2.0,4.0,0.063},{0,0,-math.pi/2}) --TODO: check why the robot is moving by itself
 	--addModel('Walking_Bill',{3,-3.0,0},{0,0,0})
 	--addModel('youbot',{2.0,-3.33515,0.063},{0,0,-math.pi/2})
 end
