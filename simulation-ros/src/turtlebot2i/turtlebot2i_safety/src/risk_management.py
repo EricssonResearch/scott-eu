@@ -17,7 +17,6 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
 # Safety control MSG
-import std_msgs.msg
 from geometry_msgs.msg import Twist,Vector3
 
 # Debug
@@ -239,11 +238,11 @@ def pub_zone_size(speed):
     warning_zone_radius= 0.62+6*speed/5.0
     #critical_zone_radius =0.5#Constant
 
-    zone_size_message.clear_zone_radius =  clear_zone_radius
-    zone_size_message.warning_zone_radius= warning_zone_radius
-    zone_size_message.critical_zone_radius =0.39+0.2 #Robot radius= 0.4
+    zone_size_message.clear_zone_radius    =  clear_zone_radius
+    zone_size_message.warning_zone_radius  = warning_zone_radius
+    zone_size_message.critical_zone_radius = 0.39+0.2 #Robot radius= 0.4
 
-    pub.publish(zone_size_message)
+    safe_zone_pub.publish(zone_size_message)
 
 def parse_dot_file(graph):
     global left_vel_scale, right_vel_scale, highest_risk
@@ -290,14 +289,13 @@ def parse_dot_file(graph):
                     print "update target with risk=",highest_risk
             else:
                print "Node not match!!"
-    #'''
     if (highest_risk!=0.0):
         left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance, target_object_direction, highest_risk)
-        pub_safe_vel(left_vel_scale,right_vel_scale)
-        #pub_safe_vel(1.0, 1.0) #to test without risk mitigation
+        #pub_safe_vel(left_vel_scale,right_vel_scale)
+        pub_safe_vel(1.0, 1.0) #to test without risk mitigation
     else:
         pub_safe_vel(1.0, 1.0) #TO DO: create a monitoring node, when this module doesnt publish scale speed for some time, publish scale 1.0
-    #'''
+    risk_val_pub.publish(highest_risk)
     print "-------------------------------"
     global    time_previous
     run_time = time.time() - time_previous
@@ -344,9 +342,10 @@ if __name__ == "__main__":
     #rospy.Subscriber('/turtlebot2i/cmd_vel_mux/navigation', Twist, navi_vel_callback)
     ## PUBLISHERS
     # Creates a publisher object
-    pub = rospy.Publisher('/turtlebot2i/safety/safety_zone', SafetyZone, queue_size=10)
+    safe_zone_pub = rospy.Publisher('/turtlebot2i/safety/safety_zone', SafetyZone, queue_size=10)
 
     safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10)
+    risk_val_pub = rospy.Publisher('/turtlebot2i/safety/risk_val', std_msgs.msg.Float64, queue_size=10)
     # Dont't use "/turtlebot2i/commands/velocity'
     # Use "/turtlebot2i/cmd_vel_mux/safety_controller" with "vel_mux" package.
 

@@ -32,8 +32,9 @@ function sysCall_init()
 
 	--addModel('Walking_Bill',{4,4,0},{0,0,math.pi/2})
 	--addModel('Working_Bill',{2.0,0.0,0},{0,0,math.pi/2})
-	addModel('sofa',{-2.0,0,0.25},{0,-math.pi/2,0})
+	addModel('sofa',{-1.0,0,0.25},{0,-math.pi/2,0})
 	--addModel('indoorPlant',{2.0,0.0,0},{0,0,0})
+	--addModel('ConcreteBox',{2.0,2.5,0.25},{0,0,0})
 	--addModel('ConcreteBox',{2.0,-3.0,0.25},{0,0,0})
 
 	addModel('80cmHighWall1000cm',{7,0,.4},{0,0,0})
