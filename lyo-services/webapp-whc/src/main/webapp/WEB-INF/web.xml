@@ -3,7 +3,7 @@
   xmlns="http://java.sun.com/xml/ns/javaee"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
   id="WebApp_ID" version="3.0">
-  <display-name>Warehouse Controller Adaptor</display-name>
+  <display-name>Warehouse Controller Adaptor (dev)</display-name>
 
   <context-param>
     <description>Base URI for the adaptor.</description>
@@ -13,11 +13,11 @@
   <context-param>
     <!--TODO remove-->
     <param-name>se.ericsson.cf.scott.sandbox.whc.kb.query_uri</param-name>
-    <param-value>http://warehouse-fuseki:3030/sandbox-whc/query</param-value>
+    <param-value>http://fuseki.aide.md.kth.se/scott-warehouse/query</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.whc.kb.update_uri</param-name>
-    <param-value>http://warehouse-fuseki:3030/sandbox-whc/update</param-value>
+    <param-value>http://fuseki.aide.md.kth.se/scott-warehouse/update</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.whc.planner.cf_uri</param-name>
@@ -26,7 +26,7 @@
   <context-param>
     <!--TODO remove-->
     <param-name>se.ericsson.cf.scott.sandbox.whc.trs.mqtt.broker</param-name>
-    <param-value>tcp://mosquitto:1883</param-value>
+    <param-value>tcp://localhost:1883</param-value>
   </context-param>
 
   <listener>
