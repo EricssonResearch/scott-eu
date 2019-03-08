@@ -97,13 +97,12 @@ class ProblemBuilder {
 
     private fun buildObjects() {
         // Shop floor
-        for (i in 0..width) {
-            val xCoord = PlanRequestHelper.coord("x$i")
-            addObject(xCoord)
-        }
-        for (i in 0..height) {
-            val yCoord = PlanRequestHelper.coord("y$i")
-            addObject(yCoord)
+
+        for(x in 0..width) {
+            for(y in 0..height) {
+                val waypoint: IExtendedResource = PlanRequestHelper.waypoint(x, y)
+                addObject(waypoint)
+            }
         }
 
         // Stationary objects
@@ -126,19 +125,40 @@ class ProblemBuilder {
         }
     }
 
+
     private fun buildInitState() {
         freeRobots.forEach { label: String ->
             val freeRobot = PlanRequestHelper.freeRobot(lookupRobot(label))
             addInit(freeRobot)
         }
 
+        for (x in 0..width) {
+            for (y in 0..height) {
+                if (x < width) {
+                    addInit(
+                        PlanRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x + 1, y)))
+                }
+                if (x > 1) {
+                    addInit(
+                        PlanRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x - 1, y)))
+                }
+                if (y < height) {
+                    addInit(
+                        PlanRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x, y + 1)))
+                }
+                if (y > 1) {
+                    addInit(
+                        PlanRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x, y - 1)))
+                }
+            }
+        }
+
         initPositions.forEach { coord, label ->
-            val x = lookupCoordX(coord.first)
-            val y = lookupCoordY(coord.second)
+            val wp = lookupWaypoint(coord)
             val objAtXY: InstanceWithResources<IExtendedResource> = when (label) {
-                is ShelfLabel -> PlanRequestHelper.shelfAt(lookupShelf(label.value), x, y)
-                is BeltLabel  -> PlanRequestHelper.beltAt(lookupBelt(label.value), x, y)
-                is RobotLabel -> PlanRequestHelper.robotAt(lookupRobot(label.value), x, y)
+                is ShelfLabel -> PlanRequestHelper.shelfAt(lookupShelf(label.value), wp)
+                is BeltLabel  -> PlanRequestHelper.beltAt(lookupBelt(label.value), wp)
+                is RobotLabel -> PlanRequestHelper.robotAt(lookupRobot(label.value), wp)
                 else          -> throw IllegalStateException("Unexpected label type")
             }
             addInit(objAtXY)
@@ -172,9 +192,10 @@ class ProblemBuilder {
             when (label) {
                 is RobotLabel -> {
                     val robot = lookupRobot(label.value)
-                    val x = lookupCoordX(coord.first)
-                    val y = lookupCoordY(coord.second)
-                    val robotAt = PlanRequestHelper.robotAt(robot, x, y)
+//                    val x = lookupCoordX(coord.first)
+//                    val y = lookupCoordY(coord.second)
+                    val wp = lookupWaypoint(coord)
+                    val robotAt = PlanRequestHelper.robotAt(robot, wp)
 
                     goalPredicates.add(robotAt)
                 }
@@ -216,13 +237,12 @@ class ProblemBuilder {
         resources += complexResource.resources
     }
 
-    private fun lookupCoordX(coord: Int): IExtendedResource {
-        return lookupNaive("x$coord")
+    private fun lookupWaypoint(c: Pair<Int, Int>): IExtendedResource {
+        return lookupNaive("x${c.first}y${c.second}")
     }
 
-    private fun lookupCoordY(coord: Int): IExtendedResource {
-        return lookupNaive("y$coord")
-    }
+    private fun lookupWaypoint(x: Int, y: Int): IExtendedResource = lookupWaypoint(Pair(x,y))
+
 
     private fun lookupShelf(label: String): IExtendedResource {
         return lookupNaive(label)
