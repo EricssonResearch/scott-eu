@@ -22,12 +22,6 @@ import java.net.URI
 class PlanRequestHelperTest {
 
     @Test
-    fun outputTurtleForManualTesting() {
-        val planRequestComplete = PlanRequestHelper().getPlanRequestComplete()
-        println(planRequestComplete.turtle)
-    }
-
-    @Test
     // TODO Andrew@2018-08-28: update the expectation in the unit test
     @Ignore("shall be updated from blocksworld to the scott-warehouse PDDL domain")
     fun locationIsIsomorphic() {
