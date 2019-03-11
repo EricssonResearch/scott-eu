@@ -4,6 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager
+import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.POST
 import javax.ws.rs.Path
@@ -19,11 +20,14 @@ class AdminResource {
         val log: Logger = LoggerFactory.getLogger(AdminResource::class.java)
     }
 
+    private val twinsRepository: TwinRepository
+        get() = WarehouseControllerManager.getTwinRepository()
+
     @POST
     @Path("plan_trigger")
     fun triggerPlanning(): Response {
-        triggerPlanningDirect()
-//        runAsync(this::triggerPlanningDirect)
+//        triggerPlanningDirect()
+        runAsync(this::triggerPlanningDirect)
         return Response.noContent().build()
     }
 
@@ -40,7 +44,7 @@ class AdminResource {
 
     private fun triggerPlanningDirect() {
         log.trace("triggerSamplePlanning() called")
-        PlanningManager.triggerSamplePlanning()
+        PlanningManager.triggerSamplePlanning(twinsRepository)
         log.trace("triggerSamplePlanning() finished")
     }
 }

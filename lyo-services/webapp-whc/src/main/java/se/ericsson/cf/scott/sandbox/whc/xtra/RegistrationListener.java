@@ -12,7 +12,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 
 /**
  * Created on 2018-07-18
@@ -47,7 +46,7 @@ public class RegistrationListener implements IMqttMessageListener {
                 log.info("Responding to the registration request from the device");
                 final ObjectNode objectNode = om.createObjectNode();
                 objectNode.put("device", twinId);
-                objectNode.put("whc", WarehouseControllerManager.getMqttClientId());
+                objectNode.put("whc", AdaptorHelper.getMqttClientId());
                 final ObjectWriter writer = om.writer();
                 final byte[] payloadBytes = writer.writeValueAsBytes(objectNode);
                 final MqttMessage responseMessage = new MqttMessage(payloadBytes);

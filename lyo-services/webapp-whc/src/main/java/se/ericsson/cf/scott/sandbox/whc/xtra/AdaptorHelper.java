@@ -1,6 +1,7 @@
 package se.ericsson.cf.scott.sandbox.whc.xtra;
 
 import java.io.InputStream;
+import java.util.UUID;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import org.apache.jena.rdf.model.Model;
@@ -33,6 +34,7 @@ public class AdaptorHelper {
 
     public static final String MQTT_CLIENT_ID = "trs-consumer-whc";
     public static final String KB_UPDATE_PROP = "kb.update_uri";
+    private final static UUID whcUUID = UUID.randomUUID();
 
     public static ServletContext getContext() {
         return context;
@@ -56,14 +58,22 @@ public class AdaptorHelper {
     /**
      * This returned value is not really used for the MQTT connection init.
      *
-     * @see WarehouseControllerManager#getMqttClientId()
+     * @see AdaptorHelper#getMqttClientId()
      */
     @Deprecated
-    public static String getMqttClientId() {
+    public static String getMqttClientIdStatic() {
         // FIXME Andrew@2019-01-29: what about the generated UUID?!
         return MQTT_CLIENT_ID;
     }
 
+    @NotNull
+    public static String getMqttClientId() {
+        return "whc-" + getUUID();
+    }
+
+    private static UUID getUUID() {
+        return whcUUID;
+    }
 
     static String parameterFQDN(final String s) {
         return PACKAGE_ROOT + "." + s;
