@@ -11,7 +11,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
-import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.whc.xtra.trs.TwinRegistrationListener;
 
 /**
@@ -46,7 +45,7 @@ public class MqttManager {
     public static MqttClient initMqttClient() {
         try {
             final String mqttBroker = AdaptorHelper.p(AdaptorHelper.MQTT_TOPIC_PROP);
-            mqttClient = new MqttClient(mqttBroker, WarehouseControllerManager.getMqttClientId());
+            mqttClient = new MqttClient(mqttBroker, AdaptorHelper.getMqttClientId());
 
             final MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setAutomaticReconnect(true);

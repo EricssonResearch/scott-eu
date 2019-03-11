@@ -29,7 +29,7 @@ public class TRSManager {
         final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
             AdaptorHelper.p(AdaptorHelper.KB_QUERY_PROP),
             AdaptorHelper.p(AdaptorHelper.KB_UPDATE_PROP), null, null, new TrsBasicAuthOslcClient(),
-            AdaptorHelper.getMqttClientId(), Executors.newSingleThreadScheduledExecutor());
+            AdaptorHelper.getMqttClientIdStatic(), Executors.newSingleThreadScheduledExecutor());
         final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
             TrsProviderConfiguration.forMQTT(mqttClient,
                 AdaptorHelper.p(AdaptorHelper.MQTT_TOPIC_PROP)));

@@ -48,6 +48,7 @@ import java.util.concurrent.Executors;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.MqttManager;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.TRSManager;
+import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository;
 import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -61,7 +62,6 @@ public class WarehouseControllerManager {
 
     // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
-    private final static UUID whcUUID = UUID.randomUUID();
     private static WhcChangeHistories changeHistoriesInstance;
     private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
     // End of user code
@@ -72,22 +72,18 @@ public class WarehouseControllerManager {
         return execService;
     }
 
-    private static UUID getUUID() {
-        return whcUUID;
-    }
-
     public static WhcChangeHistories getChangeHistories() {
         return changeHistoriesInstance;
     }
 
-    public static void setChangeHistories(final WhcChangeHistories changeHistoriesInstance) {
-        WarehouseControllerManager.changeHistoriesInstance = changeHistoriesInstance;
+    public static void setChangeHistories(final WhcChangeHistories changeHistories) {
+        changeHistoriesInstance = changeHistories;
     }
 
-    @NotNull
-    public static String getMqttClientId() {
-        return "whc-" + getUUID();
+    public static TwinRepository getTwinRepository() {
+        throw new UnsupportedOperationException();
     }
+
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -106,6 +102,7 @@ public class WarehouseControllerManager {
             TRSManager.initTRSClient(mqttClient);
             log.debug("Initialising a TRS Server");
             TRSManager.initTRSServer(mqttClient);
+            log.debug("WHC contextInitializeServletListener BACKGROUND TASK COMPLETE");
         }, 5, TimeUnit.SECONDS);
         log.debug("WHC contextInitializeServletListener COMPLETE");
         // End of user code
@@ -162,6 +159,9 @@ public class WarehouseControllerManager {
         // Start of user code createRegistrationMessage
         if(aResource != null) {
             log.info("Registering Twin {} ({})", aResource.getLabel(), aResource.getServiceProvider().getValue());
+
+            getTwinRepository().registerTwin(aResource);
+
             newResource = aResource;
         } else {
             throw new IllegalArgumentException("The input must be of type twins:RegistrationMessage");

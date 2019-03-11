@@ -16,6 +16,8 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper
 import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestBuilder
 import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper
 import se.ericsson.cf.scott.sandbox.whc.xtra.planning.ProblemBuilder
+import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinInfo
+import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository
 import java.net.URI
 import java.util.Arrays
 
@@ -40,9 +42,10 @@ object PlanningManager {
         tryRegisterPlan(planModel)
     }
 
-    fun triggerSamplePlanning() {
+    fun triggerSamplePlanning(
+        twinsRepository: TwinRepository) {
         log.info("Performing sample planning")
-        val requestModel = buildSamplePlanRequest()
+        val requestModel = buildSamplePlanRequest(twinsRepository.twins)
         val requestStr = RdfHelpers.modelToString(requestModel)
 //        log.debug("Constructed planning request: $requestStr")
 
@@ -64,7 +67,8 @@ object PlanningManager {
         }
     }
 
-    private fun buildSamplePlanRequest(): Model {
+    private fun buildSamplePlanRequest(
+        twins: Set<TwinInfo>): Model {
         log.trace("Building planning request")
         val planRequestHelper = PlanRequestHelper()
         var requestBuilder = PlanRequestBuilder()
@@ -75,27 +79,34 @@ object PlanningManager {
                 "pddl/dom-connectivity.ttl"))
             .withStateBuilder(stateBuilder)
 
+        val _width = 25
+        val _height = 25
         stateBuilder//.problemUri(OslcHelpers.u("scott-warehouse-problem"))
             .genLabel("TRS-Safety prototype plan request")
             .problemDomain(Link(OslcHelpers.u("scott-warehouse")))
-            .warehouseSize(25, 25)
-            .robotsActive(Arrays.asList("rb1", "rb2", "rb3", "rb4"))
+            .warehouseSize(_width, _height)
+            .robotsActive(twins.map { it.label })
             .robotsInactive(Arrays.asList("ob1", "ob2", "ob3"))
             .shelfAt("sh1", 0, 10)
             .beltAt("cb1", 0, 20)
             .boxOnShelfInit("b1", "sh1")
-            .robotAtInit("rb1", 1, 1)
-            .robotAtInit("rb2", 1, 2)
-            .robotAtInit("rb3", 1, 3)
-            .robotAtInit("rb4", 1, 4)
-            .robotAtInit("ob1", 3, 2)
-            .robotAtInit("ob2", 3, 3)
-            .robotAtInit("ob3", 3, 4)
+            .robotAtInit("ob1", 12, 12)
+            .robotAtInit("ob2", 12, 11)
+            .robotAtInit("ob3", 12, 10)
             .boxOnBeltGoal("b1", "cb1")
         // TODO Andrew@2019-02-19: do we need negation too?
         //.boxNotOnShelfGoal("b1", "sh1");
 
+        if(twins.size % _width > 11) {
+            log.warn("Too many robots; the robots inits may overlap with the static obstacles")
+        }
+
+        twins.forEach {
+            stateBuilder.robotAtInit(it.label, twins.size % _width, twins.size / _height + 1)
+        }
+
         return requestBuilder.build(OslcHelpers.base)
+
     }
 
     @Throws(LyoJenaModelException::class)
