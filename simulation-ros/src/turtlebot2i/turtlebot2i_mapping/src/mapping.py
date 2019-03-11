@@ -195,7 +195,28 @@ if clientID!=-1:
 
     for obj in obj_node_list:
         #obj_pol_list.append(box(obj.bbox_min[0], obj.bbox_min[1], obj.bbox_max[0], obj.bbox_max[1]))
-        obj_pol_list.append(box(obj_node_list[obj].bbox_min[0], obj_node_list[obj].bbox_min[1], obj_node_list[obj].bbox_max[0], obj_node_list[obj].bbox_max[1]))
+
+        #calculating the bounding box
+        X_min = obj_node_list[obj].bbox_min[0]
+        Y_min = obj_node_list[obj].bbox_min[1]
+        X_max = obj_node_list[obj].bbox_max[0]
+        Y_max = obj_node_list[obj].bbox_max[1]
+        x_pos = obj_node_list[obj].pose[0][0]
+        y_pos = obj_node_list[obj].pose[0][1]
+        z_rot = obj_node_list[obj].ori[0][2]
+        print("zrot:", z_rot)
+        #rotation calc refer to: http://www.euclideanspace.com/maths/geometry/affine/aroundPoint/matrix2d/
+        r00 =  np.cos(z_rot)
+        r01 = -np.sin(z_rot)
+        r10 =  np.sin(z_rot)
+        r11 =  np.cos(z_rot)
+        bbox_X_min_rotated = r00*X_min + r01*Y_min + x_pos - r00*x_pos - r01*y_pos
+        bbox_Y_min_rotated = r10*X_min + r11*Y_min + y_pos - r10*x_pos - r11*y_pos
+        bbox_X_max_rotated = r00*X_max + r01*Y_max + x_pos - r00*x_pos - r01*y_pos
+        bbox_Y_max_rotated = r10*X_max + r11*Y_max + y_pos - r10*x_pos - r11*y_pos
+        obj_pol_list.append(box(bbox_X_min_rotated, bbox_Y_min_rotated, bbox_X_max_rotated, bbox_Y_max_rotated))
+        #obj_pol_list.append(box(obj_node_list[obj].bbox_min[0], obj_node_list[obj].bbox_min[1], obj_node_list[obj].bbox_max[0], obj_node_list[obj].bbox_max[1]))
+
 
     #obj_pol = MultiPolygon(obj_pol_list)
     obj_pol = cascaded_union(obj_pol_list)
@@ -216,12 +237,12 @@ if clientID!=-1:
 
     #print(map_pgm)
     # Persists the PGM map
-    file = open('map_1.pgm', 'w')
+    file = open('map_test1.pgm', 'w')
     file.write(map_pgm)
     file.close()
 
     # Persists the yaml object
-    file = open('scene_1.yaml', 'w')
+    file = open('scene_test1.yaml', 'w')
     file.write(yaml.dump(yaml_node_list))
     file.close()
 
