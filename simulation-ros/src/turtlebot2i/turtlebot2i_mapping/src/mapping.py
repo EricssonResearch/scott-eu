@@ -91,8 +91,8 @@ if clientID!=-1:
         returnCode, objects_handles,  intData, objects_orientations, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)
 
         # get indexes of relevant elements in the warehouse
-        obj_list = ['Floor10x10m', 'stairs', 'slidingDoor', 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcretBlock']
-        #obj_list = ['ResizableFloor_5_25', 'stairs', 'slidingDoor', 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcretBlock']
+        ground_object = 'Floor10x10m'
+        obj_list = [ground_object, 'stairs', 'slidingDoor', 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcretBlock']
 
         obj_index_list = [objects_names.index(i) for i in objects_names if re.match(r'(#\d|)\b|'.join(obj_list)+'*', i)]
 
@@ -157,30 +157,21 @@ if clientID!=-1:
     ################
 
     # Get scenario pose and size from floor object
-    #map_origin = obj_node_list['ResizableFloor_5_25'].bbox_min[0:2]
-    #map_width = obj_node_list['ResizableFloor_5_25'].size[0]
-    #map_height = obj_node_list['ResizableFloor_5_25'].size[1]
-    map_origin = obj_node_list['Floor10x10m'].bbox_min[0:2]
-    #map_origin = [7.0,-5.0] # it should be [-3.-5]
+    map_origin = obj_node_list[ground_object].bbox_min[0:2]
     print("map_origin: ",map_origin)
-    map_width = obj_node_list['Floor10x10m'].size[0]+0.1
-    map_height = obj_node_list['Floor10x10m'].size[1]+0.1
+    map_width = obj_node_list[ground_object].size[0]+0.1
+    map_height = obj_node_list[ground_object].size[1]+0.1
 
     map_resolution = 0.10
 
     map_cells_x = int(round(map_width / map_resolution))
     map_cells_y = int(round(map_height / map_resolution))
 
-    #obj_node_list.pop('ResizableFloor_5_25')
-    obj_node_list.pop('Floor10x10m')
-
-
     # Get top floor polygon
-    #floor_bbox_min = obj_node_list['ConcretBlock'].bbox_min[0:2]
-    #floor_bbox_max = obj_node_list['ConcretBlock'].bbox_max[0:2]
-    #floor_pol = box(floor_bbox_min[0], floor_bbox_min[1], floor_bbox_max[0], floor_bbox_max[1])
-    floor_pol = box(-3, -5, 7, 5)
-    #obj_node_list.pop('ConcretBlock')
+    floor_bbox_min = obj_node_list[ground_object].bbox_min[0:2]
+    floor_bbox_max = obj_node_list[ground_object].bbox_max[0:2]
+    floor_pol = box(floor_bbox_min[0], floor_bbox_min[1], floor_bbox_max[0], floor_bbox_max[1])
+    obj_node_list.pop(ground_object)
 
     # PGM file header
     map_pgm = 'P2\n' + str(map_cells_x) + ' ' + str(map_cells_y) + '\n255\n'
@@ -204,8 +195,8 @@ if clientID!=-1:
         x_pos = obj_node_list[obj].pose[0][0]
         y_pos = obj_node_list[obj].pose[0][1]
         z_rot = obj_node_list[obj].ori[0][2]
-        print("zrot:", z_rot)
-        #rotation calc refer to: http://www.euclideanspace.com/maths/geometry/affine/aroundPoint/matrix2d/
+
+        #rotation on each object (calc refer to: http://www.euclideanspace.com/maths/geometry/affine/aroundPoint/matrix2d/)
         r00 =  np.cos(z_rot)
         r01 = -np.sin(z_rot)
         r10 =  np.sin(z_rot)
@@ -215,15 +206,14 @@ if clientID!=-1:
         bbox_X_max_rotated = r00*X_max + r01*Y_max + x_pos - r00*x_pos - r01*y_pos
         bbox_Y_max_rotated = r10*X_max + r11*Y_max + y_pos - r10*x_pos - r11*y_pos
         obj_pol_list.append(box(bbox_X_min_rotated, bbox_Y_min_rotated, bbox_X_max_rotated, bbox_Y_max_rotated))
-        #obj_pol_list.append(box(obj_node_list[obj].bbox_min[0], obj_node_list[obj].bbox_min[1], obj_node_list[obj].bbox_max[0], obj_node_list[obj].bbox_max[1]))
-
+        
 
     #obj_pol = MultiPolygon(obj_pol_list)
     obj_pol = cascaded_union(obj_pol_list)
 
     # Populate occupied point from MultiPolygon
-    for j in range(map_cells_x-1,-1,-1):
-        for i in range(map_cells_y):
+    for j in range(map_cells_y-1,-1,-1):
+        for i in range(map_cells_x):
             px = map_origin[0] + i*map_resolution
             py = map_origin[1] + j*map_resolution
 
@@ -235,7 +225,6 @@ if clientID!=-1:
 
         map_pgm += '\n'
 
-    #print(map_pgm)
     # Persists the PGM map
     file = open('map_test1.pgm', 'w')
     file.write(map_pgm)
