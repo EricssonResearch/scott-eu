@@ -33,20 +33,36 @@
     <module>../webapp-twin-shelf</module>
   </modules>
 
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>scott-central</name>
+      <url>https://aide.md.kth.se/artifactory/scott-central</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>scott-central</name>
+      <url>https://aide.md.kth.se/artifactory/scott-central</url>
+    </pluginRepository>
+  </pluginRepositories>
+<!--
   <repositories>
     <repository>
       <id>scott</id>
       <name>SCOTT sandbox</name>
       <url>https://aide.md.kth.se/artifactory/scott</url>
     </repository>
-<!--    <repository>
+&lt;!&ndash;    <repository>
       <id>rosjava</id>
       <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </repository>-->
-    <repository>
+    </repository>&ndash;&gt;
+&lt;!&ndash;    <repository>
       <id>jfrog</id>
       <url>http://repo.jfrog.org/artifactory/libs-releases/</url>
       <snapshots>
@@ -60,7 +76,7 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </repository>
+    </repository>&ndash;&gt;
     <repository>
       <id>lyo-releases</id>
       <name>Eclipse Lyo Releases</name>
@@ -77,5 +93,5 @@
         <enabled>false</enabled>
       </releases>
     </repository>
-  </repositories>
+  </repositories>-->
 </project>

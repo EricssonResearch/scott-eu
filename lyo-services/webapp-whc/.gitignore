@@ -2,6 +2,8 @@
 /target/
 /overlays/
 
+/build/
+
 # Acceleo
 *.lost
 

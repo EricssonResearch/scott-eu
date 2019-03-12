@@ -51,7 +51,7 @@ To revert to the default generated content, delete all content in this file, and
 <div class="container">
 
     <div class="jumbotron">
-        <h1 class="display-3">Adaptor home!</h1>
+        <h1 class="display-3"><%= application.getServletContextName() %></h1>
         <p class="lead">This is a homepage of the <em>Warehouse Controller</em> that was generated using
             Eclipse Lyo Toolchain Designer.</p>
         <hr class="my-4">
