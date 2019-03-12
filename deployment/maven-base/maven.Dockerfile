@@ -1,3 +1,4 @@
+# need git
 FROM maven:3-jdk-8
 
 # COPY m2_temp/* /root/.m2/repository/
