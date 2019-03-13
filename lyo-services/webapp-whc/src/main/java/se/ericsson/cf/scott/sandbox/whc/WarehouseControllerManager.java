@@ -24,8 +24,8 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
+import eu.scott.warehouse.lib.OslcHelper;
 import eu.scott.warehouse.lib.OslcHelpers;
-import eu.scott.warehouse.lib.RdfHelpers;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 
@@ -34,20 +34,19 @@ import eu.scott.warehouse.domains.twins.RegistrationMessage;
 
 // Start of user code imports
 import java.net.URI;
-import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 
 
 //import org.eclipse.lyo.store.StoreFactory;
+import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.MqttManager;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.TRSManager;
+import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper;
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository;
 import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
@@ -61,9 +60,11 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
 public class WarehouseControllerManager {
 
     // Start of user code class_attributes
-    private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
+    private static final Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
+    private static final ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
+    private static final TwinRepository repository = new TwinRepository();
+    private static final PlanningManager planningManager = new PlanningManager(new PlanRequestHelper(new OslcHelper(WhcConfig.getBaseUri())));
     private static WhcChangeHistories changeHistoriesInstance;
-    private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
     // End of user code
     
     
@@ -72,16 +73,18 @@ public class WarehouseControllerManager {
         return execService;
     }
 
+    // TODO Andrew@2019-03-12: move to TRSManager
     public static WhcChangeHistories getChangeHistories() {
         return changeHistoriesInstance;
     }
 
+    // TODO Andrew@2019-03-12: remove
     public static void setChangeHistories(final WhcChangeHistories changeHistories) {
         changeHistoriesInstance = changeHistories;
     }
 
     public static TwinRepository getTwinRepository() {
-        throw new UnsupportedOperationException();
+        return repository;
     }
 
     // End of user code
@@ -136,11 +139,11 @@ public class WarehouseControllerManager {
         // Start of user code getPlan
         log.trace("getPlan({}, {}) called", serviceProviderId, planId);
         // minimal impl to get the TRS provider going
-        if (serviceProviderId.equals(AdaptorHelper.DEFAULT_SP_ID)) {
+        if (serviceProviderId.equals(WhcConfig.DEFAULT_SP_ID)) {
             final URI planURI = WarehouseControllerResourcesFactory.constructURIForPlan(
                     serviceProviderId, planId);
-            if (PlanningManager.INSTANCE.getPlans().containsKey(planURI)) {
-                aResource = PlanningManager.INSTANCE.getPlans().get(planURI);
+            if (planningManager.getPlans().containsKey(planURI)) {
+                aResource = planningManager.getPlans().get(planURI);
                 log.info("found a plan", aResource);
             } else {
                 log.warn("a plan {} was not found", planId);

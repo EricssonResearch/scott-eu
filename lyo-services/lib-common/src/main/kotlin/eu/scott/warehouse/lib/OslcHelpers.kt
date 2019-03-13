@@ -13,8 +13,6 @@ import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
-import java.util.UUID
-import javax.ws.rs.core.UriBuilder
 import javax.xml.namespace.QName
 
 /**
@@ -47,10 +45,7 @@ fun IExtendedResource.setSuperclass(cl: Class<*>) = this.setProperty(OslcHelpers
 
 fun IExtendedResource.setLabel(l: String) = this.setProperty(OslcHelpers.ns(OslcHelpers.RDFS, "label"), l)
 
-class RawResource(about: URI) : AbstractResource(about) {
-    constructor() : this(OslcHelpers.u(UUID.randomUUID()))
-}
-
+class RawResource(about: URI) : AbstractResource(about)
 
 data class InstanceWithResources<T : IExtendedResource>(val instance: T,
                                                         val resources: Collection<IExtendedResource>)
@@ -67,14 +62,6 @@ object OslcHelpers {
     const val PDDL = "http://ontology.cf.ericsson.net/pddl/"
     const val OSLC = "http://open-services.net/ns/core#"
     const val SH_ORDER = "http://www.w3.org/ns/shacl#order"
-
-
-    // TODO Andrew@2019-02-20: make it a class ctor param
-    lateinit var base: URI
-
-//    fun setBase(b: URI) {
-//        this.base = b
-//    }
 
     /**
      * URI of the Resource
@@ -108,13 +95,15 @@ object OslcHelpers {
     }
 
 
-    fun u(p: String): URI {
-        return UriBuilder.fromUri(base).path(p).build()
-    }
-
-    fun u(p: UUID?): URI {
-        return u("blnk_" + p.toString())
-    }
+//    @Deprecated("Use the OslcHelper class")
+//    fun u(p: String): URI {
+//        return UriBuilder.fromUri(base).path(p).build()
+//    }
+//
+//    @Deprecated("Use the OslcHelper class")
+//    fun u(p: UUID?): URI {
+//        return u("blnk_" + p.toString())
+//    }
 
 
     // TODO Andrew@2018-02-23: move to JMH

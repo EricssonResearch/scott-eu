@@ -73,11 +73,11 @@ object RdfHelpers {
         }
     }
 
-    fun modelFromTurtleResource(clazz: Class<Any>, path: String): Model {
+    fun modelFromTurtleResource(clazz: Class<*>, path: String): Model {
         return modelFromResourceFile(clazz, path, Lang.TURTLE)
     }
 
-    private fun modelFromResourceFile(clazz: Class<Any>, path: String, lang: Lang): Model {
+    private fun modelFromResourceFile(clazz: Class<*>, path: String, lang: Lang): Model {
         val inputStream = clazz.classLoader.getResourceAsStream(path)
         if(inputStream == null) {
             val message = "'$path' cannot be loaded from JAR resources, file not found."

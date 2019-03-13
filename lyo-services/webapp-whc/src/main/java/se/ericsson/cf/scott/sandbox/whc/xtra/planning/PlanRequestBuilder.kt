@@ -4,7 +4,6 @@ import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URI
 
 /**
  * TODO
@@ -19,14 +18,14 @@ class PlanRequestBuilder {
     private lateinit var problemBuilder: ProblemBuilder
     private lateinit var domain: Model
 
-    fun build(baseURI: URI): Model {
+    fun build(): Model {
         // TODO Andrew@2019-02-19: remove all use of URIs beforehand?
 
         val m = ModelFactory.createDefaultModel()
 
         m.add(domain)
 
-        val state: ProblemRequestState = problemBuilder.build(baseURI)
+        val state: ProblemRequestState = problemBuilder.build()
         m.add(state.model)
 
         log.debug("Completed building a planning request")

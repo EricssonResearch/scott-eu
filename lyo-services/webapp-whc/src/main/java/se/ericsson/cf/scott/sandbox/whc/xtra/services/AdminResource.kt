@@ -1,9 +1,13 @@
 package se.ericsson.cf.scott.sandbox.whc.xtra.services
 
+import eu.scott.warehouse.lib.OslcHelper
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager
+import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager
+import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.POST
@@ -20,31 +24,38 @@ class AdminResource {
         val log: Logger = LoggerFactory.getLogger(AdminResource::class.java)
     }
 
+    // TODO Andrew@2019-03-12: inject this
     private val twinsRepository: TwinRepository
         get() = WarehouseControllerManager.getTwinRepository()
 
+    /**
+     * POSTING to this resource shall create one plan per robot and send them out.
+     */
     @POST
     @Path("plan_trigger")
-    fun triggerPlanning(): Response {
-//        triggerPlanningDirect()
-        runAsync(this::triggerPlanningDirect)
+    fun plan(): Response {
+//        triggerPlanning()
+        runAsync(this::triggerPlanning)
         return Response.noContent().build()
     }
 
+    // TODO Andrew@2019-03-12: move to the lib
     private fun runAsync(function: () -> Unit) {
         log.trace("Scheduling function execution w/o delay")
         WarehouseControllerManager.getExecService().schedule({
             try {
                 function.invoke()
             } catch (e: Throwable) {
-                log.warn("PlanningManager threw an exception: $e")
+                log.warn("PlanningManager threw an exception: ${ExceptionUtils.getStackTrace(e)}")
             }
         }, 0, TimeUnit.MILLISECONDS)
     }
 
-    private fun triggerPlanningDirect() {
+    fun triggerPlanning() {
         log.trace("triggerSamplePlanning() called")
-        PlanningManager.triggerSamplePlanning(twinsRepository)
+        PlanningManager(PlanRequestHelper(OslcHelper(WhcConfig.getBaseUri())))
+
+        .planForEachTwin(twinsRepository)
         log.trace("triggerSamplePlanning() finished")
     }
 }
