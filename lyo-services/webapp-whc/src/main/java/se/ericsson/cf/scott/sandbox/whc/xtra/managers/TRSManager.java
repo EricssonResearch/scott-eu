@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
+import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
 import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
 /**
@@ -27,19 +28,19 @@ public class TRSManager {
 
     public static void initTRSClient(final MqttClient mqttClient) {
         final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
-            AdaptorHelper.p(AdaptorHelper.KB_QUERY_PROP),
-            AdaptorHelper.p(AdaptorHelper.KB_UPDATE_PROP), null, null, new TrsBasicAuthOslcClient(),
+            AdaptorHelper.p(WhcConfig.KB_QUERY_PROP),
+            AdaptorHelper.p(WhcConfig.KB_UPDATE_PROP), null, null, new TrsBasicAuthOslcClient(),
             AdaptorHelper.getMqttClientIdStatic(), Executors.newSingleThreadScheduledExecutor());
         final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
             TrsProviderConfiguration.forMQTT(mqttClient,
-                AdaptorHelper.p(AdaptorHelper.MQTT_TOPIC_PROP)));
+                AdaptorHelper.p(WhcConfig.MQTT_TOPIC_PROP)));
         TrsConsumerUtils.buildHandlersSequential(consumerConfig, providerConfigs);
     }
 
     public static void initTRSServer(final MqttClient mqttClient) {
         // TODO Andrew@2018-07-18: figure out how the change history works over MQTT
         WarehouseControllerManager.setChangeHistories(
-            new WhcChangeHistories(mqttClient, AdaptorHelper.p(AdaptorHelper.MQTT_TOPIC_PROP),
+            new WhcChangeHistories(mqttClient, AdaptorHelper.p(WhcConfig.MQTT_TOPIC_PROP),
                 Duration.ofMinutes(5).toMillis()));
     }
 

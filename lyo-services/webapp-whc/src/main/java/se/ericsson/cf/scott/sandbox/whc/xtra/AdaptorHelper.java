@@ -22,19 +22,8 @@ import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
  * @since   TODO
  */
 public class AdaptorHelper {
-    public static final String KB_QUERY_PROP = "kb.query_uri";
     private final static Logger log = LoggerFactory.getLogger(AdaptorHelper.class);
-    // Start of user code class_attributes
     private final static String PACKAGE_ROOT = WarehouseControllerManager.class.getPackage().getName();
-    // TODO Andrew@2018-07-30: extract into AdaptorConfig (non-static)
-    public static final String MQTT_TOPIC_PROP = "trs.mqtt.broker";
-    public static final String DEFAULT_SP_ID = "default";
-    public static final String NS_SHACL = "http://www.w3.org/ns/shacl#";
-    public static final String MIME_TURTLE = "text/turtle";
-
-    public static final String MQTT_CLIENT_ID = "trs-consumer-whc";
-    public static final String KB_UPDATE_PROP = "kb.update_uri";
-    private final static UUID whcUUID = UUID.randomUUID();
 
     public static ServletContext getContext() {
         return context;
@@ -63,7 +52,7 @@ public class AdaptorHelper {
     @Deprecated
     public static String getMqttClientIdStatic() {
         // FIXME Andrew@2019-01-29: what about the generated UUID?!
-        return MQTT_CLIENT_ID;
+        return WhcConfig.MQTT_CLIENT_ID;
     }
 
     @NotNull
@@ -72,7 +61,7 @@ public class AdaptorHelper {
     }
 
     private static UUID getUUID() {
-        return whcUUID;
+        return WhcConfig.whcUUID;
     }
 
     static String parameterFQDN(final String s) {
@@ -97,7 +86,7 @@ public class AdaptorHelper {
     public static ServiceProviderInfo[] defaultSPInfo() {
         final ServiceProviderInfo[] serviceProviderInfos;
         final ServiceProviderInfo serviceProviderInfo = new ServiceProviderInfo();
-        serviceProviderInfo.serviceProviderId = DEFAULT_SP_ID;
+        serviceProviderInfo.serviceProviderId = WhcConfig.DEFAULT_SP_ID;
         serviceProviderInfo.name = "Default Service Provider";
         serviceProviderInfos = new ServiceProviderInfo[]{serviceProviderInfo};
         return serviceProviderInfos;

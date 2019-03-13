@@ -1,6 +1,7 @@
 package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
 import eu.scott.warehouse.domains.pddl.PrimitiveType
+import eu.scott.warehouse.lib.OslcHelper
 import eu.scott.warehouse.lib.RdfHelpers
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.Lang
@@ -10,6 +11,7 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Test
+import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig
 import java.io.ByteArrayOutputStream
 import java.net.URI
 
@@ -39,7 +41,8 @@ class PlanRequestHelperTest {
               rdfs:label "location" .
         """, Lang.TURTLE)
 
-        val location = PlanRequestHelper.buildLocation()
+        val planRequestHelper = PlanRequestHelper(OslcHelper(WhcConfig.getBaseUri()))
+        val location = planRequestHelper.buildLocation()
         val locationModelActual = JenaModelHelper.createJenaModel(arrayOf(location))
 
         assertIsomorphic("Location object is incorrect", locationModelExpected, locationModelActual)

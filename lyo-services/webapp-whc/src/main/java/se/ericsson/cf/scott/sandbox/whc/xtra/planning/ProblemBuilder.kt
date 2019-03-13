@@ -2,7 +2,7 @@ package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
 import eu.scott.warehouse.domains.pddl.Problem
 import eu.scott.warehouse.lib.InstanceWithResources
-import eu.scott.warehouse.lib.OslcHelpers
+import eu.scott.warehouse.lib.OslcHelper
 import eu.scott.warehouse.lib.link
 import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
 import org.eclipse.lyo.oslc4j.core.model.Link
@@ -26,7 +26,7 @@ data class BoxLabel(override val value: String) : Label
  *
  * @since   TODO
  */
-class ProblemBuilder {
+class ProblemBuilder(val oslcHelper: OslcHelper, private val planRequestHelper: PlanRequestHelper) {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(ProblemBuilder::class.java)
@@ -50,10 +50,10 @@ class ProblemBuilder {
 
     private val resources: MutableSet<IExtendedResource> = LinkedHashSet()
 
-    private var problem: Problem = Problem(OslcHelpers.u("scott-warehouse-problem"))
+    private var problem: Problem = Problem(oslcHelper.u("scott-warehouse-problem"))
 
 
-    fun build(baseURI: URI): ProblemRequestState {
+    fun build(): ProblemRequestState {
         if (width == 0 || height == 0) {
             throw IllegalArgumentException("Width and height must be set")
         }
@@ -61,7 +61,7 @@ class ProblemBuilder {
         val resources: MutableSet<IExtendedResource> = resources
 
         problem.label = "scott-warehouse-problem"
-        problem.domain = Link(OslcHelpers.u("scott-warehouse"))
+        problem.domain = Link(oslcHelper.u("scott-warehouse"))
 
         resources.add(problem)
 
@@ -90,7 +90,7 @@ class ProblemBuilder {
     }
 
     private fun buildMinimisationFn() {
-        val minFn = PlanRequestHelper.minFn()
+        val minFn = planRequestHelper.minFn()
         problem.minimize = minFn.link
         resources += minFn
     }
@@ -100,7 +100,7 @@ class ProblemBuilder {
 
         for(x in 0..width) {
             for(y in 0..height) {
-                val waypoint: IExtendedResource = PlanRequestHelper.waypoint(x, y)
+                val waypoint: IExtendedResource = planRequestHelper.waypoint(x, y)
                 addObject(waypoint)
             }
         }
@@ -108,19 +108,19 @@ class ProblemBuilder {
         // Stationary objects
         initPositions.forEach { coord, label ->
             when (label) {
-                is ShelfLabel -> addObject(PlanRequestHelper.shelf(label.value))
-                is BeltLabel  -> addObject(PlanRequestHelper.belt(label.value))
+                is ShelfLabel -> addObject(planRequestHelper.shelf(label.value))
+                is BeltLabel  -> addObject(planRequestHelper.belt(label.value))
             }
         }
 
         // Robots
         robots.forEach { label ->
-            val robot = PlanRequestHelper.robot(label)
+            val robot = planRequestHelper.robot(label)
             addObject(robot)
         }
 
         boxOnShelfInit.forEach { pair: Pair<BoxLabel, ShelfLabel> ->
-            val box = PlanRequestHelper.box(pair.first.value)
+            val box = planRequestHelper.box(pair.first.value)
             addObject(box)
         }
     }
@@ -128,7 +128,7 @@ class ProblemBuilder {
 
     private fun buildInitState() {
         freeRobots.forEach { label: String ->
-            val freeRobot = PlanRequestHelper.freeRobot(lookupRobot(label))
+            val freeRobot = planRequestHelper.freeRobot(lookupRobot(label))
             addInit(freeRobot)
         }
 
@@ -136,19 +136,19 @@ class ProblemBuilder {
             for (y in 0..height) {
                 if (x < width) {
                     addInit(
-                        PlanRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x + 1, y)))
+                        planRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x + 1, y)))
                 }
                 if (x > 1) {
                     addInit(
-                        PlanRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x - 1, y)))
+                        planRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x - 1, y)))
                 }
                 if (y < height) {
                     addInit(
-                        PlanRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x, y + 1)))
+                        planRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x, y + 1)))
                 }
                 if (y > 1) {
                     addInit(
-                        PlanRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x, y - 1)))
+                        planRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x, y - 1)))
                 }
             }
         }
@@ -156,9 +156,9 @@ class ProblemBuilder {
         initPositions.forEach { coord, label ->
             val wp = lookupWaypoint(coord)
             val objAtXY: InstanceWithResources<IExtendedResource> = when (label) {
-                is ShelfLabel -> PlanRequestHelper.shelfAt(lookupShelf(label.value), wp)
-                is BeltLabel  -> PlanRequestHelper.beltAt(lookupBelt(label.value), wp)
-                is RobotLabel -> PlanRequestHelper.robotAt(lookupRobot(label.value), wp)
+                is ShelfLabel -> planRequestHelper.shelfAt(lookupShelf(label.value), wp)
+                is BeltLabel  -> planRequestHelper.beltAt(lookupBelt(label.value), wp)
+                is RobotLabel -> planRequestHelper.robotAt(lookupRobot(label.value), wp)
                 else          -> throw IllegalStateException("Unexpected label type")
             }
             addInit(objAtXY)
@@ -167,7 +167,7 @@ class ProblemBuilder {
         boxOnShelfInit.forEach { pair: Pair<BoxLabel, ShelfLabel> ->
             val box = lookupBox(pair.first.value)
             val shelf = lookupShelf(pair.second.value)
-            val onShelf = PlanRequestHelper.onShelf(box, shelf)
+            val onShelf = planRequestHelper.onShelf(box, shelf)
             addInit(onShelf)
         }
     }
@@ -183,7 +183,7 @@ class ProblemBuilder {
         val goalPredicates: MutableList<InstanceWithResources<IExtendedResource>> = LinkedList()
 
         val onBeltPredicates = boxOnBeltGoal.map { pair: Pair<BoxLabel, BeltLabel> ->
-            PlanRequestHelper.onBelt(lookupBox(pair.first.value), lookupBelt(pair.second.value))
+            planRequestHelper.onBelt(lookupBox(pair.first.value), lookupBelt(pair.second.value))
         }
         goalPredicates.addAll(onBeltPredicates)
 
@@ -195,7 +195,7 @@ class ProblemBuilder {
 //                    val x = lookupCoordX(coord.first)
 //                    val y = lookupCoordY(coord.second)
                     val wp = lookupWaypoint(coord)
-                    val robotAt = PlanRequestHelper.robotAt(robot, wp)
+                    val robotAt = planRequestHelper.robotAt(robot, wp)
 
                     goalPredicates.add(robotAt)
                 }
@@ -204,7 +204,7 @@ class ProblemBuilder {
 
 
         // just a conjunction of all terms
-        val andGoal = PlanRequestHelper.and(goalPredicates)
+        val andGoal = planRequestHelper.and(goalPredicates)
 
         // no need for an addGoal() function
         problem.goal = andGoal.instance.link
@@ -261,7 +261,7 @@ class ProblemBuilder {
     }
 
     private fun lookupNaive(label: String): IExtendedResource {
-        return resources.single { r -> r.about == OslcHelpers.u(label) }
+        return resources.single { r -> r.about == oslcHelper.u(label) }
     }
 
     fun warehouseSize(_width: Int, _height: Int): ProblemBuilder {

@@ -20,12 +20,13 @@ public class WhcTrsService extends TrackedResourceSetService {
 
     @Override
     protected ChangeHistories getChangeHistories() {
+        // TODO Andrew@2019-03-12: inject TRSManager
         return WarehouseControllerManager.getChangeHistories();
     }
 
     @Override
     protected String getServiceBase() {
-        final String servletPath = OSLC4JUtils.getServletURI();
-        return servletPath;
+        // TODO Andrew@2019-03-12: remove the need for such boilerplate
+        return OSLC4JUtils.getServletURI();
     }
 }
