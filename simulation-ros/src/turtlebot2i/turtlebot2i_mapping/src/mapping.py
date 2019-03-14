@@ -91,7 +91,7 @@ if clientID!=-1:
         returnCode, objects_handles,  intData, objects_orientations, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)
 
         # get indexes of relevant elements in the warehouse
-        ground_object = 'Floor10x10m'
+        ground_object = 'Floor10x15m' #'Floor10x10m'
         obj_list = [ground_object, 'stairs', 'slidingDoor', 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcretBlock']
 
         obj_index_list = [objects_names.index(i) for i in objects_names if re.match(r'(#\d|)\b|'.join(obj_list)+'*', i)]

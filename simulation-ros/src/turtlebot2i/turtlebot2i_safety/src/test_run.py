@@ -25,13 +25,15 @@ def init_var():
     travelled_distance = 0.0 #the less the better
     mean_distance_to_goal = 0.0 #the less the better
 
-    global n_sensors, mean_obs_distance, min_obs_distance, collision_flag, n_collision, risk_mean
-    n_sensors = 675
+    global n_sensors, mean_obs_distance, min_obs_distance, collision_flag, n_collision, collision_distance, risk_mean, risk_max
+    n_sensors = 684
     mean_obs_distance = 0.0 #SM1
     min_obs_distance  = [1000.0] * n_sensors #SM2
     collision_flag = False
     n_collision = 0
+    collision_distance = 0.23
     risk_mean = -1.0
+    risk_max  = -1.0
 
     global r_warning, r_critical, obstacle_zone, prev_obstacle_zone, clear_zone, warning_zone, critical_zone, warning_duration, critical_duration
     r_warning  = 0.0
@@ -51,14 +53,14 @@ def movebase_client():
 
     goal.target_pose.header.frame_id = "map"
     goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = 2.2 #2.0
-    goal.target_pose.pose.position.y = 0.8 #4.0
+    goal.target_pose.pose.position.x = 7.5 #2.0
+    goal.target_pose.pose.position.y = 3.0 #4.0
     goal.target_pose.pose.position.z = 0.063 #1.34851861
     #goal.target_pose.pose.orientation.w = 1.0
 
     #copied from navi_goal_talker
     orientation=geometry_msgs.msg.Quaternion()
-    yaw  =-90*math.pi/180 #unit: from deg. to rad.
+    yaw  = 0.0 #-90*math.pi/180 #unit: from deg. to rad.
     orientation=quaternion_from_euler(0,0,yaw)#(roll, pitch,yaw) # return an array
     goal.target_pose.pose.orientation.x=0.0
     goal.target_pose.pose.orientation.y=0.0
@@ -67,7 +69,7 @@ def movebase_client():
 
     client.send_goal(goal, active_cb=init_subscription, done_cb=finish_callback)
     print("Goal position is sent! waiting the robot to finish....")
-    wait = client.wait_for_result(timeout=rospy.Duration(600.0)) #timeout in seconds
+    wait = client.wait_for_result(timeout=rospy.Duration(1200.0)) #timeout in seconds
     if not wait:
         rospy.logerr("Action server not available or timeout!")
         rospy.signal_shutdown("Action server not available!")
@@ -83,7 +85,8 @@ def distance2D(pos1, pos2):
 def init_subscription():
     time_start = rospy.get_time()
     rospy.Subscriber('/turtlebot2i/sensors/global_pose', geometry_msgs.msg.PoseStamped, update_pose_callback)
-    rospy.Subscriber('/turtlebot2i/lidar/scan_data_collection', LaserScan, lidar_callback)
+    rospy.Subscriber('/turtlebot2i/lidar/scan_data_collection', LaserScan, lidar_callback) #this is used with Risk mitigation 
+    #rospy.Subscriber('/turtlebot2i/lidar/scan', LaserScan, lidar_callback) #this is used without Risk mitigation
     rospy.Subscriber('/turtlebot2i/safety/risk_val', Float64, risk_callback)
     rospy.Subscriber('/turtlebot2i/safety/safety_zone', SafetyZone, safety_zone_callback)
 
@@ -102,8 +105,8 @@ def finish_callback(state_data, data2):
     safe_duration = duration-(warning_duration+critical_duration)
     rospy.loginfo("1. Time execution        : %1.4f seconds (less is better)",duration)
     rospy.loginfo(" a) Safe (green) zone    : %1.4f s (%.1f%%) (more is better)",safe_duration,     100*safe_duration/duration)
-    rospy.loginfo(" b) Warning (yellow) zone: %1.4f s (%.1f%%) (more is better)",warning_duration,  100*warning_duration/duration)
-    rospy.loginfo(" c) Critical (red )zone  : %1.4f s (%.1f%%) (more is better)",critical_duration, 100*critical_duration/duration)
+    rospy.loginfo(" b) Warning (yellow) zone: %1.4f s (%.1f%%) (less is better)",warning_duration,  100*warning_duration/duration)
+    rospy.loginfo(" c) Critical (red )zone  : %1.4f s (%.1f%%) (less is better)",critical_duration, 100*critical_duration/duration)
     rospy.loginfo("2. Travelled distance    : %1.4f m       (less is better)",travelled_distance)
     rospy.loginfo("3. Average speed         : %1.4f m/s     (more is better)",travelled_distance/duration)
     rospy.loginfo("4. Mean distance to goal : %1.4f m       (less is better)",mean_distance_to_goal)
@@ -112,6 +115,7 @@ def finish_callback(state_data, data2):
     rospy.loginfo("7. Minimum distance to obstacle          : %1.4f m (more is better)",min(min_obs_distance))
     rospy.loginfo("8. Number of collision during operation  : %d      (less is better)",n_collision)
     rospy.loginfo("9. Risk mean(average) value              : %1.4f   (less is better)",risk_mean)
+    rospy.loginfo("10.Risk maximum value                    : %1.4f   (less is better)",risk_max)
 
 
 def update_pose_callback(data):
@@ -126,10 +130,10 @@ def update_pose_callback(data):
         prev_pos              = data.pose.position
 
 def lidar_callback(data):
-    global n_sensors, mean_obs_distance, min_obs_distance, collision_flag, n_collision
+    global n_sensors, mean_obs_distance, min_obs_distance, collision_flag, n_collision, collision_distance
     global r_warning, r_critical, obstacle_zone, prev_obstacle_zone, clear_zone, warning_zone, critical_zone
-    global warning_duration, critical_duration
-    sensor_reads = data.ranges[4:679]
+    global warning_duration, critical_duration, warning_time_start, critical_time_start
+    sensor_reads = data.ranges
     #print(sensor_reads[0], sensor_reads[-1])
     #print("Lidar callback", len(sensor_reads), min(sensor_reads), max(sensor_reads))
     if mean_obs_distance == 0.0:
@@ -140,12 +144,12 @@ def lidar_callback(data):
     for i in range(n_sensors):
         min_obs_distance[i] = min(min_obs_distance[i], sensor_reads[i])
 
-    min_dist_to_obstacle = min(sensor_reads)
-    if min_dist_to_obstacle == data.range_min and not collision_flag:
+    min_dist_to_obstacle = min(sensor_reads) 
+    if min_dist_to_obstacle == collision_distance and not collision_flag:
         print("collision happen!")
         collision_flag = True
         n_collision += 1
-    elif min_dist_to_obstacle > data.range_min and collision_flag:
+    elif min_dist_to_obstacle > collision_distance and collision_flag:
         collision_flag = False
 
     prev_obstacle_zone = obstacle_zone
@@ -157,6 +161,7 @@ def lidar_callback(data):
         obstacle_zone = critical_zone
 
     if obstacle_zone!=prev_obstacle_zone:
+        #print("prev_obstacle_zone: ", prev_obstacle_zone, "| obstacle_zone:",obstacle_zone)
         if obstacle_zone == warning_zone:
             warning_time_start = rospy.get_time()
         elif obstacle_zone == critical_zone:
@@ -171,11 +176,12 @@ def lidar_callback(data):
 
 
 def risk_callback(risk_value):
-    global risk_mean
+    global risk_mean, risk_max
     if risk_mean == -1.0:
         risk_mean = risk_value.data
-    else:
+    elif risk_value.data > 0.0001: #adding threshold for the risk value (when there is no risk, there is no averaging)
         risk_mean = (risk_mean + risk_value.data) / 2.0
+    risk_max = max(risk_max, risk_value.data)
 
 def safety_zone_callback(data):
     global r_warning, r_critical

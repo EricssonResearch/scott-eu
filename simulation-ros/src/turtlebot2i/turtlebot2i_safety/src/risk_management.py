@@ -238,7 +238,7 @@ def pub_zone_size(speed):
     warning_zone_radius= 0.62+6*speed/5.0
     #critical_zone_radius =0.5#Constant
 
-    zone_size_message.clear_zone_radius    =  clear_zone_radius
+    zone_size_message.clear_zone_radius    = clear_zone_radius
     zone_size_message.warning_zone_radius  = warning_zone_radius
     zone_size_message.critical_zone_radius = 0.39+0.2 #Robot radius= 0.4
 
@@ -250,7 +250,7 @@ def parse_dot_file(graph):
     if (robot_self_node.get_name()=='robot'):
         node_info= robot_self_node.__get_attribute__("label")
         print "==============================="
-        print "-------------------------------"
+        #print "-------------------------------"
 
         matchObj = re.match(vel_pattern, node_info,re.M|re.I) #It Works
 
@@ -291,16 +291,16 @@ def parse_dot_file(graph):
                print "Node not match!!"
     if (highest_risk!=0.0):
         left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance, target_object_direction, highest_risk)
-        #pub_safe_vel(left_vel_scale,right_vel_scale)
-        pub_safe_vel(1.0, 1.0) #to test without risk mitigation
+        pub_safe_vel(left_vel_scale,right_vel_scale)
+        #pub_safe_vel(1.0, 1.0) #to test without risk mitigation
     else:
         pub_safe_vel(1.0, 1.0) #TO DO: create a monitoring node, when this module doesnt publish scale speed for some time, publish scale 1.0
     risk_val_pub.publish(highest_risk)
-    print "-------------------------------"
+    #print "-------------------------------"
     global    time_previous
-    run_time = time.time() - time_previous
-    print 'Calc. time for S-G=',run_time,'sec'   #0.0139169692993 sec for calc,
-    print 'Calc. Freq. for S-G=',1/run_time,'Hz' #max. 71.8547248681 Hz
+    #run_time = time.time() - time_previous
+    #print 'Calc. time for S-G=',run_time,'sec'   #0.0139169692993 sec for calc,
+    #print 'Calc. Freq. for S-G=',1/run_time,'Hz' #max. 71.8547248681 Hz
     time_previous = time.time()
 
 def topic_callback(data):

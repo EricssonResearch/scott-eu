@@ -21,7 +21,7 @@
 
 # Force loading python 3 version of cv2
 import importlib.util
-spec = importlib.util.spec_from_file_location("cv2", "/usr/local/lib/python3.5/dist-packages/cv2/cv2.cpython-35m-x86_64-linux-gnu.so")
+spec = importlib.util.spec_from_file_location("cv2", "/usr/local/lib/python3.5/dist-packages/cv2/python-3.5/cv2.cpython-35m-x86_64-linux-gnu.so")
 cv2 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(cv2)
 
@@ -35,9 +35,13 @@ from visualize_cv import display_instances, class_names
 # Root directory of the project
 import os
 import sys
-ROOT_DIR = os.path.abspath("../")
-LIB_PATH = os.path.join(ROOT_DIR, "mrcnn/lib")
+#ROOT_DIR = os.path.abspath("../")
+#LIB_PATH = os.path.join(ROOT_DIR, "mrcnn/lib")
+ROOT_DIR = os.path.abspath(os.path.join(os.path.realpath(__file__), '../..'))
+LIB_PATH = os.path.join(ROOT_DIR, "mrcnn/lib/mask_rcnn-2.1-py3.6.1.egg/mask_rcnn-2.1-py3.6.1")
+print (LIB_PATH)
 sys.path.append(LIB_PATH)
+
 
 # Import Mask RCNN
 from mrcnn import model as modellib
@@ -47,6 +51,8 @@ from mrcnn.config import Config
 LOG_DIR = os.path.join(ROOT_DIR, "logs")
 #MODEL_PATH = os.path.join(ROOT_DIR, "models/mask_rcnn_coco.h5")
 MODEL_PATH = os.path.join(ROOT_DIR, "models/coco_vrepall_1002.h5")
+
+
 
 class ShapesConfig(Config):
     """Configuration for training on the toy shapes dataset.
