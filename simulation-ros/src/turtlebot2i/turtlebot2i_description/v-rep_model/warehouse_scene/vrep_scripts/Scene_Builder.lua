@@ -14,6 +14,7 @@ function sysCall_init()
 	
 	-- Building the scene ------------------------
 	
+	
 	addModel('Floor10x10m',{2,0,0},{0,0,0})
 	--addModel('Floor10x10m',{10,0,0},{0,0,0})
 	

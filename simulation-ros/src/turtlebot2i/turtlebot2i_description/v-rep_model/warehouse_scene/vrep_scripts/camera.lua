@@ -37,6 +37,9 @@ function pointCloud()
 end
 
 if (sim_call_type==sim.childscriptcall_initialization) then 
+	if(simROS==nil)then
+		print('Warning: ' .. sim.getObjectName(sim.getObjectAssociatedWithScript(sim.handle_self)) .. ' cannot find simROS.')
+	end
 	
 	rgb_enabled=false
 	depth_enabled=false
