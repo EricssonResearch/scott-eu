@@ -246,6 +246,7 @@ def pub_zone_size(speed):
 
 def parse_dot_file(graph):
     global left_vel_scale, right_vel_scale, highest_risk
+    min_left_vel_scale, min_right_vel_scale = 1.0, 1.0
     robot_self_node = graph.get_node('robot')[0]
     if (robot_self_node.get_name()=='robot'):
         node_info= robot_self_node.__get_attribute__("label")
@@ -282,6 +283,9 @@ def parse_dot_file(graph):
                 object_orientation  = float(matchObj.group(4))
                 object_risk =   cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
 
+                left_vel_scale,right_vel_scale = cal_safe_vel(object_distance, object_direction, object_risk)
+                min_left_vel_scale  = min(min_left_vel_scale, min_left_vel_scale)
+                min_right_vel_scale = min(min_right_vel_scale, right_vel_scale)
                 if ( object_risk>highest_risk): # Update target
                     target_object_distance =object_distance
                     target_object_direction=object_direction
@@ -290,9 +294,9 @@ def parse_dot_file(graph):
             else:
                print "Node not match!!"
     if (highest_risk!=0.0):
-        left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance, target_object_direction, highest_risk)
-        pub_safe_vel(left_vel_scale,right_vel_scale)
-        #pub_safe_vel(1.0, 1.0) #to test without risk mitigation
+        #left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance, target_object_direction, highest_risk)
+        #pub_safe_vel(min_left_vel_scale, min_right_vel_scale)
+        pub_safe_vel(1.0, 1.0) #to test without risk mitigation
     else:
         pub_safe_vel(1.0, 1.0) #TO DO: create a monitoring node, when this module doesnt publish scale speed for some time, publish scale 1.0
     risk_val_pub.publish(highest_risk)

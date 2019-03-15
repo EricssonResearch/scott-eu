@@ -2,10 +2,10 @@
 function setCirlceSize_cb(msg)
     --Since 'setObjectSize' doesn't work, we have to use 'Scale', so we need to record the previous scale.
     --BUG: if the size is not changed (or just slightly changed), the following code will waste calculation power.
-    sim.scaleObject(zoneRed_handle,msg.critical_zone_radius/previous_critical_zone_radius,msg.critical_zone_radius/previous_critical_zone_radius,0,0)
+    sim.scaleObject(zoneRed_handle,msg.critical_zone_radius/previous_critical_zone_radius,msg.critical_zone_radius/previous_critical_zone_radius,0,0)  
     sim.scaleObject(zoneYellow_handle,msg.warning_zone_radius/previous_warning_zone_radius,msg.warning_zone_radius/previous_warning_zone_radius,0,0)
     sim.scaleObject(zoneGreen_handle,msg.clear_zone_radius/previous_clear_zone_radius,msg.clear_zone_radius/previous_clear_zone_radius,0,0)
-    --sim.scaleObject(obj_handle,scale,scale,0,0)
+    --sim.scaleObject(obj_handle,scale,scale,0,0) 
     printf("New circle size received (seq): %d",msg.header.seq)
     previous_clear_zone_radius = msg.clear_zone_radius
     previous_warning_zone_radius = msg.warning_zone_radius
@@ -25,8 +25,8 @@ function setVels_cb(msg)
    -- not sure if a scale factor must be applied
    local linVel = msg.linear.x-- in m/s
    local rotVel = msg.angular.z*interWheelDistance -- in rad/s
-
-   --  Check if motor is enabled
+   
+   --  Check if motor is enabled 
    if (motor_power == 1) then
        velocityRight = (linVel+rotVel)*rightVelScale
        velocityLeft  = (linVel-rotVel)*leftVelScale
@@ -38,8 +38,8 @@ function setVels_cb(msg)
            --print("slow down!")
        --end
    else
-       velocityRight = 0
-       velocityLeft  = 0
+       velocityRight = 0 
+       velocityLeft  = 0 
    end
 end
 
@@ -48,14 +48,14 @@ function setMotor_cb(msg)
     motor_power = msg.state
 end
 
-if (sim_call_type==sim.childscriptcall_initialization) then
+if (sim_call_type==sim.childscriptcall_initialization) then 
 
 
     -- Build file name
     local sceneFullName = sim.getStringParameter(sim.stringparam_scene_name)
     local objectHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
     root_name = sim.getObjectName(objectHandle)
-
+   
     -- Set robot name to enable multiple robots in the scene
     robot_number, robot_name = sim.getNameSuffix(root_name)
 
@@ -88,12 +88,12 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 
 
     -- Disable proximity sensors (Comment the lines below if want to enable some sensor)
-    sim.setExplicitHandling(object_cliff_sensor_front, 1)
-    sim.setExplicitHandling(object_cliff_sensor_left, 1)
-    sim.setExplicitHandling(object_cliff_sensor_right, 1)
-    --sim.setExplicitHandling(object_dock_station_ir_sensor, 1)
-    sim.setExplicitHandling(object_wheel_drop_sensor_left, 1)
-sim.setExplicitHandling(object_wheel_drop_sensor_right, 1)
+    sim.setExplicitHandling(object_cliff_sensor_front, 1)   
+    sim.setExplicitHandling(object_cliff_sensor_left, 1) 
+    sim.setExplicitHandling(object_cliff_sensor_right, 1)  
+    --sim.setExplicitHandling(object_dock_station_ir_sensor, 1) 
+    sim.setExplicitHandling(object_wheel_drop_sensor_left, 1) 
+sim.setExplicitHandling(object_wheel_drop_sensor_right, 1) 
 
 
     robot_id = sim.getStringSignal('robot_id')
@@ -111,7 +111,7 @@ sim.setExplicitHandling(object_wheel_drop_sensor_right, 1)
     linVel = 0
     rotVel = 0
     motor_power = 1 --Enable motors by default
-    velScale = 1      -- Scale is 1 by default
+    velScale = 1 -- Scale is 1 by default
     leftVelScale = 1  -- Scale is 1 by default
     rightVelScale = 1 -- Scale is 1 by default
     previous_clear_zone_radius = 1.0
@@ -122,7 +122,7 @@ sim.setExplicitHandling(object_wheel_drop_sensor_right, 1)
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')
     t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
     t_rightBumper = sim.getObjectHandle('bumper_right_joint')
-
+    
     f_cliff_handle = sim.getObjectHandle('cliff_sensor_front')
     l_cliff_handle = sim.getObjectHandle('cliff_sensor_left')
     r_cliff_handle = sim.getObjectHandle('cliff_sensor_right')
@@ -171,12 +171,12 @@ sim.setExplicitHandling(object_wheel_drop_sensor_right, 1)
     -- Commands
     subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
     subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
-    subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')
-    subCmdVelScale   = simROS.subscribe(robot_id..'/safety/vel_scale',  'turtlebot2i_safety/VelocityScale','setVels_scale_cb')
+    subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','turtlebot2i_safety/VelocityScale','setVels_scale_cb')
+    subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')  
     --------------------END ------------------------------------
-end
+end 
 
-if (sim_call_type == sim.childscriptcall_sensing) then
+if (sim_call_type == sim.childscriptcall_sensing) then 
     -- Bumper
     local bumper_pressed = 0  -- used in BumperEvent msg
     local bumper_state = 0    -- used in SensorState msg
@@ -204,7 +204,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         front_collision=false
         bumperCenterState = 0
     end
-
+    
     -- Right Bumper
     right_bumper_force = sim.getJointForce(t_rightBumper)
     if(right_bumper_force < -1) then
@@ -217,7 +217,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         right_collision=false
         bumperRightState = 0
     end
-
+    
     -- Left Bumper
     left_bumper_force = sim.getJointForce(t_leftBumper)
     if(left_bumper_force < -1) then
@@ -231,12 +231,12 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         bumperLeftState = 0
     end
 
-    -- Bumper ROS message
+    -- Bumper ROS message 
     ros_kobuki_bumper_event = {}
-    ros_kobuki_bumper_event["bumper"] = bumper_id
+    ros_kobuki_bumper_event["bumper"] = bumper_id 
     ros_kobuki_bumper_event["state"] = bumper_pressed
 	simROS.publish(pubBumper, ros_kobuki_bumper_event)
-
+    
     ---- CLIFF SENSING ----
     -- Left Cliff
     res, left_cliff_dist = simCheckProximitySensor(l_cliff_handle, sim_handle_all)
@@ -250,13 +250,13 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         cliff_sensor_activated = 1
         cliff_sensor_state = cliff_sensor_state + 4
     end
-
+   
     if (front_cliff_dist == nil) then
         cliff_sensor = 1
         cliff_sensor_activated = 1
         cliff_sensor_state = cliff_sensor_state + 2
     end
-
+    
     if (right_cliff_dist == nil) then
         cliff_sensor = 2
         cliff_sensor_activated = 1
@@ -281,7 +281,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         wheel_drop_sensor_activated = 1
         wheel_drop_sensor_state = wheel_drop_sensor + 2
     end
-
+    
     if (right_wheel_drop == nil) then
         wheel_drop_sensor = 1
         wheel_drop_sensor_activated = 1
@@ -310,9 +310,9 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     res, detect_dist, detect_point, detect_obj_handle, detect_surf = simCheckProximitySensorEx(dock_station_ir_handle, dock_station_ir_emitter_collection_handle, detection_mode, detection_threshold, detection_max_angle)
 
     dock_ir_data = {0, 0, 0}
-
+    
     charger_state = sim.getIntegerSignal(robot_name .. '_charger_state')
-
+    
     if (detect_dist ~= nil) then
 
         ir_emitter_name = simGetObjectName(detect_obj_handle)
@@ -360,7 +360,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
         -- Set state to "Charging" if the robot is very close and in front of the docking station
         if (detect_proximity < 0.10 and ir_emitter_pos_code == 2 and dock_ir_dist_ori == 2 and charger_state == 0) then
-            charger_state = 6  -- DOCKING_CHARGING
+            charger_state = 6  -- DOCKING_CHARGING 
         end
 
         dock_ir_data[ir_emitter_pos_code] = dock_ir_dist_ori
@@ -378,8 +378,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     --    ros_dock_ir["data"] = string.char(8 * dock_ir_dist_ori)
     --end
 
-    simROS.publish(pubDockIR, ros_dock_ir)
-
+    simROS.publish(pubDockIR, ros_dock_ir)     
+    
     -- Odometry
     local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
     local pose_orientationNow = sim.multiplyMatrices(invOriginMatrix, transformNow)
@@ -398,44 +398,44 @@ if (sim_call_type == sim.childscriptcall_sensing) then
     local ros_pose = {}
     ros_pose['header'] = {seq = 0,stamp=simROS.getTime(), frame_id = robot_id..'/odom'}
     local cov = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-
+    
     local quaternion_ros = {}
     quaternion_ros["x"] = r_quaternion[1]
     quaternion_ros["y"] = r_quaternion[2]
     quaternion_ros["z"] = r_quaternion[3]
     quaternion_ros["w"] = r_quaternion[4]
-
+    
     local position_ros = {}
     position_ros["x"] = r_position[1]
     position_ros["y"] = r_position[2]
     position_ros["z"] = r_position[3]
-
+    
     local quaternion_map_odom_ros = {}
     quaternion_map_odom_ros["x"] = r_map_odom_quaternion[1]
     quaternion_map_odom_ros["y"] = r_map_odom_quaternion[2]
     quaternion_map_odom_ros["z"] = r_map_odom_quaternion[3]
     quaternion_map_odom_ros["w"] = r_map_odom_quaternion[4]
-
+    
     local position_map_odom_ros = {}
     position_map_odom_ros["x"] = r_map_odom_position[1]
     position_map_odom_ros["y"] = r_map_odom_position[2]
     position_map_odom_ros["z"] = r_map_odom_position[3]
-
+    
     local pose_r = {position=position_ros, orientation=quaternion_ros}
     ros_pose['pose'] = {pose=pose_r, covariance = cov}
-
+    
     local linear_speed = {}
     linear_speed["x"] = r_linear_velocity[1]
     linear_speed["y"] = r_linear_velocity[2]
     linear_speed["z"] = r_linear_velocity[3]
-
+    
     local angular_speed = {}
     angular_speed["x"] = r_angular_velocity[1]
     angular_speed["y"] = r_angular_velocity[2]
     angular_speed["z"] = r_angular_velocity[3]
     ros_pose['twist'] = {twist = {linear = linear_speed, angular = angular_speed}, covariance = cov}
     ros_pose['child_frame_id'] = robot_id..'/base_footprint'
-    simROS.publish(pubPose, ros_pose)
+    simROS.publish(pubPose, ros_pose)     
 
     time = simROS.getTime()
 
@@ -448,7 +448,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         child_frame_id = robot_id..'/base_footprint',
         transform = {
             translation = position_ros,
-            rotation = quaternion_ros
+            rotation = quaternion_ros 
         }
     }
 
@@ -476,7 +476,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
             stamp = time,
             frame_id = robot_id..'/base_link'
         },
-
+        
         time_stamp = time,
         bumper = bumper_state,
         wheel_drop = wheel_drop_sensor_state,
@@ -497,9 +497,9 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
     simROS.publish(pubState, ros_sensor_state)
 
-end
+end 
 
-if (sim_call_type == sim.childscriptcall_cleanup) then
+if (sim_call_type == sim.childscriptcall_cleanup) then 
     -- ROS Shutdown
     simROS.shutdownPublisher(pubPose)
     simROS.shutdownPublisher(pubBumper)
@@ -507,9 +507,9 @@ if (sim_call_type == sim.childscriptcall_cleanup) then
     simROS.shutdownPublisher(pubWheelDrop)
     simROS.shutdownPublisher(pubDockIR)
     simROS.shutdownSubscriber(subCmdVel)
-end
+end 
 
-if (sim_call_type == sim.childscriptcall_actuation) then
+if (sim_call_type == sim.childscriptcall_actuation) then 
     s = sim.getObjectSizeFactor(objHandle) -- make sure that if we scale the robot during simulation, other values are scaled too!
     v0 = 0.4*s
     wheelDiameter = 0.085*s
@@ -521,25 +521,25 @@ if (sim_call_type == sim.childscriptcall_actuation) then
         p = sim.boolOr32(sim.getModelProperty(objHandle),sim.modelproperty_not_dynamic)
         sim.setModelProperty(objHandle,p)
         dt = sim.getSimulationTimeStep()
-
+ 
         p = sim.getJointPosition(leftJoint)
         sim.setJointPosition(leftJoint,p+velocityLeft*dt*2/wheelDiameter)
-
+        
         p = sim.getJointPosition(rightJoint)
         sim.setJointPosition(rightJoint,p+velocityRight*dt*2/wheelDiameter)
-
+        
         linMov = dt*(velocityLeft+velocityRight)/2.0
         rotMov = dt*math.atan((velocityRight-velocityLeft)/interWheelDistance)
-
+        
         position = sim.getObjectPosition(objHandle, sim.handle_parent)
         orientation = sim.getObjectOrientation(objHandle, sim.handle_parent)
-
+        
         xDir = {math.cos(orientation[3]), math.sin(orientation[3]), 0.0}
-
+        
         position[1] = position[1] +xDir[1]*linMov
         position[2] = position[2] + xDir[2]*linMov
         orientation[3] = orientation[3] + rotMov
-
+        
         sim.setObjectPosition(objHandle, sim.handle_parent, position)
         sim.setObjectOrientation(objHandle, sim.handle_parent, orientation)
     else
@@ -551,4 +551,4 @@ if (sim_call_type == sim.childscriptcall_actuation) then
         sim.setJointTargetVelocity(leftJoint, velocityLeft*2/wheelDiameter)
         sim.setJointTargetVelocity(rightJoint, velocityRight*2/wheelDiameter)
     end
-end
+end 

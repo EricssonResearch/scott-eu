@@ -49,8 +49,8 @@ if (sim_call_type == sim.childscriptcall_initialization) then
 
     ----------------------------- ROS STUFF --------------------------------
 
-    --pubScan = simROS.advertise(robot_id..'/'..sensor_name..'/scan', 'sensor_msgs/LaserScan')
-    pubScan = simROS.advertise(robot_id..'/'..sensor_name..'/scan_data_collection', 'sensor_msgs/LaserScan')
+    pubScan = simROS.advertise(robot_id..'/'..sensor_name..'/scan', 'sensor_msgs/LaserScan')
+    --pubScan = simROS.advertise(robot_id..'/'..sensor_name..'/scan_data_collection', 'sensor_msgs/LaserScan')
     simROS.publisherTreatUInt8ArrayAsString(pubScan)
 end
 
@@ -106,7 +106,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
         ros_laser_data["angle_min"] = -scanRange * 0.5 
         ros_laser_data["angle_max"] =  scanRange * 0.5 - stepSize
         ros_laser_data["angle_increment"] = stepSize
-        ros_laser_data["range_min"] = 0.0
+        ros_laser_data["range_min"] = 0 
         ros_laser_data["range_max"] = maxScanDistance
     
         ros_laser_data["ranges"] = ranges

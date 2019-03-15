@@ -35,8 +35,8 @@ function sysCall_init()
     addModel('dockstation',{-5.0,-4.000,0.063},{0,0,math.pi/2})
 
     -- 2 static objects:
-    addModel('sofa',{0.5, 0.0,0.25},{0,-math.pi/2,0})
-    addModel('sofa',{2.5,-2.0,0.25},{0,-math.pi/2,0})
+    --addModel('sofa',{0.5, 0.0,0.25},{0,-math.pi/2,0})
+    --addModel('sofa',{2.5,-2.0,0.25},{0,-math.pi/2,0})
     
     -- 2 walking humans:
     --addModel('walkingBill_round',{ 0.0, 1.5,0},{0,0,math.pi/2})

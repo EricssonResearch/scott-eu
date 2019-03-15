@@ -85,8 +85,8 @@ def distance2D(pos1, pos2):
 def init_subscription():
     time_start = rospy.get_time()
     rospy.Subscriber('/turtlebot2i/sensors/global_pose', geometry_msgs.msg.PoseStamped, update_pose_callback)
-    rospy.Subscriber('/turtlebot2i/lidar/scan_data_collection', LaserScan, lidar_callback) #this is used with Risk mitigation 
-    #rospy.Subscriber('/turtlebot2i/lidar/scan', LaserScan, lidar_callback) #this is used without Risk mitigation
+    #rospy.Subscriber('/turtlebot2i/lidar/scan_data_collection', LaserScan, lidar_callback) #this is used with Risk mitigation 
+    rospy.Subscriber('/turtlebot2i/lidar/scan', LaserScan, lidar_callback) #this is used without Risk mitigation
     rospy.Subscriber('/turtlebot2i/safety/risk_val', Float64, risk_callback)
     rospy.Subscriber('/turtlebot2i/safety/safety_zone', SafetyZone, safety_zone_callback)
 
