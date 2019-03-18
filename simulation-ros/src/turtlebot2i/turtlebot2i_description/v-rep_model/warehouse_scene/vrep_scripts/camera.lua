@@ -41,7 +41,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 		print('Warning: ' .. sim.getObjectName(sim.getObjectAssociatedWithScript(sim.handle_self)) .. ' cannot find simROS.')
 	end
 	
-	rgb_enabled=false
+	rgb_enabled=true
 	depth_enabled=false
 	
 	camera_handle=sim.getObjectAssociatedWithScript(sim.handle_self)
@@ -104,7 +104,7 @@ if (sim_call_type==sim.childscriptcall_cleanup) then
 end 
 
 if (sim_call_type==sim.childscriptcall_sensing) then
-	if(sim.getExplicitHandling(object_camera_rgb) == false) then
+	if(sim.getExplicitHandling(object_camera_rgb) == 0) then
         local data,w,h = sim.getVisionSensorCharImage(colorCam)
 
         -- Publish camera RGB image to ROS
@@ -118,7 +118,7 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 	    d['data'] = data
 	    simROS.publish(pubKinectRgb,d)
 	end
-	if(sim.getExplicitHandling(object_camera_depth) == false) then
+	if(sim.getExplicitHandling(object_camera_depth) == 0) then
         -- Publish camera depth image to ROS
         data,w,h = sim.getVisionSensorCharImage(depthCam)
 	    d = {}

@@ -21,13 +21,18 @@
 
 # Force loading python 3 version of cv2
 import importlib.util
-spec = importlib.util.spec_from_file_location("cv2", "/usr/local/lib/python3.5/dist-packages/cv2/cv2.cpython-35m-x86_64-linux-gnu.so")
+spec = importlib.util.spec_from_file_location("cv2", "/usr/local/lib/python3.5/dist-packages/cv2/python-3.5/cv2.cpython-35m-x86_64-linux-gnu.so")
 cv2 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(cv2)
+#import cv2
 
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
+
+import re
+from graphviz import Digraph, Source
+from shapely.geometry import box
 
 import numpy as np
 from visualize_cv import display_instances, class_names
@@ -35,10 +40,12 @@ from visualize_cv import display_instances, class_names
 # Root directory of the project
 import os
 import sys
-ROOT_DIR = os.path.abspath("../")
-LIB_PATH = os.path.join(ROOT_DIR, "mrcnn/lib")
+ROOT_DIR = os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')) 
+LIB_PATH = os.path.join(ROOT_DIR, "mrcnn/lib/mask_rcnn-2.1-py3.6.1.egg/mask_rcnn-2.1-py3.6.1")
+print (LIB_PATH)
 sys.path.append(LIB_PATH)
 
+dir(sys.modules[__name__])
 # Import Mask RCNN
 from mrcnn import model as modellib
 from mrcnn.config import Config
@@ -106,17 +113,86 @@ class ros_mask_rcnn:
         self.image_sub = rospy.Subscriber("/turtlebot2i/camera/rgb/raw_image", Image, self.callback)
         self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
 
+    def get_overlap_bbox(self, rec1, rec2):
+        #y1, x1, y2, x2 = boxes
+        y1min, x1min, y1max, x1max = rec1[0], rec1[1], rec1[2], rec1[3]
+        y2min, x2min, y2max, x2max = rec2[0], rec2[1], rec2[2], rec2[3]
+
+        box1 = box(x1min, y1min, x1max, y1max)
+        box2 = box(x2min, y2min, x2max, y2max)
+        isOverlapping = box1.intersects(box2)
+        intersectio_area = box1.intersection(box2).area/box1.area*100
+        #print (pol_overl, intersectio_area)
+        return isOverlapping, intersectio_area
+
+        #isOverlapping = (i[1] < j[3] and j[1] < i[3] and i[0] < j[2] and j[0] < i[2])
+        #isOverlapping = (x1min < x2max and x2min < x1max and y1min < y2max and y2min < y1max)
+        #print (isOverlapping)
+        #return isOverlapping
+
     def callback(self, data):
 
         try:
             cv_image = self.bridge.imgmsg_to_cv2(data, "rgb8")
             results = self.model.detect([cv_image], verbose=1)
+
             r = results[0]
 
             img_out = display_instances(
                 cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
             )
             
+            if len(r['class_ids']) > 0:
+
+                count_objects = [0] * len(class_names)
+                detected_objects = []
+
+                for i in range(len(r['class_ids'])):
+                    detected_objects.append(class_names[r['class_ids'][i]]+'#'+str(count_objects[r['class_ids'][i]]))
+                    count_objects[r['class_ids'][i]] += 1
+                    print ('Object : ',r['class_ids'][i], detected_objects[i], r['rois'][i])
+
+                #print (detected_objects)
+                dot = Digraph(comment='warehouse', format='svg')
+                dot.node_attr['shape']='record'
+                #robot_velocity = get_velocity(robot_list[robot_num])
+                #robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
+                robot_label = "robocop"
+                
+                dot.node('robot', label=robot_label)
+                dot.node('warehouse', label='warehouse')
+                dot.node('floor', label='{floor|size: 25*25}')
+                dot.edge('warehouse','floor')
+
+                for i in range(len(r['class_ids'])):
+                    #_id = r['class_ids'][i]
+                    node_label = detected_objects[i]
+
+                    dot.node(detected_objects[i], label=node_label)
+                    if re.match(r'Wall*', detected_objects[i]):
+                        dot.edge('warehouse', detected_objects[i], label='on')
+                    elif re.match(r'Product*', detected_objects[i]):
+                        overlapping_check = False
+                        for j in range(len(r['class_ids'])):
+
+                            if j != i:
+
+                                isOverlapping, intersectio_area = self.get_overlap_bbox(r['rois'][i], r['rois'][j])
+                                print ('Comparing :',detected_objects[i],' => ', detected_objects[j], ' Result: ', isOverlapping, ' Intersectio Area: ', intersectio_area)
+
+                                if isOverlapping and intersectio_area > 50.0:                    
+                                    dot.edge(detected_objects[j], detected_objects[i], label='on')
+                                    overlapping_check = True
+                                    break
+                        if overlapping_check == False:
+                            dot.edge('floor', detected_objects[i], label='on')
+                    else:
+                        dot.edge('floor', detected_objects[i], label='on')
+
+                s = Source(dot, filename="test.gv", format="png")
+                s.view()
+                
+
             self.image_pub.publish(self.bridge.cv2_to_imgmsg(img_out, "bgr8"))
 
         except CvBridgeError as e:
