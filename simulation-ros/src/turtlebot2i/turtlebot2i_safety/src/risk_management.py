@@ -24,6 +24,9 @@ import time
 import os
 import cPickle as pickle
 
+# LIDAR
+from sensor_msgs.msg import LaserScan
+
 def init_var():
     '''
     Here we initialize the global variables.
@@ -73,6 +76,9 @@ def init_var():
     global vel_scale_message, zone_size_message
     vel_scale_message = VelocityScale()
     zone_size_message = SafetyZone()
+
+    global min_distance
+    min_distance = 5.0
 
 def init_regEx():
     '''
@@ -237,10 +243,16 @@ def pub_zone_size(speed):
     clear_zone_radius = 0.64+12*speed/5.0
     warning_zone_radius= 0.62+6*speed/5.0
     #critical_zone_radius =0.5#Constant
-
-    zone_size_message.clear_zone_radius    = clear_zone_radius
-    zone_size_message.warning_zone_radius  = warning_zone_radius
+    
     zone_size_message.critical_zone_radius = 0.39+0.2 #Robot radius= 0.4
+    max_warning_diameter = 2*min_distance
+    if highest_risk == 0.0 and warning_zone_radius > max_warning_diameter:
+        zone_size_message.warning_zone_radius  = max_warning_diameter 
+        zone_size_message.clear_zone_radius    = max_warning_diameter + 0.05
+    else:
+        zone_size_message.warning_zone_radius  = warning_zone_radius
+        zone_size_message.clear_zone_radius    = clear_zone_radius
+    
 
     safe_zone_pub.publish(zone_size_message)
 
@@ -251,13 +263,12 @@ def parse_dot_file(graph):
     if (robot_self_node.get_name()=='robot'):
         node_info= robot_self_node.__get_attribute__("label")
         print "==============================="
-        #print "-------------------------------"
 
         matchObj = re.match(vel_pattern, node_info,re.M|re.I) #It Works
 
         if matchObj:
             robot_speed = float(matchObj.group(1))
-            print "Robot Speed: ",robot_speed
+            print "Robot Speed: ", robot_speed
             #setup_fls(robot_speed)
             pub_zone_size(robot_speed)
         else:
@@ -283,20 +294,22 @@ def parse_dot_file(graph):
                 object_orientation  = float(matchObj.group(4))
                 object_risk =   cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
 
-                left_vel_scale,right_vel_scale = cal_safe_vel(object_distance, object_direction, object_risk)
-                min_left_vel_scale  = min(min_left_vel_scale, min_left_vel_scale)
-                min_right_vel_scale = min(min_right_vel_scale, right_vel_scale)
+                #left_vel_scale,right_vel_scale = cal_safe_vel(object_distance, object_direction, object_risk)
+                #min_left_vel_scale  = min(min_left_vel_scale,  left_vel_scale)
+                #min_right_vel_scale = min(min_right_vel_scale, right_vel_scale)
                 if ( object_risk>highest_risk): # Update target
                     target_object_distance =object_distance
                     target_object_direction=object_direction
                     highest_risk=object_risk
                     print "update target with risk=",highest_risk
+                print(x.get_name()," | distance: ",object_distance)
             else:
                print "Node not match!!"
     if (highest_risk!=0.0):
-        #left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance, target_object_direction, highest_risk)
+        left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance, target_object_direction, highest_risk)
+        pub_safe_vel(left_vel_scale, right_vel_scale)
+        #pub_safe_vel(1.0, 1.0) #to test without risk mitigation
         #pub_safe_vel(min_left_vel_scale, min_right_vel_scale)
-        pub_safe_vel(1.0, 1.0) #to test without risk mitigation
     else:
         pub_safe_vel(1.0, 1.0) #TO DO: create a monitoring node, when this module doesnt publish scale speed for some time, publish scale 1.0
     risk_val_pub.publish(highest_risk)
@@ -322,6 +335,11 @@ def navi_vel_callback(data):
     #if (highest_risk!=0.0):
     #    pub_safe_vel(left_vel_scale,right_vel_scale)
 
+def lidar_callback(data):
+    global min_distance
+    min_distance = min(data.ranges[4:679])
+    #print("LIDAR CB")
+
 """ Main program """
 if __name__ == "__main__":
 
@@ -343,6 +361,7 @@ if __name__ == "__main__":
     ## SUBSCRIBERS
     # Creates a subscriber object
     rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)
+    rospy.Subscriber('/turtlebot2i/lidar/scan_transformed', LaserScan, lidar_callback)
     #rospy.Subscriber('/turtlebot2i/cmd_vel_mux/navigation', Twist, navi_vel_callback)
     ## PUBLISHERS
     # Creates a publisher object

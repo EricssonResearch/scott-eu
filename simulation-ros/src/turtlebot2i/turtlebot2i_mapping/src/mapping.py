@@ -158,11 +158,10 @@ if clientID!=-1:
 
     # Get scenario pose and size from floor object
     map_origin = obj_node_list[ground_object].bbox_min[0:2]
-    print("map_origin: ",map_origin)
     map_width = obj_node_list[ground_object].size[0]+0.1
     map_height = obj_node_list[ground_object].size[1]+0.1
 
-    map_resolution = 0.10
+    map_resolution = 0.050
 
     map_cells_x = int(round(map_width / map_resolution))
     map_cells_y = int(round(map_height / map_resolution))
@@ -235,8 +234,10 @@ if clientID!=-1:
     file.write(yaml.dump(yaml_node_list))
     file.close()
 
-
-    print(yaml.dump(yaml_node_list))
+    #print(yaml.dump(yaml_node_list))
+    print("Finished! ")
+    print("map_origin: ",map_origin," | resolution: ",map_resolution)
+    
 
 #---------------------------------------------------
     # Now send some data to V-REP in a non-blocking fashion:

@@ -38,6 +38,8 @@ function sysCall_init()
     --addModel('sofa',{0.5, 0.0,0.25},{0,-math.pi/2,0})
     --addModel('sofa',{2.5,-2.0,0.25},{0,-math.pi/2,0})
     
+    addModel('sofa',{-2.6,2.0,0.25},{0,-math.pi/2,0})
+    
     -- 2 walking humans:
     --addModel('walkingBill_round',{ 0.0, 1.5,0},{0,0,math.pi/2})
     --addModel('walkingBill_round',{-0.5,-0.5,0},{0,0,0})
@@ -49,22 +51,22 @@ function sysCall_init()
 
     addModel('80cmHighWall1000cm',{  9.5, 0,.4},{0,0,0})
     addModel('80cmHighWall1000cm',{ -5.5, 0,.4},{0,0,0})--dont have any effect on map
-    addModel('80cmHighWall1000cm',{ -0.5, 5,.4},{0,0,math.pi/2})
-    addModel('80cmHighWall1000cm',{ -0.5,-5,.4},{0,0,math.pi/2})
-    addModel('80cmHighWall250cm', { 5.75,-5,.4},{0,0,math.pi/2})
-    addModel('80cmHighWall250cm', { 8.25,-5,.4},{0,0,math.pi/2})
-    addModel('80cmHighWall250cm', { 5.75, 5,.4},{0,0,math.pi/2})
-    addModel('80cmHighWall250cm', { 8.25, 5,.4},{0,0,math.pi/2})
-
-    addModel('80cmHighWall250cm', {-2.0,  1.25,.4},{0,0,0})
-    addModel('80cmHighWall250cm', {-2.0, -1.25,.4},{0,0,0})
-    addModel('80cmHighWall250cm', {-2.0, -3.75,.4},{0,0,0})
-
-    addModel('80cmHighWall250cm', { 3.0,  3.75,.4},{0,0,0})
-    addModel('80cmHighWall250cm', { 3.0,  1.25,.4},{0,0,0})
-    addModel('80cmHighWall250cm', { 3.0, -1.25,.4},{0,0,0})
+    addModel('80cmHighWall1500cm',{  2.0, 5,.4},{0,0,math.pi/2})
+    addModel('80cmHighWall1500cm',{  2.0, -5,.4},{0,0,math.pi/2})
+    addModel('80cmHighWall750cm',{ -2.0, -1.25,.4},{0,0,0})
+    addModel('80cmHighWall750cm',{  3.0,  1.25,.4},{0,0,0})
+    -- For narrow passage
+    --addModel('80cmHighWall200cm',{ -1.0, 2.42,.4},{0,0,math.pi/2})
+    --addModel('80cmHighWall200cm',{  1.0, 2.42,.4},{0,0,math.pi/2})
+    --addModel('80cmHighWall500cm',{  2.0, 0.0,.4},{0,0,0})
+    --addModel('80cmHighWall200cm',{  4.0, -2.42,.4},{0,0,math.pi/2})
+    --addModel('80cmHighWall250cm',{  4.25, 1.0,.4},{0,0,math.pi/2})
+    --addModel('80cmHighWall250cm',{  7.5, 1.0,.4},{0,0,math.pi/2})
+    --addModel('80cmHighWall200cm',{ -4.5, 0,.4},{0,0,math.pi/2})
+    --addModel('80cmHighWall200cm',{ -1.8, 0,.4},{0,0,math.pi/2})
 
     addModel('turtlebot2i',{-3.5,-4.0,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+    
     --addModel('turtlebot2i',{ 7.5, 3.0,0.063},{0,0,0}) --just to check the finish location
     --addModel('Walking_Bill',{3,-3.0,0},{0,0,0})
     --addModel('youbot',{2.0,-3.33515,0.063},{0,0,-math.pi/2})
