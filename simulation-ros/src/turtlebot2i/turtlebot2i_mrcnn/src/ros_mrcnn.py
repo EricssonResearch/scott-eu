@@ -27,6 +27,7 @@ spec.loader.exec_module(cv2)
 #import cv2
 
 import rospy
+import message_filters
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 
@@ -94,6 +95,14 @@ class InferenceConfig(ShapesConfig):
     IMAGES_PER_GPU = 1
 
 
+def depth_callback(image, depth_image):
+    try:
+        print ('inside callback')
+        print (type(image),type(depth_image))
+
+    except CvBridgeError as e:
+        print(e)
+
 class ros_mask_rcnn:
 
     def __init__(self):
@@ -110,7 +119,25 @@ class ros_mask_rcnn:
 
         # Set topics
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/turtlebot2i/camera/rgb/raw_image", Image, self.callback)
+
+        # Use ApproximateTimeSynchronizer if depth and rgb camera doesn't havse same timestamp, otherwise use Time Synchronizer if both cameras have same timestamp.
+        self.image_sub = message_filters.Subscriber('/turtlebot2i/camera/rgb/raw_image', Image)
+        self.image_depth_sub = message_filters.Subscriber('/turtlebot2i/camera/depth/raw_image', Image)
+        #self.ts = message_filters.ApproximateTimeSynchronizer([self.image_sub, self.image_depth_sub], queue_size=1, slop = 0.1)
+        self.ts = message_filters.TimeSynchronizer([self.image_sub, self.image_depth_sub], queue_size=1)
+        print ('calling callback')
+
+        self.ts.registerCallback(self.callback)
+
+        #self.image_sub = rospy.Subscriber("/turtlebot2i/camera/rgb/raw_image", Image, self.callback)
+        #self.image_depth_sub = rospy.Subscriber("/turtlebot2i/camera/depth/raw_image", Image, self.depth_callback)
+        '''
+        pubKinectDepth = simROS.advertise(robot_id..'/'..sensor_name..'/depth/raw_image','sensor_msgs/Image')
+        simROS.publisherTreatUInt8ArrayAsString(pubKinectDepth)
+        pubKinectCloud = simROS.advertise(robot_id..'/'..sensor_name..'/cloud','sensor_msgs/PointCloud2')
+        simROS.publisherTreatUInt8ArrayAsString(pubKinectCloud) 
+        '''
+
         self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
 
     def get_overlap_bbox(self, rec1, rec2):
@@ -130,70 +157,80 @@ class ros_mask_rcnn:
         #print (isOverlapping)
         #return isOverlapping
 
-    def callback(self, data):
+    def callback(self, image, depth_image):
 
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, "rgb8")
+            cv_depth_image = self.bridge.imgmsg_to_cv2(depth_image)
+            print (cv_depth_image.shape)
+            #print (cv_depth_image[0], cv_depth_image)
+
+            #print (cv_depth_image[:,:,0],cv_depth_image[:,:,1],cv_depth_image[:,:,2])
+
+            cv_image = self.bridge.imgmsg_to_cv2(image, "rgb8")
             results = self.model.detect([cv_image], verbose=1)
+            cv2.imshow('frame', cv_depth_image)
+            cv2.waitKey(0)
+            # r = results[0]
 
-            r = results[0]
+            # img_out = display_instances(
+            #     cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
+            # )
 
-            img_out = display_instances(
-                cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
-            )
+            # # cv2.imshow('frame', img_out)
+            # # cv2.waitKey(1)
             
-            if len(r['class_ids']) > 0:
+            # if len(r['class_ids']) > 0:
 
-                count_objects = [0] * len(class_names)
-                detected_objects = []
+            #     count_objects = [0] * len(class_names)
+            #     detected_objects = []
 
-                for i in range(len(r['class_ids'])):
-                    detected_objects.append(class_names[r['class_ids'][i]]+'#'+str(count_objects[r['class_ids'][i]]))
-                    count_objects[r['class_ids'][i]] += 1
-                    print ('Object : ',r['class_ids'][i], detected_objects[i], r['rois'][i])
+            #     for i in range(len(r['class_ids'])):
+            #         detected_objects.append(class_names[r['class_ids'][i]]+'#'+str(count_objects[r['class_ids'][i]]))
+            #         count_objects[r['class_ids'][i]] += 1
+            #         print ('Object : ',r['class_ids'][i], detected_objects[i], r['rois'][i])
 
-                #print (detected_objects)
-                dot = Digraph(comment='warehouse', format='svg')
-                dot.node_attr['shape']='record'
-                #robot_velocity = get_velocity(robot_list[robot_num])
-                #robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
-                robot_label = "robocop"
+            #     #print (detected_objects)
+            #     dot = Digraph(comment='warehouse', format='svg')
+            #     dot.node_attr['shape']='record'
+            #     #robot_velocity = get_velocity(robot_list[robot_num])
+            #     #robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
+            #     robot_label = "robocop"
                 
-                dot.node('robot', label=robot_label)
-                dot.node('warehouse', label='warehouse')
-                dot.node('floor', label='{floor|size: 25*25}')
-                dot.edge('warehouse','floor')
+            #     dot.node('robot', label=robot_label)
+            #     dot.node('warehouse', label='warehouse')
+            #     dot.node('floor', label='{floor|size: 25*25}')
+            #     dot.edge('warehouse','floor')
 
-                for i in range(len(r['class_ids'])):
-                    #_id = r['class_ids'][i]
-                    node_label = detected_objects[i]
+            #     for i in range(len(r['class_ids'])):
+            #         #_id = r['class_ids'][i]
+            #         node_label = detected_objects[i]
 
-                    dot.node(detected_objects[i], label=node_label)
-                    if re.match(r'Wall*', detected_objects[i]):
-                        dot.edge('warehouse', detected_objects[i], label='on')
-                    elif re.match(r'Product*', detected_objects[i]):
-                        overlapping_check = False
-                        for j in range(len(r['class_ids'])):
+            #         dot.node(detected_objects[i], label=node_label)
+            #         if re.match(r'Wall*', detected_objects[i]):
+            #             dot.edge('warehouse', detected_objects[i], label='on')
+            #         elif re.match(r'Product*', detected_objects[i]):
+            #             overlapping_check = False
+            #             for j in range(len(r['class_ids'])):
 
-                            if j != i:
+            #                 if j != i:
 
-                                isOverlapping, intersectio_area = self.get_overlap_bbox(r['rois'][i], r['rois'][j])
-                                print ('Comparing :',detected_objects[i],' => ', detected_objects[j], ' Result: ', isOverlapping, ' Intersectio Area: ', intersectio_area)
+            #                     isOverlapping, intersectio_area = self.get_overlap_bbox(r['rois'][i], r['rois'][j])
+            #                     print ('Comparing :',detected_objects[i],' => ', detected_objects[j], ' Result: ', isOverlapping, ' Intersectio Area: ', intersectio_area)
 
-                                if isOverlapping and intersectio_area > 50.0:                    
-                                    dot.edge(detected_objects[j], detected_objects[i], label='on')
-                                    overlapping_check = True
-                                    break
-                        if overlapping_check == False:
-                            dot.edge('floor', detected_objects[i], label='on')
-                    else:
-                        dot.edge('floor', detected_objects[i], label='on')
+            #                     if isOverlapping and intersectio_area > 50.0:                    
+            #                         dot.edge(detected_objects[j], detected_objects[i], label='on')
+            #                         overlapping_check = True
+            #                         break
+            #             if overlapping_check == False:
+            #                 dot.edge('floor', detected_objects[i], label='on')
+            #         else:
+            #             dot.edge('floor', detected_objects[i], label='on')
 
-                s = Source(dot, filename="test.gv", format="png")
-                s.view()
+            #     s = Source(dot, filename="test.gv", format="png")
+            #     s.view()
                 
 
-            self.image_pub.publish(self.bridge.cv2_to_imgmsg(img_out, "bgr8"))
+            # self.image_pub.publish(self.bridge.cv2_to_imgmsg(img_out, "bgr8"))
 
         except CvBridgeError as e:
             print(e)
