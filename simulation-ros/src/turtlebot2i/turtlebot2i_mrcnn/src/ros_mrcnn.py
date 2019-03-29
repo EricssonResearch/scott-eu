@@ -148,9 +148,9 @@ class ros_mask_rcnn:
         box1 = box(x1min, y1min, x1max, y1max)
         box2 = box(x2min, y2min, x2max, y2max)
         isOverlapping = box1.intersects(box2)
-        intersectio_area = box1.intersection(box2).area/box1.area*100
-        #print (pol_overl, intersectio_area)
-        return isOverlapping, intersectio_area
+        intersection_area = box1.intersection(box2).area/box1.area*100
+        #print (pol_overl, intersection_area)
+        return isOverlapping, intersection_area
 
         #isOverlapping = (i[1] < j[3] and j[1] < i[3] and i[0] < j[2] and j[0] < i[2])
         #isOverlapping = (x1min < x2max and x2min < x1max and y1min < y2max and y2min < y1max)
@@ -161,76 +161,83 @@ class ros_mask_rcnn:
 
         try:
             cv_depth_image = self.bridge.imgmsg_to_cv2(depth_image)
-            print (cv_depth_image.shape)
-            #print (cv_depth_image[0], cv_depth_image)
+            cv_depth_image = cv2.flip(cv_depth_image, 0)
 
-            #print (cv_depth_image[:,:,0],cv_depth_image[:,:,1],cv_depth_image[:,:,2])
+            print ("Depth Image size: ",cv_depth_image.shape)
+            #print (cv_depth_image[0])
 
             cv_image = self.bridge.imgmsg_to_cv2(image, "rgb8")
             results = self.model.detect([cv_image], verbose=1)
-            cv2.imshow('frame', cv_depth_image)
-            cv2.waitKey(0)
-            # r = results[0]
 
-            # img_out = display_instances(
-            #     cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
-            # )
+            r = results[0]
 
-            # # cv2.imshow('frame', img_out)
-            # # cv2.waitKey(1)
+            img_out = display_instances(
+                cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
+            )
             
-            # if len(r['class_ids']) > 0:
+            if len(r['class_ids']) > 0:
 
-            #     count_objects = [0] * len(class_names)
-            #     detected_objects = []
+                count_objects = [0] * len(class_names)
+                detected_objects = []
 
-            #     for i in range(len(r['class_ids'])):
-            #         detected_objects.append(class_names[r['class_ids'][i]]+'#'+str(count_objects[r['class_ids'][i]]))
-            #         count_objects[r['class_ids'][i]] += 1
-            #         print ('Object : ',r['class_ids'][i], detected_objects[i], r['rois'][i])
+                for i in range(len(r['class_ids'])):
+                    detected_objects.append(class_names[r['class_ids'][i]]+'#'+str(count_objects[r['class_ids'][i]]))
+                    count_objects[r['class_ids'][i]] += 1
+                    print ('Object : ',r['class_ids'][i], detected_objects[i], r['rois'][i])
 
-            #     #print (detected_objects)
-            #     dot = Digraph(comment='warehouse', format='svg')
-            #     dot.node_attr['shape']='record'
-            #     #robot_velocity = get_velocity(robot_list[robot_num])
-            #     #robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
-            #     robot_label = "robocop"
+                #print (detected_objects)
+                dot = Digraph(comment='warehouse', format='svg')
+                dot.node_attr['shape']='record'
+                #robot_velocity = get_velocity(robot_list[robot_num])
+                #robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
+                robot_label = "robocop"
                 
-            #     dot.node('robot', label=robot_label)
-            #     dot.node('warehouse', label='warehouse')
-            #     dot.node('floor', label='{floor|size: 25*25}')
-            #     dot.edge('warehouse','floor')
+                dot.node('robot', label=robot_label)
+                dot.node('warehouse', label='warehouse')
+                dot.node('floor', label='{floor|size: 25*25}')
+                dot.edge('warehouse','floor')
 
-            #     for i in range(len(r['class_ids'])):
-            #         #_id = r['class_ids'][i]
-            #         node_label = detected_objects[i]
+                for i in range(len(r['class_ids'])):
+                    #_id = r['class_ids'][i]
+                    node_label = detected_objects[i]
+                    y1min, x1min, y1max, x1max = r['rois'][i][0], r['rois'][i][1], r['rois'][i][2], r['rois'][i][3]
+                    print ('Min: ', np.min(cv_depth_image[y1min:y1max, x1min:x1max]))
+                    #print ('Depth Mat: ',cv_depth_image[y1min:y1max, x1min:x1max])
+                    print ('Mask: ',r['masks'][i])
+                    #cv2.imshow(node_label, cv_depth_image[y1min:y1max, x1min:x1max])
+                    #cv2.waitKey(0)
 
-            #         dot.node(detected_objects[i], label=node_label)
-            #         if re.match(r'Wall*', detected_objects[i]):
-            #             dot.edge('warehouse', detected_objects[i], label='on')
-            #         elif re.match(r'Product*', detected_objects[i]):
-            #             overlapping_check = False
-            #             for j in range(len(r['class_ids'])):
+                    dot.node(detected_objects[i], label=node_label)
+                    if re.match(r'Wall*', detected_objects[i]):
+                        dot.edge('warehouse', detected_objects[i], label='on')
+                    elif re.match(r'Product*', detected_objects[i]):
+                        overlapping_check = False
+                        for j in range(len(r['class_ids'])):
 
-            #                 if j != i:
+                            if j != i:
 
-            #                     isOverlapping, intersectio_area = self.get_overlap_bbox(r['rois'][i], r['rois'][j])
-            #                     print ('Comparing :',detected_objects[i],' => ', detected_objects[j], ' Result: ', isOverlapping, ' Intersectio Area: ', intersectio_area)
+                                isOverlapping, intersection_area = self.get_overlap_bbox(r['rois'][i], r['rois'][j])
+                                print ('Comparing :',detected_objects[i],' => ', detected_objects[j], ' Result: ', isOverlapping, ' Intersection Area: ', intersection_area)
 
-            #                     if isOverlapping and intersectio_area > 50.0:                    
-            #                         dot.edge(detected_objects[j], detected_objects[i], label='on')
-            #                         overlapping_check = True
-            #                         break
-            #             if overlapping_check == False:
-            #                 dot.edge('floor', detected_objects[i], label='on')
-            #         else:
-            #             dot.edge('floor', detected_objects[i], label='on')
+                                if isOverlapping and intersection_area > 50.0:                    
+                                    dot.edge(detected_objects[j], detected_objects[i], label='on')
+                                    overlapping_check = True
+                                    break
+                        if overlapping_check == False:
+                            dot.edge('floor', detected_objects[i], label='on')
+                    else:
+                        dot.edge('floor', detected_objects[i], label='on')
+                        cv2.imshow(node_label, cv_depth_image[y1min:y1max, x1min:x1max])
+                        cv2.waitKey(0)
 
-            #     s = Source(dot, filename="test.gv", format="png")
-            #     s.view()
+                
+                cv2.imshow('cv_depth_image', cv_depth_image)
+                cv2.waitKey(0)
+                s = Source(dot, filename="test.gv", format="png")
+                s.view()
                 
 
-            # self.image_pub.publish(self.bridge.cv2_to_imgmsg(img_out, "bgr8"))
+            self.image_pub.publish(self.bridge.cv2_to_imgmsg(img_out, "bgr8"))
 
         except CvBridgeError as e:
             print(e)

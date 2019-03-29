@@ -1,6 +1,6 @@
-function pointCloud()
+function pointCloud(current_time)
 
-    local header = {seq = 0, stamp = simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
+    local header = {seq = 0, stamp = current_time, frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
     local data = {}
     local height = 160 
     local width  = 120
@@ -88,12 +88,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 	else
 		result1=sim.setExplicitHandling(object_camera_rgb, 1) -- disable camera rgb
 	end
-		
-		
-
-	
-    
 end 
+
+
 
 if (sim_call_type==sim.childscriptcall_cleanup) then 
 	if(not(simROS==nil))then
@@ -122,33 +119,37 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 	end
 	if(sim.getExplicitHandling(object_camera_depth) == 0) then
         -- Publish camera depth image to ROS
-        data,w,h = sim.getVisionSensorCharImage(depthCam)
+--[[        data,w,h = sim.getVisionSensorCharImage(depthCam)
 	    d = {}
         d['header'] = {seq=0, stamp=current_time, frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
 	    d['height'] = h
 	    d['width'] = w
-	    d['encoding'] = '32FC1'--'16UC1' 
+	    d['encoding'] = 'rgb8'--'16UC1' 
 	    d['is_bigendian'] = 1 --1
 	    d['step'] = w*4
 	    d['data'] = data
-	    simROS.publish(pubKinectDepth,d)
+	    simROS.publish(pubKinectDepth,d)--]]
+
+
+    	-- Publish the image of the active vision sensor:
+	    local data=sim.getVisionSensorDepthBuffer(depthCam+sim_handleflag_codedstring)
+	    local res,nearClippingPlane=sim.getObjectFloatParameter(depthCam,sim_visionfloatparam_near_clipping)
+	    local res,farClippingPlane=sim.getObjectFloatParameter(depthCam,sim_visionfloatparam_far_clipping)
+	    nearClippingPlane=nearClippingPlane*1000 -- we want mm
+	    farClippingPlane=farClippingPlane*1000 -- we want mm
+	    data=sim.transformBuffer(data,sim_buffer_float,farClippingPlane-nearClippingPlane,nearClippingPlane,sim_buffer_uint16)
+	    local res=sim.getVisionSensorResolution(depthCam)
+	    d={}
+	    d['header']={seq=0, stamp=current_time, frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
+	    d['height']=res[2]
+	    d['width']=res[1]
+	    d['encoding']='16UC1' 
+	    d['is_bigendian']=1
+	    d['step']=res[1]*res[2]
+	    d['data']=data
+	    simROS.publish(pubKinectDepth,d)        
 
         -- Publish camera point cloud to ROS
-        pointCloud()
-        
+        pointCloud(current_time)
     end      
 end
-
---[[
-header: 
-  seq: 0
-  stamp: 
-    secs: 1527861646
-    nsecs: 997300811
-  frame_id: "camera_depth_optical_frame"
-height: 480
-width: 640
-encoding: "16UC1"
-is_bigendian: 0
-step: 1280
-data: [0, 0, ... ] # array is 614'400 long, i.e. 2 entries per pixel--]]
