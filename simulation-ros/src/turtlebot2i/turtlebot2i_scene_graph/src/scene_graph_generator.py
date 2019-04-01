@@ -96,8 +96,8 @@ def init():
     extractor.set_static_obj_names(['stairs', 'slidingDoor',
                                     'dockstation_body',\
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4',
-                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1','sofa','ConcretBlock'])
-    extractor.set_dynamic_obj_names(['Bill_base#5','Bill_base#6','Bill'])
+                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1','sofa','ConcretBlock','ConcreteBox','80cmHighPillar100cm'])
+    extractor.set_dynamic_obj_names(['Bill_base#5','Bill_base#6','Bill#0','Bill#1'])
     extractor.set_robot_names(['turtlebot2i'])
 
     rospy.loginfo("Connected to remote API server")

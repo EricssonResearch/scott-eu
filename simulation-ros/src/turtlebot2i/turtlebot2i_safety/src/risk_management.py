@@ -4,7 +4,7 @@ import rospkg
 
 # Scene Graph
 from turtlebot2i_scene_graph.msg import SceneGraph
-from turtlebot2i_safety.msg import SafetyZone, VelocityScale
+from turtlebot2i_safety.msg import VelocityScale, SafetyRisk
 import std_msgs.msg
 
 # Parse S-G
@@ -24,21 +24,12 @@ import time
 import os
 import cPickle as pickle
 
-# LIDAR
-from sensor_msgs.msg import LaserScan
-
 def init_var():
     '''
     Here we initialize the global variables.
     '''
     global time_previous
     time_previous = time.time()
-
-    #global critical_zone_radius = 0.5 #constant
-    global warning_zone_radius
-    warning_zone_radius = 0.5 #Initialization
-    global clear_zone_radius
-    clear_zone_radius   = 0.5 #Initialization
 
     # Safety zone size
     global IZW, range_degree,range_meter, range_meter_per_second,range_risk
@@ -55,10 +46,6 @@ def init_var():
     #s=sim.getObjectSizeFactor(objHandle) -- make sure that if we scale the robot during simulation, other values are scaled too!
     interWheelDistance=0.137#*s
 
-    global navi_linVel,navi_rotVel
-    navi_linVel = 0.0  #Initialization
-    navi_rotVel = 0.0  #Initialization
-
     global left_vel_scale, right_vel_scale, highest_risk
     highest_risk = 0.0
     left_vel_scale = 1.0
@@ -73,12 +60,8 @@ def init_var():
     safe_vel_message.linear = Vector3()
     safe_vel_message.angular = Vector3()
 
-    global vel_scale_message, zone_size_message
+    global vel_scale_message
     vel_scale_message = VelocityScale()
-    zone_size_message = SafetyZone()
-
-    global min_distance
-    min_distance = 5.0
 
 def init_regEx():
     '''
@@ -91,7 +74,7 @@ def init_regEx():
     sg_pattern = '"{' + name_pattern+'\|type: '+integer_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'\|velocity: '+float_pattern+'}"'
     vel_pattern= '"{turtlebot2i\|camera_rgb\|velocity: '+float_pattern+'}"'
 
-def init_fls_common_part():
+def init_fls_common_part(): #TO DO: put this parameter as class or in another module
     global object_distance,object_direction
      # New Antecedent objects
     object_distance = ctrl.Antecedent(range_meter, 'distance')
@@ -104,14 +87,14 @@ def init_fls_common_part():
     object_distance['Medium']= fuzz.trimf(range_meter, [IZW, 2*IZW, 4*IZW])
     object_distance['Far']   = fuzz.trapmf(range_meter, [2*IZW, 4*IZW, 3, 3])
     # Direction -180~180
-    rear_d_p2 = fuzz.trapmf(range_degree, [-180, -180, -135, -90])
-    object_direction['Right']  = fuzz.trimf(range_degree, [-135, -90, -45])
+    rear_d_p2                       = fuzz.trapmf(range_degree, [-180, -180, -135, -90])
+    object_direction['Right']       = fuzz.trimf(range_degree, [-135, -90, -45])
     object_direction['FrontRight']  = fuzz.trimf(range_degree, [-90, -45, 0])
-    object_direction['Front']  =  fuzz.trimf(range_degree, [-45, 0, 45])
-    object_direction['FrontLeft']= fuzz.trimf(range_degree, [0, 45, 90])
-    object_direction['Left']= fuzz.trimf(range_degree, [45, 90, 135])
-    rear_d_p1 = fuzz.trapmf(range_degree, [90, 135, 180,180])
-    null,object_direction['BigRear']  =fuzz.fuzzy_or(range_degree,rear_d_p1,range_degree,rear_d_p2)
+    object_direction['Front']       =  fuzz.trimf(range_degree, [-45, 0, 45])
+    object_direction['FrontLeft']   = fuzz.trimf(range_degree, [0, 45, 90])
+    object_direction['Left']        = fuzz.trimf(range_degree, [45, 90, 135])
+    rear_d_p1                       = fuzz.trapmf(range_degree, [90, 135, 180,180])
+    null,object_direction['BigRear']=fuzz.fuzzy_or(range_degree,rear_d_p1,range_degree,rear_d_p2)
     print("init_fls_common_part")
 
 def init_risk_assessment():
@@ -178,54 +161,8 @@ def cal_risk(object_type,object_distance,object_direction,object_speed,object_or
 
     risk_assessment_instance.compute()
     risk_result = risk_assessment_instance.output['risk']
-    #print "Risk is =",risk_result
 
     return risk_result
-
-
-def init_risk_mitigation():
-    # New Antecedent/Consequent objects
-    object_risk_input = ctrl.Antecedent(range_risk, 'risk_input')# Different name
-    #global left_speed,right_speed # When Consequent need visualization
-    left_speed  = ctrl.Consequent(range_meter_per_second, 'left')
-    right_speed = ctrl.Consequent(range_meter_per_second, 'right')
-
-    # Risk
-    object_risk_input['VeryLow'] = fuzz.gaussmf(range_risk,0,0.3)
-    object_risk_input['Low'] = fuzz.gaussmf(range_risk,1,0.3)
-    object_risk_input['Medium'] = fuzz.gaussmf(range_risk,2,0.3)
-    object_risk_input['High'] = fuzz.gaussmf(range_risk,3,0.3)
-    object_risk_input['VeryHigh'] = fuzz.gaussmf(range_risk,4,0.3)
-    # Left Speed
-    left_speed['Stop']  = fuzz.gaussmf(range_meter_per_second,0.0,0.1)
-    left_speed['Slow']  = fuzz.gaussmf(range_meter_per_second,0.2,0.2)
-    left_speed['Medium']= fuzz.gaussmf(range_meter_per_second,0.8,0.2)
-    left_speed['Fast']  = fuzz.gaussmf(range_meter_per_second,1.2,0.2)
-    # Right Speed
-    right_speed['Stop']  = fuzz.gaussmf(range_meter_per_second,0.0,0.1)
-    right_speed['Slow']  = fuzz.gaussmf(range_meter_per_second,0.2,0.2)
-    right_speed['Medium']= fuzz.gaussmf(range_meter_per_second,0.8,0.2)
-    right_speed['Fast']  = fuzz.gaussmf(range_meter_per_second,1.2,0.2)
-
-    from mitigation_rules import rule_list_generator
-    mitigation_rule_list=rule_list_generator(object_distance,object_direction, object_risk_input,left_speed,right_speed)
-
-    global risk_mitigation_instance  # We don't need to change the FLS
-    risk_mitigation_fls = ctrl.ControlSystem(mitigation_rule_list)
-    risk_mitigation_instance = ctrl.ControlSystemSimulation(risk_mitigation_fls)
-
-def cal_safe_vel(object_distance,object_direction,object_risk):
-
-    risk_mitigation_instance.input['distance'] = object_distance
-    risk_mitigation_instance.input['direction'] = object_direction
-    risk_mitigation_instance.input['risk_input'] = object_risk
-
-    risk_mitigation_instance.compute()
-    #print risk_mitigation_instance.print_state()
-    #left_speed.view(sim=risk_mitigation_instance) # define global
-    #right_speed.view(sim=risk_mitigation_instance)
-
-    return risk_mitigation_instance.output['left'],risk_mitigation_instance.output['right']
 
 def pub_safe_vel(left_vel_scale,right_vel_scale):
     vel_scale_message.header = std_msgs.msg.Header()
@@ -236,55 +173,24 @@ def pub_safe_vel(left_vel_scale,right_vel_scale):
 
     safe_vel_pub.publish(vel_scale_message)
 
-def pub_zone_size(speed):
-    zone_size_message.header = std_msgs.msg.Header()
-    zone_size_message.header.stamp = rospy.Time.now()
-
-    clear_zone_radius = 0.64+12*speed/5.0
-    warning_zone_radius= 0.62+6*speed/5.0
-    #critical_zone_radius =0.5#Constant
-    
-    zone_size_message.critical_zone_radius = 0.39+0.2 #Robot radius= 0.4
-    max_warning_diameter = 2*min_distance
-    if highest_risk == 0.0 and warning_zone_radius > max_warning_diameter:
-        zone_size_message.warning_zone_radius  = max_warning_diameter 
-        zone_size_message.clear_zone_radius    = max_warning_diameter + 0.05
-    else:
-        zone_size_message.warning_zone_radius  = warning_zone_radius
-        zone_size_message.clear_zone_radius    = clear_zone_radius
-    
-
-    safe_zone_pub.publish(zone_size_message)
-
 def parse_dot_file(graph):
     global left_vel_scale, right_vel_scale, highest_risk
     min_left_vel_scale, min_right_vel_scale = 1.0, 1.0
     robot_self_node = graph.get_node('robot')[0]
     if (robot_self_node.get_name()=='robot'):
         node_info= robot_self_node.__get_attribute__("label")
-        print "==============================="
+        #print "==============================="
 
         matchObj = re.match(vel_pattern, node_info,re.M|re.I) #It Works
-
-        if matchObj:
-            robot_speed = float(matchObj.group(1))
-            print "Robot Speed: ", robot_speed
-            #setup_fls(robot_speed)
-            pub_zone_size(robot_speed)
-        else:
-            print "Error! Robot node doesn't exist!"
-
     node_list = graph.get_nodes()
-    #print len(node_list)
     highest_risk = 0 # Only consider the object with highest risk
     target_object_distance     = 0
     target_object_direction    = 0
+    risk_message = SafetyRisk()
     for x in node_list:
         if not ( (x.get_name()=='node') or (x.get_name()=='warehouse') or (x.get_name()=='floor') or (x.get_name()=='robot') ):#All leaf nodes
             node_info= x.__get_attribute__("label")
-            print "-------------------------------"
-            print x.get_name()
-            #print type(node_info),node_info
+            #print "-------------------------------"
             matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
             if matchObj:
                 object_type         = int(matchObj.group(2))
@@ -292,28 +198,24 @@ def parse_dot_file(graph):
                 object_direction    = float(matchObj.group(5))
                 object_speed        = float(matchObj.group(6))
                 object_orientation  = float(matchObj.group(4))
-                object_risk =   cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
+                object_risk         = cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
 
-                #left_vel_scale,right_vel_scale = cal_safe_vel(object_distance, object_direction, object_risk)
-                #min_left_vel_scale  = min(min_left_vel_scale,  left_vel_scale)
-                #min_right_vel_scale = min(min_right_vel_scale, right_vel_scale)
+                risk_message.distance.append(object_distance)
+                risk_message.direction.append(object_direction)
+                risk_message.risk_value.append(object_risk)
                 if ( object_risk>highest_risk): # Update target
                     target_object_distance =object_distance
                     target_object_direction=object_direction
                     highest_risk=object_risk
-                    print "update target with risk=",highest_risk
-                print(x.get_name()," | distance: ",object_distance)
+                    print "update target of ",x.get_name()," with risk=",highest_risk
             else:
                print "Node not match!!"
     if (highest_risk!=0.0):
-        left_vel_scale,right_vel_scale = cal_safe_vel(target_object_distance, target_object_direction, highest_risk)
-        pub_safe_vel(left_vel_scale, right_vel_scale)
-        #pub_safe_vel(1.0, 1.0) #to test without risk mitigation
-        #pub_safe_vel(min_left_vel_scale, min_right_vel_scale)
+        safe_risk_pub.publish(risk_message)
+        #pub_safe_vel(1.0, 1.0) 
     else:
-        pub_safe_vel(1.0, 1.0) #TO DO: create a monitoring node, when this module doesnt publish scale speed for some time, publish scale 1.0
+        pub_safe_vel(1.2, 1.2) 
     risk_val_pub.publish(highest_risk)
-    #print "-------------------------------"
     global    time_previous
     #run_time = time.time() - time_previous
     #print 'Calc. time for S-G=',run_time,'sec'   #0.0139169692993 sec for calc,
@@ -327,18 +229,6 @@ def topic_callback(data):
     parse_dot_file(graph)
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 
-def navi_vel_callback(data):
-    global navi_linVel, navi_rotVel
-    navi_linVel=data.linear.x
-    navi_rotVel=data.angular.z
-    #rospy.loginfo("NAVIGATION UPDATED: navi_linVel=%1.2f,navi_rotVel=%1.2f",navi_linVel,navi_rotVel)
-    #if (highest_risk!=0.0):
-    #    pub_safe_vel(left_vel_scale,right_vel_scale)
-
-def lidar_callback(data):
-    global min_distance
-    min_distance = min(data.ranges[4:679])
-    #print("LIDAR CB")
 
 """ Main program """
 if __name__ == "__main__":
@@ -353,22 +243,17 @@ if __name__ == "__main__":
     print("init_fls_common_part ok")
     init_risk_assessment()
     print("init_risk_assessment ok")
-    init_risk_mitigation()
-    print("init_risk_mitigation ok")
 
     print("Initializing parse node finished")
 
     ## SUBSCRIBERS
     # Creates a subscriber object
     rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)
-    rospy.Subscriber('/turtlebot2i/lidar/scan_transformed', LaserScan, lidar_callback)
-    #rospy.Subscriber('/turtlebot2i/cmd_vel_mux/navigation', Twist, navi_vel_callback)
     ## PUBLISHERS
     # Creates a publisher object
-    safe_zone_pub = rospy.Publisher('/turtlebot2i/safety/safety_zone', SafetyZone, queue_size=10)
-
     safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10)
     risk_val_pub = rospy.Publisher('/turtlebot2i/safety/risk_val', std_msgs.msg.Float64, queue_size=10)
+    safe_risk_pub = rospy.Publisher('/turtlebot2i/safety/obstacles_risk', SafetyRisk, queue_size=10)
     # Dont't use "/turtlebot2i/commands/velocity'
     # Use "/turtlebot2i/cmd_vel_mux/safety_controller" with "vel_mux" package.
 

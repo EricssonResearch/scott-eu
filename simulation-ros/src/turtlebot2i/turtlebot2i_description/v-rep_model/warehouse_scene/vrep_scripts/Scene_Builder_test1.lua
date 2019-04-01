@@ -18,54 +18,41 @@ function sysCall_init()
     --addModel('Floor10x10m',{2,0,0},{0,0,0})
     --addModel('Floor10x10m',{10,0,0},{0,0,0})
 
-    addModel('Shelf',{-4.5, 0.96485,0.063},{0,0,-math.pi/2}) -- TODO: check why shelf rotation here is not compatible with what happens in the sim
-    addModel('Shelf',{-4.5,-0.53515,0.063},{0,0,-math.pi/2})
-    addModel('Shelf',{-4.5,-2.0351,0.063},{0,0,-math.pi/2})
 
+    addModel('turtlebot2i',{-4.5,-4.0,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
 
-    --addModel('ConveyorBelt',{5.8750,2.4649,0.113},{0,0,0}) -- TODO: check why we need to add these values in z
-    addModel('ConveyorBelt',{4, 3.500,0.113},{0,0,math.pi})
-    addModel('ConveyorBelt',{4, 1.000,0.113},{0,0,math.pi})
-    addModel('ConveyorBelt',{4,-1.500,0.113},{0,0,math.pi})
-    addModel('ConveyorBelt',{8.5, 1.000,0.113},{0,0,0})
-    addModel('ConveyorBelt',{8.5,-1.500,0.113},{0,0,0})
-    addModel('ConveyorBelt',{8.5,-3.500,0.113},{0,0,0})
+    addModel('Shelf_simple',{-3.5, 0.96485,0.063},{0,0,math.pi/2}) -- TODO: check why Shelf_simple rotation here is not compatible with what happens in the sim
+    addModel('Shelf_simple',{-3.5,-0.53515,0.063},{0,0,math.pi/2})
+    addModel('Shelf_simple',{-3.5,-2.03510,0.063},{0,0,math.pi/2})
+
+    addModel('ConveyorBelt_simple',{2.5,-4.00,0.113},{0,0,-math.pi/2})
+    --addModel('ConveyorBelt_simple',{4.0,-4.00,0.113},{0,0,-math.pi/2})
     
 
-    addModel('dockstation',{-5.0,-4.000,0.063},{0,0,math.pi/2})
+    addModel('dockstation',{-3.0,-4.000,0.063},{0,0,-math.pi/2})
 
     -- 2 static objects:
-    --addModel('sofa',{0.5, 0.0,0.25},{0,-math.pi/2,0})
-    --addModel('sofa',{2.5,-2.0,0.25},{0,-math.pi/2,0})
+    addModel('ConcreteBox',{4.4, 3.0,0.25},{0,0,0})
+    addModel('80cmHighPillar100cm',{0.0, 3.0,0.25},{0,0,0})
     
-    addModel('sofa',{-2.6,2.0,0.25},{0,-math.pi/2,0})
+    --addModel('sofa',{-2.6,2.0,0.25},{0,-math.pi/2,0})
     
     -- 2 walking humans:
-    --addModel('walkingBill_round',{ 0.0, 1.5,0},{0,0,math.pi/2})
-    --addModel('walkingBill_round',{-0.5,-0.5,0},{0,0,0})
+    --addModel('walkingBill_round',{-1.0, 1.0,0},{0,0,math.pi/2})
+    --addModel('walkingBill_round',{ 1.5, 4.5,0},{0,0,0})
 
     --addModel('Walking_Bill',{4,4,0},{0,0,math.pi/2})
     --addModel('Working_Bill',{2.0,0.0,0},{0,0,math.pi/2})
-    --addModel('indoorPlant',{2.5,-2.0,0},{0,0,0})
-    --addModel('ConcreteBox',{2.0,-3.0,0.25},{0,0,0})
 
     addModel('80cmHighWall1000cm',{  9.5, 0,.4},{0,0,0})
     addModel('80cmHighWall1000cm',{ -5.5, 0,.4},{0,0,0})--dont have any effect on map
     addModel('80cmHighWall1500cm',{  2.0, 5,.4},{0,0,math.pi/2})
-    addModel('80cmHighWall1500cm',{  2.0, -5,.4},{0,0,math.pi/2})
-    addModel('80cmHighWall750cm',{ -2.0, -1.25,.4},{0,0,0})
-    addModel('80cmHighWall750cm',{  3.0,  1.25,.4},{0,0,0})
-    -- For narrow passage
-    --addModel('80cmHighWall200cm',{ -1.0, 2.42,.4},{0,0,math.pi/2})
-    --addModel('80cmHighWall200cm',{  1.0, 2.42,.4},{0,0,math.pi/2})
-    --addModel('80cmHighWall500cm',{  2.0, 0.0,.4},{0,0,0})
-    --addModel('80cmHighWall200cm',{  4.0, -2.42,.4},{0,0,math.pi/2})
-    --addModel('80cmHighWall250cm',{  4.25, 1.0,.4},{0,0,math.pi/2})
-    --addModel('80cmHighWall250cm',{  7.5, 1.0,.4},{0,0,math.pi/2})
-    --addModel('80cmHighWall200cm',{ -4.5, 0,.4},{0,0,math.pi/2})
-    --addModel('80cmHighWall200cm',{ -1.8, 0,.4},{0,0,math.pi/2})
+    addModel('80cmHighWall1500cm',{  2.0,-5,.4},{0,0,math.pi/2})
+    addModel('80cmHighWall750cm',{ -2.5, -1.25,.4},{0,0,0})
+    addModel('80cmHighWall750cm',{  1.25, 0.00,.4},{0,0,math.pi/2})
 
-    addModel('turtlebot2i',{-3.5,-4.0,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+    addModel('80cmHighWall500cm',{  0.0, -2.50,.4},{0,0,0})
+    addModel('80cmHighWall500cm',{  5.0,  0.50,.4},{0,0,0})
     
     --addModel('turtlebot2i',{ 7.5, 3.0,0.063},{0,0,0}) --just to check the finish location
     --addModel('Walking_Bill',{3,-3.0,0},{0,0,0})

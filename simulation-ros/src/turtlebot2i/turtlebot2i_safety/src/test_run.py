@@ -67,14 +67,14 @@ def movebase_client():
 
     goal.target_pose.header.frame_id = "map"
     goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = 7.5 #2.0
-    goal.target_pose.pose.position.y = 3.0 #4.0
+    goal.target_pose.pose.position.x = 1.0 #2.0
+    goal.target_pose.pose.position.y = -4.0 #4.0
     goal.target_pose.pose.position.z = 0.063 #1.34851861
     #goal.target_pose.pose.orientation.w = 1.0
 
     #copied from navi_goal_talker
     orientation=geometry_msgs.msg.Quaternion()
-    yaw  = 0.0 #-90*math.pi/180 #unit: from deg. to rad.
+    yaw  = -90*math.pi/180 #unit: from deg. to rad.
     orientation=quaternion_from_euler(0,0,yaw)#(roll, pitch,yaw) # return an array
     goal.target_pose.pose.orientation.x=0.0
     goal.target_pose.pose.orientation.y=0.0
@@ -173,10 +173,13 @@ def lidar_callback(data):
     prev_obstacle_zone = obstacle_zone
     if min_dist_to_obstacle > r_warning:
         obstacle_zone = clear_zone
+        #print("clear_zone")
     elif min_dist_to_obstacle > r_critical:
         obstacle_zone = warning_zone
+        #print("warning_zone")
     else:
         obstacle_zone = critical_zone
+        #print("critical_zone")
 
     if obstacle_zone!=prev_obstacle_zone:
         #print("prev_obstacle_zone: ", prev_obstacle_zone, "| obstacle_zone:",obstacle_zone)

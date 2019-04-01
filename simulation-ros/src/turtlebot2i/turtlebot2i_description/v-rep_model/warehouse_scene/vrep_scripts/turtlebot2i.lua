@@ -2,11 +2,17 @@
 function setCirlceSize_cb(msg)
     --Since 'setObjectSize' doesn't work, we have to use 'Scale', so we need to record the previous scale.
     --BUG: if the size is not changed (or just slightly changed), the following code will waste calculation power.
-    sim.scaleObject(zoneRed_handle,msg.critical_zone_radius/previous_critical_zone_radius,msg.critical_zone_radius/previous_critical_zone_radius,0,0)  
-    sim.scaleObject(zoneYellow_handle,msg.warning_zone_radius/previous_warning_zone_radius,msg.warning_zone_radius/previous_warning_zone_radius,0,0)
-    sim.scaleObject(zoneGreen_handle,msg.clear_zone_radius/previous_clear_zone_radius,msg.clear_zone_radius/previous_clear_zone_radius,0,0)
+    critical_scale = msg.critical_zone_radius/previous_critical_zone_radius
+    warning_scale  = msg.warning_zone_radius/previous_warning_zone_radius
+    clear_scale    = msg.clear_zone_radius/previous_clear_zone_radius
+    sim.scaleObject(zoneRed_handle,    critical_scale, critical_scale,0,0)  
+    sim.scaleObject(zoneYellow_handle, warning_scale,  warning_scale, 0,0)
+    sim.scaleObject(zoneGreen_handle,  clear_scale,    clear_scale,   0,0)
+    --sim.setObjectSizeValues(zoneRed_handle,   {msg.critical_zone_radius, msg.critical_zone_radius ,0})  
+    --sim.setObjectSizeValues(zoneYellow_handle,{msg.warning_zone_radius,  msg.warning_zone_radius  ,0})
+    --sim.setObjectSizeValues(zoneGreen_handle, {msg.clear_zone_radius,    msg.clear_zone_radius    ,0})
     --sim.scaleObject(obj_handle,scale,scale,0,0) 
-    printf("New circle size received (seq): %d",msg.header.seq)
+    --printf("New circle size received (seq): %d | %2.2f",msg.header.seq, msg.clear_zone_radius)
     previous_clear_zone_radius = msg.clear_zone_radius
     previous_warning_zone_radius = msg.warning_zone_radius
     previous_critical_zone_radius = msg.critical_zone_radius
@@ -114,9 +120,9 @@ sim.setExplicitHandling(object_wheel_drop_sensor_right, 1)
     velScale = 1 -- Scale is 1 by default
     leftVelScale = 1  -- Scale is 1 by default
     rightVelScale = 1 -- Scale is 1 by default
-    previous_clear_zone_radius = 1.0
-    previous_warning_zone_radius = 1.0
-    previous_critical_zone_radius = 1.0
+    previous_clear_zone_radius    = 0.5
+    previous_warning_zone_radius  = 0.5
+    previous_critical_zone_radius = 0.5
 
 
     t_frontBumper = sim.getObjectHandle('bumper_front_joint')

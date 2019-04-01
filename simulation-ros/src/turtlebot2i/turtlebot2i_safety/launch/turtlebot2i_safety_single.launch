@@ -19,6 +19,7 @@
 
   <!-- Scene Graph Parser+ Risk management  --> 
   <node pkg="turtlebot2i_safety" name="risk_management" type="risk_management.py" output="screen"/>
-  <node pkg="turtlebot2i_safety" name="lidar_transformer_py" type="lidar_transformer.py" output="screen"/>
+  <node pkg="turtlebot2i_safety" name="zone_generation_py"     type="zone_generation.py"     output="screen"/>
+  <node pkg="turtlebot2i_safety" name="risk_mitigation_fls_py" type="risk_mitigation_fls.py" output="screen"/>
 
 </launch>
