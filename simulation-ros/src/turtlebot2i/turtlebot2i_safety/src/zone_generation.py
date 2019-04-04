@@ -38,7 +38,7 @@ def lidar_callback(data):
     warning_zone_radius  = 0.31+6*speed/10.0
     critical_zone_radius = 0.195+0.1 #Robot diameter= 0.4
 
-    if risk_val < 0.0:
+    if risk_val == 0.0:
         available_space = min_distance
         if warning_zone_radius > available_space:
             warning_zone_radius  = available_space - 0.002

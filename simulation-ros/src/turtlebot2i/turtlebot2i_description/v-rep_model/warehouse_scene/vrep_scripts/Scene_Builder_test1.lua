@@ -32,14 +32,14 @@ function sysCall_init()
     addModel('dockstation',{-3.0,-4.000,0.063},{0,0,-math.pi/2})
 
     -- 2 static objects:
-    addModel('ConcreteBox',{4.4, 3.0,0.25},{0,0,0})
-    addModel('80cmHighPillar100cm',{0.0, 3.0,0.25},{0,0,0})
+    --addModel('ConcreteBox',{4.4, 3.0,0.25},{0,0,0})
+    --addModel('80cmHighPillar100cm',{0.0, 3.0,0.25},{0,0,0})
     
     --addModel('sofa',{-2.6,2.0,0.25},{0,-math.pi/2,0})
     
     -- 2 walking humans:
-    --addModel('walkingBill_round',{-1.0, 1.0,0},{0,0,math.pi/2})
-    --addModel('walkingBill_round',{ 1.5, 4.5,0},{0,0,0})
+    addModel('walkingBill_round',{-1.0, 1.0,0},{0,0,math.pi/2})
+    addModel('walkingBill_round',{ 1.5, 4.5,0},{0,0,0})
 
     --addModel('Walking_Bill',{4,4,0},{0,0,math.pi/2})
     --addModel('Working_Bill',{2.0,0.0,0},{0,0,math.pi/2})
