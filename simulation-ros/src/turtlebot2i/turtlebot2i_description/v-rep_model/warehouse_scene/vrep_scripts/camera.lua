@@ -132,22 +132,21 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 
 
     	-- Publish the image of the active vision sensor:
-	    local data=sim.getVisionSensorDepthBuffer(depthCam+sim_handleflag_codedstring)
-	    local res,nearClippingPlane=sim.getObjectFloatParameter(depthCam,sim_visionfloatparam_near_clipping)
-	    local res,farClippingPlane=sim.getObjectFloatParameter(depthCam,sim_visionfloatparam_far_clipping)
-	    nearClippingPlane=nearClippingPlane*1000 -- we want mm
-	    farClippingPlane=farClippingPlane*1000 -- we want mm
-	    data=sim.transformBuffer(data,sim_buffer_float,farClippingPlane-nearClippingPlane,nearClippingPlane,sim_buffer_uint16)
-	    local res=sim.getVisionSensorResolution(depthCam)
+
+	   	--local res,nearClippingPlane=sim.getObjectFloatParameter(object_camera_depth,sim.visionfloatparam_near_clipping)
+	   	--local res,farClippingPlane=sim.getObjectFloatParameter(object_camera_depth,sim.visionfloatparam_far_clipping)
+	   	local data = sim.getVisionSensorDepthBuffer(object_camera_depth+sim.handleflag_codedstring)
+	    local res = sim.getVisionSensorResolution(object_camera_depth)
+
 	    d={}
 	    d['header']={seq=0, stamp=current_time, frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
 	    d['height']=res[2]
 	    d['width']=res[1]
-	    d['encoding']='16UC1' 
-	    d['is_bigendian']=1
-	    d['step']=res[1]*res[2]
+	    d['encoding']='32FC1' 
+	    d['is_bigendian']=0
+	    d['step']=res[1]*4
 	    d['data']=data
-	    simROS.publish(pubKinectDepth,d)        
+	    simROS.publish(pubKinectDepth,d)
 
         -- Publish camera point cloud to ROS
         pointCloud(current_time)

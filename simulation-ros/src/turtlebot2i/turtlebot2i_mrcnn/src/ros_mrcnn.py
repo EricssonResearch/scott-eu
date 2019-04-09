@@ -126,17 +126,7 @@ class ros_mask_rcnn:
         #self.ts = message_filters.ApproximateTimeSynchronizer([self.image_sub, self.image_depth_sub], queue_size=1, slop = 0.1)
         self.ts = message_filters.TimeSynchronizer([self.image_sub, self.image_depth_sub], queue_size=1)
         print ('calling callback')
-
         self.ts.registerCallback(self.callback)
-
-        #self.image_sub = rospy.Subscriber("/turtlebot2i/camera/rgb/raw_image", Image, self.callback)
-        #self.image_depth_sub = rospy.Subscriber("/turtlebot2i/camera/depth/raw_image", Image, self.depth_callback)
-        '''
-        pubKinectDepth = simROS.advertise(robot_id..'/'..sensor_name..'/depth/raw_image','sensor_msgs/Image')
-        simROS.publisherTreatUInt8ArrayAsString(pubKinectDepth)
-        pubKinectCloud = simROS.advertise(robot_id..'/'..sensor_name..'/cloud','sensor_msgs/PointCloud2')
-        simROS.publisherTreatUInt8ArrayAsString(pubKinectCloud) 
-        '''
 
         self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
 
@@ -160,11 +150,18 @@ class ros_mask_rcnn:
     def callback(self, image, depth_image):
 
         try:
-            cv_depth_image = self.bridge.imgmsg_to_cv2(depth_image)
+            farClippingPlane = 3.5
+            nearClippingPlane = 0.0099999
+            cv_depth_image = self.bridge.imgmsg_to_cv2(depth_image,"passthrough")
             cv_depth_image = cv2.flip(cv_depth_image, 0)
+            print ("Depth Image size: ", cv_depth_image.shape)
+            #print ('min', min(cv_depth_image))
+            cv2.imshow("depth image", cv_depth_image)
+            cv2.waitKey(0)
 
-            print ("Depth Image size: ",cv_depth_image.shape)
-            #print (cv_depth_image[0])
+            cv_depth_image = nearClippingPlane  + (cv_depth_image * (farClippingPlane - nearClippingPlane))
+            #print ("Depth Image size: ", cv_depth_image.shape)
+
 
             cv_image = self.bridge.imgmsg_to_cv2(image, "rgb8")
             results = self.model.detect([cv_image], verbose=1)
@@ -179,13 +176,14 @@ class ros_mask_rcnn:
 
                 count_objects = [0] * len(class_names)
                 detected_objects = []
+                distances_from_mask = []
+                cropped_roi_distances = []
 
                 for i in range(len(r['class_ids'])):
                     detected_objects.append(class_names[r['class_ids'][i]]+'#'+str(count_objects[r['class_ids'][i]]))
                     count_objects[r['class_ids'][i]] += 1
                     print ('Object : ',r['class_ids'][i], detected_objects[i], r['rois'][i])
 
-                #print (detected_objects)
                 dot = Digraph(comment='warehouse', format='svg')
                 dot.node_attr['shape']='record'
                 #robot_velocity = get_velocity(robot_list[robot_num])
@@ -201,38 +199,40 @@ class ros_mask_rcnn:
                     #_id = r['class_ids'][i]
                     node_label = detected_objects[i]
                     y1min, x1min, y1max, x1max = r['rois'][i][0], r['rois'][i][1], r['rois'][i][2], r['rois'][i][3]
-                    print ('Min: ', np.min(cv_depth_image[y1min:y1max, x1min:x1max]))
-                    #print ('Depth Mat: ',cv_depth_image[y1min:y1max, x1min:x1max])
-                    print ('Mask: ',r['masks'][i])
-                    #cv2.imshow(node_label, cv_depth_image[y1min:y1max, x1min:x1max])
-                    #cv2.waitKey(0)
+                    distances_from_mask.append(cv_depth_image[r['masks'][:,:,i]])
+                    cropped_roi_distances.append(cv_depth_image[y1min:y1max, x1min:x1max])
 
-                    dot.node(detected_objects[i], label=node_label)
                     if re.match(r'Wall*', detected_objects[i]):
+                        dot.node(detected_objects[i], label=node_label)
                         dot.edge('warehouse', detected_objects[i], label='on')
                     elif re.match(r'Product*', detected_objects[i]):
                         overlapping_check = False
+                        intersection_area = 0.0
                         for j in range(len(r['class_ids'])):
-
                             if j != i:
-
                                 isOverlapping, intersection_area = self.get_overlap_bbox(r['rois'][i], r['rois'][j])
                                 print ('Comparing :',detected_objects[i],' => ', detected_objects[j], ' Result: ', isOverlapping, ' Intersection Area: ', intersection_area)
 
-                                if isOverlapping and intersection_area > 50.0:                    
+                                if isOverlapping and intersection_area > 25.0:
+                                    #print ("distances_from_mask : ", distances_from_mask[i].shape, 'Min: ', min(distances_from_mask[i]), 'Max: ', max(distances_from_mask[i]), 'Mean: ', np.mean(np.array(distances_from_mask[i])))
+                                    node_label = "%s|{Distance|Min: %.2f|Max: %.2f|Mean: %.2f}|intersection area: %.2f"%( detected_objects[i],  min(distances_from_mask[i]), max(distances_from_mask[i]), np.mean(np.array(distances_from_mask[i])), intersection_area)
+                                    dot.node(detected_objects[i], label=node_label)
                                     dot.edge(detected_objects[j], detected_objects[i], label='on')
                                     overlapping_check = True
                                     break
                         if overlapping_check == False:
+                            node_label = "%s|{Distance|Min: %.2f|Max: %.2f|Mean: %.2f}|intersection area: %.2f"%( detected_objects[i],  min(distances_from_mask[i]), max(distances_from_mask[i]), np.mean(np.array(distances_from_mask[i])), intersection_area)
+                            dot.node(detected_objects[i], label=node_label)
                             dot.edge('floor', detected_objects[i], label='on')
                     else:
+                        node_label = "%s|{Distance|Min: %.2f|Max: %.2f|Mean: %.2f}"%( detected_objects[i],  min(distances_from_mask[i]), max(distances_from_mask[i]), np.mean(np.array(distances_from_mask[i])))
+                        dot.node(detected_objects[i], label=node_label)
                         dot.edge('floor', detected_objects[i], label='on')
-                        cv2.imshow(node_label, cv_depth_image[y1min:y1max, x1min:x1max])
-                        cv2.waitKey(0)
+                        #cv2.imshow(node_label, cv_depth_image[y1min:y1max, x1min:x1max])
+                        #cv2.waitKey(0)
 
-                
-                cv2.imshow('cv_depth_image', cv_depth_image)
-                cv2.waitKey(0)
+                #cv2.imshow('cv_depth_image', cv_depth_image)
+                #cv2.waitKey(0)
                 s = Source(dot, filename="test.gv", format="png")
                 s.view()
                 
