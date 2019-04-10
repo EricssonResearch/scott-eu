@@ -19,7 +19,10 @@ function sysCall_init()
     --addModel('Floor10x10m',{10,0,0},{0,0,0})
 
 
-    addModel('turtlebot2i',{-4.5,-4.0,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+    --addModel('turtlebot2i',{-4.5,-4.0,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+    addModel('turtlebot2i',{-4.0,-4.0,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+    --addModel('80cmHighPillar100cm_pattern',{-4.0,-3.2,0.4},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+    --addModel('turtlebot2i_simple',{-4.5,-4.0,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
 
     addModel('Shelf_simple',{-3.5, 0.96485,0.063},{0,0,math.pi/2}) -- TODO: check why Shelf_simple rotation here is not compatible with what happens in the sim
     addModel('Shelf_simple',{-3.5,-0.53515,0.063},{0,0,math.pi/2})

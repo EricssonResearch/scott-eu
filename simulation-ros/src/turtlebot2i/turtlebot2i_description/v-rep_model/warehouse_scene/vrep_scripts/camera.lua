@@ -101,7 +101,7 @@ if (sim_call_type==sim.childscriptcall_cleanup) then
 end 
 
 if (sim_call_type==sim.childscriptcall_sensing) then
-	if(sim.getExplicitHandling(object_camera_rgb) == false) then
+	if(sim.getExplicitHandling(object_camera_rgb) == 0) then
         local data,w,h = sim.getVisionSensorCharImage(colorCam)
 
         -- Publish camera RGB image to ROS
@@ -115,9 +115,9 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 	    d['data'] = data
 	    simROS.publish(pubKinectRgb,d)
 	end
-	if(sim.getExplicitHandling(object_camera_depth) == false) then
+	if(sim.getExplicitHandling(object_camera_depth) == 0) then
         -- Publish camera depth image to ROS
-        data,w,h = sim.getVisionSensorCharImage(depthCam)
+--[[        data,w,h = sim.getVisionSensorCharImage(depthCam)
 	    d = {}
         d['header'] = {seq=0, stamp=simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
 	    d['height'] = h
@@ -126,6 +126,17 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 	    d['is_bigendian'] = 1
 	    d['step'] = w*3
 	    d['data'] = data
+	    simROS.publish(pubKinectDepth,d)--]]
+	    local data = sim.getVisionSensorDepthBuffer(object_camera_depth+sim_handleflag_codedstring)
+	    local res = sim.getVisionSensorResolution(object_camera_depth)
+	    d={}
+	    d['header']={seq=0, stamp=current_time, frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
+	    d['height']=res[2]
+	    d['width']=res[1]
+	    d['encoding']='32FC1' -- ? 
+	    d['is_bigendian']=0
+	    d['step']=res[1]*4
+	    d['data']=data
 	    simROS.publish(pubKinectDepth,d)
 
         -- Publish camera point cloud to ROS

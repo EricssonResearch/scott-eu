@@ -90,24 +90,24 @@ def init_fls_common_part(): #TO DO: put this parameter as class or in another mo
     rear_d_p2                       = fuzz.trapmf(range_degree, [-180, -180, -135, -90])
     object_direction['Right']       = fuzz.trimf(range_degree, [-135, -90, -45])
     object_direction['FrontRight']  = fuzz.trimf(range_degree, [-90, -45, 0])
-    object_direction['Front']       =  fuzz.trimf(range_degree, [-45, 0, 45])
+    object_direction['Front']       = fuzz.trimf(range_degree, [-45, 0, 45])
     object_direction['FrontLeft']   = fuzz.trimf(range_degree, [0, 45, 90])
     object_direction['Left']        = fuzz.trimf(range_degree, [45, 90, 135])
     rear_d_p1                       = fuzz.trapmf(range_degree, [90, 135, 180,180])
-    null,object_direction['BigRear']=fuzz.fuzzy_or(range_degree,rear_d_p1,range_degree,rear_d_p2)
+    null,object_direction['BigRear']= fuzz.fuzzy_or(range_degree,rear_d_p1,range_degree,rear_d_p2)
     print("init_fls_common_part")
 
 def init_risk_assessment():
     range_type = np.arange(0, 2+1, 1)
     # New Antecedent/Consequent objects
-    object_type =     ctrl.Antecedent(range_type, 'type')
-    object_speed = ctrl.Antecedent(range_meter_per_second, 'speed')
+    object_type        = ctrl.Antecedent(range_type, 'type')
+    object_speed       = ctrl.Antecedent(range_meter_per_second, 'speed')
     object_orientation = ctrl.Antecedent(range_degree,'orientation')
-    object_risk = ctrl.Consequent(range_risk, 'risk')
+    object_risk        = ctrl.Consequent(range_risk, 'risk')
     # Type
     object_type['StaObj'] = fuzz.trimf(range_type, [0, 0, 0.1])
     object_type['DynObj'] = fuzz.trimf(range_type, [0.9, 1, 1.1])
-    object_type['Human'] = fuzz.trimf(range_type, [1.9, 2, 2])
+    object_type['Human']  = fuzz.trimf(range_type, [1.9, 2, 2])
     # Speed
     object_speed['Slow']  = fuzz.trapmf(range_meter_per_second, [0, 0, 0.5, 1.0])
     object_speed['Medium']= fuzz.trapmf(range_meter_per_second, [0.5, 1.0, 1.0, 1.5])
@@ -188,26 +188,30 @@ def parse_dot_file(graph):
     target_object_direction    = 0
     risk_message = SafetyRisk()
     for x in node_list:
+        #print "before analyzing target of: ",x.get_name()
         if not ( (x.get_name()=='node') or (x.get_name()=='warehouse') or (x.get_name()=='floor') or (x.get_name()=='robot') ):#All leaf nodes
             node_info= x.__get_attribute__("label")
             #print "-------------------------------"
             matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
+            #print "analyzing target of: ",x.get_name()
             if matchObj:
-                object_type         = int(matchObj.group(2))
-                object_distance     = float(matchObj.group(3))
-                object_direction    = float(matchObj.group(5))
-                object_speed        = float(matchObj.group(6))
-                object_orientation  = float(matchObj.group(4))
-                object_risk         = cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
+                object_type = int(matchObj.group(2))
+                if object_type < 3: # type 3 is wall.
+                    object_distance     = float(matchObj.group(3))
+                    object_direction    = float(matchObj.group(5))
+                    object_speed        = float(matchObj.group(6))
+                    object_orientation  = float(matchObj.group(4))
+                    #print("in RM:",x.get_name(),object_type,object_distance,object_direction,object_speed,object_orientation)
+                    object_risk         = cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
 
-                risk_message.distance.append(object_distance)
-                risk_message.direction.append(object_direction)
-                risk_message.risk_value.append(object_risk)
-                if ( object_risk>highest_risk): # Update target
-                    target_object_distance =object_distance
-                    target_object_direction=object_direction
-                    highest_risk=object_risk
-                    print "update target of ",x.get_name()," with risk=",highest_risk
+                    risk_message.distance.append(object_distance)
+                    risk_message.direction.append(object_direction)
+                    risk_message.risk_value.append(object_risk)
+                    if ( object_risk>highest_risk): # Update target
+                        target_object_distance =object_distance
+                        target_object_direction=object_direction
+                        highest_risk=object_risk
+                        print "update target of ",x.get_name()," with risk=",highest_risk
             else:
                print "Node not match!!"
     if (highest_risk!=0.0):
@@ -233,7 +237,7 @@ def topic_callback(data):
 """ Main program """
 if __name__ == "__main__":
 
-    rospy.init_node("risk_management",anonymous=True)
+    rospy.init_node("risk_assessment",anonymous=True)
 
     init_var()
     print("init_var ok")

@@ -88,6 +88,7 @@ def cal_safe_vel(object_distance,object_direction,object_risk):
     risk_mitigation_instance.input['distance']   = object_distance
     risk_mitigation_instance.input['direction']  = object_direction
     risk_mitigation_instance.input['risk_input'] = object_risk
+    print("RM input value:",object_distance,object_direction,object_risk)
     risk_mitigation_instance.compute()
     return risk_mitigation_instance.output['left'],risk_mitigation_instance.output['right']
 

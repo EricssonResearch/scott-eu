@@ -15,10 +15,10 @@
   <!-- <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_cmd_vel_mux.launch"/> -->
 
   <!-- Scene Graph Generator  -->
-  <node pkg="turtlebot2i_scene_graph" name="sg_generator" type="scene_graph_generator.py" output="log"/>
+  <node pkg="turtlebot2i_scene_graph" name="sg_generator" type="scene_graph_generator.py" output="screen"/>
 
   <!-- Scene Graph Parser+ Risk management  --> 
-  <node pkg="turtlebot2i_safety" name="risk_management"        type="risk_management.py" output="screen"/>
+  <node pkg="turtlebot2i_safety" name="risk_assessment"        type="risk_assessment.py"     output="screen"/>
   <node pkg="turtlebot2i_safety" name="zone_generation_py"     type="zone_generation.py"     output="screen"/>
   <node pkg="turtlebot2i_safety" name="risk_mitigation_fls_py" type="risk_mitigation_fls.py" output="screen"/>
 

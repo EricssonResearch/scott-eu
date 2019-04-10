@@ -70,7 +70,9 @@ def get_direction(i, j):
     return dire_tan #BUG might hide here.
 
 def get_type(i):
-    if re.match(r'Bill*', i.name):
+    if re.match(r'80cmHighWall*', i.name):
+        obj_type = 3 #wall
+    elif re.match(r'Bill*', i.name):
         obj_type = 2 #human
     elif re.match(r'turtlebot*', i.name):
         obj_type = 1 # robot # non-human dynamic objects
@@ -93,13 +95,14 @@ def init():
     extractor= VrepObjectExtractor('127.0.0.1', 19997)
     # List of object names to retrieve information
     # For now it is hardcoded
+    extractor.set_wall_names(['80cmHighWall1000cm','80cmHighWall1000cm0','80cmHighWall1500cm','80cmHighWall1500cm0','80cmHighWall750cm','80cmHighWall750cm0','80cmHighWall500cm','80cmHighWall500cm0'])
     extractor.set_static_obj_names(['stairs', 'slidingDoor',
                                     'dockstation_body',\
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4',
                                     'ShelfBody', 'ShelfBody#0', 'ShelfBody#1','sofa','ConcretBlock','ConcreteBox','80cmHighPillar100cm'])
     extractor.set_dynamic_obj_names(['Bill_base#5','Bill_base#6','Bill#0','Bill#1'])
     extractor.set_robot_names(['turtlebot2i'])
-
+    
     rospy.loginfo("Connected to remote API server")
 
     rospy.loginfo('Getting scene properties (this can take a while)...')

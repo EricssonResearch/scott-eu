@@ -158,7 +158,7 @@ if clientID!=-1:
 
     # Get scenario pose and size from floor object
     map_origin = obj_node_list[ground_object].bbox_min[0:2]
-    map_width = obj_node_list[ground_object].size[0]+0.1
+    map_width  = obj_node_list[ground_object].size[0]+0.1
     map_height = obj_node_list[ground_object].size[1]+0.1
 
     map_resolution = 0.050
