@@ -14,12 +14,7 @@ import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 class TwinRegistrationListener(val mqttClient: MqttClient,
                                val mqttTopic: String): IMqttMessageListener {
     private val log: Logger = LoggerFactory.getLogger(javaClass)

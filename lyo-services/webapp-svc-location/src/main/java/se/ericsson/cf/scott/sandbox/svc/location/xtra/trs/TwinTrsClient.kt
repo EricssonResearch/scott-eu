@@ -13,12 +13,7 @@ object TrsHelper {
     }
 }
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 class TwinTrsClient {
     val log = LoggerFactory.getLogger(javaClass)!!
 

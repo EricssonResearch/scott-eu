@@ -4,11 +4,6 @@ import java.net.URI;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * TODO
- *
- * @since TODO
- */
 public class WhcConfig {
     public static final String KB_QUERY_PROP = "kb.query_uri";
     // Start of user code class_attributes

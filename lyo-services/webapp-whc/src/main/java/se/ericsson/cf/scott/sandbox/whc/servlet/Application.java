@@ -84,7 +84,6 @@ public class Application extends ResourceConfig {
         // Start of user code Custom Resource Classes
         RESOURCE_CLASSES.add(WhcTrsService.class);
         RESOURCE_CLASSES.add(AdminResource.class);
-        // TODO Andrew@2018-03-13: switch to Jersey then to Wildfly then try this
 //        RESOURCE_CLASSES.add(TrackedResourceSetServiceDI.class);
         // End of user code
 

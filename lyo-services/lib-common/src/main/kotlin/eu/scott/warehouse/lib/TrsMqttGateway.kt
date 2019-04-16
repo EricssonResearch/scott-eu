@@ -13,12 +13,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.slf4j.LoggerFactory
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 class TrsMqttGateway @Throws(MqttException::class) constructor(brokerURL: String, clientID: String,
                                                                options: MqttConnectOptions,
                                                                callback: MqttCallbackExtended?,

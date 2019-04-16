@@ -5,12 +5,7 @@ import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 public class TwinTrsServerService extends TrackedResourceSetService {
 
     @Override

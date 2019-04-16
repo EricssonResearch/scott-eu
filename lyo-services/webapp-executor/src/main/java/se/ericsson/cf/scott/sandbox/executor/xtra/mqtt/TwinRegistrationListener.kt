@@ -13,12 +13,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+// FIXME Andrew@2019-04-16: delete this class
 @Deprecated("Twin registration shall be done via REST calls")
 class TwinRegistrationListener(val twins: MutableMap<String, URI>, val mqttClient: MqttClient,
                                val mqttTopic: String): IMqttMessageListener {

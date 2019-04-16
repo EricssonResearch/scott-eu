@@ -16,13 +16,6 @@ import java.net.URI
 import javax.xml.namespace.QName
 
 /**
- * TODO
- *
- * @since   TODO
- */
-
-
-/**
  * REALLY useful method
  */
 val IResource.link: Link

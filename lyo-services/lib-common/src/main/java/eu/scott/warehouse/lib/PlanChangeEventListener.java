@@ -45,24 +45,11 @@ public class PlanChangeEventListener implements ChangeEventListener {
         return stringWriter.toString();
     }
 
-/*
-    // FIXME Andrew@2018-03-04: hangs infinitely with a Plan
-    private static String lyoResourceToString(final IResource... resources)
-            throws JenaModelException {
-        try {
-            return jenaModelToString(JenaModelHelper.createJenaModel(resources));
-        } catch (DatatypeConfigurationException | IllegalAccessException | OslcCoreApplicationException | InvocationTargetException e) {
-            // FIXME Andrew@2018-02-27: move this exception to Lyo
-            throw new JenaModelException(e);
-        }
-    }
-*/
-
     @Override
     public void handleChangeEvent(final ChangeEvent changeEvent, final Model trsResourceModel) {
         if (changeEvent instanceof Deletion) {
-            // FIXME Andrew@2018-02-27: this should not involve reflection, but just be an enum +
-            // getType()
+            // TODO Andrew@2018-02-27: this should not involve reflection, but just be an enum +
+            // getType() (after inheritance works in JMH)
             log.info("Ignoring deletion event");
             return;
         }

@@ -50,7 +50,7 @@ public class PlanExecutorManager {
     // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(PlanExecutorManager.class);
     private static String adaptorId = "exec-" + UUID.randomUUID();
-    // TODO Andrew@2019-01-22: init 
+    // FIXME Andrew@2019-01-22: init
     private static String mqttBroker;
     private static TrsMqttGateway mqttGateway;
     private static ServletContext servletContext;

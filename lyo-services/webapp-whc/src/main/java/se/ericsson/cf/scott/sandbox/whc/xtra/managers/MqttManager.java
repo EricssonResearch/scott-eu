@@ -14,30 +14,25 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
 import se.ericsson.cf.scott.sandbox.whc.xtra.trs.TwinRegistrationListener;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 public class MqttManager {
     private final static Logger log = LoggerFactory.getLogger(MqttManager.class);
     private static MqttClient mqttClient;
     private static TwinRegistrationListener registrationListener;
 
     // TODO Andrew@2019-02-21: move to the repository
-    public static Map<String, URI> getTwins() {
-        return ImmutableMap.copyOf(registrationListener.getTwins());
-    }
+//    public static Map<String, URI> getTwins() {
+//        return ImmutableMap.copyOf(registrationListener.getTwins());
+//    }
 
-    // FIXME Andrew@2019-02-21: delete in favour of se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager.getExecService
-    public static ImmutableMap<String, URI> getExecutors() {
-        return ImmutableMap.copyOf(registrationListener.getExecutors());
-    }
-
-    public static MqttClient getMqttClient() {
-        return mqttClient;
-    }
+    // TODO Andrew@2019-02-21: delete in favour of se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager.getExecService
+//    public static ImmutableMap<String, URI> getExecutors() {
+//        return ImmutableMap.copyOf(registrationListener.getExecutors());
+//    }
+//
+//    public static MqttClient getMqttClient() {
+//        return mqttClient;
+//    }
 
     /**
      * Begin listening on AdaptorHelper.MQTT_TOPIC and perform a handshake with any twin that

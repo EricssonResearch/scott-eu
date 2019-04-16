@@ -21,11 +21,7 @@ data class ShelfLabel(override val value: String) : Label
 data class BeltLabel(override val value: String) : Label
 data class BoxLabel(override val value: String) : Label
 
-/**
- * TODO
- *
- * @since   TODO
- */
+
 class ProblemBuilder(val oslcHelper: OslcHelper, private val planRequestHelper: PlanRequestHelper) {
 
     companion object {
@@ -39,7 +35,7 @@ class ProblemBuilder(val oslcHelper: OslcHelper, private val planRequestHelper: 
     private val robots: MutableSet<String> = HashSet()
 
     // TODO Andrew@2019-02-19: use typed labels
-    // TODO Andrew@2019-02-19: use se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper.freeRobot
+    // |TODO Andrew@2019-02-19: use se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper.freeRobot
     private val freeRobots: MutableSet<String> = HashSet()
 
     private val initPositions: MutableMap<Pair<Int, Int>, Label> = HashMap()

@@ -8,12 +8,6 @@ data class LastWillMessage(val topic: String, val message: Model) {
         get() = MqttHelper.msgFromModel(TrsXConstants.rdfFormat, message).payload
 }
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
 interface RegistrationAgent {
     val lastWill: LastWillMessage?
     fun register(gateway: TrsMqttGateway)

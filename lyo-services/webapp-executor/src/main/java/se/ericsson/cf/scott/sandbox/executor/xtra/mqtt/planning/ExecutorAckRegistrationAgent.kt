@@ -22,12 +22,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.UriBuilder
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+// FIXME Andrew@2019-04-16: delete class
 @Deprecated("Twin registration shall be done via REST calls")
 class ExecutorAckRegistrationAgent(private val adaptorId: String,
                                    private val lastWillTopic: String) :

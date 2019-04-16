@@ -34,10 +34,6 @@ import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 public interface BworldDomainConstants
 {
     // Start of user code user constants
-    // FIXME Andrew@2018-02-23: stop capitalising RDF class names, only do this for Java classes
-//    public static String MOVE_LOCALNAME = "move";
-//    public static String BLOCK_LOCALNAME = "block"; //localName of the rdfs:class the resource describes
-//    public static String ON_LOCALNAME = "on"; //localName of the rdfs:class the resource describes
     // End of user code
 
     public static String BLOCKSWORLD_DOMAIN_DOMAIN = "http://ontology.cf.ericsson.net/pddl_example/";

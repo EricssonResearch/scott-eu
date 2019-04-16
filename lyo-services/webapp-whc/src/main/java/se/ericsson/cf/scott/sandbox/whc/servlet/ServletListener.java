@@ -58,7 +58,6 @@ public class ServletListener implements ServletContextListener  {
     public void contextInitialized(final ServletContextEvent servletContextEvent)
     {
         // Start of user code contextInitialized_init
-        //TODO: override the default servletName to match that defined in your web.xml configuration file.
         servletName = "oslc-servlet";
         // End of user code
 

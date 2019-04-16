@@ -29,12 +29,7 @@ import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsMqttClientManager;
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinAckRegistrationAgent;
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since TODO
- */
+
 public class TwinAdaptorHelper {
     private final static Logger log = LoggerFactory.getLogger(TwinAdaptorHelper.class);
     private final static UUID uuid = UUID.randomUUID();

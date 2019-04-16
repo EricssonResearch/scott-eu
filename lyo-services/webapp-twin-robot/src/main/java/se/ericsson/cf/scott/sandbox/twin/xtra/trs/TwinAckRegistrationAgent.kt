@@ -23,12 +23,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.UriBuilder
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 class TwinAckRegistrationAgent(val whcTopic: String) :
         SimpleAckRegistrationAgent<TrsServerAnnouncement, TrsServerAck>() {
     private val log = LoggerFactory.getLogger(javaClass)!!

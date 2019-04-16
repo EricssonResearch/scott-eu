@@ -8,12 +8,6 @@ import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.slf4j.LoggerFactory
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
 class MqttClientBuilder {
     val log = LoggerFactory.getLogger(javaClass)
     private var clientID = UUID.randomUUID().toString()
