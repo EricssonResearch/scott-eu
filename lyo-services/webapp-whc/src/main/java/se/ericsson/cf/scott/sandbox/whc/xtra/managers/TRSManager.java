@@ -16,12 +16,7 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
 import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since TODO
- */
+
 public class TRSManager {
 
     private final static Logger log = LoggerFactory.getLogger(TRSManager.class);
@@ -38,7 +33,6 @@ public class TRSManager {
     }
 
     public static void initTRSServer(final MqttClient mqttClient) {
-        // TODO Andrew@2018-07-18: figure out how the change history works over MQTT
         WarehouseControllerManager.setChangeHistories(
             new WhcChangeHistories(mqttClient, AdaptorHelper.p(WhcConfig.MQTT_TOPIC_PROP),
                 Duration.ofMinutes(5).toMillis()));

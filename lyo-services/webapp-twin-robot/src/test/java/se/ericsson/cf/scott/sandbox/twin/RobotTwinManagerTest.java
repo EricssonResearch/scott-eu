@@ -7,12 +7,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @version $version-stub$
- * @since 0.0.1
- */
-// TODO Andrew@2018-08-30: make a TwinManager  test
+
 public class RobotTwinManagerTest {
     private final static Logger log = LoggerFactory.getLogger(RobotTwinManagerTest.class);
 

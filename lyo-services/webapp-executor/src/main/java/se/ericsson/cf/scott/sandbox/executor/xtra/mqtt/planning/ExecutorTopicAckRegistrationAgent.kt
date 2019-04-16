@@ -21,12 +21,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.UriBuilder
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+// FIXME Andrew@2019-04-16: delete this class
 @Deprecated("Twin registration shall be done via REST calls")
 class ExecutorTopicAckRegistrationAgent() :
         TopicAckRegistrationAgent<TrsServerAnnouncement, TrsServerAck>() {
@@ -63,7 +58,7 @@ class ExecutorTopicAckRegistrationAgent() :
         }
     }
 
-    // FIXME should be defined here, I expect a ctor param for the base and += '/lwt' here
+    // TODO should be defined here, I expect a ctor param for the base and += '/lwt' here
     private val lwtTopic: String
         get() = TODO()
 

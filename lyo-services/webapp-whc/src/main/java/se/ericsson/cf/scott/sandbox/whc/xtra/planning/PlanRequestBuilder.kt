@@ -5,11 +5,7 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-/**
- * TODO
- *
- * @since   TODO
- */
+
 class PlanRequestBuilder {
     companion object {
         val log: Logger = LoggerFactory.getLogger(PlanRequestBuilder::class.java)
@@ -19,8 +15,6 @@ class PlanRequestBuilder {
     private lateinit var domain: Model
 
     fun build(): Model {
-        // TODO Andrew@2019-02-19: remove all use of URIs beforehand?
-
         val m = ModelFactory.createDefaultModel()
 
         m.add(domain)

@@ -15,12 +15,6 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
 public class AdaptorHelper {
     private final static Logger log = LoggerFactory.getLogger(AdaptorHelper.class);
     private final static String PACKAGE_ROOT = WarehouseControllerManager.class.getPackage().getName();
@@ -49,9 +43,9 @@ public class AdaptorHelper {
      *
      * @see AdaptorHelper#getMqttClientId()
      */
+    // TODO Andrew@2019-04-16: delete this method
     @Deprecated
     public static String getMqttClientIdStatic() {
-        // FIXME Andrew@2019-01-29: what about the generated UUID?!
         return WhcConfig.MQTT_CLIENT_ID;
     }
 

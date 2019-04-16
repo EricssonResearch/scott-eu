@@ -7,10 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 data class TwinInfo(val label: String)
 
-/**
- * TODO
- *
- */
+
 class TwinRepository {
     private val _twins: MutableSet<TwinInfo> = Collections.newSetFromMap(ConcurrentHashMap())
     val twins: Set<TwinInfo>

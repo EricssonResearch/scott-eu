@@ -11,12 +11,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   0.0.1
- */
+
 object MqttHelper {
     val log: Logger = LoggerFactory.getLogger(MqttHelper.javaClass)
     var QoS = 1

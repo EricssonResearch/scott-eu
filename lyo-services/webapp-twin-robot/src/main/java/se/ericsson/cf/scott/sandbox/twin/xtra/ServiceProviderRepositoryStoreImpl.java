@@ -11,12 +11,7 @@ import org.eclipse.lyo.store.StoreAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since TODO
- */
+
 public class ServiceProviderRepositoryStoreImpl implements ServiceProviderRepository {
     private final static Logger log = LoggerFactory.getLogger(ServiceProviderRepositoryStoreImpl.class);
     private final Store store;
@@ -41,7 +36,7 @@ public class ServiceProviderRepositoryStoreImpl implements ServiceProviderReposi
             log.error("Can't fetch ServiceProviders from {}", twinsGraphURI, e);
             throw new IllegalStateException(e);
         } catch (IllegalArgumentException e) {
-            // TODO Andrew@2019-01-23: better handling, preferably with a more concrete exception
+            // FIXME Andrew@2019-01-23: better handling, preferably with a more concrete exception
             return new LinkedList<>();
         }
     }

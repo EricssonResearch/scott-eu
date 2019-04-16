@@ -373,8 +373,9 @@ public class ServiceProviderCatalogSingleton
     }
 
 
-    // TODO Andrew@2019-01-23: move to the Core
-    // TODO Andrew@2019-01-23: use unsorted Set
+    // TO?DO Andrew@2019-01-23: move to the Core
+    // TO?DO Andrew@2019-01-23: use unsorted Set
+    // TBD Andrew@2019-04-16: Is it still needed?
     private static SortedSet<URI> getServiceProviderDomains(final ServiceProvider serviceProvider)
     {
         final SortedSet<URI> domains = new TreeSet<URI>();

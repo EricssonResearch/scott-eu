@@ -12,11 +12,7 @@ import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 
-/**
- * TODO
- *
- * @since   TODO
- */
+
 public class ServiceProviderRepositoryFakeImpl implements ServiceProviderRepository {
     private final static Logger log = LoggerFactory.getLogger(ServiceProviderRepositoryFakeImpl.class);
     private final Set<ServiceProvider> serviceProviders = new HashSet<>();

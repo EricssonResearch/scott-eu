@@ -26,18 +26,11 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 public class WhcChangeHistories extends ChangeHistories {
 
     private final static Logger log = LoggerFactory.getLogger(WhcChangeHistories.class);
 
-    // TODO Andrew@2018-02-26: extract a default "manual" implementation
-//    public static final WhcChangeHistories INSTANCE = new WhcChangeHistories();
     private final List<HistoryData>   history            = new ArrayList<>();
     private final Map<URI, IResource> trackedResourceMap = new HashMap<>();
     private final MqttClient client;

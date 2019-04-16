@@ -16,11 +16,7 @@ import java.io.StringWriter
 import java.lang.reflect.InvocationTargetException
 import javax.xml.datatype.DatatypeConfigurationException
 
-/**
- * TODO
- *
- * @since   TODO
- */
+
 object RdfHelpers {
     
     val log: Logger = LoggerFactory.getLogger(RdfHelpers::class.java)

@@ -36,12 +36,6 @@ import java.io.ByteArrayInputStream
 import java.net.URI
 import java.nio.charset.StandardCharsets
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
 class ChangeEventMqttMessageListener(private val changeEventListener: ChangeEventListener) :
         IMqttMessageListener {
     private val log = LoggerFactory.getLogger(javaClass)

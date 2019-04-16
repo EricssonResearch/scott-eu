@@ -15,12 +15,7 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig
 import java.io.ByteArrayOutputStream
 import java.net.URI
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 class PlanRequestHelperTest {
 
     @Test

@@ -22,11 +22,7 @@ import java.net.URI
 import java.util.Arrays
 import java.util.concurrent.atomic.AtomicInteger
 
-/**
- * TODO
- *
- * @since   TODO
- */
+
 class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
 
     companion object {
@@ -70,7 +66,6 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
         val oslcHelper = OslcHelper(WhcConfig.getBaseUri())
         val requestBuilder = PlanRequestBuilder()
         val stateBuilder = ProblemBuilder(oslcHelper, PlanRequestHelper(oslcHelper))
-        // TODO Andrew@2019-02-19: set OslcRdfHelper base or use a real URI
         requestBuilder.domainFromModel(domain)
             .withStateBuilder(stateBuilder)
 
@@ -142,11 +137,9 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
         val helper = OslcHelper(WhcConfig.getBaseUri())
         var requestBuilder = PlanRequestBuilder()
         val stateBuilder = ProblemBuilder(helper, PlanRequestHelper(helper))
-        // TODO Andrew@2019-02-19: set OslcRdfHelper base or use a real URI
         requestBuilder = requestBuilder.domainFromModel(domain)
             .withStateBuilder(stateBuilder)
 
-        // TODO Andrew@2019-03-12: use defineStaticProblemPart()
         val _width = 25
         val _height = 25
         stateBuilder//.problemUri(OslcHelpers.u("scott-warehouse-problem"))
@@ -162,15 +155,12 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
             .robotAtInit("ob2", 12, 11)
             .robotAtInit("ob3", 12, 10)
             .boxOnBeltGoal("b1", "cb1")
-        // TODO Andrew@2019-02-19: do we need negation too?
-        //.boxNotOnShelfGoal("b1", "sh1");
 
         if(twins.size % _width > 11) {
             log.warn("Too many robots; the robots inits may overlap with the static obstacles")
         }
 
         for ((i, it) in twins.withIndex()) {
-            // TODO WARN Andrew@2019-03-12: not really sortable
             stateBuilder.robotAtInit(it.label, i % _width, i / _height + 1)
         }
 
@@ -194,8 +184,6 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
         }
         log.info("Registering plan $key")
         plans[key] = planResources
-        // TODO Andrew@2019-02-20: check the with Jad what hack from Yash did he mean
-        // TODO Andrew@2018-02-23: here the plan needs to be put through lyo store update
         WarehouseControllerManager.getChangeHistories()
             .addResource(plan)
     }

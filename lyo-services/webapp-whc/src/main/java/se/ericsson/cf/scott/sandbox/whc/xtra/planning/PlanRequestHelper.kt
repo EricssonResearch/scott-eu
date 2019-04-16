@@ -8,6 +8,7 @@ import eu.scott.warehouse.domains.blocksworld.Move
 import eu.scott.warehouse.domains.pddl.Action
 import eu.scott.warehouse.domains.pddl.Plan
 import eu.scott.warehouse.domains.pddl.PrimitiveType
+import eu.scott.warehouse.domains.pddl.Step
 import eu.scott.warehouse.lib.InstanceWithResources
 import eu.scott.warehouse.lib.OslcHelper
 import eu.scott.warehouse.lib.OslcHelpers
@@ -288,8 +289,7 @@ class PlanRequestHelper(private val oslcHelper: OslcHelper) {
     fun getPlanResources(planModel: Model, plan: Plan): Array<Any> {
         val planResources = ArrayList<IResource>()
         planResources.add(plan)
-        // TODO Andrew@2018-02-23: why not getSteps?
-        val planSteps = plan.step
+        val planSteps: MutableSet<Step> = plan.step
         for (step in planSteps) {
             step.order = (step.extendedProperties as Map<QName, Any>).getOrDefault(
                 QName(WhcConfig.NS_SHACL, "order"), null) as Int

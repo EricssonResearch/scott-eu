@@ -23,12 +23,7 @@ import javax.ws.rs.core.UriBuilder
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 class TrsMqttClientManager() {
     private val log = LoggerFactory.getLogger(javaClass)
     private val executorService: ScheduledExecutorService = Executors.newScheduledThreadPool(32)
@@ -132,10 +127,10 @@ class TrsMqttClientManager() {
         return mqttClient
     }
 
+    @Deprecated("remove MQTT reg path")
     private fun subscribeToPlans(trsTopic: String) {
         mqttClient.subscribe(trsTopic, ChangeEventMqttMessageListener(
             PlanChangeEventListener(executorService)))
-        // TODO Andrew@2018-07-29: shall I ACK this too to make WHC registration deterministic?
 //        mqttClient.subscribe(trsTopic, ChangeEventMqttMessageListener(
 //                ChangeEventListener { changeEvent, trsResourceModel ->
 //                    log.info("Change Event on resource ${changeEvent.changed} received")

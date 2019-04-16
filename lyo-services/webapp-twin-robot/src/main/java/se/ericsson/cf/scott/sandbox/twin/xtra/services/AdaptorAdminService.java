@@ -18,11 +18,6 @@ import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinRegistrationClient;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 
-/**
- * TODO
- *
- * @since   TODO
- */
 @Path("admin")
 public class AdaptorAdminService {
     private final static Logger log = LoggerFactory.getLogger(AdaptorAdminService.class);
@@ -41,7 +36,6 @@ public class AdaptorAdminService {
     {
         log.info("Processing the init call (RDF input)");
 
-        // TODO Andrew@2019-01-28: just validate the resource and use it
         final TwinsServiceProviderInfo twinInfo = new TwinsServiceProviderInfo(sp.getTitle(), "robot", sp.getIdentifier());
         try {
             final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(

@@ -9,12 +9,7 @@ import org.slf4j.LoggerFactory
 import java.net.URI
 import javax.ws.rs.core.Response
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 class TwinRegistrationClient(private val client: OslcClient, private val registrationCFUri: String) {
     val log = LoggerFactory.getLogger(javaClass)
 
@@ -38,14 +33,6 @@ class TwinRegistrationClient(private val client: OslcClient, private val registr
         registrationMessage.trsMqttTopic = trsMqttTopic(id)
         val createResource = client.createResource(registrationCFUri, registrationMessage,
             OslcMediaType.TEXT_TURTLE)
-    }
-
-    private fun trsMqttTopic(trsURI: URI?): String {
-        TODO("TRS Server MQTT topic can't be returned")
-    }
-
-    private fun trsURI(id: ServiceProvider): URI? {
-        TODO("TRS Server MQTT topic can't be returned")
     }
 
     @Deprecated("Remove dummy impl")

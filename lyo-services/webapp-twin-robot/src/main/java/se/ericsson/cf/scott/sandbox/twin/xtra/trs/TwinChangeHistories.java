@@ -15,12 +15,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 public class TwinChangeHistories extends ChangeHistories {
     // TODO Andrew@2018-09-04: extract a common superclass with the WhcCH
     private final static Logger log = LoggerFactory.getLogger(TwinChangeHistories.class);
