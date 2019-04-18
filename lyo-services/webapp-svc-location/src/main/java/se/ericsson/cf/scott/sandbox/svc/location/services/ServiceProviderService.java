@@ -82,7 +82,6 @@ public class ServiceProviderService
          usages = {OslcConstants.OSLC_USAGE_DEFAULT}
     )
     @GET
-    
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public ServiceProvider[] getServiceProviders()
     {

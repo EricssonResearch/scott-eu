@@ -14,8 +14,14 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 
 println("Running twin initialisation script...")
 
+String endpoint = 'http://localhost:8081/'
+if (args.length > 3 && args[3] == "debug") {
+    // TODO use 8180
+    endpoint = 'http://localhost:8080/'
+}
+
 HttpBuilder client = HttpBuilder.configure {
-    request.uri = 'http://localhost:8081/'
+    request.uri = endpoint
     request.encoder('text/turtle') { ChainedHttpConfig config, ToServer req ->
         // TODO optimise directly to bytes
         def rdf = serialiseModel(JenaModelHelper.createJenaModel([config.request.body] as Object[]), RDFFormat.TURTLE_PRETTY)

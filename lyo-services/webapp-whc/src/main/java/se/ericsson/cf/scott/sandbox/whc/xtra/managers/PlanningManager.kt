@@ -31,8 +31,8 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
 
     private val domain: Model = RdfHelpers.modelFromTurtleResource(PlanningManager::class.java,
         "pddl/dom-connectivity.ttl")
-    private val width = 8
-    private val height = 8
+    private val width = 4
+    private val height = 4
 
     private var counter: AtomicInteger = AtomicInteger(1)
 
@@ -73,7 +73,7 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
 
         val (x, y) = generateInitCoords()
         stateBuilder.robotsActive(listOf(twinInfo.label))
-            .robotAtInit(twinInfo.label, x, y)
+            .robotAtInit(twinInfo.id, x, y)
 
         return requestBuilder.build()
     }
@@ -81,8 +81,8 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
     private fun generateInitCoords(): Pair<Int, Int> {
         val counterValue = counter.getAndIncrement()
         val x = counterValue % width
-        val y = counterValue / height
-        log.debug("Allocating ($x, $y) coordinate for an init position")
+        val y = counterValue / height + 1
+        log.debug("Allocating ($y, $x) coordinate for an init position")
         return Pair(x, y)
     }
 
@@ -91,12 +91,12 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
             .problemDomain(Link(stateBuilder.oslcHelper.u("scott-warehouse")))
             .warehouseSize(width, height);
 
-        stateBuilder.shelfAt("sh1", 1, 7)
-            .beltAt("cb1", 7, 2)
-            .robotsInactive(Arrays.asList("ob1", "ob2", "ob3"))
-            .robotAtInit("ob1", 5, 6)
-            .robotAtInit("ob2", 5, 5)
-            .robotAtInit("ob3", 5, 4)
+        stateBuilder.shelfAt("sh1", 1, 3)
+            .beltAt("cb1", 3, 3)
+//            .robotsInactive(Arrays.asList("ob1", "ob2", "ob3"))
+//            .robotAtInit("ob1", 5, 6)
+//            .robotAtInit("ob2", 5, 5)
+//            .robotAtInit("ob3", 5, 4)
 
         stateBuilder.boxOnShelfInit("b1", "sh1")
             .boxOnBeltGoal("b1", "cb1")
@@ -106,18 +106,6 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
         log.debug(
             "Sending the plan to the Digital Twin '${twinInfo.label}':\n${RdfHelpers.modelToString(
                 planModel)}")
-    }
-
-    fun triggerSamplePlanning(
-        twinsRepository: TwinRepository) {
-        log.info("Performing sample planning")
-        val requestModel = buildSamplePlanRequest(twinsRepository.twins)
-
-        val planModel = planRequestHelper.requestPlan(requestModel)
-        val responseStr = RdfHelpers.modelToString(planModel)
-        log.debug("Received Plan response: $responseStr")
-
-        tryRegisterPlan(planModel)
     }
 
     private fun tryRegisterPlan(planModel: Model) {
@@ -131,42 +119,6 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
         }
     }
 
-
-    private fun buildSamplePlanRequest(twins: Set<TwinInfo>): Model {
-        log.trace("Building planning request")
-        val helper = OslcHelper(WhcConfig.getBaseUri())
-        var requestBuilder = PlanRequestBuilder()
-        val stateBuilder = ProblemBuilder(helper, PlanRequestHelper(helper))
-        requestBuilder = requestBuilder.domainFromModel(domain)
-            .withStateBuilder(stateBuilder)
-
-        val _width = 25
-        val _height = 25
-        stateBuilder//.problemUri(OslcHelpers.u("scott-warehouse-problem"))
-            .genLabel("TRS-Safety prototype plan request")
-            .problemDomain(Link(helper.u("scott-warehouse")))
-            .warehouseSize(_width, _height)
-            .robotsActive(twins.map { it.label })
-            .robotsInactive(Arrays.asList("ob1", "ob2", "ob3"))
-            .shelfAt("sh1", 0, 10)
-            .beltAt("cb1", 0, 20)
-            .boxOnShelfInit("b1", "sh1")
-            .robotAtInit("ob1", 12, 12)
-            .robotAtInit("ob2", 12, 11)
-            .robotAtInit("ob3", 12, 10)
-            .boxOnBeltGoal("b1", "cb1")
-
-        if(twins.size % _width > 11) {
-            log.warn("Too many robots; the robots inits may overlap with the static obstacles")
-        }
-
-        for ((i, it) in twins.withIndex()) {
-            stateBuilder.robotAtInit(it.label, i % _width, i / _height + 1)
-        }
-
-        return requestBuilder.build()
-
-    }
 
     @Throws(LyoJenaModelException::class)
     private fun unmarshalPlan(planModel: Model): Pair<Plan, Array<Any>> {
