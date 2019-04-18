@@ -53,17 +53,13 @@ public class PlanContainer implements Container<Plan> {
      * if we try to create a model from it.
      * @param r
      */
+    // TODO Andrew@2018-03-04: remove once Bug 531986 is fixed
     private void cleanUpMembership(final IExtendedResource r) {
         final Map<QName, Object> extendedProperties = r.getExtendedProperties();
         final QName offendingProperty = new QName("http://www.w3.org/2000/01/rdf-schema#",
                                                   "member",
                                                   "rfds");
-        // TODO Andrew@2018-03-04: remove once Bug 531986 is fixed
         extendedProperties.remove(offendingProperty);
-//        final ArrayList<Object> members = (ArrayList<Object>) extendedProperties.get(
-//                offendingProperty);
-//        // remove itself!
-//        members.remove(r);
     }
 
     @Override

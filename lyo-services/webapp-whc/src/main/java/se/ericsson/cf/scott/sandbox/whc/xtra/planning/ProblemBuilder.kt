@@ -94,8 +94,8 @@ class ProblemBuilder(val oslcHelper: OslcHelper, private val planRequestHelper: 
     private fun buildObjects() {
         // Shop floor
 
-        for(x in 0..width) {
-            for(y in 0..height) {
+        for(x in 1..width) {
+            for(y in 1..height) {
                 val waypoint: IExtendedResource = planRequestHelper.waypoint(x, y)
                 addObject(waypoint)
             }
@@ -128,8 +128,8 @@ class ProblemBuilder(val oslcHelper: OslcHelper, private val planRequestHelper: 
             addInit(freeRobot)
         }
 
-        for (x in 0..width) {
-            for (y in 0..height) {
+        for (x in 1..width) {
+            for (y in 1..height) {
                 if (x < width) {
                     addInit(
                         planRequestHelper.canMove(lookupWaypoint(x, y), lookupWaypoint(x + 1, y)))

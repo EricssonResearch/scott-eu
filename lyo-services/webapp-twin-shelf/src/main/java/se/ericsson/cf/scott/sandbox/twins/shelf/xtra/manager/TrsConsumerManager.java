@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.lyo.oslc4j.trs.client.config.TrsConsumerConfiguration;
 import org.eclipse.lyo.oslc4j.trs.client.config.TrsProviderConfiguration;
 import org.eclipse.lyo.oslc4j.trs.client.handlers.TrsProviderHandler;
-import org.eclipse.lyo.oslc4j.trs.client.util.TrsBasicAuthOslcClient;
 import org.eclipse.lyo.oslc4j.trs.client.util.TrsConsumerUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -55,12 +54,8 @@ public class TrsConsumerManager {
 
     @NotNull
     private static TrsConsumerConfiguration buildConsumerConfig() {
-        return new TrsConsumerConfiguration(AdaptorHelper.p("store.query"),
-                                            // disable the SPARQL triplestore update
-                                            null, null, null, new TrsBasicAuthOslcClient(),
-                                            getMqttClientId(),
-                                            // nothing fancy is really needed on the twins
-                                            Executors.newSingleThreadScheduledExecutor()
+        return new TrsConsumerConfiguration(AdaptorHelper.p("store.query"), null, null, null,
+            getMqttClientId(), Executors.newSingleThreadScheduledExecutor(), null, null
         );
     }
 
