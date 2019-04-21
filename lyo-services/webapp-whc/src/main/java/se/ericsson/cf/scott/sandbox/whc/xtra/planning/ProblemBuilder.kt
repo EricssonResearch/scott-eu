@@ -257,7 +257,24 @@ class ProblemBuilder(val oslcHelper: OslcHelper, private val planRequestHelper: 
     }
 
     private fun lookupNaive(label: String): IExtendedResource {
-        return resources.single { r -> r.about == oslcHelper.u(label) }
+        val matchingResources: List<IExtendedResource> = resources.filter { r ->
+            r.about == oslcHelper.u(label)
+        }
+        val size = matchingResources.size
+        if (size > 0) {
+            if (size > 1) {
+                log.warn("More than one resource matches label '$label'")
+            }
+            return matchingResources.single()
+        } else {
+            log.error("No match for resource '$label'")
+            if(log.isDebugEnabled) {
+                val resourceList = resources.map { it.toString() }
+                    .joinToString("\n")
+                log.debug("Registered resources: \n$resourceList")
+            }
+            throw IllegalArgumentException("Resource '$label' is not registered in the problem")
+        }
     }
 
     fun warehouseSize(_width: Int, _height: Int): ProblemBuilder {

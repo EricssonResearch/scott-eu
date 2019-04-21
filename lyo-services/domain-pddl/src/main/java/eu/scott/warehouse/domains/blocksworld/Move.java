@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -96,13 +92,13 @@ public class Move
 {
     // Start of user code attributeAnnotation:moveB
     // End of user code
-    private Link moveB = new Link();
+    private Link moveB;
     // Start of user code attributeAnnotation:moveX
     // End of user code
-    private Link moveX = new Link();
+    private Link moveX;
     // Start of user code attributeAnnotation:moveY
     // End of user code
-    private Link moveY = new Link();
+    private Link moveY;
     
     // Start of user code classAttributes
     // End of user code
@@ -125,7 +121,6 @@ public class Move
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -157,34 +152,6 @@ public class Move
     
         // Start of user code toString_finalize
         result = "Move{" + "block=" + moveB + ", from=" + moveX + ", to=" + moveY + '}';
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -271,140 +238,6 @@ public class Move
     
         // Start of user code setterFinalize:moveY
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String moveBToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:moveBToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"move-b\">move-b: </LABEL>";
-    
-        // Start of user code "Mid:moveBToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:moveBToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String moveXToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:moveXToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"move-x\">move-x: </LABEL>";
-    
-        // Start of user code "Mid:moveXToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:moveXToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String moveYToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:moveYToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"move-y\">move-y: </LABEL>";
-    
-        // Start of user code "Mid:moveYToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:moveYToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String moveBToHtml()
-    {
-        String s = "";
-    
-        // Start of user code moveBtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((moveB == null) || (moveB.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Block (moveB.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code moveBtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String moveXToHtml()
-    {
-        String s = "";
-    
-        // Start of user code moveXtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((moveX == null) || (moveX.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new LocationOrBlock (moveX.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code moveXtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String moveYToHtml()
-    {
-        String s = "";
-    
-        // Start of user code moveYtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((moveY == null) || (moveY.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new LocationOrBlock (moveY.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code moveYtoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

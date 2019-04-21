@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -93,7 +89,7 @@ public class Or
 {
     // Start of user code attributeAnnotation:argument
     // End of user code
-    private HashSet<Link> argument = new HashSet<Link>();
+    private Set<Link> argument = new HashSet<Link>();
     
     // Start of user code classAttributes
     // End of user code
@@ -116,7 +112,6 @@ public class Or
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -152,34 +147,6 @@ public class Or
         return result;
     }
     
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
-        // End of user code
-    
-        return result;
-    }
-    
     public void addArgument(final Link argument)
     {
         this.argument.add(argument);
@@ -204,7 +171,7 @@ public class Or
     
     // Start of user code setterAnnotation:argument
     // End of user code
-    public void setArgument(@NonNull final Set<Link> argument )
+    public void setArgument(final Set<Link> argument )
     {
         // Start of user code setterInit:argument
         // End of user code
@@ -216,58 +183,6 @@ public class Or
     
         // Start of user code setterFinalize:argument
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String argumentToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:argumentToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"argument\">argument: </LABEL>";
-    
-        // Start of user code "Mid:argumentToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:argumentToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String argumentToHtml()
-    {
-        String s = "";
-    
-        // Start of user code argumenttoHtml_mid
-        // End of user code
-    
-        try {
-            s = s + "<ul>";
-            for(Link next : argument) {
-                s = s + "<li>";
-                if (next.getValue() == null) {
-                    s= s + "<em>null</em>";
-                }
-                else {
-                    s = s + "<a href=\"" + next.getValue().toString() + "\">" + next.getValue().toString() + "</a>";
-                }
-                s = s + "</li>";
-            }
-            s = s + "</ul>";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code argumenttoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     
