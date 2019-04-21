@@ -76,6 +76,9 @@
     <resources name="Shelf" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1"/>
     <resources name="ConveyorBelt" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1"/>
     <resources name="Robot"/>
+    <resources name="drop-belt"/>
+    <resources name="move-to-wp"/>
+    <resources name="pick-shelf"/>
     <resourceProperties name="at-x" valueType="Resource" range="//@domainSpecifications.4/@resources.0"/>
     <resourceProperties name="at-y" valueType="Resource" range="//@domainSpecifications.4/@resources.0"/>
     <resourceProperties name="on-belt" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications.4/@resources.3"/>
