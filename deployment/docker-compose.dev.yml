@@ -8,35 +8,76 @@ services:
     networks:
       - overlay
     ports:
-      - "3021:3020" # mapping of external port to internal port
-    stdin_open: true # TODO why?
+      - "3021:3020" # external:internal
+    stdin_open: true
     deploy:
-      # should be stateless
       replicas: 1
       restart_policy:
-        condition: on-failure
+        # debug only
+        condition: none
       resources:
         limits:
           memory: 384m
   sandbox-whc:
     image: scott/webapp-whc
-    # environment:
-      # JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+    environment:
+      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
     networks:
       - overlay
     ports:
       - "8080:8080"
+      - "9980:9999"
     deploy:
-      # not ready for scaling yet
+      replicas: 1
+      restart_policy:
+        # debug only
+        condition: none
+      resources:
+        limits:
+          memory: 384m
+  sandbox-twin:
+    image: scott/webapp-twin-robot
+    environment:
+      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+    networks:
+      - overlay
+    ports:
+     - "8081:8080"
+     - "9981:9999"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 384m
+      restart_policy:
+        condition: none
+  warehouse-fuseki:
+    image: scott/jena-fuseki
+    networks:
+      - overlay
+    ports:
+      - "3030:3030"
+    deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
       resources:
         limits:
-          memory: 384m
-    # depends_on:
-      # - warehouse-fuseki
-      # - mosquitto
+          memory: 512m
+  mosquitto:
+    image: scott/eclipse-mosquitto
+    networks:
+      - overlay
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 192m
   # sandbox-executor:
   #   image: scott/webapp-executor
   #   # environment:
@@ -55,25 +96,6 @@ services:
   #         memory: 384m
   #     restart_policy:
   #       condition: on-failure
-  sandbox-twin:
-    image: scott/webapp-twin-robot
-    environment:
-      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-    networks:
-      - overlay
-    ports:
-     - "8081:8080" # Jetty
-    #  - "9991:9999" # remote debugger
-    # depends_on:
-      # - warehouse-fuseki
-      # - mosquitto
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 384m
-      restart_policy:
-        condition: on-failure
   # twin-shelf:
   #   image: scott/webapp-twin-shelf
   #   # environment:
@@ -112,33 +134,6 @@ services:
   #         memory: 384m
   #     restart_policy:
   #       condition: on-failure
-  warehouse-fuseki:
-    image: scott/jena-fuseki
-    networks:
-      - overlay
-    ports:
-      - "3030:3030"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      resources:
-        limits:
-          memory: 1024m
-  mosquitto:
-    image: scott/eclipse-mosquitto
-    networks:
-      - overlay
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      resources:
-        limits:
-          memory: 384m
 
 networks:
   overlay:
