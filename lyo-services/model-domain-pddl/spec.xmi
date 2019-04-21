@@ -70,7 +70,7 @@
   <domainSpecifications name="RDFS" namespaceURI="http://www.w3.org/2000/01/rdf-schema#" namespacePrefix="//@domainPrefixes.3">
     <resourceProperties name="label" valueType="String" description="Parameter name."/>
   </domainSpecifications>
-  <domainSpecifications name="SCOTT Warehouse" namespaceURI="http://ontology.cf.ericsson.net/ns/scott-warehouse#" namespacePrefix="//@domainPrefixes.4">
+  <domainSpecifications name="SCOTT Warehouse" namespaceURI="http://ontology.cf.ericsson.net/ns/scott-warehouse/" namespacePrefix="//@domainPrefixes.4">
     <resources name="Coord" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
     <resources name="Box" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1 //@domainSpecifications.4/@resourceProperties.2 //@domainSpecifications.4/@resourceProperties.3 //@domainSpecifications.4/@resourceProperties.4 //@domainSpecifications.4/@resourceProperties.5"/>
     <resources name="Shelf" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1"/>
