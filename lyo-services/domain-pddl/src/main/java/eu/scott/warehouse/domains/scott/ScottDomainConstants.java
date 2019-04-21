@@ -36,8 +36,8 @@ public interface ScottDomainConstants
     // Start of user code user constants
     // End of user code
 
-    public static String SCOTT_WAREHOUSE_DOMAIN = "http://ontology.cf.ericsson.net/ns/scott-warehouse#";
-    public static String SCOTT_WAREHOUSE_NAMSPACE = "http://ontology.cf.ericsson.net/ns/scott-warehouse#";
+    public static String SCOTT_WAREHOUSE_DOMAIN = "http://ontology.cf.ericsson.net/ns/scott-warehouse/";
+    public static String SCOTT_WAREHOUSE_NAMSPACE = "http://ontology.cf.ericsson.net/ns/scott-warehouse/";
     public static String SCOTT_WAREHOUSE_NAMSPACE_PREFIX = "scott";
 
     public static String BOX_PATH = "box";
