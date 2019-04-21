@@ -9,6 +9,11 @@ import org.slf4j.LoggerFactory
 import java.net.URI
 import javax.ws.rs.core.Response
 
+object TwinRegistrationHelper {
+    fun stripIdentifierUri(
+        uriString: String) = uriString.split('/').last()
+
+}
 
 class TwinRegistrationClient(private val client: OslcClient, private val registrationCFUri: String) {
     val log = LoggerFactory.getLogger(javaClass)
@@ -22,18 +27,11 @@ class TwinRegistrationClient(private val client: OslcClient, private val registr
 //        m.trsUri = trsURI(serviceProvider)
 //        m.trsMqttTopic = trsMqttTopic(m.trsUri)
         m.label = serviceProvider.description
+        m.twinId = TwinRegistrationHelper.stripIdentifierUri(serviceProvider.identifier)
 
         return client.createResource(registrationCFUri, m, OslcMediaType.TEXT_TURTLE)
     }
 
-    @Deprecated("Should pass the newly created ServiceProvider instead")
-    fun registerTwin(id: String) {
-        val registrationMessage = RegistrationMessage()
-        registrationMessage.trsUri = trsURI(id)
-        registrationMessage.trsMqttTopic = trsMqttTopic(id)
-        val createResource = client.createResource(registrationCFUri, registrationMessage,
-            OslcMediaType.TEXT_TURTLE)
-    }
 
     @Deprecated("Remove dummy impl")
     fun trsMqttTopic(id: String) = "scott.warehouse.todo"

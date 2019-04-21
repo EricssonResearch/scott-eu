@@ -19,7 +19,6 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.planning.ProblemBuilder
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinInfo
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository
 import java.net.URI
-import java.util.Arrays
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -52,11 +51,19 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
         log.info("Creating one plan per Digital Twin")
 
         twinsRepository.twins.parallelStream()
-            .forEach { twinInfo: TwinInfo ->
-                val requestModel: Model = buildPlanRequestFor(twinInfo)
-                val planModel: Model = planRequestHelper.requestPlan(requestModel)
-                sendPlan(twinInfo, planModel)
+            .forEach { twinInfo ->
+                planForTwin(twinInfo)
             }
+    }
+
+    private fun planForTwin(twinInfo: TwinInfo) {
+        try {
+            val requestModel: Model = buildPlanRequestFor(twinInfo)
+            val planModel: Model = planRequestHelper.requestPlan(requestModel)
+            sendPlan(twinInfo, planModel)
+        } catch (e: Exception) {
+            log.error("Unexpected exception while creating a plan for Twin '${twinInfo.id}': ", e)
+        }
     }
 
 
@@ -72,7 +79,7 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper) {
         defineStaticProblemPart(stateBuilder)
 
         val (x, y) = generateInitCoords()
-        stateBuilder.robotsActive(listOf(twinInfo.label))
+        stateBuilder.robotsActive(listOf(twinInfo.id))
             .robotAtInit(twinInfo.id, x, y)
 
         return requestBuilder.build()

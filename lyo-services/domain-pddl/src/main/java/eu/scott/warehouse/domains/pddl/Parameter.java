@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -94,7 +90,7 @@ public class Parameter
 {
     // Start of user code attributeAnnotation:type
     // End of user code
-    private Link type = new Link();
+    private Link type;
     // Start of user code attributeAnnotation:label
     // End of user code
     private String label;
@@ -123,7 +119,6 @@ public class Parameter
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -154,34 +149,6 @@ public class Parameter
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -269,142 +236,6 @@ public class Parameter
     
         // Start of user code setterFinalize:order
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String typeToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:typeToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"type\">type: </LABEL>";
-    
-        // Start of user code "Mid:typeToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:typeToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"label\">label: </LABEL>";
-    
-        // Start of user code "Mid:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"label\" type=\"text\" style=\"width: 400px\" id=\"label\" >";
-        // Start of user code "Finalize:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String orderToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:orderToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"order\">order: </LABEL>";
-    
-        // Start of user code "Mid:orderToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"order\" type=\"text\" style=\"width: 400px\" id=\"order\" >";
-        // Start of user code "Finalize:orderToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String typeToHtml()
-    {
-        String s = "";
-    
-        // Start of user code typetoHtml_mid
-        // End of user code
-    
-        try {
-            if ((type == null) || (type.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new EitherType (type.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code typetoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String labelToHtml()
-    {
-        String s = "";
-    
-        // Start of user code labeltoHtml_mid
-        // End of user code
-    
-        try {
-            if (label == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + label.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code labeltoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String orderToHtml()
-    {
-        String s = "";
-    
-        // Start of user code ordertoHtml_mid
-        // End of user code
-    
-        try {
-            if (order == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + order.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code ordertoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -93,7 +89,7 @@ public class Function
 {
     // Start of user code attributeAnnotation:parameter
     // End of user code
-    private Link parameter = new Link();
+    private Link parameter;
     // Start of user code attributeAnnotation:label
     // End of user code
     private String label;
@@ -119,7 +115,6 @@ public class Function
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -150,34 +145,6 @@ public class Function
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -237,97 +204,6 @@ public class Function
     
         // Start of user code setterFinalize:label
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String parameterToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:parameterToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"parameter\">parameter: </LABEL>";
-    
-        // Start of user code "Mid:parameterToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:parameterToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"label\">label: </LABEL>";
-    
-        // Start of user code "Mid:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"label\" type=\"text\" style=\"width: 400px\" id=\"label\" >";
-        // Start of user code "Finalize:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String parameterToHtml()
-    {
-        String s = "";
-    
-        // Start of user code parametertoHtml_mid
-        // End of user code
-    
-        try {
-            if ((parameter == null) || (parameter.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + parameter.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code parametertoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String labelToHtml()
-    {
-        String s = "";
-    
-        // Start of user code labeltoHtml_mid
-        // End of user code
-    
-        try {
-            if (label == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + label.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code labeltoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

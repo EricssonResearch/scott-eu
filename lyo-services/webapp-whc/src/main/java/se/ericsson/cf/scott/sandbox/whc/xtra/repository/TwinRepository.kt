@@ -5,7 +5,7 @@ import eu.scott.warehouse.domains.twins.RegistrationMessage
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 
-data class TwinInfo(val label: String, val id: String)
+data class TwinInfo(val id: String, val label: String)
 
 
 class TwinRepository {
@@ -14,7 +14,6 @@ class TwinRepository {
         get() = ImmutableSet.copyOf(_twins)
 
     fun registerTwin(message: RegistrationMessage) {
-        // FIXME Andrew@2019-04-20: extract an ID
-        _twins += TwinInfo(message.label, message.label)
+        _twins += TwinInfo(message.twinId, message.label)
     }
 }

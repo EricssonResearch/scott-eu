@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -119,7 +115,6 @@ public class Waypoint
         // End of user code
     }
     
-    
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
@@ -149,34 +144,6 @@ public class Waypoint
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -234,98 +201,6 @@ public class Waypoint
     
         // Start of user code setterFinalize:waypointY
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String waypointXToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:waypointXToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"waypointX\">waypointX: </LABEL>";
-    
-        // Start of user code "Mid:waypointXToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"waypointX\" type=\"text\" style=\"width: 400px\" id=\"waypointX\" >";
-        // Start of user code "Finalize:waypointXToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String waypointYToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:waypointYToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"waypointY\">waypointY: </LABEL>";
-    
-        // Start of user code "Mid:waypointYToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"waypointY\" type=\"text\" style=\"width: 400px\" id=\"waypointY\" >";
-        // Start of user code "Finalize:waypointYToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String waypointXToHtml()
-    {
-        String s = "";
-    
-        // Start of user code waypointXtoHtml_mid
-        // End of user code
-    
-        try {
-            if (waypointX == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + waypointX.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code waypointXtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String waypointYToHtml()
-    {
-        String s = "";
-    
-        // Start of user code waypointYtoHtml_mid
-        // End of user code
-    
-        try {
-            if (waypointY == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + waypointY.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code waypointYtoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

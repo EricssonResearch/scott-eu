@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -97,7 +93,7 @@ public class Plan
     private Float cost;
     // Start of user code attributeAnnotation:step
     // End of user code
-    private HashSet<Step> step = new HashSet<Step>();
+    private Set<Step> step = new HashSet<Step>();
     // Start of user code attributeAnnotation:time
     // End of user code
     private Float time;
@@ -141,7 +137,6 @@ public class Plan
         // End of user code
     }
     
-    
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
@@ -172,34 +167,6 @@ public class Plan
     
         // Start of user code toString_finalize
         result = "Plan{" + "cost=" + cost + ", step=" + step + ", time=" + time + '}';
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -296,143 +263,6 @@ public class Plan
     
         // Start of user code setterFinalize:time
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String costToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:costToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"cost\">cost: </LABEL>";
-    
-        // Start of user code "Mid:costToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"cost\" type=\"text\" style=\"width: 400px\" id=\"cost\" >";
-        // Start of user code "Finalize:costToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String stepToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:stepToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"step\">step: </LABEL>";
-    
-        // Start of user code "Mid:stepToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:stepToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String timeToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:timeToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"time\">time: </LABEL>";
-    
-        // Start of user code "Mid:timeToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"time\" type=\"text\" style=\"width: 400px\" id=\"time\" >";
-        // Start of user code "Finalize:timeToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String costToHtml()
-    {
-        String s = "";
-    
-        // Start of user code costtoHtml_mid
-        // End of user code
-    
-        try {
-            if (cost == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + cost.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code costtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String stepToHtml()
-    {
-        String s = "";
-    
-        // Start of user code steptoHtml_mid
-        // End of user code
-    
-        try {
-            s = s + "<ul>";
-            for(Step next : step) {
-                s = s + "<li>";
-                s = s + next.toHtml(true);
-                s = s + "</li>";
-            }
-            s = s + "</ul>";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code steptoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String timeToHtml()
-    {
-        String s = "";
-    
-        // Start of user code timetoHtml_mid
-        // End of user code
-    
-        try {
-            if (time == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + time.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code timetoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

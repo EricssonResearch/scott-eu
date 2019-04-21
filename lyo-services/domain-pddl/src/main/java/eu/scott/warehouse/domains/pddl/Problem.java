@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -95,22 +91,22 @@ public class Problem
 {
     // Start of user code attributeAnnotation:domain
     // End of user code
-    private Link domain = new Link();
+    private Link domain;
     // Start of user code attributeAnnotation:goal
     // End of user code
-    private Link goal = new Link();
+    private Link goal;
     // Start of user code attributeAnnotation:init
     // End of user code
-    private HashSet<Link> init = new HashSet<Link>();
+    private Set<Link> init = new HashSet<Link>();
     // Start of user code attributeAnnotation:maximize
     // End of user code
-    private Link maximize = new Link();
+    private Link maximize;
     // Start of user code attributeAnnotation:minimize
     // End of user code
-    private Link minimize = new Link();
+    private Link minimize;
     // Start of user code attributeAnnotation:pddlObject
     // End of user code
-    private HashSet<Link> pddlObject = new HashSet<Link>();
+    private Set<Link> pddlObject = new HashSet<Link>();
     // Start of user code attributeAnnotation:label
     // End of user code
     private String label;
@@ -136,7 +132,6 @@ public class Problem
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -167,34 +162,6 @@ public class Problem
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -411,324 +378,6 @@ public class Problem
     
         // Start of user code setterFinalize:label
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String domainToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:domainToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"domain\">domain: </LABEL>";
-    
-        // Start of user code "Mid:domainToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:domainToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String goalToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:goalToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"goal\">goal: </LABEL>";
-    
-        // Start of user code "Mid:goalToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:goalToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String initToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:initToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"init\">init: </LABEL>";
-    
-        // Start of user code "Mid:initToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:initToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String maximizeToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:maximizeToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"maximize\">maximize: </LABEL>";
-    
-        // Start of user code "Mid:maximizeToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:maximizeToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String minimizeToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:minimizeToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"minimize\">minimize: </LABEL>";
-    
-        // Start of user code "Mid:minimizeToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:minimizeToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String pddlObjectToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:pddlObjectToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"object\">object: </LABEL>";
-    
-        // Start of user code "Mid:pddlObjectToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:pddlObjectToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"label\">label: </LABEL>";
-    
-        // Start of user code "Mid:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"label\" type=\"text\" style=\"width: 400px\" id=\"label\" >";
-        // Start of user code "Finalize:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String domainToHtml()
-    {
-        String s = "";
-    
-        // Start of user code domaintoHtml_mid
-        // End of user code
-    
-        try {
-            if ((domain == null) || (domain.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Domain (domain.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code domaintoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String goalToHtml()
-    {
-        String s = "";
-    
-        // Start of user code goaltoHtml_mid
-        // End of user code
-    
-        try {
-            if ((goal == null) || (goal.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + goal.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code goaltoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String initToHtml()
-    {
-        String s = "";
-    
-        // Start of user code inittoHtml_mid
-        // End of user code
-    
-        try {
-            s = s + "<ul>";
-            for(Link next : init) {
-                s = s + "<li>";
-                if (next.getValue() == null) {
-                    s= s + "<em>null</em>";
-                }
-                else {
-                    s = s + "<a href=\"" + next.getValue().toString() + "\">" + next.getValue().toString() + "</a>";
-                }
-                s = s + "</li>";
-            }
-            s = s + "</ul>";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code inittoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String maximizeToHtml()
-    {
-        String s = "";
-    
-        // Start of user code maximizetoHtml_mid
-        // End of user code
-    
-        try {
-            if ((maximize == null) || (maximize.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + maximize.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code maximizetoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String minimizeToHtml()
-    {
-        String s = "";
-    
-        // Start of user code minimizetoHtml_mid
-        // End of user code
-    
-        try {
-            if ((minimize == null) || (minimize.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + minimize.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code minimizetoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String pddlObjectToHtml()
-    {
-        String s = "";
-    
-        // Start of user code pddlObjecttoHtml_mid
-        // End of user code
-    
-        try {
-            s = s + "<ul>";
-            for(Link next : pddlObject) {
-                s = s + "<li>";
-                s = s + (new PddlObject (next.getValue())).toHtml(false);
-                s = s + "</li>";
-            }
-            s = s + "</ul>";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code pddlObjecttoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String labelToHtml()
-    {
-        String s = "";
-    
-        // Start of user code labeltoHtml_mid
-        // End of user code
-    
-        try {
-            if (label == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + label.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code labeltoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

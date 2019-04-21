@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -97,19 +93,19 @@ public class Box
 {
     // Start of user code attributeAnnotation:atX
     // End of user code
-    private Link atX = new Link();
+    private Link atX;
     // Start of user code attributeAnnotation:atY
     // End of user code
-    private Link atY = new Link();
+    private Link atY;
     // Start of user code attributeAnnotation:onBelt
     // End of user code
-    private Link onBelt = new Link();
+    private Link onBelt;
     // Start of user code attributeAnnotation:onShelf
     // End of user code
-    private Link onShelf = new Link();
+    private Link onShelf;
     // Start of user code attributeAnnotation:onRobot
     // End of user code
-    private Link onRobot = new Link();
+    private Link onRobot;
     // Start of user code attributeAnnotation:isFree
     // End of user code
     private Boolean isFree;
@@ -135,7 +131,6 @@ public class Box
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -166,34 +161,6 @@ public class Box
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -360,273 +327,6 @@ public class Box
     
         // Start of user code setterFinalize:isFree
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String atXToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:atXToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"at-x\">at-x: </LABEL>";
-    
-        // Start of user code "Mid:atXToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:atXToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String atYToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:atYToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"at-y\">at-y: </LABEL>";
-    
-        // Start of user code "Mid:atYToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:atYToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String onBeltToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:onBeltToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"on-belt\">on-belt: </LABEL>";
-    
-        // Start of user code "Mid:onBeltToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:onBeltToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String onShelfToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:onShelfToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"on-shelf\">on-shelf: </LABEL>";
-    
-        // Start of user code "Mid:onShelfToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:onShelfToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String onRobotToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:onRobotToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"on-robot\">on-robot: </LABEL>";
-    
-        // Start of user code "Mid:onRobotToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:onRobotToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String isFreeToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:isFreeToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"is-free\">is-free: </LABEL>";
-    
-        // Start of user code "Mid:isFreeToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"isFree\" type=\"radio\" value=\"true\">True<input name=\"isFree\" type=\"radio\" value=\"false\">False";
-        // Start of user code "Finalize:isFreeToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String atXToHtml()
-    {
-        String s = "";
-    
-        // Start of user code atXtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((atX == null) || (atX.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Coord (atX.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code atXtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String atYToHtml()
-    {
-        String s = "";
-    
-        // Start of user code atYtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((atY == null) || (atY.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Coord (atY.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code atYtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String onBeltToHtml()
-    {
-        String s = "";
-    
-        // Start of user code onBelttoHtml_mid
-        // End of user code
-    
-        try {
-            if ((onBelt == null) || (onBelt.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new ConveyorBelt (onBelt.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code onBelttoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String onShelfToHtml()
-    {
-        String s = "";
-    
-        // Start of user code onShelftoHtml_mid
-        // End of user code
-    
-        try {
-            if ((onShelf == null) || (onShelf.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Shelf (onShelf.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code onShelftoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String onRobotToHtml()
-    {
-        String s = "";
-    
-        // Start of user code onRobottoHtml_mid
-        // End of user code
-    
-        try {
-            if ((onRobot == null) || (onRobot.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Robot (onRobot.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code onRobottoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String isFreeToHtml()
-    {
-        String s = "";
-    
-        // Start of user code isFreetoHtml_mid
-        // End of user code
-    
-        try {
-            if (isFree == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + isFree.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code isFreetoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     
