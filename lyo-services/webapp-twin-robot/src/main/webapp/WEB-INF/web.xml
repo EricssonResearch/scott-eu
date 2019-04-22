@@ -9,7 +9,7 @@
   <context-param>
     <description>Base URI for the adaptor.</description>
     <param-name>se.ericsson.cf.scott.sandbox.twin.servlet.baseurl</param-name>
-    <param-value>http://sandbox-twin:8081</param-value>
+    <param-value>http://sandbox-twin:8080</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.twin.store.query</param-name>

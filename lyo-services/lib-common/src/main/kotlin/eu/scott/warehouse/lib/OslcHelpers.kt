@@ -23,6 +23,12 @@ val IResource.link: Link
         return Link(this.about)
     }
 
+val IResource.toTurtleString: String
+    get() {
+        val model = RdfHelpers.modelFromResources(this)
+        return RdfHelpers.modelToString(model)
+    }
+
 /**
  * I think the QName part is XML heritage
  */
@@ -80,18 +86,6 @@ object OslcHelpers {
     fun ns(ns: String, name: String): URI {
         return URI.create(ns + name)
     }
-
-
-//    @Deprecated("Use the OslcHelper class")
-//    fun u(p: String): URI {
-//        return UriBuilder.fromUri(base).path(p).build()
-//    }
-//
-//    @Deprecated("Use the OslcHelper class")
-//    fun u(p: UUID?): URI {
-//        return u("blnk_" + p.toString())
-//    }
-
 
     // TODO Andrew@2018-02-23: move to JMH
     // TODO Andrew@2018-02-23: create a stateful JMH that would keep resources hashed by URI
