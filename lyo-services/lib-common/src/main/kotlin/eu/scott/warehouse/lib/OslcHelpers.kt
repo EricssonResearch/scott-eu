@@ -40,12 +40,6 @@ fun IExtendedResource.setLabel(l: String) = this.setProperty(OslcHelpers.ns(Oslc
 
 class RawResource(about: URI) : AbstractResource(about)
 
-data class InstanceWithResources<T : IExtendedResource>(val instance: T,
-                                                        val resources: Collection<IExtendedResource>)
-
-data class InstanceMultiWithResources<T : IExtendedResource>(val instance: Collection<T>,
-                                                             val resources: Collection<IExtendedResource>)
-
 
 object OslcHelpers {
 
@@ -126,8 +120,24 @@ object OslcHelpers {
 
         }
         // give up
+        throw IllegalArgumentException("Link ${l.value} cannot be followed in this model")
+    }
+
+    @SafeVarargs
+    @JvmStatic
+    fun navTry(m: Model, l: Link, vararg rClass: Class<out IExtendedResource>): IExtendedResource{
+        for (aClass in rClass) {
+            try {
+                return nav(m, l, aClass)
+            } catch (e: IllegalArgumentException) {
+                log.warn("Fix RDFS reasoning in JMH!!!")
+            }
+
+        }
+        // give up
         throw IllegalArgumentException("Link cannot be followed in this model")
     }
+
 
     @JvmStatic
     fun hexHashCodeFor(aResource: IResource): String {

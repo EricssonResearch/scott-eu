@@ -9,6 +9,9 @@ import eu.scott.warehouse.domains.pddl.Action
 import eu.scott.warehouse.domains.pddl.Plan
 import eu.scott.warehouse.domains.pddl.PrimitiveType
 import eu.scott.warehouse.domains.pddl.Step
+import eu.scott.warehouse.domains.scott.DropBelt
+import eu.scott.warehouse.domains.scott.MoveToWp
+import eu.scott.warehouse.domains.scott.PickShelf
 import eu.scott.warehouse.lib.InstanceWithResources
 import eu.scott.warehouse.lib.OslcHelper
 import eu.scott.warehouse.lib.OslcHelpers
@@ -286,20 +289,19 @@ class PlanRequestHelper(private val oslcHelper: OslcHelper) {
     }
 
     @Throws(LyoJenaModelException::class)
-    fun getPlanResources(planModel: Model, plan: Plan): Array<Any> {
-        val planResources = ArrayList<IResource>()
-        planResources.add(plan)
+    fun getPlanResources(planModel: Model, plan: Plan): Collection<IExtendedResource> {
+        val planResources = ArrayList<IExtendedResource>()
+//        planResources.add(plan)
         val planSteps: MutableSet<Step> = plan.step
         for (step in planSteps) {
             step.order = (step.extendedProperties as Map<QName, Any>).getOrDefault(
                 QName(WhcConfig.NS_SHACL, "order"), null) as Int
-            val action = OslcHelpers.navTry(planModel, step.action, Action::class.java,
-                Move::class.java)
+            val action = OslcHelpers.navTry(planModel, step.action, Action::class.java, DropBelt::class.java, MoveToWp::class.java, PickShelf::class.java)
             planResources.add(step)
             planResources.add(action)
             log.info("Step {}: {}", step.order, action)
         }
-        return planResources.toTypedArray()
+        return planResources
     }
 
     fun requestPlan(problemModel: Model): Model {
