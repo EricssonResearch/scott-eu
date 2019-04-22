@@ -54,9 +54,11 @@ class AdminResource {
 
     fun triggerPlanning() {
         log.trace("triggerSamplePlanning() called")
-        PlanningManager(PlanRequestHelper(OslcHelper(WhcConfig.getBaseUri())), TwinClient(), WarehouseControllerManager.getPlanRepository())
-
-        .planForEachTwin(twinsRepository)
+        val planRequestHelper = PlanRequestHelper(OslcHelper(WhcConfig.getBaseUri()))
+        val twinClient = TwinClient()
+        val planRepository = WarehouseControllerManager.getPlanRepository()
+        PlanningManager(planRequestHelper, twinClient, planRepository).planForEachTwin(
+            twinsRepository)
         log.trace("triggerSamplePlanning() finished")
     }
 }
