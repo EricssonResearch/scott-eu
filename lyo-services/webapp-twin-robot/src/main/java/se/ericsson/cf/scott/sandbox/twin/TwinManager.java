@@ -139,7 +139,8 @@ public class TwinManager {
         PlanExecutionRequest newResource = null;
         
         // Start of user code createPlanExecutionRequest
-        // TODO Implement code to create a resource
+        log.info("Incoming plan: {}", aResource);
+        newResource = aResource;
         // End of user code
         return newResource;
     }

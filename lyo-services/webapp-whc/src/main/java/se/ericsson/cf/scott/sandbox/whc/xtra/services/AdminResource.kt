@@ -6,6 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig
+import se.ericsson.cf.scott.sandbox.whc.xtra.clients.TwinClient
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager
 import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository
@@ -53,7 +54,7 @@ class AdminResource {
 
     fun triggerPlanning() {
         log.trace("triggerSamplePlanning() called")
-        PlanningManager(PlanRequestHelper(OslcHelper(WhcConfig.getBaseUri())))
+        PlanningManager(PlanRequestHelper(OslcHelper(WhcConfig.getBaseUri())), TwinClient(), WarehouseControllerManager.getPlanRepository())
 
         .planForEachTwin(twinsRepository)
         log.trace("triggerSamplePlanning() finished")

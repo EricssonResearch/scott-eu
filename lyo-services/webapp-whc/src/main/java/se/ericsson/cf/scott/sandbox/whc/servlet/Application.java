@@ -51,6 +51,7 @@ import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 
 // Start of user code imports
+import se.ericsson.cf.scott.sandbox.whc.xtra.WhcBinder;
 import se.ericsson.cf.scott.sandbox.whc.xtra.services.AdminResource;
 import se.ericsson.cf.scott.sandbox.whc.xtra.services.WhcTrsService;
 // End of user code
@@ -117,6 +118,7 @@ public class Application extends ResourceConfig {
         {
             ResourceShapeFactory.createResourceShape(BASE_URI, OslcConstants.PATH_RESOURCE_SHAPES, entry.getKey(), entry.getValue());
         }
+        register(new WhcBinder());
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {
