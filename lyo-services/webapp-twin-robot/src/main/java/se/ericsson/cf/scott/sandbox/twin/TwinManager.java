@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
+import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
@@ -42,6 +43,7 @@ import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
 import java.util.concurrent.TimeUnit;
+import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -65,7 +67,7 @@ public class TwinManager {
     public final static String PACKAGE_ROOT = TwinManager.class.getPackage().getName();
     private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
     private static Random r;
-    private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
+    private static PlanExecutionService planExecutionService;
     // End of user code
     
     
@@ -81,23 +83,19 @@ public class TwinManager {
         TwinAdaptorHelper.setServletContext(servletContextEvent.getServletContext());
         r = new Random();
 
-        execService.schedule(() -> {
-            // TODO Andrew@2019-01-24: add a wipe endpoint
-            log.debug("Initialising the KB");
-            TwinAdaptorHelper.initStore(false);
+        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        planExecutionService = new PlanExecutionService(executorService, new OslcClient());
 
-            log.debug("Initialising the TRS Client");
-            TwinAdaptorHelper.initTrsClient();
+        log.debug("Initialising the KB");
+        TwinAdaptorHelper.initStore(false);
 
-            final long updateInterval = TimeUnit.SECONDS.toMillis(5);
-            log.debug("Initialising the TRS Server (Tupd={}ms)", updateInterval);
-            TwinAdaptorHelper.setChangeHistories(
-                new TwinChangeHistories(TwinAdaptorHelper.getMqttGateway().getMqttClient(), "trs-twin", updateInterval));
+        log.debug("Initialising the TRS Client");
+        TwinAdaptorHelper.initTrsClient();
 
-//            registerTwins();
-        }, 5, TimeUnit.SECONDS);
-
-
+        final long updateInterval = TimeUnit.SECONDS.toMillis(5);
+        log.debug("Initialising the TRS Server (Tupd={}ms)", updateInterval);
+        TwinAdaptorHelper.setChangeHistories(
+            new TwinChangeHistories(TwinAdaptorHelper.getMqttGateway().getMqttClient(), "trs-twin", updateInterval));
         // End of user code
     }
 
@@ -141,6 +139,7 @@ public class TwinManager {
         // Start of user code createPlanExecutionRequest
         log.info("Incoming plan: {}", aResource);
         newResource = aResource;
+        planExecutionService.fulfillRequest(aResource);
         // End of user code
         return newResource;
     }

@@ -11,10 +11,10 @@ data class InstanceWithResources<T : IExtendedResource>(val instance: T,
                                                         val resources: Collection<IExtendedResource>) :
     ResourceArray {
     override fun asResourceArray(): Array<Object> {
-        val resources: MutableList<Object> = ArrayList()
-        resources.add(instance as Object)
-        resources.addAll(resources)
-        return resources.toTypedArray()
+        val resourceArray: MutableList<Object> = ArrayList()
+        resourceArray.add(instance as Object)
+        resourceArray.addAll(resources as Collection<Object>)
+        return resourceArray.toTypedArray()
     }
 }
 
@@ -22,9 +22,9 @@ data class InstanceMultiWithResources<T : IExtendedResource>(val instance: Colle
                                                              val resources: Collection<IExtendedResource>) :
     ResourceArray {
     override fun asResourceArray(): Array<Object> {
-        val resources: MutableList<Object> = ArrayList()
-        resources.addAll(instance as Collection<Object>)
-        resources.addAll(resources)
-        return resources.toTypedArray()
+        val resourceArray: MutableList<Object> = ArrayList()
+        resourceArray.addAll(instance as Collection<Object>)
+        resourceArray.addAll(resources as Collection<Object>)
+        return resourceArray.toTypedArray()
     }
 }

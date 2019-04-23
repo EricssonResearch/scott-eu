@@ -27,11 +27,11 @@ public class AdaptorAdminService {
 
     final TwinRegistrationClient registrationClient = TwinAdaptorHelper.createTwinRegistrationClient();
 
+    // TODO Andrew@2019-04-23: add a Store wipe endpoint
 
     @POST
     @Path("initRDF")
     @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-//    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public Response getServiceProvider(ServiceProvider sp)
     {
         log.info("Processing the init call (RDF input)");
