@@ -104,33 +104,50 @@ object OslcHelpers {
     // TODO Andrew@2019-02-21: make sure we catch all exceptions here
     @SafeVarargs
     @JvmStatic
-    fun navTry(m: Model, l: Link, vararg rClass: Class<out IResource>): IResource {
+    fun navTry(m: Model, l: Link, vararg rClass: Class<out IExtendedResource>): IExtendedResource {
+        if(l.value == null) {
+            throw IllegalArgumentException("Link $l has no URI value")
+        }
         for (aClass in rClass) {
             try {
                 return nav(m, l, aClass)
             } catch (e: IllegalArgumentException) {
                 log.warn("Fix RDFS reasoning in JMH!!!")
             }
-
         }
         // give up
+
+        if(log.isTraceEnabled) {
+            val builder = StringBuilder()
+            builder.appendln("Resource with URI ${l.value} was not found in the Model:")
+            val resources = m.listSubjectsWithProperty(
+                org.apache.jena.vocabulary.RDF.type)
+            resources.forEach {
+                val property = it.getProperty(org.apache.jena.vocabulary.RDF.type).`object`
+                builder.appendln("\t${it.nameSpace}:${it.localName} a $property")
+            }
+            log.trace(builder.toString())
+        }
+
         throw IllegalArgumentException("Link ${l.value} cannot be followed in this model")
     }
 
-    @SafeVarargs
-    @JvmStatic
-    fun navTry(m: Model, l: Link, vararg rClass: Class<out IExtendedResource>): IExtendedResource{
-        for (aClass in rClass) {
-            try {
-                return nav(m, l, aClass)
-            } catch (e: IllegalArgumentException) {
-                log.warn("Fix RDFS reasoning in JMH!!!")
-            }
-
-        }
-        // give up
-        throw IllegalArgumentException("Link cannot be followed in this model")
-    }
+///*
+//    @SafeVarargs
+//    @JvmStatic
+//    fun navTry(m: Model, l: Link, vararg rClass: Class<out IExtendedResource>): IExtendedResource{
+//        for (aClass in rClass) {
+//            try {
+//                return nav(m, l, aClass)
+//            } catch (e: IllegalArgumentException) {
+//                log.warn("Fix RDFS reasoning in JMH!!!")
+//            }
+//
+//        }
+//        // give up
+//        throw IllegalArgumentException("Link cannot be followed in this model")
+//    }
+//*/
 
 
     @JvmStatic

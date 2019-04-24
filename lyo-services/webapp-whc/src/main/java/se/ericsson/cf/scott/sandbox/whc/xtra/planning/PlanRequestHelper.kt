@@ -297,7 +297,8 @@ class PlanRequestHelper(private val oslcHelper: OslcHelper) {
             step.order = (step.extendedProperties as Map<QName, Any>).getOrDefault(
                 QName(WhcConfig.NS_SHACL, "order"), null) as Int
             val action = OslcHelpers.navTry(planModel, step.action, Action::class.java, DropBelt::class.java, MoveToWp::class.java, PickShelf::class.java)
-            planResources.add(step)
+            // is already a LocalResource
+//            planResources.add(step)
             planResources.add(action)
             log.info("Step {}: {}", step.order, action)
         }
