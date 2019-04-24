@@ -1,11 +1,13 @@
 package se.ericsson.cf.scott.sandbox.twin.xtra.trs;
 
+import javax.ws.rs.Path;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 
 
+@Path("trs")
 public class TwinTrsServerService extends TrackedResourceSetService {
 
     @Override

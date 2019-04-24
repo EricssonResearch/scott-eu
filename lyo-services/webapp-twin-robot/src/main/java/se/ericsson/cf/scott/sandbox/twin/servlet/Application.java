@@ -49,6 +49,7 @@ import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 
 // Start of user code imports
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinTrsServerService;
 // End of user code
 
 // Start of user code pre_class_code
@@ -82,7 +83,7 @@ public class Application extends ResourceConfig {
         // TODO Andrew@2018-05-27: UniversalResourceSingleProvider does not support returning arrays
         //  or collections
 //        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
-//        RESOURCE_CLASSES.add(TwinTrsServerService.class);
+        RESOURCE_CLASSES.add(TwinTrsServerService.class);
         RESOURCE_CLASSES.add(AdaptorAdminService.class);
         // End of user code
 
