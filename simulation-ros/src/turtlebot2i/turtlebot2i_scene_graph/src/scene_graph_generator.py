@@ -18,8 +18,8 @@ def get_distance(i, j):
     dx = j.pose[0] - i.pose[0]
     dy = j.pose[1] - i.pose[1]
     if not re.match(r'wall*', j.name):
-        ri = math.sqrt(i.size[0]*i.size[0] + i.size[1]*i.size[1])
-        rj = math.sqrt(j.size[0]*j.size[0] + j.size[1]*j.size[1])
+        #ri = math.sqrt(i.size[0]*i.size[0] + i.size[1]*i.size[1])
+        #rj = math.sqrt(j.size[0]*j.size[0] + j.size[1]*j.size[1])
         temp_ij = dx*dx + dy*dy
         dist_ij = math.sqrt(temp_ij) #- ri - rj
     else:
@@ -90,17 +90,24 @@ def get_orientation(i, j):
         pass
     return obj_ori # BUG here
 
+def get_size(j):
+    size_x = j.bbox_max[0] - j.bbox_min[0]
+    size_y = j.bbox_max[1] - j.bbox_min[1]
+    return size_x, size_y
+
 def init():
     global extractor
     extractor= VrepObjectExtractor('127.0.0.1', 19997)
     # List of object names to retrieve information
     # For now it is hardcoded
-    extractor.set_wall_names(['80cmHighWall1000cm','80cmHighWall1000cm0','80cmHighWall1500cm','80cmHighWall1500cm0','80cmHighWall750cm','80cmHighWall750cm0','80cmHighWall500cm','80cmHighWall500cm0'])
+    extractor.set_wall_names(['80cmHighWall1000cm','80cmHighWall1000cm0','80cmHighWall1500cm','80cmHighWall1500cm0','80cmHighWall1500cm1','80cmHighWall2000cm','80cmHighWall2000cm0',
+                              '80cmHighWall500cm','80cmHighWall500cm0','80cmHighWall500cm1','80cmHighWall500cm2','80cmHighWall500cm3','80cmHighWall500cm4','80cmHighWall500cm5'])
     extractor.set_static_obj_names(['stairs', 'slidingDoor',
-                                    'dockstation_body',\
-                                    'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4',
-                                    'ShelfBody', 'ShelfBody#0', 'ShelfBody#1','sofa','ConcretBlock','ConcreteBox','80cmHighPillar100cm'])
-    extractor.set_dynamic_obj_names(['Bill_base#5','Bill_base#6','Bill#0','Bill#1'])
+                                    'dockstation_body',
+                                    'ConcreteBox','ConcreteBox#0','ConcreteBox#1','ConcreteBox#2','ConcreteBox#3','ConcreteBox#4','ConcreteBox#5','ConcreteBox#6',
+                                    'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm',
+                                    'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4', 'ConveyorBeltBody#5', 'ConveyorBeltBody#6', 'ConveyorBeltBody#7'])
+    extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2'])
     extractor.set_robot_names(['turtlebot2i'])
     
     rospy.loginfo("Connected to remote API server")
@@ -120,18 +127,22 @@ def init():
     extractor.get_all_objects_info()
     extractor.update_robots_vision_sensor_info()
     extractor.update_all_robots_vision_sensors_fov()
+    #time.sleep(0.3) # streaming takes a while to get ready
 
 
     rospy.loginfo('Finished getting scene properties!\n')
 
 def sg_generate():
-    # Get dynamic object info (pose and vel) periodically
-    extractor.update_dynamic_obj_info()
 
-    # Update vision sensor info
-    extractor.update_all_robots_vision_sensors_fov()
+    #robot_list = extractor.robot_obj_list
+    robot_list = extractor.get_available_robot()
+    if len(robot_list) > 0:
+        # Get dynamic object info (pose and vel) periodically
+        extractor.update_dynamic_obj_info()
 
-    robot_list = extractor.robot_obj_list
+        # Update vision sensor info
+        extractor.update_all_robots_vision_sensors_fov()
+    
     # Get objects that are in the sensor FOV
     #for robot_num in range(1):
     for robot_num in range(len(robot_list)):
@@ -170,13 +181,15 @@ def sg_generate():
             obj_velocity = get_velocity(obj)
             obj_type = get_type(obj)
             obj_orientation = get_orientation(robot_list[robot_num], obj)
+            obj_size_x, obj_size_y = get_size(obj)
             # print(obj.name, '%.3f' %obj_velocity)
             # node_label = '{%s|direction: %s|distance: %.2f}'%(obj.name, obj_direction, obj_distance)
             # if obj.name == 'Bill#3':
             #     node_label = '{%s|velocity: 0.2|distance: %.2f}'%(obj.name, obj_distance)
             # else:
             #     node_label = '{%s|Static|distance: %.2f}'%(obj.name, obj_distance)
-            node_label = '{%s|type: %s|distance: %.2f|orientation: %.2f|direction: %.2f|velocity: %.2f}'%( obj.name, obj_type, obj_distance, obj_orientation, obj_direction, obj_velocity)
+            node_label = '{%s|type: %s|distance: %.2f|orientation: %.2f|direction: %.2f|velocity: %.2f|size_x: %.2f|size_y: %.2f}'%( obj.name, obj_type, obj_distance, obj_orientation, obj_direction, obj_velocity, abs(obj_size_x), abs(obj_size_y))
+            #node_label = '{%s|type: %s|distance: %.2f|orientation: %.2f|direction: %.2f|velocity: %.2f}'%( obj.name, obj_type, obj_distance, obj_orientation, obj_direction, obj_velocity)
             # node_label = '{%s|velocity: %.2f|distance: %.2f}'%( obj.name, obj_velocity, obj_distance)
 
             # node_label = '{%s|distance: %.2f}'%(obj.name, obj_distance)
@@ -212,9 +225,11 @@ if __name__ == '__main__':
         init()
         rospy.loginfo('Started getting scene objects from vision sensor FOV...')
         pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
-        rate = rospy.Rate(1.0) #Hz, T=1/Rate
+        rate = rospy.Rate(3.0) #Hz, T=1/Rate
         while not rospy.is_shutdown():
+            #mark = time.time()
             sg_generate()
+            #print("scene graph duration:",time.time()-mark)
             rate.sleep()
     except rospy.ROSInterruptException:
         # Close the connection to V-REP

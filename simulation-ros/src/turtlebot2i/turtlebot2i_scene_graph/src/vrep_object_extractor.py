@@ -100,6 +100,7 @@ class VrepObjectExtractor:
         self.static_obj_list = []
         self.dynamic_obj_list = []
         self.robot_obj_list = []
+        self.appended_robot_name = []
         self.wall_obj_list = []
 
     # Set the list of strings with static objects' names
@@ -215,10 +216,21 @@ class VrepObjectExtractor:
             elif (obj_name in self.robot_name_list):
                 obj = Robot(obj_name, obj_pose, obj_ori, obj_size, obj_vel, bbox_min, bbox_max, obj_handle)
                 self.get_robot_vision_sensor_info(obj)
-                self.robot_obj_list.append(obj)
+                if obj_name not in self.appended_robot_name: #to avoid double insertion of robot; 
+                #it happened because we call extractor.get_all_objects_info() twice in scene graph generator when we initialized the extractor
+                    self.robot_obj_list.append(obj)
+                    self.appended_robot_name.append(obj_name)
         
         return obj_list
-
+    
+    # Check if there is any robot in V-REP
+    def get_available_robot(self):
+        available_robot = []
+        for robot_obj in self.robot_obj_list:
+            returnCode, obj_pose = vrep.simxGetObjectPosition(self.clientID, robot_obj.handle, -1, self.operation_mode)
+            if returnCode == 0:
+                available_robot.append(robot_obj)
+        return available_robot
 
     # Get robot's vision sensor info
     def get_robot_vision_sensor_info(self, robot):
@@ -258,7 +270,6 @@ class VrepObjectExtractor:
         else:
             param_perspective_angle_x = 2*np.arctan(np.tan(param_perspective_angle/2)*ratio)
             param_perspective_angle_y = param_perspective_angle
-
         return VisionSensor(vision_sensor_name, \
                             param_resolution_x, \
                             param_resolution_y, \
@@ -302,7 +313,6 @@ class VrepObjectExtractor:
     def update_robots_vision_sensor_info(self):
         
         for robot in self.robot_obj_list:
-            print("robot name:",robot.name)
             self.get_robot_vision_sensor_info(robot)
 
 

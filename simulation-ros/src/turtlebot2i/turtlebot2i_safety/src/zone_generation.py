@@ -66,9 +66,9 @@ if __name__ == '__main__':
     try:
         rospy.init_node('zone_generation_py')
         init_var()
-        rospy.Subscriber('/turtlebot2i/odom', Odometry, speed_callback)
+        rospy.Subscriber('/turtlebot2i/odom', Odometry, speed_callback) #12hz
         rospy.Subscriber('/turtlebot2i/safety/risk_val', std_msgs.msg.Float64, risk_callback)
-        rospy.Subscriber('/turtlebot2i/lidar/scan', LaserScan, lidar_callback) 
+        rospy.Subscriber('/turtlebot2i/lidar/scan', LaserScan, lidar_callback) #12hz
         #rospy.Subscriber('/turtlebot2i/lidar/scan_data_collection', LaserScan, lidar_callback) 
         safe_zone_pub = rospy.Publisher('/turtlebot2i/safety/safety_zone', SafetyZone, queue_size=10)
         lidar_pub = rospy.Publisher('/turtlebot2i/lidar/scan_transformed', LaserScan, queue_size=10)

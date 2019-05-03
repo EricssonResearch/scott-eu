@@ -36,6 +36,10 @@ function setVels_cb(msg)
    if (motor_power == 1) then
        velocityRight = (linVel+rotVel)*rightVelScale
        velocityLeft  = (linVel-rotVel)*leftVelScale
+       if ((linVel==0.0) and (rotVel==0.0)) then
+           velocityRight = 0.1*rightVelScale
+           velocityLeft  = 0.1*leftVelScale
+        end
        printf("linVel=%2.2f,rotVel=%2.2f | rightVelScale=%2.2f,leftVelScale=%2.2f",linVel,rotVel,rightVelScale,leftVelScale)--print(linVel)
        --if (velScale>1) then
            --print("speed up!")

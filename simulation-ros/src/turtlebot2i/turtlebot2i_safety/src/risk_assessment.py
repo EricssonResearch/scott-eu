@@ -71,7 +71,7 @@ def init_regEx():
     float_pattern = "(-?\d+\.\d+)"
     integer_pattern = "(\d+)"
     global sg_pattern,vel_pattern
-    sg_pattern = '"{' + name_pattern+'\|type: '+integer_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'\|velocity: '+float_pattern+'}"'
+    sg_pattern = '"{' + name_pattern+'\|type: '+integer_pattern+ '\|distance: '+float_pattern+'\|orientation: '+float_pattern+'\|direction: '+float_pattern+'\|velocity: '+float_pattern+'\|size_x: '+float_pattern+'\|size_y: '+float_pattern+'}"'
     vel_pattern= '"{turtlebot2i\|camera_rgb\|velocity: '+float_pattern+'}"'
 
 def init_fls_common_part(): #TO DO: put this parameter as class or in another module
@@ -201,12 +201,19 @@ def parse_dot_file(graph):
                     object_direction    = float(matchObj.group(5))
                     object_speed        = float(matchObj.group(6))
                     object_orientation  = float(matchObj.group(4))
+                    object_size_x       = float(matchObj.group(7))
+                    object_size_y       = float(matchObj.group(8))
                     #print("in RM:",x.get_name(),object_type,object_distance,object_direction,object_speed,object_orientation)
                     object_risk         = cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
 
+                    risk_message.type.append(object_type)
                     risk_message.distance.append(object_distance)
                     risk_message.direction.append(object_direction)
                     risk_message.risk_value.append(object_risk)
+                    risk_message.speed.append(object_speed)
+                    risk_message.orientation.append(object_orientation)
+                    risk_message.size_x.append(object_size_x)
+                    risk_message.size_y.append(object_size_y)
                     if ( object_risk>highest_risk): # Update target
                         target_object_distance =object_distance
                         target_object_direction=object_direction
@@ -214,11 +221,13 @@ def parse_dot_file(graph):
                         print "update target of ",x.get_name()," with risk=",highest_risk
             else:
                print "Node not match!!"
+               print node_info
     if (highest_risk!=0.0):
         safe_risk_pub.publish(risk_message)
         #pub_safe_vel(1.0, 1.0) 
     else:
-        pub_safe_vel(1.2, 1.2) 
+        pub_safe_vel(1.0, 1.0) 
+    #pub_safe_vel(0, 0) 
     risk_val_pub.publish(highest_risk)
     global    time_previous
     #run_time = time.time() - time_previous
