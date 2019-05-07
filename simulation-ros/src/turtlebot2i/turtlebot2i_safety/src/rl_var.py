@@ -39,7 +39,8 @@ INPUT_VARIABLES = {
     "distance_front_left":  distance_list[:-1],
     "distance_left":        distance_list[:-1],
     "distance_right":       distance_list[:-1],
-    "distance_front_right": distance_list[:-1]
+    "distance_front_right": distance_list[:-1],
+    "steering_direction":   np.array([-57.0, -10.0,  10.0])*np.pi/180.0
 }
 RANGE_DISPLACEMENT = 2.0
 OUTPUT_VARIABLES = {

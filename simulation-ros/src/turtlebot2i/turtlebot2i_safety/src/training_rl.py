@@ -257,6 +257,11 @@ def speed_callback(data):
     robot_linear_speed  = data.linear.x
     robot_angular_speed = data.angular.z 
 
+    in_values  = var.INPUT_VARIABLES["steering_direction"]
+    input_data = robot_angular_speed
+    aux = np.digitize(input_data, in_values, right=True)
+    agent.steering_state = np.clip(aux - 1, 0, len(in_values) - 1)
+
 def bumper_callback(data):
     if data.state == 1: #collision occurs
         var.collision = True
