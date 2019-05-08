@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Modified from: https://github.com/angelmtenor/RL-ROBOT/blob/master/agent.py
 #   +-----------------------------------------------+
 #   | RL-ROBOT. Reinforcement Learning for Robotics |
 #   | Angel Martinez-Tenor                          |
@@ -137,7 +138,7 @@ def execute_action(a):
     actuator = np.zeros(n_outputs)
     for i in range(n_outputs):
         actuator[i] = Va[i, unwrapped_a[i]]
-
+    #print("action:",a,"scale_speed:",actuator)
     training_rl.execute_action(actuator)
     return
 

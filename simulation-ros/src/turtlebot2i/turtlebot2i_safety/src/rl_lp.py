@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Modified from: https://github.com/angelmtenor/RL-ROBOT/blob/master/lp.py
 #   +-----------------------------------------------+
 #   | RL-ROBOT. Reinforcement Learning for Robotics |
 #   | Angel Martinez-Tenor                          |
@@ -43,6 +44,7 @@ final_average_reward = 0  # Resulting average R at last step
 
 ave_v_step = None  # Average V per step (for plotting)
 ave_r_step = None  # Average R obtained per step
+tot_r_step = None  # Total R obtained per step
 sasr_step = None  # History of (s,a,s',R) per step
 
 q_limit = 0
@@ -52,14 +54,14 @@ initiated = False
 initial_step_time = step_time  # auxiliary
 mark = time.time()
 
-training_process = True
+#training_process = True
 
 def setup():
     """ Create module variables """
     global step_time, step, s, sp, a, ap, r, alpha, delta, q, v, policy, q_count
     global t_sas, r_sas, elapsed_time, actual_step_time
-    global final_average_reward, ave_v_step, ave_r_step, sasr_step, q_limit, s0
-    global initiated, initial_step_time, training_process
+    global final_average_reward, ave_v_step, ave_r_step, tot_r_step, sasr_step, q_limit, s0
+    global initiated, initial_step_time#, training_process
 
     agent.setup()
 
@@ -90,6 +92,7 @@ def setup():
 
     ave_v_step = np.zeros(var.N_STEPS)
     ave_r_step = np.zeros(var.N_STEPS)
+    tot_r_step = np.zeros(var.N_STEPS)
     sasr_step = np.zeros((var.N_STEPS, 4))
 
     learning_algorithm.setup()
@@ -104,7 +107,7 @@ def setup():
         time.sleep(2)
 
     initiated = True
-    training_process = True
+    #training_process = True
     return
 
 
@@ -113,11 +116,11 @@ def run_training():
     global step, s, sp, a, ap, r, alpha
     global q, v, policy, q_count
     global t_sas, r_sas
-    global ave_r_step, sasr_step
+    global ave_r_step, tot_r_step, sasr_step
     global elapsed_time, actual_step_time
     global final_average_reward
     global mark
-    global training_process
+    #global training_process
 
     assert initiated, ("learning process not initiated! setup() "
                        "must be previously called")
@@ -140,22 +143,24 @@ def run_training():
         ave_v_step[step] = np.mean(v)
         if step == 0:
             ave_r_step[step] = sasr_step[step, 3]
+            tot_r_step[step] = sasr_step[step, 3]
             mark = time.time()
         else:
             ave_r_step[step] = np.average(sasr_step[0:step, 3])
+            tot_r_step[step] = tot_r_step[step-1] + sasr_step[step, 3]
 
         # Display information
         if step > 0 and step % var.DISPLAY_STEP == 0:
             print("s:", s, " a:", a, " sp:", sp, " R: %0.2f" % r)
-            print("Average Reward: %0.2f" % ave_r_step[step], "\n")
+            print("Average Reward: %0.2f" % ave_r_step[step], "Total Reward: %0.2f" % tot_r_step[step], "\n")
 
         # Update state
         s = sp
         a = ap
     else:
         # End of learning process ----------------------
-        if training_process:
-            training_process = False
+        if var.training_mode:
+            var.training_mode = False
             results_path = "RL_results/"
             caption = (var.TASK_ID + "_" + var.ALGORITHM + "_" + var.ACTION_STRATEGY)
             if var.SUFFIX:
@@ -169,10 +174,12 @@ def run_training():
 
             save.plot_mean(ave_r_step, 0)
             save.simple(ave_r_step, "aveR")
+            save.plot_total(tot_r_step, 0)
+            save.simple(tot_r_step, "totR")
             final_r = ave_r_step[step-1]
             save.log(final_r, actual_step_time)
             save.arrays()
-        # Training is finished and exploit the optimal action for each state
+        # Training is finished and select the optimal action for each state
         s = agent.observe_state()
         a = agent.select_action(s)
         agent.execute_action(a)

@@ -28,8 +28,8 @@ def init_var():
     '''
     Here we initialize the global variables.
     '''
-    global time_previous
-    time_previous = time.time()
+    #global time_previous
+    #time_previous = time.time()
 
     # Safety zone size
     global IZW, range_degree,range_meter, range_meter_per_second,range_risk
@@ -62,6 +62,9 @@ def init_var():
 
     global vel_scale_message
     vel_scale_message = VelocityScale()
+
+    global time_duration_list
+    time_duration_list = []
 
 def init_regEx():
     '''
@@ -229,17 +232,21 @@ def parse_dot_file(graph):
         pub_safe_vel(1.0, 1.0) 
     #pub_safe_vel(0, 0) 
     risk_val_pub.publish(highest_risk)
-    global    time_previous
+    #global    time_previous
     #run_time = time.time() - time_previous
     #print 'Calc. time for S-G=',run_time,'sec'   #0.0139169692993 sec for calc,
     #print 'Calc. Freq. for S-G=',1/run_time,'Hz' #max. 71.8547248681 Hz
-    time_previous = time.time()
+    #time_previous = time.time()
 
 def topic_callback(data):
-    time_previous = time.time()
-    #graphs = pydot.graph_from_dot_data(data.sg_data) #From string
+    #global time_duration_list
+    #time_previous = time.time()
+
     graph = pydot.graph_from_dot_data(data.sg_data) #From string
     parse_dot_file(graph)
+
+    #time_duration_list.append(time.time()-time_previous)
+    #print("Risk assesment duration :",np.mean(time_duration_list))
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 
 

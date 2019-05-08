@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Taken from: https://github.com/angelmtenor/RL-ROBOT/blob/master/algorithm_s.py
 #   +-----------------------------------------------+
 #   | RL-ROBOT. Reinforcement Learning for Robotics |
 #   | Angel Martinez-Tenor                          |

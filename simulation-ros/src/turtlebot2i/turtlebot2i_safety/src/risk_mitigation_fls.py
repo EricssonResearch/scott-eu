@@ -10,6 +10,8 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
+import time
+
 def init_var():
     '''
     Here we initialize the global variables.
@@ -28,6 +30,9 @@ def init_var():
 
     global vel_scale_message
     vel_scale_message = VelocityScale()
+
+    global time_duration_list
+    time_duration_list = []
 
 def init_fls_common_part(): #copy this function from risk_management.py; TO DO: put this parameter as class or in another module
     global object_distance,object_direction
@@ -100,9 +105,15 @@ def pub_safe_vel(left_vel_scale,right_vel_scale):
     safe_vel_pub.publish(vel_scale_message)
 
 def risk_callback(data):
+    #global time_duration_list
+    #time_previous = time.time()
+
     i = np.argmax(data.risk_value)
     left_vel_scale,right_vel_scale = cal_safe_vel(data.distance[i], data.direction[i], data.risk_value[i])
     pub_safe_vel(left_vel_scale, right_vel_scale)
+
+    #time_duration_list.append(time.time()-time_previous)
+    #print("Risk mitigation duration:",np.mean(time_duration_list))
     
 
 if __name__ == '__main__':

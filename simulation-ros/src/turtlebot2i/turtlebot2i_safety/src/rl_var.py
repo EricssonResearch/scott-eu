@@ -3,7 +3,7 @@ import numpy as np
 #Here we initialize the global variables for Reinforcement Learning.
 print("Initializating Reinforcement Learning.")
 # Basic parameters (taken from exp.py)----------------------------------------------
-TASK_ID = "rm_rl_3k"  # task filename from tasks folder #has to be deleted
+TASK_ID = "rm_rl"  # task filename from tasks folder #has to be deleted
 ENVIRONMENT_TYPE = "VREP with ROS"   
 SPEED_RATE = 3.0  # Recommended: REAL ROBOT: 1.0 (x1), VREP: 3.0 (x3)
 
@@ -42,16 +42,16 @@ INPUT_VARIABLES = {
     "distance_front_right": distance_list[:-1],
     "steering_direction":   np.array([-57.0, -10.0,  10.0])*np.pi/180.0
 }
-RANGE_DISPLACEMENT = 2.0
 OUTPUT_VARIABLES = {
     "left_scale" : np.linspace(0.0, 1.2, 4),
     "right_scale": np.linspace(0.0, 1.2, 4)
 }
 INITIAL_STATE = 0  # (usually overwritten by the fist observation)
-INITIAL_POLICY = 0
+INITIAL_POLICY = 5 # scale the speed with 0.4 for both wheels
 
-#Rewards for [collision, critical, warning, nothing, >displacement]
-REWARDS = np.array([-10.0, -5.0, -1.0, -0.05, 5.0])
+#Rewards for [collision, critical, warning, time punishment, >displacement]
+REWARDS = np.array([-10.0, -5.0, -1.0, -0.05, 10.0])
+RANGE_DISPLACEMENT = 0.50 / SPEED_RATE
 
 n_inputs = int
 in_values = [None]
@@ -74,3 +74,4 @@ min_dist_to_obstacle = 5.0
 collision = False
 r_warning = 0.0
 r_critical = 0.0
+training_mode = True

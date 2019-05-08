@@ -6,6 +6,7 @@ import re
 import math
 import rospy
 import std_msgs.msg
+import numpy as np
 from graphviz import Digraph
 from shapely.geometry import box
 from turtlebot2i_scene_graph.msg import SceneGraph
@@ -96,7 +97,7 @@ def get_size(j):
     return size_x, size_y
 
 def init():
-    global extractor
+    global extractor, time_duration_list
     extractor= VrepObjectExtractor('127.0.0.1', 19997)
     # List of object names to retrieve information
     # For now it is hardcoded
@@ -129,7 +130,7 @@ def init():
     extractor.update_all_robots_vision_sensors_fov()
     #time.sleep(0.3) # streaming takes a while to get ready
 
-
+    time_duration_list = []
     rospy.loginfo('Finished getting scene properties!\n')
 
 def sg_generate():
@@ -227,9 +228,10 @@ if __name__ == '__main__':
         pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
         rate = rospy.Rate(3.0) #Hz, T=1/Rate
         while not rospy.is_shutdown():
-            #mark = time.time()
+            #time_previous = time.time()
             sg_generate()
-            #print("scene graph duration:",time.time()-mark)
+            #time_duration_list.append(time.time()-time_previous)
+            #print("Scene graph duration    :",np.mean(time_duration_list))
             rate.sleep()
     except rospy.ROSInterruptException:
         # Close the connection to V-REP

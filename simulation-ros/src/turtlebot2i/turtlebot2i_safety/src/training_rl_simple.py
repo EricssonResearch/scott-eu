@@ -5,6 +5,7 @@ import actionlib
 import random
 import vrep
 import time
+import sys
 import numpy as np
 import geometry_msgs.msg
 import std_msgs.msg
@@ -66,8 +67,7 @@ def init_var():
     robot_linear_speed  = 0.0 
     robot_angular_speed = 0.0
     
-    global obstacle_map, obstacle_state, obstacle_matrix, n_distance, n_direction, origin
-    obstacle_map = []
+    global n_distance, n_direction, origin
     origin = Point((0.0, 0.0))
     camera_near_clipping = 0.2 #0.01 #in meters
     camera_far_clipping  = 3.5 #in meters
@@ -76,22 +76,13 @@ def init_var():
     distance_list  = var.distance_list
     n_direction = len(direction_list)-1
     n_distance  = len(distance_list)-1
-    obstacle_matrix  = np.zeros((n_direction,n_distance))
-    obstacle_state = np.ones(n_direction)*(n_distance-1)
-    for i in range(n_direction):
-        map_row = []
-        for j in range(n_distance):
-            map_row.append(Polygon([[distance_list[j]*cos(radians(direction_list[i])),    distance_list[j]*sin(radians(direction_list[i]))],
-                                    [distance_list[j]*cos(radians(direction_list[i+1])),  distance_list[j]*sin(radians(direction_list[i+1]))],
-                                    [distance_list[j+1]*cos(radians(direction_list[i+1])),distance_list[j+1]*sin(radians(direction_list[i+1]))],
-                                    [distance_list[j+1]*cos(radians(direction_list[i])),  distance_list[j+1]*sin(radians(direction_list[i]))]]))
-        obstacle_map.append(map_row)
 
     var.min_dist_to_obstacle = 5.0
     var.r_warning  = 0.0
     var.r_critical = 0.0
     var.collision = False
     var.collected_distance = 0.0
+    var.TASK_ID = "rm_rl_simple_800"
 
 def movebase_client():
     global goal, client
@@ -184,55 +175,28 @@ def rotated_pos(pointX, pointY, centerX, centerY,r00, r01, r10, r11):
 
 
 def risk_callback(data):
-    global obstacle_matrix, obstacle_state, current_training_step#, risk_max
-    obstacle_matrix  = np.zeros((n_direction,n_distance))
-    n_obstacle = len(data.type) #count the number of detected object
-    var.risk_max = max(data.risk_value)
-    #fig = plt.figure(1, figsize=(3.5,6), dpi=90)
-    #ax = fig.add_subplot(111)
+    global current_training_step#, risk_max
+    i = np.argmax(data.risk_value)
+    var.risk_max = data.risk_value[i]
+    #data.distance[i], data.direction[i], data.risk_value[i]
+    #for property in ["object_distance", "object_direction", "object_risk_input"]
     
-    for i in range(n_obstacle):
-        #### reconstruct the obstacle from scene graph ####
-        obs_center_x = (data.distance[i])*cos(radians(data.direction[i]))
-        obs_center_y = (data.distance[i])*sin(radians(data.direction[i]))
-        
-        r00 =  np.cos((-robot_orientation))
-        r01 = -np.sin((-robot_orientation))
-        r10 =  np.sin((-robot_orientation))
-        r11 =  np.cos((-robot_orientation))
-        obstacle = Polygon([rotated_pos(obs_center_x-data.size_x[i]/2, obs_center_y-data.size_y[i]/2, obs_center_x, obs_center_y, r00, r01, r10, r11),
-                            rotated_pos(obs_center_x-data.size_x[i]/2, obs_center_y+data.size_y[i]/2, obs_center_x, obs_center_y, r00, r01, r10, r11),
-                            rotated_pos(obs_center_x+data.size_x[i]/2, obs_center_y+data.size_y[i]/2, obs_center_x, obs_center_y, r00, r01, r10, r11),
-                            rotated_pos(obs_center_x+data.size_x[i]/2, obs_center_y-data.size_y[i]/2, obs_center_x, obs_center_y, r00, r01, r10, r11)])
-        curr_distance = origin.distance(obstacle) # need to be translated
-        #print("distance to origin:",curr_distance,data.distance[i])
-        obstacle = translate(obstacle, (data.distance[i]-curr_distance)*cos(radians(data.direction[i])), (data.distance[i]-curr_distance)*sin(radians(data.direction[i])))
-        curr_distance = origin.distance(obstacle) # need to be translated
-        #print("distance to origin2:",curr_distance,data.distance[i])
-        while(data.distance[i] - curr_distance) > 0.02: #translate again if the distance is not close to the real distance
-            obstacle = translate(obstacle, (data.distance[i]-curr_distance)*cos(radians(data.direction[i])), (data.distance[i]-curr_distance)*sin(radians(data.direction[i])))
-            curr_distance = origin.distance(obstacle) 
-            #print("distance to origin3:",curr_distance,data.distance[i])
-        #x,y = obstacle.exterior.xy
-        #ax.plot(x, y)
-        for i in range(n_direction):
-            obstruction = False
-            for j in range(n_distance):
-                #x,y = obstacle_map[i][j].exterior.xy
-                #ax.plot(x, y)
-                if obstacle.intersects(obstacle_map[i][j]):
-                    obstruction = True
-                if obstruction:
-                    obstacle_matrix[i,j] = 1.0
+    obstacle_state = []
+    in_values  = var.INPUT_VARIABLES["object_distance"]
+    aux = np.digitize(data.distance[i], in_values, right=True)
+    obstacle_state.append( np.clip(aux - 1, 0, len(in_values) - 1) )
 
-    obstacle_state = np.ones(n_direction)*(n_distance-1)
-    for i in range(n_direction):
-        j = 0
-        while((j<(n_distance-1)) and (obstacle_matrix[i,j] == 0.0)): 
-            j += 1
-        obstacle_state[i] = j
+    in_values  = var.INPUT_VARIABLES["object_direction"]
+    aux = np.digitize(data.direction[i], in_values, right=True)
+    obstacle_state.append( np.clip(aux - 1, 0, len(in_values) - 1) )
+
+    in_values  = var.INPUT_VARIABLES["object_risk_input"]
+    aux = np.digitize(data.risk_value[i], in_values, right=True)
+    obstacle_state.append( np.clip(aux - 1, 0, len(in_values) - 1) )
+
+    
     #print("obstacle_state: ", obstacle_state)
-    agent.obstacle_state = obstacle_state
+    agent.obstacle_state = np.array(obstacle_state)
     lp.step = current_training_step
     lp.run_training()
     current_training_step += 1
@@ -258,8 +222,7 @@ def speed_callback(data):
     robot_angular_speed = data.angular.z 
 
     in_values  = var.INPUT_VARIABLES["steering_direction"]
-    input_data = robot_angular_speed
-    aux = np.digitize(input_data, in_values, right=True)
+    aux = np.digitize(robot_angular_speed, in_values, right=True)
     agent.steering_state = np.clip(aux - 1, 0, len(in_values) - 1)
 
 def bumper_callback(data):
@@ -286,7 +249,7 @@ def execute_action(speed_scale):
 
 def get_reward():  # abstract s,a,sp pointless here
     #displacement = robot.mobilebase_displacement2d
-    #REWARDS = np.array([-10.0, -5.0, -1.0, -0.01, 5.0])
+    #REWARDS = np.array([-10.0, -5.0, -1.0, -0.05, 10.0])
     #global collected_distance
     if var.collision:  # big penalty for collision
         r = min(var.REWARDS)
@@ -306,30 +269,40 @@ def get_reward():  # abstract s,a,sp pointless here
     #print("get reward:", r, var.risk_max, var.collected_distance, var.min_dist_to_obstacle, var.collision)
     return r-(var.risk_max*0.1)
 
+def overwriteVAR():
+    var.INPUT_VARIABLES = {
+        #"object_distance":    np.array([0.3, 0.6, 0.9, 1.4, 2.0, 3.0, 3.5]),
+        "object_distance":    np.array([0.21, 0.32, 0.6, 0.9, 1.4, 2.0, 3.0, 3.5]),
+        "object_direction":   np.array([-57.0, -33.0, -10.0,  10.0, 33.0]),
+        "object_risk_input":  np.array([0.0, 1.0, 2.0, 3.0]),
+        "steering_direction": np.array([-57.0, -33.0, -10.0,  10.0, 33.0])*np.pi/180.0
+    }
+
 def load_model(filename):
-    loaded_model = np.load(filename)
-    if (np.shape(lp.policy) == np.shape(loaded_model['Policy'])) and (np.shape(lp.v) == np.shape(loaded_model['V'])) and (np.shape(lp.q) == np.shape(loaded_model['Q'])) and (np.shape(lp.q_count) == np.shape(loaded_model['Q_count'])):
-        lp.policy  = loaded_model['Policy']
-        lp.v       = loaded_model['V']
-        lp.q       = loaded_model['Q']
-        lp.q_count = loaded_model['Q_count']
-        print("Model loaded from: ",filename)
-        print("Model has been load successfully!")
-    else:
-        print("Load file error!!! Check the dimension of the model!")
-        print("Program stop!!")
-        sys.exit()
+	loaded_model = np.load(filename)
+	if (np.shape(lp.policy) == np.shape(loaded_model['Policy'])) and (np.shape(lp.v) == np.shape(loaded_model['V'])) and (np.shape(lp.q) == np.shape(loaded_model['Q'])) and (np.shape(lp.q_count) == np.shape(loaded_model['Q_count'])):
+		lp.policy  = loaded_model['Policy']
+		lp.v       = loaded_model['V']
+		lp.q       = loaded_model['Q']
+		lp.q_count = loaded_model['Q_count']
+		print("Model loaded from: ",filename)
+		print("Model has been load successfully!")
+	else:
+		print("Load file error!!! Check the dimension of the model!")
+		print("Program stop!!")
+		sys.exit()
 
 if __name__ == '__main__':
     try:
         print("Initializating node.")
         rospy.init_node('training_rl_py')
         print("Initializating other modules.")
+        overwriteVAR()
         agent.setup_task() #setup function in task.py
         lp.setup()
         current_training_step = 0
         if not var.training_mode:
-            load_model('/home/etrrhmd/RL_results/Trained_on_Hassams_laptop/rm_rl_3k_TOSL_QBIASSR.npz')
+        	load_model('/home/etrrhmd/RL_results/2019_05_08_04_30_rm_rl_3k_TOSL_QBIASSR/rm_rl_3k_TOSL_QBIASSR.npz')
         print("Initializating internal variables.")
         init_var()
         print("Initializating VREP.")
@@ -337,8 +310,9 @@ if __name__ == '__main__':
         print("Initializating Subscription.")
         init_subscription()
         print("initialization finished, training process is starting")
-        while not rospy.is_shutdown():
+        while (not rospy.is_shutdown()) and var.training_mode:
             result = movebase_client()
+        rospy.spin()
     except rospy.ROSInterruptException:
         vrep.simxFinish(clientID)
         rospy.loginfo("Navigation test finished.")

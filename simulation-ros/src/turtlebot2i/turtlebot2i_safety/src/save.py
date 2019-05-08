@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Modified from: https://github.com/angelmtenor/RL-ROBOT/blob/master/save.py
 #   +-----------------------------------------------+
 #   | RL-ROBOT. Reinforcement Learning for Robotics |
 #   | Angel Martinez-Tenor                          |
@@ -148,6 +149,21 @@ def plot_mean(data, epi):
         plt.xlabel('STEP')
     plt.ylabel('MEAN of average Reward')
     plt.title(tittle + "  (Mean)")
+    plt.legend(loc='lower right', numpoints=1)
+    plt.savefig(filename)
+    return
+
+def plot_total(data, epi):
+    """ Plot mean of average Reward per step """
+    filename = path+"_total"
+    tittle = var.TASK_ID
+    labl = var.ALGORITHM + " " + var.ACTION_STRATEGY + " " + var.SUFFIX
+    plt.figure()
+    plt.plot(data, label=labl)
+    #plt.axis([0, int(data.size) - 1, -5, 10])
+    plt.xlabel('STEP')
+    plt.ylabel('Total of  Reward')
+    plt.title(tittle + "  (Total)")
     plt.legend(loc='lower right', numpoints=1)
     plt.savefig(filename)
     return
