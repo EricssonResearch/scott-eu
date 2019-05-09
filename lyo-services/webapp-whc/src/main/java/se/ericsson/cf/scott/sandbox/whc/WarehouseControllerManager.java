@@ -24,15 +24,19 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
-import eu.scott.warehouse.lib.InstanceWithResources;
-import eu.scott.warehouse.lib.OslcHelper;
-import eu.scott.warehouse.lib.OslcHelpers;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
+import java.util.List;
 
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.RegistrationMessage;
+import eu.scott.warehouse.domains.pddl.Step;
+
 
 // Start of user code imports
 import java.net.URI;
@@ -55,6 +59,11 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
+
+import eu.scott.warehouse.lib.InstanceWithResources;
+import eu.scott.warehouse.lib.OslcHelper;
+import eu.scott.warehouse.lib.OslcHelpers;
+import java.util.Optional;
 // End of user code
 
 // Start of user code pre_class_code
@@ -80,6 +89,10 @@ public class WarehouseControllerManager {
         return twinRepository;
     }
 
+    @NotNull
+    public static PlanRepository getPlanRepository() {
+        return planRepository;
+    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -196,8 +209,4 @@ public class WarehouseControllerManager {
         return eTag;
     }
 
-    @NotNull
-    public static PlanRepository getPlanRepository() {
-        return planRepository;
-    }
 }

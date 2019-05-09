@@ -77,7 +77,7 @@ public class ServiceProviderCatalogSingleton
 {
     private final static Logger log = LoggerFactory.getLogger(ServiceProviderCatalogSingleton.class);
     private static final ServiceProviderCatalog serviceProviderCatalog;
-    private static final Map<String, ServiceProvider> serviceProviders = new TreeMap<>();
+    private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
 
     static {
         serviceProviderCatalog = new ServiceProviderCatalog();
@@ -109,7 +109,7 @@ public class ServiceProviderCatalogSingleton
         synchronized(serviceProviders)
         {
             initServiceProviders(httpServletRequest);
-            return serviceProviders.values().toArray(new ServiceProvider[0]);
+            return serviceProviders.values().toArray(new ServiceProvider[ serviceProviders.size()]);
         }
     }
 
@@ -139,13 +139,12 @@ public class ServiceProviderCatalogSingleton
     }
 
     public static boolean containsServiceProvider(final ServiceProvider sp) {
-        return serviceProviders.containsKey(sp.getIdentifier());
+        return containsServiceProviderById(sp.getIdentifier());
     }
 
     public static boolean containsServiceProviderById(final String id) {
         return serviceProviders.containsKey(id);
     }
-
 
     public static ServiceProvider getTwinsServiceProvider(HttpServletRequest httpServletRequest, final String twinKind, final String twinId)
     {
@@ -244,10 +243,33 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
-    public static void deregisterTwinsServiceProvider(final String twinKind, final String twinId) {
-        final String id = TwinsServiceProvidersFactory.twinsServiceProviderIdentifier(
-            twinKind, twinId);
-        deregisterServiceProvider(id);
+    public static void deregisterTwinsServiceProvider(final String twinKind, final String twinId)
+    {
+        synchronized(serviceProviders)
+        {
+            final ServiceProvider deregisteredServiceProvider =
+                serviceProviders.remove(twinsServiceProviderIdentifier(twinKind, twinId));
+
+            if (deregisteredServiceProvider != null)
+            {
+                final SortedSet<URI> remainingDomains = new TreeSet<URI>();
+
+                for (final ServiceProvider remainingServiceProvider : serviceProviders.values())
+                {
+                    remainingDomains.addAll(getServiceProviderDomains(remainingServiceProvider));
+                }
+
+                final SortedSet<URI> removedServiceProviderDomains = getServiceProviderDomains(deregisteredServiceProvider);
+
+                removedServiceProviderDomains.removeAll(remainingDomains);
+                serviceProviderCatalog.removeDomains(removedServiceProviderDomains);
+                serviceProviderCatalog.removeServiceProvider(deregisteredServiceProvider);
+            }
+            else
+            {
+                throw new WebApplicationException(Status.NOT_FOUND);
+            }
+        }
     }
 
     private static URI constructIndependentServiceProviderURI(final String serviceProviderId)
@@ -268,8 +290,7 @@ public class ServiceProviderCatalogSingleton
     }
 
     public static boolean containsIndependentServiceProvider(final String serviceProviderId) {
-        final String id = independentServiceProviderIdentifier(serviceProviderId);
-        return containsServiceProviderById(id);
+        return serviceProviders.containsKey(independentServiceProviderIdentifier(serviceProviderId));
     }
 
     public static ServiceProvider getIndependentServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
@@ -367,15 +388,35 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
-    public static void deregisterIndependentServiceProvider(final String serviceProviderId)  {
-        final String id = independentServiceProviderIdentifier(serviceProviderId);
-        deregisterServiceProvider(id);
+    public static void deregisterIndependentServiceProvider(final String serviceProviderId)
+    {
+        synchronized(serviceProviders)
+        {
+            final ServiceProvider deregisteredServiceProvider =
+                serviceProviders.remove(independentServiceProviderIdentifier(serviceProviderId));
+
+            if (deregisteredServiceProvider != null)
+            {
+                final SortedSet<URI> remainingDomains = new TreeSet<URI>();
+
+                for (final ServiceProvider remainingServiceProvider : serviceProviders.values())
+                {
+                    remainingDomains.addAll(getServiceProviderDomains(remainingServiceProvider));
+                }
+
+                final SortedSet<URI> removedServiceProviderDomains = getServiceProviderDomains(deregisteredServiceProvider);
+
+                removedServiceProviderDomains.removeAll(remainingDomains);
+                serviceProviderCatalog.removeDomains(removedServiceProviderDomains);
+                serviceProviderCatalog.removeServiceProvider(deregisteredServiceProvider);
+            }
+            else
+            {
+                throw new WebApplicationException(Status.NOT_FOUND);
+            }
+        }
     }
 
-
-    // TO?DO Andrew@2019-01-23: move to the Core
-    // TO?DO Andrew@2019-01-23: use unsorted Set
-    // TBD Andrew@2019-04-16: Is it still needed?
     private static SortedSet<URI> getServiceProviderDomains(final ServiceProvider serviceProvider)
     {
         final SortedSet<URI> domains = new TreeSet<URI>();
@@ -415,7 +456,7 @@ public class ServiceProviderCatalogSingleton
             for (TwinsServiceProviderInfo serviceProviderInfo : twinsServiceProviderInfos) {
                 if (!containsTwinsServiceProvider(serviceProviderInfo.twinKind, serviceProviderInfo.twinId)) {
                     ServiceProvider aServiceProvider = createTwinsServiceProvider(serviceProviderInfo);
-                    registerTwinsServiceProvider(aServiceProvider);
+                    registerTwinsServiceProvider(aServiceProvider, serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
                 }
             }
             IndependentServiceProviderInfo [] independentServiceProviderInfos = TwinManager.getIndependentServiceProviderInfos(httpServletRequest);
@@ -423,10 +464,9 @@ public class ServiceProviderCatalogSingleton
             for (IndependentServiceProviderInfo serviceProviderInfo : independentServiceProviderInfos) {
                 if (!containsIndependentServiceProvider(serviceProviderInfo.serviceProviderId)) {
                     ServiceProvider aServiceProvider = createIndependentServiceProvider(serviceProviderInfo);
-                    registerIndependentServiceProvider(aServiceProvider);
+                    registerIndependentServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
                 }
             }
-            log.trace("initServiceProviders COMPLETE");
         } catch (Exception e) {
             e.printStackTrace();
             throw new WebApplicationException(e,Status.INTERNAL_SERVER_ERROR);

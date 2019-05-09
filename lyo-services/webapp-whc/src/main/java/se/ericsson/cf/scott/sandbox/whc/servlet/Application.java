@@ -24,19 +24,34 @@
 package se.ericsson.cf.scott.sandbox.whc.servlet;
 
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import org.eclipse.lyo.oslc4j.core.model.*;
+import org.eclipse.lyo.oslc4j.core.model.AllowedValues;
+import org.eclipse.lyo.oslc4j.core.model.Compact;
+import org.eclipse.lyo.oslc4j.core.model.CreationFactory;
+import org.eclipse.lyo.oslc4j.core.model.Dialog;
 import org.eclipse.lyo.oslc4j.core.model.Error;
+import org.eclipse.lyo.oslc4j.core.model.ExtendedError;
+import org.eclipse.lyo.oslc4j.core.model.OAuthConfiguration;
+import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
+import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
+import org.eclipse.lyo.oslc4j.core.model.Preview;
+import org.eclipse.lyo.oslc4j.core.model.Property;
+import org.eclipse.lyo.oslc4j.core.model.Publisher;
+import org.eclipse.lyo.oslc4j.core.model.QueryCapability;
+import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
+import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
+import org.eclipse.lyo.oslc4j.core.model.Service;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
 import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
 
-import org.glassfish.jersey.server.ResourceConfig;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderCatalogService;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService;
 import se.ericsson.cf.scott.sandbox.whc.services.ResourceShapeService;
@@ -45,6 +60,8 @@ import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.mission.MissionDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
@@ -58,7 +75,7 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.services.AdminResource;
 // Start of user code pre_class_code
 // End of user code
 
-public class Application extends ResourceConfig {
+public class Application extends javax.ws.rs.core.Application {
 
     private static final Set<Class<?>>         RESOURCE_CLASSES                          = new HashSet<Class<?>>();
     private static final Map<String, Class<?>> RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP = new HashMap<String, Class<?>>();
@@ -67,6 +84,11 @@ public class Application extends ResourceConfig {
     // End of user code
 
     // Start of user code class_methods
+    @Override
+    public Set<Object> getSingletons() {
+        Set s = Collections.singleton(new WhcBinder());
+        return s;
+    }
     // End of user code
 
     static
@@ -110,14 +132,16 @@ public class Application extends ResourceConfig {
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.STEP_PATH, Step.class);
     }
 
-    public Application() throws URISyntaxException, OslcCoreApplicationException {
-        registerClasses(RESOURCE_CLASSES);
+    public Application() throws OslcCoreApplicationException, URISyntaxException {
         final String BASE_URI = "http://localhost/validatingResourceShapes";
-        for (final Map.Entry<String, Class<?>> entry : RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.entrySet())
-        {
+        for (final Map.Entry<String, Class<?>> entry : RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.entrySet()) {
             ResourceShapeFactory.createResourceShape(BASE_URI, OslcConstants.PATH_RESOURCE_SHAPES, entry.getKey(), entry.getValue());
         }
-        register(new WhcBinder());
+    }
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        return RESOURCE_CLASSES;
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {

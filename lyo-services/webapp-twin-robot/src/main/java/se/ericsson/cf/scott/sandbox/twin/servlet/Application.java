@@ -23,44 +23,66 @@
 
 package se.ericsson.cf.scott.sandbox.twin.servlet;
 
-import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.pddl.Step;
-import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
-import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
+import org.eclipse.lyo.oslc4j.core.model.AllowedValues;
+import org.eclipse.lyo.oslc4j.core.model.Compact;
+import org.eclipse.lyo.oslc4j.core.model.CreationFactory;
+import org.eclipse.lyo.oslc4j.core.model.Dialog;
 import org.eclipse.lyo.oslc4j.core.model.Error;
-import org.eclipse.lyo.oslc4j.core.model.*;
+import org.eclipse.lyo.oslc4j.core.model.ExtendedError;
+import org.eclipse.lyo.oslc4j.core.model.OAuthConfiguration;
+import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
+import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
+import org.eclipse.lyo.oslc4j.core.model.Preview;
+import org.eclipse.lyo.oslc4j.core.model.Property;
+import org.eclipse.lyo.oslc4j.core.model.Publisher;
+import org.eclipse.lyo.oslc4j.core.model.QueryCapability;
+import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
+import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
+import org.eclipse.lyo.oslc4j.core.model.Service;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
+import org.eclipse.lyo.oslc4j.provider.json4j.Json4JProvidersRegistry;
+
 import org.eclipse.lyo.oslc4j.trs.server.PagedTrs;
 import org.eclipse.lyo.oslc4j.trs.server.ResourceEventHandler;
-import org.glassfish.jersey.server.ResourceConfig;
-import se.ericsson.cf.scott.sandbox.twin.xtra.services.AdaptorAdminService;
-import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService;
-import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
-import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
 import se.ericsson.cf.scott.sandbox.twin.services.ServiceProviderCatalogService;
+import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService;
+import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
+
+import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
+import eu.scott.warehouse.domains.pddl.Plan;
+import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
+import eu.scott.warehouse.domains.pddl.Step;
+import eu.scott.warehouse.domains.mission.MissionDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 
 // Start of user code imports
 import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
+import se.ericsson.cf.scott.sandbox.twin.xtra.services.AdaptorAdminService;
 // End of user code
 
 // Start of user code pre_class_code
 // End of user code
 
-public class Application extends ResourceConfig {
+public class Application extends javax.ws.rs.core.Application {
 
     private static final Set<Class<?>>         RESOURCE_CLASSES                          = new HashSet<Class<?>>();
     private static final Map<String, Class<?>> RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP = new HashMap<String, Class<?>>();
@@ -69,12 +91,25 @@ public class Application extends ResourceConfig {
     // End of user code
 
     // Start of user code class_methods
+
+    @Override
+    public Set<Object> getSingletons() {
+        return Collections.singleton(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bindFactory(new NaiveTrsFactories.PagedTrsFactory()).to(PagedTrs.class);
+                bindFactory(new NaiveTrsFactories.ResourceEventHandlerFactory()).to(
+                    ResourceEventHandler.class);
+            }
+        });
+    }
+
     // End of user code
 
     static
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
-//        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
+        RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
         RESOURCE_CLASSES.add(TwinsServiceProviderService1.class);
         RESOURCE_CLASSES.add(IndependentServiceProviderService1.class);
 
@@ -121,21 +156,15 @@ public class Application extends ResourceConfig {
            throws OslcCoreApplicationException,
                   URISyntaxException
     {
-        registerClasses(RESOURCE_CLASSES);
         final String BASE_URI = "http://localhost/validatingResourceShapes";
         for (final Map.Entry<String, Class<?>> entry : RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.entrySet()) {
-            ResourceShapeFactory.createResourceShape(BASE_URI, OslcConstants.PATH_RESOURCE_SHAPES,
-                entry.getKey(), entry.getValue());
+            ResourceShapeFactory.createResourceShape(BASE_URI, OslcConstants.PATH_RESOURCE_SHAPES, entry.getKey(), entry.getValue());
         }
+    }
 
-        register(new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bindFactory(new NaiveTrsFactories.PagedTrsFactory()).to(PagedTrs.class);
-                bindFactory(new NaiveTrsFactories.ResourceEventHandlerFactory()).to(
-                    ResourceEventHandler.class);
-            }
-        });
+    @Override 
+    public Set<Class<?>> getClasses() { 
+        return RESOURCE_CLASSES; 
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {
