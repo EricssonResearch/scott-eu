@@ -13,7 +13,6 @@ import org.apache.jena.sparql.ARQException;
 import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.lyo.store.StoreFactory;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -27,7 +26,6 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsMqttClientManager;
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinAckRegistrationAgent;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
 
 
 public class TwinAdaptorHelper {
@@ -37,7 +35,6 @@ public class TwinAdaptorHelper {
     static TrsMqttClientManager trsClientManager;
     static Store store;
     static TrsMqttGateway mqttGateway;
-    static TwinChangeHistories changeHistories;
     private static ServletContext servletContext;
     private static ServiceProviderRepository serviceProviderRepository;
 
@@ -71,14 +68,6 @@ public class TwinAdaptorHelper {
 
     public static void setTrsClientManager(TrsMqttClientManager trsClientManager) {
         TwinAdaptorHelper.trsClientManager = trsClientManager;
-    }
-
-    public static ChangeHistories getChangeHistories() {
-        return changeHistories;
-    }
-
-    public static void setChangeHistories(final TwinChangeHistories changeHistories) {
-        TwinAdaptorHelper.changeHistories = changeHistories;
     }
 
     public static ServletContext getServletContext() {

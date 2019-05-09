@@ -38,13 +38,10 @@ import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.pddl.Step;
 
 
 // Start of user code imports
-import java.util.concurrent.TimeUnit;
 import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
@@ -56,6 +53,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
+import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
 // End of user code
 
 // Start of user code pre_class_code
@@ -78,7 +76,7 @@ public class TwinManager {
     {
         
         // Start of user code contextInitializeServletListener
-
+        NaiveTrsFactories.activate();
         log.info("Twin {} is starting", TwinAdaptorHelper.getTwinUUID());
         TwinAdaptorHelper.setServletContext(servletContextEvent.getServletContext());
         r = new Random();
@@ -91,11 +89,6 @@ public class TwinManager {
 
         log.debug("Initialising the TRS Client");
         TwinAdaptorHelper.initTrsClient();
-
-        final long updateInterval = TimeUnit.SECONDS.toMillis(5);
-        log.debug("Initialising the TRS Server (Tupd={}ms)", updateInterval);
-        TwinAdaptorHelper.setChangeHistories(
-            new TwinChangeHistories(TwinAdaptorHelper.getMqttGateway().getMqttClient(), "trs-twin", updateInterval));
         // End of user code
     }
 

@@ -39,6 +39,8 @@ import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.Error;
 import org.eclipse.lyo.oslc4j.core.model.*;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaProvidersRegistry;
+import org.eclipse.lyo.oslc4j.trs.server.PagedTrs;
+import org.eclipse.lyo.oslc4j.trs.server.ResourceEventHandler;
 import org.glassfish.jersey.server.ResourceConfig;
 import se.ericsson.cf.scott.sandbox.twin.xtra.services.AdaptorAdminService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService;
@@ -49,7 +51,10 @@ import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
 
 // Start of user code imports
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinTrsServerService;
+import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
+
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
 // End of user code
 
 // Start of user code pre_class_code
@@ -83,7 +88,8 @@ public class Application extends ResourceConfig {
         // TODO Andrew@2018-05-27: UniversalResourceSingleProvider does not support returning arrays
         //  or collections
 //        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
-        RESOURCE_CLASSES.add(TwinTrsServerService.class);
+        RESOURCE_CLASSES.add(TrackedResourceSetService.class);
+
         RESOURCE_CLASSES.add(AdaptorAdminService.class);
         // End of user code
 
@@ -121,6 +127,15 @@ public class Application extends ResourceConfig {
             ResourceShapeFactory.createResourceShape(BASE_URI, OslcConstants.PATH_RESOURCE_SHAPES,
                 entry.getKey(), entry.getValue());
         }
+
+        register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bindFactory(new NaiveTrsFactories.PagedTrsFactory()).to(PagedTrs.class);
+                bindFactory(new NaiveTrsFactories.ResourceEventHandlerFactory()).to(
+                    ResourceEventHandler.class);
+            }
+        });
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {
