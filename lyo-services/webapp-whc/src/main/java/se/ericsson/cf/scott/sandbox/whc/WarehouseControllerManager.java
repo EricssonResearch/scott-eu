@@ -43,8 +43,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 
-
-//import org.eclipse.lyo.store.StoreFactory;
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
 import se.ericsson.cf.scott.sandbox.whc.xtra.clients.TwinClient;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.MqttManager;
@@ -54,7 +52,6 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper;
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.PlanRepository;
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.PlanRepositoryMem;
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository;
-import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
@@ -70,7 +67,6 @@ public class WarehouseControllerManager {
     private static final ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
     private static TwinRepository twinRepository;
     private static PlanningManager planningManager;
-    private static WhcChangeHistories changeHistoriesInstance;
     private static PlanRepository planRepository;
     // End of user code
     
@@ -78,16 +74,6 @@ public class WarehouseControllerManager {
     // Start of user code class_methods
     public static ScheduledExecutorService getExecService() {
         return execService;
-    }
-
-    // TODO Andrew@2019-03-12: move to TRSManager
-    public static WhcChangeHistories getChangeHistories() {
-        return changeHistoriesInstance;
-    }
-
-    // TODO Andrew@2019-03-12: remove
-    public static void setChangeHistories(final WhcChangeHistories changeHistories) {
-        changeHistoriesInstance = changeHistories;
     }
 
     public static TwinRepository getTwinRepository() {
@@ -118,8 +104,8 @@ public class WarehouseControllerManager {
 
             log.debug("Initialising a TRS Client");
             TRSManager.initTRSClient(mqttClient);
-            log.debug("Initialising a TRS Server");
-            TRSManager.initTRSServer(mqttClient);
+//            log.debug("Initialising a TRS Server");
+//            TRSManager.initTRSServer(mqttClient);
             log.debug("WHC contextInitializeServletListener BACKGROUND TASK COMPLETE");
         }, 5, TimeUnit.SECONDS);
         log.debug("WHC contextInitializeServletListener COMPLETE");

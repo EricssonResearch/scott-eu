@@ -53,7 +53,6 @@ import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 // Start of user code imports
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcBinder;
 import se.ericsson.cf.scott.sandbox.whc.xtra.services.AdminResource;
-import se.ericsson.cf.scott.sandbox.whc.xtra.services.WhcTrsService;
 // End of user code
 
 // Start of user code pre_class_code
@@ -83,7 +82,7 @@ public class Application extends ResourceConfig {
         RESOURCE_CLASSES.add(ResourceShapeService.class);
 
         // Start of user code Custom Resource Classes
-        RESOURCE_CLASSES.add(WhcTrsService.class);
+//        RESOURCE_CLASSES.add(WhcTrsService.class);
         RESOURCE_CLASSES.add(AdminResource.class);
 //        RESOURCE_CLASSES.add(TrackedResourceSetServiceDI.class);
         // End of user code
