@@ -24,7 +24,6 @@
 package se.ericsson.cf.scott.sandbox.whc.servlet;
 
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -68,6 +67,8 @@ import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 
 // Start of user code imports
+import java.util.Collections;
+
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcBinder;
 import se.ericsson.cf.scott.sandbox.whc.xtra.services.AdminResource;
 // End of user code
@@ -132,16 +133,19 @@ public class Application extends javax.ws.rs.core.Application {
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.STEP_PATH, Step.class);
     }
 
-    public Application() throws OslcCoreApplicationException, URISyntaxException {
+    public Application()
+           throws OslcCoreApplicationException,
+                  URISyntaxException
+    {
         final String BASE_URI = "http://localhost/validatingResourceShapes";
         for (final Map.Entry<String, Class<?>> entry : RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.entrySet()) {
             ResourceShapeFactory.createResourceShape(BASE_URI, OslcConstants.PATH_RESOURCE_SHAPES, entry.getKey(), entry.getValue());
         }
     }
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        return RESOURCE_CLASSES;
+    @Override 
+    public Set<Class<?>> getClasses() { 
+        return RESOURCE_CLASSES; 
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {
