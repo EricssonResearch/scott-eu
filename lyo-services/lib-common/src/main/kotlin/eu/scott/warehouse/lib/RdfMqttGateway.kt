@@ -14,10 +14,9 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.slf4j.LoggerFactory
 
 
-class TrsMqttGateway @Throws(MqttException::class) constructor(brokerURL: String, clientID: String,
+class RdfMqttGateway @Throws(MqttException::class) constructor(brokerURL: String, clientID: String,
                                                                options: MqttConnectOptions,
-                                                               callback: MqttCallbackExtended?,
-                                                               private val registrationAgent: RegistrationAgent) {
+                                                               callback: MqttCallbackExtended?) {
     val log = LoggerFactory.getLogger(javaClass)
     // MqttException (0) - java.io.FileNotFoundException:
     // /var/lib/jetty/twn-fc4a2304-a1a5-44b2-b3c0-bf70ced08f95-tcpmosquitto1883/s-2.msg
@@ -32,17 +31,11 @@ class TrsMqttGateway @Throws(MqttException::class) constructor(brokerURL: String
         if (callback != null) {
             mqttClient.setCallback(callback)
         }
-        val lastWill = registrationAgent.lastWill
-        if (lastWill != null) {
-            options.setWill(lastWill.topic, lastWill.messageBytes, 2, false)
-        }
         mqttClient.connect(options)
-        this.registrationAgent.register(this)
     }
 
     @Throws(MqttException::class)
     fun disconnect() {
-        registrationAgent.unregister(this)
         log.info("Registration agent is shut down")
         if(mqttClient.isConnected) {
             mqttClient.disconnect()
