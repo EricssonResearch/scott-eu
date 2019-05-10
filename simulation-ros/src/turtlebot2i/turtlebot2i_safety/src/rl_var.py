@@ -7,8 +7,8 @@ TASK_ID = "rm_rl"  # task filename from tasks folder #has to be deleted
 ENVIRONMENT_TYPE = "VREP with ROS"   
 SPEED_RATE = 3.0  # Recommended: REAL ROBOT: 1.0 (x1), VREP: 3.0 (x3)
 
-N_STEPS = 60#00 * 4# * 60#60  # 1 step ~ 1 second (Sets LE.N_STEPS)
-DISPLAY_STEP = 10#00 #1800  # Policy will be printed each DISPLAY_STEP
+N_STEPS = 6000 * 4# * 60#60  # 1 step ~ 1 second (Sets LE.N_STEPS)
+DISPLAY_STEP = 1000 #1800  # Policy will be printed each DISPLAY_STEP
 
 FILE_MODEL = TASK_ID + "_model"  # MODEL environment only
 

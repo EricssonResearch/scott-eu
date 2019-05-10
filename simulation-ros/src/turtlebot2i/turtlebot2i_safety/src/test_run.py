@@ -14,6 +14,8 @@ from tf.transformations import quaternion_from_euler
 import math
 from std_msgs.msg import Float64
 from turtlebot2i_safety.msg import SafetyZone
+import numpy as np
+from kobuki_msgs.msg import BumperEvent
 
 def init_var():
     #Here we initialize the global variables.
@@ -59,7 +61,7 @@ def init_var():
     
 
 def movebase_client():
-    global goal
+    global goal, client
     #client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
     #client = actionlib.SimpleActionClient('turtlebot2i_0/move_base', MoveBaseAction)
     client = actionlib.SimpleActionClient('turtlebot2i/move_base', MoveBaseAction)
@@ -67,14 +69,14 @@ def movebase_client():
 
     goal.target_pose.header.frame_id = "map"
     goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = 1.0 #2.0
-    goal.target_pose.pose.position.y = -4.0 #4.0
+    goal.target_pose.pose.position.x = -2.0 #2.0
+    goal.target_pose.pose.position.y = -2.5 #4.0
     goal.target_pose.pose.position.z = 0.063 #1.34851861
     #goal.target_pose.pose.orientation.w = 1.0
 
     #copied from navi_goal_talker
     orientation=geometry_msgs.msg.Quaternion()
-    yaw  = -90*math.pi/180 #unit: from deg. to rad.
+    yaw  = -180*math.pi/180 #unit: from deg. to rad.
     orientation=quaternion_from_euler(0,0,yaw)#(roll, pitch,yaw) # return an array
     goal.target_pose.pose.orientation.x=0.0
     goal.target_pose.pose.orientation.y=0.0
@@ -103,6 +105,7 @@ def init_subscription():
     rospy.Subscriber('/turtlebot2i/safety/risk_val', Float64, risk_callback)
     rospy.Subscriber('/turtlebot2i/safety/safety_zone', SafetyZone, safety_zone_callback)
     rospy.Subscriber('/turtlebot2i/odom', Odometry, speed_callback)
+    rospy.Subscriber('/turtlebot2i/events/bumper', BumperEvent, bumper_callback)
 
 def finish_callback(state_data, data2):
     global warning_duration, critical_duration
@@ -132,11 +135,16 @@ def finish_callback(state_data, data2):
     rospy.loginfo("10.Risk maximum value                    : %1.4f    (less is better)",risk_max)
     rospy.loginfo("11.Risk x speed mean(average) value      : %1.4f    (less is better)",risk_x_speed_sum/risk_count)
     rospy.loginfo("12.Risk x speed maximum value            : %1.4f    (less is better)",risk_x_speed_max)
-
+    np.savez_compressed('result_x.npz', duration=duration, safe_duration=safe_duration, warning_duration=warning_duration, critical_duration=critical_duration, travelled_distance=travelled_distance,
+                        average_speed=sum_speed/speed_cb_count, mean_distance_to_goal=sum_distance_to_goal/pose_cb_count, sm1=sum_mean_obs_distance/lidar_cb_count, sm2=sum(min_obs_distance)/n_sensors,
+                        min_distance_to_obstacle=min(min_obs_distance), n_collision=n_collision, risk_mean=risk_sum/risk_count, risk_max=risk_max, risk_speed_mean=risk_x_speed_sum/risk_count, risk_speed=risk_x_speed_max)
 
 def update_pose_callback(data):
     global prev_pos, init_pos, travelled_distance, sum_distance_to_goal, pose_cb_count
     pose_cb_count += 1
+    if distance2D(data.pose.position, goal.target_pose.pose.position) < 0.2: #check distance to goal
+        print("goal reached!")
+        client.cancel_all_goals()
     if prev_pos == init_pos:
         prev_pos = data.pose.position
         sum_distance_to_goal  = distance2D(prev_pos, goal.target_pose.pose.position)
@@ -163,12 +171,6 @@ def lidar_callback(data):
         min_obs_distance[i] = min(min_obs_distance[i], sensor_reads[i])
 
     min_dist_to_obstacle = min(sensor_reads) 
-    if min_dist_to_obstacle < collision_distance and not collision_flag:
-        print("collision happen!")
-        collision_flag = True
-        n_collision += 1
-    elif min_dist_to_obstacle > collision_distance and collision_flag:
-        collision_flag = False
 
     prev_obstacle_zone = obstacle_zone
     if min_dist_to_obstacle > r_warning:
@@ -194,6 +196,15 @@ def lidar_callback(data):
         elif prev_obstacle_zone == critical_zone:
             critical_time_end = rospy.get_time()
             critical_duration += (critical_time_end - critical_time_start)
+
+def bumper_callback(data):
+    global n_collision, collision_flag
+    if data.state == 1 and not collision_flag:
+        print("collision happen!")
+        collision_flag = True
+        n_collision += 1
+    elif data.state == 0 and collision_flag:
+        collision_flag = False
 
 
 def risk_callback(risk_value):

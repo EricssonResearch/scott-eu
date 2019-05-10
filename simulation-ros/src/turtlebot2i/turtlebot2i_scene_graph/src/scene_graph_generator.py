@@ -102,7 +102,8 @@ def init():
     # List of object names to retrieve information
     # For now it is hardcoded
     extractor.set_wall_names(['80cmHighWall1000cm','80cmHighWall1000cm0','80cmHighWall1500cm','80cmHighWall1500cm0','80cmHighWall1500cm1','80cmHighWall2000cm','80cmHighWall2000cm0',
-                              '80cmHighWall500cm','80cmHighWall500cm0','80cmHighWall500cm1','80cmHighWall500cm2','80cmHighWall500cm3','80cmHighWall500cm4','80cmHighWall500cm5'])
+                              '80cmHighWall500cm','80cmHighWall500cm0','80cmHighWall500cm1','80cmHighWall500cm2','80cmHighWall500cm3','80cmHighWall500cm4','80cmHighWall500cm5',
+                              '80cmHighWall200cm','80cmHighWall200cm0','80cmHighWall200cm1','80cmHighWall200cm2','80cmHighWall200cm3','80cmHighWall750cm','80cmHighWall750cm0'])
     extractor.set_static_obj_names(['stairs', 'slidingDoor',
                                     'dockstation_body',
                                     'ConcreteBox','ConcreteBox#0','ConcreteBox#1','ConcreteBox#2','ConcreteBox#3','ConcreteBox#4','ConcreteBox#5','ConcreteBox#6',
