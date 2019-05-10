@@ -60,7 +60,7 @@ def init_var():
 
     
 
-def movebase_client():
+def move_to_goal():
     global goal, client
     #client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
     #client = actionlib.SimpleActionClient('turtlebot2i_0/move_base', MoveBaseAction)
@@ -83,17 +83,39 @@ def movebase_client():
     goal.target_pose.pose.orientation.z=orientation[2]
     goal.target_pose.pose.orientation.w=orientation[3]
 
-    client.send_goal(goal, active_cb=init_subscription, done_cb=finish_callback)
+    client.send_goal(goal)
     print("Goal position is sent! waiting the robot to finish....")
     wait = client.wait_for_result(timeout=rospy.Duration(1200.0)) #timeout in seconds
     if not wait:
         rospy.logerr("Action server not available or timeout!")
         rospy.signal_shutdown("Action server not available!")
-    #else:
-    #    state = client.get_state()
-    #    if state == actionlib.GoalStatus.SUCCEEDED:
-    #        rospy.loginfo("Goal succeeded!")
-        #return client.get_result()
+
+def move_to_start():
+    global goal, client
+    
+    goal.target_pose.header.frame_id = "map"
+    goal.target_pose.header.stamp = rospy.Time.now()
+    goal.target_pose.pose.position.x = -4.5 #2.0 #-4.5,-3.5
+    goal.target_pose.pose.position.y = -3.5 #4.0
+    goal.target_pose.pose.position.z = 0.063 #1.34851861
+    #goal.target_pose.pose.orientation.w = 1.0
+
+    #copied from navi_goal_talker
+    orientation=geometry_msgs.msg.Quaternion()
+    yaw  = -90*math.pi/180 #unit: from deg. to rad.
+    orientation=quaternion_from_euler(0,0,yaw)#(roll, pitch,yaw) # return an array
+    goal.target_pose.pose.orientation.x=0.0
+    goal.target_pose.pose.orientation.y=0.0
+    goal.target_pose.pose.orientation.z=orientation[2]
+    goal.target_pose.pose.orientation.w=orientation[3]
+
+    client.send_goal(goal)
+    print("Goal position is sent! waiting the robot to finish....")
+    wait = client.wait_for_result(timeout=rospy.Duration(1200.0)) #timeout in seconds
+    if not wait:
+        rospy.logerr("Action server not available or timeout!")
+        rospy.signal_shutdown("Action server not available!")
+
 
 def distance2D(pos1, pos2):
     return math.sqrt((pos1.x - pos2.x)**2 + (pos1.y - pos2.y)**2)
@@ -107,10 +129,9 @@ def init_subscription():
     rospy.Subscriber('/turtlebot2i/odom', Odometry, speed_callback)
     rospy.Subscriber('/turtlebot2i/events/bumper', BumperEvent, bumper_callback)
 
-def finish_callback(state_data, data2):
+def summarize_running_test():
     global warning_duration, critical_duration
-    if state_data == actionlib.GoalStatus.SUCCEEDED:
-        rospy.loginfo("Goal reached!")
+    rospy.loginfo("Goal reached!")
     time_finish = rospy.get_time()
     duration = time_finish - time_start
     if obstacle_zone == warning_zone:
@@ -231,8 +252,11 @@ if __name__ == '__main__':
     try:
         rospy.init_node('test_run_py')
         init_var()
-        result = movebase_client()
-        if result:
-            rospy.loginfo("Goal execution done!")
+        init_subscription()
+        move_to_goal()
+        move_to_start()
+        move_to_goal()
+        summarize_running_test()
+        rospy.loginfo("Running test done!")
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation test finished.")

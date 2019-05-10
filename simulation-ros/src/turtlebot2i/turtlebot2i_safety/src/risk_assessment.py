@@ -195,6 +195,7 @@ def parse_dot_file(graph):
         if not ( (x.get_name()=='node') or (x.get_name()=='warehouse') or (x.get_name()=='floor') or (x.get_name()=='robot') ):#All leaf nodes
             node_info= x.__get_attribute__("label")
             #print "-------------------------------"
+            #print node_info
             matchObj = re.match(sg_pattern, node_info,re.M|re.I) #It Works
             #print "analyzing target of: ",x.get_name()
             if matchObj:

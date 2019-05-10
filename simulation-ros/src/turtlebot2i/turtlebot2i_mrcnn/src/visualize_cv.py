@@ -51,7 +51,8 @@ def display_instances(image, boxes, masks, ids, names, scores):
         image = cv2.putText(
             image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2
         )
-
+    # cv2.imshow('frame', image)
+    # cv2.waitKey(0)
     return image
 
 #if __name__ == '__main__':
@@ -72,7 +73,7 @@ def display_instances(image, boxes, masks, ids, names, scores):
 #        frame = display_instances(
 #            frame, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
 #        )
-##        cv2.imshow('frame', frame)
+#        cv2.imshow('frame', frame)
 #        if cv2.waitKey(1) & 0xFF == ord('q'):
 #            break
 #

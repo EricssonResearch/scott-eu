@@ -73,6 +73,16 @@
     waypoint: [1.9996612071990967, -5.0, 0.3999997675418854, -0.0, 0.0, 1.5707964897155762]
 - node:
     edges: []
+    name: 80cmHighWall100cm
+    vertices: [-3.1, 4.0, -2.9, 5.0]
+    waypoint: [-3.0, 4.5, 0.4000000059604645, -0.0, 0.0, -0.0]
+- node:
+    edges: []
+    name: 80cmHighWall100cm_visible
+    vertices: [-3.1, 4.0, -2.9, 5.0]
+    waypoint: [-3.0, 4.500339031219482, 0.3999997675418854, -0.0, 0.0, -0.0]
+- node:
+    edges: []
     name: 80cmHighWall750cm
     vertices: [-3.1, -5.0, -2.9, 2.5]
     waypoint: [-3.0, -1.25, 0.4000000059604645, -0.0, 0.0, -0.0]
@@ -92,6 +102,26 @@
     vertices: [0.7, -3.8, 0.8, 3.8]
     waypoint: [0.7496612071990967, 1.8146238289773464e-08, 0.3999997675418854, -0.0,
       0.0, 1.5707964897155762]
+- node:
+    edges: []
+    name: 80cmHighWall100cm0
+    vertices: [5.9, 3.0, 6.1, 4.0]
+    waypoint: [6.0, 3.5, 0.4000000059604645, -0.0, 0.0, -0.0]
+- node:
+    edges: []
+    name: 80cmHighWall100cm_visible0
+    vertices: [5.9, 3.0, 6.1, 4.0]
+    waypoint: [6.0, 3.5003387928009033, 0.3999997675418854, -0.0, 0.0, -0.0]
+- node:
+    edges: []
+    name: 80cmHighWall100cm1
+    vertices: [4.4, 4.0, 4.6, 5.0]
+    waypoint: [4.5, 4.5, 0.4000000059604645, -0.0, 0.0, -0.0]
+- node:
+    edges: []
+    name: 80cmHighWall100cm_visible1
+    vertices: [4.4, 4.0, 4.6, 5.0]
+    waypoint: [4.5, 4.500339031219482, 0.3999997675418854, -0.0, 0.0, -0.0]
 - node:
     edges: []
     name: 80cmHighWall500cm

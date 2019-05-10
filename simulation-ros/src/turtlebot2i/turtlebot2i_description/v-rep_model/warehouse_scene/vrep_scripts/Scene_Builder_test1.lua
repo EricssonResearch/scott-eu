@@ -21,6 +21,7 @@ function sysCall_init()
 
     addModel('dockstation',{-5.25,-4.000,0.063},{0,0,math.pi/2})
     addModel('turtlebot2i',{-4.5,-3.5,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
+    --addModel('turtlebot2i',{-2.0, -2.5,0.063},{0,0,0}) --TODO: check why the robot is moving by itself
     --addModel('80cmHighPillar100cm_pattern',{-4.0,-3.2,0.4},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
     --addModel('turtlebot2i_simple',{-4.5,-4.0,0.063},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
 
@@ -36,28 +37,41 @@ function sysCall_init()
     
 
 
-    -- 2 static objects:
-    --addModel('ConcreteBox',{3.9, 3.0,0.25},{0,0,0})
-    --addModel('80cmHighPillar100cm',{-0.5, 3.0,0.25},{0,0,0})
+    -- 8 static objects:
+    addModel('ConcreteBox',{2.5, 3.5,0.5},{0,0,0})
+    addModel('80cmHighPillar100cm',{-0.5, 3.0,0.25},{0,0,0})
+    addModel('ConcreteBox1',{ 7.0, 1.5,0.5},{0,0,math.pi/2})
+    addModel('ConcreteBox2',{ 6.0,-0.5,0.5},{0,0,0})
+    addModel('ConcreteBox2',{ 8.0,-0.5,0.5},{0,0,0})
+    addModel('80cmHighPillar100cm',{-0.5, -2.5,0.25},{0,0,0})
+    addModel('ConcreteBox1',{ 1.0, -1.5,0.5},{0,0,0})
+    addModel('ConcreteBox1',{ 1.0, -3.5,0.5},{0,0,0})
     
-    --addModel('sofa',{-2.6,2.0,0.25},{0,-math.pi/2,0})
-    
-    -- 2 walking humans:
+    -- 5 walking humans:
     --addModel('walkingBill_round',{-1.5, 1.0,0},{0,0,math.pi/2})
     --addModel('walkingBill_round',{ 1.0, 4.5,0},{0,0,0})
-    --addModel('Walking_Bill',{ 8.5, -1.5,0},{0,0, math.pi/2})
+    addModel('Walking_Bill',{-1.5, 1.0,0},{0,0,math.pi/2})
+    addModel('Walking_Bill',{ 1.0, 4.5,0},{0,0,0})
+    addModel('Walking_Bill',{ 8.5, -1.5,0},{0,0, math.pi/2})
+    addModel('Walking_Bill',{ 5.5,  1.5,0},{0,0, 0})
+    addModel('Walking_Bill',{ 0.0, -1.0,0},{0,0, 0})
+    addModel('Working_Bill',{ 8.5,  4.0,0},{0,0,math.pi/2})
+    addModel('Working_Bill',{ 1.0,  1.0,0},{0,0,0})
 
-    --addModel('Walking_Bill',{4,4,0},{0,0,math.pi/2})
-    --addModel('Working_Bill',{2.0,0.0,0},{0,0,math.pi/2})
+    -------------------------Wall section bellow-------------------------------
 
     addModel('80cmHighWall1000cm',{  9.5, 0,.4},{0,0,0})
     addModel('80cmHighWall1000cm',{ -5.5, 0,.4},{0,0,0})--dont have any effect on map
     addModel('80cmHighWall1500cm',{  2.0, 5,.4},{0,0,math.pi/2})
     addModel('80cmHighWall1500cm',{  2.0,-5,.4},{0,0,math.pi/2})
+
+
+    addModel('80cmHighWall100cm',{ -3.0,  4.5,.4},{0,0,0})
     addModel('80cmHighWall750cm',{ -3.0, -1.25,.4},{0,0,0})
     addModel('80cmHighWall750cm',{  0.75, 0.00,.4},{0,0,math.pi/2})
 
-    --addModel('80cmHighWall500cm',{  0.0, -2.50,.4},{0,0,0})
+    addModel('80cmHighWall100cm',{  6.0,  3.5,.4},{0,0,0})
+    addModel('80cmHighWall100cm',{  4.5,  4.5,.4},{0,0,0})
     addModel('80cmHighWall500cm',{  4.5,  0.5,.4},{0,0,0})
     addModel('80cmHighWall200cm',{  4.5,  -4.0,.4},{0,0,0})
 
@@ -66,12 +80,6 @@ function sysCall_init()
     addModel('80cmHighWall200cm',{  8.5, -2.0,.4},{0,0,math.pi/2})
     addModel('80cmHighWall200cm',{  5.5, -2.0,.4},{0,0,math.pi/2})
 
-
-    
-    
-    --addModel('turtlebot2i',{ 7.5, 3.0,0.063},{0,0,0}) --just to check the finish location
-    --addModel('Walking_Bill',{3,-3.0,0},{0,0,0})
-    --addModel('youbot',{2.0,-3.33515,0.063},{0,0,-math.pi/2})
 end
 
 function addModel(name,position,orientation)

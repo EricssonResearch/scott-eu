@@ -103,13 +103,14 @@ def init():
     # For now it is hardcoded
     extractor.set_wall_names(['80cmHighWall1000cm','80cmHighWall1000cm0','80cmHighWall1500cm','80cmHighWall1500cm0','80cmHighWall1500cm1','80cmHighWall2000cm','80cmHighWall2000cm0',
                               '80cmHighWall500cm','80cmHighWall500cm0','80cmHighWall500cm1','80cmHighWall500cm2','80cmHighWall500cm3','80cmHighWall500cm4','80cmHighWall500cm5',
-                              '80cmHighWall200cm','80cmHighWall200cm0','80cmHighWall200cm1','80cmHighWall200cm2','80cmHighWall200cm3','80cmHighWall750cm','80cmHighWall750cm0'])
+                              '80cmHighWall200cm','80cmHighWall200cm0','80cmHighWall200cm1','80cmHighWall200cm2','80cmHighWall200cm3','80cmHighWall750cm','80cmHighWall750cm0',
+                              '80cmHighWall100cm','80cmHighWall100cm0','80cmHighWall100cm1','80cmHighWall100cm2'])
     extractor.set_static_obj_names(['stairs', 'slidingDoor',
                                     'dockstation_body',
                                     'ConcreteBox','ConcreteBox#0','ConcreteBox#1','ConcreteBox#2','ConcreteBox#3','ConcreteBox#4','ConcreteBox#5','ConcreteBox#6',
-                                    'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm',
+                                    'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm','80cmHighPillar100cm0',
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4', 'ConveyorBeltBody#5', 'ConveyorBeltBody#6', 'ConveyorBeltBody#7'])
-    extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2'])
+    extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2','Walking_Bill#3','Walking_Bill#4','Bill','Bill#5'])
     extractor.set_robot_names(['turtlebot2i'])
     
     rospy.loginfo("Connected to remote API server")
