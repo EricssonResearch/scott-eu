@@ -19,18 +19,12 @@ public class MqttManager {
     public static MqttClient initMqttClient(final String mqttBroker, final String clientId) {
         try {
             mqttClient = new MqttClient(mqttBroker, clientId);
-
             final MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setAutomaticReconnect(true);
-            mqttClient.setCallback(new LoggingMqttCallback());
-
+            if(log.isDebugEnabled()) {
+                mqttClient.setCallback(new LoggingMqttCallback());
+            }
             mqttClient.connect(mqttConnectOptions);
-
-            mqttClient.subscribeWithResponse(
-                    MqttTopics.WHC_PLANS,
-                    new PlanPublicationListener(mqttClient)
-            );
-
             return mqttClient;
         } catch (MqttException e) {
             log.error("MQTT connection failed", e);
