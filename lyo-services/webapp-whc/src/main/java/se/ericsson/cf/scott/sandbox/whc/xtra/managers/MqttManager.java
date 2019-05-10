@@ -1,10 +1,6 @@
 package se.ericsson.cf.scott.sandbox.whc.xtra.managers;
 
-import com.google.common.collect.ImmutableMap;
-import eu.scott.warehouse.lib.MqttTopics;
 import eu.scott.warehouse.lib.LoggingMqttCallback;
-import java.net.URI;
-import java.util.Map;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -12,30 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
-import se.ericsson.cf.scott.sandbox.whc.xtra.trs.TwinRegistrationListener;
 
 
 public class MqttManager {
     private final static Logger log = LoggerFactory.getLogger(MqttManager.class);
     private static MqttClient mqttClient;
-    private static TwinRegistrationListener registrationListener;
-
-    // TODO Andrew@2019-02-21: move to the repository
-//    public static Map<String, URI> getTwins() {
-//        return ImmutableMap.copyOf(registrationListener.getTwins());
-//    }
-
-    // TODO Andrew@2019-02-21: delete in favour of se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager.getExecService
-//    public static ImmutableMap<String, URI> getExecutors() {
-//        return ImmutableMap.copyOf(registrationListener.getExecutors());
-//    }
-//
-//    public static MqttClient getMqttClient() {
-//        return mqttClient;
-//    }
 
     /**
-     * Begin listening on AdaptorHelper.MQTT_TOPIC and perform a handshake with any twin that
+     * Begin listening on AdaptorHelper.lMQTT_TOPIC and perform a handshake with any twin that
      * registers there.
      */
     public static MqttClient initMqttClient() {
@@ -48,10 +28,6 @@ public class MqttManager {
             mqttClient.setCallback(new LoggingMqttCallback());
             // TODO Andrew@2018-03-13: set highest QoS
             mqttClient.connect(mqttConnectOptions);
-
-            registrationListener = new TwinRegistrationListener(mqttClient, MqttTopics.WHC_PLANS);
-            mqttClient.subscribe(MqttTopics.REGISTRATION_ANNOUNCE, registrationListener);
-
             return mqttClient;
         } catch (MqttException e) {
             log.error("MQTT connection failed", e);

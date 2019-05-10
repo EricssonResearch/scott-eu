@@ -25,7 +25,6 @@ import se.ericsson.cf.scott.sandbox.twins.shelf.ShelfTwinManager;
  */
 public class TrsConsumerManager {
     private final static Logger log = LoggerFactory.getLogger(TrsConsumerManager.class);
-    private static final String MQTT_CLIENT_ID = "trs-consumer-whc";
     private static final String warehouseTrsUri = "http://sandbox-whc:8080/services/trs";
     private static final Integer updateInterval = Integer.valueOf(
             AdaptorHelper.p("update.interval"));
@@ -48,14 +47,10 @@ public class TrsConsumerManager {
         return warehouseTrsUri;
     }
 
-    public static String getMqttClientId() {
-        return MQTT_CLIENT_ID;
-    }
-
     @NotNull
     private static TrsConsumerConfiguration buildConsumerConfig() {
         return new TrsConsumerConfiguration(AdaptorHelper.p("store.query"), null, null, null,
-            getMqttClientId(), Executors.newSingleThreadScheduledExecutor(), null, null
+            Executors.newSingleThreadScheduledExecutor(), null, null
         );
     }
 

@@ -38,17 +38,6 @@ public class AdaptorHelper {
         return value;
     }
 
-    /**
-     * This returned value is not really used for the MQTT connection init.
-     *
-     * @see AdaptorHelper#getMqttClientId()
-     */
-    // TODO Andrew@2019-04-16: delete this method
-    @Deprecated
-    public static String getMqttClientIdStatic() {
-        return WhcConfig.MQTT_CLIENT_ID;
-    }
-
     @NotNull
     public static String getMqttClientId() {
         return "whc-" + getUUID();

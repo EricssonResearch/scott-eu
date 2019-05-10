@@ -14,13 +14,12 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
 
 
 public class TRSManager {
-
     private final static Logger log = LoggerFactory.getLogger(TRSManager.class);
 
     public static void initTRSClient(final MqttClient mqttClient) {
         final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
             AdaptorHelper.p(WhcConfig.KB_QUERY_PROP), AdaptorHelper.p(WhcConfig.KB_UPDATE_PROP),
-            null, null, AdaptorHelper.getMqttClientIdStatic(),
+            null, null,
             Executors.newSingleThreadScheduledExecutor(), null, null);
         final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
             TrsProviderConfiguration.forMQTT(mqttClient,
