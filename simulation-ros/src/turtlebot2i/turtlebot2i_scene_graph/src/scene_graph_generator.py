@@ -6,6 +6,7 @@ import re
 import math
 import rospy
 import std_msgs.msg
+import numpy as np
 from graphviz import Digraph
 from shapely.geometry import box
 from turtlebot2i_scene_graph.msg import SceneGraph
@@ -96,18 +97,20 @@ def get_size(j):
     return size_x, size_y
 
 def init():
-    global extractor
+    global extractor, time_duration_list
     extractor= VrepObjectExtractor('127.0.0.1', 19997)
     # List of object names to retrieve information
     # For now it is hardcoded
     extractor.set_wall_names(['80cmHighWall1000cm','80cmHighWall1000cm0','80cmHighWall1500cm','80cmHighWall1500cm0','80cmHighWall1500cm1','80cmHighWall2000cm','80cmHighWall2000cm0',
-                              '80cmHighWall500cm','80cmHighWall500cm0','80cmHighWall500cm1','80cmHighWall500cm2','80cmHighWall500cm3','80cmHighWall500cm4','80cmHighWall500cm5'])
+                              '80cmHighWall500cm','80cmHighWall500cm0','80cmHighWall500cm1','80cmHighWall500cm2','80cmHighWall500cm3','80cmHighWall500cm4','80cmHighWall500cm5',
+                              '80cmHighWall200cm','80cmHighWall200cm0','80cmHighWall200cm1','80cmHighWall200cm2','80cmHighWall200cm3','80cmHighWall750cm','80cmHighWall750cm0',
+                              '80cmHighWall100cm','80cmHighWall100cm0','80cmHighWall100cm1','80cmHighWall100cm2'])
     extractor.set_static_obj_names(['stairs', 'slidingDoor',
                                     'dockstation_body',
                                     'ConcreteBox','ConcreteBox#0','ConcreteBox#1','ConcreteBox#2','ConcreteBox#3','ConcreteBox#4','ConcreteBox#5','ConcreteBox#6',
-                                    'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm',
+                                    'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm','80cmHighPillar100cm0',
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4', 'ConveyorBeltBody#5', 'ConveyorBeltBody#6', 'ConveyorBeltBody#7'])
-    extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2'])
+    extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2','Walking_Bill#3','Walking_Bill#4','Bill','Bill#5'])
     extractor.set_robot_names(['turtlebot2i'])
     
     rospy.loginfo("Connected to remote API server")
@@ -129,7 +132,7 @@ def init():
     extractor.update_all_robots_vision_sensors_fov()
     #time.sleep(0.3) # streaming takes a while to get ready
 
-
+    time_duration_list = []
     rospy.loginfo('Finished getting scene properties!\n')
 
 def sg_generate():
@@ -227,9 +230,10 @@ if __name__ == '__main__':
         pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
         rate = rospy.Rate(3.0) #Hz, T=1/Rate
         while not rospy.is_shutdown():
-            #mark = time.time()
+            #time_previous = time.time()
             sg_generate()
-            #print("scene graph duration:",time.time()-mark)
+            #time_duration_list.append(time.time()-time_previous)
+            #print("Scene graph duration    :",np.mean(time_duration_list))
             rate.sleep()
     except rospy.ROSInterruptException:
         # Close the connection to V-REP

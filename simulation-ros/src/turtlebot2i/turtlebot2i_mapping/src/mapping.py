@@ -91,8 +91,8 @@ if clientID!=-1:
         returnCode, objects_handles,  intData, objects_orientations, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)
 
         # get indexes of relevant elements in the warehouse
-        ground_object = 'Floor15x20m' #'Floor10x10m'
-        obj_list = [ground_object, 'stairs', 'slidingDoor', 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcretBlock']
+        ground_object = 'Floor10x15m' #'Floor15x20m' #
+        obj_list = [ground_object, 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcreteBox']
 
         obj_index_list = [objects_names.index(i) for i in objects_names if re.match(r'(#\d|)\b|'.join(obj_list)+'*', i)]
 
@@ -225,12 +225,12 @@ if clientID!=-1:
         map_pgm += '\n'
 
     # Persists the PGM map
-    file = open('map_training.pgm', 'w')
+    file = open('map_test1.pgm', 'w')
     file.write(map_pgm)
     file.close()
 
     # Persists the yaml object
-    file = open('scene_training.yaml', 'w')
+    file = open('scene_test1.yaml', 'w')
     file.write(yaml.dump(yaml_node_list))
     file.close()
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Modified from: https://github.com/angelmtenor/RL-ROBOT/blob/master/action_qbiassr.py
 #   +-----------------------------------------------+
 #   | RL-ROBOT. Reinforcement Learning for Robotics |
 #   | Angel Martinez-Tenor                          |

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Modified from: https://github.com/angelmtenor/RL-ROBOT/blob/master/agent.py
 #   +-----------------------------------------------+
 #   | RL-ROBOT. Reinforcement Learning for Robotics |
 #   | Angel Martinez-Tenor                          |
@@ -31,12 +32,13 @@ initiated = False
 goal_reached = False
 
 obstacle_state = np.empty(0)
+steering_state = 0
 
 def setup_task():
     """ Task setup will be performed in the agent """
     global n_inputs, in_values, n_outputs, out_values, Vs, Va, VAR, cont_VAR
     global in_sizes, out_sizes, n_states, n_actions, initiated
-    global obstacle_state
+    global obstacle_state, steering_state
 
     inputvar = var.INPUT_VARIABLES
     outputvar = var.OUTPUT_VARIABLES
@@ -67,7 +69,8 @@ def setup_task():
     n_actions = int(np.prod(out_sizes))
     output_data = np.zeros(n_outputs)
 
-    obstacle_state = np.ones(n_inputs)*(in_sizes[0]-1)
+    obstacle_state = np.zeros(n_inputs)
+    steering_state = int(1+in_sizes[n_inputs-1]/2.0)
     var.n_inputs = n_inputs
     var.in_values = in_values
     var.in_names = in_names
@@ -113,8 +116,8 @@ def observe_state():
     """ Returns the reached state s' from robot """
     global obstacle_state
     assert initiated, "agent not initiated! setup() must be previously executed"
-
-    state = wrap_state(obstacle_state)
+    unwrapped_state = np.append(obstacle_state,steering_state)
+    state = wrap_state(unwrapped_state)
     #print("state:",state,obstacle_state)
     assert (0 <= state < n_states), ("Wrong state: ", str(state))
     return state #integer
@@ -135,7 +138,7 @@ def execute_action(a):
     actuator = np.zeros(n_outputs)
     for i in range(n_outputs):
         actuator[i] = Va[i, unwrapped_a[i]]
-
+    #print("action:",a,"scale_speed:",actuator)
     training_rl.execute_action(actuator)
     return
 
