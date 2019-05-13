@@ -25,6 +25,7 @@ spec = importlib.util.spec_from_file_location("cv2", "/usr/local/lib/python3.5/d
 cv2 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(cv2)
 #import cv2
+import time
 
 import rospy
 import message_filters
@@ -133,6 +134,7 @@ class ros_mask_rcnn:
 
         #self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
         self.scenegraph_pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
+        self.time_duration_list = []
 
     def get_overlap_bbox(self, rec1, rec2):
         #y1, x1, y2, x2 = boxes
@@ -163,6 +165,7 @@ class ros_mask_rcnn:
     def callback(self, image, depth_image):
 
         try:
+            time_previous = time.time()
             farClippingPlane = 3.5
             nearClippingPlane = 0.0099999
             cv_depth_image = self.bridge.imgmsg_to_cv2(depth_image,"passthrough")
@@ -294,6 +297,10 @@ class ros_mask_rcnn:
 
                 self.scenegraph_pub.publish(sg_message)
             #self.image_pub.publish(self.bridge.cv2_to_imgmsg(img_out, "bgr8"))
+
+            module_duration = time.time()-time_previous
+            self.time_duration_list.append(module_duration)
+            print("ROS MRCNN duration; mean:",np.mean(self.time_duration_list),"| last duration:",module_duration)
 
         except CvBridgeError as e:
             print(e)
