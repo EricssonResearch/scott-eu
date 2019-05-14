@@ -1,24 +1,7 @@
-# EricssonProject
-Software Engineering 2: Project Teamwork 
-Project title: A visual simulator tool for high quality planning domain models
-Group 2
+# PDDL domain V&V framework
+A tool to simulate PDDL domains (with given problem descriptions). Starting from an initial state defined
+by the problem, the tool displays enabled actions and traverses the state space depending upon selected
+action. Simultaneously, it shows the updated knowledge base with the deleted and added predicates which
+can help in debugging the problems with the domain file.
 
-Folder guide:
-
-| *Folder* | *Contains* |
-| :-: | :--------: |
-| Documentation | Project plan, Detailed design description, Project Report |
-| SteeringGroupMeetingPresentations | Presentations made for weekly steering group meetings |
-| UsefulDocuments | Useful documents regarding the project |
-| ProjectPresentations | Presentations for the other groups (28.11., 12.12. and 16.1.) |
-
-
-| *Team member* | *Roles* |
-| :-: | :--------: |
-| Ermal | Group manager |
-| Johannes | Client contact |
-| Erik P | Presentation overseer |
-| Laura | Git manager |
-| Allan | Trello manager |
-| Marta | Documentation & report |
-| Erik E | Developer studio manager |
+The project is a Visual Studio C# project on the .NET framework. The .sln file is in the PDDLPlanning folder.
