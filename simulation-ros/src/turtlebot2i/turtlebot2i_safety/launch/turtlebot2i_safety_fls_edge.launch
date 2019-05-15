@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Activate the camera (depth camera and rgb)  --> 
+  <node pkg="uvc_camera" name="rgb_camera"        type="uvc_camera_node"     output="screen"/>
+  <include file="$(find astra_launch)/launch/astrapro.launch"/>
+
+  <!-- Scene Graph Generator   -->
+  <!-- <node pkg="turtlebot2i_scene_graph" name="sg_generator" type="scene_graph_generator.py" output="screen"/> -->
+
+  
+  <!-- Scene Graph Parser+ Risk management  --> 
+  <node pkg="turtlebot2i_safety" name="risk_assessment"        type="risk_assessment.py"     output="screen"/>
+  <node pkg="turtlebot2i_safety" name="zone_generation_py"     type="zone_generation.py"     output="screen"/>
+  <node pkg="turtlebot2i_safety" name="risk_mitigation_fls_py" type="risk_mitigation_fls.py" output="screen"/>
+
+</launch>
