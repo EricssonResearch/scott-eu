@@ -74,4 +74,4 @@ min_dist_to_obstacle = 5.0
 collision = False
 r_warning = 0.0
 r_critical = 0.0
-training_mode = True
+training_mode = False
