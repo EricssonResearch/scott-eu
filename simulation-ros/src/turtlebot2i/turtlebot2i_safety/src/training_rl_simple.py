@@ -83,11 +83,12 @@ def init_var():
     var.collision = False
     var.collected_distance = 0.0
     var.TASK_ID = "rm_rl_simple_800"
-
-def movebase_client():
+    
     global goal, client
     client = actionlib.SimpleActionClient('turtlebot2i/move_base', MoveBaseAction)
     #client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+
+def movebase_client():
     client.wait_for_server()
 
     goal.target_pose.header.frame_id = "map"
@@ -271,26 +272,27 @@ def get_reward():  # abstract s,a,sp pointless here
 
 def overwriteVAR():
     var.INPUT_VARIABLES = {
-        #"object_distance":    np.array([0.3, 0.6, 0.9, 1.4, 2.0, 3.0, 3.5]),
-        "object_distance":    np.array([0.21, 0.32, 0.6, 0.9, 1.4, 2.0, 3.0, 3.5]),
+        "object_distance":    np.array([0.3, 0.6, 0.9, 1.4, 2.0, 3.0, 3.5]),
+        #"object_distance":    np.array([0.21, 0.32, 0.6, 0.9, 1.4, 2.0, 3.0, 3.5]),
         "object_direction":   np.array([-57.0, -33.0, -10.0,  10.0, 33.0]),
         "object_risk_input":  np.array([0.0, 1.0, 2.0, 3.0]),
         "steering_direction": np.array([-57.0, -33.0, -10.0,  10.0, 33.0])*np.pi/180.0
     }
 
 def load_model(filename):
-	loaded_model = np.load(filename)
-	if (np.shape(lp.policy) == np.shape(loaded_model['Policy'])) and (np.shape(lp.v) == np.shape(loaded_model['V'])) and (np.shape(lp.q) == np.shape(loaded_model['Q'])) and (np.shape(lp.q_count) == np.shape(loaded_model['Q_count'])):
-		lp.policy  = loaded_model['Policy']
-		lp.v       = loaded_model['V']
-		lp.q       = loaded_model['Q']
-		lp.q_count = loaded_model['Q_count']
-		print("Model loaded from: ",filename)
-		print("Model has been load successfully!")
-	else:
-		print("Load file error!!! Check the dimension of the model!")
-		print("Program stop!!")
-		sys.exit()
+    loaded_model = np.load(filename)
+    if (np.shape(lp.policy) == np.shape(loaded_model['Policy'])) and (np.shape(lp.v) == np.shape(loaded_model['V'])) and (np.shape(lp.q) == np.shape(loaded_model['Q'])) and (np.shape(lp.q_count) == np.shape(loaded_model['Q_count'])):
+        lp.policy  = loaded_model['Policy']
+        lp.v       = loaded_model['V']
+        lp.q       = loaded_model['Q']
+        lp.q_count = loaded_model['Q_count']
+        print("Model loaded from: ",filename)
+        print("Model has been load successfully!")
+    else:
+        print("Load file error!!! Check the dimension of the model!")
+        print("Current model:",np.shape(lp.policy)," | loaded model", np.shape(loaded_model['Policy']))
+        print("Program stop!!")
+        sys.exit()
 
 if __name__ == '__main__':
     try:

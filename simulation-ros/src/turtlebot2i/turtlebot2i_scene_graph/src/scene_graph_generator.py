@@ -7,10 +7,12 @@ import math
 import rospy
 import std_msgs.msg
 import numpy as np
+import sys
 from graphviz import Digraph
 from shapely.geometry import box
 from turtlebot2i_scene_graph.msg import SceneGraph
 from vrep_object_extractor import VrepObjectExtractor
+from turtlebot2i_safety.msg import VelocityScale
 
 pi = math.pi
 
@@ -97,7 +99,7 @@ def get_size(j):
     return size_x, size_y
 
 def init():
-    global extractor, time_duration_list
+    global extractor
     extractor= VrepObjectExtractor('127.0.0.1', 19997)
     # List of object names to retrieve information
     # For now it is hardcoded
@@ -132,7 +134,10 @@ def init():
     extractor.update_all_robots_vision_sensors_fov()
     #time.sleep(0.3) # streaming takes a while to get ready
 
-    time_duration_list = []
+    global time_start_list, time_sg_end_list, time_all_end_list
+    time_start_list = []
+    time_sg_end_list = []
+    time_all_end_list = []
     rospy.loginfo('Finished getting scene properties!\n')
 
 def sg_generate():
@@ -220,6 +225,13 @@ def sg_generate():
 
         pub.publish(sg_message)
 
+def vel_scale_callback(data):
+    global time_start_list, time_sg_end_list, time_all_end_list
+    time_all_end_list.append(time.time())
+    if len(time_all_end_list) == 100:
+        np.savez('/home/etrrhmd/duration_result/time_duration_sg_vrep.npz', time_start_list=time_start_list, time_sg_end_list=time_sg_end_list, time_all_end_list=time_all_end_list)
+        print("saving file")
+
 if __name__ == '__main__':
 
     rospy.init_node('sg_generator', anonymous=True)
@@ -229,11 +241,13 @@ if __name__ == '__main__':
         rospy.loginfo('Started getting scene objects from vision sensor FOV...')
         pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
         rate = rospy.Rate(3.0) #Hz, T=1/Rate
+        rospy.Subscriber('/turtlebot2i/safety/vel_scale', VelocityScale, vel_scale_callback) 
         while not rospy.is_shutdown():
-            #time_previous = time.time()
+            time_start_list.append(time.time())
             sg_generate()
-            #time_duration_list.append(time.time()-time_previous)
-            #print("Scene graph duration    :",np.mean(time_duration_list))
+            time_sg_end_list.append(time.time())
+            last_duration = time_sg_end_list[-1]-time_start_list[-1]
+            print("Scene graph last duration:",last_duration)
             rate.sleep()
     except rospy.ROSInterruptException:
         # Close the connection to V-REP

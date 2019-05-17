@@ -186,9 +186,9 @@ def parse_dot_file(graph):
 
         matchObj = re.match(vel_pattern, node_info,re.M|re.I) #It Works
     node_list = graph.get_nodes()
-    highest_risk = 0 # Only consider the object with highest risk
-    target_object_distance     = 0
-    target_object_direction    = 0
+    highest_risk = 0.0 # Only consider the object with highest risk
+    target_object_distance     = 0.0
+    target_object_direction    = 0.0
     risk_message = SafetyRisk()
     for x in node_list:
         #print "before analyzing target of: ",x.get_name()
@@ -200,29 +200,30 @@ def parse_dot_file(graph):
             #print "analyzing target of: ",x.get_name()
             if matchObj:
                 object_type = int(matchObj.group(2))
+                object_distance     = float(matchObj.group(3))
+                object_direction    = float(matchObj.group(5))
+                object_speed        = float(matchObj.group(6))
+                object_orientation  = float(matchObj.group(4))
+                object_size_x       = float(matchObj.group(7))
+                object_size_y       = float(matchObj.group(8))
+                #print("in RM:",x.get_name(),object_type,object_distance,object_direction,object_speed,object_orientation)
                 if object_type < 3: # type 3 is wall.
-                    object_distance     = float(matchObj.group(3))
-                    object_direction    = float(matchObj.group(5))
-                    object_speed        = float(matchObj.group(6))
-                    object_orientation  = float(matchObj.group(4))
-                    object_size_x       = float(matchObj.group(7))
-                    object_size_y       = float(matchObj.group(8))
-                    #print("in RM:",x.get_name(),object_type,object_distance,object_direction,object_speed,object_orientation)
-                    object_risk         = cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
-
-                    risk_message.type.append(object_type)
-                    risk_message.distance.append(object_distance)
-                    risk_message.direction.append(object_direction)
-                    risk_message.risk_value.append(object_risk)
-                    risk_message.speed.append(object_speed)
-                    risk_message.orientation.append(object_orientation)
-                    risk_message.size_x.append(object_size_x)
-                    risk_message.size_y.append(object_size_y)
-                    if ( object_risk>highest_risk): # Update target
-                        target_object_distance =object_distance
-                        target_object_direction=object_direction
-                        highest_risk=object_risk
-                        print "update target of ",x.get_name()," with risk=",highest_risk
+                    object_risk = cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation)
+                else:
+                    object_risk = 0.0
+                risk_message.type.append(object_type)
+                risk_message.distance.append(object_distance)
+                risk_message.direction.append(object_direction)
+                risk_message.risk_value.append(object_risk)
+                risk_message.speed.append(object_speed)
+                risk_message.orientation.append(object_orientation)
+                risk_message.size_x.append(object_size_x)
+                risk_message.size_y.append(object_size_y)
+                if ( object_risk>highest_risk): # Update target
+                    target_object_distance =object_distance
+                    target_object_direction=object_direction
+                    highest_risk=object_risk
+                    print "update target of ",x.get_name()," with risk=",highest_risk
             else:
                print "Node not match!!"
                print node_info
@@ -240,14 +241,17 @@ def parse_dot_file(graph):
     #time_previous = time.time()
 
 def topic_callback(data):
-    #global time_duration_list
-    #time_previous = time.time()
+    global time_duration_list
+    time_previous = time.time()
 
     graph = pydot.graph_from_dot_data(data.sg_data) #From string
     parse_dot_file(graph)
 
-    #time_duration_list.append(time.time()-time_previous)
-    #print("Risk assesment duration :",np.mean(time_duration_list))
+    time_duration_list.append(time.time()-time_previous)
+    print("Risk assesment duration :",np.mean(time_duration_list))
+    if len(time_duration_list) == 100:
+        np.savez('/home/etrrhmd/duration_result/time_duration_ra.npz', time_duration_list=time_duration_list[10:])
+
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 
 

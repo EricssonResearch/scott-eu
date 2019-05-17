@@ -105,16 +105,17 @@ def pub_safe_vel(left_vel_scale,right_vel_scale):
     safe_vel_pub.publish(vel_scale_message)
 
 def risk_callback(data):
-    #global time_duration_list
-    #time_previous = time.time()
+    global time_duration_list
+    time_previous = time.time()
 
     i = np.argmax(data.risk_value)
     left_vel_scale,right_vel_scale = cal_safe_vel(data.distance[i], data.direction[i], data.risk_value[i])
     pub_safe_vel(left_vel_scale, right_vel_scale)
 
-    #time_duration_list.append(time.time()-time_previous)
-    #print("Risk mitigation duration:",np.mean(time_duration_list))
-    
+    time_duration_list.append(time.time()-time_previous)
+    print("Risk mitigation duration:",np.mean(time_duration_list))
+    if len(time_duration_list) == 100:
+        np.savez('/home/etrrhmd/duration_result/time_duration_rm_fls.npz', time_duration_list=time_duration_list[10:])
 
 if __name__ == '__main__':
     try:
