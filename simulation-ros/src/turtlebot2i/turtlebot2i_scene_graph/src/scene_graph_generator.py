@@ -113,7 +113,7 @@ def init():
                                     'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm','80cmHighPillar100cm0',
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4', 'ConveyorBeltBody#5', 'ConveyorBeltBody#6', 'ConveyorBeltBody#7'])
     extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2','Walking_Bill#3','Walking_Bill#4','Bill','Bill#5'])
-    extractor.set_robot_names(['turtlebot2i'])
+    extractor.set_robot_names(['turtlebot2i','turtlebot2i#0'])
     
     rospy.loginfo("Connected to remote API server")
 
@@ -150,31 +150,31 @@ def sg_generate():
 
         # Update vision sensor info
         extractor.update_all_robots_vision_sensors_fov()
-    
+    print("length of robot: ",len(robot_list))
     # Get objects that are in the sensor FOV
     #for robot_num in range(1):
-    for robot_num in range(len(robot_list)):
-        obj_list = extractor.get_objects_from_vision_sensor(robot_list[robot_num].vision_sensor) #NOT ROBUST HERE
+    for robot_obj in robot_list:
+        obj_list = extractor.get_objects_from_vision_sensor(robot_obj.vision_sensor) #NOT ROBUST HERE
 
         if (obj_list != None):
             # Remove the robot itself from the list
-            obj_list = [i for i in obj_list if i.name!=robot_list[robot_num].name]
+            obj_list = [i for i in obj_list if i.name!=robot_obj.name]
 
         # Print detected objects of the vision sensor
         # TODO: print just in debug mode
-        #print(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, obj_list)
+        #print(robot_obj.name, robot_obj.vision_sensor.name, obj_list)
 
         #############################################
         # generate scene graph
         #############################################
         dot = Digraph(comment='warehouse', format='svg')
         dot.node_attr['shape']='record'
-        robot_velocity = get_velocity(robot_list[robot_num])
-        i = robot_list[robot_num]
+        robot_velocity = get_velocity(robot_obj)
+        i = robot_obj
         # print(i.bbox_min[0], i.bbox_min[1], i.bbox_max[0], i.bbox_max[1])
         # robot_label = '{%s|%s|velocity: %.2f|orientation: %.2f}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name, robot_velocity, robot[robot_num].ori[2]*180/pi)
-        robot_label = '{%s|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity)
-        #robot_label = '{%s|type: 0|%s|velocity: %.2f}'%(robot_list[robot_num].name, robot_list[robot_num].vision_sensor.name, robot_velocity) #Label for itself?
+        robot_label = '{%s|%s|velocity: %.2f}'%(robot_obj.name, robot_obj.vision_sensor.name, robot_velocity)
+        #robot_label = '{%s|type: 0|%s|velocity: %.2f}'%(robot_obj.name, robot_obj.vision_sensor.name, robot_velocity) #Label for itself?
 
         # robot_label = '{%s|%s}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name)
 
@@ -184,11 +184,11 @@ def sg_generate():
         dot.edge('warehouse','floor')
 
         for obj in obj_list:
-            obj_direction = get_direction(robot_list[robot_num], obj)
-            obj_distance = get_distance_bbox(robot_list[robot_num], obj)
+            obj_direction = get_direction(robot_obj, obj)
+            obj_distance = get_distance_bbox(robot_obj, obj)
             obj_velocity = get_velocity(obj)
             obj_type = get_type(obj)
-            obj_orientation = get_orientation(robot_list[robot_num], obj)
+            obj_orientation = get_orientation(robot_obj, obj)
             obj_size_x, obj_size_y = get_size(obj)
             # print(obj.name, '%.3f' %obj_velocity)
             # node_label = '{%s|direction: %s|distance: %.2f}'%(obj.name, obj_direction, obj_distance)
@@ -223,7 +223,13 @@ def sg_generate():
 
         sg_message.sg_data=dot.source
 
-        pub.publish(sg_message)
+        #print("robot's name is:",robot_obj.name)
+        if (robot_obj.name=='turtlebot2i'):
+            pub1.publish(sg_message)
+        elif (robot_obj.name=='turtlebot2i#0'):
+            pub2.publish(sg_message)
+        else:
+            print("Do not publish anything, check the code")
 
 def vel_scale_callback(data):
     global time_start_list, time_sg_end_list, time_all_end_list
@@ -239,15 +245,16 @@ if __name__ == '__main__':
     try:
         init()
         rospy.loginfo('Started getting scene objects from vision sensor FOV...')
-        pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
+        pub1 = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
+        pub2 = rospy.Publisher('/turtlebot2i_0/scene_graph', SceneGraph, queue_size=10)
         rate = rospy.Rate(3.0) #Hz, T=1/Rate
-        rospy.Subscriber('/turtlebot2i/safety/vel_scale', VelocityScale, vel_scale_callback) 
+        #rospy.Subscriber('/turtlebot2i/safety/vel_scale', VelocityScale, vel_scale_callback) 
         while not rospy.is_shutdown():
-            time_start_list.append(time.time())
+            #time_start_list.append(time.time())
             sg_generate()
-            time_sg_end_list.append(time.time())
-            last_duration = time_sg_end_list[-1]-time_start_list[-1]
-            print("Scene graph last duration:",last_duration)
+            #time_sg_end_list.append(time.time())
+            #last_duration = time_sg_end_list[-1]-time_start_list[-1]
+            #print("Scene graph last duration:",last_duration)
             rate.sleep()
     except rospy.ROSInterruptException:
         # Close the connection to V-REP
