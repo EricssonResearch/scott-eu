@@ -41,7 +41,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 		print('Warning: ' .. sim.getObjectName(sim.getObjectAssociatedWithScript(sim.handle_self)) .. ' cannot find simROS.')
 	end
 	
-	rgb_enabled=false
+	rgb_enabled=true
 	depth_enabled=false
 	
 	camera_handle=sim.getObjectAssociatedWithScript(sim.handle_self)

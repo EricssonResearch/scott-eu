@@ -23,13 +23,13 @@ function sysCall_init()
     --addModel('turtlebot2i',{-4.5, 3.0,0.063},{0,0,0}) --Position for testing the mrcnn
     addModel('dockstation',{-1.0,4.500,0.063},{0,0,0})
     addModel('dockstation',{ 3.0,4.500,0.063},{0,0,0})
-    addModel('dockstation',{ 1.0,1.500,0.063},{0,0,math.pi})
+    addModel('dockstation',{ 1.0,2.500,0.063},{0,0,math.pi})
     
     addModel('turtlebot2i',{-4.5, 3.0,0.063},{0,0,0}) --Position for testing the mrcnn
     addModel('turtlebot2i',{-2.0,-2.5,0.063},{0,0,0}) --Position for testing the mrcnn
-    addModel('turtlebot2i_dummy',{ 1.0, 1.75,0.063},{0,0,-math.pi/2}) --Position for testing the mrcnn
+    addModel('turtlebot2i_dummy',{ 1.0, 2.75,0.063},{0,0,-math.pi/2}) --Position for testing the mrcnn
     
-    addModel('Shelf_simple',{3.0, 1.5,0.063},{0,0,0}) -- TODO: check why Shelf_simple rotation here is not compatible with what happens in the sim
+    addModel('Shelf_simple',{3.0, 2.5,0.063},{0,0,0}) -- TODO: check why Shelf_simple rotation here is not compatible with what happens in the sim
     
 
     addModel('ConcreteBox2',{-3.5, 2.0,0.5},{0,0,0})

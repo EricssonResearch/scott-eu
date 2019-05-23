@@ -26,7 +26,7 @@ def init_var():
     goal1 = MoveBaseGoal()
     goal1.target_pose.header.frame_id = "map"
     goal1.target_pose.header.stamp = rospy.Time.now()
-    goal1.target_pose.pose.position.x = -2.0
+    goal1.target_pose.pose.position.x = -1.0
     goal1.target_pose.pose.position.y = -2.5
     goal1.target_pose.pose.position.z = 0.063 #1.34851861
     goal1.target_pose.pose.orientation.x=0.0
@@ -64,10 +64,7 @@ def init_var():
     sum_distance_to_goal = 0.0 #the less the better
     
 
-def move_to_goal(goal, client):
-    #client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
-    #client = actionlib.SimpleActionClient('turtlebot2i_0/move_base', MoveBaseAction)
-    
+def move_to_goal(goal, client):    
     client.wait_for_server()
     client.send_goal(goal)
     print("Goal position is sent! waiting the robot to finish....")
@@ -83,7 +80,7 @@ def init_subscription():
     time_start = rospy.get_time()
     rospy.Subscriber('/turtlebot2i/sensors/global_pose', geometry_msgs.msg.PoseStamped, update_pose_callback1)
     rospy.Subscriber('/turtlebot2i_0/sensors/global_pose', geometry_msgs.msg.PoseStamped, update_pose_callback2)
- 
+
 def update_pose_callback1(data):
     global rob1goal
     if rob1goal:
@@ -114,11 +111,10 @@ def update_pose_callback2(data):
             client2.send_goal(goal2)
             rob2goal = True
 
- 
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('test_run_py')
+        rospy.init_node('two_robots_py')
         init_var()
         init_subscription()
         client1.wait_for_server()
