@@ -78,6 +78,52 @@ services:
       resources:
         limits:
           memory: 192m
+
+  # Kafka
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka:latest
+    ports:
+      - target: 9094
+        published: 9094
+        protocol: tcp
+        mode: host
+    environment:
+#      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+#      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://kafka:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_CREATE_TOPICS: test:2:1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # Flink
+  job-cluster:
+    image: scott/flink-trs-twin
+    ports:
+      - "8881:8081"
+    command: job-cluster --job-classname se.ericsson.cf.scott.sandbox.flink.StreamingJob -Djobmanager.rpc.address=job-cluster -Dparallelism.default=2
+    deploy:
+      replicas: 1
+      restart_policy:
+        # debug only
+        condition: none
+
+  taskmanager:
+    image: scott/flink-trs-twin
+    command: task-manager -Djobmanager.rpc.address=job-cluster
+    deploy:
+      replicas: 2
+      restart_policy:
+        # debug only
+        condition: none
+
   # sandbox-executor:
   #   image: scott/webapp-executor
   #   # environment:
