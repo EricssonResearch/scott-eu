@@ -14,10 +14,6 @@ public class MqttManager {
     private final static Logger log = LoggerFactory.getLogger(MqttManager.class);
     private static MqttClient mqttClient;
 
-    /**
-     * Begin listening on AdaptorHelper.lMQTT_TOPIC and perform a handshake with any twin that
-     * registers there.
-     */
     public static MqttClient initMqttClient() {
         try {
             final String mqttBroker = AdaptorHelper.p(WhcConfig.MQTT_TOPIC_PROP);
