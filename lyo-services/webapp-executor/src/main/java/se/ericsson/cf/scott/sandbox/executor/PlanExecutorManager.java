@@ -26,6 +26,13 @@ package se.ericsson.cf.scott.sandbox.executor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
+import java.util.List;
+
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.executor.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.executor.ServiceProviderInfo;
+
 
 // Start of user code imports
 import java.util.UUID;

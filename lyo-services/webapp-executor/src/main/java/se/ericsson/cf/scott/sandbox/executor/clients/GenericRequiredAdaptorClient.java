@@ -50,7 +50,7 @@ public class GenericRequiredAdaptorClient
         // Start of user code getServiceProviderCatalog_init
         // End of user code
 
-        response = client.getResource(serviceProviderCatalogURI, OSLCConstants.CT_RDF);
+        response = client.getResource(serviceProviderCatalogURI,OSLCConstants.CT_RDF);
         if (response != null) {
             catalog = response.readEntity(ServiceProviderCatalog.class);
         }
