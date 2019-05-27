@@ -157,7 +157,7 @@ public class TwinManager {
         final String name = String.format("%s Twin '%s'", WordUtils.capitalize(twinKind), twinId);
         final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo(name, twinKind, twinId);
         try {
-            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(spInfo);
+            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.createTwinsServiceProvider(spInfo);
             TwinAdaptorHelper.getTwins().addServiceProvider(serviceProvider);
         } catch (OslcCoreApplicationException | URISyntaxException e) {
             log.error("Failed to create an SP", e);
