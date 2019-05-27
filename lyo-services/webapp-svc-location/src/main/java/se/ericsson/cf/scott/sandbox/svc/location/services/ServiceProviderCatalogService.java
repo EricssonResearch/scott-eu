@@ -128,7 +128,6 @@ public class ServiceProviderCatalogService
      *
      * Forwards to serviceprovidercatalog_html.jsp to build the html
      *
-     * @param serviceProviderId
      */
     @GET
     @Path("{someId}")
