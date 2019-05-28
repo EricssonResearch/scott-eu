@@ -1,7 +1,6 @@
 package se.ericsson.cf.scott.sandbox.twin.xtra.trs;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,14 +8,13 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.lyo.oslc4j.core.model.IResource;
-import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.oslc4j.trs.server.HistoryData;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class TwinChangeHistories extends ChangeHistories {
+@Deprecated
+class TwinChangeHistories {
     // TODO Andrew@2018-09-04: extract a common superclass with the WhcCH
     private final static Logger log = LoggerFactory.getLogger(TwinChangeHistories.class);
 
@@ -27,17 +25,13 @@ public class TwinChangeHistories extends ChangeHistories {
 
     /**
      *
-     * @param client
-     * @param topic
      * @param baseUpdateInterval in ms
      */
     public TwinChangeHistories(MqttClient client, String topic, final long baseUpdateInterval) {
-        super(baseUpdateInterval);
         this.client = client;
         this.topic = topic;
     }
 
-    @Override
     public HistoryData[] getHistory(final HttpServletRequest httpServletRequest,
         final Date dateAfter) {
         // TODO Andrew@2018-02-26: less expensive implementation
@@ -60,11 +54,6 @@ public class TwinChangeHistories extends ChangeHistories {
         final HistoryData historyData = HistoryData.getInstance(now, resource.getAbout(), type);
         history.add(historyData);
         trackedResourceMap.put(resource.getAbout(), resource);
-        try {
-            super.buildBaseResourcesAndChangeLogs(null);
-        } catch (URISyntaxException e) {
-            log.error("Something went wrong with the URIs", e);
-        }
     }
 
     private boolean isTracked(final IResource resource) {

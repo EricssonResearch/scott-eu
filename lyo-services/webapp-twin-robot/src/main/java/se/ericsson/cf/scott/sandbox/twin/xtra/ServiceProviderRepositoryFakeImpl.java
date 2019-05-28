@@ -10,7 +10,7 @@ import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
+import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 
 
 public class ServiceProviderRepositoryFakeImpl implements ServiceProviderRepository {
@@ -20,7 +20,7 @@ public class ServiceProviderRepositoryFakeImpl implements ServiceProviderReposit
     public ServiceProviderRepositoryFakeImpl() {
         final TwinsServiceProviderInfo twinInfo = new TwinsServiceProviderInfo("Fake Twin", "robot", "r-1");
         try {
-            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(
+            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.createTwinsServiceProvider(
                 twinInfo);
             serviceProviders.addAll(ImmutableSet.of(serviceProvider));
         } catch (OslcCoreApplicationException | URISyntaxException e) {

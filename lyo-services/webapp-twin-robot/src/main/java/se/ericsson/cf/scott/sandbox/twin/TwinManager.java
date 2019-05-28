@@ -41,19 +41,23 @@ import eu.scott.warehouse.domains.pddl.Step;
 
 
 // Start of user code imports
-import java.util.concurrent.TimeUnit;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import java.net.URISyntaxException;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import org.apache.commons.lang.WordUtils;
-import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.eclipse.lyo.oslc4j.client.OslcClient;
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
+
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
+import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
+import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
+import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
 // End of user code
 
 // Start of user code pre_class_code
@@ -65,7 +69,7 @@ public class TwinManager {
     public final static String PACKAGE_ROOT = TwinManager.class.getPackage().getName();
     private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
     private static Random r;
-    private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
+    private static PlanExecutionService planExecutionService;
     // End of user code
     
     
@@ -76,28 +80,19 @@ public class TwinManager {
     {
         
         // Start of user code contextInitializeServletListener
-
+        NaiveTrsFactories.activate();
         log.info("Twin {} is starting", TwinAdaptorHelper.getTwinUUID());
         TwinAdaptorHelper.setServletContext(servletContextEvent.getServletContext());
         r = new Random();
 
-        execService.schedule(() -> {
-            // TODO Andrew@2019-01-24: add a wipe endpoint
-            log.debug("Initialising the KB");
-            TwinAdaptorHelper.initStore(false);
+        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        planExecutionService = new PlanExecutionService(executorService, new OslcClient());
 
-            log.debug("Initialising the TRS Client");
-            TwinAdaptorHelper.initTrsClient();
+        log.debug("Initialising the KB");
+        TwinAdaptorHelper.initStore(false);
 
-            final long updateInterval = TimeUnit.SECONDS.toMillis(5);
-            log.debug("Initialising the TRS Server (Tupd={}ms)", updateInterval);
-            TwinAdaptorHelper.setChangeHistories(
-                new TwinChangeHistories(TwinAdaptorHelper.getMqttGateway().getMqttClient(), "trs-twin", updateInterval));
-
-//            registerTwins();
-        }, 5, TimeUnit.SECONDS);
-
-
+        log.debug("Initialising the TRS Client");
+        TwinAdaptorHelper.initTrsClient();
         // End of user code
     }
 
@@ -141,6 +136,7 @@ public class TwinManager {
         // Start of user code createPlanExecutionRequest
         log.info("Incoming plan: {}", aResource);
         newResource = aResource;
+        planExecutionService.fulfillRequest(aResource);
         // End of user code
         return newResource;
     }
@@ -161,7 +157,7 @@ public class TwinManager {
         final String name = String.format("%s Twin '%s'", WordUtils.capitalize(twinKind), twinId);
         final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo(name, twinKind, twinId);
         try {
-            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(spInfo);
+            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.createTwinsServiceProvider(spInfo);
             TwinAdaptorHelper.getTwins().addServiceProvider(serviceProvider);
         } catch (OslcCoreApplicationException | URISyntaxException e) {
             log.error("Failed to create an SP", e);

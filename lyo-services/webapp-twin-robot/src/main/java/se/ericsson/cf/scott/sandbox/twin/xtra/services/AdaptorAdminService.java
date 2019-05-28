@@ -13,6 +13,7 @@ import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinRegistrationClient;
@@ -27,18 +28,18 @@ public class AdaptorAdminService {
 
     final TwinRegistrationClient registrationClient = TwinAdaptorHelper.createTwinRegistrationClient();
 
+    // TODO Andrew@2019-04-23: add a Store wipe endpoint
 
     @POST
     @Path("initRDF")
     @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-//    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
     public Response getServiceProvider(ServiceProvider sp)
     {
         log.info("Processing the init call (RDF input)");
 
         final TwinsServiceProviderInfo twinInfo = new TwinsServiceProviderInfo(sp.getTitle(), "robot", sp.getIdentifier());
         try {
-            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(
+            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.createTwinsServiceProvider(
                 twinInfo);
             TwinAdaptorHelper.getServiceProviderRepository().addServiceProvider(serviceProvider);
 
