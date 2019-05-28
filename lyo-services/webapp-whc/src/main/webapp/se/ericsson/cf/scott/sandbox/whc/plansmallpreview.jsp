@@ -33,8 +33,13 @@ To revert to the default generated content, delete all content in this file, and
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<%@page import="org.eclipse.lyo.oslc4j.core.model.Link" %>
 <%@page import="org.eclipse.lyo.oslc4j.core.model.ServiceProvider"%>
-<%@page import="java.util.List" %>
+<%@page import="java.net.URI"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.HashSet"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Iterator"%>
 <%@page import="eu.scott.warehouse.domains.pddl.Plan"%>
 
 <%@ page contentType="text/html" language="java" pageEncoding="UTF-8" %>
@@ -49,7 +54,7 @@ To revert to the default generated content, delete all content in this file, and
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title><%= aPlan.toString(false) %></title>
+  <title><%= aPlan.toString() %></title>
 
   <link href="<c:url value="/static/css/bootstrap-4.0.0-beta.min.css"/>" rel="stylesheet">
   <link href="<c:url value="/static/css/adaptor.css"/>" rel="stylesheet">
@@ -66,15 +71,50 @@ To revert to the default generated content, delete all content in this file, and
         <div>
           <dl class="dl-horizontal">
             <dt>cost</dt>
-            <dd><%= aPlan.costToHtml()%></dd>
+            <dd>
+            <%
+            if (aPlan.getCost() == null) {
+                out.write("<em>null</em>");
+            }
+            else {
+                out.write(aPlan.getCost().toString());
+            }
+            %>
+            
+            </dd>
           </dl>
           <dl class="dl-horizontal">
             <dt>step</dt>
-            <dd><%= aPlan.stepToHtml()%></dd>
+            <dd>
+            <ul>
+            <%
+            for(Object next : aPlan.getStep()) {
+                %>
+                <li> 
+                <jsp:include page="/se/ericsson/cf/scott/sandbox/whc/steptohtml.jsp">
+                    <jsp:param name="asLocalResource" value="true"/>
+                    </jsp:include>
+                </li> 
+                <%
+            }
+            %>
+            </ul>
+            
+            </dd>
           </dl>
           <dl class="dl-horizontal">
             <dt>time</dt>
-            <dd><%= aPlan.timeToHtml()%></dd>
+            <dd>
+            <%
+            if (aPlan.getTime() == null) {
+                out.write("<em>null</em>");
+            }
+            else {
+                out.write(aPlan.getTime().toString());
+            }
+            %>
+            
+            </dd>
           </dl>
         </div>
       </div>

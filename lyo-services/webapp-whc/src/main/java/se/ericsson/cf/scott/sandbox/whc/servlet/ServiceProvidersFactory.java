@@ -64,7 +64,7 @@ public class ServiceProvidersFactory
            throws OslcCoreApplicationException, URISyntaxException
     {
         final ServiceProvider serviceProvider = ServiceProviderFactory.createServiceProvider(baseURI,
-                                                    null,
+                                                    "",
                                                     title,
                                                     description,
                                                     publisher,

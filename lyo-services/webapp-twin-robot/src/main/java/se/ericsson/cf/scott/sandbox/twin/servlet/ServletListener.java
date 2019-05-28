@@ -69,7 +69,9 @@ public class ServletListener implements ServletContextListener  {
             logger.log(Level.SEVERE, "servletListner encountered problems identifying the servlet URL pattern.", e1);
         }
         try {
+            logger.info("Setting public URI: " + baseUrl);
             OSLC4JUtils.setPublicURI(baseUrl);
+            logger.info("Setting servlet path: " + servletUrlPattern);
             OSLC4JUtils.setServletPath(servletUrlPattern);
         } catch (MalformedURLException e) {
             logger.log(Level.SEVERE, "servletListner encountered MalformedURLException.", e);

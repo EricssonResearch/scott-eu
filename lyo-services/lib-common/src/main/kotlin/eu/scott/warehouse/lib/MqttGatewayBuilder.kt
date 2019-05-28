@@ -8,21 +8,20 @@ import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.slf4j.LoggerFactory
 
-class MqttClientBuilder {
+class MqttGatewayBuilder {
     val log = LoggerFactory.getLogger(javaClass)
     private var clientID = UUID.randomUUID().toString()
     private var callback: MqttCallbackExtended = LoggingMqttCallback()
     private val lwtTopic: String? = null
     private val lwtMessage: MqttMessage? = null
     private var brokerURL = "tcp://localhost:1883"
-    private var registrationAgent: RegistrationAgent? = null
 
-    fun withBroker(URL: String): MqttClientBuilder {
+    fun withBroker(URL: String): MqttGatewayBuilder {
         this.brokerURL = URL
         return this
     }
 
-    fun withId(id: String): MqttClientBuilder {
+    fun withId(id: String): MqttGatewayBuilder {
         if (Strings.isNullOrEmpty(id)) {
             throw IllegalArgumentException("ID must be unique and not null")
         }
@@ -30,18 +29,13 @@ class MqttClientBuilder {
         return this
     }
 
-    fun withCallback(callback: MqttCallbackExtended): MqttClientBuilder {
+    fun withCallback(callback: MqttCallbackExtended): MqttGatewayBuilder {
         this.callback = callback
         return this
     }
 
-    fun withRegistration(registrationAgent: RegistrationAgent): MqttClientBuilder {
-        this.registrationAgent = registrationAgent
-        return this
-    }
-
     @Throws(MqttException::class)
-    fun build(): TrsMqttGateway {
+    fun build(): RdfMqttGateway {
         if (Strings.isNullOrEmpty(brokerURL) || Strings.isNullOrEmpty(clientID)) {
             throw IllegalStateException(
                     "MqttGateway cannot be built without broker URL and client ID")
@@ -58,7 +52,6 @@ class MqttClientBuilder {
             options.setWill(lwtTopic!!, lwtMessage.payload, 1, false)
         }
         log.debug("Initialising an MQTT client (id=$clientID)")
-        return TrsMqttGateway(brokerURL, clientID, options, callback,
-            registrationAgent!!)
+        return RdfMqttGateway(brokerURL, clientID, options, callback)
     }
 }

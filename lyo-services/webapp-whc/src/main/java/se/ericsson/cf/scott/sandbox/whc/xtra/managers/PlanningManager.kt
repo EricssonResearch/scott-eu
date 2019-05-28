@@ -10,7 +10,6 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig
 import se.ericsson.cf.scott.sandbox.whc.xtra.clients.TwinClient
 import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestBuilder
@@ -110,9 +109,8 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper,
 
             planRepository.registerPlan(plan)
 
-            // TODO Andrew@2019-04-22: have some event listener here
-            WarehouseControllerManager.getChangeHistories()
-                .addResource(plan.instance)
+            // FIXME Andrew@2019-05-02: call the event listener
+
             twinClient.requestPlanExecution(twinInfo, plan)
         } catch (e: LyoJenaModelException) {
             log.error("Cannot unmarshal the Plan")

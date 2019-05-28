@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
 
-import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
@@ -42,20 +41,23 @@ import eu.scott.warehouse.domains.pddl.Step;
 
 
 // Start of user code imports
-import java.util.concurrent.TimeUnit;
-import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import java.net.URISyntaxException;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import org.apache.commons.lang.WordUtils;
-import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.eclipse.lyo.oslc4j.client.OslcClient;
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
+
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
+import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
+import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
+import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
 // End of user code
 
 // Start of user code pre_class_code
@@ -78,7 +80,7 @@ public class TwinManager {
     {
         
         // Start of user code contextInitializeServletListener
-
+        NaiveTrsFactories.activate();
         log.info("Twin {} is starting", TwinAdaptorHelper.getTwinUUID());
         TwinAdaptorHelper.setServletContext(servletContextEvent.getServletContext());
         r = new Random();
@@ -91,11 +93,6 @@ public class TwinManager {
 
         log.debug("Initialising the TRS Client");
         TwinAdaptorHelper.initTrsClient();
-
-        final long updateInterval = TimeUnit.SECONDS.toMillis(5);
-        log.debug("Initialising the TRS Server (Tupd={}ms)", updateInterval);
-        TwinAdaptorHelper.setChangeHistories(
-            new TwinChangeHistories(TwinAdaptorHelper.getMqttGateway().getMqttClient(), "trs-twin", updateInterval));
         // End of user code
     }
 
@@ -160,7 +157,7 @@ public class TwinManager {
         final String name = String.format("%s Twin '%s'", WordUtils.capitalize(twinKind), twinId);
         final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo(name, twinKind, twinId);
         try {
-            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(spInfo);
+            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.createTwinsServiceProvider(spInfo);
             TwinAdaptorHelper.getTwins().addServiceProvider(serviceProvider);
         } catch (OslcCoreApplicationException | URISyntaxException e) {
             log.error("Failed to create an SP", e);
