@@ -84,6 +84,7 @@ import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
+import java.util.Optional;
 // End of user code
 
 // Start of user code pre_class_code
@@ -100,6 +101,18 @@ public class ServiceProviderService1
     // End of user code
 
     // Start of user code class_methods
+    @SuppressWarnings("unchecked")
+    <T> Optional<T> findArray(Object[] array, Class<T> clazz) {
+        if (array == null) {
+            throw new IllegalArgumentException("The array may not be null");
+        }
+        for (final Object o : array) {
+            if (o != null && clazz.isAssignableFrom(o.getClass())) {
+                return Optional.of((T) o);
+            }
+        }
+        return Optional.empty();
+    }
     // End of user code
 
     public ServiceProviderService1()
@@ -107,9 +120,18 @@ public class ServiceProviderService1
         super();
     }
 
+    private void addCORSHeaders (final HttpServletResponse httpServletResponse) {
+        //UI preview can be blocked by CORS policy.
+        //add select CORS headers to every response that is embedded in an iframe.
+        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD");
+        httpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+        httpServletResponse.addHeader("Access-Control-Allow-Credentials", "true");
+    }
+
     @GET
     @Path("{planId}")
-    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
     public Object[] getPlan(
                 @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
         ) throws IOException, ServletException, URISyntaxException
@@ -117,15 +139,13 @@ public class ServiceProviderService1
         // Start of user code getResource_init
         // End of user code
 
-        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest,
-                                                               serviceProviderId, planId);
+        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
 
         if (aPlan != null) {
             // Start of user code getPlan
             // End of user code
             httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
-            // TODO Andrew@2018-06-19: avoid copying the array fully, switch to collections
-            return Arrays.copyOf(aPlan, aPlan.length, Object[].class);
+            return aPlan;
         }
 
         throw new WebApplicationException(Status.NOT_FOUND);
@@ -141,16 +161,119 @@ public class ServiceProviderService1
         // Start of user code getPlanAsHtml_init
         // End of user code
 
-        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest,
-                                                             serviceProviderId, planId);
+        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
 
         if (aPlan != null) {
-            httpServletRequest.setAttribute("aPlan", aPlan[0]);
+            httpServletRequest.setAttribute("aPlan", aPlan);
             // Start of user code getPlanAsHtml_setAttributes
             // End of user code
 
             RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/whc/plan.jsp");
             rd.forward(httpServletRequest,httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("{planId}")
+    @Produces({OslcMediaType.APPLICATION_X_OSLC_COMPACT_XML})
+    public Compact getPlanCompact(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        String iconUri = OSLC4JUtils.getPublicURI() + "/images/ui_preview_icon.gif";
+        String smallPreviewHintHeight = "10em";
+        String smallPreviewHintWidth = "45em";
+        String largePreviewHintHeight = "20em";
+        String largePreviewHintWidth = "45em";
+
+        // Start of user code getPlanCompact_init
+        //TODO: adjust the preview height & width values from the default values provided above.
+        // End of user code
+
+        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            Plan plan = findArray(aPlan, Plan.class).orElseThrow(IllegalStateException::new);
+            final Compact compact = new Compact();
+
+            compact.setAbout(plan.getAbout());
+            compact.setTitle(plan.toString());
+
+            compact.setIcon(new URI(iconUri));
+
+            //Create and set attributes for OSLC preview resource
+            final Preview smallPreview = new Preview();
+            smallPreview.setHintHeight(smallPreviewHintHeight);
+            smallPreview.setHintWidth(smallPreviewHintWidth);
+            smallPreview.setDocument(UriBuilder.fromUri(plan.getAbout()).path("smallPreview").build());
+            compact.setSmallPreview(smallPreview);
+
+            final Preview largePreview = new Preview();
+            largePreview.setHintHeight(largePreviewHintHeight);
+            largePreview.setHintWidth(largePreviewHintWidth);
+            largePreview.setDocument(UriBuilder.fromUri(plan.getAbout()).path("largePreview").build());
+            compact.setLargePreview(largePreview);
+
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
+            addCORSHeaders(httpServletResponse);
+            return compact;
+        }
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("{planId}/smallPreview")
+    @Produces({ MediaType.TEXT_HTML })
+    public void getPlanAsHtmlSmallPreview(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getPlanAsHtmlSmallPreview_init
+        // End of user code
+
+        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            Plan plan = findArray(aPlan, Plan.class).orElseThrow(IllegalStateException::new);
+
+            httpServletRequest.setAttribute("aPlan", plan);
+            // Start of user code getPlanAsHtmlSmallPreview_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/whc/plansmallpreview.jsp");
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
+            addCORSHeaders(httpServletResponse);
+            rd.forward(httpServletRequest, httpServletResponse);
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
+    @GET
+    @Path("{planId}/largePreview")
+    @Produces({ MediaType.TEXT_HTML })
+    public void getPlanAsHtmlLargePreview(
+        @PathParam("serviceProviderId") final String serviceProviderId, @PathParam("planId") final String planId
+        ) throws ServletException, IOException, URISyntaxException
+    {
+        // Start of user code getPlanAsHtmlLargePreview_init
+        // End of user code
+
+        final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
+
+        if (aPlan != null) {
+            Plan plan = findArray(aPlan, Plan.class).orElseThrow(IllegalStateException::new);
+
+            httpServletRequest.setAttribute("aPlan", plan);
+            // Start of user code getPlanAsHtmlLargePreview_setAttributes
+            // End of user code
+
+            RequestDispatcher rd = httpServletRequest.getRequestDispatcher("/se/ericsson/cf/scott/sandbox/whc/planlargepreview.jsp");
+            httpServletResponse.addHeader(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2);
+            addCORSHeaders(httpServletResponse);
+            rd.forward(httpServletRequest, httpServletResponse);
         }
 
         throw new WebApplicationException(Status.NOT_FOUND);

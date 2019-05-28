@@ -71,6 +71,8 @@ public class ServiceProviderCatalogSingleton
 {
     private static final ServiceProviderCatalog serviceProviderCatalog;
     private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
+    // Start of user code class_attributes
+    // End of user code
 
     static {
         serviceProviderCatalog = new ServiceProviderCatalog();
@@ -79,6 +81,9 @@ public class ServiceProviderCatalogSingleton
         serviceProviderCatalog.setTitle("Service Provider Catalog");
         serviceProviderCatalog.setDescription("Service Provider Catalog");
     }
+
+    // Start of user code class_methods
+    // End of user code
 
     private ServiceProviderCatalogSingleton()
     {

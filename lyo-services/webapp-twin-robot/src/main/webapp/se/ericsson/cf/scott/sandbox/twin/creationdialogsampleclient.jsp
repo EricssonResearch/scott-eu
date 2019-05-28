@@ -49,7 +49,7 @@ To revert to the default generated content, delete all content in this file, and
 
 <nav class="navbar sticky-top navbar-light bg-light">
   <div class="container">
-    <a class="navbar-brand" href="<c:url value="/services/catalog/singleton"/>">RobotTwin</a>
+    <a class="navbar-brand" href="<c:url value="/services/catalog/singleton"/>">Twin</a>
   </div>
 </nav>
 

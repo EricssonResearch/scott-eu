@@ -105,6 +105,15 @@ public class ServiceProviderService2
         super();
     }
 
+    private void addCORSHeaders (final HttpServletResponse httpServletResponse) {
+        //UI preview can be blocked by CORS policy.
+        //add select CORS headers to every response that is embedded in an iframe.
+        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD");
+        httpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+        httpServletResponse.addHeader("Access-Control-Allow-Credentials", "true");
+    }
+
     /**
      * Create a single RegistrationMessage via RDF/XML, XML or JSON POST
      *
@@ -121,8 +130,8 @@ public class ServiceProviderService2
     )
     @POST
     @Path("register")
-    @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON })
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
     public Response createRegistrationMessage(
             
             final RegistrationMessage aResource

@@ -13,6 +13,7 @@ import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinRegistrationClient;
@@ -38,7 +39,7 @@ public class AdaptorAdminService {
 
         final TwinsServiceProviderInfo twinInfo = new TwinsServiceProviderInfo(sp.getTitle(), "robot", sp.getIdentifier());
         try {
-            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(
+            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.createTwinsServiceProvider(
                 twinInfo);
             TwinAdaptorHelper.getServiceProviderRepository().addServiceProvider(serviceProvider);
 

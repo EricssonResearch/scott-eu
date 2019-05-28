@@ -71,7 +71,7 @@ class PlanExecutionService(private val executor: ScheduledExecutorService,
             val response: Response = client.getResource(uriString,
                 OslcMediaType.APPLICATION_RDF_XML)
             val inputStream = BufferedInputStream(response.readEntity(InputStream::class.java))
-            val responseModel = ModelFactory.createDefaultModel()
+            val responseModel: Model = ModelFactory.createDefaultModel()
             RDFDataMgr.read(responseModel, inputStream, Lang.RDFXML)
             Optional.of(responseModel)
         } catch (e: ConnectException) {

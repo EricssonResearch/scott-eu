@@ -24,15 +24,19 @@
 
 package se.ericsson.cf.scott.sandbox.whc;
 
-import eu.scott.warehouse.lib.InstanceWithResources;
-import eu.scott.warehouse.lib.OslcHelper;
-import eu.scott.warehouse.lib.OslcHelpers;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
+import java.util.List;
 
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
+import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.RegistrationMessage;
+import eu.scott.warehouse.domains.pddl.Step;
+
 
 // Start of user code imports
 import java.net.URI;
@@ -43,8 +47,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 
-
-//import org.eclipse.lyo.store.StoreFactory;
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
 import se.ericsson.cf.scott.sandbox.whc.xtra.clients.TwinClient;
 import se.ericsson.cf.scott.sandbox.whc.xtra.managers.MqttManager;
@@ -54,10 +56,14 @@ import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper;
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.PlanRepository;
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.PlanRepositoryMem;
 import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository;
-import se.ericsson.cf.scott.sandbox.whc.xtra.trs.WhcChangeHistories;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
+
+import eu.scott.warehouse.lib.InstanceWithResources;
+import eu.scott.warehouse.lib.OslcHelper;
+import eu.scott.warehouse.lib.OslcHelpers;
+import java.util.Optional;
 // End of user code
 
 // Start of user code pre_class_code
@@ -70,7 +76,6 @@ public class WarehouseControllerManager {
     private static final ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
     private static TwinRepository twinRepository;
     private static PlanningManager planningManager;
-    private static WhcChangeHistories changeHistoriesInstance;
     private static PlanRepository planRepository;
     // End of user code
     
@@ -80,20 +85,14 @@ public class WarehouseControllerManager {
         return execService;
     }
 
-    // TODO Andrew@2019-03-12: move to TRSManager
-    public static WhcChangeHistories getChangeHistories() {
-        return changeHistoriesInstance;
-    }
-
-    // TODO Andrew@2019-03-12: remove
-    public static void setChangeHistories(final WhcChangeHistories changeHistories) {
-        changeHistoriesInstance = changeHistories;
-    }
-
     public static TwinRepository getTwinRepository() {
         return twinRepository;
     }
 
+    @NotNull
+    public static PlanRepository getPlanRepository() {
+        return planRepository;
+    }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
@@ -118,8 +117,8 @@ public class WarehouseControllerManager {
 
             log.debug("Initialising a TRS Client");
             TRSManager.initTRSClient(mqttClient);
-            log.debug("Initialising a TRS Server");
-            TRSManager.initTRSServer(mqttClient);
+//            log.debug("Initialising a TRS Server");
+//            TRSManager.initTRSServer(mqttClient);
             log.debug("WHC contextInitializeServletListener BACKGROUND TASK COMPLETE");
         }, 5, TimeUnit.SECONDS);
         log.debug("WHC contextInitializeServletListener COMPLETE");
@@ -197,7 +196,7 @@ public class WarehouseControllerManager {
     {
         String eTag = null;
         // Start of user code getETagFromPlan
-        eTag = OslcHelpers.hexHashCodeFor(aResource);
+        // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;
     }
@@ -210,8 +209,4 @@ public class WarehouseControllerManager {
         return eTag;
     }
 
-    @NotNull
-    public static PlanRepository getPlanRepository() {
-        return planRepository;
-    }
 }
