@@ -14,7 +14,7 @@ services:
       replicas: 1
       restart_policy:
         # debug only
-        condition: none
+        condition: any
       resources:
         limits:
           memory: 384m
@@ -31,7 +31,7 @@ services:
       replicas: 1
       restart_policy:
         # debug only
-        condition: none
+        condition: any
       resources:
         limits:
           memory: 384m
@@ -44,13 +44,15 @@ services:
     ports:
      - "8081:8080"
      - "9981:9999"
+    depends_on:
+      - kafka
     deploy:
-      replicas: 1
+      replicas: 8
       resources:
         limits:
           memory: 384m
       restart_policy:
-        condition: none
+        condition: any
   warehouse-fuseki:
     image: scott/jena-fuseki
     networks:
@@ -60,7 +62,7 @@ services:
     deploy:
       replicas: 1
       restart_policy:
-        condition: on-failure
+        condition: any
       resources:
         limits:
           memory: 512m
@@ -74,7 +76,7 @@ services:
     deploy:
       replicas: 1
       restart_policy:
-        condition: on-failure
+        condition: any
       resources:
         limits:
           memory: 192m
@@ -84,6 +86,15 @@ services:
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
+    networks:
+     - overlay
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          memory: 512m
   kafka:
     image: wurstmeister/kafka:latest
     ports:
@@ -91,6 +102,8 @@ services:
         published: 9094
         protocol: tcp
         mode: host
+    networks:
+      - overlay
     environment:
 #      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -99,7 +112,14 @@ services:
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://kafka:9094
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_CREATE_TOPICS: test:2:1
+      KAFKA_CREATE_TOPICS: test:4:1
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          memory: 1024m
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
@@ -108,21 +128,33 @@ services:
     image: scott/flink-trs-twin
     ports:
       - "8881:8081"
-    command: job-cluster --job-classname se.ericsson.cf.scott.sandbox.flink.StreamingJob -Djobmanager.rpc.address=job-cluster -Dparallelism.default=2
+    command: job-cluster --job-classname se.ericsson.cf.scott.sandbox.flink.StreamingJob -Djobmanager.rpc.address=job-cluster -Dparallelism.default=4
+    networks:
+      - overlay
+    depends_on:
+      - kafka
     deploy:
       replicas: 1
+      resources:
+        limits:
+          memory: 768m
       restart_policy:
-        # debug only
-        condition: none
+        condition: any
 
   taskmanager:
     image: scott/flink-trs-twin
     command: task-manager -Djobmanager.rpc.address=job-cluster
+    networks:
+      - overlay
+    depends_on:
+      - job-cluster
     deploy:
-      replicas: 2
+      replicas: 4
+      resources:
+        limits:
+          memory: 512m
       restart_policy:
-        # debug only
-        condition: none
+        condition: any
 
   # sandbox-executor:
   #   image: scott/webapp-executor

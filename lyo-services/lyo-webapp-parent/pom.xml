@@ -32,7 +32,7 @@
     <module>../webapp-twin-robot</module>
     <module>../webapp-twin-shelf</module>
 
-    <module>../flink-trs-twin</module>
+<!--    <module>../flink-trs-twin</module>-->
   </modules>
 
 

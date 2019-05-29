@@ -2,14 +2,11 @@
 
 build:
 	docker build -f sandbox.Dockerfile -t scott/sandbox-base .
-	(cd flink-trs-twin && mvn clean package)
-	(cd flink-docker && ./build.sh --job-jar ../flink-trs-twin/target/flink-*.jar --from-release --flink-version 1.8.0 --scala-version 2.12 --image-name scott/flink-trs-twin)
 	docker build -f whc.Dockerfile  -t scott/webapp-whc .
 	docker build -f twin-robot.Dockerfile -t scott/webapp-twin-robot .
 	docker build -f twin-shelf.Dockerfile -t scott/webapp-twin-shelf .
 	docker build -f executor.Dockerfile  -t scott/webapp-executor .
 	docker build -f svc-location.Dockerfile  -t scott/webapp-svc-location .
-	# docker build -f flink-trs.Dockerfile  -t scott/flink-trs-twin .
 
 build-twin-robot:
 	docker build -f sandbox.Dockerfile -t scott/sandbox-base .

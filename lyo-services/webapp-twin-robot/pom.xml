@@ -57,6 +57,11 @@
       <version>${version.lyo}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>2.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.paho</groupId>
       <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
       <version>1.2.0</version>
