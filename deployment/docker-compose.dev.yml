@@ -47,7 +47,7 @@ services:
     depends_on:
       - kafka
     deploy:
-      replicas: 8
+      replicas: 1
       resources:
         limits:
           memory: 384m
