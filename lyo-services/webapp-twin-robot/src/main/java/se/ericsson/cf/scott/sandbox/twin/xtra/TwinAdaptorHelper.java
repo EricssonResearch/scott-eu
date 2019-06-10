@@ -148,8 +148,8 @@ public class TwinAdaptorHelper {
     static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
         try {
             log.info("Registering provider: {}", info);
-            final ServiceProvider robotSP = ServiceProviderCatalogSingleton.createTwinsServiceProvider(info);
-            ServiceProviderCatalogSingleton.registerTwinsServiceProvider(robotSP);
+            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createServiceProvider(info);
+            ServiceProviderCatalogSingleton.register(robotSP);
             return robotSP;
         } catch (URISyntaxException | OslcCoreApplicationException e) {
             log.error("Cannot register the Robot SP", e);

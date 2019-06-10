@@ -5,13 +5,13 @@
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  *  The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  *  and the Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
- *  
+ *
  *  Contributors:
- *  
+ *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
  *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
@@ -78,8 +78,8 @@ public class WarehouseControllerManager {
     private static PlanningManager planningManager;
     private static PlanRepository planRepository;
     // End of user code
-    
-    
+
+
     // Start of user code class_methods
     public static ScheduledExecutorService getExecService() {
         return execService;
@@ -97,7 +97,7 @@ public class WarehouseControllerManager {
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
         AdaptorHelper.initLogger();
         log.debug("WHC contextInitializeServletListener START");
@@ -125,9 +125,9 @@ public class WarehouseControllerManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
         log.info("Shutting down the adaptor");
         MqttManager.disconnect();
@@ -137,7 +137,7 @@ public class WarehouseControllerManager {
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         serviceProviderInfos = AdaptorHelper.defaultSPInfo();
         // End of user code
@@ -149,7 +149,7 @@ public class WarehouseControllerManager {
     public static Object[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
     {
         Object[] aResource = null;
-        
+
         // Start of user code getPlan
         log.trace("getPlan({}, {}) called", serviceProviderId, planId);
         // minimal impl to get the TRS provider going
@@ -174,7 +174,7 @@ public class WarehouseControllerManager {
     public static RegistrationMessage createRegistrationMessage(HttpServletRequest httpServletRequest, final RegistrationMessage aResource)
     {
         RegistrationMessage newResource = null;
-        
+
         // Start of user code createRegistrationMessage
         if(aResource != null) {
             log.info("Registering Twin {} ({})", aResource.getLabel(), aResource.getServiceProvider().getValue());

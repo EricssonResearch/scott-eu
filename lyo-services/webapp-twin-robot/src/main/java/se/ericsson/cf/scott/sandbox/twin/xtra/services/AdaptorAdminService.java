@@ -44,7 +44,7 @@ public class AdaptorAdminService {
         final TwinsServiceProviderInfo twinInfo = new TwinsServiceProviderInfo(sp.getTitle(),
             "robot", sp.getIdentifier());
         try {
-            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.createTwinsServiceProvider(
+            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createServiceProvider(
                 twinInfo);
             TwinAdaptorHelper.getServiceProviderRepository().addServiceProvider(serviceProvider);
 
