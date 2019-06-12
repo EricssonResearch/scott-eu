@@ -28,25 +28,8 @@ fun main() {
     val reasoner: RDFSRuleReasoner = RDFSRuleReasonerFactory.theInstance().create(null) as RDFSRuleReasoner
 
     reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_SIMPLE)
-//    reasoner.setParameter(ReasonerVocabulary.PROPderivationLogging, true)
+    reasoner.setParameter(ReasonerVocabulary.PROPderivationLogging, true)
     reasoner.setParameter(ReasonerVocabulary.PROPtraceOn, true)
-//    reasoner.setDerivationLogging(true)
-//    reasoner.isTraceOn = true
-//    reasoner.addPreprocessingHook(object : RulePreprocessHook {
-//        override fun run(infGraph: FBRuleInfGraph?, dataFind: Finder?, inserts: Graph?) {
-//            log.
-//        }
-//
-//        override fun needsRerun(infGraph: FBRuleInfGraph?, t: Triple?): Boolean {
-//            TODO("not implemented")
-//        }
-//
-//    })
-
-    // NPE at org.apache.jena.reasoner.rulesys.RDFSRuleReasoner.bind(RDFSRuleReasoner.java:150)
-//    reasoner.setParameter(ReasonerVocabulary.PROPruleMode,
-//        "forward")
-
 
     val infModel: InfModel = ModelFactory.createInfModel(reasoner, model)
     infModel.setDerivationLogging(true)
