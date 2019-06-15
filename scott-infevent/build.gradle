@@ -19,6 +19,8 @@ dependencies {
     compile group: 'org.apache.jena', name: 'jena-tdb2', version: jenaVersion
     compile group: 'org.apache.jena', name: 'jena-rdfconnection', version: jenaVersion
 
+    compile group: 'org.eclipse.rdf4j', name: 'rdf4j-runtime', version: '2.5.2'
+
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.26'
 
