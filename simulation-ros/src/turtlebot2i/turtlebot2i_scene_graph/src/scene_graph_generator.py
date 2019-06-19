@@ -111,7 +111,7 @@ def init():
                                     'dockstation_body',
                                     'ConcreteBox','ConcreteBox#0','ConcreteBox#1','ConcreteBox#2','ConcreteBox#3','ConcreteBox#4','ConcreteBox#5','ConcreteBox#6',
                                     'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm','80cmHighPillar100cm0',
-                                    'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4', 'ConveyorBeltBody#5', 'ConveyorBeltBody#6', 'ConveyorBeltBody#7'])
+                                    'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4', 'ConveyorBeltBody#5', 'ConveyorBeltBody#6', 'ConveyorBeltBody#7', 'ConveyorBeltBody#8', 'ConveyorBeltBody#9'])
     extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2','Walking_Bill#3','Walking_Bill#4','Bill','Bill#5'])
     extractor.set_robot_names(['turtlebot2i','turtlebot2i#0'])
     
@@ -126,7 +126,7 @@ def init():
     extractor.get_all_objects_info()
     extractor.update_robots_vision_sensor_info()
     extractor.update_all_robots_vision_sensors_fov()
-    time.sleep(0.3) # streaming takes a while to get ready
+    #time.sleep(0.3) # streaming takes a while to get ready
 
     extractor.operation_mode = vrep.simx_opmode_buffer
     extractor.get_all_objects_info()
@@ -140,17 +140,25 @@ def init():
     time_all_end_list = []
     rospy.loginfo('Finished getting scene properties!\n')
 
+def reset():
+    global extractor
+    extractor.close_connection()
+    init()
+
 def sg_generate():
 
     #robot_list = extractor.robot_obj_list
     robot_list = extractor.get_available_robot()
+    #print("robot list:",robot_list)
     if len(robot_list) > 0:
         # Get dynamic object info (pose and vel) periodically
         extractor.update_dynamic_obj_info()
 
         # Update vision sensor info
         extractor.update_all_robots_vision_sensors_fov()
-    print("length of robot: ",len(robot_list))
+    else:
+        return reset()
+    #print("length of robot: ",len(robot_list))
     # Get objects that are in the sensor FOV
     #for robot_num in range(1):
     for robot_obj in robot_list:
@@ -173,6 +181,7 @@ def sg_generate():
         i = robot_obj
         # print(i.bbox_min[0], i.bbox_min[1], i.bbox_max[0], i.bbox_max[1])
         # robot_label = '{%s|%s|velocity: %.2f|orientation: %.2f}'%(robot[robot_num].name, robot[robot_num].vision_sensor.name, robot_velocity, robot[robot_num].ori[2]*180/pi)
+        #print("robot_obj.vision_sensor.name:",robot_obj.vision_sensor.name)
         robot_label = '{%s|%s|velocity: %.2f}'%(robot_obj.name, robot_obj.vision_sensor.name, robot_velocity)
         #robot_label = '{%s|type: 0|%s|velocity: %.2f}'%(robot_obj.name, robot_obj.vision_sensor.name, robot_velocity) #Label for itself?
 
@@ -247,7 +256,7 @@ if __name__ == '__main__':
         rospy.loginfo('Started getting scene objects from vision sensor FOV...')
         pub1 = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
         pub2 = rospy.Publisher('/turtlebot2i_0/scene_graph', SceneGraph, queue_size=10)
-        rate = rospy.Rate(3.0) #Hz, T=1/Rate
+        rate = rospy.Rate(5.0) #Hz, T=1/Rate
         #rospy.Subscriber('/turtlebot2i/safety/vel_scale', VelocityScale, vel_scale_callback) 
         while not rospy.is_shutdown():
             #time_start_list.append(time.time())

@@ -227,12 +227,12 @@ def parse_dot_file(graph):
             else:
                print "Node not match!!"
                print node_info
-    if (highest_risk!=0.0):
-        safe_risk_pub.publish(risk_message)
-        #pub_safe_vel(1.0, 1.0) 
-    else:
-        pub_safe_vel(1.0, 1.0) 
-    #pub_safe_vel(0, 0) 
+    # if (highest_risk!=0.0):
+    #     safe_risk_pub.publish(risk_message)
+    #     #pub_safe_vel(1.0, 1.0) 
+    # else:
+    #     pub_safe_vel(1.0, 1.0) 
+    safe_risk_pub.publish(risk_message)
     risk_val_pub.publish(highest_risk)
     #global    time_previous
     #run_time = time.time() - time_previous
@@ -241,16 +241,16 @@ def parse_dot_file(graph):
     #time_previous = time.time()
 
 def topic_callback(data):
-    global time_duration_list
-    time_previous = time.time()
+    #global time_duration_list
+    #time_previous = time.time()
 
     graph = pydot.graph_from_dot_data(data.sg_data) #From string
     parse_dot_file(graph)
 
-    time_duration_list.append(time.time()-time_previous)
-    print("Risk assesment duration :",np.mean(time_duration_list))
-    if len(time_duration_list) == 100:
-        np.savez('/home/etrrhmd/duration_result/time_duration_ra.npz', time_duration_list=time_duration_list[10:])
+    #time_duration_list.append(time.time()-time_previous)
+    #print("Risk assesment duration :",np.mean(time_duration_list))
+    #if len(time_duration_list) == 100:
+    #    np.savez('/home/etrrhmd/duration_result/time_duration_ra.npz', time_duration_list=time_duration_list[10:])
 
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 

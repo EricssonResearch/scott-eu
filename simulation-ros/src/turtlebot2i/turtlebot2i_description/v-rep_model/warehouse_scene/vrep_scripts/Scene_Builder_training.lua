@@ -59,39 +59,30 @@ function sysCall_init()
 
 
     -- static objects:
-    --addModel('Shelf_simple',{2.5, 9.0,0.063},{0,0,math.pi})
-    --addModel('ConcreteBox',{-3.5, 6.5,0.25},{0,0,0})
-    --addModel('ConcreteBox',{-4.5, 8.5,0.25},{0,0,0})
     addModel('80cmHighPillar100cm',{2.0,-4.0,0.35},{0,0,0})
-
+    addModel('80cmHighPillar100cm',{2.0,-6.5,0.35},{0,0,0})
 
     addModel('ConcreteBox',{ 7.0, 4.5,0.5},{0,0,0})
-    
     addModel('ConcreteBox2',{ 1.0, 7.0,0.5},{0,0,0})
-
     addModel('ConcreteBox1',{-2.0,-3.0,0.5},{0,0,math.pi/2})
     addModel('ConcreteBox2',{-3.0,-4.5,0.5},{0,0,0})
-    --addModel('80cmHighPillar100cm_oval',{-4.5,-6.0,0.4},{0,0,0})
-    --addModel('80cmHighPillar100cm_oval',{ 1.0,4.5,0.4},{0,0,0})
-    --addModel('80cmHighPillar100cm_oval',{-8.5,-3.0,0.4},{0,0,0})
+
     addModel('ConveyorBelt_simple',{-4.5,-6.0,0.113},{0,0,math.pi})
-    addModel('ConveyorBelt_simple',{ 1.0,4.5,0.113},{0,0,0})
-    addModel('ConveyorBelt_simple',{-6.5,4.75,0.113},{0,0,0})
-    addModel('ConveyorBelt_simple',{-8.5,-3.0,0.113},{0,0,math.pi})
+    addModel('ConveyorBelt_simple',{ 0.0,4.5,0.113},{0,0,0})
+    addModel('ConveyorBelt_simple',{-9.0,5.5,0.113},{0,0,math.pi})
+    addModel('ConveyorBelt_simple',{-9.0,-3.0,0.113},{0,0,math.pi})
+    addModel('ConveyorBelt_simple',{-4.0, 5.0,0.113},{0,0,math.pi/2})
+    addModel('ConveyorBelt_simple',{-7.0, 3.0,0.113},{0,0,-math.pi/2})
 
     addModel('ConcreteBox2',{ 5.5, 0.0,0.5},{0,0,0})
-
     addModel('ConcreteBox2',{ 5.5,-4.0,0.5},{0,0,0})
     addModel('ConcreteBox2',{ 7.0,-2.5,0.5},{0,0,0})
     addModel('ConcreteBox2',{ 7.25,-4.5,0.5},{0,0,0})
     addModel('ConcreteBox2',{ 9.0,-4.5,0.5},{0,0,0})
     addModel('ConcreteBox2',{ 7.5,-6.5,0.5},{0,0,0})
-
     addModel('ConcreteBox2',{ -7.0,-6.0,0.5},{0,0,0})
     
     -- dynamic objects:
-    --addModel('pioneer_p3dx',{-3.0, 5.0,0.139},{0,0,-math.pi/2})
-    --addModel('pioneer_p3dx',{ 6.0, 3.0,0.139},{0,0,math.pi/2})
 
     --addModel('walkingBill_round',{ 3.0, -2.5,0},{0,0,-math.pi/2})
     addModel('Walking_Bill',{ 3.0, -2.5,0},{0,0,-math.pi/2})
@@ -104,8 +95,6 @@ function sysCall_init()
     --addModel('80cmHighWall500cm',{  5.0,  0.50,.4},{0,0,0})
     
     --addModel('turtlebot2i',{ 7.5, 3.0,0.063},{0,0,0}) --just to check the finish location
-    --addModel('Walking_Bill',{3,-3.0,0},{0,0,0})
-    --addModel('youbot',{2.0,-3.33515,0.063},{0,0,-math.pi/2})
 
     --[[Possible target point:
     addModel('Waypoint',{ -9.0, 6.5,.1},{0,0,0})

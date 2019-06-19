@@ -33,10 +33,10 @@ def lidar_callback(data):
     data.ranges = sensor_reads
     #sensor_reads = data.ranges[4:n_sensors+4]
     min_distance = min(sensor_reads[4:n_sensors+4]) 
-
-    clear_zone_radius    = 0.32+12*speed/10.0
-    warning_zone_radius  = 0.31+6*speed/10.0
-    critical_zone_radius = 0.195+0.1 #Robot diameter= 0.4
+    #robot max speed = 0.52
+    clear_zone_radius    = 0.32+12*speed/10.0 #at max: 0.944
+    warning_zone_radius  = 0.31+6*speed/10.0 #at max: 0.622
+    critical_zone_radius = 0.195+0.1 # = 0.295 #Robot diameter= 0.4
 
     if risk_val == 0.0:
         available_space = min_distance
