@@ -350,7 +350,7 @@ class Env():
 
     def getState(self, safety_risk_msg):
         obstacle_distances = list(self.sceneGraphReconstruction(safety_risk_msg)/self.camera_far_clipping)
-        min_range = 0.18
+        min_range = 0.01
         done = False
 
         if (min_range > self.min_distance) or self.collision:
@@ -402,7 +402,7 @@ class Env():
         #rospy.loginfo("Goal position is sent! waiting the robot to finish....") 
         
     def setReward(self, state, done, action):
-        nearest_obstacle_distance  = state[-5] * self.camera_far_clipping
+        nearest_obstacle_distance  = state[-5] * self.camera_far_clipping + 0.175 #0.175 is robot radius
         nearest_obstacle_direction = state[-4] * 2 * pi - pi
 
         yaw_reward = 1.0
@@ -436,7 +436,7 @@ class Env():
 
         if self.get_goalbox:
             rospy.loginfo("Goal!!")
-            reward = 1000
+            reward = 250
             self.publishScaleSpeed(0.0, 0.0)
             self.respawn_goal(reset=True)
             self.get_goalbox = False
