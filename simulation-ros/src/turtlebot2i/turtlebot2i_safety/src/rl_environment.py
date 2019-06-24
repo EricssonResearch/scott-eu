@@ -131,9 +131,10 @@ class VrepManipulation():
             rospy.loginfo("Previous loading failed. Reload robot. robot handler:",self.robot_handle," | return code:",returnCode)
         
     def remove_all_turtlebot2i(self):
-        turtlebot2i_namelist = ['turtlebot2i', 'turtlebot2i#0', 'turtlebot2i#1', 'turtlebot2i#1', 'turtlebot2i#2', 'turtlebot2i#3', 'turtlebot2i#4', 'turtlebot2i#5', 'turtlebot2i#6', 'turtlebot2i#7', 'turtlebot2i#8', 'turtlebot2i#9']
+        turtlebot2i_namelist = ['turtlebot2i', 'turtlebot2i#0', 'turtlebot2i#1', 'turtlebot2i#2', 'turtlebot2i#3', 'turtlebot2i#4', 'turtlebot2i#5', 'turtlebot2i#6', 'turtlebot2i#7', 'turtlebot2i#8', 'turtlebot2i#9',
+                                'turtlebot_body_visual','turtlebot_reference','plate_middle_link_visual','plate_middle_link_respondable','GPS']
         for turtlebot2i_name in turtlebot2i_namelist:
-            returnCode, temp_robot_handle = vrep.simxGetObjectHandle(self.clientID, 'turtlebot2i', vrep.simx_opmode_oneshot_wait)
+            returnCode, temp_robot_handle = vrep.simxGetObjectHandle(self.clientID, turtlebot2i_name, vrep.simx_opmode_oneshot_wait)
             returnCode = vrep.simxRemoveModel(self.clientID, temp_robot_handle, vrep.simx_opmode_oneshot_wait)
 
     def check_robot_correctness(self):
@@ -231,6 +232,8 @@ class Env():
         self.robot_linear_speed  = 0.0
         self.robot_angular_speed = 0.0 
 
+        self.speed_monitor = deque([])
+
     def distance2D(self, pos1, pos2):
         return sqrt((pos1.x - pos2.x)**2 + (pos1.y - pos2.y)**2)
 
@@ -255,6 +258,15 @@ class Env():
         #getting data from move base module
         self.robot_linear_speed  = data.linear.x
         self.robot_angular_speed = data.angular.z 
+        if len(self.speed_monitor) > 300:
+            if sum(self.speed_monitor) < 0.1: #if robot gets stuck, cancel the goal
+                self.speed_monitor = deque([])
+                self.vrep_control.reset_robot_pos()
+                self.respawn_goal()
+                rospy.loginfo("Robot is stuck, changing goal position.")
+            else:
+                self.speed_monitor.popleft()
+        self.speed_monitor.append(data.linear.x+abs(data.angular.z))
 
     def safety_zone_callback(self, data):
         self.r_critical = data.critical_zone_radius
@@ -337,7 +349,7 @@ class Env():
 
 
     def getState(self, safety_risk_msg):
-        obstacle_distances = list(self.sceneGraphReconstruction(safety_risk_msg))
+        obstacle_distances = list(self.sceneGraphReconstruction(safety_risk_msg)/self.camera_far_clipping)
         min_range = 0.18
         done = False
 
@@ -348,7 +360,8 @@ class Env():
         if self.getGoalDistance() < 0.5:
             self.get_goalbox = True
         #returning 21 information (12 obstacles' distances, robot's speed (linear&angular), distance to goal, orientation to goal and 5 riskiest obstacle)
-        return obstacle_distances + [self.robot_linear_speed, self.robot_angular_speed, self.getGoalDistance(), self.heading, self.risk_max, self.nearest_type, self.min_distance, self.nearest_direction, self.nearest_speed], done
+        #return obstacle_distances + [self.robot_linear_speed, self.robot_angular_speed, self.getGoalDistance(), self.heading, self.risk_max, self.nearest_type, self.min_distance, self.nearest_direction, self.nearest_speed], done
+        return obstacle_distances + [self.robot_linear_speed/0.55, (self.robot_angular_speed + pi)/(2*pi), self.getGoalDistance()/25.0, (self.heading+pi)/(2*pi), self.risk_max/5.0, self.nearest_type/3.0, self.min_distance/self.camera_far_clipping, ((self.nearest_direction*pi/180.0) +pi)/(2*pi), self.nearest_speed, (self.r_warning - 0.31)/0.35, (self.r_clear-0.32)/0.7], done
 
     def publishScaleSpeed(self, left_vel_scale, right_vel_scale):
         vel_scale_message = VelocityScale()
@@ -359,7 +372,7 @@ class Env():
         self.pub_safe_vel.publish(vel_scale_message)
 
     def respawn_goal(self, reset=False):
-        if not reset:
+        if reset:
             self.vrep_control.changeScenario()
 
         #self.client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
@@ -387,11 +400,10 @@ class Env():
 
         self.client.send_goal(self.goal)
         #rospy.loginfo("Goal position is sent! waiting the robot to finish....") 
-        self.vrep_control.check_robot_correctness()
         
     def setReward(self, state, done, action):
-        nearest_obstacle_distance  = state[-3]
-        nearest_obstacle_direction = state[-2] * 180 / pi
+        nearest_obstacle_distance  = state[-5] * self.camera_far_clipping
+        nearest_obstacle_direction = state[-4] * 2 * pi - pi
 
         yaw_reward = 1.0
         if (nearest_obstacle_direction < -pi/6):#obstacle is on the right 
@@ -426,7 +438,7 @@ class Env():
             rospy.loginfo("Goal!!")
             reward = 1000
             self.publishScaleSpeed(0.0, 0.0)
-            self.respawn_goal()
+            self.respawn_goal(reset=True)
             self.get_goalbox = False
 
         return reward
@@ -438,6 +450,7 @@ class Env():
             try:
                 data = rospy.wait_for_message('/turtlebot2i/safety/obstacles_risk', SafetyRisk, timeout=5)
             except:
+                self.vrep_control.check_robot_correctness()
                 pass
 
         state, done = self.getState(data)
@@ -453,6 +466,7 @@ class Env():
             try:
                 data = rospy.wait_for_message('/turtlebot2i/safety/obstacles_risk', SafetyRisk, timeout=5)
             except:
+                self.vrep_control.check_robot_correctness()
                 pass
 
         self.respawn_goal(reset=True)
