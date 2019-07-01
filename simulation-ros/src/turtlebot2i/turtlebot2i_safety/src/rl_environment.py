@@ -28,7 +28,7 @@ class VrepManipulation():
         self.scenarioNr = 0
         self.clientID   = vrep.simxStart('127.0.0.1', 20001, True, True, 5000, 5) 
         self.dirPath = os.path.dirname(os.path.realpath(__file__))
-        self.model_location = self.dirPath.replace('turtlebot2i_safety/src', 'turtlebot2i_description/v-rep_model/warehouse_scene/vrep_models/turtlebot2i.ttm')
+        self.model_location = self.dirPath.replace('turtlebot2i_safety/src', 'turtlebot2i_description/v-rep_model/warehouse_scene/vrep_models/turtlebot2i_for_training.ttm')
         returnCode, self.robot_handle = vrep.simxGetObjectHandle(self.clientID, 'turtlebot2i', vrep.simx_opmode_blocking)
         returnCode, self.ConcreteBox  = vrep.simxGetObjectHandle(self.clientID, 'ConcreteBox', vrep.simx_opmode_blocking) 
         returnCode, self.ConcreteBox0 = vrep.simxGetObjectHandle(self.clientID, 'ConcreteBox#0', vrep.simx_opmode_blocking)
@@ -395,19 +395,22 @@ class Env():
         distance_rate = 1.0 / max(nearest_obstacle_distance, 0.175)
 
         if nearest_obstacle_distance < self.r_critical:
-            ob_reward = -50
+            reward = (yaw_reward * distance_rate) -50
         elif nearest_obstacle_distance < self.r_warning:
-            ob_reward = -10
-        elif self.distance2D(self.prev_position, self.position) > 0.018:
-            ob_reward = 1
+            reward = (yaw_reward * distance_rate) -10
+        elif self.distance2D(self.prev_position, self.position) > 0.017:
+            if nearest_obstacle_distance < self.r_clear:
+                reward = (yaw_reward * distance_rate) + 1
+            else:
+                reward = 1
         else:
-            ob_reward = -1
+            reward = -1
 
-        reward = (yaw_reward * distance_rate) + ob_reward
+        #reward = (yaw_reward * distance_rate) + ob_reward
 
         if done:
             rospy.loginfo("Collision!!")
-            reward = -500
+            reward = -5000
             self.publishScaleSpeed(0.0, 0.0)
 
         if self.get_goalbox:

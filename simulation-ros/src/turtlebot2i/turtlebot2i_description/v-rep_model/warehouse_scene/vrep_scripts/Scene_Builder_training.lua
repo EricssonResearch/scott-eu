@@ -38,7 +38,8 @@ function sysCall_init()
 
 
     --addModel('turtlebot2i',{-6.5, 4.75,0.063},{0,0,-math.pi/2}) 
-    addModel('turtlebot2i',{ 0.0,  0.0,0.063},{0,0,0}) 
+    --addModel('turtlebot2i',{ 0.0,  0.0,0.063},{0,0,0}) 
+    addModel('turtlebot2i_for_training',{ 0.0,  0.0,0.063},{0,0,0}) 
     addModel('dockstation',{-6.5, -2.0,0.063},{0,0,0})
     --
 
