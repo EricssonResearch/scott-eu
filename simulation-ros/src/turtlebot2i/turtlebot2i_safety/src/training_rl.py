@@ -31,6 +31,7 @@ from rl_environment import Env
 from keras.models import Sequential, load_model
 from keras.optimizers import RMSprop
 from keras.layers import Dense, Dropout, Activation
+from turtlebot2i_safety.msg import SafetyRisk
 
 EPISODES = 3000
 
@@ -43,7 +44,7 @@ class ReinforceAgent():
         self.result = Float32MultiArray()
 
         self.load_model = False
-        self.load_episode = 0 #0
+        self.load_episode = 0#340 #0
         self.state_size = state_size
         self.action_size = action_size
         self.episode_step = 6000
@@ -62,7 +63,6 @@ class ReinforceAgent():
 
         self.updateTargetModel()
 
-
         self.scores   = []
         self.episodes = []
 
@@ -76,6 +76,10 @@ class ReinforceAgent():
             loaded_result = np.load(self.dirPath + str(self.load_episode) + '.npz')
             self.scores   = list(loaded_result['scores'])
             self.episodes = list(loaded_result['episodes'])
+            #loaded_result2 = np.load(self.dirPath + 'memory.npz')
+            #print("type:",type(loaded_result2['memory'])) 
+            #self.memory = loaded_result2['memory']
+
 
     def buildModel(self):
         model = Sequential()
@@ -83,7 +87,7 @@ class ReinforceAgent():
 
         model.add(Dense(64, input_shape=(self.state_size,), activation='relu', kernel_initializer='lecun_uniform'))
 
-        model.add(Dense(64, activation='relu', kernel_initializer='lecun_uniform'))
+        model.add(Dense(32, activation='relu', kernel_initializer='lecun_uniform'))
         model.add(Dropout(dropout))
 
         model.add(Dense(self.action_size, kernel_initializer='lecun_uniform'))
@@ -170,60 +174,76 @@ if __name__ == '__main__':
 
         print('start training')
         #'''
-        for e in range(agent.load_episode + 1, EPISODES):
-            done = False
-            state = env.reset()
-            score = 0
-            for t in range(agent.episode_step):
-                action = agent.getAction(state)
+        training_mode = True
+        if training_mode:
+            for e in range(agent.load_episode + 1, EPISODES):
+                done = False
+                state = env.reset()
+                score = 0
+                for t in range(agent.episode_step):
+                    action = agent.getAction(state)
 
-                next_state, reward, done = env.step(action)
+                    next_state, reward, done = env.step(action)
 
-                agent.appendMemory(state, action, reward, next_state, done)
+                    agent.appendMemory(state, action, reward, next_state, done)
 
-                if len(agent.memory) >= agent.train_start:
-                    if global_step <= agent.target_update:
-                        agent.trainModel()
-                    else:
-                        agent.trainModel(True)
+                    if len(agent.memory) >= agent.train_start:
+                        if global_step <= agent.target_update:
+                            agent.trainModel()
+                        else:
+                            agent.trainModel(True)
 
-                score += reward
-                state = next_state
-                get_action.data = [env.action_list[action][0], env.action_list[action][1], score, reward]
-                pub_get_action.publish(get_action)
+                    score += reward
+                    state = next_state
+                    get_action.data = [env.action_list[action][0], env.action_list[action][1], score, reward]
+                    pub_get_action.publish(get_action)
 
-                if e % 5 == 0:
-                    agent.model.save(agent.dirPath + str(e) + '.h5')
-                    with open(agent.dirPath + str(e) + '.json', 'w') as outfile:
-                        json.dump(param_dictionary, outfile)
-                    np.savez(agent.dirPath + str(e) + '.npz', scores=agent.scores, episodes=agent.episodes)
+                    if e % 5 == 0:
+                        agent.model.save(agent.dirPath + str(e) + '.h5')
+                        with open(agent.dirPath + str(e) + '.json', 'w') as outfile:
+                            json.dump(param_dictionary, outfile)
+                        np.savez(agent.dirPath + str(e) + '.npz', scores=agent.scores, episodes=agent.episodes)
+                        #np.savez(agent.dirPath + 'memory.npz', memory=agent.memory)
 
-                if t >= 1000:
-                    rospy.loginfo("Time out!!")
-                    done = True
+                    if t >= 2000:
+                        rospy.loginfo("Time out!!")
+                        done = True
 
-                if done:
-                    result.data = [score, np.max(agent.q_value)]
-                    pub_result.publish(result)
-                    agent.updateTargetModel()
-                    agent.scores.append(score)
-                    agent.episodes.append(e)
-                    m, s = divmod(int(time.time() - start_time), 60)
-                    h, m = divmod(m, 60)
+                    if done:
+                        result.data = [score, np.max(agent.q_value)]
+                        pub_result.publish(result)
+                        agent.updateTargetModel()
+                        agent.scores.append(score)
+                        agent.episodes.append(e)
+                        m, s = divmod(int(time.time() - start_time), 60)
+                        h, m = divmod(m, 60)
 
-                    rospy.loginfo('Ep: %d score: %.2f memory: %d epsilon: %.2f time: %d:%02d:%02d',
-                                  e, score, len(agent.memory), agent.epsilon, h, m, s)
-                    param_keys = ['epsilon']
-                    param_values = [agent.epsilon]
-                    param_dictionary = dict(zip(param_keys, param_values))
-                    break
+                        rospy.loginfo('Ep: %d score: %.2f memory: %d epsilon: %.2f time: %d:%02d:%02d',
+                                      e, score, len(agent.memory), agent.epsilon, h, m, s)
+                        param_keys = ['epsilon']
+                        param_values = [agent.epsilon]
+                        param_dictionary = dict(zip(param_keys, param_values))
+                        break
 
-                global_step += 1
-                if global_step % agent.target_update == 0:
-                    rospy.loginfo("UPDATE TARGET NETWORK")
+                    global_step += 1
+                    if global_step % agent.target_update == 0:
+                        rospy.loginfo("UPDATE TARGET NETWORK")
 
-            if agent.epsilon > agent.epsilon_min:
-                agent.epsilon *= agent.epsilon_decay
+                if agent.epsilon > agent.epsilon_min:
+                    agent.epsilon *= agent.epsilon_decay
+        else:
+            agent.epsilon = 0.0
+            while True:
+                data = None
+                data = rospy.wait_for_message('/turtlebot2i/safety/obstacles_risk', SafetyRisk, timeout=5)
+                if data == None:
+                    print("no data")
+                else:
+                    state, done = env.getState(data)
+                    action = agent.getAction(np.asarray(state))
+                    env.publishScaleSpeed(env.action_list[action][0], env.action_list[action][1])
+                    print("action:",action)
+
         #'''
     except rospy.ROSInterruptException:
         env.vrep_control.shutdown()

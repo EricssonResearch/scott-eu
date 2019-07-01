@@ -185,11 +185,12 @@ class Env():
         self.target_idx = random.randrange(0, len(self.target_list))
 
         #self.heading = 0
-        self.action_list = [[0.0, 1.0], [0.0, 0.5], [0.5, 1.0], [0.0, 0.0], [0.5, 0.5], [1.0, 1.0], [1.0, 0.5], [0.5, 0.0], [1.0, 0.0]]
+        self.action_list = [[0.0, 1.2], [0.0, 0.8], [0.0, 0.4], [0.4, 1.2], [0.4, 0.8], [0.8, 1.2], [0.0, 0.0], [0.4, 0.4], [0.8, 0.8], [1.2, 1.2], [1.2, 0.8], [0.8, 0.4], [1.2, 0.4], [0.4, 0.0], [0.8, 0.0], [1.2, 0.0]]
         self.action_size = len(self.action_list)
         #self.initGoal = True
         self.get_goalbox = False
         self.position = Pose()
+        self.prev_position = Pose()
         self.orientation = 0.0
         self.sub_pos        = rospy.Subscriber('/turtlebot2i/sensors/global_pose', geometry_msgs.msg.PoseStamped, self.update_pose_callback)
         #self.sub_risk       = rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, self.sceneGraphReconstruction) #instead of subscribing, wait this information in step function
@@ -229,9 +230,6 @@ class Env():
         self.nearest_direction  = 0.0
         self.nearest_speed      = 0.0
 
-        self.robot_linear_speed  = 0.0
-        self.robot_angular_speed = 0.0 
-
         self.speed_monitor = deque([])
 
     def distance2D(self, pos1, pos2):
@@ -242,23 +240,15 @@ class Env():
         return self.distance2D(self.goal.target_pose.pose.position, self.position)
 
     def update_pose_callback(self, data):
+        self.prev_position = self.position
         self.position = data.pose.position
-        (roll, pitch, self.robot_orientation) = euler_from_quaternion([data.pose.orientation.x, data.pose.orientation.y, data.pose.orientation.z, data.pose.orientation.w])
-        goal_angle = atan2(self.goal.target_pose.pose.position.y - self.position.y, self.goal.target_pose.pose.position.x - self.position.x)
-
-        heading = goal_angle - self.robot_orientation
-        if heading > pi:
-            heading -= 2 * pi
-        elif heading < -pi:
-            heading += 2 * pi
-
-        self.heading = heading
+        (roll, pitch, self.orientation) = euler_from_quaternion([data.pose.orientation.x, data.pose.orientation.y, data.pose.orientation.z, data.pose.orientation.w])
 
     def speed_callback(self, data):
         #getting data from move base module
         self.robot_linear_speed  = data.linear.x
         self.robot_angular_speed = data.angular.z 
-        if len(self.speed_monitor) > 300:
+        if len(self.speed_monitor) > 100:
             if sum(self.speed_monitor) < 0.1: #if robot gets stuck, cancel the goal
                 self.speed_monitor = deque([])
                 self.vrep_control.reset_robot_pos()
@@ -286,27 +276,9 @@ class Env():
         self.obstacle_distances = np.ones((self.n_direction))*self.camera_far_clipping
         n_obstacle = len(data.type) #count the number of detected object
         if n_obstacle > 0:
-            if max(data.risk_value) == 0.0:
-                nearest_obj_idx = np.argmin(data.distance)
-                self.risk_max           = 0.0
-                self.nearest_type       = data.type[nearest_obj_idx]
-                self.min_distance       = data.distance[nearest_obj_idx]
-                self.nearest_direction  = data.direction[nearest_obj_idx]
-                self.nearest_speed      = data.speed[nearest_obj_idx]
-            else:
-                risk_max_idx = np.argmax(data.risk_value)
-                self.risk_max           = data.risk_value[risk_max_idx]
-                self.nearest_type       = data.type[risk_max_idx]
-                self.min_distance       = data.distance[risk_max_idx]
-                self.nearest_direction  = data.direction[risk_max_idx]
-                self.nearest_speed      = data.speed[risk_max_idx]
+            self.risk_max = max(data.risk_value)
         else:
-            self.risk_max           = 0.0
-            self.nearest_type       = 0
-            self.min_distance       = self.camera_far_clipping
-            self.nearest_direction  = self.camera_fov_angle
-            self.nearest_speed      = 0.0
-
+            self.risk_max = 0.0
         #fig = plt.figure(1, figsize=(3.5,6), dpi=90)
         #ax = fig.add_subplot(111)
         
@@ -315,10 +287,10 @@ class Env():
             obs_center_x = (data.distance[i])*cos(radians(data.direction[i]))
             obs_center_y = (data.distance[i])*sin(radians(data.direction[i]))
             
-            r00 =  np.cos((-self.robot_orientation))
-            r01 = -np.sin((-self.robot_orientation))
-            r10 =  np.sin((-self.robot_orientation))
-            r11 =  np.cos((-self.robot_orientation))
+            r00 =  np.cos((-self.orientation))
+            r01 = -np.sin((-self.orientation))
+            r10 =  np.sin((-self.orientation))
+            r11 =  np.cos((-self.orientation))
             obstacle = Polygon([self.rotated_pos(obs_center_x-data.size_x[i]/2, obs_center_y-data.size_y[i]/2, obs_center_x, obs_center_y, r00, r01, r10, r11),
                                 self.rotated_pos(obs_center_x-data.size_x[i]/2, obs_center_y+data.size_y[i]/2, obs_center_x, obs_center_y, r00, r01, r10, r11),
                                 self.rotated_pos(obs_center_x+data.size_x[i]/2, obs_center_y+data.size_y[i]/2, obs_center_x, obs_center_y, r00, r01, r10, r11),
@@ -335,7 +307,7 @@ class Env():
             #x,y = obstacle.exterior.xy
             #ax.plot(x, y)
             for i in range(self.n_direction):
-                #x,y = obstacle_map[i].exterior.xy
+                #x,y = self.obstacle_map[i].exterior.xy
                 #ax.plot(x, y)
                 if obstacle.intersects(self.obstacle_map[i]):
                     intersection_poylgon = obstacle.intersection(self.obstacle_map[i])
@@ -343,25 +315,27 @@ class Env():
                     #ax.plot(xC, yC)
                     self.obstacle_distances[i] = min(self.obstacle_distances[i], self.origin.distance(intersection_poylgon))
 
+        
         #print("obstacle_distances: ", self.obstacle_distances)
+        #print("argmin_distance:",np.argmin(self.obstacle_distances))
         #plt.show() 
+
         return self.obstacle_distances
 
 
     def getState(self, safety_risk_msg):
-        obstacle_distances = list(self.sceneGraphReconstruction(safety_risk_msg)/self.camera_far_clipping)
-        min_range = 0.01
+        obstacle_distances = list(self.sceneGraphReconstruction(safety_risk_msg))
         done = False
 
-        if (min_range > self.min_distance) or self.collision:
+        #min_range = 0.01
+        #if (min_range > self.min_distance) or self.collision:
+        if self.collision:
             done = True
             self.collision = False
-        
+
         if self.getGoalDistance() < 0.5:
             self.get_goalbox = True
-        #returning 21 information (12 obstacles' distances, robot's speed (linear&angular), distance to goal, orientation to goal and 5 riskiest obstacle)
-        #return obstacle_distances + [self.robot_linear_speed, self.robot_angular_speed, self.getGoalDistance(), self.heading, self.risk_max, self.nearest_type, self.min_distance, self.nearest_direction, self.nearest_speed], done
-        return obstacle_distances + [self.robot_linear_speed/0.55, (self.robot_angular_speed + pi)/(2*pi), self.getGoalDistance()/25.0, (self.heading+pi)/(2*pi), self.risk_max/5.0, self.nearest_type/3.0, self.min_distance/self.camera_far_clipping, ((self.nearest_direction*pi/180.0) +pi)/(2*pi), self.nearest_speed, (self.r_warning - 0.31)/0.35, (self.r_clear-0.32)/0.7], done
+        return obstacle_distances + [self.robot_linear_speed, self.robot_angular_speed, self.risk_max, self.r_warning, self.r_clear], done
 
     def publishScaleSpeed(self, left_vel_scale, right_vel_scale):
         vel_scale_message = VelocityScale()
@@ -402,30 +376,32 @@ class Env():
         #rospy.loginfo("Goal position is sent! waiting the robot to finish....") 
         
     def setReward(self, state, done, action):
-        nearest_obstacle_distance  = state[-5] * self.camera_far_clipping + 0.175 #0.175 is robot radius
-        nearest_obstacle_direction = state[-4] * 2 * pi - pi
+        nearest_obstacle_distance  = min(state[:12])
+        nearest_obstacle_direction = np.argmin(state[:12]) #index 0 start from right side of the robot
 
         yaw_reward = 1.0
-        if (nearest_obstacle_direction < -pi/6):#obstacle is on the right 
-            if (action <= 2):                   #robot turns right
-                yaw_reward = -(3-action)/3
-        elif (nearest_obstacle_direction > pi/6):#obstacle is on the left
-            if (action >= 6):                    #robot turns left
-                yaw_reward = -(action-5)/3
+        #travelled_distance = self.distance2D(self.prev_position, self.position)
+        #print("travelled_distance:",travelled_distance)
+        if (nearest_obstacle_direction <= self.n_direction/3-1):#obstacle is on the right 
+            if (action >= 10):                    #robot turns right
+                yaw_reward = -(action-9)/6
+        elif (nearest_obstacle_direction >= self.n_direction*2/3):#obstacle is on the left
+            if (action <= 5):                   #robot turns left
+                yaw_reward = -(6-action)/6
         else:#obstacle is in the front
-            if (action in [3,4,5]):
-                yaw_reward = -(action-2)/3
-
-        distance_rate = 1.0 / nearest_obstacle_distance
+            if (action in [6,7,8,9]):
+                yaw_reward = -(action-5)/4
+        
+        distance_rate = 1.0 / max(nearest_obstacle_distance, 0.175)
 
         if nearest_obstacle_distance < self.r_critical:
             ob_reward = -50
         elif nearest_obstacle_distance < self.r_warning:
             ob_reward = -10
-        elif nearest_obstacle_distance < self.r_clear:
-            ob_reward = -1    
+        elif self.distance2D(self.prev_position, self.position) > 0.018:
+            ob_reward = 1
         else:
-            ob_reward = 0
+            ob_reward = -1
 
         reward = (yaw_reward * distance_rate) + ob_reward
 
@@ -436,7 +412,7 @@ class Env():
 
         if self.get_goalbox:
             rospy.loginfo("Goal!!")
-            reward = 250
+            #reward = 500 
             self.publishScaleSpeed(0.0, 0.0)
             self.respawn_goal(reset=True)
             self.get_goalbox = False
@@ -459,8 +435,9 @@ class Env():
         return np.asarray(state), reward, done
 
     def reset(self):
+        self.publishScaleSpeed(0,0)
         self.vrep_control.reset_robot_pos()
-        self.vrep_control.changeScenario()
+        self.respawn_goal(reset=True)
         data = None
         while data is None:
             try:
@@ -469,7 +446,6 @@ class Env():
                 self.vrep_control.check_robot_correctness()
                 pass
 
-        self.respawn_goal(reset=True)
 
         state, done = self.getState(data)
 

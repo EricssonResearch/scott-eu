@@ -122,8 +122,8 @@ sim.setExplicitHandling(object_wheel_drop_sensor_right, 1)
     rotVel = 0
     motor_power = 1 --Enable motors by default
     velScale = 1 -- Scale is 1 by default
-    leftVelScale = 1  -- Scale is 1 by default
-    rightVelScale = 1 -- Scale is 1 by default
+    leftVelScale = 0  -- Scale is 1 by default
+    rightVelScale = 0 -- Scale is 1 by default
     previous_clear_zone_radius    = 0.5
     previous_warning_zone_radius  = 0.5
     previous_critical_zone_radius = 0.5
