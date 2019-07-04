@@ -87,6 +87,7 @@ class ReinforceAgent():
 
         model.add(Dense(64, input_shape=(self.state_size,), activation='relu', kernel_initializer='lecun_uniform'))
 
+        model.add(Dense(48, activation='relu', kernel_initializer='lecun_uniform'))
         model.add(Dense(32, activation='relu', kernel_initializer='lecun_uniform'))
         model.add(Dropout(dropout))
 

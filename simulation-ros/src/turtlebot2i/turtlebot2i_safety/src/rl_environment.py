@@ -219,7 +219,7 @@ class Env():
                                     [self.camera_far_clipping*cos(radians(self.direction_list[i+1])),self.camera_far_clipping*sin(radians(self.direction_list[i+1]))],
                                     [self.camera_far_clipping*cos(radians(self.direction_list[i])),  self.camera_far_clipping*sin(radians(self.direction_list[i]))]]))
 
-        self.r_critical = 0.205
+        self.r_critical = 0.295
         self.r_warning  = 0.31
         self.r_clear    = 0.32
         self.collision  = False
@@ -391,11 +391,11 @@ class Env():
         
         distance_rate = 1.0 / max(nearest_obstacle_distance, 0.175)
 
-        if nearest_obstacle_distance < self.r_critical + 0.03:
+        if nearest_obstacle_distance < 0.295 + 0.03: #r_critical + offset
             reward = (yaw_reward * distance_rate) -50
-        elif nearest_obstacle_distance < self.r_warning+ 0.05:
+        elif nearest_obstacle_distance < state[-2] + 0.05: #r_warning + offset
             reward = (yaw_reward * distance_rate) -10
-        elif nearest_obstacle_distance < self.r_clear+ 0.05:
+        elif nearest_obstacle_distance < state[-1] + 0.05: #r_clear + offset
             reward = (yaw_reward * distance_rate) +1
         elif self.distance2D(self.prev_position, self.position) > 1.0:
             reward = 10
