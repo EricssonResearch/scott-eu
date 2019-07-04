@@ -240,7 +240,6 @@ class Env():
         return self.distance2D(self.goal.target_pose.pose.position, self.position)
 
     def update_pose_callback(self, data):
-        self.prev_position = self.position
         self.position = data.pose.position
         (roll, pitch, self.orientation) = euler_from_quaternion([data.pose.orientation.x, data.pose.orientation.y, data.pose.orientation.z, data.pose.orientation.w])
 
@@ -327,8 +326,6 @@ class Env():
         obstacle_distances = list(self.sceneGraphReconstruction(safety_risk_msg))
         done = False
 
-        #min_range = 0.01
-        #if (min_range > self.min_distance) or self.collision:
         if self.collision:
             done = True
             self.collision = False
@@ -394,15 +391,16 @@ class Env():
         
         distance_rate = 1.0 / max(nearest_obstacle_distance, 0.175)
 
-        if nearest_obstacle_distance < self.r_critical:
+        if nearest_obstacle_distance < self.r_critical + 0.03:
             reward = (yaw_reward * distance_rate) -50
-        elif nearest_obstacle_distance < self.r_warning:
+        elif nearest_obstacle_distance < self.r_warning+ 0.05:
             reward = (yaw_reward * distance_rate) -10
-        elif self.distance2D(self.prev_position, self.position) > 0.017:
-            if nearest_obstacle_distance < self.r_clear:
-                reward = (yaw_reward * distance_rate) + 1
-            else:
-                reward = 1
+        elif nearest_obstacle_distance < self.r_clear+ 0.05:
+            reward = (yaw_reward * distance_rate) +1
+        elif self.distance2D(self.prev_position, self.position) > 1.0:
+            reward = 10
+            self.prev_position = self.position
+            #print("have moved 1 m! positive reward!")
         else:
             reward = -1
 
@@ -412,6 +410,7 @@ class Env():
             rospy.loginfo("Collision!!")
             reward = -5000
             self.publishScaleSpeed(0.0, 0.0)
+            self.prev_position = Pose()
 
         if self.get_goalbox:
             rospy.loginfo("Goal!!")
@@ -422,8 +421,11 @@ class Env():
 
         return reward
 
-    def step(self, action):
+    def execute(self, action):
         self.publishScaleSpeed(self.action_list[action][0], self.action_list[action][1])
+
+    def step(self, action):
+        self.execute(action)
         data = None
         while data is None:
             try:
@@ -437,11 +439,11 @@ class Env():
 
         return np.asarray(state), reward, done
 
-    def reset(self):
+    def reset(self, data=None):
         self.publishScaleSpeed(0,0)
         self.vrep_control.reset_robot_pos()
         self.respawn_goal(reset=True)
-        data = None
+        self.vrep_control.check_robot_correctness()
         while data is None:
             try:
                 data = rospy.wait_for_message('/turtlebot2i/safety/obstacles_risk', SafetyRisk, timeout=5)
@@ -451,7 +453,7 @@ class Env():
 
 
         state, done = self.getState(data)
-
+        self.prev_position = self.position
         return np.asarray(state)
 
 
