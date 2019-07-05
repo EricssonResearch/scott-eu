@@ -1,7 +1,8 @@
 # This file was extracted from https://surfertas.github.io/rviz/turtlebot/2017/05/08/turtlepi-spin.html
 
-TrajectoryPlannerROS:
-# Robot Configuration Parameters - Kobuki
+DWAPlannerROS:
+
+ # Robot Configuration Parameters - Kobuki
  max_vel_x: 0.5  # 0.55
  min_vel_x: 0.0
  
@@ -25,17 +26,28 @@ TrajectoryPlannerROS:
  acc_lim_x: 1.0 # maximum is theoretically 2.0.
  acc_lim_theta: 2.0
  acc_lim_y: 0.0  # diff drive robot
- #escape_vel: 0.0
+
+
+# Here begins the old config file version. Remove if above one succeeds
+controller_frequency: 10.0
+TrajectoryPlannerROS:
+# max_vel_x: 1.0
+# min_vel_x: 0.1
+# max_vel_theta: 0.5
+# min_in_place_vel_theta: 0.1
+#
+## acc_lim_theta: 3.2
+## acc_lim_x: 2.5
+## acc_lim_y: 2.5
+# acc_lim_theta: 10.0
+# acc_lim_x: 5.0
+# acc_lim_y: 5.0
 #
  holonomic_robot: false
 ##TO DO:holonomic_robot: true? false # Version control problem here
 ## recovery_behaviour_enabled : false
 ## clearing_rotation_allowed : false
 #
- dwa: false
+## dwa: false
  xy_goal_tolerance: 0.5
-
-
-# Here begins the old config file version. Remove if above one succeeds
-controller_frequency: 10.0
  
