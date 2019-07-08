@@ -73,21 +73,6 @@ services:
         constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
-  twin-shelf:
-    image: "${CI_REGISTRY_IMAGE}/webapp-twin-shelf:${CI_COMMIT_REF_NAME}"
-    networks:
-      - overlay
-    ports:
-     - "8082:8080"
-    deploy:
-      replicas: 3
-      resources:
-        limits:
-          memory: 512m
-      placement:
-        constraints: [node.role == worker]
-      restart_policy:
-        condition: on-failure
   svc-location:
     image: "${CI_REGISTRY_IMAGE}/webapp-svc-location:${CI_COMMIT_REF_NAME}"
     networks:
