@@ -75,7 +75,6 @@ import eu.scott.warehouse.domains.pddl.PrimitiveType;
 // End of user code
 
 // Start of user code preClassCode
-import eu.scott.warehouse.domains.pddl.PrimitiveType;
 // End of user code
 
 // Start of user code classAnnotations

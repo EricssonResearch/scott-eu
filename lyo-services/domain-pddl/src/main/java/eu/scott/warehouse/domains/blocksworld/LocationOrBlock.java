@@ -73,7 +73,6 @@ import eu.scott.warehouse.domains.pddl.EitherType;
 import eu.scott.warehouse.domains.pddl.PrimitiveType;
 
 // Start of user code imports
-import eu.scott.warehouse.domains.pddl.EitherType;
 // End of user code
 
 // Start of user code preClassCode

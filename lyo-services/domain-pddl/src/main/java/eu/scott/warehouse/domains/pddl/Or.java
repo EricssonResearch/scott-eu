@@ -72,7 +72,6 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 
 // Start of user code imports
-import org.checkerframework.checker.nullness.qual.NonNull;
 // End of user code
 
 // Start of user code preClassCode
