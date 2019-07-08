@@ -64,31 +64,6 @@ public class PlanChangeEventListener implements ChangeEventListener {
                 e.printStackTrace();
             }
 
-
-            /*
-             * Okay, now we are redefining the architecture and we might want to go away from the
-             * LWM2M for the purposes of the demo.
-             */
-            // FIXME Andrew@2018-03-06: reevaluate the plan below depending on whether we use lwm2m
-
-            // TODO Andrew@2018-03-05: define a single-threaded executor or init a thread by hand
-
-            // TODO Andrew@2018-03-05: terminate any previously running runnable!
-            // TODO Andrew@2018-03-05: add create a PlanExecutionRunnable instance
-
-            // TODO Andrew@2018-03-05: Drain the write requests queue and log their cancellation
-            // TODO Andrew@2018-03-05: process all new values before executing plan
-            // TODO Andrew@2018-03-05: convert a step of a plan into a WriteRequest(s)
-            // TODO Andrew@2018-03-05: block until the step has executed (via SynchronousQueue)
-            // or something more advanced than that (ie to handle plan execution error cases)
-
-            // TODO Andrew@2018-03-05: define the same process for handling the new values queue
-
-            /*
-             * So we are going to make a dummy plan executor for now while the LWM2M issue are
-             * getting ironed out. Once we get an LWM2M comm or any other comm to the ROS and
-             * make sure the comm is nicely working with VREP, we can remove this dummy code.
-             */
             final Future<PlanExecutionResult> planExecutionResultFuture = executorService
                     .submit(() -> {
                         Thread.sleep(5);
