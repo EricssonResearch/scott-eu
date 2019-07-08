@@ -96,7 +96,6 @@ public class EitherType
     // Start of user code classMethods
     // End of user code
     public EitherType()
-           throws URISyntaxException
     {
         super();
     
@@ -105,7 +104,6 @@ public class EitherType
     }
     
     public EitherType(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

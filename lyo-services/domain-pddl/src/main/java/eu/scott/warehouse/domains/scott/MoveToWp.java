@@ -92,7 +92,6 @@ public class MoveToWp
     // Start of user code classMethods
     // End of user code
     public MoveToWp()
-           throws URISyntaxException
     {
         super();
     
@@ -101,7 +100,6 @@ public class MoveToWp
     }
     
     public MoveToWp(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

@@ -116,7 +116,6 @@ public class Problem
     // Start of user code classMethods
     // End of user code
     public Problem()
-           throws URISyntaxException
     {
         super();
     
@@ -125,7 +124,6 @@ public class Problem
     }
     
     public Problem(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

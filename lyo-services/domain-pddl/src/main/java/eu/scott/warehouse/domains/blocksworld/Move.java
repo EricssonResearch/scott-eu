@@ -105,7 +105,6 @@ public class Move
     // Start of user code classMethods
     // End of user code
     public Move()
-           throws URISyntaxException
     {
         super();
     
@@ -114,7 +113,6 @@ public class Move
     }
     
     public Move(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

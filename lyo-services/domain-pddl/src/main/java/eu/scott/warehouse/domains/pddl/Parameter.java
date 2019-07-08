@@ -103,7 +103,6 @@ public class Parameter
     // Start of user code classMethods
     // End of user code
     public Parameter()
-           throws URISyntaxException
     {
         super();
     
@@ -112,7 +111,6 @@ public class Parameter
     }
     
     public Parameter(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

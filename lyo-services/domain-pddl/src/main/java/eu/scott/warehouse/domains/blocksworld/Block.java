@@ -93,7 +93,6 @@ public class Block
     // Start of user code classMethods
     // End of user code
     public Block()
-           throws URISyntaxException
     {
         super();
     
@@ -102,7 +101,6 @@ public class Block
     }
     
     public Block(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

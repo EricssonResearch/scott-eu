@@ -95,7 +95,6 @@ public class Not
     // Start of user code classMethods
     // End of user code
     public Not()
-           throws URISyntaxException
     {
         super();
     
@@ -104,7 +103,6 @@ public class Not
     }
     
     public Not(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

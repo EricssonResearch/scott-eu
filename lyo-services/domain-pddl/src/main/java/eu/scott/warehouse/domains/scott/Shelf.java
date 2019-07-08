@@ -100,7 +100,6 @@ public class Shelf
     // Start of user code classMethods
     // End of user code
     public Shelf()
-           throws URISyntaxException
     {
         super();
     
@@ -109,7 +108,6 @@ public class Shelf
     }
     
     public Shelf(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

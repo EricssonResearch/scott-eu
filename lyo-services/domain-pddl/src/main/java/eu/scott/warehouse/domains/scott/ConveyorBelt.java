@@ -100,7 +100,6 @@ public class ConveyorBelt
     // Start of user code classMethods
     // End of user code
     public ConveyorBelt()
-           throws URISyntaxException
     {
         super();
     
@@ -109,7 +108,6 @@ public class ConveyorBelt
     }
     
     public ConveyorBelt(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
