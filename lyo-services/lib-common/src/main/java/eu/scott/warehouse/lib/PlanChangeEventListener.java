@@ -23,12 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created on 2018-02-27
- *
- * @author Andrew Berezovskyi (andriib@kth.se)
- * @version $version-stub$
- * @since 0.0.1
+ * Plans no longer arrive over MQTT, hence this code will not be triggered in the current architecture.
  */
+@Deprecated
 public class PlanChangeEventListener implements ChangeEventListener {
     private final static Logger log = LoggerFactory.getLogger(PlanChangeEventListener.class);
     private ExecutorService executorService;
