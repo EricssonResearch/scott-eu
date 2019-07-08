@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -92,7 +88,7 @@ public class TypeSelector
 {
     // Start of user code attributeAnnotation:itemType
     // End of user code
-    private Link itemType = new Link();
+    private Link itemType;
     // Start of user code attributeAnnotation:count
     // End of user code
     private Integer count;
@@ -102,7 +98,6 @@ public class TypeSelector
     // Start of user code classMethods
     // End of user code
     public TypeSelector()
-           throws URISyntaxException
     {
         super();
     
@@ -111,14 +106,12 @@ public class TypeSelector
     }
     
     public TypeSelector(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -145,36 +138,10 @@ public class TypeSelector
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -232,93 +199,6 @@ public class TypeSelector
     
         // Start of user code setterFinalize:count
         // End of user code
-    }
-    
-    
-    static public String itemTypeToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:itemTypeToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"itemType\">itemType: </LABEL>";
-    
-        // Start of user code "Mid:itemTypeToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:itemTypeToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String countToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:countToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"count\">count: </LABEL>";
-    
-        // Start of user code "Mid:countToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"count\" type=\"text\" style=\"width: 400px\" id=\"count\" >";
-        // Start of user code "Finalize:countToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    public String itemTypeToHtml()
-    {
-        String s = "";
-    
-        // Start of user code itemTypetoHtml_mid
-        // End of user code
-    
-        try {
-            if ((itemType == null) || (itemType.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + itemType.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code itemTypetoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String countToHtml()
-    {
-        String s = "";
-    
-        // Start of user code counttoHtml_mid
-        // End of user code
-    
-        try {
-            if (count == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + count.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code counttoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

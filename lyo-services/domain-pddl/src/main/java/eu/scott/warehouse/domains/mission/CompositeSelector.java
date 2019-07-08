@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -93,14 +89,13 @@ public class CompositeSelector
 {
     // Start of user code attributeAnnotation:selector
     // End of user code
-    private Selector selector = new Selector();
+    private Selector selector;
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
     public CompositeSelector()
-           throws URISyntaxException
     {
         super();
     
@@ -109,14 +104,12 @@ public class CompositeSelector
     }
     
     public CompositeSelector(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -143,36 +136,10 @@ public class CompositeSelector
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -207,50 +174,6 @@ public class CompositeSelector
     
         // Start of user code setterFinalize:selector
         // End of user code
-    }
-    
-    
-    static public String selectorToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:selectorToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"selector\">selector: </LABEL>";
-    
-        // Start of user code "Mid:selectorToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:selectorToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    public String selectorToHtml()
-    {
-        String s = "";
-    
-        // Start of user code selectortoHtml_mid
-        // End of user code
-    
-        try {
-            if (selector == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + selector.toHtml(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code selectortoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

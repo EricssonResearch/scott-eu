@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -93,7 +89,7 @@ public class Mission
 {
     // Start of user code attributeAnnotation:goal
     // End of user code
-    private Goal goal = new Goal();
+    private Goal goal;
     // Start of user code attributeAnnotation:responseTimeout
     // End of user code
     private Double responseTimeout;
@@ -106,7 +102,6 @@ public class Mission
     // Start of user code classMethods
     // End of user code
     public Mission()
-           throws URISyntaxException
     {
         super();
     
@@ -115,58 +110,11 @@ public class Mission
     }
     
     public Mission(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
-    }
-    
-    /**
-    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twin.RobotTwinResourcesFactory} instead.
-    */
-    @Deprecated
-    public Mission(final String beltId, final String missionId)
-           throws URISyntaxException
-    {
-        this (constructURI(beltId, missionId));
-        // Start of user code constructor3
-        // End of user code
-    }
-    
-    /**
-    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twin.RobotTwinResourcesFactory} instead.
-    */
-    @Deprecated
-    public static URI constructURI(final String beltId, final String missionId)
-    {
-        String basePath = OSLC4JUtils.getServletURI();
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("beltId", beltId);
-        pathParameters.put("missionId", missionId);
-        String instanceURI = "belts/{beltId}/resources/missions/{missionId}";
-    
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
-    }
-    
-    /**
-    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twin.RobotTwinResourcesFactory} instead.
-    */
-    @Deprecated
-    public static Link constructLink(final String beltId, final String missionId , final String label)
-    {
-        return new Link(constructURI(beltId, missionId), label);
-    }
-    
-    /**
-    * @deprecated Use the methods in class {@link se.ericsson.cf.scott.sandbox.twin.RobotTwinResourcesFactory} instead.
-    */
-    @Deprecated
-    public static Link constructLink(final String beltId, final String missionId)
-    {
-        return new Link(constructURI(beltId, missionId));
     }
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
@@ -194,36 +142,10 @@ public class Mission
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -308,136 +230,6 @@ public class Mission
     
         // Start of user code setterFinalize:missionDeadline
         // End of user code
-    }
-    
-    
-    static public String goalToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:goalToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"goal\">goal: </LABEL>";
-    
-        // Start of user code "Mid:goalToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:goalToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String responseTimeoutToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:responseTimeoutToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"responseTimeout\">responseTimeout: </LABEL>";
-    
-        // Start of user code "Mid:responseTimeoutToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"responseTimeout\" type=\"text\" style=\"width: 400px\" id=\"responseTimeout\" >";
-        // Start of user code "Finalize:responseTimeoutToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String missionDeadlineToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:missionDeadlineToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"missionDeadline\">missionDeadline: </LABEL>";
-    
-        // Start of user code "Mid:missionDeadlineToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"missionDeadline\" type=\"text\" style=\"width: 400px\" id=\"missionDeadline\" >";
-        // Start of user code "Finalize:missionDeadlineToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    public String goalToHtml()
-    {
-        String s = "";
-    
-        // Start of user code goaltoHtml_mid
-        // End of user code
-    
-        try {
-            if (goal == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + goal.toHtml(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code goaltoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String responseTimeoutToHtml()
-    {
-        String s = "";
-    
-        // Start of user code responseTimeouttoHtml_mid
-        // End of user code
-    
-        try {
-            if (responseTimeout == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + responseTimeout.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code responseTimeouttoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String missionDeadlineToHtml()
-    {
-        String s = "";
-    
-        // Start of user code missionDeadlinetoHtml_mid
-        // End of user code
-    
-        try {
-            if (missionDeadline == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + missionDeadline.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code missionDeadlinetoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

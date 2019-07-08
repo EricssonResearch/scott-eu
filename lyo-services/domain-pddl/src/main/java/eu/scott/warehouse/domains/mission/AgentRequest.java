@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -105,7 +101,6 @@ public class AgentRequest
     // Start of user code classMethods
     // End of user code
     public AgentRequest()
-           throws URISyntaxException
     {
         super();
     
@@ -114,14 +109,12 @@ public class AgentRequest
     }
     
     public AgentRequest(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -148,38 +141,10 @@ public class AgentRequest
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -263,143 +228,6 @@ public class AgentRequest
     
         // Start of user code setterFinalize:trs_server
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String adaptor_idToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:adaptor_idToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"adaptor_id\">adaptor_id: </LABEL>";
-    
-        // Start of user code "Mid:adaptor_idToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"adaptor_id\" type=\"text\" style=\"width: 400px\" id=\"adaptor_id\" >";
-        // Start of user code "Finalize:adaptor_idToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String trs_topicToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:trs_topicToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"trs_topic\">trs_topic: </LABEL>";
-    
-        // Start of user code "Mid:trs_topicToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"trs_topic\" type=\"text\" style=\"width: 400px\" id=\"trs_topic\" >";
-        // Start of user code "Finalize:trs_topicToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String trs_serverToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:trs_serverToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"trs_server\">trs_server: </LABEL>";
-    
-        // Start of user code "Mid:trs_serverToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"trs_server\" type=\"text\" style=\"width: 400px\" id=\"trs_server\" >";
-        // Start of user code "Finalize:trs_serverToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String adaptor_idToHtml()
-    {
-        String s = "";
-    
-        // Start of user code adaptor_idtoHtml_mid
-        // End of user code
-    
-        try {
-            if (adaptor_id == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + adaptor_id.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code adaptor_idtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String trs_topicToHtml()
-    {
-        String s = "";
-    
-        // Start of user code trs_topictoHtml_mid
-        // End of user code
-    
-        try {
-            if (trs_topic == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + trs_topic.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code trs_topictoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String trs_serverToHtml()
-    {
-        String s = "";
-    
-        // Start of user code trs_servertoHtml_mid
-        // End of user code
-    
-        try {
-            if (trs_server == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + trs_server.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code trs_servertoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     
