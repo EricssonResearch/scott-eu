@@ -73,7 +73,6 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.Step;
 
 // Start of user code imports
-import java.util.Objects;
 // End of user code
 
 // Start of user code preClassCode
@@ -101,23 +100,6 @@ public class Plan
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Plan)) {
-            return false;
-        }
-        final Plan plan = (Plan) o;
-        return Objects.equals(cost, plan.cost) && Objects.equals(step, plan.step) && Objects.equals(
-                time, plan.time);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cost, step, time);
-    }
     // End of user code
     public Plan()
     {
@@ -164,7 +146,6 @@ public class Plan
         }
     
         // Start of user code toString_finalize
-        result = "Plan{" + "cost=" + cost + ", step=" + step + ", time=" + time + '}';
         // End of user code
     
         return result;

@@ -5,13 +5,13 @@
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  *  The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  *  and the Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
- *  
+ *
  *  Contributors:
- *  
+ *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
  *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
@@ -71,14 +71,14 @@ public class TwinManager {
     private static Random r;
     private static PlanExecutionService planExecutionService;
     // End of user code
-    
-    
+
+
     // Start of user code class_methods
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
         NaiveTrsFactories.activate();
         log.info("Twin {} is starting", TwinAdaptorHelper.getTwinUUID());
@@ -96,9 +96,9 @@ public class TwinManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
 
         log.info("Destroying the servlet");
@@ -115,7 +115,7 @@ public class TwinManager {
     public static TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         TwinsServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(...)"
         // End of user code
         return serviceProviderInfos;
@@ -123,7 +123,7 @@ public class TwinManager {
     public static IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         IndependentServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(...)"
         // End of user code
         return serviceProviderInfos;
@@ -132,7 +132,7 @@ public class TwinManager {
     public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String twinKind, final String twinId)
     {
         PlanExecutionRequest newResource = null;
-        
+
         // Start of user code createPlanExecutionRequest
         log.info("Incoming plan: {}", aResource);
         newResource = aResource;
@@ -146,7 +146,7 @@ public class TwinManager {
     public static DeviceRegistrationMessage createDeviceRegistrationMessage(HttpServletRequest httpServletRequest, final DeviceRegistrationMessage aResource)
     {
         DeviceRegistrationMessage newResource = null;
-        
+
         // Start of user code createDeviceRegistrationMessage
         log.info("Registering a twin: {}", aResource.toString());
         final String twinKind = aResource.getTwinType();
@@ -157,7 +157,7 @@ public class TwinManager {
         final String name = String.format("%s Twin '%s'", WordUtils.capitalize(twinKind), twinId);
         final TwinsServiceProviderInfo spInfo = new TwinsServiceProviderInfo(name, twinKind, twinId);
         try {
-            final ServiceProvider serviceProvider = ServiceProviderCatalogSingleton.createTwinsServiceProvider(spInfo);
+            final ServiceProvider serviceProvider = TwinsServiceProvidersFactory.createServiceProvider(spInfo);
             TwinAdaptorHelper.getTwins().addServiceProvider(serviceProvider);
         } catch (OslcCoreApplicationException | URISyntaxException e) {
             log.error("Failed to create an SP", e);
