@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -92,14 +88,13 @@ public class DirectSelector
 {
     // Start of user code attributeAnnotation:item
     // End of user code
-    private Link item = new Link();
+    private Link item;
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
     public DirectSelector()
-           throws URISyntaxException
     {
         super();
     
@@ -108,14 +103,12 @@ public class DirectSelector
     }
     
     public DirectSelector(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -142,36 +135,10 @@ public class DirectSelector
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -203,50 +170,6 @@ public class DirectSelector
     
         // Start of user code setterFinalize:item
         // End of user code
-    }
-    
-    
-    static public String itemToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:itemToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"item\">item: </LABEL>";
-    
-        // Start of user code "Mid:itemToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:itemToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    public String itemToHtml()
-    {
-        String s = "";
-    
-        // Start of user code itemtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((item == null) || (item.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + item.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code itemtoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

@@ -193,7 +193,7 @@ public class WarehouseControllerManager {
     {
         String eTag = null;
         // Start of user code getETagFromPlan
-        // TODO Implement code to return an ETag for a particular resource
+        eTag = OslcHelpers.hexHashCodeFor(aResource);
         // End of user code
         return eTag;
     }
