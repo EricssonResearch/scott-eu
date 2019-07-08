@@ -95,7 +95,6 @@ public class FluentMinus
     // Start of user code classMethods
     // End of user code
     public FluentMinus()
-           throws URISyntaxException
     {
         super();
     
@@ -104,7 +103,6 @@ public class FluentMinus
     }
     
     public FluentMinus(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

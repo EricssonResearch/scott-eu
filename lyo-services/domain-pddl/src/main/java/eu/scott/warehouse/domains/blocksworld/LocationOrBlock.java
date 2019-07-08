@@ -94,7 +94,6 @@ public class LocationOrBlock
     // Start of user code classMethods
     // End of user code
     public LocationOrBlock()
-           throws URISyntaxException
     {
         super();
     
@@ -103,7 +102,6 @@ public class LocationOrBlock
     }
     
     public LocationOrBlock(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

@@ -92,7 +92,6 @@ public class Robot
     // Start of user code classMethods
     // End of user code
     public Robot()
-           throws URISyntaxException
     {
         super();
     
@@ -101,7 +100,6 @@ public class Robot
     }
     
     public Robot(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

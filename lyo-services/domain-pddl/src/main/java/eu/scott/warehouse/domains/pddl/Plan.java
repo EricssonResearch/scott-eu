@@ -120,7 +120,6 @@ public class Plan
     }
     // End of user code
     public Plan()
-           throws URISyntaxException
     {
         super();
     
@@ -129,7 +128,6 @@ public class Plan
     }
     
     public Plan(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

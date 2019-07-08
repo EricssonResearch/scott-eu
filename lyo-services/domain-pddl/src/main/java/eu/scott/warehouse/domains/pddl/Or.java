@@ -96,7 +96,6 @@ public class Or
     // Start of user code classMethods
     // End of user code
     public Or()
-           throws URISyntaxException
     {
         super();
     
@@ -105,7 +104,6 @@ public class Or
     }
     
     public Or(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

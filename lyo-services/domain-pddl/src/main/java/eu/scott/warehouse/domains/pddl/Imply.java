@@ -95,7 +95,6 @@ public class Imply
     // Start of user code classMethods
     // End of user code
     public Imply()
-           throws URISyntaxException
     {
         super();
     
@@ -104,7 +103,6 @@ public class Imply
     }
     
     public Imply(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

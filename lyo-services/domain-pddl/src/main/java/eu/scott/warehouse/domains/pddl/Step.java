@@ -108,7 +108,6 @@ public class Step
     // Start of user code classMethods
     // End of user code
     public Step()
-           throws URISyntaxException
     {
         super();
     
@@ -117,7 +116,6 @@ public class Step
     }
     
     public Step(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

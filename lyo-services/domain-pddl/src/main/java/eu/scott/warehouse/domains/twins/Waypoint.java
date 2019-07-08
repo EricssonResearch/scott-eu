@@ -98,7 +98,6 @@ public class Waypoint
     // Start of user code classMethods
     // End of user code
     public Waypoint()
-           throws URISyntaxException
     {
         super();
     
@@ -107,7 +106,6 @@ public class Waypoint
     }
     
     public Waypoint(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
