@@ -13,7 +13,7 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 
 println("Running planning script...")
 
-String endpoint = 'http://localhost:8080/'
+String endpoint = 'http://whc.svc:8080/'
 if (args.length > 0 && args[0] == "debug") {
     endpoint = 'http://localhost:8180/'
 }

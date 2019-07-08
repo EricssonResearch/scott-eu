@@ -14,7 +14,7 @@ import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 
 println("Running twin initialisation script...")
 
-String endpoint = 'http://twins.local/'
+String endpoint = 'http://twins.svc:8080/'
 if (args.length > 3 && args[3] == "debug") {
     // TODO use 8180
     endpoint = 'http://localhost:8080/'

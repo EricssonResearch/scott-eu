@@ -164,7 +164,8 @@ public class ServiceProviderService1
         final Object[] aPlan = WarehouseControllerManager.getPlan(httpServletRequest, serviceProviderId, planId);
 
         if (aPlan != null) {
-            httpServletRequest.setAttribute("aPlan", aPlan);
+            Plan plan = findArray(aPlan, Plan.class).orElseThrow(IllegalStateException::new);
+            httpServletRequest.setAttribute("aPlan", plan);
             // Start of user code getPlanAsHtml_setAttributes
             // End of user code
 

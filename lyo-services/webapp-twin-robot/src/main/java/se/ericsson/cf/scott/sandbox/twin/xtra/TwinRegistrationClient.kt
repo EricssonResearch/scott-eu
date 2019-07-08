@@ -21,7 +21,7 @@ class TwinRegistrationClient(private val client: OslcClient, private val registr
     fun registerTwin(serviceProvider: ServiceProvider): Response? {
         val m = RegistrationMessage()
 
-        m.about = URI.create("http://twin/registrationMessage_${System.currentTimeMillis()}")
+        m.about = URI.create("urn:twin:registrationMessage_${System.currentTimeMillis()}")
         m.serviceProvider = serviceProvider.link
         m.isDeregister = false
 //        m.trsUri = trsURI(serviceProvider)
