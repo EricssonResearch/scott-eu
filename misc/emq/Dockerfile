@@ -8,7 +8,8 @@ RUN apt-get update && apt-get -yq upgrade \
 
 # download emqtt
 WORKDIR /opt
-RUN wget --quiet https://www.emqx.io/downloads/broker/v2.3.9/emqttd-ubuntu18.04-v2.3.9.zip
+# amateurs!
+RUN wget --quiet --no-check-certificate https://www.emqx.io/downloads/broker/v2.3.9/emqttd-ubuntu18.04-v2.3.9.zip
 RUN unzip emqttd-ubuntu18.04-v2.3.9.zip
 
 # start emqtt daemon
