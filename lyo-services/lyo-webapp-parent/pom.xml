@@ -30,6 +30,8 @@
     <module>../webapp-svc-location</module>
 
     <module>../webapp-twin-robot</module>
+
+<!--    <module>../flink-trs-twin</module>-->
   </modules>
 
 

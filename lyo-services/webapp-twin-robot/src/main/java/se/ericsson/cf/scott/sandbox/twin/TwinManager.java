@@ -58,6 +58,7 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsEventKafkaPublisher;
 // End of user code
 
 // Start of user code pre_class_code
@@ -70,10 +71,16 @@ public class TwinManager {
     private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
     private static Random r;
     private static PlanExecutionService planExecutionService;
+    private static final TrsEventKafkaPublisher kafkaPublisher = new TrsEventKafkaPublisher(
+        "kafka:9092", "test");
     // End of user code
 
 
     // Start of user code class_methods
+    public static TrsEventKafkaPublisher getKafkaPublisher() {
+        return kafkaPublisher;
+    }
+
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)

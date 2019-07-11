@@ -6,6 +6,7 @@
 import groovyx.net.http.ChainedHttpConfig
 import groovyx.net.http.HttpBuilder
 import groovyx.net.http.ToServer
+import groovyx.net.http.FromServer
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.RDFFormat
@@ -25,6 +26,7 @@ HttpBuilder client = HttpBuilder.configure {
     request.encoder('text/turtle') { ChainedHttpConfig config, ToServer req ->
         // TODO optimise directly to bytes
         def rdf = serialiseModel(JenaModelHelper.createJenaModel([config.request.body] as Object[]), RDFFormat.TURTLE_PRETTY)
+        println(rdf)
         req.toServer(new ByteArrayInputStream(rdf.bytes))
     }
 }
@@ -78,11 +80,15 @@ private static ServiceProvider createServiceProvider(String id) {
 
 private void createTwin(HttpBuilder client, ServiceProvider serviceProvider) {
     def result = client.post {
-        request.uri.path = '/services/admin/initRDF'
+        request.uri.path = '/services/admin/init_twin'
         request.contentType = 'text/turtle'
         request.body = serviceProvider
         response.success {
             println("Created a twin '$serviceProvider.identifier'")
+        }
+        response.failure { FromServer fs ->
+            int code = fs.getStatusCode()
+            println("Request failure: $code")
         }
     }
 }
