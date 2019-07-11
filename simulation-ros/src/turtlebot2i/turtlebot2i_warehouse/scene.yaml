@@ -1,0 +1,82 @@
+# * This is a yaml file that describes the warehouse scene.
+# * Structure of the scene.yaml:
+#   - node:
+#       name: "name of the object in the scene"
+#       waypoint: [x(m), y(m), z(m), r(deg), p(deg), y(deg)]
+#       mesh: "mesh file path"
+#	offset: "offset to place the object on the manipulation scene"
+#	frame: "reference frame (default: map)"
+#   * waypoints follow the ROS coordenate reference
+
+- node:
+    name: dockstation_body
+    waypoint: [0.7749941945075989, -2.9749913215637207, 1.2998032569885254, 0.0, 0.0, 0.0]
+- node:
+    name: Waypoint_DS
+    waypoint: [1.0749683380126953, -2.974980354309082, 1.252000093460083, 0.0, 0.0, 180.0]
+- node:
+    name: ShelfBody
+    waypoint: [0.6516190767288208, 0.9648474454879761, 1.5239125490188599, 0.0, 0.0, 0.0]
+    mesh: "meshes/shelf_2.stl"
+    offset: [0.65161908, 0.97484756, 2.77391255, 0, 0, 0]        
+- node:
+    name: ShelfBody#0
+    waypoint: [0.6516190767288208, -0.5351524353027344, 1.5239125490188599, 0.0, 0.0, 0.0]
+    mesh: "meshes/shelf_2.stl"
+    offset: [0.65161908, 0.97484756, 2.77391255, 0, 0, 0]
+- node:
+    name: ShelfBody#1
+    waypoint: [0.6516190767288208, -2.0351526737213135, 1.5239126682281494, 0.0, 0.0, 0.0]
+    mesh: "meshes/shelf_2.stl"
+    offset : [0.65161908, 0.97484756, 2.77391255, 0, 0, 0]
+- node:
+    name: Waypoint_SH
+    waypoint: [1.4030006313323975, 0.9648533463478088, 1.252000093460083, 0.0, 0.0, 180.0]
+- node:
+    name: Waypoint_SH#0
+    waypoint: [1.4030006313323975, -0.5351467728614807, 1.252000093460083, 0.0, 0.0, 180.0]
+- node:
+    name: Waypoint_SH#1
+    waypoint: [1.4030006313323975, -2.035146713256836, 1.252000093460083, 0.0, 0.0, 180.0]
+- node:
+    name: ConveyorBeltBody
+    waypoint: [4.375002861022949, -3.5351498126983643, 1.3598122596740723, 0.0, 0.0, 0.0]
+    mesh: "meshes/conveyor2.stl"
+    offset: [4.37500286, -3.58514981, 2.61981226, 0, 0 , 0]
+- node:
+    name: ConveyorBeltBody#0
+    waypoint: [4.375002861022949, -0.5351498126983643, 1.3598122596740723, 0.0, 0.0, 0.0]
+    mesh: "meshes/conveyor2.stl"
+    offset: [4.37500286, -3.58514981, 2.61981226, 0, 0 , 0]
+- node:
+    name: ConveyorBeltBody#1
+    waypoint: [4.375002861022949, 2.4648501873016357, 1.3598122596740723, 0.0, 0.0, 0.0]
+    mesh: meshes/conveyor2.stl
+    offset: [4.37500286, -3.58514981, 2.61981226, 0, 0 , 0]
+- node:
+    name: Waypoint_CB
+    waypoint: [3.2749977111816406, -3.5351498126983643, 1.2519997358322144, 0.0, 0.0, 0.0]
+- node:
+    name: Waypoint_CB#0
+    waypoint: [3.2749977111816406, -0.5351498126983643, 1.2519997358322144, 0.0, 0.0, 0.0]
+- node:
+    name: Waypoint_CB#1
+    waypoint: [3.2749977111816406, 2.4648501873016357, 1.2519997358322144, 0.0, 0.0, 0.0]
+- node:
+    name: productGreen
+    waypoint: [1.07, 1.068, 1.368, 0, 0.271, 0, 0.962]
+- node:
+    name: productRed    
+    waypoint: [1.07, 0.965, 1.368, 0, 0.271, 0, 0.962]
+- node:
+    name: productYellow
+    waypoint: [1.07, 0.86, 1.368, 0, 0.271, 0, 0.962]
+- node:
+    name: positionSensorGreen
+    waypoint: [1.0, 1.12, 1.38, 0, 0.271, 0, 0.962]
+- node:
+    name: positionSensorRed
+    waypoint: [1.0, 1.02, 1.38, 0, 0.271, 0, 0.962]
+- node:
+    name: positionSensorYellow
+    waypoint: [1.0, 0.92, 1.38, 0, 0.271, 0, 0.962]

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  id="WebApp_ID"
+  version="3.0">
+  <display-name>Twin Service</display-name>
+
+  <context-param>
+    <description>Base URI for the adaptor.</description>
+    <param-name>se.ericsson.cf.scott.sandbox.twin.servlet.baseurl</param-name>
+    <param-value>http://twins:8080</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twin.store.query</param-name>
+    <param-value>http://fuseki.svc:3030/warehouse-twin/query</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twin.store.update</param-name>
+    <param-value>http://fuseki.svc:3030/warehouse-twin/update</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twin.update.interval</param-name>
+    <param-value>60</param-value><!--seconds-->
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.twin.trs.mqtt.broker</param-name>
+    <param-value>tcp://mqtt.svc:1883</param-value>
+  </context-param>
+
+  <listener>
+    <description>Listener for ServletContext lifecycle changes</description>
+    <listener-class>se.ericsson.cf.scott.sandbox.twin.servlet.ServletListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>oslc-servlet</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>se.ericsson.cf.scott.sandbox.twin.servlet.Application</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>oslc-servlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+</web-app>

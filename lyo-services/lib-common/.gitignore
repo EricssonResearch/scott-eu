@@ -1,0 +1,17 @@
+# Maven
+/target/
+/overlays/
+
+# Acceleo
+*.lost
+
+# Eclipse
+/bin/
+/.project
+/.classpath
+/.settings/
+
+# Intellij
+
+/.idea/
+/*.iml

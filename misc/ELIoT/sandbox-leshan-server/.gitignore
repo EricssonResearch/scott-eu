@@ -1,0 +1,20 @@
+# Maven
+/target/
+/overlays/
+#> maven-shade plugin
+/dependency-reduced-pom.xml
+
+# Acceleo
+*.lost
+
+# Eclipse
+/bin/
+/.project
+/.classpath
+/.settings/
+
+# Intellij
+
+/out/
+/.idea/
+/*.iml

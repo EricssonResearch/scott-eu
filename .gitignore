@@ -1,3 +1,39 @@
+
+# Sandobox-specific
+webapp-planner-placeholder/
+/tmp
+
+# Misc
+
+TODO*.md
+TODO*.pdf
+
+# Maven
+dependency-reduced-pom.xml
+target/
+overlays/
+
+# Gradle
+.gradle/
+*/out/production/classes/
+
+# Acceleo
+*.lost
+
+# Eclipse
+*/bin/
+.project
+.classpath
+*/.settings/
+
+# Intellij
+.idea/
+*.iml
+
+# Python
+*/venv/
+*.pyc
+
 # OS
 .DS_Store
 *.tmp

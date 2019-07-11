@@ -1,5 +1,5 @@
 #
-# Copyright 2017 Ericsson AB
+# Copyright 2017-2018 Ericsson AB
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,76 +15,40 @@
 
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix oslc: <http://open-services.net/ns/core#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix pddl: <http://ontology.cf.ericsson.net/pddl/> .
-@prefix : <http://ontology.cf.ericsson.net/pddl_example/> .
+@prefix : <http://ontology.cf.ericsson.net/warehouse/> .
 
-# --- Planning Domain
-
-#    (define (domain adl-blocksworld)
-#      (:requirements :typing :equality :fluents)
-#      (:types location block)
-#      (:predicates (on ?x ?y - (either block location))
-#                   (clear ?x - (either block location))
-#      )
-#      (:functions (moved ?m - block)
-#                  (total-moved))
-#      (:action move
-#         :parameters (?b - block ?x ?y - (either block location))
-#         :precondition
-#            (and
-#              (not(= ?b ?y))
-#              (clear ?b)
-#              (on ?b ?x)
-#              (clear ?y)
-#            )
-#         :effect
-#            (and
-#              (on ?b ?y)
-#              (not (on ?b ?x))
-#              (clear ?x)
-#              (increase (moved ?b) 1)
-#              (increase (total-moved) 1)
-#              (when
-#                (not (= ?y table))
-#                (not (clear ?y))
-#              )
-#            )
-#      )
-#    )
-
-
-:warehouseDomain
+:warehouse-domain
   a pddl:Domain ;
   oslc:instanceShape pddl:DomainShape ;
-  rdfs:label "warehouseDomain" ;
+  rdfs:label "warehouse-domain" ;
   pddl:type :Robot ,
             :Place ,
-			:Waypoint ,
-			:Object,
-			:ObjType,
-			:Charge;
+            :Waypoint ,
+            :Object ,
+            :ObjType ,
+            :Charge ;
   pddl:predicate :is-at ,
-				 :situated-at,
-				 :is-on,
-				 :is-origin-on,
-				 :is-type,
-				 :carrying,
-				 :can-move,
-				 :is-recharging,
-				 :is-charging-station;
+                 :situated-at ,
+                 :is-on ,
+                 :is-origin-on ,
+                 :is-type ,
+                 :carrying ,
+                 :can-move ,
+                 :is-recharging ,
+                 :is-charging-station ;
   pddl:function :capacity ,
                 :charge-level ,
-				:max-Charge ,
-				:low-Charge ,
-				:high-Charge;
-  pddl:action :moveToWaypoint,
-			:pickupAtPlace,
-			:dropAtPlace,
-			:startRecharge,
-			:stopRecharge.
+                :max-charge ,
+                :low-charge ,
+                :high-charge ;
+  pddl:action :moveToWaypoint ,
+              :pickupAtPlace ,
+              :dropAtPlace ,
+              :startRecharge ,
+              :stopRecharge .
 
 :Robot
   a rdfs:Class ;
@@ -105,28 +69,28 @@
   rdfs:label "Waypoint" .
 
 :Object
-	  a rdfs:Class ;
-	  rdfs:subClassOf pddl:PrimitiveType ;
-	  oslc:instanceShape pddl:PrimitiveTypeShape ;
-	  rdfs:label "Object" .
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:PrimitiveType ;
+  oslc:instanceShape pddl:PrimitiveTypeShape ;
+  rdfs:label "Object" .
 
 :ObjType
-	  a rdfs:Class ;
-	  rdfs:subClassOf pddl:PrimitiveType ;
-	  oslc:instanceShape pddl:PrimitiveTypeShape ;
-	  rdfs:label "ObjType" .
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:PrimitiveType ;
+  oslc:instanceShape pddl:PrimitiveTypeShape ;
+  rdfs:label "ObjType" .
 
 :Charge
-		a rdfs:Class ;
-		rdfs:subClassOf pddl:PrimitiveType ;
-		oslc:instanceShape pddl:PrimitiveTypeShape ;
-		rdfs:label "Charge" .
-# (is-at ?r - Robot ?w - Waypoint)
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:PrimitiveType ;
+  oslc:instanceShape pddl:PrimitiveTypeShape ;
+  rdfs:label "Charge" .
+
 :is-at
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
   oslc:instanceShape pddl:PredicateShape ;
-  rdfs:label "on" ;
+  rdfs:label "is-at" ;
   pddl:parameter :is-at-x ,
                  :is-at-y .
 
@@ -143,14 +107,14 @@
   rdfs:label "y" ;
   pddl:type :Waypoint ;
   sh:order 2 .
-# (situated-at ?p - Place ?w - Waypoint)
+
 :situated-at
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
   oslc:instanceShape pddl:PredicateShape ;
   rdfs:label "situated-at" ;
   pddl:parameter :situated-at-x ,
-								 :situated-at-y.
+                 :situated-at-y .
 
 :situated-at-x
   a pddl:Parameter ;
@@ -166,14 +130,13 @@
   pddl:type :Waypoint ;
   sh:order 2 .
 
-# (is-on ?o - Object ?p - Place)
 :is-on
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
   oslc:instanceShape pddl:PredicateShape ;
   rdfs:label "is-on" ;
   pddl:parameter :is-on-x ,
-								 :is-on-y.
+                 :is-on-y .
 
 :is-on-x
   a pddl:Parameter ;
@@ -188,14 +151,14 @@
   rdfs:label "y" ;
   pddl:type :Place ;
   sh:order 2 .
-# (is-origin-on ?o - Object ?p - Place)
+
 :is-origin-on
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
   oslc:instanceShape pddl:PredicateShape ;
   rdfs:label "is-origin-on" ;
   pddl:parameter :is-origin-on-x ,
-				 :is-origin-on-y.
+                 :is-origin-on-y .
 
 :is-origin-on-x
   a pddl:Parameter ;
@@ -211,14 +174,13 @@
   pddl:type :Place ;
   sh:order 2 .
 
-# (is-type ?o - Object ?t - ObjType)
 :is-type
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
   oslc:instanceShape pddl:PredicateShape ;
   rdfs:label "is-type" ;
   pddl:parameter :is-type-x ,
-				 :is-type-y.
+                 :is-type-y .
 
 :is-type-x
   a pddl:Parameter ;
@@ -234,7 +196,6 @@
   pddl:type :ObjType ;
   sh:order 2 .
 
-#(carrying ?r - Robot ?o - Object)
 :carrying
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
@@ -257,7 +218,6 @@
   pddl:type :Object ;
   sh:order 2 .
 
-# (can-move ?w1 ?w2 - Waypoint)
 :can-move
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
@@ -280,7 +240,6 @@
   pddl:type :Waypoint ;
   sh:order 2 .
 
-# (is-recharging ?r - Robot)
 :is-recharging
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
@@ -295,7 +254,6 @@
   pddl:type :Robot ;
   sh:order 1 .
 
-# (is-charging-station ?p - Place)
 :is-charging-station
   a rdfs:Class ;
   rdfs:subClassOf pddl:Predicate ;
@@ -310,9 +268,6 @@
   pddl:type :Place ;
   sh:order 1 .
 
-#FUNCTIONS
-
-# (capacity ?r - Robot)
 :capacity
   a rdfs:Class ;
   rdfs:subClassOf pddl:Function ;
@@ -323,11 +278,10 @@
 :capacity-x
   a pddl:Parameter ;
   oslc:instanceShape pddl:ParameterShape ;
-  rdfs:label "r" ;
+  rdfs:label "x" ;
   pddl:type :Robot ;
   sh:order 1 .
 
-# (charge-level ?r - Robot)
 :charge-level
   a rdfs:Class ;
   rdfs:subClassOf pddl:Function ;
@@ -338,72 +292,51 @@
 :charge-level-x
   a pddl:Parameter ;
   oslc:instanceShape pddl:ParameterShape ;
-  rdfs:label "r" ;
+  rdfs:label "x" ;
   pddl:type :Robot ;
   sh:order 1 .
 
-# (max-Charge ?r - Robot)
-:max-Charge
+:max-charge
   a rdfs:Class ;
   rdfs:subClassOf pddl:Function ;
   oslc:instanceShape pddl:FunctionShape ;
-  rdfs:label "max-Charge" ;
-  pddl:parameter :max-Charge-x .
+  rdfs:label "max-charge" ;
+  pddl:parameter :max-charge-x .
 
-:max-Charge-x
+:max-charge-x
   a pddl:Parameter ;
   oslc:instanceShape pddl:ParameterShape ;
-  rdfs:label "r" ;
+  rdfs:label "x" ;
   pddl:type :Robot ;
   sh:order 1 .
 
-# (low-Charge ?r - Robot)
-:low-Charge
+:low-charge
   a rdfs:Class ;
   rdfs:subClassOf pddl:Function ;
   oslc:instanceShape pddl:FunctionShape ;
-  rdfs:label "low-Charge" ;
-  pddl:parameter :low-Charge-x .
+  rdfs:label "low-charge" ;
+  pddl:parameter :low-charge-x .
 
-:low-Charge-x
+:low-charge-x
   a pddl:Parameter ;
   oslc:instanceShape pddl:ParameterShape ;
-  rdfs:label "r" ;
+  rdfs:label "x" ;
   pddl:type :Robot ;
   sh:order 1 .
 
-# (high-Charge ?r - Robot)
-:high-Charge
+:high-charge
   a rdfs:Class ;
   rdfs:subClassOf pddl:Function ;
   oslc:instanceShape pddl:FunctionShape ;
-  rdfs:label "high-Charge" ;
-  pddl:parameter :high-Charge-x .
+  rdfs:label "high-charge" ;
+  pddl:parameter :high-charge-x .
 
-:high-Charge-x
+:high-charge-x
   a pddl:Parameter ;
   oslc:instanceShape pddl:ParameterShape ;
-  rdfs:label "r" ;
+  rdfs:label "x" ;
   pddl:type :Robot ;
   sh:order 1 .
-
-#ACTIONS
-
-# (:action moveToWaypoint
-		# :parameters (?robot - Robot ?from-waypoint ?to-waypoint - Waypoint)
-		# :precondition (and
-			# (is-at ?robot ?from-waypoint)
-			# (can-move ?from-waypoint ?to-waypoint)
-			# (not (is-recharging ?robot))
-			# (> (charge-level ?robot) (low-Charge ?robot))
-		# )
-		# :effect (and
-			# (is-at ?robot ?to-waypoint)
-			# (not (is-at ?robot ?from-waypoint))
-		# ;	(decrease (charge-level ?robot) (required-charge (current-load ?robot) ?from-waypoint ?to-waypoint))
-			# (decrease (charge-level ?robot) 2)
-		# )
-	# )
 
 :moveToWaypoint
   a rdfs:Class ;
@@ -414,56 +347,46 @@
                  :moveToWaypoint-x ,
                  :moveToWaypoint-y ;
   pddl:precondition [ a pddl:And ;
-                      pddl:argument
-									#(is-at ?robot ?from-waypoint)
-									[ a :is-at ;
-										:is-at-x :moveToWaypoint-r;
-										:is-at-y :moveToWaypoint-x
-									] ,
-									#(can-move ?from-waypoint ?to-waypoint)
-									[ a :can-move ;
-										:can-move-x :moveToWaypoint-x;
-										:can-move-y :moveToWaypoint-y
-									] ,
-									#(not (is-recharging ?robot))
-									[ a pddl:Not ;
-									  pddl:argument	[ a :is-recharging ;
-													  :is-recharging-x :moveToWaypoint-r
-													]
-									],
-									#(> (charge-level ?robot) (low-Charge ?robot))
-									[ a pddl:GT ;
-									  pddl:left [ a :charge-level;
-												  :charge-level-x :moveToWaypoint-r
-												];
-									  pddl:right[ a :low-Charge;
-											      :low-Charge-x :moveToWaypoint-r
-												]
-									]
+                      pddl:argument [ a :is-at ;
+                                      :is-at-x :moveToWaypoint-r ;
+                                      :is-at-y :moveToWaypoint-x
+                                    ] ,
+                                    [ a :can-move ;
+                                      :can-move-x :moveToWaypoint-x ;
+                                      :can-move-y :moveToWaypoint-y
+                                    ] ,
+                                    [ a pddl:Not ;
+                                      pddl:argument [ a :is-recharging ;
+                                                      :is-recharging-x :moveToWaypoint-r
+                                                    ]
+                                    ],
+                                    [ a pddl:GT ;
+                                      pddl:left [ a :charge-level ;
+                                                  :charge-level-x :moveToWaypoint-r
+                                                ];
+                                      pddl:right [ a :low-charge ;
+                                                     :low-charge-x :moveToWaypoint-r
+                                                 ]
+                                    ]
                     ] ;
-  pddl:effect 		[ a pddl:And ;
-					  pddl:argument
-									#(is-at ?robot ?to-waypoint)
-									[ a :is-at ;
-										:is-at-x :moveToWaypoint-r;
-										:is-at-y :moveToWaypoint-y
-									] ,
-									#(not (is-at ?robot ?from-waypoint))
-									[ a pddl:Not ;
-									  pddl:argument [ a :is-at ;
-														:is-at-x :moveToWaypoint-r;
-														:is-at-y :moveToWaypoint-x
-													]
-									] ,
-									#(decrease (charge-level ?robot) 2)
-									[ a pddl:Decrease ;
-									  pddl:parameter[ a :charge-level ;
-														:charge-level-x :moveToWaypoint-r
-													] ;
-									  pddl:argument 2
-									]
-
-					] .
+  pddl:effect [ a pddl:And ;
+                pddl:argument [ a :is-at ;
+                                :is-at-x :moveToWaypoint-r ;
+                                :is-at-y :moveToWaypoint-y
+                              ] ,
+                              [ a pddl:Not ;
+                                pddl:argument [ a :is-at ;
+                                                :is-at-x :moveToWaypoint-r ;
+                                                :is-at-y :moveToWaypoint-x
+                                              ]
+                              ] ,
+                              [ a pddl:Decrease ;
+                                pddl:parameter [ a :charge-level ;
+                                                 :charge-level-x :moveToWaypoint-r
+                                               ] ;
+                                pddl:argument 2
+                              ]
+              ] .
 
 :moveToWaypoint-r
   a pddl:Parameter ;
@@ -486,96 +409,64 @@
   pddl:type :Waypoint ;
   sh:order 3 .
 
-# (:action pickupAtPlace
-		# :parameters (?robot - Robot ?object - Object ?place - Place ?waypoint - Waypoint
-		# )
-		# :precondition (and
-			# (is-at ?robot ?waypoint)
-			# (situated-at ?place ?waypoint)
-			# (is-on ?object ?place)
-			# (not (is-recharging ?robot))
-			# (> (capacity ?robot) 0)
-		# )
-		# :effect (and
-			# (not (is-on ?object ?place))
-			# (carrying ?robot ?object)
-			# (decrease (capacity ?robot) 1)
-		# ;	(decrease (charge-level ?robot) (required-charge-pickup-drop (weight ?object)))
-			# (decrease (charge-level ?robot) 1)
-		# )
-	# )
-
 :pickupAtPlace
   a rdfs:Class ;
   rdfs:subClassOf pddl:Action ;
   oslc:instanceShape pddl:ActionShape ;
   rdfs:label "pickupAtPlace" ;
   pddl:parameter :pickupAtPlace-r ,
-				 :pickupAtPlace-o ,
+                 :pickupAtPlace-o ,
                  :pickupAtPlace-p ,
                  :pickupAtPlace-w ;
   pddl:precondition [ a pddl:And ;
-                      pddl:argument
-									#(is-at ?robot ?waypoint)
-									[ a :is-at ;
-										:is-at-x :pickupAtPlace-r;
-										:is-at-y :pickupAtPlace-w
-									] ,
-									#(situated-at ?place ?waypoint)
-									[ a :situated-at ;
-										:situated-at-x :pickupAtPlace-p;
-										:situated-at-y :pickupAtPlace-w
-									] ,
-									# (is-on ?object ?place)
-									[ a :is-on ;
-										:is-on-x :pickupAtPlace-o;
-										:is-on-y :pickupAtPlace-p
-									] ,
-									#(not (is-recharging ?robot))
-									[ a pddl:Not ;
-									  pddl:argument	[ a :is-recharging ;
-													  :is-recharging-x :pickupAtPlace-r
-													]
-									] ,
-									#(> (capacity ?robot) 0)
-									[ a pddl:GT ;
-									  pddl:left [ a :capacity;
-												  :capacity-x :pickupAtPlace-r
-												];
-									  pddl:right 0
-									]
+                      pddl:argument [ a :is-at ;
+                                      :is-at-x :pickupAtPlace-r ;
+                                      :is-at-y :pickupAtPlace-w
+                                    ] ,
+                                    [ a :situated-at ;
+                                      :situated-at-x :pickupAtPlace-p ;
+                                      :situated-at-y :pickupAtPlace-w
+                                    ] ,
+                                    [ a :is-on ;
+                                      :is-on-x :pickupAtPlace-o ;
+                                      :is-on-y :pickupAtPlace-p
+                                    ] ,
+                                    [ a pddl:Not ;
+                                      pddl:argument [ a :is-recharging ;
+                                                      :is-recharging-x :pickupAtPlace-r
+                                                    ]
+                                    ] ,
+                                    [ a pddl:GT ;
+                                      pddl:left [ a :capacity ;
+                                                  :capacity-x :pickupAtPlace-r
+                                                ];
+                                      pddl:right 0
+                                    ]
                     ] ;
-  pddl:effect 		[ a pddl:And ;
-					  pddl:argument
-									#(not (is-on ?object ?place))
-									[ a pddl:Not ;
-									  pddl:argument [ a :is-on ;
-														:is-on-x :pickupAtPlace-o;
-														:is-on-y :pickupAtPlace-p
-													]
-									] ,
-									# (carrying ?robot ?object)
-									[ a :carrying ;
-										:carrying-x :pickupAtPlace-r;
-										:carrying-y :pickupAtPlace-o
-									] ,
-									# (decrease (capacity ?robot) 1)
-									[ a pddl:Decrease ;
-									  pddl:parameter[ a :capacity ;
-														:capacity-x :pickupAtPlace-r
-													] ;
-									  pddl:argument 1
-									] ,
-									# (decrease (charge-level ?robot) 1)
-									[ a pddl:Decrease ;
-									  pddl:parameter[ a :charge-level ;
-														:charge-level-x :pickupAtPlace-r
-													] ;
-									  pddl:argument 1
-									]
-
-
-					] .
+  pddl:effect [ a pddl:And ;
+                pddl:argument [ a pddl:Not ;
+                                pddl:argument [ a :is-on ;
+                                                :is-on-x :pickupAtPlace-o ;
+                                                :is-on-y :pickupAtPlace-p
+                                              ]
+                              ] ,
+                              [ a :carrying ;
+                                :carrying-x :pickupAtPlace-r ;
+                                :carrying-y :pickupAtPlace-o
+                              ] ,
+                              [ a pddl:Decrease ;
+                                pddl:parameter [ a :capacity ;
+                                                 :capacity-x :pickupAtPlace-r
+                                               ] ;
+                                pddl:argument 1
+                              ] ,
+                              [ a pddl:Decrease ;
+                                pddl:parameter [ a :charge-level ;
+                                                 :charge-level-x :pickupAtPlace-r
+                                               ] ;
+                                pddl:argument 1
+                              ]
+              ] .
 
 :pickupAtPlace-r
   a pddl:Parameter ;
@@ -589,7 +480,7 @@
   oslc:instanceShape pddl:ParameterShape ;
   rdfs:label "object" ;
   pddl:type :Object ;
-  sh:order 1 .
+  sh:order 2 .
 
 :pickupAtPlace-p
   a pddl:Parameter ;
@@ -605,276 +496,201 @@
   pddl:type :Waypoint ;
   sh:order 4 .
 
-# (:action dropAtPlace
-		# :parameters (?robot - Robot ?object - Object ?place - Place ?waypoint - Waypoint
-		# )
-		# :precondition (and
-			# (is-at ?robot ?waypoint)
-			# (situated-at ?place ?waypoint)
-			# (carrying ?robot ?object)
-			# (not (is-recharging ?robot))
-		# )
-		# :effect (and
-			# (not (carrying ?robot ?object))
-			# (is-on ?object ?place)
-			# (increase (capacity ?robot) 1)
-		# ;	(decrease (charge-level ?robot) (required-charge-pickup-drop (weight ?object)))
-			# (decrease (charge-level ?robot) 1)
-		# )
-# )
-
 :dropAtPlace
-	a rdfs:Class ;
-	rdfs:subClassOf pddl:Action ;
-	oslc:instanceShape pddl:ActionShape ;
-	rdfs:label "dropAtPlace" ;
-	pddl:parameter :dropAtPlace-r ,
-				 :dropAtPlace-o ,
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Action ;
+  oslc:instanceShape pddl:ActionShape ;
+  rdfs:label "dropAtPlace" ;
+  pddl:parameter :dropAtPlace-r ,
+                 :dropAtPlace-o ,
                  :dropAtPlace-p ,
                  :dropAtPlace-w ;
-	pddl:precondition [ a pddl:And ;
-                      pddl:argument
-									#(is-at ?robot ?waypoint)
-									[ a :is-at ;
-										:is-at-x :dropAtPlace-r;
-										:is-at-y :dropAtPlace-w
-									] ,
-									#(situated-at ?place ?waypoint)
-									[ a :situated-at ;
-										:situated-at-x :dropAtPlace-p;
-										:situated-at-y :dropAtPlace-w
-									] ,
-									# (carrying ?robot ?object)
-									[ a :carrying ;
-										:carrying-x :dropAtPlace-r;
-										:carrying-y :dropAtPlace-o
-									] ,
-									#(not (is-recharging ?robot))
-									[ a pddl:Not ;
-									  pddl:argument	[ a :is-recharging ;
-													  :is-recharging-x :dropAtPlace-r
-													]
-									]
+  pddl:precondition [ a pddl:And ;
+                      pddl:argument [ a :is-at ;
+                                      :is-at-x :dropAtPlace-r ;
+                                      :is-at-y :dropAtPlace-w
+                                    ] ,
+                                    [ a :situated-at ;
+                                      :situated-at-x :dropAtPlace-p ;
+                                      :situated-at-y :dropAtPlace-w
+                                    ] ,
+                                    [ a :carrying ;
+                                      :carrying-x :dropAtPlace-r ;
+                                      :carrying-y :dropAtPlace-o
+                                    ] ,
+                                    [ a pddl:Not ;
+                                      pddl:argument  [ a :is-recharging ;
+                                                       :is-recharging-x :dropAtPlace-r
+                                                     ]
+                                    ]
                     ] ;
-	pddl:effect 	[ a pddl:And ;
-					  pddl:argument
-									# (not (carrying ?robot ?object))
-									[ a pddl:Not ;
-									  pddl:argument [ a :carrying ;
-														:carrying-x :dropAtPlace-r;
-														:carrying-y :dropAtPlace-o
-													]
-									] ,
-									#(is-on ?object ?place)
-									[ a :is-on ;
-														:is-on-x :dropAtPlace-o;
-														:is-on-y :dropAtPlace-p
-									] ,
-									# (increase (capacity ?robot) 1)
-									[ a pddl:Increase ;
-									  pddl:parameter[ a :capacity ;
-														:capacity-x :dropAtPlace-r
-													] ;
-									  pddl:argument 1
-									] ,
-									# (decrease (charge-level ?robot) 1)
-									[ a pddl:Decrease ;
-									  pddl:parameter[ a :charge-level ;
-														:charge-level-x :dropAtPlace-r
-													] ;
-									  pddl:argument 1
-									]
+  pddl:effect [ a pddl:And ;
+                pddl:argument [ a pddl:Not ;
+                                pddl:argument [ a :carrying ;
+                                                :carrying-x :dropAtPlace-r ;
+                                                :carrying-y :dropAtPlace-o
+                                              ]
+                              ] ,
+                              [ a :is-on ;
+                                :is-on-x :dropAtPlace-o ;
+                                :is-on-y :dropAtPlace-p
+                              ] ,
+                              [ a pddl:Increase ;
+                                pddl:parameter [ a :capacity ;
+                                                 :capacity-x :dropAtPlace-r
+                                               ] ;
+                                pddl:argument 1
+                              ] ,
+                              [ a pddl:Decrease ;
+                                pddl:parameter [ a :charge-level ;
+                                                 :charge-level-x :dropAtPlace-r
+                                               ] ;
+                                pddl:argument 1
+                              ]
+              ] .
 
+:dropAtPlace-r
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "robot" ;
+  pddl:type :Robot ;
+  sh:order 1 .
 
-					] .
+:dropAtPlace-o
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "object" ;
+  pddl:type :Object ;
+  sh:order 2 .
 
-	:dropAtPlace-r
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "robot" ;
-	  pddl:type :Robot ;
-	  sh:order 1 .
+:dropAtPlace-p
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "place" ;
+  pddl:type :Place ;
+  sh:order 3 .
 
-	:dropAtPlace-o
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "object" ;
-	  pddl:type :Object ;
-	  sh:order 1 .
-
-	:dropAtPlace-p
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "place" ;
-	  pddl:type :Place ;
-	  sh:order 3 .
-
-	:dropAtPlace-w
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "waypoint" ;
-	  pddl:type :Waypoint ;
-	  sh:order 4 .
-
-# (:action startRecharge
-# :parameters (?robot - Robot ?RechargeStationName - Place ?waypoint - Waypoint)
-# :precondition (and
-	# (is-at ?robot ?waypoint)
-	# (situated-at ?RechargeStationName ?waypoint)
-	# (is-charging-station ?RechargeStationName)
-	# (< (charge-level ?robot) (max-charge ?robot))
-# )
-# :effect (and
-	# (is-recharging ?robot)
-	# (increase (charge-level ?robot) 1)
-# )
-# )
+:dropAtPlace-w
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "waypoint" ;
+  pddl:type :Waypoint ;
+  sh:order 4 .
 
 :startRecharge
-	a rdfs:Class ;
-	rdfs:subClassOf pddl:Action ;
-	oslc:instanceShape pddl:ActionShape ;
-	rdfs:label "startRecharge" ;
-	pddl:parameter :startRecharge-r ,
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Action ;
+  oslc:instanceShape pddl:ActionShape ;
+  rdfs:label "startRecharge" ;
+  pddl:parameter :startRecharge-r ,
                  :startRecharge-p ,
                  :startRecharge-w ;
-	pddl:precondition [ a pddl:And ;
-                      pddl:argument
-									#(is-at ?robot ?waypoint)
-									[ a :is-at ;
-										:is-at-x :startRecharge-r;
-										:is-at-y :startRecharge-w
-									] ,
-									# (situated-at ?RechargeStationName ?waypoint)
-									[ a :situated-at ;
-										:situated-at-x :startRecharge-p;
-										:situated-at-y :startRecharge-w
-									] ,
-									# (is-charging-station ?RechargeStationName)
-									[ a :is-charging-station ;
-										:is-charging-station-x :startRecharge-p
-									] ,
-									#(< (charge-level ?robot) (max-charge ?robot))
-									[ a pddl:LT ;
-									  pddl:left [ a :charge-level;
-												  :charge-level-x :startRecharge-r
-												];
-									  pddl:right [ a :max-Charge;
-												   :max-Charge-x :startRecharge-r
-												]
-									]
+  pddl:precondition [ a pddl:And ;
+                      pddl:argument [ a :is-at ;
+                                      :is-at-x :startRecharge-r ;
+                                      :is-at-y :startRecharge-w
+                                    ] ,
+                                    [ a :situated-at ;
+                                      :situated-at-x :startRecharge-p ;
+                                      :situated-at-y :startRecharge-w
+                                    ] ,
+                                    [ a :is-charging-station ;
+                                      :is-charging-station-x :startRecharge-p
+                                    ] ,
+                                    [ a pddl:LT ;
+                                      pddl:left [ a :charge-level;
+                                                  :charge-level-x :startRecharge-r
+                                                ];
+                                      pddl:right [ a :max-charge;
+                                                   :max-charge-x :startRecharge-r
+                                                 ]
+                                    ]
                     ] ;
-	pddl:effect 	[ a pddl:And ;
-					  pddl:argument
-									#(is-recharging ?robot)
-									[ a :is-recharging ;
-									  :is-recharging-x :startRecharge-r
-									] ,
-									#(increase (charge-level ?robot) 1)
-									[ a pddl:Increase ;
-									  pddl:parameter[ a :charge-level ;
-														:charge-level-x :startRecharge-r
-													] ;
-									  pddl:argument 1
-									]
-					] .
+  pddl:effect [ a pddl:And ;
+                pddl:argument [ a :is-recharging ;
+                                :is-recharging-x :startRecharge-r
+                              ] ,
+                              [ a pddl:Increase ;
+                                pddl:parameter [ a :charge-level ;
+                                                 :charge-level-x :startRecharge-r
+                                               ] ;
+                                pddl:argument 1
+                              ]
+              ] .
 
-	:startRecharge-r
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "robot" ;
-	  pddl:type :Robot ;
-	  sh:order 1 .
+:startRecharge-r
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "robot" ;
+  pddl:type :Robot ;
+  sh:order 1 .
 
-	:startRecharge-p
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "place" ;
-	  pddl:type :Place ;
-	  sh:order 2 .
+:startRecharge-p
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "place" ;
+  pddl:type :Place ;
+  sh:order 2 .
 
-	:startRecharge-w
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "waypoint" ;
-	  pddl:type :Waypoint ;
-	  sh:order 3 .
-
-
-# (:action stopRecharge
-# :parameters (?robot - Robot ?RechargeStationName - Place ?waypoint - Waypoint)
-# :precondition (and
-	# (is-at ?robot ?waypoint)
-	# (situated-at ?RechargeStationName ?waypoint)
-	# (is-recharging ?robot)
-	# (>(charge-level ?robot) (high-Charge ?robot))
-# )
-# :effect (and
-	# (not(is-recharging ?robot))
-# )
-# )
+:startRecharge-w
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "waypoint" ;
+  pddl:type :Waypoint ;
+  sh:order 3 .
 
 :stopRecharge
-	a rdfs:Class ;
-	rdfs:subClassOf pddl:Action ;
-	oslc:instanceShape pddl:ActionShape ;
-	rdfs:label "stopRecharge" ;
-	pddl:parameter :stopRecharge-r ,
+  a rdfs:Class ;
+  rdfs:subClassOf pddl:Action ;
+  oslc:instanceShape pddl:ActionShape ;
+  rdfs:label "stopRecharge" ;
+  pddl:parameter :stopRecharge-r ,
                  :stopRecharge-p ,
                  :stopRecharge-w ;
-	pddl:precondition [ a pddl:And ;
-                      pddl:argument
-									#(is-at ?robot ?waypoint)
-									[ a :is-at ;
-										:is-at-x :stopRecharge-r;
-										:is-at-y :stopRecharge-w
-									] ,
-									# (situated-at ?RechargeStationName ?waypoint)
-									[ a :situated-at ;
-										:situated-at-x :stopRecharge-p;
-										:situated-at-y :stopRecharge-w
-									] ,
-									#(is-recharging ?robot)
-									[ a :is-recharging ;
-									  :is-recharging-x :stopRecharge-r
-									] ,
-									#(>(charge-level ?robot) (high-Charge ?robot))
-									[ a pddl:GT ;
-									  pddl:left [ a :charge-level;
-												  :charge-level-x :stopRecharge-r
-												];
-									  pddl:right [ a :high-Charge;
-												   :high-Charge-x :stopRecharge-r
-												]
-									]
+  pddl:precondition [ a pddl:And ;
+                      pddl:argument [ a :is-at ;
+                                      :is-at-x :stopRecharge-r ;
+                                      :is-at-y :stopRecharge-w
+                                    ] ,
+                                    [ a :situated-at ;
+                                      :situated-at-x :stopRecharge-p ;
+                                      :situated-at-y :stopRecharge-w
+                                    ] ,
+                                    [ a :is-recharging ;
+                                      :is-recharging-x :stopRecharge-r
+                                    ] ,
+                                    [ a pddl:GT ;
+                                      pddl:left [ a :charge-level ;
+                                                  :charge-level-x :stopRecharge-r
+                                                ];
+                                      pddl:right [ a :high-charge ;
+                                                   :high-charge-x :stopRecharge-r
+                                                 ]
+                                    ]
                     ] ;
-	pddl:effect 	[ a pddl:And ;
-					  pddl:argument
-									#(not(is-recharging ?robot))
-									[ a pddl:Not ;
-									  pddl:argument [ a :is-recharging ;
-													  :is-recharging-x :stopRecharge-r
-													]
-									]
-					] .
+  pddl:effect [ a pddl:Not ;
+                pddl:argument [ a :is-recharging ;
+                                :is-recharging-x :stopRecharge-r
+                              ]
+              ] .
 
-	:stopRecharge-r
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "robot" ;
-	  pddl:type :Robot ;
-	  sh:order 1 .
+:stopRecharge-r
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "robot" ;
+  pddl:type :Robot ;
+  sh:order 1 .
 
-	:stopRecharge-p
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "place" ;
-	  pddl:type :Place ;
-	  sh:order 2 .
+:stopRecharge-p
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "place" ;
+  pddl:type :Place ;
+  sh:order 2 .
 
-	:stopRecharge-w
-	  a pddl:Parameter ;
-	  oslc:instanceShape pddl:ParameterShape ;
-	  rdfs:label "waypoint" ;
-	  pddl:type :Waypoint ;
-	  sh:order 3 .
+:stopRecharge-w
+  a pddl:Parameter ;
+  oslc:instanceShape pddl:ParameterShape ;
+  rdfs:label "waypoint" ;
+  pddl:type :Waypoint ;
+  sh:order 3 .

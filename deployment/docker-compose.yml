@@ -1,8 +1,0 @@
-warehouse-controller:
-  image: wc
-  ports:
-   - "5001:5001"
-  links:
-   - ff-metric
-ff-metric:
-  image: ff-metric

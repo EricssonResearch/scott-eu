@@ -1,7 +1,14 @@
-1) (Since we don't have a repo of our own yet)
-a) Build image for ff-metric
-b) Build image for warehousecontroller
+# SCOTT sandbox using linked data
 
-To start this: docker-compose up -d
-To stop: docker-compose down
-Logs: docker-compose logs -f (follow mode)
+## Local setup
+
+    make build && make restart-swarm
+
+Navigate to http://localhost:8081/sandbox-twin/services/serviceProviders/robot_handcrafted/robots/1. You should see that the particular Robot resource has property *isAt: http://sandbox-warehouse:8080/sandbox-warehouse/services/serviceProviders/dummy/resources/waypoints/wp2*
+
+> Note that Docker does not support external (from the host OS) name resoulution to the containers, so the waypoint link will be broken unless you update your `/etc/hosts` file.
+
+## Deployment
+
+    make build
+    STACK=docker-compose.erdc.yml make restart-swarm

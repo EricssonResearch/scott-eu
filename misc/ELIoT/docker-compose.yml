@@ -1,0 +1,51 @@
+version: '2'
+
+services:
+    sandbox-leshan-server:
+        build: ./sandbox-leshan-server
+        ports:
+        - "8080:8080"
+        - "5683:5683"
+        - "5684:5684"
+    sandbox-rot-client:
+        build: ./sandbox-rot-client
+        depends_on:
+        - sandbox-leshan-server
+        # ports:
+        # - "5683:5683"
+    # ms:
+    #     image: corfr/leshan
+    #     ports:
+    #     - 8080:8080/tcp
+    #     - 5683:5683/udp
+    #     depends_on:
+    #     - bss
+    # bss:
+    #     image: corfr/leshan
+    #     ports:
+    #     - 8081:8080
+    #     command: bootstrap
+    # weather:
+    #     image: alliasd/eliot
+    #     command: weather.js ms
+    #     depends_on:
+    #     - bss
+    #     - ms
+    # presence:
+    #     image: alliasd/eliot
+    #     command: presence.js ms
+    #     depends_on:
+    #     - bss
+    #     - ms
+    # radiator:
+    #    image: alliasd/eliot
+    #    command: radiator.js ms
+    #    depends_on:
+    #    - bss
+    #    - ms
+    # light:
+    #    image: alliasd/eliot
+    #    command: light_control.js ms
+    #    depends_on:
+    #    - bss
+    #    - ms
