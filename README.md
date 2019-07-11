@@ -77,9 +77,9 @@ PDDL Planner (`/planner`) exposes PDDL planners via a REST API (so does the [Met
 
 ## Planner Reasoner
 
-Planner Reasoner (`/planner_reasoner`) uses an [internal planning ontology](planner_reasoner/rdf/base/pp.ttl) to transform the *warehouse state* (given in a form that adheres to the [warehouse ontology](planner_reasoner/rdf/base/warehouse_domain.ttl)) into the PDDL problem and domain files
+Planner Reasoner (`/planner_reasoner`) uses an [internal planning ontology](planner_reasoner/rdf/base/pddl.ttl) to transform the *warehouse state* (given in a form that adheres to the [warehouse ontology](planner_reasoner/rdf/base/warehouse_domain.ttl)) into the PDDL problem and domain files
 .
 
-> :point_right: Start by reading about the [`generate_pddl/2` predicate](planner_reasoner/lib/planner_reasoner.pl).
+> :point_right: Start by reading about the [`generate_pddl/3`](planner_reasoner/lib/pddl_generator.pl) predicate. A plan is generated using [`generate_plan/6`, `generate_plan/8`](planner_reasoner/lib/metric_ff.pl) predicates. The plan is validated using [`validate_plan/8`](planner_reasoner/lib/validate.pl) predicate.
 
 > **NB!** The project is called a *reasoner* because it is using Prolog reasoning facilities, it does not do any reasoning over the ontology and does not produce any inferred triples (as of now).

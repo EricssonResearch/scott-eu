@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -93,7 +89,7 @@ public class PlanExecutionResult
 {
     // Start of user code attributeAnnotation:plan
     // End of user code
-    private Link plan = new Link();
+    private Link plan;
     // Start of user code attributeAnnotation:isSuccessful
     // End of user code
     private Boolean isSuccessful;
@@ -106,7 +102,6 @@ public class PlanExecutionResult
     // Start of user code classMethods
     // End of user code
     public PlanExecutionResult()
-           throws URISyntaxException
     {
         super();
     
@@ -115,14 +110,12 @@ public class PlanExecutionResult
     }
     
     public PlanExecutionResult(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -149,36 +142,10 @@ public class PlanExecutionResult
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -263,136 +230,6 @@ public class PlanExecutionResult
     
         // Start of user code setterFinalize:durationSeconds
         // End of user code
-    }
-    
-    
-    static public String planToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:planToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"plan\">plan: </LABEL>";
-    
-        // Start of user code "Mid:planToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:planToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String isSuccessfulToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:isSuccessfulToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"isSuccessful\">isSuccessful: </LABEL>";
-    
-        // Start of user code "Mid:isSuccessfulToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"isSuccessful\" type=\"radio\" value=\"true\">True<input name=\"isSuccessful\" type=\"radio\" value=\"false\">False";
-        // Start of user code "Finalize:isSuccessfulToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String durationSecondsToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:durationSecondsToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"durationSeconds\">durationSeconds: </LABEL>";
-    
-        // Start of user code "Mid:durationSecondsToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"durationSeconds\" type=\"text\" style=\"width: 400px\" id=\"durationSeconds\" >";
-        // Start of user code "Finalize:durationSecondsToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    public String planToHtml()
-    {
-        String s = "";
-    
-        // Start of user code plantoHtml_mid
-        // End of user code
-    
-        try {
-            if ((plan == null) || (plan.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Plan (plan.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code plantoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String isSuccessfulToHtml()
-    {
-        String s = "";
-    
-        // Start of user code isSuccessfultoHtml_mid
-        // End of user code
-    
-        try {
-            if (isSuccessful == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + isSuccessful.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code isSuccessfultoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String durationSecondsToHtml()
-    {
-        String s = "";
-    
-        // Start of user code durationSecondstoHtml_mid
-        // End of user code
-    
-        try {
-            if (durationSeconds == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + durationSeconds.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code durationSecondstoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

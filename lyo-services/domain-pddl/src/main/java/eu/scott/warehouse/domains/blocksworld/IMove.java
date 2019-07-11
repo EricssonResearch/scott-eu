@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.annotation.OslcAllowedValue;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDescription;
@@ -80,24 +76,24 @@ public interface IMove
 {
 
 
-    @OslcName("moveB")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveB")
+    @OslcName("move-b")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-b")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.BLOCK_TYPE})
     @OslcReadOnly(false)
     public Link getMoveB();
 
-    @OslcName("moveX")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveX")
+    @OslcName("move-x")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.LOCATION_OR_BLOCK_TYPE})
     @OslcReadOnly(false)
     public Link getMoveX();
 
-    @OslcName("moveY")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveY")
+    @OslcName("move-y")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.LOCATION_OR_BLOCK_TYPE})

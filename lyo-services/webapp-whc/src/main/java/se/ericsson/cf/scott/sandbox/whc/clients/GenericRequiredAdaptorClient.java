@@ -19,9 +19,9 @@
 
 package se.ericsson.cf.scott.sandbox.whc.clients;
 
-import org.apache.wink.client.ClientResponse;
-import org.eclipse.lyo.client.oslc.OSLCConstants;
-import org.eclipse.lyo.client.oslc.OslcClient;
+import javax.ws.rs.core.Response;
+import org.eclipse.lyo.oslc4j.client.OSLCConstants;
+import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
 
 // Start of user code imports
@@ -44,7 +44,7 @@ public class GenericRequiredAdaptorClient
 
     public static ServiceProviderCatalog getServiceProviderCatalog() throws Exception {
         OslcClient client = new OslcClient();
-        ClientResponse response = null;
+        Response response = null;
         ServiceProviderCatalog catalog = null;
 
         // Start of user code getServiceProviderCatalog_init
@@ -52,7 +52,7 @@ public class GenericRequiredAdaptorClient
 
         response = client.getResource(serviceProviderCatalogURI,OSLCConstants.CT_RDF);
         if (response != null) {
-            catalog = response.getEntity(ServiceProviderCatalog.class);
+            catalog = response.readEntity(ServiceProviderCatalog.class);
         }
         // Start of user code getServiceProviderCatalog_final
         // End of user code

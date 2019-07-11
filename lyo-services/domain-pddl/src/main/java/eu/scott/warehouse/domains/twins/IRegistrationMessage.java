@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.annotation.OslcAllowedValue;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDescription;
@@ -78,13 +74,6 @@ public interface IRegistrationMessage
 {
 
 
-    @OslcName("twinType")
-    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "twinType")
-    @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.String)
-    @OslcReadOnly(false)
-    public String getTwinType();
-
     @OslcName("deregister")
     @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "deregister")
     @OslcOccurs(Occurs.ExactlyOne)
@@ -113,11 +102,27 @@ public interface IRegistrationMessage
     @OslcReadOnly(false)
     public String getLabel();
 
+    @OslcName("serviceProvider")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "serviceProvider")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.Resource)
+    @OslcRepresentation(Representation.Reference)
+    @OslcReadOnly(true)
+    public Link getServiceProvider();
 
-    public void setTwinType(final String twinType );
+    @OslcName("twinId")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "twinId")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.String)
+    @OslcReadOnly(false)
+    public String getTwinId();
+
+
     public void setDeregister(final Boolean deregister );
     public void setTrsUri(final URI trsUri );
     public void setTrsMqttTopic(final String trsMqttTopic );
     public void setLabel(final String label );
+    public void setServiceProvider(final Link serviceProvider );
+    public void setTwinId(final String twinId );
 }
 

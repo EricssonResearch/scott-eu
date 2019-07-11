@@ -77,10 +77,9 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerManager;
 import se.ericsson.cf.scott.sandbox.whc.WarehouseControllerConstants;
 import eu.scott.warehouse.domains.mission.MissionDomainConstants;
-import eu.scott.warehouse.domains.mission.MissionDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
-import eu.scott.warehouse.domains.mission.AgentRequest;
-import eu.scott.warehouse.domains.mission.RegistrationRequest;
+import eu.scott.warehouse.domains.twins.RegistrationMessage;
 
 // Start of user code imports
 // End of user code
@@ -88,7 +87,7 @@ import eu.scott.warehouse.domains.mission.RegistrationRequest;
 // Start of user code pre_class_code
 // End of user code
 @OslcService(MissionDomainConstants.MISSIONONTOLOGY_DOMAIN)
-@Path("service2/registrationRequests")
+@Path("service2/registrationMessages")
 public class ServiceProviderService2
 {
     @Context private HttpServletRequest httpServletRequest;
@@ -106,8 +105,17 @@ public class ServiceProviderService2
         super();
     }
 
+    private void addCORSHeaders (final HttpServletResponse httpServletResponse) {
+        //UI preview can be blocked by CORS policy.
+        //add select CORS headers to every response that is embedded in an iframe.
+        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD");
+        httpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+        httpServletResponse.addHeader("Access-Control-Allow-Credentials", "true");
+    }
+
     /**
-     * Create a single RegistrationRequest via RDF/XML, XML or JSON POST
+     * Create a single RegistrationMessage via RDF/XML, XML or JSON POST
      *
      * @throws IOException
      * @throws ServletException
@@ -116,22 +124,22 @@ public class ServiceProviderService2
     (
          title = "RegistrationCF",
          label = "Registration Creation Factory",
-         resourceShapes = {OslcConstants.PATH_RESOURCE_SHAPES + "/" + MissionDomainConstants.REGISTRATIONREQUEST_PATH},
-         resourceTypes = {MissionDomainConstants.REGISTRATIONREQUEST_TYPE},
+         resourceShapes = {OslcConstants.PATH_RESOURCE_SHAPES + "/" + TwinsDomainConstants.REGISTRATIONMESSAGE_PATH},
+         resourceTypes = {TwinsDomainConstants.REGISTRATIONMESSAGE_TYPE},
          usages = {}
     )
     @POST
     @Path("register")
-    @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-    public Response createRegistrationRequest(
+    @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON })
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
+    public Response createRegistrationMessage(
             
-            final RegistrationRequest aResource
+            final RegistrationMessage aResource
         ) throws IOException, ServletException
     {
         try {
-            RegistrationRequest newResource = WarehouseControllerManager.createRegistrationRequest(httpServletRequest, aResource);
-            httpServletResponse.setHeader("ETag", WarehouseControllerManager.getETagFromRegistrationRequest(newResource));
+            RegistrationMessage newResource = WarehouseControllerManager.createRegistrationMessage(httpServletRequest, aResource);
+            httpServletResponse.setHeader("ETag", WarehouseControllerManager.getETagFromRegistrationMessage(newResource));
             return Response.created(newResource.getAbout()).entity(newResource).header(WarehouseControllerConstants.HDR_OSLC_VERSION, WarehouseControllerConstants.OSLC_VERSION_V2).build();
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,13 +3,39 @@ phantom_controller:
   joints:
      - PhantomXPincher_joint1
      - PhantomXPincher_joint2
-     - PhantomXPincher_joint3
+     - PhantomXPincher_joint3 
      - PhantomXPincher_joint4
+  constraints:
+    goal_time: &goal_time_constraint 60.0
+    stopped_velocity_tolerance: 0.0001
+    PhantomXPincher_joint1:
+      goal: &goal_pos_constraint 1.0
+      trajectory: &trajectory_pos_constraint 2.0
+    PhantomXPincher_joint2:
+      goal: *goal_pos_constraint
+      trajectory: *trajectory_pos_constraint
+    PhantomXPincher_joint3:
+      goal: *goal_pos_constraint
+      trajectory: *trajectory_pos_constraint
+    PhantomXPincher_joint4:
+      goal: *goal_pos_constraint
+      trajectory: *trajectory_pos_constraint
   publish_rate: 50
+  stop_trajectory_duration: 0.5
+  
 gripper_controller:
-  type: position_controllers/GripperActionController
-  joint: PhantomXPincher_gripperClose_joint
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - PhantomXPincher_gripperClose_joint
+  constraints:
+    goal_time: 10.0
+    stopped_velocity_tolerance: 0.0001
+    PhantomXPincher_gripperClose_joint:
+      goal: 0.01
+      trajectory: 0.1
   publish_rate: 50
+  stop_trajectory_duration: 0.5
+  
 joint_states:
   type: joint_state_controller/JointStateController
   publish_rate: 100.0

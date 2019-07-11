@@ -1,18 +1,10 @@
-FROM ubuntu:16.10
-LABEL maintainer "konstantinos.vandikas@ericsson.com"
+FROM ubuntu:16.04
 
 # update/upgrade base system
-RUN apt-get update
-RUN apt-get -yq upgrade
+RUN apt-get update && apt-get -yq upgrade
 
 # install gcc, make, flex and bison
-RUN apt-get install -yq make gcc wget flex bison
-
-# install python, pip
-RUN apt-get install -yq python python-pip
-
-# upgrade pip
-RUN pip install --upgrade pip
+RUN apt-get install -yq make gcc wget flex bison python python-pip && pip install --upgrade pip
 
 # download ff-metric from source
 WORKDIR /opt

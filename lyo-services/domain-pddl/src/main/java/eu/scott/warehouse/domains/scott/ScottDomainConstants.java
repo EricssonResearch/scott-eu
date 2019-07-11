@@ -36,8 +36,8 @@ public interface ScottDomainConstants
     // Start of user code user constants
     // End of user code
 
-    public static String SCOTT_WAREHOUSE_DOMAIN = "http://ontology.cf.ericsson.net/ns/scott-warehouse#";
-    public static String SCOTT_WAREHOUSE_NAMSPACE = "http://ontology.cf.ericsson.net/ns/scott-warehouse#";
+    public static String SCOTT_WAREHOUSE_DOMAIN = "http://ontology.cf.ericsson.net/ns/scott-warehouse/";
+    public static String SCOTT_WAREHOUSE_NAMSPACE = "http://ontology.cf.ericsson.net/ns/scott-warehouse/";
     public static String SCOTT_WAREHOUSE_NAMSPACE_PREFIX = "scott";
 
     public static String BOX_PATH = "box";
@@ -60,4 +60,16 @@ public interface ScottDomainConstants
     public static String SHELF_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String SHELF_LOCALNAME = "Shelf"; //localName of the rdfs:class the resource describes
     public static String SHELF_TYPE = SHELF_NAMESPACE + SHELF_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String DROP_BELT_PATH = "dropBelt";
+    public static String DROP_BELT_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String DROP_BELT_LOCALNAME = "drop-belt"; //localName of the rdfs:class the resource describes
+    public static String DROP_BELT_TYPE = DROP_BELT_NAMESPACE + DROP_BELT_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String MOVE_TO_WP_PATH = "moveToWp";
+    public static String MOVE_TO_WP_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String MOVE_TO_WP_LOCALNAME = "move-to-wp"; //localName of the rdfs:class the resource describes
+    public static String MOVE_TO_WP_TYPE = MOVE_TO_WP_NAMESPACE + MOVE_TO_WP_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String PICK_SHELF_PATH = "pickShelf";
+    public static String PICK_SHELF_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String PICK_SHELF_LOCALNAME = "pick-shelf"; //localName of the rdfs:class the resource describes
+    public static String PICK_SHELF_TYPE = PICK_SHELF_NAMESPACE + PICK_SHELF_LOCALNAME; //fullname of the rdfs:class the resource describes
 }

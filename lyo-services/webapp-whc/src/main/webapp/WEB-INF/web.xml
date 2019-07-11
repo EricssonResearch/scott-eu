@@ -3,24 +3,28 @@
   xmlns="http://java.sun.com/xml/ns/javaee"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
   id="WebApp_ID" version="3.0">
-  <display-name>Warehouse Controller Adaptor</display-name>
+  <display-name>Warehouse Controller</display-name>
 
   <context-param>
     <description>Base URI for the adaptor.</description>
     <param-name>se.ericsson.cf.scott.sandbox.whc.servlet.baseurl</param-name>
-    <param-value>http://sandbox-whc:8080</param-value>
+    <param-value>http://whc:8080</param-value>
   </context-param>
   <context-param>
-    <param-name>se.ericsson.cf.scott.sandbox.whc.store.query</param-name>
-    <param-value>http://warehouse-fuseki:3030/sandbox-whc/query</param-value>
+    <param-name>se.ericsson.cf.scott.sandbox.whc.kb.query_uri</param-name>
+    <param-value>http://fuseki.svc:3030/sandbox-whc/query</param-value>
   </context-param>
   <context-param>
-    <param-name>se.ericsson.cf.scott.sandbox.whc.store.update</param-name>
-    <param-value>http://warehouse-fuseki:3030/sandbox-whc/update</param-value>
+    <param-name>se.ericsson.cf.scott.sandbox.whc.kb.update_uri</param-name>
+    <param-value>http://fuseki.svc:3030/sandbox-whc/update</param-value>
+  </context-param>
+  <context-param>
+    <param-name>se.ericsson.cf.scott.sandbox.whc.planner.cf_uri</param-name>
+    <param-value>http://planner.svc:3020/planner/planCreationFactory</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.whc.trs.mqtt.broker</param-name>
-    <param-value>tcp://mosquitto:1883</param-value>
+    <param-value>tcp://mqtt.svc:1883</param-value>
   </context-param>
 
   <listener>
@@ -29,7 +33,11 @@
   </listener>
   <servlet>
     <servlet-name>oslc-servlet</servlet-name>
-    <servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>jersey.config.server.provider.packages</param-name>
+      <param-value>se.ericsson.cf.scott.sandbox.whc</param-value>
+    </init-param>
     <init-param>
       <param-name>javax.ws.rs.Application</param-name>
       <param-value>se.ericsson.cf.scott.sandbox.whc.servlet.Application</param-value>

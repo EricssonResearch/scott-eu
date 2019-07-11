@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -94,17 +90,16 @@ public class Shelf
 {
     // Start of user code attributeAnnotation:atX
     // End of user code
-    private Link atX = new Link();
+    private Link atX;
     // Start of user code attributeAnnotation:atY
     // End of user code
-    private Link atY = new Link();
+    private Link atY;
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
     public Shelf()
-           throws URISyntaxException
     {
         super();
     
@@ -113,14 +108,12 @@ public class Shelf
     }
     
     public Shelf(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -147,7 +140,7 @@ public class Shelf
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
@@ -156,37 +149,11 @@ public class Shelf
         return result;
     }
     
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
-        // End of user code
-    
-        return result;
-    }
-    
     
     // Start of user code getterAnnotation:atX
     // End of user code
-    @OslcName("atX")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "atX")
+    @OslcName("at-x")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.COORD_TYPE})
@@ -200,8 +167,8 @@ public class Shelf
     
     // Start of user code getterAnnotation:atY
     // End of user code
-    @OslcName("atY")
-    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "atY")
+    @OslcName("at-y")
+    @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "at-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({ScottDomainConstants.COORD_TYPE})
@@ -236,92 +203,6 @@ public class Shelf
     
         // Start of user code setterFinalize:atY
         // End of user code
-    }
-    
-    
-    static public String atXToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:atXToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"at-x\">at-x: </LABEL>";
-    
-        // Start of user code "Mid:atXToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:atXToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String atYToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:atYToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"at-y\">at-y: </LABEL>";
-    
-        // Start of user code "Mid:atYToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:atYToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    public String atXToHtml()
-    {
-        String s = "";
-    
-        // Start of user code atXtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((atX == null) || (atX.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Coord (atX.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code atXtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String atYToHtml()
-    {
-        String s = "";
-    
-        // Start of user code atYtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((atY == null) || (atY.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Coord (atY.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code atYtoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

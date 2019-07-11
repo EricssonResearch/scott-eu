@@ -1,17 +1,17 @@
 // Start of user code Copyright
-/*******************************************************************************
+/*!*****************************************************************************
  * Copyright (c) 2011, 2012 IBM Corporation and others.
  *
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  *  The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  *  and the Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
- *  
+ *
  *  Contributors:
- *  
+ *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
  *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
@@ -33,32 +33,37 @@ import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
-import eu.scott.warehouse.domains.mission.AgentRequest;
 import eu.scott.warehouse.domains.pddl.Plan;
-import eu.scott.warehouse.domains.mission.RegistrationRequest;
+import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
 
 
 // Start of user code imports
 import java.net.URI;
-import javax.servlet.ServletContext;
-//import org.eclipse.lyo.store.Store;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 
-
-//import org.eclipse.lyo.store.StoreFactory;
-import se.ericsson.cf.scott.sandbox.whc.managers.MqttManager;
-import se.ericsson.cf.scott.sandbox.whc.managers.TRSManager;
-import se.ericsson.cf.scott.sandbox.whc.planning.PlanDTO;
-import se.ericsson.cf.scott.sandbox.whc.trs.WhcChangeHistories;
+import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
+import se.ericsson.cf.scott.sandbox.whc.xtra.clients.TwinClient;
+import se.ericsson.cf.scott.sandbox.whc.xtra.managers.MqttManager;
+import se.ericsson.cf.scott.sandbox.whc.xtra.managers.PlanningManager;
+import se.ericsson.cf.scott.sandbox.whc.xtra.managers.TRSManager;
+import se.ericsson.cf.scott.sandbox.whc.xtra.planning.PlanRequestHelper;
+import se.ericsson.cf.scott.sandbox.whc.xtra.repository.PlanRepository;
+import se.ericsson.cf.scott.sandbox.whc.xtra.repository.PlanRepositoryMem;
+import se.ericsson.cf.scott.sandbox.whc.xtra.repository.TwinRepository;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
+
+import eu.scott.warehouse.lib.InstanceWithResources;
+import eu.scott.warehouse.lib.OslcHelper;
+import eu.scott.warehouse.lib.OslcHelpers;
+import java.util.Optional;
 // End of user code
 
 // Start of user code pre_class_code
@@ -67,78 +72,70 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 public class WarehouseControllerManager {
 
     // Start of user code class_attributes
-    private final static Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
-    private final static UUID whcUUID = UUID.randomUUID();
-    private static ServletContext context;
-    private static WhcChangeHistories changeHistoriesInstance;
-    private static ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
+    private static final Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
+    private static final ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
+    private static TwinRepository twinRepository;
+    private static PlanningManager planningManager;
+    private static PlanRepository planRepository;
     // End of user code
-    
-    
+
+
     // Start of user code class_methods
-    private static UUID getUUID() {
-        return whcUUID;
+    public static ScheduledExecutorService getExecService() {
+        return execService;
     }
 
-    public static String p(final String s) {
-        return context.getInitParameter(AdaptorHelper.parameterFQDN(s));
-    }
-
-    public static WhcChangeHistories getChangeHistories() {
-        return changeHistoriesInstance;
-    }
-
-    public static void setChangeHistories(final WhcChangeHistories changeHistoriesInstance) {
-        WarehouseControllerManager.changeHistoriesInstance = changeHistoriesInstance;
+    public static TwinRepository getTwinRepository() {
+        return twinRepository;
     }
 
     @NotNull
-    public static String getWhcId() {
-        return "whc-" + getUUID();
+    public static PlanRepository getPlanRepository() {
+        return planRepository;
     }
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
-
         AdaptorHelper.initLogger();
-        log.info("WHC instance '{}' is initialising", whcUUID.toString());
+        log.debug("WHC contextInitializeServletListener START");
+        AdaptorHelper.setContext(servletContextEvent.getServletContext());
 
-        context = servletContextEvent.getServletContext();
-        // TODO Andrew@2018-07-30: https://github.com/EricssonResearch/scott-eu/issues/101
-//        StoreManager.initLyoStore();
+        twinRepository = new TwinRepository();
+        planRepository = new PlanRepositoryMem();
+        planningManager = new PlanningManager(
+            new PlanRequestHelper(new OslcHelper(WhcConfig.getBaseUri())), new TwinClient(),
+            planRepository);
 
-        final MqttClient mqttClient = MqttManager.initMqttClient();
+        getExecService().schedule(() -> {
+            log.debug("Initialising an MQTT client");
+            final MqttClient mqttClient = MqttManager.initMqttClient();
 
-        execService.schedule(() -> {
-            log.debug("Can now begin the execution of the planner");
-            TRSManager.fetchPlanForProblem("sample-problem-request.ttl");
-//            final Object[] resources = new PlanRequestBuilder().build();
-//            MqttManager.triggerPlan(new PlanDTO(resources));
-        }, 30, TimeUnit.SECONDS);
-
-//        TRSManager.initTRSServer(mqttClient);
-        TRSManager.initTRSClient(mqttClient);
-
+            log.debug("Initialising a TRS Client");
+            TRSManager.initTRSClient(mqttClient);
+//            log.debug("Initialising a TRS Server");
+//            TRSManager.initTRSServer(mqttClient);
+            log.debug("WHC contextInitializeServletListener BACKGROUND TASK COMPLETE");
+        }, 5, TimeUnit.SECONDS);
+        log.debug("WHC contextInitializeServletListener COMPLETE");
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
-        // TODO Implement code to shutdown connections to data backbone etc...
         log.info("Shutting down the adaptor");
-        // FIXME Andrew@2018-07-30: disconnect from the MQTT broker
+        MqttManager.disconnect();
         // End of user code
     }
 
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         serviceProviderInfos = AdaptorHelper.defaultSPInfo();
         // End of user code
@@ -150,19 +147,21 @@ public class WarehouseControllerManager {
     public static Object[] getPlan(HttpServletRequest httpServletRequest, final String serviceProviderId, final String planId)
     {
         Object[] aResource = null;
-        
+
         // Start of user code getPlan
         log.trace("getPlan({}, {}) called", serviceProviderId, planId);
         // minimal impl to get the TRS provider going
-        if (serviceProviderId.equals(AdaptorHelper.DEFAULT_SP_ID)) {
+        if (serviceProviderId.equals(WhcConfig.DEFAULT_SP_ID)) {
             final URI planURI = WarehouseControllerResourcesFactory.constructURIForPlan(
-                    serviceProviderId, planId);
-            if (TRSManager.getPlans().containsKey(planURI)) {
-                aResource = TRSManager.getPlans().get(planURI);
-                log.info("found a plan", aResource);
+                serviceProviderId, planId);
+            final Optional<InstanceWithResources<Plan>> plan = planRepository.getPlanByURI(planURI);
+            if (plan.isPresent()) {
+                aResource = plan.get().asResourceArray();
             } else {
-                log.warn("a plan {} was not found", planId);
+                log.warn("Plan '{}' was not found", planId);
             }
+        } else {
+            log.warn("Wrong service provider: '{}'", serviceProviderId);
         }
         // End of user code
         return aResource;
@@ -170,12 +169,18 @@ public class WarehouseControllerManager {
 
 
 
-    public static RegistrationRequest createRegistrationRequest(HttpServletRequest httpServletRequest, final RegistrationRequest aResource)
+    public static RegistrationMessage createRegistrationMessage(HttpServletRequest httpServletRequest, final RegistrationMessage aResource)
     {
-        RegistrationRequest newResource = null;
-        
-        // Start of user code createRegistrationRequest
-        // TODO Implement code to create a resource
+        RegistrationMessage newResource = null;
+
+        // Start of user code createRegistrationMessage
+        if(aResource != null) {
+            log.info("Registering Twin {} ({})", aResource.getLabel(), aResource.getServiceProvider().getValue());
+            getTwinRepository().registerTwin(aResource);
+            newResource = aResource;
+        } else {
+            throw new IllegalArgumentException("The input must be of type twins:RegistrationMessage");
+        }
         // End of user code
         return newResource;
     }
@@ -187,14 +192,14 @@ public class WarehouseControllerManager {
     {
         String eTag = null;
         // Start of user code getETagFromPlan
-        eTag = AdaptorHelper.hexHashCodeFor(aResource);
+        eTag = OslcHelpers.hexHashCodeFor(aResource);
         // End of user code
         return eTag;
     }
-    public static String getETagFromRegistrationRequest(final RegistrationRequest aResource)
+    public static String getETagFromRegistrationMessage(final RegistrationMessage aResource)
     {
         String eTag = null;
-        // Start of user code getETagFromRegistrationRequest
+        // Start of user code getETagFromRegistrationMessage
         // TODO Implement code to return an ETag for a particular resource
         // End of user code
         return eTag;

@@ -10,70 +10,17 @@
     <relativePath>../lyo-webapp-parent</relativePath>
   </parent>
   <artifactId>domain-pddl</artifactId>
-  <name>Sandbox :: Domain model</name>
+  <name>Sandbox :: Lib :: Domain model</name>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <version.lyo>2.4.0-SNAPSHOT</version.lyo>
-    <kotlin.version>1.2.51</kotlin.version>
+    <version.lyo>4.0.0-SNAPSHOT</version.lyo>
   </properties>
   <dependencies>
-    <dependency>
-      <!--TODO move to the lib-->
-      <groupId>com.hazelcast</groupId>
-      <artifactId>hazelcast</artifactId>
-      <version>3.10.4</version>
-    </dependency>
-    <dependency>
-      <!--TODO move to the lib-->
-      <groupId>org.bitsofinfo</groupId>
-      <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-      <version>1.0-RC8</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
-    </dependency>
-    <dependency>
-      <!--TODO refactor-->
-      <groupId>org.eclipse.paho</groupId>
-      <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <!--TODO refactor-->
-      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
-      <artifactId>oslc4j-jena-provider</artifactId>
-      <version>2.4.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.lyo.trs</groupId>
-      <artifactId>trs-client</artifactId>
-      <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <!--TODO fix upstream-->
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-        <exclusion>
-          <!--TODO fix upstream or use Jena 3.8.0; conflicts with Jena stax-api (JENA-1537)-->
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.25</version>
     </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib</artifactId>
-      <version>${kotlin.version}</version>
-    </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -84,12 +31,11 @@
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-core</artifactId>
       <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.lyo.oslc4j.core</groupId>
+      <artifactId>oslc4j-jena-provider</artifactId>
+      <version>${version.lyo}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -97,63 +43,10 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.checkerframework</groupId>
+      <artifactId>checker-qual</artifactId>
+      <version>2.5.2</version>
+    </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <version>${kotlin.version}</version>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <goals> <goal>compile</goal> </goals>
-            <configuration>
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                <sourceDir>${project.basedir}/src/main/java</sourceDir>
-              </sourceDirs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <goals> <goal>test-compile</goal> </goals>
-            <configuration>
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-                <sourceDir>${project.basedir}/src/test/java</sourceDir>
-              </sourceDirs>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
-        <executions>
-          <!-- Replacing default-compile as it is treated specially by maven -->
-          <execution>
-            <id>default-compile</id>
-            <phase>none</phase>
-          </execution>
-          <!-- Replacing default-testCompile as it is treated specially by maven -->
-          <execution>
-            <id>default-testCompile</id>
-            <phase>none</phase>
-          </execution>
-          <execution>
-            <id>java-compile</id>
-            <phase>compile</phase>
-            <goals> <goal>compile</goal> </goals>
-          </execution>
-          <execution>
-            <id>java-test-compile</id>
-            <phase>test-compile</phase>
-            <goals> <goal>testCompile</goal> </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.annotation.OslcAllowedValue;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDescription;
@@ -96,7 +92,7 @@ public interface IStep
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getAdding();
+    public Set<Link> getAdding();
 
     @OslcName("deleting")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "deleting")
@@ -104,7 +100,7 @@ public interface IStep
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getDeleting();
+    public Set<Link> getDeleting();
 
     @OslcName("updating")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "updating")
@@ -112,7 +108,7 @@ public interface IStep
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getUpdating();
+    public Set<Link> getUpdating();
 
     @OslcName("order")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "order")
@@ -124,9 +120,9 @@ public interface IStep
 
 
     public void setAction(final Link action );
-    public void setAdding(final HashSet<Link> adding );
-    public void setDeleting(final HashSet<Link> deleting );
-    public void setUpdating(final HashSet<Link> updating );
+    public void setAdding(final Set<Link> adding );
+    public void setDeleting(final Set<Link> deleting );
+    public void setUpdating(final Set<Link> updating );
     public void setOrder(final Integer order );
 }
 

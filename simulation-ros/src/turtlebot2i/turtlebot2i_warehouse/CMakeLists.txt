@@ -29,7 +29,13 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 add_service_files(
   DIRECTORY srv FILES
-  TaskRequest.srv
+  Task.srv
+  TaskArray.srv
+)
+
+add_message_files(
+  DIRECTORY msg FILES
+  Action.msg
 )
 
 generate_messages(

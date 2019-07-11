@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -92,17 +88,16 @@ public class On
 {
     // Start of user code attributeAnnotation:onX
     // End of user code
-    private Link onX = new Link();
+    private Link onX;
     // Start of user code attributeAnnotation:onY
     // End of user code
-    private Link onY = new Link();
+    private Link onY;
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
     public On()
-           throws URISyntaxException
     {
         super();
     
@@ -111,14 +106,12 @@ public class On
     }
     
     public On(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -145,7 +138,7 @@ public class On
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
@@ -154,37 +147,11 @@ public class On
         return result;
     }
     
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
-        // End of user code
-    
-        return result;
-    }
-    
     
     // Start of user code getterAnnotation:onX
     // End of user code
-    @OslcName("onX")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onX")
+    @OslcName("on-x")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "on-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
@@ -197,8 +164,8 @@ public class On
     
     // Start of user code getterAnnotation:onY
     // End of user code
-    @OslcName("onY")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onY")
+    @OslcName("on-y")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "on-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
@@ -232,92 +199,6 @@ public class On
     
         // Start of user code setterFinalize:onY
         // End of user code
-    }
-    
-    
-    static public String onXToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:onXToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"on-x\">on-x: </LABEL>";
-    
-        // Start of user code "Mid:onXToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:onXToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String onYToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:onYToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"on-y\">on-y: </LABEL>";
-    
-        // Start of user code "Mid:onYToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:onYToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    public String onXToHtml()
-    {
-        String s = "";
-    
-        // Start of user code onXtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((onX == null) || (onX.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + onX.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code onXtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String onYToHtml()
-    {
-        String s = "";
-    
-        // Start of user code onYtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((onY == null) || (onY.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + onY.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code onYtoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     
