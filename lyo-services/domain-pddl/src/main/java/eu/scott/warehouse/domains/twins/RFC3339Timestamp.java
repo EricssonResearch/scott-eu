@@ -95,7 +95,6 @@ public class RFC3339Timestamp
     // Start of user code classMethods
     // End of user code
     public RFC3339Timestamp()
-           throws URISyntaxException
     {
         super();
     
@@ -104,7 +103,6 @@ public class RFC3339Timestamp
     }
     
     public RFC3339Timestamp(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -137,7 +135,7 @@ public class RFC3339Timestamp
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

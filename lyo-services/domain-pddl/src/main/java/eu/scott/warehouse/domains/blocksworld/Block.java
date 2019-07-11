@@ -72,7 +72,6 @@ import eu.scott.warehouse.domains.pddl.PrimitiveType;
 
 
 // Start of user code imports
-import eu.scott.warehouse.domains.pddl.PrimitiveType;
 // End of user code
 
 // Start of user code preClassCode
@@ -93,7 +92,6 @@ public class Block
     // Start of user code classMethods
     // End of user code
     public Block()
-           throws URISyntaxException
     {
         super();
     
@@ -102,7 +100,6 @@ public class Block
     }
     
     public Block(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -135,11 +132,10 @@ public class Block
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-//        result = String.format("b{%s}",)
         // End of user code
     
         return result;

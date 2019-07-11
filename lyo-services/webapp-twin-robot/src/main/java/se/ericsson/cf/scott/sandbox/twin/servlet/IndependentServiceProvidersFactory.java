@@ -29,7 +29,11 @@ package se.ericsson.cf.scott.sandbox.twin.servlet;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+
+import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
@@ -37,6 +41,9 @@ import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
 import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+
+import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 
 import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
@@ -64,18 +71,55 @@ public class IndependentServiceProvidersFactory
         super();
     }
 
-    public static ServiceProvider createServiceProvider(final String baseURI, final String title, final String description, final Publisher publisher, final Map<String,Object> parameterValueMap)
-           throws OslcCoreApplicationException, URISyntaxException
+    public static URI constructURI(final String serviceProviderId)
     {
-        final ServiceProvider serviceProvider = ServiceProviderFactory.createServiceProvider(baseURI,
-                                                    null,
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("serviceProviderId", serviceProviderId);
+        String instanceURI = "independent/{serviceProviderId}";
+
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+
+    public static URI constructURI(final IndependentServiceProviderInfo serviceProviderInfo)
+    {
+        return constructURI(serviceProviderInfo.serviceProviderId);
+    }
+
+    public static String constructIdentifier(final String serviceProviderId)
+    {
+        return serviceProviderId;
+    }
+
+    public static String constructIdentifier(final IndependentServiceProviderInfo serviceProviderInfo)
+    {
+        return constructIdentifier(serviceProviderInfo.serviceProviderId);
+    }
+
+    public static ServiceProvider createServiceProvider(final IndependentServiceProviderInfo serviceProviderInfo) 
+            throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
+        // Start of user code init
+        // End of user code
+        URI serviceProviderURI = constructURI(serviceProviderInfo);
+        String identifier = constructIdentifier(serviceProviderInfo);
+        String basePath = OSLC4JUtils.getServletURI();
+        String title = serviceProviderInfo.name;
+        String description = String.format("%s (id: %s; kind: %s)",
+            "Generic SP for SP-independent services",
+            identifier,
+            "Independent");
+        Publisher publisher = null;
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
+
+        ServiceProvider serviceProvider = ServiceProviderFactory.createServiceProvider(basePath,
+                                                    "",
                                                     title,
                                                     description,
                                                     publisher,
                                                     RESOURCE_CLASSES,
-                                                    parameterValueMap);
-        URI detailsURIs[] = {new URI(baseURI)};
-        serviceProvider.setDetails(detailsURIs);
+                                                    parameterMap);
 
         final PrefixDefinition[] prefixDefinitions =
         {
@@ -88,65 +132,15 @@ public class IndependentServiceProvidersFactory
 ,
             new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE))
         };
-
         serviceProvider.setPrefixDefinitions(prefixDefinitions);
-
-        return serviceProvider;
-    }
-
-    // move back to the SPCSingleton for now
-    @Deprecated
-    public static ServiceProvider createIndependentServiceProvider(
-        final IndependentServiceProviderInfo serviceProviderInfo)
-        throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
-        String basePath = OSLC4JUtils.getServletURI();
-        String identifier = independentServiceProviderIdentifier(
-            serviceProviderInfo.serviceProviderId);
-        if (ServiceProviderCatalogSingleton.containsIndependentServiceProvider(
-            serviceProviderInfo.serviceProviderId)) {
-            throw new IllegalArgumentException(
-                String.format("The SP '%s' was already registered", identifier));
-        }
-
-        String serviceProviderName = serviceProviderInfo.name;
-        String title = String.format("Service Provider '%s'", serviceProviderName);
-        String description = String.format("%s (id: %s; kind: %s)",
-                                           "Generic SP for SP-independent services", identifier,
-                                           "Independent"
-        );
-        Publisher publisher = null;
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
-        final ServiceProvider serviceProvider = createServiceProvider(
-            basePath, title, description, publisher, parameterMap);
-
-        final URI serviceProviderURI = IndependentServiceProvidersFactory.constructIndependentServiceProviderURI(
-            serviceProviderInfo.serviceProviderId);
 
         serviceProvider.setAbout(serviceProviderURI);
         serviceProvider.setIdentifier(identifier);
         serviceProvider.setCreated(new Date());
-        serviceProvider.setDetails(new URI[]{serviceProviderURI});
+        serviceProvider.setDetails(new URI[] {serviceProviderURI});
 
+        // Start of user code finalize
+        // End of user code
         return serviceProvider;
-    }
-
-    // move back to the SPCSingleton for now
-    @Deprecated
-    static URI constructIndependentServiceProviderURI(final String serviceProviderId) {
-        String basePath = OSLC4JUtils.getServletURI();
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("serviceProviderId", serviceProviderId);
-        String instanceURI = "independent/{serviceProviderId}";
-
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
-    }
-
-    // move back to the SPCSingleton for now
-    @Deprecated
-    static String independentServiceProviderIdentifier(final String serviceProviderId) {
-        String identifier = "/" + serviceProviderId;
-        return identifier;
     }
 }

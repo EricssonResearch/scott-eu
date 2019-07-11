@@ -102,7 +102,6 @@ public class PlanExecutionResult
     // Start of user code classMethods
     // End of user code
     public PlanExecutionResult()
-           throws URISyntaxException
     {
         super();
     
@@ -111,7 +110,6 @@ public class PlanExecutionResult
     }
     
     public PlanExecutionResult(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -144,7 +142,7 @@ public class PlanExecutionResult
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

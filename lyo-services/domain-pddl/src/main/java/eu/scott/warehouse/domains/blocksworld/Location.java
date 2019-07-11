@@ -75,7 +75,6 @@ import eu.scott.warehouse.domains.pddl.PrimitiveType;
 // End of user code
 
 // Start of user code preClassCode
-import eu.scott.warehouse.domains.pddl.PrimitiveType;
 // End of user code
 
 // Start of user code classAnnotations
@@ -93,7 +92,6 @@ public class Location
     // Start of user code classMethods
     // End of user code
     public Location()
-           throws URISyntaxException
     {
         super();
     
@@ -102,7 +100,6 @@ public class Location
     }
     
     public Location(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -135,7 +132,7 @@ public class Location
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

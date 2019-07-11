@@ -1,9 +1,8 @@
 package se.ericsson.cf.scott.sandbox.twin.xtra;
 
 import com.google.common.base.Strings;
-import eu.scott.warehouse.lib.MqttClientBuilder;
-import eu.scott.warehouse.lib.MqttTopics;
-import eu.scott.warehouse.lib.TrsMqttGateway;
+import eu.scott.warehouse.lib.MqttGatewayBuilder;
+import eu.scott.warehouse.lib.RdfMqttGateway;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +12,6 @@ import org.apache.jena.sparql.ARQException;
 import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.lyo.store.StoreFactory;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -26,9 +24,6 @@ import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsMqttClientManager;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinAckRegistrationAgent;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
-
 
 public class TwinAdaptorHelper {
     private final static Logger log = LoggerFactory.getLogger(TwinAdaptorHelper.class);
@@ -36,16 +31,15 @@ public class TwinAdaptorHelper {
     static String trsTopic;
     static TrsMqttClientManager trsClientManager;
     static Store store;
-    static TrsMqttGateway mqttGateway;
-    static TwinChangeHistories changeHistories;
+    static RdfMqttGateway mqttGateway;
     private static ServletContext servletContext;
     private static ServiceProviderRepository serviceProviderRepository;
 
-    public static TrsMqttGateway getMqttGateway() {
+    public static RdfMqttGateway getMqttGateway() {
         return mqttGateway;
     }
 
-    public static void setMqttGateway(final TrsMqttGateway mqttGateway) {
+    public static void setMqttGateway(final RdfMqttGateway mqttGateway) {
         TwinAdaptorHelper.mqttGateway = mqttGateway;
     }
 
@@ -71,14 +65,6 @@ public class TwinAdaptorHelper {
 
     public static void setTrsClientManager(TrsMqttClientManager trsClientManager) {
         TwinAdaptorHelper.trsClientManager = trsClientManager;
-    }
-
-    public static ChangeHistories getChangeHistories() {
-        return changeHistories;
-    }
-
-    public static void setChangeHistories(final TwinChangeHistories changeHistories) {
-        TwinAdaptorHelper.changeHistories = changeHistories;
     }
 
     public static ServletContext getServletContext() {
@@ -111,7 +97,7 @@ public class TwinAdaptorHelper {
         final OslcClient client = new OslcClient();
         // TODO Andrew@2019-01-29: remove hardcoded URI
         return new TwinRegistrationClient(
-            client, "http://sandbox-whc:8080/services/service2/registrationMessages/register");
+            client, "http://whc.svc:8080/services/service2/registrationMessages/register");
     }
 
     public static void initTrsClient() {
@@ -119,9 +105,8 @@ public class TwinAdaptorHelper {
         // TODO Andrew@2018-07-31: remove non-gateway based code
         try {
             log.debug("Connecting to the MQTT broker: {}", mqttBroker);
-            mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
+            mqttGateway = new MqttGatewayBuilder().withBroker(mqttBroker)
                                                  .withId(getTwinUUID())
-                                                 .withRegistration(new TwinAckRegistrationAgent(MqttTopics.WHC_PLANS))
                                                  .build();
             final MqttClient mqttClient = mqttGateway.getMqttClient();
             final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttClient);
@@ -163,7 +148,7 @@ public class TwinAdaptorHelper {
     static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
         try {
             log.info("Registering provider: {}", info);
-            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createTwinsServiceProvider(info);
+            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createServiceProvider(info);
             ServiceProviderCatalogSingleton.registerTwinsServiceProvider(robotSP);
             return robotSP;
         } catch (URISyntaxException | OslcCoreApplicationException e) {

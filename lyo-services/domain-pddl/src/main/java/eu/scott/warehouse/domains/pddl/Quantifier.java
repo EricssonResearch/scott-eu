@@ -98,7 +98,6 @@ public class Quantifier
     // Start of user code classMethods
     // End of user code
     public Quantifier()
-           throws URISyntaxException
     {
         super();
     
@@ -107,7 +106,6 @@ public class Quantifier
     }
     
     public Quantifier(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -140,7 +138,7 @@ public class Quantifier
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

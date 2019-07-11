@@ -8,6 +8,7 @@ build:
 	(cd deployment/eclipse-mosquitto &&	make build)
 	(cd deployment/jena-fuseki 	&&	make build)
 	(cd lyo-services 		&&	make build)
+	(cd flink-jobs 			&&	make build)
 	(cd robot-emulator 		&&	make build)
 
 push:
@@ -16,6 +17,7 @@ push:
 	(cd deployment/eclipse-mosquitto &&	make push)
 	(cd deployment/jena-fuseki 	&&	make push)
 	(cd lyo-services		&&	make push)
+	#(cd flink-jobs 			&&	make push)
 	(cd robot-emulator		&&	make push)
 
 restart-swarm:

@@ -92,7 +92,6 @@ public class DropBelt
     // Start of user code classMethods
     // End of user code
     public DropBelt()
-           throws URISyntaxException
     {
         super();
     
@@ -101,7 +100,6 @@ public class DropBelt
     }
     
     public DropBelt(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -134,7 +132,7 @@ public class DropBelt
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

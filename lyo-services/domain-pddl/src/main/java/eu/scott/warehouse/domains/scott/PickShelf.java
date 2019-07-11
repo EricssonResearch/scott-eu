@@ -92,7 +92,6 @@ public class PickShelf
     // Start of user code classMethods
     // End of user code
     public PickShelf()
-           throws URISyntaxException
     {
         super();
     
@@ -101,7 +100,6 @@ public class PickShelf
     }
     
     public PickShelf(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -134,7 +132,7 @@ public class PickShelf
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

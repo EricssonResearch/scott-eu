@@ -57,7 +57,7 @@
           </children>
           <children xmi:type="notation:Node" xmi:id="_Q3WlQBi5EeikF-vCO9HXQg" type="3012" element="_Q2ebgBi5EeikF-vCO9HXQg">
             <children xmi:type="notation:Node" xmi:id="_Q3XMUBi5EeikF-vCO9HXQg" type="5010">
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_Q3XMURi5EeikF-vCO9HXQg" x="31" y="5"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_Q3XMURi5EeikF-vCO9HXQg" x="-20" y="4"/>
             </children>
             <children xmi:type="notation:Node" xmi:id="_Q3bdwBi5EeikF-vCO9HXQg" type="3005" element="_Q2ebgRi5EeikF-vCO9HXQg">
               <styles xmi:type="notation:ShapeStyle" xmi:id="_Q3bdwRi5EeikF-vCO9HXQg" fontName=".AppleSystemUIFont"/>
@@ -68,14 +68,14 @@
           </children>
           <children xmi:type="notation:Node" xmi:id="_u-2EICQREem2Pvi8H506IQ" type="3012" element="_u9y7QCQREem2Pvi8H506IQ">
             <children xmi:type="notation:Node" xmi:id="_u-2rMCQREem2Pvi8H506IQ" type="5010">
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_u-2rMSQREem2Pvi8H506IQ" x="31" y="5"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_u-2rMSQREem2Pvi8H506IQ" x="-94" y="9"/>
             </children>
             <children xmi:type="notation:Node" xmi:id="_u-6VkCQREem2Pvi8H506IQ" type="3005" element="_u9ziUCQREem2Pvi8H506IQ">
               <styles xmi:type="notation:ShapeStyle" xmi:id="_u-6VkSQREem2Pvi8H506IQ" fontName=".AppleSystemUIFont"/>
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u-6VkiQREem2Pvi8H506IQ"/>
             </children>
             <styles xmi:type="notation:ShapeStyle" xmi:id="_u-2EISQREem2Pvi8H506IQ" fontName=".AppleSystemUIFont"/>
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u-2EIiQREem2Pvi8H506IQ" x="-22" width="30" height="30"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u-2EIiQREem2Pvi8H506IQ" x="140" y="76" width="30" height="30"/>
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_5vo1oRHPEei8f44qdc-xoQ" fontName=".AppleSystemUIFont"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5vo1ohHPEei8f44qdc-xoQ" x="152" y="124"/>
@@ -87,7 +87,7 @@
             <styles xmi:type="notation:FilteringStyle" xmi:id="_5vpcuRHPEei8f44qdc-xoQ"/>
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_5vpctBHPEei8f44qdc-xoQ" fontName=".AppleSystemUIFont"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5vpctRHPEei8f44qdc-xoQ" x="88" y="512"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5vpctRHPEei8f44qdc-xoQ" x="296" y="364"/>
         </children>
         <children xmi:type="notation:Node" xmi:id="_5vpcuhHPEei8f44qdc-xoQ" type="2002" element="_5u85IhHPEei8f44qdc-xoQ">
           <children xmi:type="notation:Node" xmi:id="_5vqDwBHPEei8f44qdc-xoQ" type="5006"/>
@@ -104,7 +104,7 @@
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9QAcquwEeiXztvONuxTyg"/>
             </children>
             <styles xmi:type="notation:ShapeStyle" xmi:id="_R9OLR6uwEeiXztvONuxTyg" fontName=".SF NS Text"/>
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9OLSKuwEeiXztvONuxTyg" x="-22" y="36" width="30" height="30"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9OLSKuwEeiXztvONuxTyg" x="-22" y="40" width="30" height="30"/>
           </children>
           <children xmi:type="notation:Node" xmi:id="_lTX_MKyCEeiXztvONuxTyg" type="3012" element="_lShDkKyCEeiXztvONuxTyg">
             <children xmi:type="notation:Node" xmi:id="_lTX_M6yCEeiXztvONuxTyg" type="5010">
@@ -115,7 +115,7 @@
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="_lTZ0YqyCEeiXztvONuxTyg"/>
             </children>
             <styles xmi:type="notation:ShapeStyle" xmi:id="_lTX_MayCEeiXztvONuxTyg" fontName=".SF NS Text"/>
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_lTX_MqyCEeiXztvONuxTyg" x="-22" width="30" height="30"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_lTX_MqyCEeiXztvONuxTyg" x="-22" y="76" width="30" height="30"/>
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_5vpcuxHPEei8f44qdc-xoQ" fontName=".AppleSystemUIFont"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5vpcvBHPEei8f44qdc-xoQ" x="772" y="116"/>
@@ -127,7 +127,7 @@
             <styles xmi:type="notation:FilteringStyle" xmi:id="_kWdhkpT1EeiruKQ1CH8-2Q"/>
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_kWVlwZT1EeiruKQ1CH8-2Q" fontName=".AppleSystemUIFont"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_kWVlwpT1EeiruKQ1CH8-2Q" x="464" y="365" width="150" height="150"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_kWVlwpT1EeiruKQ1CH8-2Q" x="480" y="364" width="150" height="150"/>
         </children>
         <children xmi:type="notation:Node" xmi:id="_uJ6iABiyEem2dvzw-IY9Vg" type="2002" element="_uJnAABiyEem2dvzw-IY9Vg">
           <children xmi:type="notation:Node" xmi:id="_uJ7JEBiyEem2dvzw-IY9Vg" type="5006"/>
@@ -136,22 +136,22 @@
             <styles xmi:type="notation:FilteringStyle" xmi:id="_uJ7JExiyEem2dvzw-IY9Vg"/>
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_uJ6iARiyEem2dvzw-IY9Vg" fontName=".AppleSystemUIFont"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uJ6iAhiyEem2dvzw-IY9Vg" x="772" y="365" width="150" height="150"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uJ6iAhiyEem2dvzw-IY9Vg" x="656" y="364" width="150" height="150"/>
         </children>
         <styles xmi:type="notation:DiagramStyle" xmi:id="_J1_qohHPEei8f44qdc-xoQ"/>
         <edges xmi:type="notation:Edge" xmi:id="_R9ROkKuwEeiXztvONuxTyg" type="4001" element="_R9J50KuwEeiXztvONuxTyg" source="_R9OLRquwEeiXztvONuxTyg" target="_Q3WlQBi5EeikF-vCO9HXQg">
           <children xmi:type="notation:Node" xmi:id="_R9ROlKuwEeiXztvONuxTyg" type="6001">
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9ROlauwEeiXztvONuxTyg" x="2" y="13"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9ROlauwEeiXztvONuxTyg" x="4" y="14"/>
           </children>
           <children xmi:type="notation:Node" xmi:id="_R9ROlquwEeiXztvONuxTyg" type="6002">
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9ROl6uwEeiXztvONuxTyg" x="-2" y="-6"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9ROl6uwEeiXztvONuxTyg" x="-2" y="-5"/>
           </children>
           <children xmi:type="notation:Node" xmi:id="_R9ROmKuwEeiXztvONuxTyg" type="6003">
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9ROmauwEeiXztvONuxTyg" x="1" y="-4"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_R9ROmauwEeiXztvONuxTyg" x="3" y="-3"/>
           </children>
           <styles xmi:type="notation:ConnectorStyle" xmi:id="_R9ROkauwEeiXztvONuxTyg"/>
           <styles xmi:type="notation:FontStyle" xmi:id="_R9ROkquwEeiXztvONuxTyg" fontName=".SF NS Text"/>
-          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_R9ROk6uwEeiXztvONuxTyg" points="[-15, 0, 443, -8]$[-443, 7, 15, -1]"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_R9ROk6uwEeiXztvONuxTyg" points="[-15, 0, 443, -4]$[-443, 3, 15, -1]"/>
           <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_R9R1oKuwEeiXztvONuxTyg" id="(0.5,0.5)"/>
           <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_R9R1oauwEeiXztvONuxTyg" id="(0.5,0.5)"/>
         </edges>
@@ -174,6 +174,9 @@
       <ownedBorderedNodes xmi:type="diagram:DNode" xmi:id="_u9y7QCQREem2Pvi8H506IQ" name="RegistrationMessage" width="3" height="3" resizeKind="NSEW">
         <target xmi:type="oslc4j_ai:Resource" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.0"/>
         <semanticElements xmi:type="oslc4j_ai:Resource" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.0"/>
+        <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+        <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+        <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
         <ownedStyle xmi:type="diagram:WorkspaceImage" xmi:id="_u9ziUCQREem2Pvi8H506IQ" labelSize="9" showIcon="false" workspacePath="/org.eclipse.lyo.tools.toolchain.design/images/providedInterface.png">
           <description xmi:type="style:WorkspaceImageDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='ToolchainDiagram']/@defaultLayer/@containerMappings[name='Toolchain.AdaptorInterface']/@borderedNodeMappings[name='Toolchain.AdaptorInterface.ManagedResource']/@style"/>
         </ownedStyle>
@@ -215,6 +218,9 @@
       <ownedBorderedNodes xmi:type="diagram:DNode" xmi:id="_lShDkKyCEeiXztvONuxTyg" name="DeviceRegistrationMessage" width="3" height="3" resizeKind="NSEW">
         <target xmi:type="oslc4j_ai:Resource" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.2"/>
         <semanticElements xmi:type="oslc4j_ai:Resource" href="platform:/resource/model-domain-pddl/spec.xmi#//@domainSpecifications.5/@resources.2"/>
+        <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+        <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+        <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
         <ownedStyle xmi:type="diagram:WorkspaceImage" xmi:id="_lShDkayCEeiXztvONuxTyg" labelSize="9" showIcon="false" workspacePath="/org.eclipse.lyo.tools.toolchain.design/images/providedInterface.png">
           <description xmi:type="style:WorkspaceImageDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='ToolchainDiagram']/@defaultLayer/@containerMappings[name='Toolchain.AdaptorInterface']/@borderedNodeMappings[name='Toolchain.AdaptorInterface.ManagedResource']/@style"/>
         </ownedStyle>

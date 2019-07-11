@@ -3,35 +3,28 @@
   xmlns="http://java.sun.com/xml/ns/javaee"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
   id="WebApp_ID" version="3.0">
-  <display-name>Warehouse Controller Adaptor (dev)</display-name>
+  <display-name>Warehouse Controller</display-name>
 
   <context-param>
     <description>Base URI for the adaptor.</description>
     <param-name>se.ericsson.cf.scott.sandbox.whc.servlet.baseurl</param-name>
-    <param-value>http://localhost:8180</param-value>
+    <param-value>http://whc:8080</param-value>
   </context-param>
   <context-param>
-    <!--TODO remove-->
     <param-name>se.ericsson.cf.scott.sandbox.whc.kb.query_uri</param-name>
-    <param-value>http://fuseki.aide.md.kth.se/scott-warehouse/query</param-value>
+    <param-value>http://fuseki.svc:3030/sandbox-whc/query</param-value>
   </context-param>
   <context-param>
     <param-name>se.ericsson.cf.scott.sandbox.whc.kb.update_uri</param-name>
-    <param-value>http://fuseki.aide.md.kth.se/scott-warehouse/update</param-value>
+    <param-value>http://fuseki.svc:3030/sandbox-whc/update</param-value>
   </context-param>
   <context-param>
-<!--    TODO remove in favour of the base URI-->
     <param-name>se.ericsson.cf.scott.sandbox.whc.planner.cf_uri</param-name>
-    <param-value>http://localhost:3020/planner/planCreationFactory</param-value>
+    <param-value>http://planner.svc:3020/planner/planCreationFactory</param-value>
   </context-param>
   <context-param>
-    <param-name>se.ericsson.cf.scott.sandbox.whc.twin.base_uri</param-name>
-    <param-value>http://sandbox-twin:8080/</param-value>
-  </context-param>
-  <context-param>
-    <!--TODO remove-->
     <param-name>se.ericsson.cf.scott.sandbox.whc.trs.mqtt.broker</param-name>
-    <param-value>tcp://localhost:1883</param-value>
+    <param-value>tcp://mqtt.svc:1883</param-value>
   </context-param>
 
   <listener>

@@ -101,7 +101,6 @@ public class DeviceRegistrationMessage
     // Start of user code classMethods
     // End of user code
     public DeviceRegistrationMessage()
-           throws URISyntaxException
     {
         super();
     
@@ -110,7 +109,6 @@ public class DeviceRegistrationMessage
     }
     
     public DeviceRegistrationMessage(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -143,7 +141,7 @@ public class DeviceRegistrationMessage
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

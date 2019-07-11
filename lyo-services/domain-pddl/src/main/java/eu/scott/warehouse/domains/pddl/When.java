@@ -98,7 +98,6 @@ public class When
     // Start of user code classMethods
     // End of user code
     public When()
-           throws URISyntaxException
     {
         super();
     
@@ -107,7 +106,6 @@ public class When
     }
     
     public When(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -140,7 +138,7 @@ public class When
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

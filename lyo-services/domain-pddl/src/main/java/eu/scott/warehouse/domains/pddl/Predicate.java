@@ -99,7 +99,6 @@ public class Predicate
     // Start of user code classMethods
     // End of user code
     public Predicate()
-           throws URISyntaxException
     {
         super();
     
@@ -108,7 +107,6 @@ public class Predicate
     }
     
     public Predicate(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -141,7 +139,7 @@ public class Predicate
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

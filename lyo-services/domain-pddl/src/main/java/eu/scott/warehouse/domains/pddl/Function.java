@@ -99,7 +99,6 @@ public class Function
     // Start of user code classMethods
     // End of user code
     public Function()
-           throws URISyntaxException
     {
         super();
     
@@ -108,7 +107,6 @@ public class Function
     }
     
     public Function(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -141,7 +139,7 @@ public class Function
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize

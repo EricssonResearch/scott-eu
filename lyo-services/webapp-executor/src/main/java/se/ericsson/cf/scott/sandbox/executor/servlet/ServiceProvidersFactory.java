@@ -29,7 +29,11 @@ package se.ericsson.cf.scott.sandbox.executor.servlet;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+
+import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
@@ -37,6 +41,9 @@ import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
 import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+
+import se.ericsson.cf.scott.sandbox.executor.ServiceProviderInfo;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import se.ericsson.cf.scott.sandbox.executor.services.ServiceProviderService1;
@@ -56,18 +63,55 @@ public class ServiceProvidersFactory
         super();
     }
 
-    public static ServiceProvider createServiceProvider(final String baseURI, final String title, final String description, final Publisher publisher, final Map<String,Object> parameterValueMap)
-           throws OslcCoreApplicationException, URISyntaxException
+    public static URI constructURI(final String serviceProviderId)
     {
-        final ServiceProvider serviceProvider = ServiceProviderFactory.createServiceProvider(baseURI,
-                                                    null,
+        String basePath = OSLC4JUtils.getServletURI();
+        Map<String, Object> pathParameters = new HashMap<String, Object>();
+        pathParameters.put("serviceProviderId", serviceProviderId);
+        String instanceURI = "serviceProviders/{serviceProviderId}";
+
+        final UriBuilder builder = UriBuilder.fromUri(basePath);
+        return builder.path(instanceURI).buildFromMap(pathParameters);
+    }
+
+    public static URI constructURI(final ServiceProviderInfo serviceProviderInfo)
+    {
+        return constructURI(serviceProviderInfo.serviceProviderId);
+    }
+
+    public static String constructIdentifier(final String serviceProviderId)
+    {
+        return serviceProviderId;
+    }
+
+    public static String constructIdentifier(final ServiceProviderInfo serviceProviderInfo)
+    {
+        return constructIdentifier(serviceProviderInfo.serviceProviderId);
+    }
+
+    public static ServiceProvider createServiceProvider(final ServiceProviderInfo serviceProviderInfo) 
+            throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
+        // Start of user code init
+        // End of user code
+        URI serviceProviderURI = constructURI(serviceProviderInfo);
+        String identifier = constructIdentifier(serviceProviderInfo);
+        String basePath = OSLC4JUtils.getServletURI();
+        String title = serviceProviderInfo.name;
+        String description = String.format("%s (id: %s; kind: %s)",
+            "Service Provider",
+            identifier,
+            "Service Provider");
+        Publisher publisher = null;
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
+
+        ServiceProvider serviceProvider = ServiceProviderFactory.createServiceProvider(basePath,
+                                                    "",
                                                     title,
                                                     description,
                                                     publisher,
                                                     RESOURCE_CLASSES,
-                                                    parameterValueMap);
-        URI detailsURIs[] = {new URI(baseURI)};
-        serviceProvider.setDetails(detailsURIs);
+                                                    parameterMap);
 
         final PrefixDefinition[] prefixDefinitions =
         {
@@ -78,9 +122,15 @@ public class ServiceProvidersFactory
             new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
             new PrefixDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, new URI(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE))
         };
-
         serviceProvider.setPrefixDefinitions(prefixDefinitions);
 
+        serviceProvider.setAbout(serviceProviderURI);
+        serviceProvider.setIdentifier(identifier);
+        serviceProvider.setCreated(new Date());
+        serviceProvider.setDetails(new URI[] {serviceProviderURI});
+
+        // Start of user code finalize
+        // End of user code
         return serviceProvider;
     }
 }

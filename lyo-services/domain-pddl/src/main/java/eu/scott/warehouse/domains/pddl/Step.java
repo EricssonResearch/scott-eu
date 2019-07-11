@@ -108,7 +108,6 @@ public class Step
     // Start of user code classMethods
     // End of user code
     public Step()
-           throws URISyntaxException
     {
         super();
     
@@ -117,7 +116,6 @@ public class Step
     }
     
     public Step(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -150,13 +148,10 @@ public class Step
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // FIXME Andrew@2018-02-23: remove getAbout().toString() or make it String.valueOf(about);
-        result = "Step{" + "action=" + action + ", adding=" + adding + ", deleting=" + deleting +
-                ", updating=" + updating + ", order=" + order + '}';
         // End of user code
     
         return result;

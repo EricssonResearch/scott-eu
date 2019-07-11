@@ -103,7 +103,6 @@ public class TwinStatus
     // Start of user code classMethods
     // End of user code
     public TwinStatus()
-           throws URISyntaxException
     {
         super();
     
@@ -112,7 +111,6 @@ public class TwinStatus
     }
     
     public TwinStatus(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -145,7 +143,7 @@ public class TwinStatus
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
