@@ -1,12 +1,10 @@
-FROM ubuntu:16.10
+FROM ubuntu:16.04
 LABEL maintainer "konstantinos.vandikas@ericsson.com"
 
 # update/upgrade base system
-RUN apt-get update
-RUN apt-get -yq upgrade
-
-# misc apps
-RUN apt-get -yq install wget unzip
+RUN apt-get update && apt-get -yq upgrade \
+  && apt-get -yq install --no-install-recommends wget unzip \
+  && rm -rf /var/lib/apt/lists/*
 
 # download emqtt
 WORKDIR /opt
