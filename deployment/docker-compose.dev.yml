@@ -1,16 +1,36 @@
 version: '3.3'
 
 services:
-  planner-reasoner:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:alpine
+    networks:
+      - overlay
+    ports:
+      - 8080:8080
+    command: -port 8080 -log stdout
+    # TODO why
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: none
+  planner:
     image: scott/planner-reasoner
     environment:
       - PORT=3020 # internal port
     networks:
-      - overlay
-    ports:
-      - "3021:3020" # external:internal
+      overlay:
+        aliases:
+            - planner.svc
+#    ports:
+#      - "3021:3020" # external:internal
     stdin_open: true
     deploy:
+      labels:
+        caddy.address: planner.svc
+        caddy.targetport: 3020
+        caddy.tls: "off"
       replicas: 1
       restart_policy:
         # debug only
@@ -18,16 +38,22 @@ services:
       resources:
         limits:
           memory: 384m
-  sandbox-whc:
+  whc:
     image: scott/webapp-whc
     environment:
-      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+#      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      LYO_BASE: "http://whc.svc:8080/"
     networks:
-      - overlay
+      overlay:
+        aliases:
+            - whc.svc
     ports:
-      - "8080:8080"
       - "9980:9999"
     deploy:
+      labels:
+        caddy.address: whc.svc
+        caddy.targetport: 8080
+        caddy.tls: "off"
       replicas: 1
       restart_policy:
         # debug only
@@ -35,46 +61,60 @@ services:
       resources:
         limits:
           memory: 384m
-  sandbox-twin:
+  twins:
     image: scott/webapp-twin-robot
     environment:
-      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+#      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      LYO_BASE: "http://twins.svc:8080/"
     networks:
-      - overlay
+      overlay:
+        aliases:
+            - twins.svc
+    expose:
+      - 80
     ports:
-     - "8081:8080"
-     - "9981:9999"
+      - "9981:9999"
     deploy:
+      labels:
+        caddy.address: twins.svc
+        caddy.targetport: 8080
+        caddy.tls: "off"
       replicas: 1
       resources:
         limits:
           memory: 384m
       restart_policy:
         condition: none
-  warehouse-fuseki:
+  fuseki:
     image: scott/jena-fuseki
     networks:
-      - overlay
-    ports:
-      - "3030:3030"
+      overlay:
+        aliases:
+            - fuseki.svc
     deploy:
+      labels:
+        caddy.address: fuseki.svc
+        caddy.targetport: 3030
+        caddy.tls: "off"
       replicas: 1
       restart_policy:
-        condition: on-failure
+        condition: none
       resources:
         limits:
           memory: 512m
   mosquitto:
     image: scott/eclipse-mosquitto
     networks:
-      - overlay
+      overlay:
+        aliases:
+            - mqtt.svc
     ports:
       - "1883:1883"
       - "9001:9001"
     deploy:
       replicas: 1
       restart_policy:
-        condition: on-failure
+        condition: none
       resources:
         limits:
           memory: 192m
@@ -89,25 +129,6 @@ services:
   #     # - "9999:9999"
   #   # depends_on:
   #     # - sandbox-whc
-  #   deploy:
-  #     replicas: 1
-  #     resources:
-  #       limits:
-  #         memory: 384m
-  #     restart_policy:
-  #       condition: on-failure
-  # twin-shelf:
-  #   image: scott/webapp-twin-shelf
-  #   # environment:
-  #   #   JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-  #   networks:
-  #     - overlay
-  #   ports:
-  #    - "8082:8080" # Jetty
-  #   #  - "9991:9999" # remote debugger
-  #   # depends_on:
-  #     # - warehouse-fuseki
-  #     # - mosquitto
   #   deploy:
   #     replicas: 1
   #     resources:

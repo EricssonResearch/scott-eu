@@ -96,7 +96,6 @@ public class PlanExecutionRequest
     // Start of user code classMethods
     // End of user code
     public PlanExecutionRequest()
-           throws URISyntaxException
     {
         super();
     
@@ -105,7 +104,6 @@ public class PlanExecutionRequest
     }
     
     public PlanExecutionRequest(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

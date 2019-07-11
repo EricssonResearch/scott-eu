@@ -95,7 +95,6 @@ public class Constant
     // Start of user code classMethods
     // End of user code
     public Constant()
-           throws URISyntaxException
     {
         super();
     
@@ -104,7 +103,6 @@ public class Constant
     }
     
     public Constant(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

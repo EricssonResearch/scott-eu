@@ -98,7 +98,6 @@ public class ForAll
     // Start of user code classMethods
     // End of user code
     public ForAll()
-           throws URISyntaxException
     {
         super();
     
@@ -107,7 +106,6 @@ public class ForAll
     }
     
     public ForAll(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

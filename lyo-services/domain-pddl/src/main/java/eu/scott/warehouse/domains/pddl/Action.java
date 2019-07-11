@@ -105,7 +105,6 @@ public class Action
     // Start of user code classMethods
     // End of user code
     public Action()
-           throws URISyntaxException
     {
         super();
     
@@ -114,7 +113,6 @@ public class Action
     }
     
     public Action(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

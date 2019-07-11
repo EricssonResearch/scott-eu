@@ -98,7 +98,6 @@ public class AssignmentOperator
     // Start of user code classMethods
     // End of user code
     public AssignmentOperator()
-           throws URISyntaxException
     {
         super();
     
@@ -107,7 +106,6 @@ public class AssignmentOperator
     }
     
     public AssignmentOperator(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

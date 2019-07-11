@@ -114,7 +114,6 @@ public class Domain
     // Start of user code classMethods
     // End of user code
     public Domain()
-           throws URISyntaxException
     {
         super();
     
@@ -123,7 +122,6 @@ public class Domain
     }
     
     public Domain(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

@@ -95,7 +95,6 @@ public class PrimitiveType
     // Start of user code classMethods
     // End of user code
     public PrimitiveType()
-           throws URISyntaxException
     {
         super();
     
@@ -104,7 +103,6 @@ public class PrimitiveType
     }
     
     public PrimitiveType(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
