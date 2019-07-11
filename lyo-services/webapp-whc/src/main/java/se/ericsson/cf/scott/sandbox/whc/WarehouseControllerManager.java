@@ -109,8 +109,6 @@ public class WarehouseControllerManager {
             new PlanRequestHelper(new OslcHelper(WhcConfig.getBaseUri())), new TwinClient(),
             planRepository);
 
-
-
         getExecService().schedule(() -> {
             log.debug("Initialising an MQTT client");
             final MqttClient mqttClient = MqttManager.initMqttClient();
@@ -178,9 +176,7 @@ public class WarehouseControllerManager {
         // Start of user code createRegistrationMessage
         if(aResource != null) {
             log.info("Registering Twin {} ({})", aResource.getLabel(), aResource.getServiceProvider().getValue());
-
             getTwinRepository().registerTwin(aResource);
-
             newResource = aResource;
         } else {
             throw new IllegalArgumentException("The input must be of type twins:RegistrationMessage");
@@ -196,7 +192,7 @@ public class WarehouseControllerManager {
     {
         String eTag = null;
         // Start of user code getETagFromPlan
-        // TODO Implement code to return an ETag for a particular resource
+        eTag = OslcHelpers.hexHashCodeFor(aResource);
         // End of user code
         return eTag;
     }

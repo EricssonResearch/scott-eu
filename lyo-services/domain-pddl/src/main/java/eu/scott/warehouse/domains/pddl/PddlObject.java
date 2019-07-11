@@ -95,7 +95,6 @@ public class PddlObject
     // Start of user code classMethods
     // End of user code
     public PddlObject()
-           throws URISyntaxException
     {
         super();
     
@@ -104,7 +103,6 @@ public class PddlObject
     }
     
     public PddlObject(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

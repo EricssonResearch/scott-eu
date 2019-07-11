@@ -98,8 +98,8 @@ public class TwinManager {
         log.debug("Initialising the KB");
         TwinAdaptorHelper.initStore(false);
 
-        log.debug("Initialising the TRS Client");
-        TwinAdaptorHelper.initTrsClient();
+//        log.debug("Initialising the TRS Client");
+//        TwinAdaptorHelper.initTrsClient();
         // End of user code
     }
 

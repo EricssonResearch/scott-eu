@@ -72,7 +72,6 @@ import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 
 // Start of user code imports
-import org.checkerframework.checker.nullness.qual.NonNull;
 // End of user code
 
 // Start of user code preClassCode
@@ -96,7 +95,6 @@ public class Or
     // Start of user code classMethods
     // End of user code
     public Or()
-           throws URISyntaxException
     {
         super();
     
@@ -105,7 +103,6 @@ public class Or
     }
     
     public Or(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

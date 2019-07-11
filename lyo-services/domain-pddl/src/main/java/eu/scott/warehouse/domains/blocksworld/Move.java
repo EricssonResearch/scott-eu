@@ -75,7 +75,6 @@ import eu.scott.warehouse.domains.blocksworld.LocationOrBlock;
 import eu.scott.warehouse.domains.blocksworld.LocationOrBlock;
 
 // Start of user code imports
-import eu.scott.warehouse.domains.pddl.Action;
 // End of user code
 
 // Start of user code preClassCode
@@ -105,7 +104,6 @@ public class Move
     // Start of user code classMethods
     // End of user code
     public Move()
-           throws URISyntaxException
     {
         super();
     
@@ -114,7 +112,6 @@ public class Move
     }
     
     public Move(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
@@ -151,7 +148,6 @@ public class Move
         }
     
         // Start of user code toString_finalize
-        result = "Move{" + "block=" + moveB + ", from=" + moveX + ", to=" + moveY + '}';
         // End of user code
     
         return result;

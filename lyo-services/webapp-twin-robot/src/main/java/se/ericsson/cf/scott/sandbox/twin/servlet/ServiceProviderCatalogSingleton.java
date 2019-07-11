@@ -86,13 +86,79 @@ public class ServiceProviderCatalogSingleton
     }
 
     // Start of user code class_methods
+    public static void registerTwinsServiceProvider(final ServiceProvider serviceProvider) {
+        synchronized (serviceProviders) {
+            registerTwinsServiceProviderNoSync(serviceProvider);
+        }
+    }
+
     public static void registerServiceProviderOrSkip(final ServiceProvider serviceProvider) {
         if (!containsServiceProvider(serviceProvider)) {
             synchronized (serviceProviders) {
                 if (!containsServiceProvider(serviceProvider)) { // prevent a race cond
-                    registerNoSync(serviceProvider);
+                    registerServiceProviderNoSync(serviceProvider);
                 }
             }
+        }
+    }
+
+    private static void registerServiceProviderNoSync(final ServiceProvider serviceProvider) {
+        if (containsServiceProvider(serviceProvider)) {
+            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", serviceProvider.getIdentifier()));
+        }
+
+        final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
+
+        serviceProviderCatalog.addServiceProvider(serviceProvider);
+        serviceProviderCatalog.addDomains(serviceProviderDomains);
+
+        serviceProviders.put(serviceProvider.getIdentifier(), serviceProvider);
+    }
+
+    /**
+     * Register a service provider with the OSLC catalog
+     */
+    private static void registerTwinsServiceProviderNoSync(final ServiceProvider serviceProvider) {
+        registerServiceProviderNoSync(serviceProvider);
+
+    }
+
+    /**
+     * Register a service provider with the OSLC catalog
+     */
+    private static void registerIndependentServiceProviderNoSync(final ServiceProvider serviceProvider) {
+        registerServiceProviderNoSync(serviceProvider);
+    }
+
+
+
+    private static void deregisterServiceProvider(final String serviceProviderIdentifier) {
+        synchronized (serviceProviders) {
+            final ServiceProvider deregisteredServiceProvider = serviceProviders.remove(
+                serviceProviderIdentifier);
+
+            if (deregisteredServiceProvider != null) {
+                final SortedSet<URI> remainingDomains = new TreeSet<>();
+
+                for (final ServiceProvider remainingServiceProvider : serviceProviders.values()) {
+                    remainingDomains.addAll(getServiceProviderDomains(remainingServiceProvider));
+                }
+
+                final SortedSet<URI> removedServiceProviderDomains = getServiceProviderDomains(
+                    deregisteredServiceProvider);
+
+                removedServiceProviderDomains.removeAll(remainingDomains);
+                serviceProviderCatalog.removeDomains(removedServiceProviderDomains);
+                serviceProviderCatalog.removeServiceProvider(deregisteredServiceProvider);
+            } else {
+                throw new WebApplicationException(Status.NOT_FOUND);
+            }
+        }
+    }
+
+    public static void registerIndependentServiceProvider(final ServiceProvider serviceProvider) {
+        synchronized (serviceProviders) {
+            registerIndependentServiceProviderNoSync(serviceProvider);
         }
     }
     // End of user code

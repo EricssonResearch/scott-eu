@@ -73,7 +73,6 @@ import eu.scott.warehouse.domains.pddl.EitherType;
 import eu.scott.warehouse.domains.pddl.PrimitiveType;
 
 // Start of user code imports
-import eu.scott.warehouse.domains.pddl.EitherType;
 // End of user code
 
 // Start of user code preClassCode
@@ -94,7 +93,6 @@ public class LocationOrBlock
     // Start of user code classMethods
     // End of user code
     public LocationOrBlock()
-           throws URISyntaxException
     {
         super();
     
@@ -103,7 +101,6 @@ public class LocationOrBlock
     }
     
     public LocationOrBlock(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

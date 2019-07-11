@@ -95,7 +95,6 @@ public class BinaryOperator
     // Start of user code classMethods
     // End of user code
     public BinaryOperator()
-           throws URISyntaxException
     {
         super();
     
@@ -104,7 +103,6 @@ public class BinaryOperator
     }
     
     public BinaryOperator(final URI about)
-           throws URISyntaxException
     {
         super(about);
     

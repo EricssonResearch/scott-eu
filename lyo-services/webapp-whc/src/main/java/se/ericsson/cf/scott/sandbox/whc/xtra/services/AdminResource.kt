@@ -52,7 +52,7 @@ class AdminResource {
         }, 0, TimeUnit.MILLISECONDS)
     }
 
-    fun triggerPlanning() {
+    private fun triggerPlanning() {
         log.trace("triggerSamplePlanning() called")
         val planRequestHelper = PlanRequestHelper(OslcHelper(WhcConfig.getBaseUri()))
         val twinClient = TwinClient()
