@@ -1,0 +1,18 @@
+{
+    "servers": {
+        "1": {
+            "shortId": "1",
+            "defaultMinPeriod": 10,
+            "defaultMaxPeriod": 60
+        }
+    },
+    "security": {
+        "1": {
+            "uri": "coap://sandbox-leshan-server:5683/",
+            "bootstrapServer": false,
+            "securityMode": "NO_SEC",
+            "serverId": "1"
+        }
+    }
+}
+
