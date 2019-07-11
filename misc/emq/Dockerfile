@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 LABEL maintainer "konstantinos.vandikas@ericsson.com"
 
 # update/upgrade base system
@@ -8,8 +8,8 @@ RUN apt-get update && apt-get -yq upgrade \
 
 # download emqtt
 WORKDIR /opt
-RUN wget --quiet http://emqtt.com/static/brokers/emqttd-ubuntu16.04-v2.3-beta.4.zip
-RUN unzip emqttd-ubuntu16.04-v2.3-beta.4.zip
+RUN wget --quiet https://www.emqx.io/downloads/broker/v2.3.9/emqttd-ubuntu18.04-v2.3.9.zip
+RUN unzip emqttd-ubuntu18.04-v2.3.9.zip
 
 # start emqtt daemon
 CMD /opt/emqttd/bin/emqttd start && tail -f /dev/null
