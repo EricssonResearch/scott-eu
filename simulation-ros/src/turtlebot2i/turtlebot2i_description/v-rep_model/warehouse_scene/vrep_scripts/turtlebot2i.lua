@@ -34,11 +34,15 @@ function setVels_cb(msg)
    
    --  Check if motor is enabled 
    if (motor_power == 1) then
-       velocityRight = (linVel+rotVel)*rightVelScale
-       velocityLeft  = (linVel-rotVel)*leftVelScale
-       if ((rightVelScale==0.0) and (leftVelScale==0.0)) then
+       if ((linVel==0.0) and (rotVel==0.0)) then
+           velocityRight = rightVelScale - leftVelScale
+           velocityLeft  = leftVelScale - rightVelScale
+       elseif ((rightVelScale==0.0) and (leftVelScale==0.0)) then
            velocityRight = 0.4*rotVel
            velocityLeft  =-0.4*rotVel
+       else
+            velocityRight = (linVel+rotVel)*rightVelScale
+            velocityLeft  = (linVel-rotVel)*leftVelScale
         end
        printf("linVel=%2.2f,rotVel=%2.2f | rightVelScale=%2.2f,leftVelScale=%2.2f",linVel,rotVel,rightVelScale,leftVelScale)--print(linVel)
        --if (velScale>1) then

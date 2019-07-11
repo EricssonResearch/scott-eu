@@ -9,7 +9,7 @@ import numpy as np
 import geometry_msgs.msg
 import std_msgs.msg
 import os
-from geometry_msgs.msg import Twist, Pose
+from geometry_msgs.msg import Twist, Pose, Vector3
 from kobuki_msgs.msg import BumperEvent
 from nav_msgs.msg import Odometry
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -189,8 +189,8 @@ class Env():
         self.action_size = len(self.action_list)
         #self.initGoal = True
         self.get_goalbox = False
-        self.position = Pose()
-        self.prev_position = Pose()
+        self.position = Vector3()
+        self.prev_position = Vector3()
         self.orientation = 0.0
         self.sub_pos        = rospy.Subscriber('/turtlebot2i/sensors/global_pose', geometry_msgs.msg.PoseStamped, self.update_pose_callback)
         #self.sub_risk       = rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, self.sceneGraphReconstruction) #instead of subscribing, wait this information in step function
@@ -247,15 +247,15 @@ class Env():
         #getting data from move base module
         self.robot_linear_speed  = data.linear.x
         self.robot_angular_speed = data.angular.z 
-        if len(self.speed_monitor) > 100:
-            if sum(self.speed_monitor) < 0.1: #if robot gets stuck, cancel the goal
-                self.speed_monitor = deque([])
-                self.vrep_control.reset_robot_pos()
-                self.respawn_goal()
-                rospy.loginfo("Robot is stuck, changing goal position.")
-            else:
-                self.speed_monitor.popleft()
-        self.speed_monitor.append(data.linear.x+abs(data.angular.z))
+        # if len(self.speed_monitor) > 100:
+        #     if sum(self.speed_monitor) < 0.1: #if robot gets stuck, cancel the goal
+        #         self.speed_monitor = deque([])
+        #         self.vrep_control.reset_robot_pos()
+        #         self.respawn_goal()
+        #         rospy.loginfo("Robot is stuck, changing goal position.")
+        #     else:
+        #         self.speed_monitor.popleft()
+        # self.speed_monitor.append(data.linear.x+abs(data.angular.z))
 
     def safety_zone_callback(self, data):
         self.r_critical = data.critical_zone_radius
@@ -334,6 +334,9 @@ class Env():
             self.get_goalbox = True
         return obstacle_distances + [self.robot_linear_speed, self.robot_angular_speed, self.risk_max, self.r_warning, self.r_clear], done
 
+    def getEmptyState(self):
+        return list(np.ones((self.n_direction))*self.camera_far_clipping) + [0.0, 0.0, 0.0, 0.31, 0.32]
+
     def publishScaleSpeed(self, left_vel_scale, right_vel_scale):
         vel_scale_message = VelocityScale()
         vel_scale_message.header = std_msgs.msg.Header()
@@ -375,19 +378,20 @@ class Env():
     def setReward(self, state, done, action):
         nearest_obstacle_distance  = min(state[:12])
         nearest_obstacle_direction = np.argmin(state[:12]) #index 0 start from right side of the robot
+        risk_max = max(1, state[-3])
 
         yaw_reward = 1.0
         #travelled_distance = self.distance2D(self.prev_position, self.position)
         #print("travelled_distance:",travelled_distance)
         if (nearest_obstacle_direction <= self.n_direction/3-1):#obstacle is on the right 
             if (action >= 10):                    #robot turns right
-                yaw_reward = -(action-9)/6
+                yaw_reward = -(action-9)*risk_max/6
         elif (nearest_obstacle_direction >= self.n_direction*2/3):#obstacle is on the left
             if (action <= 5):                   #robot turns left
-                yaw_reward = -(6-action)/6
+                yaw_reward = -(6-action)*risk_max/6
         else:#obstacle is in the front
             if (action in [6,7,8,9]):
-                yaw_reward = -(action-5)/4
+                yaw_reward = -(action-5)*risk_max/4
         
         distance_rate = 1.0 / max(nearest_obstacle_distance, 0.175)
 
@@ -395,12 +399,12 @@ class Env():
             reward = (yaw_reward * distance_rate) -50
         elif nearest_obstacle_distance < state[-2] + 0.05: #r_warning + offset
             reward = (yaw_reward * distance_rate) -10
-        elif nearest_obstacle_distance < state[-1] + 0.05: #r_clear + offset
-            reward = (yaw_reward * distance_rate) +1
-        elif self.distance2D(self.prev_position, self.position) > 1.0:
-            reward = 10
+        elif self.distance2D(self.prev_position, self.position) > 0.4:
+            reward = 8
             self.prev_position = self.position
-            #print("have moved 1 m! positive reward!")
+            #print("have moved 0-4 m! positive reward!")
+        elif nearest_obstacle_distance < state[-1] + 0.05: #r_clear + offset
+            reward = yaw_reward 
         else:
             reward = -1
 

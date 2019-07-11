@@ -30,7 +30,10 @@ class ReinforceAgent():
         self.load_model = False
         self.load_episode = 0#340 #0
         self.env = env
-        self.state = self.env.reset()
+        if training_mode:
+            self.state = self.env.reset()
+        else:
+            self.state = self.env.getEmptyState()
         self.state_size = len(self.state)
         self.action_size = self.env.action_size
         self.episode_step = 6000
@@ -76,7 +79,10 @@ class ReinforceAgent():
         self.param_dictionary = dict(zip(['epsilon'], [self.epsilon]))
 
         if training_mode:
-            self.sub_risk = rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, self.risk_callback)
+            self.sub_risk = rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, self.training_callback)
+        else:
+            self.sub_risk = rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, self.prediction_callback)
+            self.epsilon = 0.0
 
         self.start_time = time.time()
         self.graph = tf.get_default_graph()
@@ -157,7 +163,7 @@ class ReinforceAgent():
 
             self.model.fit(X_batch, Y_batch, batch_size=self.batch_size, epochs=1, verbose=0)    
 
-    def risk_callback(self, data):
+    def training_callback(self, data):
         next_state, done = self.env.getState(data)
         reward = self.env.setReward(next_state, done, self.action)
         next_state = np.asarray(next_state)
@@ -212,6 +218,11 @@ class ReinforceAgent():
             self.t += 1
             self.global_step += 1
 
+    def prediction_callback(self, data):
+        next_state, done = self.env.getState(data)
+        self.state = np.asarray(next_state)
+        self.action = agent.getAction(self.state)
+        self.env.execute(self.action)
 
 EPISODES = 3000
 if __name__ == '__main__':
@@ -220,22 +231,8 @@ if __name__ == '__main__':
         training_mode = True
         env = Env()
         agent = ReinforceAgent(env,training_mode)
-
-        if training_mode:
-            print('start training')
-            rospy.spin()
-        else:
-            agent.epsilon = 0.0
-            while True:
-                data = None
-                data = rospy.wait_for_message('/turtlebot2i/safety/obstacles_risk', SafetyRisk, timeout=5)
-                if data == None:
-                    print("no data")
-                else:
-                    state, done = env.getState(data)
-                    action = agent.getAction(np.asarray(state))
-                    env.publishScaleSpeed(env.action_list[action][0], env.action_list[action][1])
-                    print("action:",action)
+        print("Program ready!")
+        rospy.spin()
 
     except rospy.ROSInterruptException:
         env.vrep_control.shutdown()

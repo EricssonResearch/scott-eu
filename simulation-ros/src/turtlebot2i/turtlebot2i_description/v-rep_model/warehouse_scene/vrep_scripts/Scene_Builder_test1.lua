@@ -20,10 +20,9 @@ function sysCall_init()
 
 
     addModel('dockstation',{-5.25,-4.000,0.063},{0,0,math.pi/2})
-    --addModel('turtlebot2i',{-4.5,-3.5,0.063},{0,0,math.pi/2}) --Position for testing the performance of the robot
-    addModel('turtlebot2i',{-1.5, 2.0,0.063},{0,0,0}) --Position for testing the mrcnn
-    --addModel('80cmHighPillar100cm_pattern',{-4.0,-3.2,0.4},{0,0,math.pi/2}) --TODO: check why the robot is moving by itself
-
+    addModel('turtlebot2i',{-4.5,-3.5,0.063},{0,0,math.pi/2}) --Position for testing the performance of the robot
+    --addModel('turtlebot2i',{-1.5, 2.0,0.063},{0,0,0}) --Position for testing the mrcnn
+    
     addModel('Shelf_simple',{-4.0, -4.0,0.063},{0,0,math.pi/2}) -- TODO: check why Shelf_simple rotation here is not compatible with what happens in the sim
     
 
@@ -35,7 +34,7 @@ function sysCall_init()
     --addModel('ConveyorBelt_simple',{4.0,-4.00,0.113},{0,0,-math.pi/2})
     
 
-    --[[
+    -- [[
     -- 8 static objects:
     addModel('ConcreteBox',{2.5, 3.5,0.5},{0,0,0})
     addModel('80cmHighPillar100cm',{-0.5, 3.0,0.25},{0,0,0})
@@ -55,8 +54,8 @@ function sysCall_init()
     addModel('Walking_Bill',{ 8.5, -1.5,0},{0,0, math.pi/2})
     addModel('Walking_Bill',{ 5.5,  1.5,0},{0,0, 0})
     addModel('Walking_Bill',{ 0.0, -1.0,0},{0,0, 0})
-    addModel('Working_Bill',{ 8.5,  4.0,0},{0,0,math.pi/2}) --]]
-    addModel('Working_Bill',{ 1.0,  1.0,0},{0,0,0})
+    addModel('Working_Bill',{ 8.5,  4.0,0},{0,0,math.pi/2}) 
+    addModel('Working_Bill',{ 1.0,  1.0,0},{0,0,0})--]]
 
     -------------------------Wall section bellow-------------------------------
 

@@ -223,15 +223,15 @@ def parse_dot_file(graph):
                     target_object_distance =object_distance
                     target_object_direction=object_direction
                     highest_risk=object_risk
-                    print "update target of ",x.get_name()," with risk=",highest_risk
+                    #print "update target of ",x.get_name()," with risk=",highest_risk
             else:
                print "Node not match!!"
                print node_info
-    # if (highest_risk!=0.0):
-    #     safe_risk_pub.publish(risk_message)
-    #     #pub_safe_vel(1.0, 1.0) 
-    # else:
-    #     pub_safe_vel(1.0, 1.0) 
+    #if (highest_risk!=0.0):
+    #    safe_risk_pub.publish(risk_message)
+    #    #pub_safe_vel(1.0, 1.0) 
+    #else:
+    #    pub_safe_vel(1.0, 1.0) 
     safe_risk_pub.publish(risk_message)
     risk_val_pub.publish(highest_risk)
     #global    time_previous
@@ -270,16 +270,16 @@ if __name__ == "__main__":
     print("init_risk_assessment ok")
 
     print("Initializing parse node finished")
-
-    ## SUBSCRIBERS
-    # Creates a subscriber object
-    rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)
+    cal_risk(0, 1.0, 0.0, 0.0, 0.0) #FLS takes some time for initialization. Run it once before subscribe to a topic
     ## PUBLISHERS
     # Creates a publisher object
     safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10)
     risk_val_pub = rospy.Publisher('/turtlebot2i/safety/risk_val', std_msgs.msg.Float64, queue_size=10)
     safe_risk_pub = rospy.Publisher('/turtlebot2i/safety/obstacles_risk', SafetyRisk, queue_size=10)
+    ## SUBSCRIBERS
+    # Creates a subscriber object
+    rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)
     # Dont't use "/turtlebot2i/commands/velocity'
     # Use "/turtlebot2i/cmd_vel_mux/safety_controller" with "vel_mux" package.
-
+    print("initialization finished, Risk assesment ready!")
     rospy.spin()
