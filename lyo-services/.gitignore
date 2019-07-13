@@ -2,6 +2,7 @@
 /license
 
 .gradle
+.settings
 
 # see https://github.com/eclipse/lyo.designer/issues/20
 /model-sandbox/domain-pddl
