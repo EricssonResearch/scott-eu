@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2019 Ericsson Research and others
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package eu.scott.warehouse.lib
 
 import org.apache.jena.rdf.model.Model
@@ -9,7 +25,6 @@ import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
 import org.eclipse.lyo.oslc4j.core.model.IResource
 import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
-import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -23,7 +38,7 @@ val IResource.link: Link
         return Link(this.about)
     }
 
-val IResource.toTurtleString: String
+val IResource.toTurtle: String
     get() {
         val model = RdfHelpers.modelFromResources(this)
         return RdfHelpers.modelToString(model)
@@ -89,7 +104,6 @@ object OslcHelpers {
 
     // TODO Andrew@2018-02-23: move to JMH
     // TODO Andrew@2018-02-23: create a stateful JMH that would keep resources hashed by URI
-    @Throws(LyoJenaModelException::class)
     @JvmStatic
     private fun <R : IResource> nav(m: Model, l: Link, rClass: Class<R>): R {
         val rs = JenaModelHelper.unmarshal(m, rClass)

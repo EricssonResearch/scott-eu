@@ -24,41 +24,30 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletContextEvent;
-import java.util.List;
-
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
-import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.pddl.Step;
-
-
-// Start of user code imports
 import java.net.URISyntaxException;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.WordUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.paho.client.mqttv3.MqttException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
+import se.ericsson.cf.scott.sandbox.twin.xtra.plans.TrsActionStatusHandler;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.MemAppender;
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsEventKafkaPublisher;
+
+// Start of user code imports
 // End of user code
 
 // Start of user code pre_class_code
@@ -93,7 +82,10 @@ public class TwinManager {
         r = new Random();
 
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        planExecutionService = new PlanExecutionService(executorService, new OslcClient());
+        // TODO Andrew@2019-07-15: replace with something concurrent
+        final TrsActionStatusHandler statusHandler = new TrsActionStatusHandler(new MemAppender());
+        final OslcClient client = new OslcClient();
+        planExecutionService = new PlanExecutionService(executorService, client, statusHandler);
 
         log.debug("Initialising the KB");
         TwinAdaptorHelper.initStore(false);

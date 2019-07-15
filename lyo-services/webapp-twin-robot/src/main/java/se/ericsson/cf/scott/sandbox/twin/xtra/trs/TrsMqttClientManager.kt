@@ -1,23 +1,35 @@
+/*
+ * Copyright (c) 2019 Ericsson Research and others
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.ericsson.cf.scott.sandbox.twin.xtra.trs
 
-import eu.scott.warehouse.lib.LoggingMqttCallback
-import eu.scott.warehouse.lib.PlanChangeEventListener
-import eu.scott.warehouse.lib.ChangeEventMqttMessageListener
+import eu.scott.warehouse.domains.trs.TrsServerAck
+import eu.scott.warehouse.domains.trs.TrsServerAnnouncement
+import eu.scott.warehouse.domains.trs.TrsXConstants
 import eu.scott.warehouse.lib.MqttHelper
 import eu.scott.warehouse.lib.MqttTopics
-import eu.scott.warehouse.domains.trs.*
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils
+import org.eclipse.lyo.oslc4j.core.exception.LyoModelException
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
-import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
 import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.slf4j.LoggerFactory
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.core.UriBuilder
 import kotlin.math.roundToLong
@@ -25,16 +37,11 @@ import kotlin.math.roundToLong
 
 class TrsMqttClientManager() {
     private val log = LoggerFactory.getLogger(javaClass)
-    private val executorService: ScheduledExecutorService = Executors.newScheduledThreadPool(32)
     private lateinit var mqttClient: MqttClient
     private lateinit var trsTopic: String
 
     constructor(mqttClient: MqttClient) : this() {
         this.mqttClient = mqttClient
-    }
-
-    constructor(mqttBroker: String): this() {
-        this.mqttClient = mqttBrokerConnect(mqttBroker, getTwinUUID())
     }
 
     fun connectAndSubscribeToPlans() {
@@ -60,8 +67,7 @@ class TrsMqttClientManager() {
     private fun registerWithWHC(mqttClient: MqttClient) {
         val latch = CountDownLatch(1)
         try {
-            mqttClient.subscribe(
-                MqttTopics.REGISTRATION_ACK) { topic, message ->
+            mqttClient.subscribe(MqttTopics.REGISTRATION_ACK) { _, message ->
                 completeRegistration(message, latch)
             }
         } catch (e: MqttException) {
@@ -103,38 +109,14 @@ class TrsMqttClientManager() {
             if (getTwinUUID() == serverAck.adaptorId) {
                 log.debug("The WHC registration of the {} has been confirmed", getTwinUUID())
                 trsTopic = serverAck.trsTopic
-                log.info("Using the '{}' topic to monitor new plans", trsTopic)
-                subscribeToPlans(trsTopic)
                 latch.countDown()
             }
-        } catch (e: LyoJenaModelException) {
+        } catch (e: LyoModelException) {
             log.error("Error unmarshalling TrsServerAck from the server response", e)
         }
 
     }
 
-    @Throws(MqttException::class)
-    private fun mqttBrokerConnect(mqttBroker: String, mqttClientId: String): MqttClient {
-        val mqttClient = MqttClient(mqttBroker, mqttClientId)
-        val mqttConnectOptions = MqttConnectOptions()
-        mqttConnectOptions.isAutomaticReconnect = true
-        mqttConnectOptions.setWill(MqttTopics.REGISTRATION_ANNOUNCE,
-                getTwinUnregistrationMessage().payload, 2, false)
-        mqttClient.setCallback(LoggingMqttCallback())
-        // TODO Andrew@2018-03-13: set highest QoS
-        mqttClient.connect(mqttConnectOptions)
-        return mqttClient
-    }
-
-    @Deprecated("remove MQTT reg path")
-    private fun subscribeToPlans(trsTopic: String) {
-        mqttClient.subscribe(trsTopic, ChangeEventMqttMessageListener(
-            PlanChangeEventListener(executorService)))
-//        mqttClient.subscribe(trsTopic, ChangeEventMqttMessageListener(
-//                ChangeEventListener { changeEvent, trsResourceModel ->
-//                    log.info("Change Event on resource ${changeEvent.changed} received")
-//                }, executorService))
-    }
     // HELPERS
 
     private fun getTwinUUID() = TwinAdaptorHelper.getTwinUUID()
