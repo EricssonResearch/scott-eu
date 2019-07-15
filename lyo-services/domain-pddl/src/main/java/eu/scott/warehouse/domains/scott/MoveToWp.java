@@ -67,7 +67,7 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.scott.ScottDomainConstants;
-
+import eu.scott.warehouse.domains.scott.ExecutableAction;
 
 
 
@@ -83,7 +83,7 @@ import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 @OslcName(ScottDomainConstants.MOVE_TO_WP_LOCALNAME)
 @OslcResourceShape(title = "move-to-wp Resource Shape", describes = ScottDomainConstants.MOVE_TO_WP_TYPE)
 public class MoveToWp
-    extends AbstractResource
+    extends ExecutableAction
     implements IMoveToWp
 {
     

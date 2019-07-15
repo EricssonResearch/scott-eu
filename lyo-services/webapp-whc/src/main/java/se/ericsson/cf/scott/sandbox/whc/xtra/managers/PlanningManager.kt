@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2019 Ericsson Research and others
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.ericsson.cf.scott.sandbox.whc.xtra.managers
 
 import eu.scott.warehouse.domains.pddl.Plan
@@ -5,9 +21,9 @@ import eu.scott.warehouse.lib.InstanceWithResources
 import eu.scott.warehouse.lib.OslcHelper
 import eu.scott.warehouse.lib.RdfHelpers
 import org.apache.jena.rdf.model.Model
+import org.eclipse.lyo.oslc4j.core.exception.LyoModelException
 import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
-import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig
@@ -112,23 +128,20 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper,
             // FIXME Andrew@2019-05-02: call the event listener
 
             twinClient.requestPlanExecution(twinInfo, plan)
-        } catch (e: LyoJenaModelException) {
+        } catch (e: LyoModelException) {
             log.error("Cannot unmarshal the Plan")
         }
     }
 
 
-    @Throws(LyoJenaModelException::class)
     private fun unmarshalPlan(planModel: Model): InstanceWithResources<Plan> {
         val planResource = extractPlan(planModel)
         log.debug("Received plan: {}", planResource)
         val planResources = planRequestHelper.getPlanResources(planModel, planResource)
 
-        val plan: InstanceWithResources<Plan> = InstanceWithResources(planResource, planResources)
-        return plan
+        return InstanceWithResources(planResource, planResources)
     }
 
-    @Throws(LyoJenaModelException::class)
     private fun extractPlan(planModel: Model): Plan {
         val plan = JenaModelHelper.unmarshalSingle(planModel, Plan::class.java)
         plan.about = planRepository.newURI()

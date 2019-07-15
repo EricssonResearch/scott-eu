@@ -67,7 +67,7 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.scott.ScottDomainConstants;
-import eu.scott.warehouse.domains.scott.ExecutableAction;
+
 
 
 
@@ -79,19 +79,19 @@ import eu.scott.warehouse.domains.scott.ExecutableAction;
 
 // Start of user code classAnnotations
 // End of user code
-@OslcNamespace(ScottDomainConstants.PICK_SHELF_NAMESPACE)
-@OslcName(ScottDomainConstants.PICK_SHELF_LOCALNAME)
-@OslcResourceShape(title = "pick-shelf Resource Shape", describes = ScottDomainConstants.PICK_SHELF_TYPE)
-public class PickShelf
-    extends ExecutableAction
-    implements IPickShelf
+@OslcNamespace(ScottDomainConstants.EXECUTABLEACTION_NAMESPACE)
+@OslcName(ScottDomainConstants.EXECUTABLEACTION_LOCALNAME)
+@OslcResourceShape(title = "ExecutableAction Resource Shape", describes = ScottDomainConstants.EXECUTABLEACTION_TYPE)
+public class ExecutableAction
+    extends AbstractResource
+    implements IExecutableAction
 {
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
-    public PickShelf()
+    public ExecutableAction()
     {
         super();
     
@@ -99,7 +99,7 @@ public class PickShelf
         // End of user code
     }
     
-    public PickShelf(final URI about)
+    public ExecutableAction(final URI about)
     {
         super(about);
     
@@ -110,8 +110,8 @@ public class PickShelf
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
         OslcConstants.PATH_RESOURCE_SHAPES,
-        ScottDomainConstants.PICK_SHELF_PATH,
-        PickShelf.class);
+        ScottDomainConstants.EXECUTABLEACTION_PATH,
+        ExecutableAction.class);
     }
     
     
@@ -127,7 +127,7 @@ public class PickShelf
         // End of user code
     
         if (asLocalResource) {
-            result = result + "{a Local Pick-shelf Resource} - update Pick-shelf.toString() to present resource as desired.";
+            result = result + "{a Local ExecutableAction Resource} - update ExecutableAction.toString() to present resource as desired.";
             // Start of user code toString_bodyForLocalResource
             // End of user code
         }

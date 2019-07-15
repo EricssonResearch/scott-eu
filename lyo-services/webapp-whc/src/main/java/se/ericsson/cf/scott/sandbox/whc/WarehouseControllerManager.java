@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import se.ericsson.cf.scott.sandbox.whc.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 import eu.scott.warehouse.domains.pddl.Action;
@@ -114,7 +115,11 @@ public class WarehouseControllerManager {
             final MqttClient mqttClient = MqttManager.initMqttClient();
 
             log.debug("Initialising a TRS Client");
-            TRSManager.initTRSClient(mqttClient);
+            try {
+                TRSManager.initTRSClient(mqttClient);
+            } catch (MqttException e) {
+                log.error("Failed to attach an MQTT TRS event listenter");
+            }
 //            log.debug("Initialising a TRS Server");
 //            TRSManager.initTRSServer(mqttClient);
             log.debug("WHC contextInitializeServletListener BACKGROUND TASK COMPLETE");

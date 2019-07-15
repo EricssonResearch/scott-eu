@@ -52,6 +52,10 @@ public interface ScottDomainConstants
     public static String COORD_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String COORD_LOCALNAME = "Coord"; //localName of the rdfs:class the resource describes
     public static String COORD_TYPE = COORD_NAMESPACE + COORD_LOCALNAME; //fullname of the rdfs:class the resource describes
+    public static String EXECUTABLEACTION_PATH = "executableAction";
+    public static String EXECUTABLEACTION_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String EXECUTABLEACTION_LOCALNAME = "ExecutableAction"; //localName of the rdfs:class the resource describes
+    public static String EXECUTABLEACTION_TYPE = EXECUTABLEACTION_NAMESPACE + EXECUTABLEACTION_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String ROBOT_PATH = "robot";
     public static String ROBOT_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String ROBOT_LOCALNAME = "Robot"; //localName of the rdfs:class the resource describes
