@@ -90,7 +90,7 @@
     <resourceProperties name="executionSuccess"/>
     <resourceProperties name="action" valueType="LocalResource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
     <resourceProperties name="executionBegin" valueType="DateTime"/>
-    <resourceProperties name="executionEnd"/>
+    <resourceProperties name="executionEnd" valueType="DateTime"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.scott"/>
   </domainSpecifications>
   <domainSpecifications name="Twins Domain" namespaceURI="http://ontology.cf.ericsson.net/ns/twins#" namespacePrefix="//@domainPrefixes[name='twins']">

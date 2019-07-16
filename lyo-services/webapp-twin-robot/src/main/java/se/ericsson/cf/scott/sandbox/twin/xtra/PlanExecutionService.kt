@@ -34,12 +34,14 @@ import org.eclipse.lyo.oslc4j.core.model.OslcMediaType
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import se.ericsson.cf.scott.sandbox.twin.xtra.plans.ExecutionInfo
 import se.ericsson.cf.scott.sandbox.twin.xtra.plans.IActionStatusHandler
 import java.io.BufferedInputStream
 import java.util.concurrent.ScheduledExecutorService
 import javax.ws.rs.core.Response
 import java.io.InputStream
 import java.net.ConnectException
+import java.util.Date
 import java.util.Optional
 
 
@@ -50,7 +52,8 @@ class PlanExecutionService(private val executor: ScheduledExecutorService,
         val log: Logger = LoggerFactory.getLogger(PlanExecutionService::class.java)
     }
 
-    fun fulfillRequest(request: PlanExecutionRequest) {
+    fun fulfillRequest(request: PlanExecutionRequest,
+                       twinKind: String, twinId: String) {
         if (request.plan == null || request.plan.value == null) {
             throw IllegalArgumentException("Plan link is missing from the $request")
         }
@@ -74,29 +77,35 @@ class PlanExecutionService(private val executor: ScheduledExecutorService,
                 val action: IExtendedResource = OslcHelpers.navTry(plan, step.action,
                     Action::class.java, DropBelt::class.java, MoveToWp::class.java,
                     PickShelf::class.java)
+                val executionBegin = Date()
+                val executionInfo = ExecutionInfo(twinKind, twinId, executionBegin)
                 when (action) {
-                    is DropBelt  -> execDropBelt(action, reportBuilder)
-                    is MoveToWp  -> execMoveToWp(action, reportBuilder)
-                    is PickShelf -> execPickShelf(action, reportBuilder)
+                    is DropBelt  -> execDropBelt(action, reportBuilder, executionInfo)
+                    is MoveToWp  -> execMoveToWp(action, reportBuilder, executionInfo)
+                    is PickShelf -> execPickShelf(action, reportBuilder, executionInfo)
                 }
             }
             log.debug(reportBuilder.toString())
         }
     }
 
-    private fun execPickShelf(action: PickShelf, reportBuilder: StringBuilder) {
-        reportBuilder.appendln("action 'pick-shelf'")
-        statusHandler.actionCompleted(action)
-    }
-
-    private fun execMoveToWp(action: MoveToWp, reportBuilder: StringBuilder) {
-        reportBuilder.appendln("action 'move-to-wp'")
-        statusHandler.actionCompleted(action)
-    }
-
-    private fun execDropBelt(action: DropBelt, reportBuilder: StringBuilder) {
+    private fun execDropBelt(action: DropBelt, reportBuilder: StringBuilder, executionInfo: ExecutionInfo) {
         reportBuilder.appendln("action 'drop-belt'")
-        statusHandler.actionCompleted(action)
+        statusHandler.actionCompleted(action, executionInfo)
+    }
+
+    private fun execMoveToWp(action: MoveToWp,
+                             reportBuilder: StringBuilder,
+                             executionInfo: ExecutionInfo) {
+        reportBuilder.appendln("action 'move-to-wp'")
+        statusHandler.actionCompleted(action, executionInfo)
+    }
+
+    private fun execPickShelf(action: PickShelf,
+                              reportBuilder: StringBuilder,
+                              executionInfo: ExecutionInfo) {
+        reportBuilder.appendln("action 'pick-shelf'")
+        statusHandler.actionCompleted(action, executionInfo)
     }
 
     private fun requestModel(uriString: String): Optional<Model> {

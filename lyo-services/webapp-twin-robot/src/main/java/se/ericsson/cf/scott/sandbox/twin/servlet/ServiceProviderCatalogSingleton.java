@@ -325,7 +325,7 @@ public class ServiceProviderCatalogSingleton
     * Retrieve the set of initial ServiceProviders as returned from the Manager.getServiceProviderInfos() method, and construct a service provider for each.
     *
     * Each ServiceProvider ID is added to the parameter map which will be used during service provider
-    * creation to create unique URI paths for each ServiceProvider.
+    * creation to create unique URI paths for each ServiceProvider. 
     *
     */
     protected static void initServiceProviders (HttpServletRequest httpServletRequest)

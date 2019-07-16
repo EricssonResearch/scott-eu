@@ -23,6 +23,7 @@ import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
+import se.ericsson.cf.scott.sandbox.twin.xtra.repository.ExecutionReportRepository;
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsMqttClientManager;
 
 public class TwinAdaptorHelper {
@@ -34,6 +35,7 @@ public class TwinAdaptorHelper {
     static RdfMqttGateway mqttGateway;
     private static ServletContext servletContext;
     private static ServiceProviderRepository serviceProviderRepository;
+    private static ExecutionReportRepository executionReportRepository;
 
     public static RdfMqttGateway getMqttGateway() {
         return mqttGateway;
@@ -83,10 +85,19 @@ public class TwinAdaptorHelper {
     // TODO Andrew@2019-01-23: move to some other singleton, ideally use DI
     public static ServiceProviderRepository getServiceProviderRepository() {
         if (serviceProviderRepository == null) {
+            // TODO Andrew@2019-07-16: thread safety
             serviceProviderRepository = new ServiceProviderRepositoryStoreImpl(getStore(), getTwinsGraphURI());
         }
         return serviceProviderRepository;
     }
+
+    public static ExecutionReportRepository getExecutionReportRepository() {
+        if (executionReportRepository == null) {
+            executionReportRepository = new ExecutionReportRepository(getStore());
+        }
+        return executionReportRepository;
+    }
+
 
     public static String p(final String s) {
         return getServletContext().getInitParameter(parameterFQDN(s));

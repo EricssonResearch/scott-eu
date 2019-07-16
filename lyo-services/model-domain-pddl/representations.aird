@@ -794,7 +794,7 @@
                 <styles xmi:type="notation:FilteringStyle" xmi:id="_rfJJQKfKEemxcdpeO4uwLQ"/>
               </children>
               <styles xmi:type="notation:ShapeStyle" xmi:id="_rerPMKfKEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont" fontHeight="8"/>
-              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_rerPMafKEemxcdpeO4uwLQ" x="372" y="170"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_rerPMafKEemxcdpeO4uwLQ" x="365" y="186"/>
             </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_Sj2ykanxEeibYKtxaqrILw"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_Sj2ykqnxEeibYKtxaqrILw"/>
@@ -1421,17 +1421,17 @@
         </edges>
         <edges xmi:type="notation:Edge" xmi:id="_5QEigKfKEemxcdpeO4uwLQ" type="4001" element="_5P3uMKfKEemxcdpeO4uwLQ" source="_reoL4KfKEemxcdpeO4uwLQ" target="_6jkEsKWbEemxcdpeO4uwLQ">
           <children xmi:type="notation:Node" xmi:id="_5QEihKfKEemxcdpeO4uwLQ" type="6001">
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEihafKEemxcdpeO4uwLQ" y="-10"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEihafKEemxcdpeO4uwLQ" x="-1" y="-9"/>
           </children>
           <children xmi:type="notation:Node" xmi:id="_5QEihqfKEemxcdpeO4uwLQ" type="6002">
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEih6fKEemxcdpeO4uwLQ" y="10"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEih6fKEemxcdpeO4uwLQ" x="2" y="10"/>
           </children>
           <children xmi:type="notation:Node" xmi:id="_5QEiiKfKEemxcdpeO4uwLQ" type="6003">
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEiiafKEemxcdpeO4uwLQ" y="10"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEiiafKEemxcdpeO4uwLQ" x="2" y="10"/>
           </children>
           <styles xmi:type="notation:ConnectorStyle" xmi:id="_5QEigafKEemxcdpeO4uwLQ"/>
           <styles xmi:type="notation:FontStyle" xmi:id="_5QEigqfKEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
-          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_5QEig6fKEemxcdpeO4uwLQ" points="[0, 0, 128, -71]$[-128, 71, 0, 0]"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_5QEig6fKEemxcdpeO4uwLQ" points="[-65, 19, 86, -27]$[-115, 35, 36, -11]"/>
           <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_5QGXsKfKEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
           <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_5QGXsafKEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
         </edges>
@@ -2663,7 +2663,7 @@
           </ownedStyle>
           <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
         </ownedElements>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_CsPiAKfLEemxcdpeO4uwLQ" name="executionEnd: Boolean">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_CsPiAKfLEemxcdpeO4uwLQ" name="executionEnd: DateTime">
           <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
           <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
           <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_CsPiAafLEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" labelPosition="node">
@@ -2789,7 +2789,7 @@
           </ownedStyle>
           <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']"/>
         </ownedElements>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_Cqz-oKfLEemxcdpeO4uwLQ" name="executionEnd: Boolean">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_Cqz-oKfLEemxcdpeO4uwLQ" name="executionEnd: DateTime">
           <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
           <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
           <ownedStyle xmi:type="diagram:Square" xmi:id="_Cqz-oafLEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" color="0,0,0">

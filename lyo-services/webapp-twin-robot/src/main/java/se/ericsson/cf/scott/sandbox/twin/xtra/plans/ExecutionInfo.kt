@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package se.ericsson.cf.scott.sandbox.twin.xtra.plans
 
-import eu.scott.warehouse.domains.scott.ExecutableAction
+import java.util.Date
 
-interface IActionStatusHandler {
-    fun actionCompleted(action: ExecutableAction, info: ExecutionInfo)
-    fun actionFailed(action: ExecutableAction, info: ExecutionInfo)
-}
+data class ExecutionInfo(val twinKind: String, val twinId: String, val executionBegin: Date)

@@ -98,7 +98,7 @@ public class ActionExecutionReport
     private Date executionBegin;
     // Start of user code attributeAnnotation:executionEnd
     // End of user code
-    private Boolean executionEnd;
+    private Date executionEnd;
     
     // Start of user code classAttributes
     // End of user code
@@ -203,9 +203,9 @@ public class ActionExecutionReport
     @OslcName("executionEnd")
     @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "executionEnd")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.Boolean)
+    @OslcValueType(ValueType.DateTime)
     @OslcReadOnly(false)
-    public Boolean isExecutionEnd()
+    public Date getExecutionEnd()
     {
         // Start of user code getterInit:executionEnd
         // End of user code
@@ -251,7 +251,7 @@ public class ActionExecutionReport
     
     // Start of user code setterAnnotation:executionEnd
     // End of user code
-    public void setExecutionEnd(final Boolean executionEnd )
+    public void setExecutionEnd(final Date executionEnd )
     {
         // Start of user code setterInit:executionEnd
         // End of user code

@@ -99,14 +99,14 @@ public interface IActionExecutionReport
     @OslcName("executionEnd")
     @OslcPropertyDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE + "executionEnd")
     @OslcOccurs(Occurs.ExactlyOne)
-    @OslcValueType(ValueType.Boolean)
+    @OslcValueType(ValueType.DateTime)
     @OslcReadOnly(false)
-    public Boolean isExecutionEnd();
+    public Date getExecutionEnd();
 
 
     public void setExecutionSuccess(final Boolean executionSuccess );
     public void setAction(final ExecutableAction action );
     public void setExecutionBegin(final Date executionBegin );
-    public void setExecutionEnd(final Boolean executionEnd );
+    public void setExecutionEnd(final Date executionEnd );
 }
 

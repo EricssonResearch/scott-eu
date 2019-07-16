@@ -90,7 +90,7 @@ import eu.scott.warehouse.domains.pddl.Step;
 // Start of user code pre_class_code
 // End of user code
 @OslcService(TwinsDomainConstants.TWINS_DOMAIN_DOMAIN)
-@Path("twins/{twinKind}/{twinId}/planExecutionRequests")
+@Path("twins/{twinKind}/{twinId}/service1/planExecutionRequests")
 public class TwinsServiceProviderService1
 {
     @Context private HttpServletRequest httpServletRequest;

@@ -48,6 +48,7 @@ import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 
