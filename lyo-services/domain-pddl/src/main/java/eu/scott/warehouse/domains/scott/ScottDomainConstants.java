@@ -40,6 +40,10 @@ public interface ScottDomainConstants
     public static String SCOTT_WAREHOUSE_NAMSPACE = "http://ontology.cf.ericsson.net/ns/scott-warehouse/";
     public static String SCOTT_WAREHOUSE_NAMSPACE_PREFIX = "scott";
 
+    public static String ACTIONEXECUTIONREPORT_PATH = "actionExecutionReport";
+    public static String ACTIONEXECUTIONREPORT_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
+    public static String ACTIONEXECUTIONREPORT_LOCALNAME = "ActionExecutionReport"; //localName of the rdfs:class the resource describes
+    public static String ACTIONEXECUTIONREPORT_TYPE = ACTIONEXECUTIONREPORT_NAMESPACE + ACTIONEXECUTIONREPORT_LOCALNAME; //fullname of the rdfs:class the resource describes
     public static String BOX_PATH = "box";
     public static String BOX_NAMESPACE = SCOTT_WAREHOUSE_NAMSPACE; //namespace of the rdfs:class the resource describes
     public static String BOX_LOCALNAME = "Box"; //localName of the rdfs:class the resource describes
