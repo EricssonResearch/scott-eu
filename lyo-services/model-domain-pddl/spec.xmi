@@ -80,12 +80,17 @@
     <resources name="move-to-wp" extends="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
     <resources name="pick-shelf" extends="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
     <resources name="ExecutableAction"/>
+    <resources name="ActionExecutionReport" resourceProperties="//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionSuccess'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='action'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionBegin'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
     <resourceProperties name="at-x" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Coord']"/>
     <resourceProperties name="at-y" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Coord']"/>
     <resourceProperties name="on-belt" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ConveyorBelt']"/>
     <resourceProperties name="on-shelf" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Shelf']"/>
     <resourceProperties name="on-robot" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Robot']"/>
     <resourceProperties name="is-free"/>
+    <resourceProperties name="executionSuccess"/>
+    <resourceProperties name="action" valueType="LocalResource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
+    <resourceProperties name="executionBegin" valueType="DateTime"/>
+    <resourceProperties name="executionEnd"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.scott"/>
   </domainSpecifications>
   <domainSpecifications name="Twins Domain" namespaceURI="http://ontology.cf.ericsson.net/ns/twins#" namespacePrefix="//@domainPrefixes[name='twins']">
