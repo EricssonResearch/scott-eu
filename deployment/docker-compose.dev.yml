@@ -41,7 +41,7 @@ services:
   whc:
     image: scott/webapp-whc
     environment:
-#      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
       LYO_BASE: "http://whc.svc:8080/"
     networks:
       overlay:
@@ -64,7 +64,7 @@ services:
   twins:
     image: scott/webapp-twin-robot
     environment:
-#      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
       LYO_BASE: "http://twins.svc:8080/"
     networks:
       overlay:
