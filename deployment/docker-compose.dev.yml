@@ -70,8 +70,6 @@ services:
       overlay:
         aliases:
             - twins.svc
-    expose:
-      - 80
     ports:
       - "9981:9999"
     deploy:
