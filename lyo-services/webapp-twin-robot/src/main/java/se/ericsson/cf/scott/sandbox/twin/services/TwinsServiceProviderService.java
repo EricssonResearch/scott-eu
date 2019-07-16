@@ -25,6 +25,9 @@
 
 package se.ericsson.cf.scott.sandbox.twin.services;
 
+import java.net.URI;
+import java.util.Collections;
+import java.util.HashMap;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +40,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDialog;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcQueryCapability;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcService;
@@ -46,6 +52,8 @@ import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 
+import org.eclipse.lyo.oslc4j.trs.server.InmemPagedTrs;
+import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 
@@ -82,7 +90,7 @@ public class TwinsServiceProviderService
          usages = {OslcConstants.OSLC_USAGE_DEFAULT}
     )
     @GET
-    
+
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
     public ServiceProvider[] getServiceProviders()
     {
@@ -103,6 +111,22 @@ public class TwinsServiceProviderService
     {
         httpServletResponse.addHeader("Oslc-Core-Version","2.0");
         return ServiceProviderCatalogSingleton.getTwinsServiceProvider(httpServletRequest, twinKind, twinId);
+    }
+
+    @Path("{twinKind}/{twinId}/trs")
+    public TrackedResourceSetService getServiceProviderTrs(
+        @PathParam("twinKind") final String twinKind, @PathParam("twinId") final String twinId,
+        @Context UriInfo info) {
+//        because httpServletRequest.getRequestURI() does not work properly
+        final HashMap<String, Object> values = new HashMap<>();
+        values.put("twinKind", twinKind);
+        values.put("twinId", twinId);
+        httpServletResponse.addHeader("Oslc-Core-Version", "2.0");
+        final URI uriBase = UriBuilder.fromUri(OSLC4JUtils.getServletURI())
+            .path("{twinKind}/{twinId}/trs")
+            .buildFromMap(values);
+        return new TrackedResourceSetService(new InmemPagedTrs(10, 10,
+            uriBase, Collections.emptyList()), uriBase.toString());
     }
 
     /**

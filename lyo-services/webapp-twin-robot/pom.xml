@@ -245,7 +245,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.3.9.v20160517</version>
+        <version>9.4.19.v20190610</version>
         <configuration>
           <webAppConfig>
             <contextPath>/</contextPath>
@@ -255,7 +255,7 @@
           <systemProperties>
             <systemProperty>
               <name>jetty.port</name>
-              <value>8080</value>
+              <value>8880</value>
             </systemProperty>
           </systemProperties>
           <stopKey/>
