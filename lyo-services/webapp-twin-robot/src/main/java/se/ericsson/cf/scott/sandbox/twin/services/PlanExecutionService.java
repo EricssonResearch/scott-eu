@@ -91,7 +91,7 @@ import eu.scott.warehouse.domains.pddl.Step;
 // End of user code
 @OslcService(TwinsDomainConstants.TWINS_DOMAIN_DOMAIN)
 @Path("twins/{twinKind}/{twinId}/service1/planExecutionRequests")
-public class TwinsServiceProviderService1
+public class PlanExecutionService
 {
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
@@ -103,7 +103,7 @@ public class TwinsServiceProviderService1
     // Start of user code class_methods
     // End of user code
 
-    public TwinsServiceProviderService1()
+    public PlanExecutionService()
     {
         super();
     }

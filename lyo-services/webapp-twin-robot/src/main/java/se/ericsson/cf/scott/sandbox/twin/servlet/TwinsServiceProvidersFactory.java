@@ -50,7 +50,7 @@ import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.services.ExecutionReportsService;
 
 // Start of user code imports
@@ -65,7 +65,7 @@ public class TwinsServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        TwinsServiceProviderService1.class, ExecutionReportsService.class
+        PlanExecutionService.class, ExecutionReportsService.class
     };
 
     private TwinsServiceProvidersFactory()

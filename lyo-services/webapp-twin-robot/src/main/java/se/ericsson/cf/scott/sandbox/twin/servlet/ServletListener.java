@@ -26,6 +26,7 @@ package se.ericsson.cf.scott.sandbox.twin.servlet;
 import java.net.MalformedURLException;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -47,8 +48,7 @@ import org.slf4j.LoggerFactory;
 public class ServletListener implements ServletContextListener  {
     private static final String DEFAULT_BASE = "http://localhost:8080";
     private static final String PROPERTY_BASE = servletContextParameterName("baseurl");
-    private static final Logger logger = LoggerFactory.getLogger(ServletListener.class);
-    public static final String BASE_ENV_KEY = "LYO_BASE";
+    private static final Logger logger = Logger.getLogger(ServletListener.class.getName());
 
     //If you are using another servletName in your web.xml configuration file, modify this variable early in the method contextInitialized below
     private static String servletName = "JAX-RS Servlet";
@@ -72,7 +72,7 @@ public class ServletListener implements ServletContextListener  {
         try {
             servletUrlPattern = getServletUrlPattern(servletContextEvent);
         } catch (Exception e1) {
-            logger.error("servletListner encountered problems identifying the servlet URL pattern.", e1);
+            logger.log(Level.SEVERE, "servletListner encountered problems identifying the servlet URL pattern.", e1);
         }
         try {
             logger.info("Setting public URI: " + baseUrl);
@@ -80,12 +80,12 @@ public class ServletListener implements ServletContextListener  {
             logger.info("Setting servlet path: " + servletUrlPattern);
             OSLC4JUtils.setServletPath(servletUrlPattern);
         } catch (MalformedURLException e) {
-            logger.error("servletListner encountered MalformedURLException.", e);
+            logger.log(Level.SEVERE, "servletListner encountered MalformedURLException.", e);
         } catch (IllegalArgumentException e) {
-            logger.error("servletListner encountered IllegalArgumentException.", e);
+            logger.log(Level.SEVERE, "servletListner encountered IllegalArgumentException.", e);
         }
 
-        logger.info("servletListner contextInitialized.");
+        logger.log(Level.INFO, "servletListner contextInitialized.");
 
         // Establish connection to data backbone etc ...
         TwinManager.contextInitializeServletListener(servletContextEvent);
@@ -131,8 +131,9 @@ public class ServletListener implements ServletContextListener  {
     }
 
     private static String generateBasePath(final ServletContextEvent servletContextEvent) {
-        Optional<String> basePath = generateBasePathEnv();
-        return basePath.orElseGet(() -> generateBasePathContext(servletContextEvent));
+        final ServletContext servletContext = servletContextEvent.getServletContext();
+        String base = getInitParameterOrDefault(servletContext, PROPERTY_BASE, DEFAULT_BASE);
+        return base + servletContext.getContextPath();
     }
 
     private static String getInitParameterOrDefault(ServletContext context, String propertyName, String defaultValue) {
@@ -162,3 +163,4 @@ public class ServletListener implements ServletContextListener  {
         return mapping;
     }
 }
+

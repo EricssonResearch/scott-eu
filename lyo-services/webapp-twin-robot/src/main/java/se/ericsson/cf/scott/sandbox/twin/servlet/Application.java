@@ -68,7 +68,7 @@ import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.services.ExecutionReportsService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 
@@ -118,7 +118,7 @@ public class Application extends javax.ws.rs.core.Application {
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
         RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
-        RESOURCE_CLASSES.add(TwinsServiceProviderService1.class);
+        RESOURCE_CLASSES.add(PlanExecutionService.class);
         RESOURCE_CLASSES.add(ExecutionReportsService.class);
         RESOURCE_CLASSES.add(IndependentServiceProviderService1.class);
 

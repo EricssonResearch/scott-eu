@@ -39,6 +39,7 @@
           <creationFactories title="PlanFactory" label="CF to schedule new plans for execution" creationURI="create">
             <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='Twins%20Domain']/@resources[name='PlanExecutionRequest']"/>
           </creationFactories>
+          <usages>planExecution</usages>
         </services>
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']"/>

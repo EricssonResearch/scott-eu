@@ -76,8 +76,8 @@ public class TwinManager {
     private static final TrsEventKafkaPublisher kafkaPublisher = new TrsEventKafkaPublisher(
         "kafka:9092", "test");
     // End of user code
-
-
+    
+    
     // Start of user code class_methods
     public static TrsEventKafkaPublisher getKafkaPublisher() {
         return kafkaPublisher;
@@ -87,7 +87,7 @@ public class TwinManager {
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-
+        
         // Start of user code contextInitializeServletListener
         NaiveTrsFactories.activate();
         log.info("Twin {} is starting", TwinAdaptorHelper.getTwinUUID());
@@ -108,9 +108,9 @@ public class TwinManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
     {
-
+        
         // Start of user code contextDestroyed
 
         log.info("Destroying the servlet");
@@ -127,7 +127,7 @@ public class TwinManager {
     public static TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         TwinsServiceProviderInfo[] serviceProviderInfos = {};
-
+        
         // Start of user code "TwinsServiceProviderInfo[] getTwinsServiceProviderInfos(...)"
         // End of user code
         return serviceProviderInfos;
@@ -135,7 +135,7 @@ public class TwinManager {
     public static IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         IndependentServiceProviderInfo[] serviceProviderInfos = {};
-
+        
         // Start of user code "IndependentServiceProviderInfo[] getIndependentServiceProviderInfos(...)"
         // End of user code
         return serviceProviderInfos;
@@ -144,7 +144,7 @@ public class TwinManager {
     public static PlanExecutionRequest createPlanExecutionRequest(HttpServletRequest httpServletRequest, final PlanExecutionRequest aResource, final String twinKind, final String twinId)
     {
         PlanExecutionRequest newResource = null;
-
+        
         // Start of user code createPlanExecutionRequest
         log.info("Incoming plan: {}", aResource);
         newResource = aResource;
@@ -160,7 +160,7 @@ public class TwinManager {
     public static ActionExecutionReport getActionExecutionReport(HttpServletRequest httpServletRequest, final String twinKind, final String twinId, final String actionExecutionReportId)
     {
         ActionExecutionReport aResource = null;
-
+        
         // Start of user code getActionExecutionReport
         // TODO Implement code to return a resource
         // End of user code
@@ -172,7 +172,7 @@ public class TwinManager {
     public static DeviceRegistrationMessage createDeviceRegistrationMessage(HttpServletRequest httpServletRequest, final DeviceRegistrationMessage aResource)
     {
         DeviceRegistrationMessage newResource = null;
-
+        
         // Start of user code createDeviceRegistrationMessage
         log.info("Registering a twin: {}", aResource.toString());
         final String twinKind = aResource.getTwinType();
