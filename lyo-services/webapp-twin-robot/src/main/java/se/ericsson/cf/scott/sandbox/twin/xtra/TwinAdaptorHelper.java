@@ -138,7 +138,7 @@ public class TwinAdaptorHelper {
         return URI.create("http://scott.example.com/g/twinSPs");
     }
 
-    private static Store getStore() {
+    public static Store getStore() {
 //        return StoreFactory.inMemory();
         if (store == null) {
             log.warn("Lyo Store was not initialised properly");

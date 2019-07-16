@@ -58,24 +58,24 @@ public class AdaptorAdminService {
         return Response.noContent().build();
     }
 
-    @POST
-    @Path("trigger-trs")
-    @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML,
-        OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
-    public Response triggerTrsEvent() {
-        log.info("Triggering a dummy TRS event via Kafka");
-
-        try {
-            final Creation event = new Creation(
-                URI.create("urn:uuid" + UUID.randomUUID().toString()),
-                URI.create("http://example.com/test"), -1);
-            TwinManager.getKafkaPublisher().publish(event);
-        } catch (Exception e) {
-            log.error("Error", e);
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-//        httpServletResponse.addHeader("Oslc-Core-Version","2.0");
-        return Response.noContent().build();
-    }
+//    @POST
+//    @Path("trigger-trs")
+//    @Consumes({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML,
+//        OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+//    public Response triggerTrsEvent() {
+//        log.info("Triggering a dummy TRS event via Kafka");
+//
+//        try {
+//            final Creation event = new Creation(
+//                URI.create("urn:uuid" + UUID.randomUUID().toString()),
+//                URI.create("http://example.com/test"), -1);
+////            TwinManager.getKafkaPublisher().publish(event);
+//        } catch (Exception e) {
+//            log.error("Error", e);
+//            return Response.status(Response.Status.BAD_REQUEST).build();
+//        }
+//
+////        httpServletResponse.addHeader("Oslc-Core-Version","2.0");
+//        return Response.noContent().build();
+//    }
 }

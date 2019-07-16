@@ -22,7 +22,17 @@ import org.eclipse.lyo.core.trs.Modification
 import java.net.URI
 
 interface ITrsLogAppender {
-    fun appendCreationEvent(changed: URI): Creation
-    fun appendModificationEvent(changed: URI): Modification
-    fun appendDeletionEvent(changed: URI): Deletion
+    fun appendCreationEvent(changed: URI, twinKind: String, twinId: String): Creation
+    fun appendModificationEvent(changed: URI, twinKind: String, twinId: String): Modification
+    fun appendDeletionEvent(changed: URI, twinKind: String, twinId: String): Deletion
+
+    companion object {
+        val pageSize = 200
+        fun logGraphFor(twinKind: String, twinId: String, orderId: Int): URI {
+            val page = pageNo(orderId)
+            return URI.create("http://twins.svc/ng/trs/log/$twinKind/$twinId/$page")
+        }
+
+        private fun pageNo(orderId: Int) = orderId / pageSize + 1
+    }
 }

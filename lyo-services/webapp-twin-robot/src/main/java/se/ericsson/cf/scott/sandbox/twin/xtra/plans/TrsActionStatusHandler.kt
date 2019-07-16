@@ -31,9 +31,7 @@ class TrsActionStatusHandler(private val logAppender: ITrsLogAppender,
                              private val reportRepository: ExecutionReportRepository) :
     IActionStatusHandler {
     override fun actionFailed(action: ExecutableAction, info: ExecutionInfo) {
-        val executionReport = generateReport(info, action, success = true)
-        reportRepository.add(executionReport, info.twinKind, info.twinId)
-        logAppender.appendCreationEvent(executionReport.about)
+        TODO("not implemented")
     }
 
     override fun actionCompleted(action: ExecutableAction, info: ExecutionInfo) {
@@ -59,7 +57,7 @@ class TrsActionStatusHandler(private val logAppender: ITrsLogAppender,
     private fun appendCompletionEvent(action: ExecutableAction, info: ExecutionInfo) {
         val executionReport = generateReport(info, action, success = true)
         reportRepository.add(executionReport, info.twinKind, info.twinId)
-        logAppender.appendCreationEvent(executionReport.about)
+        logAppender.appendCreationEvent(executionReport.about, info.twinKind, info.twinId)
     }
 
     private fun generateReport(info: ExecutionInfo, action: ExecutableAction,

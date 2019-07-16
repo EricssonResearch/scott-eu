@@ -22,15 +22,15 @@ import org.eclipse.lyo.core.trs.Modification
 import java.net.URI
 
 class MemAppender : ITrsLogAppender {
-    override fun appendCreationEvent(changed: URI): Creation {
+    override fun appendCreationEvent(changed: URI, twinKind: String, twinId: String): Creation {
         TODO("not implemented")
     }
 
-    override fun appendModificationEvent(changed: URI): Modification {
+    override fun appendModificationEvent(changed: URI, twinKind: String, twinId: String): Modification {
         TODO("not implemented")
     }
 
-    override fun appendDeletionEvent(changed: URI): Deletion {
+    override fun appendDeletionEvent(changed: URI, twinKind: String, twinId: String): Deletion {
         TODO("not implemented")
     }
 }
