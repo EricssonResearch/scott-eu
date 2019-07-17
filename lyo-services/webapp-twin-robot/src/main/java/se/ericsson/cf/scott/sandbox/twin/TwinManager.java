@@ -24,6 +24,8 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
+import com.google.common.base.Strings;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
 import java.util.List;
@@ -93,13 +95,34 @@ public class TwinManager {
         TwinAdaptorHelper.setServletContext(servletContextEvent.getServletContext());
         r = new Random();
 
+
         log.debug("Initialising the KB");
-        TwinAdaptorHelper.initStore(false);
+
+        final Jedis jedis = new Jedis("redis.svc");
+
+        final String slot = System.getenv("CONTAINER_SLOT");
+        if(Strings.isNullOrEmpty(slot) || Integer.parseUnsignedInt(slot) != 1) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("Non-master node initialising...");
+            TwinAdaptorHelper.initStore(false);
+        } else {
+            log.warn("Clearing the state of the triplestore");
+            TwinAdaptorHelper.initStore(true);
+            log.warn("Clearing Redis keys");
+            Set<String> keys = jedis.keys("order:*");
+            for (String key : keys) {
+                jedis.del(key);
+            }
+        }
 
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         // TODO Andrew@2019-07-15: replace with something concurrent
         final TrsActionStatusHandler statusHandler = new TrsActionStatusHandler(
-            new ConcurrentRedisAppender(new Jedis("redis.svc"), TwinAdaptorHelper.getStore()),
+            new ConcurrentRedisAppender(jedis, TwinAdaptorHelper.getStore()),
             TwinAdaptorHelper.getExecutionReportRepository());
         final OslcClient client = new OslcClient();
         planExecutionService = new PlanExecutionService(executorService, client, statusHandler);

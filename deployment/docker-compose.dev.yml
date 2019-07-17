@@ -66,6 +66,7 @@ services:
     environment:
       JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
       LYO_BASE: "http://twins.svc:8080/"
+      CONTAINER_SLOT: "{{.Task.Slot}}"
     networks:
       overlay:
         aliases:
