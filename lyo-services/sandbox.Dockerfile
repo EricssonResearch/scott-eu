@@ -13,8 +13,9 @@ COPY ./webapp-svc-location/pom.xml ./webapp-svc-location/pom.xml
 
 COPY ./webapp-twin-robot/pom.xml ./webapp-twin-robot/pom.xml
 
-RUN mvn -f lyo-webapp-parent/pom.xml dependency:resolve  -B -q || true
-#RUN mvn -f lyo-webapp-parent/pom.xml --fail-at-end dependency:go-offline -B -q || true
+#RUN mvn -f lyo-webapp-parent/pom.xml dependency:resolve  -B -q || true
+RUN mvn -f lyo-webapp-parent/pom.xml --fail-at-end dependency:go-offline -B -q > /dev/null 2>&1 || true
 
 COPY . .
-RUN mvn -f lyo-webapp-parent/pom.xml --no-snapshot-updates -Dmaven.test.skip=true install -B
+#RUN mvn -f lyo-webapp-parent/pom.xml --no-snapshot-updates -Dmaven.test.skip=true install -B
+RUN mvn -f lyo-webapp-parent/pom.xml -Dmaven.test.skip=true install -B
