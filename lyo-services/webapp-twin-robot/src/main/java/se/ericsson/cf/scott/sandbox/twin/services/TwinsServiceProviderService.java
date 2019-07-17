@@ -38,7 +38,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -46,16 +45,16 @@ import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDialog;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcQueryCapability;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcService;
-import org.eclipse.lyo.oslc4j.core.model.Compact;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 
 import org.eclipse.lyo.oslc4j.trs.server.InmemPagedTrs;
-import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
-import se.ericsson.cf.scott.sandbox.twin.TwinManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsSubresourceService;
 
 // Start of user code imports
 // End of user code
@@ -64,6 +63,8 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton
 @Path("twins")
 public class TwinsServiceProviderService
 {
+    private final static Logger log = LoggerFactory.getLogger(TwinsServiceProviderService.class);
+
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
 
@@ -114,7 +115,7 @@ public class TwinsServiceProviderService
     }
 
     @Path("{twinKind}/{twinId}/trs")
-    public TrackedResourceSetService getServiceProviderTrs(
+    public Object getServiceProviderTrs(
         @PathParam("twinKind") final String twinKind, @PathParam("twinId") final String twinId,
         @Context UriInfo info) {
 //        because httpServletRequest.getRequestURI() does not work properly
@@ -122,11 +123,18 @@ public class TwinsServiceProviderService
         values.put("twinKind", twinKind);
         values.put("twinId", twinId);
         httpServletResponse.addHeader("Oslc-Core-Version", "2.0");
-        final URI uriBase = UriBuilder.fromUri(OSLC4JUtils.getServletURI())
+        String servletURI = OSLC4JUtils.getServletURI();
+//        servletURI = info.getBaseUri().toString();
+        log.debug("OSLC4JUtils: {}; UriInfo: {}", servletURI, info.getBaseUri());
+        final URI uriBase = UriBuilder.fromUri(servletURI)
             .path("{twinKind}/{twinId}/trs")
             .buildFromMap(values);
-        return new TrackedResourceSetService(new InmemPagedTrs(10, 10,
-            uriBase, Collections.emptyList()), uriBase.toString());
+        log.debug("{}", info.getMatchedURIs());
+
+        final URI subresourceBase = UriBuilder.fromUri(servletURI).path(info.getMatchedURIs().get(0)).build();
+
+        return new TrsSubresourceService(
+            new InmemPagedTrs(10, 10, uriBase, Collections.emptyList()), subresourceBase.toString());
     }
 
     /**
