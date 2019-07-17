@@ -53,6 +53,8 @@ import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.twin.services.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.services.ExecutionReportsService;
 
+import static se.ericsson.cf.scott.sandbox.twin.servlet.QNames.trs;
+
 // Start of user code imports
 
 // End of user code
@@ -136,7 +138,8 @@ public class TwinsServiceProvidersFactory
 ,
             new PrefixDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE_PREFIX, new URI(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE))
 ,
-            new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE))
+            new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE)),
+            QNames.getTrsPrefix(), QNames.getTrsxPrefix()
         };
         serviceProvider.setPrefixDefinitions(prefixDefinitions);
 
@@ -146,8 +149,8 @@ public class TwinsServiceProvidersFactory
         serviceProvider.setDetails(new URI[] {serviceProviderURI});
 
         // Start of user code finalize
-        final Map<QName, Object> properties = serviceProvider.getExtendedProperties();
-        properties.put(QNames.trsNS("trackedResourceSet"), UriBuilder.fromUri(serviceProviderURI).path("trs").build());
+        final Map<QName, Object> ext = serviceProvider.getExtendedProperties();
+        ext.put(trs("trackedResourceSet"), UriBuilder.fromUri(serviceProviderURI).path("trs").build());
         // End of user code
         return serviceProvider;
     }

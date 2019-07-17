@@ -27,7 +27,6 @@ package se.ericsson.cf.scott.sandbox.twin.services;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +53,7 @@ import org.eclipse.lyo.oslc4j.trs.server.InmemPagedTrs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsSubresourceService;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.MqttTrsService;
 
 // Start of user code imports
 // End of user code
@@ -118,23 +117,16 @@ public class TwinsServiceProviderService
     public Object getServiceProviderTrs(
         @PathParam("twinKind") final String twinKind, @PathParam("twinId") final String twinId,
         @Context UriInfo info) {
-//        because httpServletRequest.getRequestURI() does not work properly
-        final HashMap<String, Object> values = new HashMap<>();
-        values.put("twinKind", twinKind);
-        values.put("twinId", twinId);
         httpServletResponse.addHeader("Oslc-Core-Version", "2.0");
-        String servletURI = OSLC4JUtils.getServletURI();
-//        servletURI = info.getBaseUri().toString();
-        log.debug("OSLC4JUtils: {}; UriInfo: {}", servletURI, info.getBaseUri());
-        final URI uriBase = UriBuilder.fromUri(servletURI)
-            .path("{twinKind}/{twinId}/trs")
-            .buildFromMap(values);
-        log.debug("{}", info.getMatchedURIs());
 
+        String servletURI = OSLC4JUtils.getServletURI();
         final URI subresourceBase = UriBuilder.fromUri(servletURI).path(info.getMatchedURIs().get(0)).build();
 
-        return new TrsSubresourceService(
-            new InmemPagedTrs(10, 10, uriBase, Collections.emptyList()), subresourceBase.toString());
+        final InmemPagedTrs pagedTrs = new InmemPagedTrs(10, 10, subresourceBase,
+            Collections.emptyList());
+        final String mqttBroker = "tcp://mqtt.svc:1883";
+        final String mqttTopic = String.format("scott/trs/twins/%s.%s", twinKind, twinId);
+        return new MqttTrsService(pagedTrs, subresourceBase.toString(), mqttBroker, mqttTopic);
     }
 
     /**
@@ -142,7 +134,7 @@ public class TwinsServiceProviderService
      *
      * Forwards to serviceprovider_html.jsp to create the html document
      *
-     * @param serviceProviderId
+     * @param serviceProvideArId
      */
     @GET
     @Path("{twinKind}/{twinId}")

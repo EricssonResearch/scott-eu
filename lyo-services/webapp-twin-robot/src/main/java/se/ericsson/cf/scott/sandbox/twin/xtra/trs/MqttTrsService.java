@@ -33,7 +33,7 @@ package se.ericsson.cf.scott.sandbox.twin.xtra.trs;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.inject.Inject;
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -41,6 +41,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.xml.namespace.QName;
 import org.apache.jena.ext.com.google.common.base.Strings;
 import org.eclipse.lyo.core.trs.Base;
 import org.eclipse.lyo.core.trs.ChangeLog;
@@ -55,9 +56,12 @@ import org.eclipse.lyo.oslc4j.trs.server.PagedTrs;
 import org.eclipse.lyo.oslc4j.trs.server.TRSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.ericsson.cf.scott.sandbox.twin.servlet.QNames;
+
+import static se.ericsson.cf.scott.sandbox.twin.servlet.QNames.trsx;
 
 @OslcService(TRSConstants.TRS_NAMESPACE)
-public class TrsSubresourceService {
+public class MqttTrsService {
     private static final Logger log     = LoggerFactory.getLogger(
         org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService.class);
     private static final String BASE_PATH = "base";
@@ -69,12 +73,16 @@ public class TrsSubresourceService {
      * class. The instance returned is expected to be a singleton of a class implementing the
      * ChangeHistories class
      */
-    private PagedTrs changeHistories;
+    private PagedTrs pagedTrs;
     private String base;
+    private final String mqttBroker;
+    private final String mqttTopic;
 
-    public TrsSubresourceService(PagedTrs _changeHistories, String base) {
-        changeHistories = _changeHistories;
+    public MqttTrsService(PagedTrs pagedTrs, String base, String mqttBroker, String mqttTopic) {
+        this.pagedTrs = pagedTrs;
         this.base = base;
+        this.mqttBroker = mqttBroker;
+        this.mqttTopic = mqttTopic;
     }
 
     /**
@@ -87,19 +95,23 @@ public class TrsSubresourceService {
         OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
     public TrackedResourceSet getTrackedResourceSet()
         throws URISyntaxException {
-        TrackedResourceSet result = new TrackedResourceSet();
+        TrackedResourceSet trs = new TrackedResourceSet();
 
-        result.setAbout(uriBuilder().build());
-        result.setBase(uriBuilder().path(BASE_PATH).build());
+        trs.setAbout(uriBuilder().build());
+        trs.setBase(uriBuilder().path(BASE_PATH).build());
 
         if(getPagedTrs().changelogPageCount() == 0) {
             // FIXME Andrew@2019-04-27: remove this exception from the signature
-            result.setChangeLog(new ChangeLog());
+            trs.setChangeLog(new ChangeLog());
         } else {
-            result.setChangeLog(getPagedTrs().getChangeLogLast());
+            trs.setChangeLog(getPagedTrs().getChangeLogLast());
         }
 
-        return result;
+        final Map<QName, Object> ext = trs.getExtendedProperties();
+        ext.put(QNames.trsx("mqttLog"), mqttBroker);
+        ext.put(QNames.trsx("mqttLogTopic"), mqttTopic);
+
+        return trs;
     }
 
     /**
@@ -153,7 +165,7 @@ public class TrsSubresourceService {
     }
 
     protected PagedTrs getPagedTrs() {
-        return changeHistories;
+        return pagedTrs;
     }
 
     /**
