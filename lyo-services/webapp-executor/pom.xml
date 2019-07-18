@@ -91,7 +91,7 @@
       <!--NoClassDefFoundError: org/apache/jena/riot/lang/ReaderRIOTRDFXML-->
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.6.0</version>
+      <version>3.11.0</version>
       <type>pom</type>
     </dependency>
 
