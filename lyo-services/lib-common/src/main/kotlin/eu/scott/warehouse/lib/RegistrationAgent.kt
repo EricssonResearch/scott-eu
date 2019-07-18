@@ -5,5 +5,5 @@ import org.apache.jena.rdf.model.Model
 
 data class LastWillMessage(val topic: String, val message: Model) {
     val messageBytes: ByteArray
-        get() = MqttHelper.msgFromModel(TrsXConstants.rdfFormat, message).payload
+        get() = MqttTrsServices.msgFromModel(message).payload
 }

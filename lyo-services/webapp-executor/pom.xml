@@ -47,11 +47,6 @@
           <artifactId>commons-logging</artifactId>
           <groupId>commons-logging</groupId>
         </exclusion>
-        <exclusion>
-          <!--TODO fix upstream or use Jena 3.8.0; conflicts with Jena stax-api (JENA-1537)-->
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -79,20 +74,6 @@
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-jena-provider</artifactId>
       <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <!--TODO fix upstream or use Jena 3.8.0; conflicts with Jena stax-api (JENA-1537)-->
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <!--NoClassDefFoundError: org/apache/jena/riot/lang/ReaderRIOTRDFXML-->
-      <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
-      <version>3.6.0</version>
-      <type>pom</type>
     </dependency>
 
     <dependency>

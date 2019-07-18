@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package se.ericsson.cf.scott.sandbox.twin.xtra.trs
 
-import org.eclipse.lyo.core.trs.Creation
-import org.eclipse.lyo.core.trs.Deletion
-import org.eclipse.lyo.core.trs.Modification
-import java.net.URI
+import redis.clients.jedis.Jedis
 
-class MemAppender : ITrsLogAppender {
-    override fun appendCreationEvent(changed: URI, twinKind: String, twinId: String): Creation {
-        TODO("not implemented")
-    }
+interface IConcurrentOrderGenerator {
+    fun nextOrder(twinKind: String, twinId: String): Int
+}
 
-    override fun appendModificationEvent(changed: URI, twinKind: String, twinId: String): Modification {
-        TODO("not implemented")
-    }
+class ConcurrentRedisOrderGenerator(private val jedis: Jedis) : IConcurrentOrderGenerator {
+    // TODO Andrew@2019-07-16: remove cast after https://github.com/eclipse/lyo.core/issues/104 is fixed
+    @Synchronized //just in case, Jedis is not thread-safe unless we use pools &c.
+    override fun nextOrder(twinKind: String, twinId: String): Int =
+        jedis.incr("order:$twinKind:$twinId").toInt()
 
-    override fun appendDeletionEvent(changed: URI, twinKind: String, twinId: String): Deletion {
-        TODO("not implemented")
-    }
 }

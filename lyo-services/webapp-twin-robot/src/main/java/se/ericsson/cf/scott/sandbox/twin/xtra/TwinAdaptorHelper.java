@@ -1,6 +1,5 @@
 package se.ericsson.cf.scott.sandbox.twin.xtra;
 
-import com.google.common.base.Strings;
 import eu.scott.warehouse.lib.MqttGatewayBuilder;
 import eu.scott.warehouse.lib.RdfMqttGateway;
 import java.io.IOException;
@@ -24,15 +23,14 @@ import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.xtra.repository.ExecutionReportRepository;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsMqttClientManager;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsMqttPlanManager;
 
 public class TwinAdaptorHelper {
     private final static Logger log = LoggerFactory.getLogger(TwinAdaptorHelper.class);
     private final static UUID uuid = UUID.randomUUID();
-    static String trsTopic;
-    static TrsMqttClientManager trsClientManager;
-    static Store store;
-    static RdfMqttGateway mqttGateway;
+    private static TrsMqttPlanManager trsClientManager;
+    private static Store store;
+    private static RdfMqttGateway mqttGateway;
     private static ServletContext servletContext;
     private static ServiceProviderRepository serviceProviderRepository;
     private static ExecutionReportRepository executionReportRepository;
@@ -41,31 +39,16 @@ public class TwinAdaptorHelper {
         return mqttGateway;
     }
 
-    public static void setMqttGateway(final RdfMqttGateway mqttGateway) {
-        TwinAdaptorHelper.mqttGateway = mqttGateway;
-    }
-
     @NotNull
     public static String getTwinUUID() {
         return "twn-" + uuid.toString();
     }
 
-    public static String getTrsTopic() {
-        if (Strings.isNullOrEmpty(trsTopic)) {
-            log.warn("The TRS topic was requested before it was set");
-        }
-        return trsTopic;
-    }
-
-    public static void setTrsTopic(String trsTopic) {
-        TwinAdaptorHelper.trsTopic = trsTopic;
-    }
-
-    public static TrsMqttClientManager getTrsClientManager() {
+    public static TrsMqttPlanManager getTrsClientManager() {
         return trsClientManager;
     }
 
-    public static void setTrsClientManager(TrsMqttClientManager trsClientManager) {
+    public static void setTrsClientManager(TrsMqttPlanManager trsClientManager) {
         TwinAdaptorHelper.trsClientManager = trsClientManager;
     }
 
@@ -112,19 +95,29 @@ public class TwinAdaptorHelper {
     }
 
     public static void initTrsClient() {
-        final String mqttBroker = p("trs.mqtt.broker");
         // TODO Andrew@2018-07-31: remove non-gateway based code
+        final MqttClient mqttClient = getMqttClient();
+        final TrsMqttPlanManager trsClientManager = new TrsMqttPlanManager(mqttClient);
+        setTrsClientManager(trsClientManager);
+        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
+    }
+
+    @NotNull
+    public static MqttClient getMqttClient() {
+        if (mqttGateway == null) {
+            initMqttGateway();
+        }
+        return mqttGateway.getMqttClient();
+    }
+
+    private static void initMqttGateway() {
         try {
+            final String mqttBroker = p("trs.mqtt.broker");
             log.debug("Connecting to the MQTT broker: {}", mqttBroker);
-            mqttGateway = new MqttGatewayBuilder().withBroker(mqttBroker)
-                                                 .withId(getTwinUUID())
-                                                 .build();
-            final MqttClient mqttClient = mqttGateway.getMqttClient();
-            final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttClient);
-            setTrsClientManager(trsClientManager);
-            new Thread(trsClientManager::connectAndSubscribeToPlans).run();
+            mqttGateway = new MqttGatewayBuilder().withBroker(mqttBroker).withId(getTwinUUID()).build();
         } catch (MqttException e) {
-            log.error("Failed to initialise the MQTT gateway", e);
+            log.error("Cannot connect to the MQTT broker");
+            throw new RuntimeException(e);
         }
     }
 

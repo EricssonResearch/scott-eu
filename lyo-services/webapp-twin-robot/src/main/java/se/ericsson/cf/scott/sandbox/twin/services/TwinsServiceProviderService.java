@@ -25,6 +25,7 @@
 
 package se.ericsson.cf.scott.sandbox.twin.services;
 
+import eu.scott.warehouse.lib.MqttTrsServices;
 import java.net.URI;
 import java.util.Collections;
 import javax.servlet.RequestDispatcher;
@@ -53,7 +54,7 @@ import org.eclipse.lyo.oslc4j.trs.server.InmemPagedTrs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.MqttTrsService;
+import se.ericsson.cf.scott.sandbox.twin.xtra.services.MqttTrsService;
 
 // Start of user code imports
 // End of user code
@@ -125,7 +126,7 @@ public class TwinsServiceProviderService
         final InmemPagedTrs pagedTrs = new InmemPagedTrs(10, 10, subresourceBase,
             Collections.emptyList());
         final String mqttBroker = "tcp://mqtt.svc:1883";
-        final String mqttTopic = String.format("scott/trs/twins/%s.%s", twinKind, twinId);
+        final String mqttTopic = MqttTrsServices.trsMqttTopic(twinKind, twinId);
         return new MqttTrsService(pagedTrs, subresourceBase.toString(), mqttBroker, mqttTopic);
     }
 

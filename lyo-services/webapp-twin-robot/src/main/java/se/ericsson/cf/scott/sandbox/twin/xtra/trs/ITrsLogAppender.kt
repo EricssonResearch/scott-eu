@@ -16,15 +16,19 @@
 
 package se.ericsson.cf.scott.sandbox.twin.xtra.trs
 
+import eu.scott.warehouse.domains.scott.ActionExecutionReport
+import org.apache.jena.rdf.model.Model
 import org.eclipse.lyo.core.trs.Creation
 import org.eclipse.lyo.core.trs.Deletion
 import org.eclipse.lyo.core.trs.Modification
 import java.net.URI
 
 interface ITrsLogAppender {
-    fun appendCreationEvent(changed: URI, twinKind: String, twinId: String): Creation
-    fun appendModificationEvent(changed: URI, twinKind: String, twinId: String): Modification
-    fun appendDeletionEvent(changed: URI, twinKind: String, twinId: String): Deletion
+    fun appendCreationEvent(changed: URI,
+                            model: Model,
+                            twinKind: String, twinId: String): Creation
+    fun appendModificationEvent(changed: URI, twinKind: String, twinId: String, model: Model): Modification
+    fun appendDeletionEvent(changed: URI, twinKind: String, twinId: String, model: Model): Deletion
 
     companion object {
         val pageSize = 200

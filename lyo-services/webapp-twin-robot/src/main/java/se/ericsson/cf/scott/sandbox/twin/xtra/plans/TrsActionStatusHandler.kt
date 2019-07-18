@@ -21,6 +21,7 @@ import eu.scott.warehouse.domains.scott.DropBelt
 import eu.scott.warehouse.domains.scott.ExecutableAction
 import eu.scott.warehouse.domains.scott.MoveToWp
 import eu.scott.warehouse.domains.scott.PickShelf
+import eu.scott.warehouse.lib.toModel
 import se.ericsson.cf.scott.sandbox.twin.TwinResourcesFactory
 import se.ericsson.cf.scott.sandbox.twin.xtra.repository.ExecutionReportRepository
 import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ITrsLogAppender
@@ -57,7 +58,8 @@ class TrsActionStatusHandler(private val logAppender: ITrsLogAppender,
     private fun appendCompletionEvent(action: ExecutableAction, info: ExecutionInfo) {
         val executionReport = generateReport(info, action, success = true)
         reportRepository.add(executionReport, info.twinKind, info.twinId)
-        logAppender.appendCreationEvent(executionReport.about, info.twinKind, info.twinId)
+        logAppender.appendCreationEvent(executionReport.about, executionReport.toModel, info.twinKind,
+            info.twinId)
     }
 
     private fun generateReport(info: ExecutionInfo, action: ExecutableAction,

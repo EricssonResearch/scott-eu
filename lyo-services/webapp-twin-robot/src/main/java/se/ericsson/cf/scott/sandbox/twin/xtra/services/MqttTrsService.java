@@ -29,7 +29,7 @@
  * Andrew Berezovskyi  -  Lyo contribution updates; refactoring.
  */
 
-package se.ericsson.cf.scott.sandbox.twin.xtra.trs;
+package se.ericsson.cf.scott.sandbox.twin.xtra.services;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -57,8 +57,6 @@ import org.eclipse.lyo.oslc4j.trs.server.TRSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.QNames;
-
-import static se.ericsson.cf.scott.sandbox.twin.servlet.QNames.trsx;
 
 @OslcService(TRSConstants.TRS_NAMESPACE)
 public class MqttTrsService {

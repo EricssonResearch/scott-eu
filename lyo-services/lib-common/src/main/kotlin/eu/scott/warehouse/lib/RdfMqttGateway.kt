@@ -57,7 +57,6 @@ class RdfMqttGateway @Throws(MqttException::class) constructor(brokerURL: String
 
     @Throws(MqttException::class)
     fun publish(topic: String, messageModel: Model) {
-        publish(topic,
-            MqttHelper.msgFromModel(TrsXConstants.rdfFormat, messageModel))
+        publish(topic, MqttTrsServices.msgFromModel(messageModel))
     }
 }

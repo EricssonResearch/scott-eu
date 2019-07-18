@@ -44,6 +44,11 @@ val IResource.toTurtle: String
         return RdfHelpers.modelToString(model)
     }
 
+val IResource.toModel: Model
+    get() {
+        return JenaModelHelper.createJenaModel(arrayOf(this))
+    }
+
 /**
  * I think the QName part is XML heritage
  */

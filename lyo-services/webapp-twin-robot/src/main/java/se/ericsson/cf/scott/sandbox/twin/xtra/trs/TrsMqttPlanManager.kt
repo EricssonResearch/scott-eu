@@ -19,7 +19,7 @@ package se.ericsson.cf.scott.sandbox.twin.xtra.trs
 import eu.scott.warehouse.domains.trs.TrsServerAck
 import eu.scott.warehouse.domains.trs.TrsServerAnnouncement
 import eu.scott.warehouse.domains.trs.TrsXConstants
-import eu.scott.warehouse.lib.MqttHelper
+import eu.scott.warehouse.lib.MqttTrsServices
 import eu.scott.warehouse.lib.MqttTopics
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils
 import org.eclipse.lyo.oslc4j.core.exception.LyoModelException
@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriBuilder
 import kotlin.math.roundToLong
 
 
-class TrsMqttClientManager() {
+class TrsMqttPlanManager() {
     private val log = LoggerFactory.getLogger(javaClass)
     private lateinit var mqttClient: MqttClient
     private lateinit var trsTopic: String
@@ -103,7 +103,7 @@ class TrsMqttClientManager() {
     }
 
     private fun completeRegistration(message: MqttMessage, latch: CountDownLatch) {
-        val model = MqttHelper.extractModelFromMessage(message)
+        val model = MqttTrsServices.extractModelFromMessage(message)
         try {
             val serverAck = JenaModelHelper.unmarshalSingle(model, TrsServerAck::class.java)
             if (getTwinUUID() == serverAck.adaptorId) {
@@ -125,7 +125,7 @@ class TrsMqttClientManager() {
         val trsUri = UriBuilder.fromUri(OSLC4JUtils.getServletURI()).path("trs").build()
         val announcement = TrsServerAnnouncement(getTwinUUID(), TrsXConstants.TYPE_TWIN, trsUri, MqttTopics.REGISTRATION_ANNOUNCE,
                 isLeaving)
-        return MqttHelper.msgFromResources(TrsXConstants.rdfFormat, announcement)
+        return MqttTrsServices.msgFromResources(announcement)
     }
 
     private fun getTwinUnregistrationMessage(): MqttMessage {

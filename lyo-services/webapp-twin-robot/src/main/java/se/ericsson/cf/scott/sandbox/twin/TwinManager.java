@@ -24,27 +24,17 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
-import com.google.common.base.Strings;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.scott.ActionExecutionReport;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
-import eu.scott.warehouse.domains.scott.ExecutableAction;
-import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
+import com.google.common.base.Strings;
 import java.net.URISyntaxException;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -60,9 +50,10 @@ import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
 import se.ericsson.cf.scott.sandbox.twin.xtra.plans.TrsActionStatusHandler;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ConcurrentRedisAppender;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsEventKafkaPublisher;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ConcurrentMqttAppender;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ConcurrentRedisOrderGenerator;
 import redis.clients.jedis.Jedis;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ITrsLogAppender;
 // End of user code
 
 // Start of user code pre_class_code
@@ -121,8 +112,11 @@ public class TwinManager {
 
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         // TODO Andrew@2019-07-15: replace with something concurrent
-        final TrsActionStatusHandler statusHandler = new TrsActionStatusHandler(
-            new ConcurrentRedisAppender(jedis, TwinAdaptorHelper.getStore()),
+        final ConcurrentRedisOrderGenerator orderGenerator = new ConcurrentRedisOrderGenerator(
+            jedis);
+        final ITrsLogAppender logAppender = new ConcurrentMqttAppender(
+            TwinAdaptorHelper.getMqttClient(), orderGenerator);
+        final TrsActionStatusHandler statusHandler = new TrsActionStatusHandler(logAppender,
             TwinAdaptorHelper.getExecutionReportRepository());
         final OslcClient client = new OslcClient();
         planExecutionService = new PlanExecutionService(executorService, client, statusHandler);
