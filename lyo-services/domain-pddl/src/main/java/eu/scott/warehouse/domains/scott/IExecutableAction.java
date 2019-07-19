@@ -54,6 +54,7 @@ import org.eclipse.lyo.oslc4j.core.annotation.OslcResourceShape;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcTitle;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcValueType;
 import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import org.eclipse.lyo.oslc4j.core.model.IExtendedResource;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.core.model.Occurs;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
@@ -66,10 +67,10 @@ import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 // Start of user code imports
 // End of user code
 
-@OslcNamespace(ScottDomainConstants.EXECUTABLEACTION_NAMESPACE)
-@OslcName(ScottDomainConstants.EXECUTABLEACTION_LOCALNAME)
-@OslcResourceShape(title = "ExecutableAction Resource Shape", describes = ScottDomainConstants.EXECUTABLEACTION_TYPE)
-public interface IExecutableAction
+//@OslcNamespace(ScottDomainConstants.EXECUTABLEACTION_NAMESPACE)
+//@OslcName(ScottDomainConstants.EXECUTABLEACTION_LOCALNAME)
+//@OslcResourceShape(title = "ExecutableAction Resource Shape", describes = ScottDomainConstants.EXECUTABLEACTION_TYPE)
+public interface IExecutableAction extends IExtendedResource
 {
 
 

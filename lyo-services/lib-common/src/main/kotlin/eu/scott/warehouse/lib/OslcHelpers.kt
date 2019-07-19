@@ -49,6 +49,11 @@ val IResource.toModel: Model
         return JenaModelHelper.createJenaModel(arrayOf(this))
     }
 
+val Model.toTurtle: String?
+    get() {
+        return RdfHelpers.modelToString(this)
+    }
+
 /**
  * I think the QName part is XML heritage
  */
@@ -120,22 +125,24 @@ object OslcHelpers {
         throw IllegalArgumentException("Link cannot be followed in this model")
     }
 
-    // TODO Andrew@2019-02-21: make sure we catch all exceptions here
     @SafeVarargs
     @JvmStatic
     fun navTry(m: Model, l: Link, vararg rClass: Class<out IExtendedResource>): IExtendedResource {
         if(l.value == null) {
             throw IllegalArgumentException("Link $l has no URI value")
         }
+        if(rClass.size > 1) {
+            log.debug("Fix RDFS reasoning in JMH!!!")
+        }
         for (aClass in rClass) {
             try {
-                return nav(m, l, aClass)
-            } catch (e: IllegalArgumentException) {
-                log.warn("Fix RDFS reasoning in JMH!!!")
-            }
+                val resource = nav(m, l, aClass)
+                log.debug("Found an instance of ${aClass.simpleName}")
+                return resource
+            } catch (e: IllegalArgumentException) {}
         }
-        // give up
 
+        // give up
         if(log.isTraceEnabled) {
             val builder = StringBuilder()
             builder.appendln("Resource with URI ${l.value} was not found in the Model:")
@@ -150,24 +157,6 @@ object OslcHelpers {
 
         throw IllegalArgumentException("Link ${l.value} cannot be followed in this model")
     }
-
-///*
-//    @SafeVarargs
-//    @JvmStatic
-//    fun navTry(m: Model, l: Link, vararg rClass: Class<out IExtendedResource>): IExtendedResource{
-//        for (aClass in rClass) {
-//            try {
-//                return nav(m, l, aClass)
-//            } catch (e: IllegalArgumentException) {
-//                log.warn("Fix RDFS reasoning in JMH!!!")
-//            }
-//
-//        }
-//        // give up
-//        throw IllegalArgumentException("Link cannot be followed in this model")
-//    }
-//*/
-
 
     @JvmStatic
     fun hexHashCodeFor(aResource: IResource): String {

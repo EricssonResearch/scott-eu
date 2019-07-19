@@ -20,9 +20,9 @@ import javax.ws.rs.core.Response
  *
  */
 @Path("admin")
-class AdminResource {
+class WhcAdminService {
     companion object {
-        val log: Logger = LoggerFactory.getLogger(AdminResource::class.java)
+        val log: Logger = LoggerFactory.getLogger(WhcAdminService::class.java)
     }
 
     // TODO Andrew@2019-03-12: inject this
@@ -43,13 +43,14 @@ class AdminResource {
     // TODO Andrew@2019-03-12: move to the lib
     private fun runAsync(function: () -> Unit) {
         log.trace("Scheduling function execution w/o delay")
-        WarehouseControllerManager.getExecService().schedule({
+        WarehouseControllerManager.getExecService()
+            .execute {
             try {
                 function.invoke()
             } catch (e: Throwable) {
-                log.warn("PlanningManager threw an exception: ${ExceptionUtils.getStackTrace(e)}")
+                log.error("PlanningManager threw an exception: ${ExceptionUtils.getStackTrace(e)}")
             }
-        }, 0, TimeUnit.MILLISECONDS)
+            }
     }
 
     private fun triggerPlanning() {
@@ -57,8 +58,8 @@ class AdminResource {
         val planRequestHelper = PlanRequestHelper(OslcHelper(WhcConfig.getBaseUri()))
         val twinClient = TwinClient()
         val planRepository = WarehouseControllerManager.getPlanRepository()
-        PlanningManager(planRequestHelper, twinClient, planRepository).planForEachTwin(
-            twinsRepository)
+        val planningManager = PlanningManager(planRequestHelper, twinClient, planRepository)
+        planningManager.planForEachTwin(twinsRepository)
         log.trace("triggerSamplePlanning() finished")
     }
 }

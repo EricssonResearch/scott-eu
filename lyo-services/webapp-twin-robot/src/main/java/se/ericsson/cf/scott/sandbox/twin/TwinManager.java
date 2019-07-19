@@ -120,10 +120,7 @@ public class TwinManager {
             TwinAdaptorHelper.getExecutionReportRepository());
         final OslcClient client = new OslcClient();
         planExecutionService = new PlanExecutionService(executorService, client, statusHandler);
-
-//        log.debug("Initialising the TRS Client");
-//        TwinAdaptorHelper.initTrsClient();
-        // End of user code
+       // End of user code
     }
 
     public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)

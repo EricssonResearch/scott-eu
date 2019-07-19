@@ -47,23 +47,20 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper,
 
     private val domain: Model = RdfHelpers.modelFromTurtleResource(PlanningManager::class.java,
         "pddl/dom-connectivity.ttl")
-    private val width = 4
-    private val height = 4
+    private val width = 8
+    private val height = 8
 
     private var counter: AtomicInteger = AtomicInteger(1)
 
     fun planForEachTwin(twinsRepository: TwinRepository) {
-        log.info("Creating one plan per Digital Twin")
-
         twinsRepository.twins.parallelStream()
-            .forEach { twinInfo ->
-                planForTwin(twinInfo)
-            }
+            .forEach(::planForTwin)
     }
 
     private fun planForTwin(twinInfo: TwinInfo) {
         try {
             val requestModel: Model = buildPlanRequestFor(twinInfo)
+            log.info("Requesting a new plan for {}", twinInfo.label)
             val planModel: Model = planRequestHelper.requestPlan(requestModel)
             tryRegisterPlan(twinInfo, planModel)
         } catch (e: Exception) {
@@ -92,7 +89,7 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper,
 
     private fun generateInitCoords(): Pair<Int, Int> {
         val counterValue = counter.getAndIncrement()
-        val x = counterValue % width
+        val x = counterValue % width + 1
         val y = counterValue / height + 1
         log.debug("Allocating ($y, $x) coordinate for an init position")
         return Pair(x, y)
@@ -119,9 +116,11 @@ class PlanningManager(private val planRequestHelper: PlanRequestHelper,
             val plan = unmarshalPlan(planModel)
             val key = plan.instance.about
             if (planRepository.existsPlan(key)) {
-                throw IllegalStateException("Plan '$key' has already been registered")
+                log.warn("Overwriting an existing plan '{}'", key)
+                planRepository.removePlan(key)
+//                throw IllegalStateException("Plan '$key' has already been registered")
             }
-            log.info("Registering plan '$key'")
+            log.debug("Registering plan '$key'")
 
             planRepository.registerPlan(plan)
 

@@ -69,7 +69,7 @@ object RdfHelpers {
 
 
     @JvmStatic
-    fun modelFromIndentedString(str: String, l: Lang): Model {
+    fun modelFromIndentedString(str: String, l: Lang = Lang.TURTLE): Model {
         val model = ModelFactory.createDefaultModel()
         RDFParser.fromString(str.trimIndent()).lang(l).parse(model.graph)
         return model

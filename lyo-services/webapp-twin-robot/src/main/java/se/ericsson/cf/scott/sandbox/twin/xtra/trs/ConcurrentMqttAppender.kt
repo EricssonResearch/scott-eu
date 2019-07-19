@@ -22,11 +22,18 @@ import org.eclipse.lyo.core.trs.Creation
 import org.eclipse.lyo.core.trs.Deletion
 import org.eclipse.lyo.core.trs.Modification
 import org.eclipse.paho.client.mqttv3.MqttClient
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.net.URI
 
 class ConcurrentMqttAppender(private val mqttClient: MqttClient,
                              private val orderGenerator: IConcurrentOrderGenerator) :
     ITrsLogAppender {
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(ConcurrentMqttAppender::class.java)
+    }
+
     override fun appendCreationEvent(changed: URI, model: Model, twinKind: String,
                                      twinId: String): Creation {
         val topic = MqttTrsServices.trsMqttTopic(twinKind, twinId)
@@ -35,6 +42,7 @@ class ConcurrentMqttAppender(private val mqttClient: MqttClient,
         val creation = Creation(RdfHelpers.randomUuidUrn(), changed, order)
         val message = MqttTrsServices.msgFromEventWithModel(creation, model)
 
+        log.debug("Publishing a Creation CE for $twinId to $topic")
         mqttClient.publish(topic, message)
 
         return creation

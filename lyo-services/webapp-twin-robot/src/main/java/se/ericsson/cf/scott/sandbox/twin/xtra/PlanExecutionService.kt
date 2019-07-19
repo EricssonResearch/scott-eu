@@ -20,10 +20,12 @@ import eu.scott.warehouse.domains.pddl.Action
 import eu.scott.warehouse.domains.pddl.Plan
 import eu.scott.warehouse.domains.pddl.Step
 import eu.scott.warehouse.domains.scott.DropBelt
+import eu.scott.warehouse.domains.scott.ExecutableAction
 import eu.scott.warehouse.domains.scott.MoveToWp
 import eu.scott.warehouse.domains.scott.PickShelf
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest
 import eu.scott.warehouse.lib.OslcHelpers
+import eu.scott.warehouse.lib.toTurtle
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.riot.Lang
@@ -49,7 +51,7 @@ class PlanExecutionService(private val executor: ScheduledExecutorService,
                            private val client: OslcClient,
                            private val statusHandler: IActionStatusHandler) {
     companion object {
-        val log: Logger = LoggerFactory.getLogger(PlanExecutionService::class.java)
+        private val log: Logger = LoggerFactory.getLogger(PlanExecutionService::class.java)
     }
 
     fun fulfillRequest(request: PlanExecutionRequest,
@@ -67,15 +69,16 @@ class PlanExecutionService(private val executor: ScheduledExecutorService,
 
         if (planModelResult.isPresent) {
             val plan = planModelResult.get()
+            log.trace(plan.toTurtle)
             val planResource = JenaModelHelper.unmarshalSingle(plan, Plan::class.java)
-            log.info("New Plan received: ${planResource.about} (cost ${planResource.cost})")
+            log.info("New Plan: ${planResource.about} (cost ${planResource.cost})")
             val reportBuilder = StringBuilder()
             reportBuilder.appendln("Steps in the Plan ${planResource.about}:")
             val actionSteps = planResource.step.sortedBy { it.order }
             actionSteps.forEach { step: Step ->
                 reportBuilder.append("\tStep ${step.order}: ")
                 val action: IExtendedResource = OslcHelpers.navTry(plan, step.action,
-                    Action::class.java, DropBelt::class.java, MoveToWp::class.java,
+                    ExecutableAction::class.java, Action::class.java, DropBelt::class.java, MoveToWp::class.java,
                     PickShelf::class.java)
                 val executionBegin = Date()
                 val executionInfo = ExecutionInfo(twinKind, twinId, executionBegin)

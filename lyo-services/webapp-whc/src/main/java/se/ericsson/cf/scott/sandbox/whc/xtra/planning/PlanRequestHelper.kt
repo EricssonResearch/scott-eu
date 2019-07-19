@@ -266,7 +266,7 @@ class PlanRequestHelper(private val oslcHelper: OslcHelper) {
             val response = requestPlanManually(problemModel)
             val responsePlan = ModelFactory.createDefaultModel()
             RDFDataMgr.read(responsePlan, response, Lang.TURTLE)
-            log.info("Plan response\n{}", RdfHelpers.modelToString(responsePlan))
+            log.trace("Plan response\n{}", RdfHelpers.modelToString(responsePlan))
             return responsePlan
         } catch (e: IOException) {
             log.error("Something went wrong", e)

@@ -74,7 +74,7 @@ public class WarehouseControllerManager {
 
     // Start of user code class_attributes
     private static final Logger log = LoggerFactory.getLogger(WarehouseControllerManager.class);
-    private static final ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService execService = Executors.newScheduledThreadPool(1);
     private static TwinRepository twinRepository;
     private static PlanningManager planningManager;
     private static PlanRepository planRepository;

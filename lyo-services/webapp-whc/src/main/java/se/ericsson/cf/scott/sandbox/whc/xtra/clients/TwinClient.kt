@@ -41,12 +41,13 @@ class TwinClient() {
         val execRequest = PlanExecutionRequest(randomUuidUrn())
         execRequest.plan = plan.instance.link
 
+        log.info("Dispatching a new Plan to {}", twinInfo.label)
         log.trace("POSTing PlanExecutionRequest to ${twinInfo.cfUri}:\n${execRequest.toTurtle}")
 
         val response = client.createResource(twinInfo.cfUri, execRequest,
             OslcMediaType.APPLICATION_RDF_XML)
         if (response.statusInfo.family == Response.Status.Family.SUCCESSFUL) {
-            log.info("Plan '${plan.instance.about}' was successfully POSTed")
+            log.debug("Plan '${plan.instance.about}' was successfully POSTed")
         } else {
             log.warn("There was a problem with the plan '${plan.instance.about}'" +
                 ": ${response.statusInfo} (${twinInfo.cfUri})")
