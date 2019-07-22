@@ -70,12 +70,42 @@ services:
     networks:
       overlay:
         aliases:
-            - twins.svc
+          - twins.svc
+    depends_on:
+      - whc
+      - planner
+      - redis
+      - mqtt
     ports:
       - "9981:9999"
     deploy:
       labels:
         caddy.address: twins.svc
+        caddy.targetport: 8080
+        caddy.tls: "off"
+      replicas: 1
+      resources:
+        limits:
+          memory: 384m
+      restart_policy:
+        condition: none
+  svc-location:
+    image: scott/webapp-svc-location
+    environment:
+      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      LYO_BASE: "http://location.svc:8080/"
+    networks:
+      overlay:
+        aliases:
+          - "location.svc"
+    ports:
+      - "9982:9999"
+    depends_on:
+      - redis
+      - mqtt
+    deploy:
+      labels:
+        caddy.address: location.svc
         caddy.targetport: 8080
         caddy.tls: "off"
       replicas: 1
@@ -223,25 +253,5 @@ services:
   #         memory: 384m
   #     restart_policy:
   #       condition: on-failure
-  # svc-location:
-  #   image: scott/webapp-svc-location
-  #   # environment:
-  #   #   JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-  #   networks:
-  #     - overlay
-  #   ports:
-  #    - "8090:8080" # Jetty
-  #   #  - "9991:9999" # remote debugger
-  #   # depends_on:
-  #     # - warehouse-fuseki
-  #     # - mosquitto
-  #   deploy:
-  #     replicas: 1
-  #     resources:
-  #       limits:
-  #         memory: 384m
-  #     restart_policy:
-  #       condition: on-failure
-
 networks:
   overlay:

@@ -5,13 +5,13 @@
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  *  The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  *  and the Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
- *  
+ *
  *  Contributors:
- *  
+ *
  *	   Sam Padgett	       - initial API and implementation
  *     Michael Fiedler     - adapted for OSLC4J
  *     Jad El-khoury        - initial implementation of code generator (https://bugs.eclipse.org/bugs/show_bug.cgi?id=422448)
@@ -24,15 +24,20 @@
 
 package se.ericsson.cf.scott.sandbox.svc.location;
 
+import eu.scott.warehouse.lib.MqttTrsServices;
+import eu.scott.warehouse.lib.trs.ConcurrentMqttAppender;
+import eu.scott.warehouse.lib.trs.ConcurrentRedisOrderGenerator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
-import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.svc.location.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.svc.location.ServiceProviderInfo;
-
+import org.eclipse.lyo.trs.client.mqtt.MqttTrsEventListener;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import se.ericsson.cf.scott.sandbox.svc.location.xtra.MqttClients;
+import se.ericsson.cf.scott.sandbox.svc.location.xtra.LocationVicinityFilterHandler;
 
 // Start of user code imports
 // End of user code
@@ -43,23 +48,42 @@ import se.ericsson.cf.scott.sandbox.svc.location.ServiceProviderInfo;
 public class LocationServiceManager {
 
     // Start of user code class_attributes
+    private final static Logger log = LoggerFactory.getLogger(LocationServiceManager.class);
     // End of user code
-    
-    
+
     // Start of user code class_methods
     // End of user code
 
     public static void contextInitializeServletListener(final ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextInitializeServletListener
-        // TODO Implement code to establish connection to data backbone etc ...
+        // TODO Andrew@2019-07-19: MQTT connection
+
+        final MqttClients mqttClients = MqttClients.INSTANCE;
+        final MqttClient client = mqttClients.connect("tcp://mqtt.svc");
+
+        final ConcurrentMqttAppender appender = new ConcurrentMqttAppender(client,
+            new ConcurrentRedisOrderGenerator(new Jedis("redis.svc")));
+
+        final LocationVicinityFilterHandler filteringHandler = new LocationVicinityFilterHandler(
+            appender);
+        final MqttTrsEventListener listener = new MqttTrsEventListener(filteringHandler,
+            MqttTrsServices.INSTANCE.getDefaultLang());
+        try {
+            client.subscribe("scott/trs/#", listener);
+        } catch (MqttException e) {
+            log.error("Failed to subscribe to the TRS topics");
+        }
+
+        // TODO Andrew@2019-07-19: TRS Client for all twins
+        // TODO Andrew@2019-07-19: TRS Server for the CEs around location
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
     {
-        
+
         // Start of user code contextDestroyed
         // TODO Implement code to shutdown connections to data backbone etc...
         // End of user code
@@ -68,7 +92,7 @@ public class LocationServiceManager {
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
     {
         ServiceProviderInfo[] serviceProviderInfos = {};
-        
+
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
         // TODO Implement code to return the set of ServiceProviders
         // End of user code

@@ -24,7 +24,7 @@ import eu.scott.warehouse.domains.scott.PickShelf
 import eu.scott.warehouse.lib.toModel
 import se.ericsson.cf.scott.sandbox.twin.TwinResourcesFactory
 import se.ericsson.cf.scott.sandbox.twin.xtra.repository.ExecutionReportRepository
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ITrsLogAppender
+import eu.scott.warehouse.lib.trs.ITrsLogAppender
 import java.util.Date
 import java.util.UUID
 

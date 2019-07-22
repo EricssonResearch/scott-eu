@@ -114,12 +114,13 @@ public class WarehouseControllerManager {
             log.debug("Initialising an MQTT client");
             final MqttClient mqttClient = MqttManager.initMqttClient();
 
-            log.debug("Initialising a TRS Client");
-            try {
-                TRSManager.initTRSClient(mqttClient);
-            } catch (MqttException e) {
-                log.error("Failed to attach an MQTT TRS event listenter");
-            }
+//            log.debug("Initialising a TRS Client");
+//            try {
+//                TRSManager.initTRSClient(mqttClient);
+//            } catch (MqttException e) {
+//                log.error("Failed to attach an MQTT TRS event listenter");
+//            }
+
 //            log.debug("Initialising a TRS Server");
 //            TRSManager.initTRSServer(mqttClient);
             log.debug("WHC contextInitializeServletListener BACKGROUND TASK COMPLETE");

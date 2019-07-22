@@ -50,10 +50,10 @@ import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
 import se.ericsson.cf.scott.sandbox.twin.xtra.plans.TrsActionStatusHandler;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ConcurrentMqttAppender;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ConcurrentRedisOrderGenerator;
+import eu.scott.warehouse.lib.trs.ConcurrentMqttAppender;
+import eu.scott.warehouse.lib.trs.ConcurrentRedisOrderGenerator;
 import redis.clients.jedis.Jedis;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.ITrsLogAppender;
+import eu.scott.warehouse.lib.trs.ITrsLogAppender;
 // End of user code
 
 // Start of user code pre_class_code
@@ -161,7 +161,7 @@ public class TwinManager {
         PlanExecutionRequest newResource = null;
 
         // Start of user code createPlanExecutionRequest
-        log.info("Incoming plan: {}", aResource);
+        log.info("Incoming plan: {}", aResource.getPlan().getValue());
         newResource = aResource;
         planExecutionService.fulfillRequest(aResource, twinKind, twinId);
         // End of user code

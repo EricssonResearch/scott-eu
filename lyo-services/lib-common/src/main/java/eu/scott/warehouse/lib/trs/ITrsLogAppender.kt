@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package se.ericsson.cf.scott.sandbox.twin.xtra.trs
+package eu.scott.warehouse.lib.trs
 
-import eu.scott.warehouse.domains.scott.ActionExecutionReport
 import org.apache.jena.rdf.model.Model
 import org.eclipse.lyo.core.trs.Creation
 import org.eclipse.lyo.core.trs.Deletion

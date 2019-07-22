@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ericsson.cf.scott.sandbox.twin.xtra.trs
+package eu.scott.warehouse.lib.trs
 
 import redis.clients.jedis.Jedis
 
@@ -21,7 +21,8 @@ interface IConcurrentOrderGenerator {
     fun nextOrder(twinKind: String, twinId: String): Int
 }
 
-class ConcurrentRedisOrderGenerator(private val jedis: Jedis) : IConcurrentOrderGenerator {
+class ConcurrentRedisOrderGenerator(private val jedis: Jedis) :
+    IConcurrentOrderGenerator {
     // TODO Andrew@2019-07-16: remove cast after https://github.com/eclipse/lyo.core/issues/104 is fixed
     @Synchronized //just in case, Jedis is not thread-safe unless we use pools &c.
     override fun nextOrder(twinKind: String, twinId: String): Int =

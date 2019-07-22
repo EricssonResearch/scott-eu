@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ericsson.cf.scott.sandbox.twin.xtra.trs
+package eu.scott.warehouse.lib.trs
 
 import eu.scott.warehouse.lib.MqttTrsServices
 import eu.scott.warehouse.lib.RdfHelpers
 import org.apache.jena.rdf.model.Model
+import org.eclipse.lyo.core.trs.ChangeEvent
 import org.eclipse.lyo.core.trs.Creation
 import org.eclipse.lyo.core.trs.Deletion
 import org.eclipse.lyo.core.trs.Modification
@@ -34,6 +35,12 @@ class ConcurrentMqttAppender(private val mqttClient: MqttClient,
         private val log: Logger = LoggerFactory.getLogger(ConcurrentMqttAppender::class.java)
     }
 
+    // TODO Andrew@2019-07-22: refactor
+    fun forwardEvent(event: ChangeEvent, model: Model, topic: String) {
+        val message = MqttTrsServices.msgFromEventWithModel(event, model)
+        mqttClient.publish(topic, message)
+    }
+
     override fun appendCreationEvent(changed: URI, model: Model, twinKind: String,
                                      twinId: String): Creation {
         val topic = MqttTrsServices.trsMqttTopic(twinKind, twinId)
@@ -42,7 +49,7 @@ class ConcurrentMqttAppender(private val mqttClient: MqttClient,
         val creation = Creation(RdfHelpers.randomUuidUrn(), changed, order)
         val message = MqttTrsServices.msgFromEventWithModel(creation, model)
 
-        log.debug("Publishing a Creation CE for $twinId to $topic")
+        log.debug("Publishing a Creation CE for $twinId to $topic ($changed)")
         mqttClient.publish(topic, message)
 
         return creation

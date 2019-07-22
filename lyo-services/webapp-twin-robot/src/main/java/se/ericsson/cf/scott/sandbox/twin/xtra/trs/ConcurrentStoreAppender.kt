@@ -2,6 +2,8 @@ package se.ericsson.cf.scott.sandbox.twin.xtra.trs
 
 import eu.scott.warehouse.lib.RdfHelpers
 import eu.scott.warehouse.lib.toTurtle
+import eu.scott.warehouse.lib.trs.IConcurrentOrderGenerator
+import eu.scott.warehouse.lib.trs.ITrsLogAppender
 import org.apache.jena.rdf.model.Model
 import org.eclipse.lyo.core.trs.Creation
 import org.eclipse.lyo.core.trs.Deletion
@@ -27,7 +29,8 @@ class ConcurrentStoreAppender(private val store: Store, private val orderGenerat
         log.debug("Minted order={} (Twin {}:{})", order, twinKind, twinId)
         val creation = Creation(RdfHelpers.randomUuidUrn(), changed, order)
         // TODO Andrew@2019-07-16: what to do with the order if the write fails?
-        store.appendResource(ITrsLogAppender.logGraphFor(twinKind, twinId, order), creation)
+        store.appendResource(
+            ITrsLogAppender.logGraphFor(twinKind, twinId, order), creation)
         log.info("Added a Creation Event to the TRS log ({})", creation.about)
         log.trace(creation.toTurtle)
         return creation
