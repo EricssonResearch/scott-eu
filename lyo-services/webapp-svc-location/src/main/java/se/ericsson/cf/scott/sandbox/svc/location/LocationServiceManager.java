@@ -69,7 +69,7 @@ public class LocationServiceManager {
         final MqttTrsEventListener listener = new MqttTrsEventListener(filteringHandler,
             MqttTrsServices.INSTANCE.getDefaultLang());
         try {
-            client.subscribe("scott/trs/#", listener);
+            client.subscribe("scott/trs/twins/#", listener);
         } catch (MqttException e) {
             log.error("Failed to subscribe to the TRS topics");
         }

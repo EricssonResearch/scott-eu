@@ -18,11 +18,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <kotlin.version>1.3.20</kotlin.version>
-    <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
-    <kotlin.compiler.languageVersion>1.3</kotlin.compiler.languageVersion>
-    <kotlin.compiler.apiVersion>1.3</kotlin.compiler.apiVersion>
-
     <version.lyo>4.0.0-SNAPSHOT</version.lyo>
     <version.jersey>2.28</version.jersey>
     <powermock.version>1.7.1</powermock.version>
@@ -59,11 +54,6 @@
           <!--TODO fix upstream-->
           <artifactId>commons-logging</artifactId>
           <groupId>commons-logging</groupId>
-        </exclusion>
-        <exclusion>
-          <!--TODO fix upstream or use Jena 3.8.0; conflicts with Jena stax-api (JENA-1537)-->
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -127,20 +117,6 @@
       <groupId>org.eclipse.lyo.oslc4j.core</groupId>
       <artifactId>oslc4j-jena-provider</artifactId>
       <version>${version.lyo}</version>
-      <exclusions>
-        <exclusion>
-          <!--TODO fix upstream or use Jena 3.8.0; conflicts with Jena stax-api (JENA-1537)-->
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <!--NoClassDefFoundError: org/apache/jena/riot/lang/ReaderRIOTRDFXML-->
-      <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
-      <version>3.6.0</version>
-      <type>pom</type>
     </dependency>
 
     <dependency>

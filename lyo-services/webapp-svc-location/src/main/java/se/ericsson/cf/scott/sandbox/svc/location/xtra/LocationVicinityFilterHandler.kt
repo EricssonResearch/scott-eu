@@ -20,11 +20,13 @@ import eu.scott.warehouse.domains.scott.MoveToWp
 import eu.scott.warehouse.lib.LyoModels
 import eu.scott.warehouse.lib.toTurtle
 import eu.scott.warehouse.lib.trs.ConcurrentMqttAppender
+import org.apache.jena.rdf.model.Model
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.eclipse.lyo.trs.client.handlers.IPushProviderHandler
 import org.eclipse.lyo.trs.client.model.ChangeEventMessageTR
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URI
 import javax.xml.namespace.QName
 
 
@@ -34,25 +36,36 @@ class LocationVicinityFilterHandler(private val appender: ConcurrentMqttAppender
     }
 
     override fun handlePush(message: ChangeEventMessageTR, topic: String) {
-        val resourceModel = message.trackedResourceModel
-        log.trace("Processing a CE from $topic:\n{}", message.trackedResourceModel.toTurtle)
-        val hasResource = LyoModels.hasResource(resourceModel, ActionExecutionReport::class.java)
-        if (hasResource) {
-            log.trace("An action execution report found")
-            val report = JenaModelHelper.unmarshalSingle(resourceModel, ActionExecutionReport::class.java)
+        try {
+            val resourceModel: Model = message.trackedResourceModel
+            log.trace("Processing a CE from $topic:\n{}", message.trackedResourceModel.toTurtle)
+//        val hasResource = LyoModels.hasResource(resourceModel, ActionExecutionReport::class.java)
+//        if (hasResource) {
+            val report: ActionExecutionReport = JenaModelHelper.unmarshalSingle(resourceModel,
+                ActionExecutionReport::class.java)
+            log.debug("An action execution report found")
             if (report.action is MoveToWp) {
-                val from = report.action.extendedProperties[QName.valueOf(
-                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/move-to-wp_from")]
-                val to = report.action.extendedProperties[QName.valueOf(
-                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/" + "move-to-wp_to")]
-                val robot = report.action.extendedProperties[QName.valueOf(
-                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/" + "move-to-wp_rb")]
-                log.debug("Forwarding a change event for the MoveToWp[$robot: $from -> $to] action report")
-                appender.forwardEvent(message.changeEvent, message.trackedResourceModel, "scott/trs/controller/all")
+                val from = strip(report.action.extendedProperties[QName(
+                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/", "move-to-wp_from")])
+                val to = strip(report.action.extendedProperties[QName(
+                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/", "move-to-wp_to")])
+                val robot = strip(report.action.extendedProperties[QName(
+                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/", "move-to-wp_rb")])
+                log.debug(
+                    "Forwarding a change event for the MoveToWp[$robot: $from -> $to] action report")
+                appender.forwardEvent(message.changeEvent, message.trackedResourceModel,
+                    "scott/trs/controller/all")
             }
-        } /*else if (LyoModels.hasResource(message.trackedResourceModel, LocationReport::class.java)) {
-            // FIXME Andrew@2019-07-19: model LocationReport
-            log.debug("CE with an location update report found")
-        }*/
+//        } /*else if (LyoModels.hasResource(message.trackedResourceModel, LocationReport::class.java)) {
+//           //  FIXME Andrew@2019-07-19: model LocationReport
+//            log.debug("CE with an location update report found")
+//        }*/
+        } catch (e: Throwable) {
+            log.error("Exception", e)
+        }
+    }
+
+    private fun strip(any: Any?): Any {
+        return (any as URI).toString().split('/').last()
     }
 }
