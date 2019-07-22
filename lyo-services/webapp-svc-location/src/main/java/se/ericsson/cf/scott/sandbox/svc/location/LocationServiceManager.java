@@ -58,8 +58,6 @@ public class LocationServiceManager {
     {
 
         // Start of user code contextInitializeServletListener
-        // TODO Andrew@2019-07-19: MQTT connection
-
         final MqttClients mqttClients = MqttClients.INSTANCE;
         final MqttClient client = mqttClients.connect("tcp://mqtt.svc");
 
@@ -75,9 +73,6 @@ public class LocationServiceManager {
         } catch (MqttException e) {
             log.error("Failed to subscribe to the TRS topics");
         }
-
-        // TODO Andrew@2019-07-19: TRS Client for all twins
-        // TODO Andrew@2019-07-19: TRS Server for the CEs around location
         // End of user code
     }
 

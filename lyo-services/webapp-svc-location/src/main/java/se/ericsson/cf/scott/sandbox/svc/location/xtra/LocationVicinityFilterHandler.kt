@@ -24,6 +24,8 @@ import org.eclipse.lyo.trs.client.handlers.IPushProviderHandler
 import org.eclipse.lyo.trs.client.model.ChangeEventMessageTR
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import javax.xml.namespace.QName
+
 
 class LocationVicinityFilterHandler(private val appender: ConcurrentMqttAppender) : IPushProviderHandler {
     companion object {
@@ -32,13 +34,18 @@ class LocationVicinityFilterHandler(private val appender: ConcurrentMqttAppender
 
     override fun handlePush(message: ChangeEventMessageTR, topic: String) {
         val resourceModel = message.trackedResourceModel
-        log.trace("Processing a CE from $topic:\n{}", message.trackedResourceModel)
+        log.trace("Processing a CE from $topic:\n{}", message.trackedResourceModel.toTurtle)
         if (LyoModels.hasResource(resourceModel, ActionExecutionReport::class.java)) {
             log.trace("An action execution report found")
-            val movementEvent = JenaModelHelper.unmarshalSingle(resourceModel, MoveToWp::class.java)
-            if (movementEvent !== null) {
-//                log.debug(resourceModel.toTurtle)
-                log.debug("Forwarding a change event for the MoveToWp action report")
+            val report = JenaModelHelper.unmarshalSingle(resourceModel, ActionExecutionReport::class.java)
+            if (report.action is MoveToWp) {
+                val from = report.action.extendedProperties[QName.valueOf(
+                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/" + "move-to-wp_from")]
+                val to = report.action.extendedProperties[QName.valueOf(
+                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/" + "move-to-wp_to")]
+                val robot = report.action.extendedProperties[QName.valueOf(
+                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/" + "move-to-wp_rb")]
+                log.debug("Forwarding a change event for the MoveToWp[$robot: $from -> $to] action report")
                 appender.forwardEvent(message.changeEvent, message.trackedResourceModel, "scott/trs/controller/all")
             }
         } /*else if (LyoModels.hasResource(message.trackedResourceModel, LocationReport::class.java)) {
