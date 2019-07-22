@@ -17,6 +17,7 @@ package se.ericsson.cf.scott.sandbox.svc.location.xtra
 
 import eu.scott.warehouse.domains.scott.ActionExecutionReport
 import eu.scott.warehouse.domains.scott.MoveToWp
+import eu.scott.warehouse.lib.LyoModels
 import eu.scott.warehouse.lib.toTurtle
 import eu.scott.warehouse.lib.trs.ConcurrentMqttAppender
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
@@ -35,12 +36,13 @@ class LocationVicinityFilterHandler(private val appender: ConcurrentMqttAppender
     override fun handlePush(message: ChangeEventMessageTR, topic: String) {
         val resourceModel = message.trackedResourceModel
         log.trace("Processing a CE from $topic:\n{}", message.trackedResourceModel.toTurtle)
-        if (LyoModels.hasResource(resourceModel, ActionExecutionReport::class.java)) {
+        val hasResource = LyoModels.hasResource(resourceModel, ActionExecutionReport::class.java)
+        if (hasResource) {
             log.trace("An action execution report found")
             val report = JenaModelHelper.unmarshalSingle(resourceModel, ActionExecutionReport::class.java)
             if (report.action is MoveToWp) {
                 val from = report.action.extendedProperties[QName.valueOf(
-                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/" + "move-to-wp_from")]
+                    "http://ontology.cf.ericsson.net/ns/scott-warehouse/move-to-wp_from")]
                 val to = report.action.extendedProperties[QName.valueOf(
                     "http://ontology.cf.ericsson.net/ns/scott-warehouse/" + "move-to-wp_to")]
                 val robot = report.action.extendedProperties[QName.valueOf(

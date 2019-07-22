@@ -60,7 +60,7 @@ services:
         condition: none
       resources:
         limits:
-          memory: 384m
+          memory: 512m
   twins:
     image: scott/webapp-twin-robot
     environment:
@@ -130,7 +130,7 @@ services:
         condition: none
       resources:
         limits:
-          memory: 512m
+          memory: 384m
   mosquitto:
     image: scott/eclipse-mosquitto
     networks:
@@ -146,7 +146,7 @@ services:
         condition: none
       resources:
         limits:
-          memory: 192m
+          memory: 128m
   redis:
     image: redis:5-alpine
     networks:
@@ -159,7 +159,7 @@ services:
         condition: none
       resources:
         limits:
-          memory: 384m
+          memory: 128m
 
 #   # Kafka
 #   zookeeper:
