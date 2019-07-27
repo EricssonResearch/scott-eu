@@ -17,6 +17,7 @@
 package eu.scott.warehouse.lib
 
 import org.apache.jena.rdf.model.Model
+import org.apache.jena.vocabulary.RDF
 import org.eclipse.lyo.oslc4j.core.annotation.OslcName
 import org.eclipse.lyo.oslc4j.core.annotation.OslcNamespace
 import org.eclipse.lyo.oslc4j.core.annotation.OslcResourceShape
@@ -156,6 +157,34 @@ object OslcHelpers {
         }
 
         throw IllegalArgumentException("Link ${l.value} cannot be followed in this model")
+    }
+
+    @JvmStatic
+    fun <T : IExtendedResource> findSubclasses(rClass: Class<T>,
+                                               m: Model): Set<T> {
+        val objects = HashSet<T>()
+        for (r in m.listResourcesWithProperty(RDF.type)) {
+            try {
+                val lyoOjbect: T = JenaModelHelper.unmarshal(r, rClass)
+                objects.add(lyoOjbect)
+            } catch (e: Throwable) {
+                log.trace("${r.localName} is not an instance of ${rClass.simpleName}")
+            }
+        }
+
+        if(objects.isNotEmpty()) {
+            return objects
+        }
+
+        throw IllegalArgumentException("There are no subclasses of ${rClass.simpleName} in this model")
+    }
+
+
+    @JvmStatic
+    fun <T : IExtendedResource> follow(l: Link, rClass: Class<T>, m: Model): T {
+        val resource = m.getResource(l.value.toString())
+        val obj = JenaModelHelper.unmarshal(resource, rClass)
+        return obj
     }
 
     @JvmStatic

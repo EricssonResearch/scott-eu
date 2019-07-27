@@ -1,21 +1,13 @@
 package eu.scott.warehouse.lib
 
-import eu.scott.warehouse.domains.pddl.Action
 import eu.scott.warehouse.domains.pddl.Plan
 import eu.scott.warehouse.domains.pddl.Step
-import eu.scott.warehouse.domains.scott.DropBelt
 import eu.scott.warehouse.domains.scott.ExecutableAction
-import eu.scott.warehouse.domains.scott.IExecutableAction
-import eu.scott.warehouse.domains.scott.MoveToWp
-import eu.scott.warehouse.domains.scott.PickShelf
-import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
+import org.apache.jena.rdf.model.Model
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
 import org.junit.Test
 
 import org.junit.Assert.*
-import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService
-import se.ericsson.cf.scott.sandbox.twin.xtra.plans.ExecutionInfo
-import java.util.Date
 
 /*
  * Copyright (c) 2019  Ericsson Research and others
@@ -34,7 +26,7 @@ import java.util.Date
  */
 class OslcHelpersTest {
 
-    val plan = RdfHelpers.modelFromIndentedString("""
+    private val plan: Model = RdfHelpers.modelFromIndentedString("""
         @prefix dcterms: <http://purl.org/dc/terms/> .
         @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
         @prefix j.1:   <http://www.w3.org/ns/shacl#> .
@@ -105,15 +97,21 @@ class OslcHelpersTest {
     """)
 
     @Test
-    fun navTry() {
+    fun testActions() {
+        val action: Set<ExecutableAction> = OslcHelpers.findSubclasses(ExecutableAction::class.java,
+            plan)
+
+        assertEquals(9, action.size)
+    }
+
+    @Test
+    fun testLinkNavigation() {
         val planResource = JenaModelHelper.unmarshalSingle(plan, Plan::class.java)
         val actionSteps = planResource.step.sortedBy { it.order }
         actionSteps.forEach { step: Step ->
-//            val action: IExtendedResource = OslcHelpers.navTry(plan, step.action,
-//                ExecutableAction::class.java, DropBelt::class.java, MoveToWp::class.java,
-//                PickShelf::class.java)
-            val action: IExtendedResource = OslcHelpers.navTry(plan, step.action,
-                ExecutableAction::class.java)
+            val action: ExecutableAction? = OslcHelpers.follow(step.action,
+                ExecutableAction::class.java, plan)
+            assert(action is ExecutableAction)
         }
     }
 }

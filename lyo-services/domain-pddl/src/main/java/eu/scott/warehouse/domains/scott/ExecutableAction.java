@@ -82,7 +82,7 @@ import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 @OslcNamespace(ScottDomainConstants.EXECUTABLEACTION_NAMESPACE)
 @OslcName(ScottDomainConstants.EXECUTABLEACTION_LOCALNAME)
 @OslcResourceShape(title = "ExecutableAction Resource Shape", describes = ScottDomainConstants.EXECUTABLEACTION_TYPE)
-public class ExecutableAction
+public abstract class ExecutableAction
     extends AbstractResource
     implements IExecutableAction
 {
