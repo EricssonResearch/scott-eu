@@ -19,6 +19,6 @@
 
   <!-- Scene Graph Parser+ Risk management  --> 
   <node pkg="turtlebot2i_safety" name="risk_assessment"        type="risk_assessment.py"     output="screen"/>
-  <node pkg="turtlebot2i_safety" name="zone_generation_py"     type="zone_generation.py"     output="screen"/>
+  <node pkg="turtlebot2i_safety" name="zone_generation_py"     type="zone_generation.py"     output="screen"/> 
 
 </launch>

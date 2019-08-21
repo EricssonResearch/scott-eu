@@ -112,7 +112,7 @@ def init():
                                     'ConcreteBox','ConcreteBox#0','ConcreteBox#1','ConcreteBox#2','ConcreteBox#3','ConcreteBox#4','ConcreteBox#5','ConcreteBox#6',
                                     'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm','80cmHighPillar100cm0',
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4', 'ConveyorBeltBody#5', 'ConveyorBeltBody#6', 'ConveyorBeltBody#7', 'ConveyorBeltBody#8', 'ConveyorBeltBody#9'])
-    extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2','Walking_Bill#3','Walking_Bill#4','Bill','Bill#5'])
+    extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2','Walking_Bill#3','Walking_Bill#4','Bill','Bill#5','Bill#0'])
     extractor.set_robot_names(['turtlebot2i','turtlebot2i#0'])
     
     rospy.loginfo("Connected to remote API server")
@@ -226,6 +226,8 @@ def sg_generate():
             else:
                 dot.edge('floor', obj.name, label='on')
 
+        #dot.render(view=True)
+        #raw_input("Press Enter to continue...")
         sg_message=SceneGraph()
         sg_message.header = std_msgs.msg.Header()
         sg_message.header.stamp = rospy.Time.now()
@@ -254,8 +256,8 @@ if __name__ == '__main__':
     try:
         init()
         rospy.loginfo('Started getting scene objects from vision sensor FOV...')
-        pub1 = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
-        pub2 = rospy.Publisher('/turtlebot2i_0/scene_graph', SceneGraph, queue_size=10)
+        pub1 = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=1)
+        pub2 = rospy.Publisher('/turtlebot2i_0/scene_graph', SceneGraph, queue_size=1)
         rate = rospy.Rate(5.0) #Hz, T=1/Rate
         #rospy.Subscriber('/turtlebot2i/safety/vel_scale', VelocityScale, vel_scale_callback) 
         while not rospy.is_shutdown():

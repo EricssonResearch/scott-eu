@@ -250,7 +250,9 @@ def topic_callback(data):
     #time_duration_list.append(time.time()-time_previous)
     #print("Risk assesment duration :",np.mean(time_duration_list))
     #if len(time_duration_list) == 100:
-    #    np.savez('/home/etrrhmd/duration_result/time_duration_ra.npz', time_duration_list=time_duration_list[10:])
+    #    dirPath = os.path.dirname(os.path.realpath(__file__))
+    #    savePath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'time_duration/time_duration_ra.npz')
+    #    np.savez(savePath, time_duration_list=time_duration_list)
 
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 
@@ -273,9 +275,9 @@ if __name__ == "__main__":
     cal_risk(0, 1.0, 0.0, 0.0, 0.0) #FLS takes some time for initialization. Run it once before subscribe to a topic
     ## PUBLISHERS
     # Creates a publisher object
-    safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10)
-    risk_val_pub = rospy.Publisher('/turtlebot2i/safety/risk_val', std_msgs.msg.Float64, queue_size=10)
-    safe_risk_pub = rospy.Publisher('/turtlebot2i/safety/obstacles_risk', SafetyRisk, queue_size=10)
+    safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=1)
+    risk_val_pub = rospy.Publisher('/turtlebot2i/safety/risk_val', std_msgs.msg.Float64, queue_size=1)
+    safe_risk_pub = rospy.Publisher('/turtlebot2i/safety/obstacles_risk', SafetyRisk, queue_size=1)
     ## SUBSCRIBERS
     # Creates a subscriber object
     rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)

@@ -26,18 +26,19 @@ function sysCall_init()
     addModel('dockstation',{ 1.0,2.500,0.063},{0,0,math.pi})
     
     addModel('turtlebot2i',{-4.5, 3.0,0.063},{0,0,0}) --Position for testing the mrcnn
-    addModel('turtlebot2i',{-2.0,-2.5,0.063},{0,0,0}) --Position for testing the mrcnn
+    --addModel('turtlebot2i',{-2.0,-2.5,0.063},{0,0,0}) --Position for testing the mrcnn
     addModel('turtlebot2i_dummy',{ 1.0, 2.75,0.063},{0,0,-math.pi/2}) --Position for testing the mrcnn
     
-    addModel('Shelf_simple',{3.0, 2.5,0.063},{0,0,0}) -- TODO: check why Shelf_simple rotation here is not compatible with what happens in the sim
+    addModel('Shelf',{3.0, 2.5,0.063},{0,0,0}) -- TODO: check why Shelf_simple rotation here is not compatible with what happens in the sim
     
 
     addModel('ConcreteBox2',{-3.5, 2.0,0.5},{0,0,0})
     addModel('ConcreteBox2',{-5.0,-0.5,0.5},{0,0,0})
     addModel('ConcreteBox2',{-3.5,-2.5,0.5},{0,0,0})
 
-    addModel('ConveyorBelt_simple',{2.5,-2.50,0.113},{0,0,-math.pi/2})
-    addModel('ConveyorBelt_simple',{7.0,-3.5,0.113},{0,0,0})
+    addModel('ConveyorBelt',{2.5,-2.50,0.113},{0,0,-math.pi/2})
+    addModel('ConveyorBelt',{0.0,-4.00,0.113},{0,0,-math.pi/2})
+    addModel('ConveyorBelt',{7.0,-3.5,0.113},{0,0,0})
     --addModel('ConveyorBelt_simple',{4.0,-4.00,0.113},{0,0,-math.pi/2})
     
 

@@ -21,7 +21,7 @@ from math import pi, sqrt, sin, cos, radians, atan2
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from shapely.geometry import Polygon, box, LineString, Point
 from shapely.affinity import translate
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
 class VrepManipulation():
     def __init__(self):
@@ -168,7 +168,6 @@ class Env():
         self.goal.target_pose.pose.position.y = 5.0 
         self.target_list = [[-9.0, 6.5],
                     [-9.0, 3.0],
-                    #[-6.5, 4.75],
                     [-4.0, 6.5],
                     [-4.0, 3.0],
                     [-0.5, 6.0],
@@ -187,13 +186,11 @@ class Env():
         #self.heading = 0
         self.action_list = [[0.0, 1.2], [0.0, 0.8], [0.0, 0.4], [0.4, 1.2], [0.4, 0.8], [0.8, 1.2], [0.0, 0.0], [0.4, 0.4], [0.8, 0.8], [1.2, 1.2], [1.2, 0.8], [0.8, 0.4], [1.2, 0.4], [0.4, 0.0], [0.8, 0.0], [1.2, 0.0]]
         self.action_size = len(self.action_list)
-        #self.initGoal = True
         self.get_goalbox = False
         self.position = Pose()
         self.prev_position = Pose()
         self.orientation = 0.0
         self.sub_pos        = rospy.Subscriber('/turtlebot2i/sensors/global_pose', geometry_msgs.msg.PoseStamped, self.update_pose_callback)
-        #self.sub_risk       = rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, self.sceneGraphReconstruction) #instead of subscribing, wait this information in step function
         self.sub_safetyzone = rospy.Subscriber('/turtlebot2i/safety/safety_zone', SafetyZone, self.safety_zone_callback)
         self.sub_vel        = rospy.Subscriber('/turtlebot2i/commands/velocity', Twist, self.speed_callback)
         self.sub_bumper     = rospy.Subscriber('/turtlebot2i/events/bumper', BumperEvent, self.bumper_callback)
@@ -248,17 +245,7 @@ class Env():
         #getting data from move base module
         self.robot_linear_speed  = data.linear.x
         self.robot_angular_speed = data.angular.z 
-        '''
-        if len(self.speed_monitor) > 100:
-            if sum(self.speed_monitor) < 0.1: #if robot gets stuck, cancel the goal
-                self.speed_monitor = deque([])
-                self.vrep_control.reset_robot_pos()
-                self.respawn_goal()
-                rospy.loginfo("Robot is stuck, changing goal position.")
-            else:
-                self.speed_monitor.popleft()
-        self.speed_monitor.append(data.linear.x+abs(data.angular.z))
-        '''
+
     def safety_zone_callback(self, data):
         self.r_critical = data.critical_zone_radius
         self.r_warning  = data.warning_zone_radius
@@ -280,8 +267,8 @@ class Env():
             self.risk_max = max(data.risk_value)
         else:
             self.risk_max = 0.0
-        fig = plt.figure(1, figsize=(3.5,6), dpi=90)
-        ax = fig.add_subplot(111)
+        #fig = plt.figure(1, figsize=(3.5,6), dpi=90)
+        #ax = fig.add_subplot(111)
         
         for i in range(n_obstacle):
             #### reconstruct the obstacle from scene graph ####
@@ -305,23 +292,21 @@ class Env():
                 obstacle = translate(obstacle, (data.distance[i]-curr_distance)*cos(radians(data.direction[i])), (data.distance[i]-curr_distance)*sin(radians(data.direction[i])))
                 curr_distance = self.origin.distance(obstacle) 
                 #print("distance to origin3:",curr_distance,data.distance[i])
-            x,y = obstacle.exterior.xy
-            ax.plot(x, y)
+            #x,y = obstacle.exterior.xy
+            #ax.plot(x, y)
             for i in range(self.n_direction):
-                x,y = self.obstacle_map[i].exterior.xy
-                ax.plot(x, y)
+                #x,y = self.obstacle_map[i].exterior.xy
+                #ax.plot(x, y)
                 if obstacle.intersects(self.obstacle_map[i]):
                     intersection_poylgon = obstacle.intersection(self.obstacle_map[i])
-                    xC,yC= intersection_poylgon.exterior.xy
-                    ax.plot(xC, yC)
+                    #xC,yC= intersection_poylgon.exterior.xy
+                    #ax.plot(xC, yC)
                     self.obstacle_distances[i] = min(self.obstacle_distances[i], self.origin.distance(intersection_poylgon))
 
         
-        print("obstacle_distances: ")#, self.obstacle_distances)
-        for i in range(self.n_direction-1,-1,-1):
-            print("distance in zone["+str(self.n_direction-i-1)+"]: "+ str(self.obstacle_distances[i]))
+        #print("obstacle_distances: ", self.obstacle_distances)
         #print("argmin_distance:",np.argmin(self.obstacle_distances))
-        plt.show() 
+        #plt.show() 
 
         return self.obstacle_distances
 
@@ -330,8 +315,6 @@ class Env():
         obstacle_distances = list(self.sceneGraphReconstruction(safety_risk_msg))
         done = False
 
-        #min_range = 0.01
-        #if (min_range > self.min_distance) or self.collision:
         if self.collision:
             done = True
             self.collision = False
@@ -383,8 +366,6 @@ class Env():
         nearest_obstacle_direction = np.argmin(state[:12]) #index 0 start from right side of the robot
 
         yaw_reward = 1.0
-        #travelled_distance = self.distance2D(self.prev_position, self.position)
-        #print("travelled_distance:",travelled_distance)
         if (nearest_obstacle_direction <= self.n_direction/3-1):#obstacle is on the right 
             if (action >= 10):                    #robot turns right
                 yaw_reward = -(action-9)/6
@@ -409,8 +390,6 @@ class Env():
         else:
             reward = -1
 
-        #reward = (yaw_reward * distance_rate) + ob_reward
-
         if done:
             rospy.loginfo("Collision!!")
             reward = -5000
@@ -418,7 +397,6 @@ class Env():
 
         if self.get_goalbox:
             rospy.loginfo("Goal!!")
-            #reward = 500 
             self.publishScaleSpeed(0.0, 0.0)
             self.respawn_goal(reset=True)
             self.get_goalbox = False

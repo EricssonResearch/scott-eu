@@ -11,32 +11,35 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from collections import deque
 from std_msgs.msg import Float32MultiArray
-from rl_environment import Env
+from environment_hybrid import Env
 import tensorflow as tf
-from keras.models import Sequential, load_model
+from keras.models import Sequential, load_model, Model
 from keras.optimizers import RMSprop
 from keras.layers import Conv1D, GlobalAveragePooling1D, MaxPooling1D
 from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import concatenate
 from turtlebot2i_safety.msg import SafetyRisk
 
 
 class ReinforceAgent():
     def __init__(self, env, training_mode):
-        self.pub_result = rospy.Publisher('result', Float32MultiArray, queue_size=5)
+        self.pub_result = rospy.Publisher('result', Float32MultiArray, queue_size=1)
         self.dirPath = os.path.dirname(os.path.realpath(__file__))
-        self.dirPath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'model_and_result/dqn_')
+        self.dirPath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src/models/hybrid_')
         self.result = Float32MultiArray()
 
-        self.load_model = False
-        self.load_episode = 0#340 #0
+        self.load_model = True
+        self.load_episode = 2540#1671#2541 #665 #0
         self.env = env
-        self.stack_len = 20
-        self.state_stack = deque(maxlen=self.stack_len)
+        self.stack_len = 6
+        self.distance_stack = deque(maxlen=self.stack_len)
         if training_mode:
             self.single_state_len = len(self.env.reset())
         else:
             self.single_state_len = len(self.env.getEmptyState())
-        self.state_size = (self.stack_len, self.single_state_len)
+        self.distance_size = self.env.n_direction
+        self.nondistance_size = self.single_state_len - self.distance_size
+        self.state_size = (self.distance_size, self.stack_len)
         self.state = np.empty((self.state_size), dtype=np.float64)
         self.action_size = self.env.action_size
         self.episode_step = 6000
@@ -52,7 +55,6 @@ class ReinforceAgent():
 
         self.model = self.buildModel()
         self.target_model = self.buildModel()
-        #self.graph = tf.get_default_graph()
 
         self.updateTargetModel()
 
@@ -63,7 +65,7 @@ class ReinforceAgent():
 
         if self.load_model:
             self.model.set_weights(load_model(self.dirPath + str(self.load_episode) + ".h5").get_weights())
-
+            
             with open(self.dirPath + str(self.load_episode) + '.json') as outfile:
                 param = json.load(outfile)
                 self.epsilon = param.get('epsilon')
@@ -74,7 +76,7 @@ class ReinforceAgent():
             self.maxQval  = list(loaded_result['maxQval'])
             self.step_list= list(loaded_result['step_list'])
 
-        self.action = 6
+        self.action = 7
         self.score = 0
         self.e = self.load_episode + 1
         self.t = 0
@@ -90,24 +92,33 @@ class ReinforceAgent():
         self.start_time = time.time()
         self.graph = tf.get_default_graph()
 
+        self.time_duration_list = []
+
     def buildModel(self):
-        model = Sequential()
         dropout = 0.2
 
-        model.add(Conv1D(32, 3, activation='relu', input_shape=self.state_size))
-        model.add(Conv1D(32, 3, activation='relu'))
-        #model.add(MaxPooling1D(3))
-        model.add(Conv1D(32, 3, activation='relu'))
-        model.add(GlobalAveragePooling1D())
-        #model.add(Dense(64, activation='relu', kernel_initializer='lecun_uniform'))
-        model.add(Dropout(dropout))
+        mlp = Sequential()
+        mlp.add(Dense(32, input_shape=(self.nondistance_size,), activation='relu', kernel_initializer='lecun_uniform'))
+        mlp.add(Dense(16, activation='relu', kernel_initializer='lecun_uniform'))
+        mlp.add(Dropout(dropout))
+        #mlp.summary()
 
-        model.add(Dense(self.action_size, kernel_initializer='lecun_uniform'))
-        model.add(Activation('linear'))
-        model.compile(loss='mse', optimizer=RMSprop(lr=self.learning_rate, rho=0.9, epsilon=1e-06))
-        model.summary()
-
-        return model
+        cnn = Sequential()
+        cnn.add(Conv1D(16, 2, activation='relu', input_shape=self.state_size))
+        cnn.add(Conv1D(32, 2, activation='relu'))
+        cnn.add(Conv1D(32, 2, activation='relu'))
+        cnn.add(MaxPooling1D(3))
+        cnn.add(Flatten())
+        #cnn.summary()
+        
+        combinedInput = concatenate([cnn.output, mlp.output])
+ 
+        x = Dense(self.action_size, kernel_initializer='lecun_uniform', activation="linear")(combinedInput)
+         
+        hybrid = Model(inputs=[mlp.input, cnn.input], outputs=x)
+        hybrid.compile(loss='mse', optimizer=RMSprop(lr=self.learning_rate, rho=0.9, epsilon=1e-06))
+        hybrid.summary()
+        return hybrid
     
     def getQvalue(self, reward, next_target, done):
         if done:
@@ -116,7 +127,6 @@ class ReinforceAgent():
             return reward + self.discount_factor * np.amax(next_target)
 
     def updateTargetModel(self):
-        #with self.graph.as_default():
         self.target_model.set_weights(self.model.get_weights())
 
     def getAction(self, state):
@@ -134,7 +144,8 @@ class ReinforceAgent():
 
     def trainModel(self, target=False):
         mini_batch = random.sample(self.memory, self.batch_size)
-        X_batch = np.empty((0, self.stack_len, self.single_state_len), dtype=np.float64)
+        X_batch_distance    = np.empty((0, self.distance_size, self.stack_len), dtype=np.float64)
+        X_batch_nondistance = np.empty((0, self.nondistance_size), dtype=np.float64)
         Y_batch = np.empty((0, self.action_size), dtype=np.float64)
 
         with self.graph.as_default():
@@ -144,7 +155,6 @@ class ReinforceAgent():
                 rewards = mini_batch[i][2]
                 next_states = mini_batch[i][3]
                 dones = mini_batch[i][4]
-                #print("states shape",np.shape(states),"|xbatch shape:",np.shape(X_batch))
                 q_value = self.model.predict(states)
                 self.q_value = q_value
 
@@ -156,39 +166,39 @@ class ReinforceAgent():
 
                 next_q_value = self.getQvalue(rewards, next_target, dones)
 
-                X_batch = np.append(X_batch, np.array(states.copy()), axis=0)
+                X_batch_distance    = np.append(X_batch_distance, np.array(states[1].copy()), axis=0)
+                X_batch_nondistance = np.append(X_batch_nondistance, np.array(states[0].copy()), axis=0)
                 Y_sample = q_value.copy()
 
                 Y_sample[0][actions] = next_q_value
                 Y_batch = np.append(Y_batch, np.array([Y_sample[0]]), axis=0)
 
                 if dones:
-                    X_batch = np.append(X_batch, np.array(next_states.copy()), axis=0)
+                    X_batch_distance    = np.append(X_batch_distance, np.array(next_states[1].copy()), axis=0)
+                    X_batch_nondistance = np.append(X_batch_nondistance, np.array(next_states[0].copy()), axis=0)
                     Y_batch = np.append(Y_batch, np.array([[rewards] * self.action_size]), axis=0)
 
-            self.model.fit(X_batch, Y_batch, batch_size=self.batch_size, epochs=1, verbose=0)    
+            self.model.fit([X_batch_nondistance, X_batch_distance], Y_batch, batch_size=self.batch_size, epochs=1, verbose=0)    
 
     def training_callback(self, data):
-        if len(self.state_stack) < self.stack_len:
+        if len(self.distance_stack) < self.stack_len:
             state, done = self.env.getState(data)
-            self.state_stack.append(np.asarray(state))
-            self.env.execute(7) #scaling to 0.4 for both wheels
-            if len(self.state_stack) == self.stack_len:
-                self.state = np.asarray([self.state_stack])
+            self.distance_stack.append(np.asarray(state[:self.distance_size]))
+            self.env.execute(7) #both wheels are scaled to 0.4
+            if len(self.distance_stack) == self.stack_len:
+                self.state = [np.array(state[self.distance_size:]).reshape(1,self.nondistance_size), np.transpose(self.distance_stack).reshape(1,self.distance_size, self.stack_len)]
             if done:
-                self.state_stack.clear()
+                self.distance_stack.clear()
                 self.env.reset(data=data)
                 
         else:
-            #print("states shape:",np.shape(self.state))
             next_state, done = self.env.getState(data)
             reward = self.env.setReward(next_state, done, self.action)
-            #next_state = np.asarray(next_state)
-            self.state_stack.append(np.asarray(next_state))
-            next_state_stack = np.asarray([self.state_stack])
-            self.appendMemory(self.state, self.action, reward, next_state_stack, done)
+            self.distance_stack.append(np.asarray(next_state[:self.distance_size]))
+            next_distance_stack = [np.array(next_state[self.distance_size:]).reshape(1,self.nondistance_size), np.transpose(self.distance_stack).reshape(1,self.distance_size,self.stack_len)]
+            self.appendMemory(self.state, self.action, reward, next_distance_stack, done)
 
-            self.state = next_state_stack
+            self.state = next_distance_stack
             self.action = agent.getAction(self.state)
             self.env.execute(self.action)
             self.score += reward
@@ -209,7 +219,6 @@ class ReinforceAgent():
                         json.dump(self.param_dictionary, outfile)
                     np.savez(self.dirPath + str(self.e) + '.npz', scores=self.scores, episodes=self.episodes, maxQval=self.maxQval, step_list=self.step_list)
 
-                #self.state = self.env.reset(data=data)
                 self.env.reset(data=data)
                 self.updateTargetModel()
                 self.scores.append(self.score)
@@ -226,12 +235,11 @@ class ReinforceAgent():
                     rospy.loginfo('Ep: %d score: %.2f average_score: %.2f memory: %d epsilon: %.2f time: %d:%02d:%02d',
                                   self.e, self.score, self.score/self.step_list[-1], len(self.memory), self.epsilon, h, m, s)
                 self.param_dictionary = dict(zip(['epsilon'], [self.epsilon]))
-                #break
-
+                
                 self.score = 0
                 self.e += 1
                 self.t = 0
-                self.state_stack.clear()
+                self.distance_stack.clear()
                 if agent.epsilon > agent.epsilon_min:
                     agent.epsilon *= agent.epsilon_decay
             else:
@@ -239,16 +247,42 @@ class ReinforceAgent():
                 self.global_step += 1
 
     def prediction_callback(self, data):
-        next_state, done = self.env.getState(data)
-        self.state = np.asarray(next_state)
-        self.action = agent.getAction(self.state)
-        self.env.execute(self.action)
+        if len(self.distance_stack) < self.stack_len:
+            state, done = self.env.getState(data)
+            self.distance_stack.append(np.asarray(state[:self.distance_size]))
+            self.env.execute(7) #both wheels are scaled to 0.4
+            if len(self.distance_stack) == self.stack_len:
+                self.state = [np.array(state[self.distance_size:]).reshape(1,self.nondistance_size), np.transpose(self.distance_stack).reshape(1,self.distance_size, self.stack_len)]
+            if done:
+                self.distance_stack.clear()
+                self.env.reset(data=data)
+                
+        else:
+            #time_previous = time.time()
+            next_state, done = self.env.getState(data)
+            self.distance_stack.append(np.asarray(next_state[:self.distance_size]))
+            self.state = [np.array(next_state[self.distance_size:]).reshape(1,self.nondistance_size), np.transpose(self.distance_stack).reshape(1,self.distance_size,self.stack_len)]
+            
+            next_action = agent.getAction(self.state)
+            #time_end = time.time()
+            self.env.execute(next_action)
+
+            # self.time_duration_list.append(time_end-time_previous)
+            # if len(self.time_duration_list) == 100:
+            #     np.savez('/home/turtlebot/thesis2019/duration_result/time_duration_rm_hybrid.npz', time_duration_list=self.time_duration_list)
+            #     dirPath = os.path.dirname(os.path.realpath(__file__))
+            #     savePath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'time_duration/time_duration_rm_hybrid.npz')
+            #     np.savez(savePath, time_duration_list=self.time_duration_list)
+            if next_action != self.action:
+                print("action:",next_action)
+                self.action = next_action
+            
 
 EPISODES = 3000
 if __name__ == '__main__':
     try:
-        rospy.init_node('training_rl_py')
-        training_mode = True
+        rospy.init_node('hybrid_training_rl_py')
+        training_mode = False
         env = Env()
         agent = ReinforceAgent(env,training_mode)
         print("Program ready!")

@@ -9,7 +9,7 @@ import numpy as np
 import geometry_msgs.msg
 import std_msgs.msg
 import os
-from geometry_msgs.msg import Twist, Pose
+from geometry_msgs.msg import Twist, Pose, Vector3
 from kobuki_msgs.msg import BumperEvent
 from nav_msgs.msg import Odometry
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -21,7 +21,7 @@ from math import pi, sqrt, sin, cos, radians, atan2
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from shapely.geometry import Polygon, box, LineString, Point
 from shapely.affinity import translate
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
 class VrepManipulation():
     def __init__(self):
@@ -168,7 +168,6 @@ class Env():
         self.goal.target_pose.pose.position.y = 5.0 
         self.target_list = [[-9.0, 6.5],
                     [-9.0, 3.0],
-                    #[-6.5, 4.75],
                     [-4.0, 6.5],
                     [-4.0, 3.0],
                     [-0.5, 6.0],
@@ -184,24 +183,19 @@ class Env():
                     [-9.0,-6.5]]
         self.target_idx = random.randrange(0, len(self.target_list))
 
-        #self.heading = 0
         self.action_list = [[0.0, 1.2], [0.0, 0.8], [0.0, 0.4], [0.4, 1.2], [0.4, 0.8], [0.8, 1.2], [0.0, 0.0], [0.4, 0.4], [0.8, 0.8], [1.2, 1.2], [1.2, 0.8], [0.8, 0.4], [1.2, 0.4], [0.4, 0.0], [0.8, 0.0], [1.2, 0.0]]
         self.action_size = len(self.action_list)
-        #self.initGoal = True
         self.get_goalbox = False
-        self.position = Pose()
-        self.prev_position = Pose()
+        self.position = Vector3()
+        self.prev_position = Vector3()
         self.orientation = 0.0
         self.sub_pos        = rospy.Subscriber('/turtlebot2i/sensors/global_pose', geometry_msgs.msg.PoseStamped, self.update_pose_callback)
-        #self.sub_risk       = rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, self.sceneGraphReconstruction) #instead of subscribing, wait this information in step function
         self.sub_safetyzone = rospy.Subscriber('/turtlebot2i/safety/safety_zone', SafetyZone, self.safety_zone_callback)
         self.sub_vel        = rospy.Subscriber('/turtlebot2i/commands/velocity', Twist, self.speed_callback)
         self.sub_bumper     = rospy.Subscriber('/turtlebot2i/events/bumper', BumperEvent, self.bumper_callback)
         self.pub_safe_vel   = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10) #init publisher
 
         #Additional
-        self.n_sensors = 675 #684 #if lidar on top: 684 data, if lidar in front of robot: 675 data
-
         self.robot_linear_speed  = 0.0 
         self.robot_angular_speed = 0.0
 
@@ -219,7 +213,7 @@ class Env():
                                     [self.camera_far_clipping*cos(radians(self.direction_list[i+1])),self.camera_far_clipping*sin(radians(self.direction_list[i+1]))],
                                     [self.camera_far_clipping*cos(radians(self.direction_list[i])),  self.camera_far_clipping*sin(radians(self.direction_list[i]))]]))
 
-        self.r_critical = 0.205
+        self.r_critical = 0.295
         self.r_warning  = 0.31
         self.r_clear    = 0.32
         self.collision  = False
@@ -236,11 +230,9 @@ class Env():
         return sqrt((pos1.x - pos2.x)**2 + (pos1.y - pos2.y)**2)
 
     def getGoalDistance(self):
-        #print("goal pos:",self.goal.target_pose.pose.position,"\n robot pos:",self.position)
         return self.distance2D(self.goal.target_pose.pose.position, self.position)
 
     def update_pose_callback(self, data):
-        self.prev_position = self.position
         self.position = data.pose.position
         (roll, pitch, self.orientation) = euler_from_quaternion([data.pose.orientation.x, data.pose.orientation.y, data.pose.orientation.z, data.pose.orientation.w])
 
@@ -248,17 +240,7 @@ class Env():
         #getting data from move base module
         self.robot_linear_speed  = data.linear.x
         self.robot_angular_speed = data.angular.z 
-        '''
-        if len(self.speed_monitor) > 100:
-            if sum(self.speed_monitor) < 0.1: #if robot gets stuck, cancel the goal
-                self.speed_monitor = deque([])
-                self.vrep_control.reset_robot_pos()
-                self.respawn_goal()
-                rospy.loginfo("Robot is stuck, changing goal position.")
-            else:
-                self.speed_monitor.popleft()
-        self.speed_monitor.append(data.linear.x+abs(data.angular.z))
-        '''
+
     def safety_zone_callback(self, data):
         self.r_critical = data.critical_zone_radius
         self.r_warning  = data.warning_zone_radius
@@ -280,8 +262,8 @@ class Env():
             self.risk_max = max(data.risk_value)
         else:
             self.risk_max = 0.0
-        fig = plt.figure(1, figsize=(3.5,6), dpi=90)
-        ax = fig.add_subplot(111)
+        #fig = plt.figure(1, figsize=(3.5,6), dpi=90)
+        #ax = fig.add_subplot(111)
         
         for i in range(n_obstacle):
             #### reconstruct the obstacle from scene graph ####
@@ -305,23 +287,21 @@ class Env():
                 obstacle = translate(obstacle, (data.distance[i]-curr_distance)*cos(radians(data.direction[i])), (data.distance[i]-curr_distance)*sin(radians(data.direction[i])))
                 curr_distance = self.origin.distance(obstacle) 
                 #print("distance to origin3:",curr_distance,data.distance[i])
-            x,y = obstacle.exterior.xy
-            ax.plot(x, y)
+            #x,y = obstacle.exterior.xy
+            #ax.plot(x, y)
             for i in range(self.n_direction):
-                x,y = self.obstacle_map[i].exterior.xy
-                ax.plot(x, y)
+                #x,y = self.obstacle_map[i].exterior.xy
+                #ax.plot(x, y)
                 if obstacle.intersects(self.obstacle_map[i]):
                     intersection_poylgon = obstacle.intersection(self.obstacle_map[i])
-                    xC,yC= intersection_poylgon.exterior.xy
-                    ax.plot(xC, yC)
+                    #xC,yC= intersection_poylgon.exterior.xy
+                    #ax.plot(xC, yC)
                     self.obstacle_distances[i] = min(self.obstacle_distances[i], self.origin.distance(intersection_poylgon))
 
         
-        print("obstacle_distances: ")#, self.obstacle_distances)
-        for i in range(self.n_direction-1,-1,-1):
-            print("distance in zone["+str(self.n_direction-i-1)+"]: "+ str(self.obstacle_distances[i]))
+        #print("obstacle_distances: ", self.obstacle_distances)
         #print("argmin_distance:",np.argmin(self.obstacle_distances))
-        plt.show() 
+        #plt.show() 
 
         return self.obstacle_distances
 
@@ -330,8 +310,6 @@ class Env():
         obstacle_distances = list(self.sceneGraphReconstruction(safety_risk_msg))
         done = False
 
-        #min_range = 0.01
-        #if (min_range > self.min_distance) or self.collision:
         if self.collision:
             done = True
             self.collision = False
@@ -339,6 +317,9 @@ class Env():
         if self.getGoalDistance() < 0.5:
             self.get_goalbox = True
         return obstacle_distances + [self.robot_linear_speed, self.robot_angular_speed, self.risk_max, self.r_warning, self.r_clear], done
+
+    def getEmptyState(self):
+        return list(np.ones((self.n_direction))*self.camera_far_clipping) + [0.0, 0.0, 0.0, 0.31, 0.32]
 
     def publishScaleSpeed(self, left_vel_scale, right_vel_scale):
         vel_scale_message = VelocityScale()
@@ -381,52 +362,52 @@ class Env():
     def setReward(self, state, done, action):
         nearest_obstacle_distance  = min(state[:12])
         nearest_obstacle_direction = np.argmin(state[:12]) #index 0 start from right side of the robot
+        risk_max = max(1, state[-3])
 
         yaw_reward = 1.0
-        #travelled_distance = self.distance2D(self.prev_position, self.position)
-        #print("travelled_distance:",travelled_distance)
         if (nearest_obstacle_direction <= self.n_direction/3-1):#obstacle is on the right 
             if (action >= 10):                    #robot turns right
-                yaw_reward = -(action-9)/6
+                yaw_reward = -(action-9)*risk_max/6
         elif (nearest_obstacle_direction >= self.n_direction*2/3):#obstacle is on the left
             if (action <= 5):                   #robot turns left
-                yaw_reward = -(6-action)/6
+                yaw_reward = -(6-action)*risk_max/6
         else:#obstacle is in the front
             if (action in [6,7,8,9]):
-                yaw_reward = -(action-5)/4
+                yaw_reward = -(action-5)*risk_max/4
         
         distance_rate = 1.0 / max(nearest_obstacle_distance, 0.175)
 
-        if nearest_obstacle_distance < self.r_critical:
+        if nearest_obstacle_distance < 0.295 + 0.03: #r_critical + offset
             reward = (yaw_reward * distance_rate) -50
-        elif nearest_obstacle_distance < self.r_warning:
+        elif nearest_obstacle_distance < state[-2] + 0.05: #r_warning + offset
             reward = (yaw_reward * distance_rate) -10
-        elif self.distance2D(self.prev_position, self.position) > 0.017:
-            if nearest_obstacle_distance < self.r_clear:
-                reward = (yaw_reward * distance_rate) + 1
-            else:
-                reward = 1
+        elif self.distance2D(self.prev_position, self.position) > 0.4:
+            reward = 8
+            self.prev_position = self.position
+        elif nearest_obstacle_distance < state[-1] + 0.05: #r_clear + offset
+            reward = yaw_reward 
         else:
             reward = -1
-
-        #reward = (yaw_reward * distance_rate) + ob_reward
 
         if done:
             rospy.loginfo("Collision!!")
             reward = -5000
             self.publishScaleSpeed(0.0, 0.0)
+            self.prev_position = Pose()
 
         if self.get_goalbox:
             rospy.loginfo("Goal!!")
-            #reward = 500 
             self.publishScaleSpeed(0.0, 0.0)
             self.respawn_goal(reset=True)
             self.get_goalbox = False
 
         return reward
 
-    def step(self, action):
+    def execute(self, action):
         self.publishScaleSpeed(self.action_list[action][0], self.action_list[action][1])
+
+    def step(self, action):
+        self.execute(action)
         data = None
         while data is None:
             try:
@@ -440,11 +421,11 @@ class Env():
 
         return np.asarray(state), reward, done
 
-    def reset(self):
+    def reset(self, data=None):
         self.publishScaleSpeed(0,0)
         self.vrep_control.reset_robot_pos()
         self.respawn_goal(reset=True)
-        data = None
+        self.vrep_control.check_robot_correctness()
         while data is None:
             try:
                 data = rospy.wait_for_message('/turtlebot2i/safety/obstacles_risk', SafetyRisk, timeout=5)
@@ -454,7 +435,7 @@ class Env():
 
 
         state, done = self.getState(data)
-
+        self.prev_position = self.position
         return np.asarray(state)
 
 
