@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import sys
 
-class_names = ['BG', 'SlidingDoor', 'Wall', 'Shelf', 'Robot', 'Human', 'ConveyorBelt', 'Dockstation', 'Product']
+class_names = ['BG', 'SlidingDoor', 'Wall', 'Shelf', 'Robot', 'Human', 'ConveyorBelt', 'Dockstation', 'Product', 'Floor']
 
 def random_colors(N):
     np.random.seed(1)
@@ -29,11 +29,49 @@ def display_instances(image, boxes, masks, ids, names, scores):
         take the image and results and apply the mask, box, and Label
     """
     n_instances = boxes.shape[0]
+    new_image = image.copy()
 
     if not n_instances:
         print('NO INSTANCES TO DISPLAY')
     else:
-        assert boxes.shape[0] == masks.shape[-1] == ids.shape[0]
+        #print (boxes.shape[0], masks.shape[-1], ids.shape[0])
+        #assert boxes.shape[0] == masks.shape[-1] == ids.shape[0]
+        assert boxes.shape[0] == ids.shape[0]
+
+    for i in range(n_instances):
+        if not np.any(boxes[i]):
+            continue
+
+        y1, x1, y2, x2 = boxes[i]
+        label = names[i]
+
+        print (i,' label: ',label)
+        color = class_dict[class_names[ids[i]]]
+        score = scores[i] if scores is not None else None
+        caption = '{} {:.2f}'.format(label, score) if score else label
+        if label != 'Floor':
+            mask = masks[:, :, i]
+            new_image = apply_mask(new_image, mask, color)
+        #print (x1, y1,x2, y2)
+        new_image = cv2.rectangle(new_image, (x1, y1), (x2, y2), color, 2)
+        new_image = cv2.putText(
+            new_image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2
+        )
+    cv2.imshow('frame', new_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return new_image
+
+def draw_bbox_label(image, boxes, ids, names, scores):
+    """
+        take the image and results and apply the box, and Label
+    """
+    n_instances = boxes.shape[0]
+    new_image = image.copy()
+    if not n_instances:
+        print('NO INSTANCES TO DISPLAY')
+    else:
+        assert boxes.shape[0] == ids.shape[0]
 
     for i in range(n_instances):
         if not np.any(boxes[i]):
@@ -44,17 +82,74 @@ def display_instances(image, boxes, masks, ids, names, scores):
         color = class_dict[label]
         score = scores[i] if scores is not None else None
         caption = '{} {:.2f}'.format(label, score) if score else label
-        mask = masks[:, :, i]
-
-        image = apply_mask(image, mask, color)
-        image = cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
-        image = cv2.putText(
-            image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2
+        new_image = cv2.rectangle(new_image, (x1, y1), (x2, y2), color, 2)
+        new_image = cv2.putText(
+            new_image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2
         )
-    # cv2.imshow('frame', image)
-    # cv2.waitKey(0)
-    return image
+    cv2.imshow('bbox label frame', new_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return new_image
 
+
+
+def draw_bbox_label_msdn(image, boxes, ids, scores):
+    """
+        take the image and results and apply the box, and Label
+    """
+    n_instances = boxes.shape[0]
+    new_image = image.copy()
+    if not n_instances:
+        print('NO INSTANCES TO DISPLAY')
+    else:
+        assert boxes.shape[0] == ids.shape[0]
+
+    for i in range(n_instances):
+        if not np.any(boxes[i]):
+            continue
+
+        x1, y1, x2, y2 = boxes[i]
+        x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+        label = class_names[ids[i]]
+        color = class_dict[label]
+        score = scores[i] if scores is not None else None
+        caption = '{} {:.2f}'.format(label, score) if score else label
+        new_image = cv2.rectangle(new_image, (x1, y1), (x2, y2), color, 2)
+        new_image = cv2.putText(
+            new_image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2
+        )
+    cv2.imshow('bbox label frame', new_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return new_image
+
+def draw_bbox(image, boxes):
+    """
+        take the image and bbox and apply the bbox
+    """
+    n_instances = boxes.shape[0]
+    new_image = image.copy()
+
+    if not n_instances:
+        print('NO INSTANCES TO DISPLAY')
+    else:
+        assert boxes.shape[0] > 0
+
+    for i in range(n_instances):
+        if not np.any(boxes[i]):
+            continue
+
+        y1, x1, y2, x2 = boxes[i]
+        color = class_dict["Robot"]
+        caption = 'bbox'
+        new_image = cv2.rectangle(new_image, (x1, y1), (x2, y2), color, 2)
+        new_image = cv2.putText(
+            new_image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2
+        )
+    cv2.imshow('bbox frame', new_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return new_image
 #if __name__ == '__main__':
 #    """
 #        test everything

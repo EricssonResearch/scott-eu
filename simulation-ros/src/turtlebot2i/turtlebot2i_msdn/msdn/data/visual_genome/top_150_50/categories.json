@@ -1,0 +1,1 @@
+{"object": ["slidingdoor", "wall", "shelf", "robot", "human", "conveyorbelt", "dockstation", "product", "floor"], "predicate": ["behind", "on", "has", "in_front_of", "next_to", "beside", "with", "attach_to", "connected_to", "charges", "in_hands_of"]}
