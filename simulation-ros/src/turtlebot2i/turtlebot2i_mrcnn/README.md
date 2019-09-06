@@ -42,12 +42,8 @@ Follow the instructions in https://stackoverflow.com/questions/49221565/unable-t
 sudo pip3 install tensorflow
 ```
 
-5. Download the pretrained MRCNN models (one of the following two):
+5. The Pretrained MRCNN models is in models folder.
 
-```
-wget https://www.dropbox.com/s/xunaa1idwcmdyz5/coco_vrepall_1002.h5 -P models
-wget https://www.dropbox.com/s/5foyklp3azy2wi0/mask_rcnn_coco.h5  -P models
-```
 
 ## 3.2. Running Mask R-CNN node
 
