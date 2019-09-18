@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""
+""" 
     Copyright 2018-03-02 Alberto Hata
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +23,8 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 def movebase_client():
 
     #client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
-    #client = actionlib.SimpleActionClient('turtlebot2i_0/move_base', MoveBaseAction)
-    client = actionlib.SimpleActionClient('turtlebot2i/move_base', MoveBaseAction)
+    client = actionlib.SimpleActionClient('turtlebot2i_0/move_base', MoveBaseAction)
+    #client = actionlib.SimpleActionClient('turtlebot2i/move_base', MoveBaseAction)
     client.wait_for_server()
 
     goal = MoveBaseGoal()
@@ -55,3 +55,4 @@ if __name__ == '__main__':
             rospy.loginfo("Goal execution done!")
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation test finished.")
+

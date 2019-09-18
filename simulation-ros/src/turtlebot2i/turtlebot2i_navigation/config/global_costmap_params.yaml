@@ -1,9 +1,9 @@
 global_costmap:
  global_frame: /map
  robot_base_frame: /turtlebot2i/base_footprint
- update_frequency: 5 #10
+ update_frequency: 10
  static_map: true
  rolling_window: true
- width: 40.0
- height: 40.0
+# width: 8.0
+# height: 8.0
  resolution: 0.05
