@@ -227,13 +227,9 @@ def parse_dot_file(graph):
             else:
                print "Node not match!!"
                print node_info
-    #if (highest_risk!=0.0):
-    #    safe_risk_pub.publish(risk_message)
-    #    #pub_safe_vel(1.0, 1.0) 
-    #else:
-    #    pub_safe_vel(1.0, 1.0) 
-    safe_risk_pub.publish(risk_message)
+    safe_risk_pub.publish(risk_message) # comment this line for FLS and MLP
     risk_val_pub.publish(highest_risk)
+    
     #global    time_previous
     #run_time = time.time() - time_previous
     #print 'Calc. time for S-G=',run_time,'sec'   #0.0139169692993 sec for calc,
@@ -281,7 +277,5 @@ if __name__ == "__main__":
     ## SUBSCRIBERS
     # Creates a subscriber object
     rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)
-    # Dont't use "/turtlebot2i/commands/velocity'
-    # Use "/turtlebot2i/cmd_vel_mux/safety_controller" with "vel_mux" package.
     print("initialization finished, Risk assesment ready!")
     rospy.spin()

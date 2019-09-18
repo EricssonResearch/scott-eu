@@ -29,7 +29,7 @@ DWAPlannerROS:
 
 
 # Here begins the old config file version. Remove if above one succeeds
-controller_frequency: 10.0
+controller_frequency: 5.0 #10.0
 TrajectoryPlannerROS:
 # max_vel_x: 1.0
 # min_vel_x: 0.1

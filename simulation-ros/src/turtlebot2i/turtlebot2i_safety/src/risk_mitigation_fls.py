@@ -107,11 +107,14 @@ def pub_safe_vel(left_vel_scale,right_vel_scale):
 def risk_callback(data):
     global time_duration_list
     #time_previous = time.time()
-
-    i = np.argmax(data.risk_value)
-    left_vel_scale,right_vel_scale = cal_safe_vel(data.distance[i], data.direction[i], data.risk_value[i])
-    pub_safe_vel(left_vel_scale, right_vel_scale)
-
+    if len(data.risk_value) == 0:
+        pub_safe_vel(1.0, 1.0)
+    elif max(data.risk_value) == 0:
+        pub_safe_vel(1.0, 1.0)
+    else:
+        i = np.argmax(data.risk_value)
+        left_vel_scale,right_vel_scale = cal_safe_vel(data.distance[i], data.direction[i], data.risk_value[i])
+        pub_safe_vel(left_vel_scale, right_vel_scale)
     #time_duration_list.append(time.time()-time_previous)
     #print("Risk mitigation duration:",np.mean(time_duration_list))
     #if len(time_duration_list) == 100:
@@ -128,8 +131,8 @@ if __name__ == '__main__':
         print("init_fls_common_part ok")
         init_risk_mitigation()
         print("init_risk_mitigation ok")
-        rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, risk_callback) 
         safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10)
+        rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, risk_callback) 
         print("risk_mitigation_fls.py is now running!")
         rospy.spin()
     except rospy.ROSInterruptException:

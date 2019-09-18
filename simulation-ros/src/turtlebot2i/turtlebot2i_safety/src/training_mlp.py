@@ -1,21 +1,5 @@
 #!/usr/bin/env python
-#################################################################################
-# Copyright 2018 ROBOTIS CO., LTD.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#################################################################################
-
-# Authors: Gilbert #
+#modified from: https://github.com/ROBOTIS-GIT/turtlebot3_machine_learning/blob/master/turtlebot3_dqn/nodes/turtlebot3_dqn_stage_4
 
 import rospy
 import os
@@ -154,7 +138,7 @@ class ReinforceAgent():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('training_rl_py')
+        rospy.init_node('training_mlp_py')
         pub_result = rospy.Publisher('result', Float32MultiArray, queue_size=5)
         pub_get_action = rospy.Publisher('get_action', Float32MultiArray, queue_size=5)
         result = Float32MultiArray()
@@ -238,6 +222,11 @@ if __name__ == '__main__':
                 #time_previous = time.time()
                 if data == None:
                     print("no data")
+                    env.publishScaleSpeed(1.0, 1.0)
+                elif len(data.risk_value) == 0:
+                    env.publishScaleSpeed(1.0, 1.0)
+                elif max(data.risk_value) == 0:
+                    env.publishScaleSpeed(1.0, 1.0)    
                 else:
                     state, done = env.getState(data)
                     action = agent.getAction(np.asarray(state))

@@ -23,8 +23,8 @@ function sysCall_init()
     addModel('turtlebot2i',{-4.5,-3.5,0.063},{0,0,math.pi/2}) --Position for testing the performance of the robot
     --addModel('turtlebot2i',{-1.5, 2.0,0.063},{0,0,0}) --Position for testing the mrcnn
     --addModel('turtlebot2i_with_zone',{-1.0, 2.5,0.063},{0,0,0}) --Position for taking screenshoot
-    --addModel('Standing_Bill',{ 0.0,  2.0,0},{0,0,math.pi/2})
-    --addModel('ConveyorBelt',{1.0,4.0,0.113},{0,0,math.pi/2})
+    --addModel('Standing_Bill',{ 0.0,  2.0,0},{0,0,math.pi/2}) -- for taking screenshoot
+    --addModel('ConveyorBelt',{1.0,4.0,0.113},{0,0,math.pi/2}) -- for taking screenshoot
     
     addModel('Shelf_simple',{-4.0, -4.0,0.063},{0,0,math.pi/2}) -- TODO: check why Shelf_simple rotation here is not compatible with what happens in the sim
     
@@ -38,7 +38,7 @@ function sysCall_init()
     
 
     -- [[
-    -- 8 static objects:
+    --8 static objects:
     addModel('ConcreteBox',{2.5, 3.5,0.5},{0,0,0})
     addModel('80cmHighPillar100cm',{-0.5, 3.0,0.25},{0,0,0})
     addModel('ConcreteBox1',{ 7.0, 1.5,0.5},{0,0,math.pi/2})
@@ -49,7 +49,7 @@ function sysCall_init()
     addModel('ConcreteBox1',{ 1.0, -3.5,0.5},{0,0,0}) --]]
     
     -- [[
-    -- 5 walking humans:
+    --5 walking humans:
     --addModel('walkingBill_round',{-1.5, 1.0,0},{0,0,math.pi/2})
     --addModel('walkingBill_round',{ 1.0, 4.5,0},{0,0,0})
     addModel('Walking_Bill',{-1.5, 1.0,0},{0,0,math.pi/2})
