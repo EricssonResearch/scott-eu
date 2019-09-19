@@ -15,8 +15,11 @@ The risk assessment rules are stored in the `assessment_rules.py`.
 * The second component is the **risk mitigation**, which is responsible for reducing the risk based on the risk analysis.
 
 The risk mitigation using fuzzy logic system is implemented in ´risk_mitigation_fls.py´ and the rules are stored in the `mitigation_rules.py`.
+
 The risk mitigation using reinforcement learning with fully connected network is implemented in  `training_mlp.py` 
+
 The risk mitigation using reinforcement learning with convoloutional neural network is implemented in  `training_cnn.py` 
+
 The risk mitigation using reinforcement learning with hybrid network is implemented in  `training_hybrid.py` 
 
 # 3. Running the Risk Assessment and Mitigation (Risk Management)
