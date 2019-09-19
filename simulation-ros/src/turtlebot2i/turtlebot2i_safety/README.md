@@ -36,19 +36,10 @@ The risk mitigation can be run by executing one of the following commands:
 ```
 rosrun turtlebot2i_safety risk_mitigation_fls.py
 ```
-or
+or (replace `XXX` with either `mlp`, `cnn`, or `hybrid`)
 ```
 rosrun turtlebot2i_safety training_mlp.py
 ```
-or
-```
-rosrun turtlebot2i_safety training_cnn.py
-```
-or
-```
-rosrun turtlebot2i_safety training_hybrid.py
-```
-
 
 Alternatively, it is possible to run the launch script (this script also runs the scenegraph generator module along with the risk assessment and risk mitigation modules):
 ```
