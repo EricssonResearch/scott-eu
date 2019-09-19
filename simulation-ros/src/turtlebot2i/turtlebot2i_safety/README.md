@@ -48,7 +48,11 @@ rosrun turtlebot2i_safety training_hybrid.py
 
 Alternatively, it is possible to run the launch script (this script also run the scenegraph generator module):
 ```
-roslaunch turtlebot2i_safety turtlebot2i_safety_single.launch 
+roslaunch turtlebot2i_safety turtlebot2i_safety_fls.launch 
+```
+or 
+```
+roslaunch turtlebot2i_safety turtlebot2i_safety_train_rl.launch
 ```
 
 **The use case scenarios compatible to this package is located in the scenario folder (`scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_turtlebot2i.ttt`).**
