@@ -1,38 +1,57 @@
 # 1. Overview
 
 This package provides methods and resources related to the robot safety, specifically the risk management.
-The main components of this package are the risk assessment and the risk mitigation. Both methods are based on _fuzzy logic_ and _neuro-fuzzy_ methods.
+The main components of this package are the risk assessment and the risk mitigation. The risk management is implementing _fuzzy logic_ method and the risk mitigation is implementing _fuzzy logic_ and _reinforcement learning_ methods.
 
 
 # 2. Risk Management
 
-The risk management comprises the full pipeline to address the safety. Here safety means the injury risk associated to the human and robot collaboration.
+The risk management comprises the pipeline to address the safety. Here safety means the injury risk associated to the human and robot collaboration.
 
 * The first component of the risk management is the **risk assessment**, which is responsible for analyzing all the existing risks in the scenario and evaluate the risk level.
 
+The risk assessment rules are stored in the `assessment_rules.py`.
+
 * The second component is the **risk mitigation**, which is responsible for reducing the risk based on the risk analysis.
 
-Both risk management and mitigation is based on fuzzy logic and neuro-fuzzy.
-The **trained rules** are stored in the following files:
-
-* `assessment_rules.py` for the risk assessment.
-
-* `mitigation_rules.py` for the risk mitigation.
-
+The risk mitigation using fuzzy logic system is implemented in ´risk_mitigation_fls.py´ and the rules are stored in the `mitigation_rules.py`.
+The risk mitigation using reinforcement learning with fully connected network is implemented in  `training_mlp.py` 
+The risk mitigation using reinforcement learning with convoloutional neural network is implemented in  `training_cnn.py` 
+The risk mitigation using reinforcement learning with hybrid network is implemented in  `training_hybrid.py` 
 
 # 3. Running the Risk Assessment and Mitigation (Risk Management)
 
-The risk management can be run by executing the following:
+Before running the risk assessment and risk mitigation module, make sure the scene graph generator module is running.
+
+The risk assessment can be run by executing the following:
 ```
-rosrun turtlebot2i_safety risk_management.py
+rosrun turtlebot2i_safety risk_assessment.py
 ```
 
-Alternatively it is possible to run the launch script:
+The risk mitigation can be run by executing one of the following commands:
+```
+rosrun turtlebot2i_safety risk_mitigation_fls.py
+```
+or
+```
+rosrun turtlebot2i_safety training_mlp.py
+```
+or
+```
+rosrun turtlebot2i_safety training_cnn.py
+```
+or
+```
+rosrun turtlebot2i_safety training_hybrid.py
+```
+
+
+Alternatively it is possible to run the launch script (this script also run the scenegraph generator module):
 ```
 roslaunch turtlebot2i_safety turtlebot2i_safety_single.launch 
 ```
 
-**The use case scenarios compatible to this package is located in the scenario folder. It is also possible to use the `warehouse_turtlebot2i.ttt` located in the `turtlebot2i_description/v-rep_model` folder.**
+**The use case scenarios compatible to this package is located in the scenario folder (`scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_turtlebot2i.ttt`).**
 
 # 4. Generating Rules for Risk Assessment or Management
 
@@ -51,8 +70,23 @@ The rule number must be increased accordingly.
 
 Follow the scripts in the `Labeling_tools` folder.
 
+# 5. Training mode
 
-# 5. Safety Message
+To train the risk mitigation module using reinforcement learning, change the following variables in the file `training_XXX.py`:
+
+On ReinforceAgent initialization:
+```
+self.load_model = False
+self.load_episode = 0
+```
+
+On main:
+```
+training_mode = True
+```
+
+
+# 6. Safety Message
 
 A custom message *safety_zone_msg* that informs the size of safety zones is provided. It formed by four fields:
 
@@ -61,9 +95,3 @@ A custom message *safety_zone_msg* that informs the size of safety zones is prov
 - **warning_safety_zone_radius:** Radius size of the robot's intermediary safety zone.
 - **critical_safety_zone_radius:** Radius size of the robot's most internal safety zone.
 
-# 6. V-REP Scenarios
-
-In `scenarios` folder there are a set of v-rep scenarios to test the risk management.
-- Files with SXX.ttt: Scenario for risk management for single robot.
-- Files with MXX.ttt: Scenario for risk management for multiple robots.
-- Files with HRC_XX.ttt: Human-robot collaboration scenarios.
