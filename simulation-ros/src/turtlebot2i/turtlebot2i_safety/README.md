@@ -29,6 +29,7 @@ Before running the risk assessment and risk mitigation module, make sure the sce
 The risk assessment can be run by executing the following:
 ```
 rosrun turtlebot2i_safety risk_assessment.py
+rosrun turtlebot2i_safety zone_generation.py
 ```
 
 The risk mitigation can be run by executing one of the following commands:
@@ -49,7 +50,7 @@ rosrun turtlebot2i_safety training_hybrid.py
 ```
 
 
-Alternatively, it is possible to run the launch script (this script also run the scenegraph generator module):
+Alternatively, it is possible to run the launch script (this script also runs the scenegraph generator module along with the risk assessment and risk mitigation modules):
 ```
 roslaunch turtlebot2i_safety turtlebot2i_safety_fls.launch 
 ```
