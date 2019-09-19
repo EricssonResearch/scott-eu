@@ -46,7 +46,7 @@ rosrun turtlebot2i_safety training_hybrid.py
 ```
 
 
-Alternatively it is possible to run the launch script (this script also run the scenegraph generator module):
+Alternatively, it is possible to run the launch script (this script also run the scenegraph generator module):
 ```
 roslaunch turtlebot2i_safety turtlebot2i_safety_single.launch 
 ```
