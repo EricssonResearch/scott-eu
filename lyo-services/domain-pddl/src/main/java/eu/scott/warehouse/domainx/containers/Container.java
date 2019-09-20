@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2018  Ericsson Research and others
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package eu.scott.warehouse.domainx.containers;
 
 import java.lang.reflect.InvocationTargetException;
@@ -9,20 +25,12 @@ import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.IResource;
 import org.eclipse.lyo.oslc4j.core.model.Link;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
-import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Created on 2018-03-04
- *
- * @author Andrew Berezovskyi (andriib@kth.se)
- * @version $version-stub$
- * @since 0.0.1
- */
+
 // TODO Andrew@2018-03-04: consider codegen instances of this
 // TODO Andrew@2018-03-04: consider lazy containerisation of child properties
-// TODO Andrew@2018-03-04:
 public interface Container<R extends IResource> {
     Logger log = LoggerFactory.getLogger(Container.class);
 
@@ -48,8 +56,7 @@ public interface Container<R extends IResource> {
         }
     }
 
-    static <T extends IResource> T tryFollow(final Model m, final Link link, final Class<T> clazz)
-            throws LyoJenaModelException {
+    static <T extends IResource> T tryFollow(final Model m, final Link link, final Class<T> clazz) {
         final T resource;
         try {
             resource = JenaModelHelper.followLink(m, link, clazz);

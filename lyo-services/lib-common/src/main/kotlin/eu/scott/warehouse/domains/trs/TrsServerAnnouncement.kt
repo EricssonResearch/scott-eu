@@ -7,13 +7,6 @@ import org.eclipse.lyo.oslc4j.core.model.Occurs
 import org.eclipse.lyo.oslc4j.core.model.ValueType
 import java.net.URI
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   0.0.1
- */
-
 // TODO I would love just to have @OslcNamespace mandatory and have the rest inferred
 @OslcNamespace(TrsXConstants.NS)
 @OslcName("TrsServerAnnouncement")

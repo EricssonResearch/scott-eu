@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -93,14 +89,13 @@ public class EitherType
 {
     // Start of user code attributeAnnotation:member
     // End of user code
-    private HashSet<Link> member = new HashSet<Link>();
+    private Set<Link> member = new HashSet<Link>();
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
     public EitherType()
-           throws URISyntaxException
     {
         super();
     
@@ -109,14 +104,12 @@ public class EitherType
     }
     
     public EitherType(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -143,38 +136,10 @@ public class EitherType
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -217,53 +182,6 @@ public class EitherType
     
         // Start of user code setterFinalize:member
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String memberToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:memberToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"member\">member: </LABEL>";
-    
-        // Start of user code "Mid:memberToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:memberToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String memberToHtml()
-    {
-        String s = "";
-    
-        // Start of user code membertoHtml_mid
-        // End of user code
-    
-        try {
-            s = s + "<ul>";
-            for(Link next : member) {
-                s = s + "<li>";
-                s = s + (new PrimitiveType (next.getValue())).toHtml(false);
-                s = s + "</li>";
-            }
-            s = s + "</ul>";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code membertoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

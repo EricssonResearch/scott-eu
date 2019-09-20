@@ -5,7 +5,7 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  * and the Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
@@ -27,33 +27,43 @@
 
 package se.ericsson.cf.scott.sandbox.twin.servlet;
 
-import eu.scott.warehouse.domains.RdfsDomainConstants;
-import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
-import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.ws.rs.core.UriBuilder;
-import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+
+import javax.xml.namespace.QName;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
 import org.eclipse.lyo.oslc4j.core.model.Publisher;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderFactory;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
+
+import eu.scott.warehouse.domains.RdfsDomainConstants;
+import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.scott.ScottDomainConstants;
+import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
+import se.ericsson.cf.scott.sandbox.twin.services.PlanExecutionService;
+import se.ericsson.cf.scott.sandbox.twin.services.ExecutionReportsService;
+
+import static se.ericsson.cf.scott.sandbox.twin.servlet.QNames.trs;
 
 // Start of user code imports
+
 // End of user code
 
 public class TwinsServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        TwinsServiceProviderService1.class
+        PlanExecutionService.class, ExecutionReportsService.class
     };
 
     private TwinsServiceProvidersFactory()
@@ -61,70 +71,7 @@ public class TwinsServiceProvidersFactory
         super();
     }
 
-    public static ServiceProvider createServiceProvider(final String baseURI, final String title, final String description, final Publisher publisher, final Map<String,Object> parameterValueMap)
-           throws OslcCoreApplicationException, URISyntaxException
-    {
-        final ServiceProvider serviceProvider = ServiceProviderFactory.createServiceProvider(baseURI,
-                                                    null,
-                                                    title,
-                                                    description,
-                                                    publisher,
-                                                    RESOURCE_CLASSES,
-                                                    parameterValueMap);
-        URI detailsURIs[] = {new URI(baseURI)};
-        serviceProvider.setDetails(detailsURIs);
-
-        final PrefixDefinition[] prefixDefinitions =
-        {
-            new PrefixDefinition(OslcConstants.DCTERMS_NAMESPACE_PREFIX, new URI(OslcConstants.DCTERMS_NAMESPACE)),
-            new PrefixDefinition(OslcConstants.OSLC_CORE_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_CORE_NAMESPACE)),
-            new PrefixDefinition(OslcConstants.OSLC_DATA_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_DATA_NAMESPACE)),
-            new PrefixDefinition(OslcConstants.RDF_NAMESPACE_PREFIX, new URI(OslcConstants.RDF_NAMESPACE)),
-            new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
-            new PrefixDefinition(RdfsDomainConstants.RDFS_NAMSPACE_PREFIX, new URI(RdfsDomainConstants.RDFS_NAMSPACE))
-,
-            new PrefixDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, new URI(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE))
-,
-            new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE))
-        };
-
-        serviceProvider.setPrefixDefinitions(prefixDefinitions);
-
-        return serviceProvider;
-    }
-
-    public static ServiceProvider createTwinsServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo)
-            throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
-        String basePath = OSLC4JUtils.getServletURI();
-        String identifier = twinsServiceProviderIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
-
-        String serviceProviderName = serviceProviderInfo.name;
-        String title = String.format("Service Provider '%s'", serviceProviderName);
-        String description = String.format("%s (id: %s; kind: %s)",
-            "A Service Provider for Twins",
-            identifier,
-            "Twin SP");
-        Publisher publisher = null;
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put("twinKind", serviceProviderInfo.twinKind);
-
-        parameterMap.put("twinId", serviceProviderInfo.twinId);
-
-        final ServiceProvider serviceProvider = createServiceProvider(
-            basePath, title, description, publisher, parameterMap);
-        final URI serviceProviderURI = constructTwinsServiceProviderURI(
-            serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
-
-        serviceProvider.setAbout(serviceProviderURI);
-        serviceProvider.setIdentifier(identifier);
-        serviceProvider.setCreated(new Date());
-        serviceProvider.setDetails(new URI[] {serviceProviderURI});
-
-
-        return serviceProvider;
-    }
-
-    private static URI constructTwinsServiceProviderURI(final String twinKind, final String twinId)
+    public static URI constructURI(final String twinKind, final String twinId)
     {
         String basePath = OSLC4JUtils.getServletURI();
         Map<String, Object> pathParameters = new HashMap<String, Object>();
@@ -137,8 +84,75 @@ public class TwinsServiceProvidersFactory
         return builder.path(instanceURI).buildFromMap(pathParameters);
     }
 
-    static String twinsServiceProviderIdentifier(final String twinKind, final String twinId)
+    public static URI constructURI(final TwinsServiceProviderInfo serviceProviderInfo)
     {
-        return "/" + twinKind+"/" + twinId;
+        return constructURI(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
     }
+
+    public static String constructIdentifier(final String twinKind, final String twinId)
+    {
+        return twinKind + "/" + twinId;
+    }
+
+    public static String constructIdentifier(final TwinsServiceProviderInfo serviceProviderInfo)
+    {
+        return constructIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
+    }
+
+    public static ServiceProvider createServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo)
+            throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
+        // Start of user code init
+        // End of user code
+        URI serviceProviderURI = constructURI(serviceProviderInfo);
+        String identifier = constructIdentifier(serviceProviderInfo);
+        String basePath = OSLC4JUtils.getServletURI();
+        String title = serviceProviderInfo.name;
+        String description = String.format("%s (id: %s; kind: %s)",
+            "A Service Provider for Twins",
+            identifier,
+            "Twin SP");
+        Publisher publisher = null;
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("twinKind", serviceProviderInfo.twinKind);
+
+        parameterMap.put("twinId", serviceProviderInfo.twinId);
+
+        ServiceProvider serviceProvider = ServiceProviderFactory.createServiceProvider(basePath,
+                                                    "",
+                                                    title,
+                                                    description,
+                                                    publisher,
+                                                    RESOURCE_CLASSES,
+                                                    parameterMap);
+
+        final PrefixDefinition[] prefixDefinitions =
+        {
+            new PrefixDefinition(OslcConstants.DCTERMS_NAMESPACE_PREFIX, new URI(OslcConstants.DCTERMS_NAMESPACE)),
+            new PrefixDefinition(OslcConstants.OSLC_CORE_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_CORE_NAMESPACE)),
+            new PrefixDefinition(OslcConstants.OSLC_DATA_NAMESPACE_PREFIX, new URI(OslcConstants.OSLC_DATA_NAMESPACE)),
+            new PrefixDefinition(OslcConstants.RDF_NAMESPACE_PREFIX, new URI(OslcConstants.RDF_NAMESPACE)),
+            new PrefixDefinition(OslcConstants.RDFS_NAMESPACE_PREFIX, new URI(OslcConstants.RDFS_NAMESPACE)),
+            new PrefixDefinition(RdfsDomainConstants.RDFS_NAMSPACE_PREFIX, new URI(RdfsDomainConstants.RDFS_NAMSPACE))
+,
+            new PrefixDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, new URI(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE))
+,
+            new PrefixDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE_PREFIX, new URI(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE))
+,
+            new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE)),
+            QNames.getTrsPrefix(), QNames.getTrsxPrefix()
+        };
+        serviceProvider.setPrefixDefinitions(prefixDefinitions);
+
+        serviceProvider.setAbout(serviceProviderURI);
+        serviceProvider.setIdentifier(identifier);
+        serviceProvider.setCreated(new Date());
+        serviceProvider.setDetails(new URI[] {serviceProviderURI});
+
+        // Start of user code finalize
+        final Map<QName, Object> ext = serviceProvider.getExtendedProperties();
+        ext.put(trs("trackedResourceSet"), UriBuilder.fromUri(serviceProviderURI).path("trs").build());
+        // End of user code
+        return serviceProvider;
+    }
+
 }

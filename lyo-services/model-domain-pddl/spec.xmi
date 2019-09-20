@@ -1,96 +1,105 @@
 <?xml version="1.0" encoding="ASCII"?>
 <oslc4j_ai:Specification xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:oslc4j_ai="http://org.eclipse.lyo/oslc4j/adaptorInterface">
-  <domainSpecifications name="SCOTT PDDL 2.1 subset spec" namespaceURI="http://ontology.cf.ericsson.net/pddl/" namespacePrefix="//@domainPrefixes.0">
-    <resources name="Plan" resourceProperties="//@domainSpecifications.0/@resourceProperties.0 //@domainSpecifications.0/@resourceProperties.1 //@domainSpecifications.0/@resourceProperties.2"/>
-    <resources name="Parameter" resourceProperties="//@domainSpecifications.0/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0 //@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="When" resourceProperties="//@domainSpecifications.0/@resourceProperties.5 //@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="Imply" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
-    <resources name="PrimitiveType" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="Action" resourceProperties="//@domainSpecifications.0/@resourceProperties.7 //@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.0/@resourceProperties.8 //@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="Not" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
-    <resources name="EitherType" resourceProperties="//@domainSpecifications.0/@resourceProperties.9"/>
-    <resources name="Constant" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="ForAll" resourceProperties="//@domainSpecifications.0/@resourceProperties.5 //@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="Step" resourceProperties="//@domainSpecifications.0/@resourceProperties.10 //@domainSpecifications.0/@resourceProperties.11 //@domainSpecifications.0/@resourceProperties.12 //@domainSpecifications.0/@resourceProperties.13 //@domainSpecifications.0/@resourceProperties.4"/>
-    <resources name="Domain" resourceProperties="//@domainSpecifications.0/@resourceProperties.10 //@domainSpecifications.0/@resourceProperties.14 //@domainSpecifications.0/@resourceProperties.15 //@domainSpecifications.0/@resourceProperties.16 //@domainSpecifications.0/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="Quantifier" resourceProperties="//@domainSpecifications.0/@resourceProperties.5 //@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="Object" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="BinaryOperator" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
-    <resources name="Problem" resourceProperties="//@domainSpecifications.0/@resourceProperties.17 //@domainSpecifications.0/@resourceProperties.18 //@domainSpecifications.0/@resourceProperties.19 //@domainSpecifications.0/@resourceProperties.20 //@domainSpecifications.0/@resourceProperties.21 //@domainSpecifications.0/@resourceProperties.22 //@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="Function" resourceProperties="//@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="FluentMinus" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
-    <resources name="AssignmentOperator" resourceProperties="//@domainSpecifications.0/@resourceProperties.23 //@domainSpecifications.0/@resourceProperties.6"/>
-    <resources name="BinaryComparator" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
-    <resources name="Predicate" resourceProperties="//@domainSpecifications.0/@resourceProperties.6 //@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="Or" resourceProperties="//@domainSpecifications.0/@resourceProperties.5"/>
-    <resources name="PlanExecutionResult" resourceProperties="//@domainSpecifications.0/@resourceProperties.24 //@domainSpecifications.0/@resourceProperties.25 //@domainSpecifications.0/@resourceProperties.26"/>
+  <domainSpecifications name="SCOTT PDDL 2.1 subset spec" namespaceURI="http://ontology.cf.ericsson.net/pddl/" namespacePrefix="//@domainPrefixes[name='pddl']">
+    <resources name="Plan" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='cost'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='step'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='time']"/>
+    <resources name="Parameter" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='type'] //@domainSpecifications[name='RDFS']/@resourceProperties[name='label'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='order']"/>
+    <resources name="When" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='parameter']"/>
+    <resources name="Imply" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
+    <resources name="PrimitiveType" resourceProperties="//@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="Action" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='effect'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='parameter'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='precondition'] //@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="Not" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
+    <resources name="EitherType" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='member']"/>
+    <resources name="Constant" resourceProperties="//@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="ForAll" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='parameter']"/>
+    <resources name="Step" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='action'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='adding'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='deleting'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='updating'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='order']"/>
+    <resources name="Domain" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='action'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='constant'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='function'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='predicate'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='type'] //@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="Quantifier" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='parameter']"/>
+    <resources name="Object" resourceProperties="//@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="BinaryOperator" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
+    <resources name="Problem" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='domain'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='goal'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='init'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='maximize'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='minimize'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='object'] //@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="Function" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='parameter'] //@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="FluentMinus" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
+    <resources name="AssignmentOperator" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='parameter']"/>
+    <resources name="BinaryComparator" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
+    <resources name="Predicate" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='parameter'] //@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="Or" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
+    <resources name="PlanExecutionResult" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='plan'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='isSuccessful'] //@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='durationSeconds']"/>
     <resourceProperties name="cost" occurs="zeroOrOne" valueType="Float" description="Cost of the plan according to metric."/>
-    <resourceProperties name="step" occurs="zeroOrMany" valueType="LocalResource" range="//@domainSpecifications.0/@resources.10" description="Step of the plan containing an action."/>
+    <resourceProperties name="step" occurs="zeroOrMany" valueType="LocalResource" range="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='Step']" description="Step of the plan containing an action."/>
     <resourceProperties name="time" occurs="zeroOrOne" valueType="Float" description="Time in seconds it took to produce the plan."/>
-    <resourceProperties name="type" valueType="Resource" range="//@domainSpecifications.0/@resources.7" description="Parameter type."/>
+    <resourceProperties name="type" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='EitherType']" description="Parameter type."/>
     <resourceProperties name="order" valueType="Integer" description="Parameter order."/>
     <resourceProperties name="argument" occurs="oneOrMany" valueType="Resource" description="Conditional effect."/>
     <resourceProperties name="parameter" valueType="Resource" description="Condition (same as precondition)."/>
     <resourceProperties name="effect" valueType="Resource" description="Action effect describing state modification."/>
     <resourceProperties name="precondition" valueType="Resource" description="Action precondition that must be fulfilled to enable it."/>
-    <resourceProperties name="member" occurs="oneOrMany" valueType="Resource" range="//@domainSpecifications.0/@resources.4" description="Type member (primitive type)."/>
-    <resourceProperties name="action" valueType="Resource" range="//@domainSpecifications.0/@resources.5" description="Action of the plan step."/>
+    <resourceProperties name="member" occurs="oneOrMany" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='PrimitiveType']" description="Type member (primitive type)."/>
+    <resourceProperties name="action" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='Action']" description="Action of the plan step."/>
     <resourceProperties name="adding" occurs="zeroOrMany" valueType="Resource" description="Step additions."/>
     <resourceProperties name="deleting" occurs="zeroOrMany" valueType="Resource" description="Step deletions."/>
     <resourceProperties name="updating" occurs="zeroOrMany" valueType="Resource" description="Step updates."/>
-    <resourceProperties name="constant" occurs="zeroOrMany" valueType="Resource" range="//@domainSpecifications.0/@resources.8" description="Domain constants."/>
+    <resourceProperties name="constant" occurs="zeroOrMany" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='Constant']" description="Domain constants."/>
     <resourceProperties name="function" occurs="zeroOrMany" valueType="Resource" description="Domain functions."/>
     <resourceProperties name="predicate" occurs="zeroOrMany" valueType="Resource" description="Domain predicates."/>
-    <resourceProperties name="domain" valueType="Resource" range="//@domainSpecifications.0/@resources.11" description="Problem planning domain."/>
+    <resourceProperties name="domain" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='Domain']" description="Problem planning domain."/>
     <resourceProperties name="goal" valueType="Resource" representation="inline" description="Problem goal."/>
     <resourceProperties name="init" occurs="zeroOrMany" valueType="Resource" representation="inline" description="Problem init."/>
     <resourceProperties name="maximize" occurs="zeroOrOne" valueType="Resource" description="Maximization metric."/>
     <resourceProperties name="minimize" occurs="zeroOrOne" valueType="Resource" description="Minimization metric."/>
-    <resourceProperties name="object" occurs="zeroOrMany" valueType="Resource" range="//@domainSpecifications.0/@resources.13" description="Problem objects."/>
+    <resourceProperties name="object" occurs="zeroOrMany" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='Object']" description="Problem objects."/>
     <resourceProperties name="argument" description="Assignment operator argument (fluent)."/>
-    <resourceProperties name="plan" valueType="Resource" range="//@domainSpecifications.0/@resources.0"/>
+    <resourceProperties name="plan" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='Plan']"/>
     <resourceProperties name="isSuccessful"/>
     <resourceProperties name="durationSeconds" valueType="Double"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.pddl" javaFilesPath=""/>
   </domainSpecifications>
-  <domainSpecifications name="Blocksworld Domain" namespaceURI="http://ontology.cf.ericsson.net/pddl_example/" namespacePrefix="//@domainPrefixes.1">
-    <resources name="location" extends="//@domainSpecifications.0/@resources.4"/>
-    <resources name="block" extends="//@domainSpecifications.0/@resources.4"/>
-    <resources name="location-or-block" extends="//@domainSpecifications.0/@resources.7"/>
-    <resources name="on" resourceProperties="//@domainSpecifications.1/@resourceProperties.0 //@domainSpecifications.1/@resourceProperties.1"/>
-    <resources name="move" extends="//@domainSpecifications.0/@resources.5" resourceProperties="//@domainSpecifications.1/@resourceProperties.2 //@domainSpecifications.1/@resourceProperties.3 //@domainSpecifications.1/@resourceProperties.4"/>
+  <domainSpecifications name="Blocksworld Domain" namespaceURI="http://ontology.cf.ericsson.net/pddl_example/" namespacePrefix="//@domainPrefixes[name='bworld']">
+    <resources name="location" extends="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='PrimitiveType']"/>
+    <resources name="block" extends="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='PrimitiveType']"/>
+    <resources name="location-or-block" extends="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='EitherType']"/>
+    <resources name="on" resourceProperties="//@domainSpecifications[name='Blocksworld%20Domain']/@resourceProperties[name='on-x'] //@domainSpecifications[name='Blocksworld%20Domain']/@resourceProperties[name='on-y']"/>
+    <resources name="move" extends="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='Action']" resourceProperties="//@domainSpecifications[name='Blocksworld%20Domain']/@resourceProperties[name='move-b'] //@domainSpecifications[name='Blocksworld%20Domain']/@resourceProperties[name='move-x'] //@domainSpecifications[name='Blocksworld%20Domain']/@resourceProperties[name='move-y']"/>
     <resourceProperties name="on-x" valueType="Resource"/>
     <resourceProperties name="on-y" valueType="Resource"/>
-    <resourceProperties name="move-b" valueType="Resource" range="//@domainSpecifications.1/@resources.1"/>
-    <resourceProperties name="move-x" valueType="Resource" range="//@domainSpecifications.1/@resources.2"/>
-    <resourceProperties name="move-y" valueType="Resource" range="//@domainSpecifications.1/@resources.2"/>
+    <resourceProperties name="move-b" valueType="Resource" range="//@domainSpecifications[name='Blocksworld%20Domain']/@resources[name='block']"/>
+    <resourceProperties name="move-x" valueType="Resource" range="//@domainSpecifications[name='Blocksworld%20Domain']/@resources[name='location-or-block']"/>
+    <resourceProperties name="move-y" valueType="Resource" range="//@domainSpecifications[name='Blocksworld%20Domain']/@resources[name='location-or-block']"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.blocksworld" javaFilesPath=""/>
   </domainSpecifications>
-  <domainSpecifications name="Domain3" namespaceURI="http://your.organisation.domain/nsp3#" namespacePrefix="//@domainPrefixes.2"/>
-  <domainSpecifications name="RDFS" namespaceURI="http://www.w3.org/2000/01/rdf-schema#" namespacePrefix="//@domainPrefixes.3">
+  <domainSpecifications name="Domain3" namespaceURI="http://your.organisation.domain/nsp3#" namespacePrefix="//@domainPrefixes[name='nsp3']"/>
+  <domainSpecifications name="RDFS" namespaceURI="http://www.w3.org/2000/01/rdf-schema#" namespacePrefix="//@domainPrefixes[name='rdfs']">
     <resourceProperties name="label" valueType="String" description="Parameter name."/>
   </domainSpecifications>
-  <domainSpecifications name="SCOTT Warehouse" namespaceURI="http://ontology.cf.ericsson.net/ns/scott-warehouse#" namespacePrefix="//@domainPrefixes.4">
-    <resources name="Coord" resourceProperties="//@domainSpecifications.3/@resourceProperties.0"/>
-    <resources name="Box" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1 //@domainSpecifications.4/@resourceProperties.2 //@domainSpecifications.4/@resourceProperties.3 //@domainSpecifications.4/@resourceProperties.4 //@domainSpecifications.4/@resourceProperties.5"/>
-    <resources name="Shelf" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1"/>
-    <resources name="ConveyorBelt" resourceProperties="//@domainSpecifications.4/@resourceProperties.0 //@domainSpecifications.4/@resourceProperties.1"/>
+  <domainSpecifications name="SCOTT Warehouse" namespaceURI="http://ontology.cf.ericsson.net/ns/scott-warehouse/" namespacePrefix="//@domainPrefixes[name='scott']">
+    <resources name="Coord" resourceProperties="//@domainSpecifications[name='RDFS']/@resourceProperties[name='label']"/>
+    <resources name="Box" resourceProperties="//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='at-x'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='at-y'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='on-belt'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='on-shelf'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='on-robot'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='is-free']"/>
+    <resources name="Shelf" resourceProperties="//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='at-x'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='at-y']"/>
+    <resources name="ConveyorBelt" resourceProperties="//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='at-x'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='at-y']"/>
     <resources name="Robot"/>
-    <resourceProperties name="at-x" valueType="Resource" range="//@domainSpecifications.4/@resources.0"/>
-    <resourceProperties name="at-y" valueType="Resource" range="//@domainSpecifications.4/@resources.0"/>
-    <resourceProperties name="on-belt" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications.4/@resources.3"/>
-    <resourceProperties name="on-shelf" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications.4/@resources.2"/>
-    <resourceProperties name="on-robot" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications.4/@resources.4"/>
+    <resources name="drop-belt" extends="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
+    <resources name="move-to-wp" extends="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
+    <resources name="pick-shelf" extends="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
+    <resources name="ExecutableAction"/>
+    <resources name="ActionExecutionReport" resourceProperties="//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionSuccess'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='action'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionBegin'] //@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
+    <resourceProperties name="at-x" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Coord']"/>
+    <resourceProperties name="at-y" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Coord']"/>
+    <resourceProperties name="on-belt" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ConveyorBelt']"/>
+    <resourceProperties name="on-shelf" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Shelf']"/>
+    <resourceProperties name="on-robot" occurs="zeroOrOne" valueType="Resource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Robot']"/>
     <resourceProperties name="is-free"/>
+    <resourceProperties name="executionSuccess"/>
+    <resourceProperties name="action" valueType="LocalResource" range="//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
+    <resourceProperties name="executionBegin" valueType="DateTime"/>
+    <resourceProperties name="executionEnd" valueType="DateTime"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.scott"/>
   </domainSpecifications>
-  <domainSpecifications name="Twins Domain" namespaceURI="http://ontology.cf.ericsson.net/ns/twins#" namespacePrefix="//@domainPrefixes.5">
-    <resources name="RegistrationMessage" resourceProperties="//@domainSpecifications.5/@resourceProperties.1 //@domainSpecifications.5/@resourceProperties.2 //@domainSpecifications.5/@resourceProperties.3 //@domainSpecifications.3/@resourceProperties.0 //@domainSpecifications.5/@resourceProperties.10"/>
-    <resources name="PlanExecutionRequest" resourceProperties="//@domainSpecifications.0/@resourceProperties.24"/>
-    <resources name="DeviceRegistrationMessage" resourceProperties="//@domainSpecifications.5/@resourceProperties.0 //@domainSpecifications.5/@resourceProperties.4 //@domainSpecifications.5/@resourceProperties.1"/>
-    <resources name="Waypoint" resourceProperties="//@domainSpecifications.5/@resourceProperties.5 //@domainSpecifications.5/@resourceProperties.6"/>
-    <resources name="TwinStatus" resourceProperties="//@domainSpecifications.5/@resourceProperties.7 //@domainSpecifications.5/@resourceProperties.8 //@domainSpecifications.5/@resourceProperties.4"/>
-    <resources name="RFC3339Timestamp" resourceProperties="//@domainSpecifications.5/@resourceProperties.9"/>
+  <domainSpecifications name="Twins Domain" namespaceURI="http://ontology.cf.ericsson.net/ns/twins#" namespacePrefix="//@domainPrefixes[name='twins']">
+    <resources name="RegistrationMessage" resourceProperties="//@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='deregister'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='trsUri'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='trsMqttTopic'] //@domainSpecifications[name='RDFS']/@resourceProperties[name='label'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='serviceProvider'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='twinId']"/>
+    <resources name="PlanExecutionRequest" resourceProperties="//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='plan']"/>
+    <resources name="DeviceRegistrationMessage" resourceProperties="//@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='twinType'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='twinId'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='deregister']"/>
+    <resources name="Waypoint" resourceProperties="//@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='waypointX'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='waypointY']"/>
+    <resources name="TwinStatus" resourceProperties="//@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='position'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='timestamp'] //@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='twinId']"/>
+    <resources name="RFC3339Timestamp" resourceProperties="//@domainSpecifications[name='Twins%20Domain']/@resourceProperties[name='formattedTimestamp']"/>
     <resourceProperties name="twinType" valueType="String"/>
     <resourceProperties name="deregister"/>
     <resourceProperties name="trsUri" valueType="URI"/>
@@ -98,8 +107,8 @@
     <resourceProperties name="twinId" valueType="String"/>
     <resourceProperties name="waypointX" valueType="Integer"/>
     <resourceProperties name="waypointY" valueType="Integer"/>
-    <resourceProperties name="position" valueType="LocalResource" representation="inline" range="//@domainSpecifications.5/@resources.3"/>
-    <resourceProperties name="timestamp" valueType="LocalResource" representation="inline" range="//@domainSpecifications.5/@resources.5"/>
+    <resourceProperties name="position" valueType="LocalResource" representation="inline" range="//@domainSpecifications[name='Twins%20Domain']/@resources[name='Waypoint']"/>
+    <resourceProperties name="timestamp" valueType="LocalResource" representation="inline" range="//@domainSpecifications[name='Twins%20Domain']/@resources[name='RFC3339Timestamp']"/>
     <resourceProperties name="formattedTimestamp" valueType="String"/>
     <resourceProperties name="serviceProvider" readOnly="true" valueType="Resource" representation="reference"/>
     <generationSetting javaClassPackageName="eu.scott.warehouse.domains.twins" javaFilesPath=""/>

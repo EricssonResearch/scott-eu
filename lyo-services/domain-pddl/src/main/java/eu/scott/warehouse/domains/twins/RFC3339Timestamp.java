@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -99,7 +95,6 @@ public class RFC3339Timestamp
     // Start of user code classMethods
     // End of user code
     public RFC3339Timestamp()
-           throws URISyntaxException
     {
         super();
     
@@ -108,14 +103,12 @@ public class RFC3339Timestamp
     }
     
     public RFC3339Timestamp(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -142,38 +135,10 @@ public class RFC3339Timestamp
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -205,53 +170,6 @@ public class RFC3339Timestamp
     
         // Start of user code setterFinalize:formattedTimestamp
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String formattedTimestampToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:formattedTimestampToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"formattedTimestamp\">formattedTimestamp: </LABEL>";
-    
-        // Start of user code "Mid:formattedTimestampToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"formattedTimestamp\" type=\"text\" style=\"width: 400px\" id=\"formattedTimestamp\" >";
-        // Start of user code "Finalize:formattedTimestampToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String formattedTimestampToHtml()
-    {
-        String s = "";
-    
-        // Start of user code formattedTimestamptoHtml_mid
-        // End of user code
-    
-        try {
-            if (formattedTimestamp == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + formattedTimestamp.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code formattedTimestamptoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

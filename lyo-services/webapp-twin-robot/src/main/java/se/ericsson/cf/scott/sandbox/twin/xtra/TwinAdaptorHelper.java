@@ -1,9 +1,7 @@
 package se.ericsson.cf.scott.sandbox.twin.xtra;
 
-import com.google.common.base.Strings;
-import eu.scott.warehouse.lib.MqttClientBuilder;
-import eu.scott.warehouse.lib.MqttTopics;
-import eu.scott.warehouse.lib.TrsMqttGateway;
+import eu.scott.warehouse.lib.MqttGatewayBuilder;
+import eu.scott.warehouse.lib.RdfMqttGateway;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +11,6 @@ import org.apache.jena.sparql.ARQException;
 import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.store.Store;
 import org.eclipse.lyo.store.StoreFactory;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -25,33 +22,21 @@ import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsMqttClientManager;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinAckRegistrationAgent;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TwinChangeHistories;
+import se.ericsson.cf.scott.sandbox.twin.xtra.repository.ExecutionReportRepository;
+import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsMqttPlanManager;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since TODO
- */
 public class TwinAdaptorHelper {
     private final static Logger log = LoggerFactory.getLogger(TwinAdaptorHelper.class);
     private final static UUID uuid = UUID.randomUUID();
-    static String trsTopic;
-    static TrsMqttClientManager trsClientManager;
-    static Store store;
-    static TrsMqttGateway mqttGateway;
-    static TwinChangeHistories changeHistories;
+    private static TrsMqttPlanManager trsClientManager;
+    private static Store store;
+    private static RdfMqttGateway mqttGateway;
     private static ServletContext servletContext;
     private static ServiceProviderRepository serviceProviderRepository;
+    private static ExecutionReportRepository executionReportRepository;
 
-    public static TrsMqttGateway getMqttGateway() {
+    public static RdfMqttGateway getMqttGateway() {
         return mqttGateway;
-    }
-
-    public static void setMqttGateway(final TrsMqttGateway mqttGateway) {
-        TwinAdaptorHelper.mqttGateway = mqttGateway;
     }
 
     @NotNull
@@ -59,31 +44,12 @@ public class TwinAdaptorHelper {
         return "twn-" + uuid.toString();
     }
 
-    public static String getTrsTopic() {
-        if (Strings.isNullOrEmpty(trsTopic)) {
-            log.warn("The TRS topic was requested before it was set");
-        }
-        return trsTopic;
-    }
-
-    public static void setTrsTopic(String trsTopic) {
-        TwinAdaptorHelper.trsTopic = trsTopic;
-    }
-
-    public static TrsMqttClientManager getTrsClientManager() {
+    public static TrsMqttPlanManager getTrsClientManager() {
         return trsClientManager;
     }
 
-    public static void setTrsClientManager(TrsMqttClientManager trsClientManager) {
+    public static void setTrsClientManager(TrsMqttPlanManager trsClientManager) {
         TwinAdaptorHelper.trsClientManager = trsClientManager;
-    }
-
-    public static ChangeHistories getChangeHistories() {
-        return changeHistories;
-    }
-
-    public static void setChangeHistories(final TwinChangeHistories changeHistories) {
-        TwinAdaptorHelper.changeHistories = changeHistories;
     }
 
     public static ServletContext getServletContext() {
@@ -102,10 +68,19 @@ public class TwinAdaptorHelper {
     // TODO Andrew@2019-01-23: move to some other singleton, ideally use DI
     public static ServiceProviderRepository getServiceProviderRepository() {
         if (serviceProviderRepository == null) {
+            // TODO Andrew@2019-07-16: thread safety
             serviceProviderRepository = new ServiceProviderRepositoryStoreImpl(getStore(), getTwinsGraphURI());
         }
         return serviceProviderRepository;
     }
+
+    public static ExecutionReportRepository getExecutionReportRepository() {
+        if (executionReportRepository == null) {
+            executionReportRepository = new ExecutionReportRepository(getStore());
+        }
+        return executionReportRepository;
+    }
+
 
     public static String p(final String s) {
         return getServletContext().getInitParameter(parameterFQDN(s));
@@ -116,24 +91,33 @@ public class TwinAdaptorHelper {
         final OslcClient client = new OslcClient();
         // TODO Andrew@2019-01-29: remove hardcoded URI
         return new TwinRegistrationClient(
-            client, "http://sandbox-whc:8080/services/service2/registrationMessages/register");
+            client, "http://whc.svc:8080/services/service2/registrationMessages/register");
     }
 
     public static void initTrsClient() {
-        final String mqttBroker = p("trs.mqtt.broker");
         // TODO Andrew@2018-07-31: remove non-gateway based code
+        final MqttClient mqttClient = getMqttClient();
+        final TrsMqttPlanManager trsClientManager = new TrsMqttPlanManager(mqttClient);
+        setTrsClientManager(trsClientManager);
+        new Thread(trsClientManager::connectAndSubscribeToPlans).run();
+    }
+
+    @NotNull
+    public static MqttClient getMqttClient() {
+        if (mqttGateway == null) {
+            initMqttGateway();
+        }
+        return mqttGateway.getMqttClient();
+    }
+
+    private static void initMqttGateway() {
         try {
+            final String mqttBroker = p("trs.mqtt.broker");
             log.debug("Connecting to the MQTT broker: {}", mqttBroker);
-            mqttGateway = new MqttClientBuilder().withBroker(mqttBroker)
-                                                 .withId(getTwinUUID())
-                                                 .withRegistration(new TwinAckRegistrationAgent(MqttTopics.WHC_PLANS))
-                                                 .build();
-            final MqttClient mqttClient = mqttGateway.getMqttClient();
-            final TrsMqttClientManager trsClientManager = new TrsMqttClientManager(mqttClient);
-            setTrsClientManager(trsClientManager);
-            new Thread(trsClientManager::connectAndSubscribeToPlans).run();
+            mqttGateway = new MqttGatewayBuilder().withBroker(mqttBroker).withId(getTwinUUID()).build();
         } catch (MqttException e) {
-            log.error("Failed to initialise the MQTT gateway", e);
+            log.error("Cannot connect to the MQTT broker");
+            throw new RuntimeException(e);
         }
     }
 
@@ -147,7 +131,7 @@ public class TwinAdaptorHelper {
         return URI.create("http://scott.example.com/g/twinSPs");
     }
 
-    private static Store getStore() {
+    public static Store getStore() {
 //        return StoreFactory.inMemory();
         if (store == null) {
             log.warn("Lyo Store was not initialised properly");
@@ -168,7 +152,7 @@ public class TwinAdaptorHelper {
     static ServiceProvider registerProvider(final TwinsServiceProviderInfo info) {
         try {
             log.info("Registering provider: {}", info);
-            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createTwinsServiceProvider(info);
+            final ServiceProvider robotSP = TwinsServiceProvidersFactory.createServiceProvider(info);
             ServiceProviderCatalogSingleton.registerTwinsServiceProvider(robotSP);
             return robotSP;
         } catch (URISyntaxException | OslcCoreApplicationException e) {

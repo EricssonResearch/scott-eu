@@ -3,11 +3,6 @@ package se.ericsson.cf.scott.sandbox.twin.xtra;
 import java.util.Collection;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 
-/**
- * TODO
- *
- * @since   TODO
- */
 public interface ServiceProviderRepository {
     Collection<ServiceProvider> getServiceProviders();
 

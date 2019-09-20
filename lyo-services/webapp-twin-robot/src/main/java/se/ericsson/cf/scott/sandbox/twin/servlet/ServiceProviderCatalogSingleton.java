@@ -28,28 +28,33 @@
 package se.ericsson.cf.scott.sandbox.twin.servlet;
 
 import java.net.URI;
-import java.util.Collection;
-import java.util.Map;
+import java.net.URISyntaxException;
+import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
+
 import se.ericsson.cf.scott.sandbox.twin.TwinManager;
-import se.ericsson.cf.scott.sandbox.twin.xtra.ServiceProviderRepository;
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
+import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
 
 // Start of user code imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.Collection;
+import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
+import se.ericsson.cf.scott.sandbox.twin.xtra.ServiceProviderRepository;
 // End of user code
 
 /**
@@ -66,9 +71,11 @@ import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
  */
 public class ServiceProviderCatalogSingleton
 {
-    private final static Logger log = LoggerFactory.getLogger(ServiceProviderCatalogSingleton.class);
     private static final ServiceProviderCatalog serviceProviderCatalog;
-    private static final Map<String, ServiceProvider> serviceProviders = new TreeMap<>();
+    private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
+    // Start of user code class_attributes
+    private final static Logger log = LoggerFactory.getLogger(ServiceProviderCatalogSingleton.class);
+    // End of user code
 
     static {
         serviceProviderCatalog = new ServiceProviderCatalog();
@@ -78,75 +85,7 @@ public class ServiceProviderCatalogSingleton
         serviceProviderCatalog.setDescription("Service Provider Catalog");
     }
 
-    private ServiceProviderCatalogSingleton()
-    {
-        super();
-    }
-
-
-    public static URI getUri()
-    {
-        return serviceProviderCatalog.getAbout();
-    }
-
-    public static ServiceProviderCatalog getServiceProviderCatalog(HttpServletRequest httpServletRequest)
-    {
-        initServiceProviders(httpServletRequest);
-        return serviceProviderCatalog;
-    }
-
-    public static ServiceProvider [] getServiceProviders(HttpServletRequest httpServletRequest)
-    {
-        synchronized(serviceProviders)
-        {
-            initServiceProviders(httpServletRequest);
-            return serviceProviders.values().toArray(new ServiceProvider[0]);
-        }
-    }
-
-    public static boolean containsTwinsServiceProvider(final String twinKind, final String twinId) {
-        final String id = TwinsServiceProvidersFactory.twinsServiceProviderIdentifier(twinKind, twinId);
-        return containsServiceProviderById(id);
-    }
-
-    public static boolean containsIndependentServiceProvider(final String serviceProviderId) {
-        final String id = IndependentServiceProvidersFactory.independentServiceProviderIdentifier(serviceProviderId);
-        return containsServiceProviderById(id);
-    }
-
-    public static boolean containsServiceProvider(final ServiceProvider sp) {
-        return serviceProviders.containsKey(sp.getIdentifier());
-    }
-
-    public static boolean containsServiceProviderById(final String id) {
-        return serviceProviders.containsKey(id);
-    }
-
-    public static ServiceProvider getTwinsServiceProvider(HttpServletRequest httpServletRequest, final String twinKind, final String twinId)
-    {
-        ServiceProvider serviceProvider;
-
-        synchronized(serviceProviders)
-        {
-            String identifier = TwinsServiceProvidersFactory.twinsServiceProviderIdentifier(twinKind, twinId);
-            serviceProvider = serviceProviders.get(identifier);
-
-            //One retry refreshing the service providers
-            if (serviceProvider == null)
-            {
-                getServiceProviders(httpServletRequest);
-                serviceProvider = serviceProviders.get(identifier);
-            }
-        }
-
-        if (serviceProvider != null)
-        {
-            return serviceProvider;
-        }
-
-        throw new WebApplicationException(Status.NOT_FOUND);
-    }
-
+    // Start of user code class_methods
     public static void registerTwinsServiceProvider(final ServiceProvider serviceProvider) {
         synchronized (serviceProviders) {
             registerTwinsServiceProviderNoSync(serviceProvider);
@@ -217,26 +156,137 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
-    public static void deregisterTwinServiceProvider(final String twinKind, final String twinId) {
-        final String id = TwinsServiceProvidersFactory.twinsServiceProviderIdentifier(
-            twinKind, twinId);
-        deregisterServiceProvider(id);
+    public static void registerIndependentServiceProvider(final ServiceProvider serviceProvider) {
+        synchronized (serviceProviders) {
+            registerIndependentServiceProviderNoSync(serviceProvider);
+        }
+    }
+    // End of user code
+
+    private ServiceProviderCatalogSingleton()
+    {
+        super();
     }
 
-    public static void deregisterIndependentServiceProvider(final String serviceProviderId) {
-        final String id = IndependentServiceProvidersFactory.independentServiceProviderIdentifier(
-            serviceProviderId);
-        deregisterServiceProvider(id);
+
+    public static URI getUri()
+    {
+        return serviceProviderCatalog.getAbout();
+    }
+
+    public static ServiceProviderCatalog getServiceProviderCatalog(HttpServletRequest httpServletRequest)
+    {
+        initServiceProviders(httpServletRequest);
+        return serviceProviderCatalog;
+    }
+
+    public static ServiceProvider [] getServiceProviders(HttpServletRequest httpServletRequest)
+    {
+        synchronized(serviceProviders)
+        {
+            initServiceProviders(httpServletRequest);
+            return serviceProviders.values().toArray(new ServiceProvider[ serviceProviders.size()]);
+        }
+    }
+
+    public static boolean containsServiceProvider(final String identifier) {
+        return serviceProviders.containsKey(identifier);
+    }
+
+    public static boolean containsServiceProvider(final ServiceProvider serviceProvider) {
+        return containsServiceProvider(serviceProvider.getIdentifier());
+    }
+
+    // This version is for self-registration and thus package-protected
+    public static ServiceProvider register(final ServiceProvider serviceProvider)
+                                            throws URISyntaxException
+    {
+        if (containsServiceProvider(serviceProvider)) {
+            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", serviceProvider.getIdentifier()));
+        }
+        synchronized(serviceProviders)
+        {
+            if (containsServiceProvider(serviceProvider)) {
+                throw new IllegalArgumentException(String.format("The SP '%s' was already registered", serviceProvider.getIdentifier()));
+            }
+            return registerNoSync(serviceProvider);
+        }
+    }
+
+    /**
+    * Register a service provider with the OSLC catalog
+    *
+    */
+    private static ServiceProvider registerNoSync(final ServiceProvider serviceProvider)
+    {
+        final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
+        serviceProviderCatalog.addServiceProvider(serviceProvider);
+        serviceProviderCatalog.addDomains(serviceProviderDomains);
+        serviceProviders.put(serviceProvider.getIdentifier(), serviceProvider);
+        return serviceProvider;
+    }
+
+    public static void deregister(final ServiceProvider serviceProvider)
+    {
+        synchronized(serviceProviders)
+        {
+            final ServiceProvider deregisteredServiceProvider =
+                serviceProviders.remove(serviceProvider.getIdentifier());
+
+            if (deregisteredServiceProvider != null)
+            {
+                final SortedSet<URI> remainingDomains = new TreeSet<URI>();
+
+                for (final ServiceProvider remainingServiceProvider : serviceProviders.values())
+                {
+                    remainingDomains.addAll(getServiceProviderDomains(remainingServiceProvider));
+                }
+
+                final SortedSet<URI> removedServiceProviderDomains = getServiceProviderDomains(deregisteredServiceProvider);
+
+                removedServiceProviderDomains.removeAll(remainingDomains);
+                serviceProviderCatalog.removeDomains(removedServiceProviderDomains);
+                serviceProviderCatalog.removeServiceProvider(deregisteredServiceProvider);
+            }
+            else
+            {
+                throw new WebApplicationException(Status.NOT_FOUND);
+            }
+        }
     }
 
 
+    public static ServiceProvider getTwinsServiceProvider(HttpServletRequest httpServletRequest, final String twinKind, final String twinId)
+    {
+        ServiceProvider serviceProvider;
+
+        synchronized(serviceProviders)
+        {
+            String identifier = TwinsServiceProvidersFactory.constructIdentifier(twinKind, twinId);
+            serviceProvider = serviceProviders.get(identifier);
+
+            //One retry refreshing the service providers
+            if (serviceProvider == null)
+            {
+                getServiceProviders(httpServletRequest);
+                serviceProvider = serviceProviders.get(identifier);
+            }
+        }
+
+        if (serviceProvider != null)
+        {
+            return serviceProvider;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
     public static ServiceProvider getIndependentServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
     {
         ServiceProvider serviceProvider;
 
         synchronized(serviceProviders)
         {
-            String identifier = IndependentServiceProvidersFactory.independentServiceProviderIdentifier(serviceProviderId);
+            String identifier = IndependentServiceProvidersFactory.constructIdentifier(serviceProviderId);
             serviceProvider = serviceProviders.get(identifier);
 
             //One retry refreshing the service providers
@@ -255,18 +305,9 @@ public class ServiceProviderCatalogSingleton
         throw new WebApplicationException(Status.NOT_FOUND);
     }
 
-    public static void registerIndependentServiceProvider(final ServiceProvider serviceProvider) {
-        synchronized (serviceProviders) {
-            registerIndependentServiceProviderNoSync(serviceProvider);
-        }
-    }
-
-
-    // TODO Andrew@2019-01-23: move to the Core
-    // TODO Andrew@2019-01-23: use unsorted Set
     private static SortedSet<URI> getServiceProviderDomains(final ServiceProvider serviceProvider)
     {
-        final SortedSet<URI> domains = new TreeSet<>();
+        final SortedSet<URI> domains = new TreeSet<URI>();
 
         if (serviceProvider!=null) {
             final Service [] services = serviceProvider.getServices();
@@ -289,8 +330,6 @@ public class ServiceProviderCatalogSingleton
     */
     protected static void initServiceProviders (HttpServletRequest httpServletRequest)
     {
-//        throw new UnsupportedOperationException("This is method is being removed");
-
         try {
             // Start of user code initServiceProviders
             log.trace("User code in initServiceProviders START");
@@ -300,30 +339,25 @@ public class ServiceProviderCatalogSingleton
             log.trace("User code in initServiceProviders END");
             // End of user code
 
-
             TwinsServiceProviderInfo [] twinsServiceProviderInfos = TwinManager.getTwinsServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (TwinsServiceProviderInfo serviceProviderInfo : twinsServiceProviderInfos) {
-                if (!containsTwinsServiceProvider(serviceProviderInfo.twinKind, serviceProviderInfo.twinId)) {
-                    ServiceProvider aServiceProvider = TwinsServiceProvidersFactory.createTwinsServiceProvider(serviceProviderInfo);
-                    registerTwinsServiceProvider(aServiceProvider);
+                if (!containsServiceProvider(TwinsServiceProvidersFactory.constructIdentifier(serviceProviderInfo))) {
+                    ServiceProvider aServiceProvider = TwinsServiceProvidersFactory.createServiceProvider(serviceProviderInfo);
+                    register(aServiceProvider);
                 }
             }
             IndependentServiceProviderInfo [] independentServiceProviderInfos = TwinManager.getIndependentServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (IndependentServiceProviderInfo serviceProviderInfo : independentServiceProviderInfos) {
-                if (!containsIndependentServiceProvider(serviceProviderInfo.serviceProviderId)) {
-                    ServiceProvider aServiceProvider = IndependentServiceProvidersFactory.createIndependentServiceProvider(serviceProviderInfo);
-                    registerIndependentServiceProvider(aServiceProvider);
+                if (!containsServiceProvider(IndependentServiceProvidersFactory.constructIdentifier(serviceProviderInfo))) {
+                    ServiceProvider aServiceProvider = IndependentServiceProvidersFactory.createServiceProvider(serviceProviderInfo);
+                    register(aServiceProvider);
                 }
             }
-            log.trace("initServiceProviders COMPLETE");
-
         } catch (Exception e) {
             e.printStackTrace();
             throw new WebApplicationException(e,Status.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
-

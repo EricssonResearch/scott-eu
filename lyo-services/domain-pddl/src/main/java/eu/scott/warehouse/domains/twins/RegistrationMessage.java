@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -105,14 +101,16 @@ public class RegistrationMessage
     private String label;
     // Start of user code attributeAnnotation:serviceProvider
     // End of user code
-    private Link serviceProvider = new Link();
+    private Link serviceProvider;
+    // Start of user code attributeAnnotation:twinId
+    // End of user code
+    private String twinId;
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
     public RegistrationMessage()
-           throws URISyntaxException
     {
         super();
     
@@ -121,14 +119,12 @@ public class RegistrationMessage
     }
     
     public RegistrationMessage(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -155,38 +151,10 @@ public class RegistrationMessage
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -264,6 +232,20 @@ public class RegistrationMessage
         return serviceProvider;
     }
     
+    // Start of user code getterAnnotation:twinId
+    // End of user code
+    @OslcName("twinId")
+    @OslcPropertyDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE + "twinId")
+    @OslcOccurs(Occurs.ExactlyOne)
+    @OslcValueType(ValueType.String)
+    @OslcReadOnly(false)
+    public String getTwinId()
+    {
+        // Start of user code getterInit:twinId
+        // End of user code
+        return twinId;
+    }
+    
     
     // Start of user code setterAnnotation:deregister
     // End of user code
@@ -325,230 +307,16 @@ public class RegistrationMessage
         // End of user code
     }
     
-    
-    @Deprecated
-    static public String deregisterToHtmlForCreation (final HttpServletRequest httpServletRequest)
+    // Start of user code setterAnnotation:twinId
+    // End of user code
+    public void setTwinId(final String twinId )
     {
-        String s = "";
-    
-        // Start of user code "Init:deregisterToHtmlForCreation(...)"
+        // Start of user code setterInit:twinId
         // End of user code
+        this.twinId = twinId;
     
-        s = s + "<label for=\"deregister\">deregister: </LABEL>";
-    
-        // Start of user code "Mid:deregisterToHtmlForCreation(...)"
+        // Start of user code setterFinalize:twinId
         // End of user code
-    
-        s= s + "<input name=\"deregister\" type=\"radio\" value=\"true\">True<input name=\"deregister\" type=\"radio\" value=\"false\">False";
-        // Start of user code "Finalize:deregisterToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String trsUriToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:trsUriToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"trsUri\">trsUri: </LABEL>";
-    
-        // Start of user code "Mid:trsUriToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"trsUri\" type=\"text\" style=\"width: 400px\" id=\"trsUri\" >";
-        // Start of user code "Finalize:trsUriToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String trsMqttTopicToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:trsMqttTopicToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"trsMqttTopic\">trsMqttTopic: </LABEL>";
-    
-        // Start of user code "Mid:trsMqttTopicToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"trsMqttTopic\" type=\"text\" style=\"width: 400px\" id=\"trsMqttTopic\" >";
-        // Start of user code "Finalize:trsMqttTopicToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String labelToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"label\">label: </LABEL>";
-    
-        // Start of user code "Mid:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"label\" type=\"text\" style=\"width: 400px\" id=\"label\" >";
-        // Start of user code "Finalize:labelToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String serviceProviderToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:serviceProviderToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"serviceProvider\">serviceProvider: </LABEL>";
-    
-        // Start of user code "Mid:serviceProviderToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:serviceProviderToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String deregisterToHtml()
-    {
-        String s = "";
-    
-        // Start of user code deregistertoHtml_mid
-        // End of user code
-    
-        try {
-            if (deregister == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + deregister.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code deregistertoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String trsUriToHtml()
-    {
-        String s = "";
-    
-        // Start of user code trsUritoHtml_mid
-        // End of user code
-    
-        try {
-            if (trsUri == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + trsUri.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code trsUritoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String trsMqttTopicToHtml()
-    {
-        String s = "";
-    
-        // Start of user code trsMqttTopictoHtml_mid
-        // End of user code
-    
-        try {
-            if (trsMqttTopic == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + trsMqttTopic.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code trsMqttTopictoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String labelToHtml()
-    {
-        String s = "";
-    
-        // Start of user code labeltoHtml_mid
-        // End of user code
-    
-        try {
-            if (label == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + label.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code labeltoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String serviceProviderToHtml()
-    {
-        String s = "";
-    
-        // Start of user code serviceProvidertoHtml_mid
-        // End of user code
-    
-        try {
-            if ((serviceProvider == null) || (serviceProvider.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + serviceProvider.getValue().toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code serviceProvidertoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

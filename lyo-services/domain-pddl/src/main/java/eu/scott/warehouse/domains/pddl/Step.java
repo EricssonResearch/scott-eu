@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -93,16 +89,16 @@ public class Step
 {
     // Start of user code attributeAnnotation:action
     // End of user code
-    private Link action = new Link();
+    private Link action;
     // Start of user code attributeAnnotation:adding
     // End of user code
-    private HashSet<Link> adding = new HashSet<Link>();
+    private Set<Link> adding = new HashSet<Link>();
     // Start of user code attributeAnnotation:deleting
     // End of user code
-    private HashSet<Link> deleting = new HashSet<Link>();
+    private Set<Link> deleting = new HashSet<Link>();
     // Start of user code attributeAnnotation:updating
     // End of user code
-    private HashSet<Link> updating = new HashSet<Link>();
+    private Set<Link> updating = new HashSet<Link>();
     // Start of user code attributeAnnotation:order
     // End of user code
     private Integer order;
@@ -112,7 +108,6 @@ public class Step
     // Start of user code classMethods
     // End of user code
     public Step()
-           throws URISyntaxException
     {
         super();
     
@@ -121,14 +116,12 @@ public class Step
     }
     
     public Step(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -155,41 +148,10 @@ public class Step
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // FIXME Andrew@2018-02-23: remove getAbout().toString() or make it String.valueOf(about);
-        result = "Step{" + "action=" + action + ", adding=" + adding + ", deleting=" + deleting +
-                ", updating=" + updating + ", order=" + order + '}';
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -358,247 +320,6 @@ public class Step
     
         // Start of user code setterFinalize:order
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String actionToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:actionToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"action\">action: </LABEL>";
-    
-        // Start of user code "Mid:actionToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:actionToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String addingToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:addingToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"adding\">adding: </LABEL>";
-    
-        // Start of user code "Mid:addingToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:addingToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String deletingToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:deletingToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"deleting\">deleting: </LABEL>";
-    
-        // Start of user code "Mid:deletingToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:deletingToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String updatingToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:updatingToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"updating\">updating: </LABEL>";
-    
-        // Start of user code "Mid:updatingToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:updatingToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String orderToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:orderToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"order\">order: </LABEL>";
-    
-        // Start of user code "Mid:orderToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"order\" type=\"text\" style=\"width: 400px\" id=\"order\" >";
-        // Start of user code "Finalize:orderToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String actionToHtml()
-    {
-        String s = "";
-    
-        // Start of user code actiontoHtml_mid
-        // End of user code
-    
-        try {
-            if ((action == null) || (action.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Action (action.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code actiontoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String addingToHtml()
-    {
-        String s = "";
-    
-        // Start of user code addingtoHtml_mid
-        // End of user code
-    
-        try {
-            s = s + "<ul>";
-            for(Link next : adding) {
-                s = s + "<li>";
-                if (next.getValue() == null) {
-                    s= s + "<em>null</em>";
-                }
-                else {
-                    s = s + "<a href=\"" + next.getValue().toString() + "\">" + next.getValue().toString() + "</a>";
-                }
-                s = s + "</li>";
-            }
-            s = s + "</ul>";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code addingtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String deletingToHtml()
-    {
-        String s = "";
-    
-        // Start of user code deletingtoHtml_mid
-        // End of user code
-    
-        try {
-            s = s + "<ul>";
-            for(Link next : deleting) {
-                s = s + "<li>";
-                if (next.getValue() == null) {
-                    s= s + "<em>null</em>";
-                }
-                else {
-                    s = s + "<a href=\"" + next.getValue().toString() + "\">" + next.getValue().toString() + "</a>";
-                }
-                s = s + "</li>";
-            }
-            s = s + "</ul>";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code deletingtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String updatingToHtml()
-    {
-        String s = "";
-    
-        // Start of user code updatingtoHtml_mid
-        // End of user code
-    
-        try {
-            s = s + "<ul>";
-            for(Link next : updating) {
-                s = s + "<li>";
-                if (next.getValue() == null) {
-                    s= s + "<em>null</em>";
-                }
-                else {
-                    s = s + "<a href=\"" + next.getValue().toString() + "\">" + next.getValue().toString() + "</a>";
-                }
-                s = s + "</li>";
-            }
-            s = s + "</ul>";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code updatingtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String orderToHtml()
-    {
-        String s = "";
-    
-        // Start of user code ordertoHtml_mid
-        // End of user code
-    
-        try {
-            if (order == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + order.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code ordertoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

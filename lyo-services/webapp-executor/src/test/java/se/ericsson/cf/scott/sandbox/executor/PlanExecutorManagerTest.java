@@ -5,12 +5,6 @@ import se.ericsson.cf.scott.sandbox.executor.xtra.ExecutorServiceHelper;
 
 import static org.assertj.core.api.Assertions.*;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
 public class PlanExecutorManagerTest {
 
     @Test

@@ -47,7 +47,7 @@ ServiceProviderCatalog catalog = (ServiceProviderCatalog)request.getAttribute("c
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Service Provider Catalog - RobotTwin OSLC Adapter</title>
+    <title>Service Provider Catalog - Twin OSLC Adapter</title>
 
     <link href="<c:url value="/static/css/bootstrap-4.0.0-beta.min.css"/>" rel="stylesheet">
     <link href="<c:url value="/static/css/adaptor.css"/>" rel="stylesheet">
@@ -60,13 +60,13 @@ ServiceProviderCatalog catalog = (ServiceProviderCatalog)request.getAttribute("c
   <body>
   <nav class="navbar sticky-top navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand" href="<c:url value="/services/catalog/singleton"/>">RobotTwin</a>
+      <a class="navbar-brand" href="<c:url value="/services/catalog/singleton"/>">Twin</a>
     </div>
   </nav>
 
   <div class="container">
     <div class="page-header">
-      <h1>RobotTwin Service Provider Catalogue</h1>
+      <h1>Twin Service Provider Catalogue</h1>
     </div>
 
   	<h2>Service Providers</h2>

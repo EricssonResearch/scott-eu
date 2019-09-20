@@ -10,12 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import static se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper.p;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
+
 public class StoreManager {
     private final static Logger log = LoggerFactory.getLogger(StoreManager.class);
 

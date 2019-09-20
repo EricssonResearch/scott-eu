@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -105,7 +101,6 @@ public class DeviceRegistrationMessage
     // Start of user code classMethods
     // End of user code
     public DeviceRegistrationMessage()
-           throws URISyntaxException
     {
         super();
     
@@ -114,14 +109,12 @@ public class DeviceRegistrationMessage
     }
     
     public DeviceRegistrationMessage(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -148,38 +141,10 @@ public class DeviceRegistrationMessage
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        // End of user code
-    
-        return result;
-    }
-    
-    @Deprecated
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    @Deprecated
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -263,143 +228,6 @@ public class DeviceRegistrationMessage
     
         // Start of user code setterFinalize:deregister
         // End of user code
-    }
-    
-    
-    @Deprecated
-    static public String twinTypeToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:twinTypeToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"twinType\">twinType: </LABEL>";
-    
-        // Start of user code "Mid:twinTypeToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"twinType\" type=\"text\" style=\"width: 400px\" id=\"twinType\" >";
-        // Start of user code "Finalize:twinTypeToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String twinIdToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:twinIdToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"twinId\">twinId: </LABEL>";
-    
-        // Start of user code "Mid:twinIdToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"twinId\" type=\"text\" style=\"width: 400px\" id=\"twinId\" >";
-        // Start of user code "Finalize:twinIdToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    static public String deregisterToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:deregisterToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"deregister\">deregister: </LABEL>";
-    
-        // Start of user code "Mid:deregisterToHtmlForCreation(...)"
-        // End of user code
-    
-        s= s + "<input name=\"deregister\" type=\"radio\" value=\"true\">True<input name=\"deregister\" type=\"radio\" value=\"false\">False";
-        // Start of user code "Finalize:deregisterToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    @Deprecated
-    public String twinTypeToHtml()
-    {
-        String s = "";
-    
-        // Start of user code twinTypetoHtml_mid
-        // End of user code
-    
-        try {
-            if (twinType == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + twinType.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code twinTypetoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String twinIdToHtml()
-    {
-        String s = "";
-    
-        // Start of user code twinIdtoHtml_mid
-        // End of user code
-    
-        try {
-            if (twinId == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + twinId.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code twinIdtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    @Deprecated
-    public String deregisterToHtml()
-    {
-        String s = "";
-    
-        // Start of user code deregistertoHtml_mid
-        // End of user code
-    
-        try {
-            if (deregister == null) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + deregister.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code deregistertoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

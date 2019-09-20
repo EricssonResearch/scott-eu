@@ -24,20 +24,27 @@
 
 package se.ericsson.cf.scott.sandbox.executor;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
+import java.util.List;
+
+import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
+import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
+import se.ericsson.cf.scott.sandbox.executor.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.executor.ServiceProviderInfo;
 
 
 // Start of user code imports
 import java.util.UUID;
+import javax.servlet.ServletContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import eu.scott.warehouse.lib.TrsMqttGateway;
+import eu.scott.warehouse.lib.RdfMqttGateway;
 import se.ericsson.cf.scott.sandbox.executor.xtra.ExecutorServiceHelper;
 import se.ericsson.cf.scott.sandbox.executor.xtra.mqtt.MqttManager;
 // End of user code
@@ -50,13 +57,14 @@ public class PlanExecutorManager {
     // Start of user code class_attributes
     private final static Logger log = LoggerFactory.getLogger(PlanExecutorManager.class);
     private static String adaptorId = "exec-" + UUID.randomUUID();
-    // TODO Andrew@2019-01-22: init 
+    // FIXME Andrew@2019-01-22: init
     private static String mqttBroker;
-    private static TrsMqttGateway mqttGateway;
+    private static RdfMqttGateway mqttGateway;
     private static ServletContext servletContext;
     private static MqttClient mqttClient;
     // End of user code
-
+    
+    
     // Start of user code class_methods
     public static ServletContext getServletContext() {
         return servletContext;
@@ -79,7 +87,7 @@ public class PlanExecutorManager {
         // End of user code
     }
 
-    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
+    public static void contextDestroyServletListener(ServletContextEvent servletContextEvent) 
     {
         
         // Start of user code contextDestroyed
@@ -96,7 +104,7 @@ public class PlanExecutorManager {
     }
 
     public static ServiceProviderInfo[] getServiceProviderInfos(HttpServletRequest httpServletRequest)
-            throws InterruptedException {
+    {
         ServiceProviderInfo[] serviceProviderInfos = {};
         
         // Start of user code "ServiceProviderInfo[] getServiceProviderInfos(...)"
@@ -104,4 +112,12 @@ public class PlanExecutorManager {
         // End of user code
         return serviceProviderInfos;
     }
+
+
+
+
+
+
+
+
 }

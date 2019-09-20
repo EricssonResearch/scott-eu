@@ -1,493 +1,103 @@
+/*
+ * Copyright (c) 2019 Ericsson Research and others
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
-import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import eu.scott.warehouse.domains.blocksworld.Block
-import eu.scott.warehouse.domains.pddl.Or
+import eu.scott.warehouse.domains.pddl.Action
+import eu.scott.warehouse.domains.pddl.Plan
 import eu.scott.warehouse.domains.pddl.PrimitiveType
-import eu.scott.warehouse.domains.pddl.Problem
-import eu.scott.warehouse.lib.OslcRdfHelper
-import eu.scott.warehouse.lib.OslcRdfHelper.OSLC
-import eu.scott.warehouse.lib.OslcRdfHelper.PDDL
-import eu.scott.warehouse.lib.OslcRdfHelper.RDFS
-import eu.scott.warehouse.lib.OslcRdfHelper.ns
-import eu.scott.warehouse.lib.OslcRdfHelper.nsSh
-import eu.scott.warehouse.lib.OslcRdfHelper.u
-import eu.scott.warehouse.lib.link
+import eu.scott.warehouse.domains.pddl.Step
+import eu.scott.warehouse.domains.scott.DropBelt
+import eu.scott.warehouse.domains.scott.MoveToWp
+import eu.scott.warehouse.domains.scott.PickShelf
+import eu.scott.warehouse.lib.InstanceWithResources
+import eu.scott.warehouse.lib.OslcHelper
+import eu.scott.warehouse.lib.OslcHelpers
+import eu.scott.warehouse.lib.OslcHelpers.OSLC
+import eu.scott.warehouse.lib.OslcHelpers.PDDL
+import eu.scott.warehouse.lib.OslcHelpers.RDFS
+import eu.scott.warehouse.lib.OslcHelpers.ns
+import eu.scott.warehouse.lib.OslcHelpers.nsSh
+import eu.scott.warehouse.lib.RawResource
+import eu.scott.warehouse.lib.RdfHelpers
 import eu.scott.warehouse.lib.setLabel
 import eu.scott.warehouse.lib.setProperty
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.ByteArrayEntity
+import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.riot.Lang
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource
+import org.apache.jena.riot.RDFDataMgr
+import org.apache.jena.riot.RDFFormat
 import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
-import org.eclipse.lyo.oslc4j.core.model.IResource
-import org.eclipse.lyo.oslc4j.core.model.Link
-import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
-import java.math.BigInteger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper
+import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.net.URI
+import java.util.ArrayList
 import java.util.UUID
+import javax.xml.namespace.QName
 
-data class InstanceWithResources<T : IResource>(val instance: T,
-                                                val resources: Collection<IResource>)
+@Suppress("MemberVisibilityCanBePrivate")
+class PlanRequestHelper(private val oslcHelper: OslcHelper) {
+    val log: Logger = LoggerFactory.getLogger(PlanRequestHelper::class.java)
 
-data class InstanceMultiWithResources<T : IResource>(val instance: Collection<T>,
-                                                val resources: Collection<IResource>)
+    // just an alias for typing
+    private fun u(uuid: UUID): URI = oslcHelper.u(uuid)
+    private fun u(uri: String): URI = oslcHelper.u(uri)
 
-class PlanRequestHelper {
-    // FIXME Andrew@2018-08-27: fix support for # in the URIs
-    private val base = URI.create("http://ontology.cf.ericsson.net/ns/scott-warehouse/")
-
-    init {
-        OslcRdfHelper.setBase(base)
-    }
-
-    fun getPlanRequestComplete(): Model {
-        val domain = genDomain()
-        val problem = genProblem()
-        problem.add(domain)
-        return problem
-    }
-
-    fun genDomain(): Model {
-        val ttl = """
-@prefix :      <http://ontology.cf.ericsson.net/ns/scott-warehouse/> .
-@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh:    <http://www.w3.org/ns/shacl#> .
-@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix pddl:  <http://ontology.cf.ericsson.net/pddl/> .
-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix oslc:  <http://open-services.net/ns/core#> .
-
-# DOMAIN
-
-:scott-warehouse  a         pddl:Domain ;
-        rdfs:label          "scott-warehouse" ;
-        pddl:type           :Box, :Robot, :ConveyorBelt, :Shelf, :Coord;
-        pddl:predicate      :robot-at, :on-belt, :on-shelf, :on-robot, :free-robot, :shelf-at, :belt-at;
-        pddl:action         :pick-shelf, :move-to, :drop-belt ;
-        oslc:instanceShape  pddl:DomainShape .
-
-# TYPES
-
-:Box    a                   rdfs:Class ;
-        rdfs:label          "box" ;
-        rdfs:subClassOf     pddl:PrimitiveType ;
-        oslc:instanceShape  pddl:PrimitiveTypeShape .
-
-:Robot  a                   rdfs:Class ;
-        rdfs:label          "robot" ;
-        rdfs:subClassOf     pddl:PrimitiveType ;
-        oslc:instanceShape  pddl:PrimitiveTypeShape .
-
-:ConveyorBelt  a           rdfs:Class ;
-        rdfs:label          "conveyor-belt" ;
-        rdfs:subClassOf     pddl:PrimitiveType ;
-        oslc:instanceShape  pddl:PrimitiveTypeShape .
-
-:Shelf  a           rdfs:Class ;
-        rdfs:label          "shelf" ;
-        rdfs:subClassOf     pddl:PrimitiveType ;
-        oslc:instanceShape  pddl:PrimitiveTypeShape .
-
-:Coord  a           rdfs:Class ;
-        rdfs:label          "coord" ;
-        rdfs:subClassOf     pddl:PrimitiveType ;
-        oslc:instanceShape  pddl:PrimitiveTypeShape .
-
-# PREDICATES
-
-:robot-at  a                rdfs:Class ;
-        rdfs:label          "robot-at" ;
-        rdfs:subClassOf     pddl:Predicate ;
-        pddl:parameter      :robot-at-rb, :robot-at-x, :robot-at-y ;
-        oslc:instanceShape  pddl:PredicateShape .
-
-:robot-at-rb  a             pddl:Parameter ;
-        rdfs:label          "rb" ;
-        pddl:type           :Robot ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-:robot-at-x  a             pddl:Parameter ;
-        rdfs:label          "x" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-:robot-at-y  a             pddl:Parameter ;
-        rdfs:label          "y" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            3 .
-
-:on-belt  a                   rdfs:Class ;
-        rdfs:label          "on-belt" ;
-        rdfs:subClassOf     pddl:Predicate ;
-        pddl:parameter      :on-belt-b, :on-belt-cb;
-        oslc:instanceShape  pddl:PredicateShape .
-
-:on-belt-b  a             pddl:Parameter ;
-        rdfs:label          "b" ;
-        pddl:type           :Box ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-:on-belt-cb  a             pddl:Parameter ;
-        rdfs:label          "cb" ;
-        pddl:type           :ConveyorBelt ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-:on-shelf  a                   rdfs:Class ;
-        rdfs:label          "on-shelf" ;
-        rdfs:subClassOf     pddl:Predicate ;
-        pddl:parameter      :on-shelf-b, :on-shelf-sh ;
-        oslc:instanceShape  pddl:PredicateShape .
-
-:on-shelf-b  a             pddl:Parameter ;
-        rdfs:label          "b" ;
-        pddl:type           :Box ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-:on-shelf-sh  a             pddl:Parameter ;
-        rdfs:label          "sh" ;
-        pddl:type           :Shelf ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-:on-robot  a                   rdfs:Class ;
-        rdfs:label          "on-robot" ;
-        rdfs:subClassOf     pddl:Predicate ;
-        pddl:parameter      :on-robot-b, :on-robot-rb ;
-        oslc:instanceShape  pddl:PredicateShape .
-
-:on-robot-b  a             pddl:Parameter ;
-        rdfs:label          "b" ;
-        pddl:type           :Box ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-:on-robot-rb  a             pddl:Parameter ;
-        rdfs:label          "rb" ;
-        pddl:type           :Robot ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-
-:free-robot  a                   rdfs:Class ;
-        rdfs:label          "free-robot" ;
-        rdfs:subClassOf     pddl:Predicate ;
-        pddl:parameter      :free-robot-rb ;
-        oslc:instanceShape  pddl:PredicateShape .
-
-:free-robot-rb  a             pddl:Parameter ;
-        rdfs:label          "rb" ;
-        pddl:type           :Robot ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-
-:shelf-at  a                   rdfs:Class ;
-        rdfs:label          "shelf-at" ;
-        rdfs:subClassOf     pddl:Predicate ;
-        pddl:parameter      :shelf-at-sh, :shelf-at-x, :shelf-at-y ;
-        oslc:instanceShape  pddl:PredicateShape .
-
-:shelf-at-sh  a             pddl:Parameter ;
-        rdfs:label          "sh" ;
-        pddl:type           :Shelf ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-:shelf-at-x  a             pddl:Parameter ;
-        rdfs:label          "x" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-:shelf-at-y  a             pddl:Parameter ;
-        rdfs:label          "y" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            3 .
-
-:belt-at  a                   rdfs:Class ;
-        rdfs:label          "belt-at" ;
-        rdfs:subClassOf     pddl:Predicate ;
-        pddl:parameter      :belt-at-cb, :belt-at-x, :belt-at-y ;
-        oslc:instanceShape  pddl:PredicateShape .
-
-:belt-at-cb  a             pddl:Parameter ;
-        rdfs:label          "cb" ;
-        pddl:type           :ConveyorBelt ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order           1 .
-
-:belt-at-x  a             pddl:Parameter ;
-        rdfs:label          "x" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-:belt-at-y  a             pddl:Parameter ;
-        rdfs:label          "y" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            3 .
-
-# ACTIONS
-
-
-:move-to   a                   rdfs:Class ;
-        oslc:instanceShape  pddl:ActionShape ;
-        rdfs:label          "move-to" ;
-        rdfs:subClassOf     pddl:Action ;
-        pddl:parameter      :move-to-rb, :move-to-x1, :move-to-y1, :move-to-x2, :move-to-y2 ;
-        pddl:precondition   [ a              pddl:And ;
-                              pddl:argument  [ a         :robot-at ;
-                                               :robot-at-rb :move-to-rb;
-                                               :robot-at-x :move-to-x1;
-                                               :robot-at-y :move-to-y1 ] ;
-                            ] ;
-        pddl:effect   [ a  pddl:And ;
-                        pddl:argument  [ a         :robot-at ;
-                                         :robot-at-rb :move-to-rb;
-                                         :robot-at-x :move-to-x2;
-                                         :robot-at-y :move-to-y2 ] ;
-                      ] .
-
-:move-to-rb  a             pddl:Parameter ;
-        rdfs:label          "rb" ;
-        pddl:type           :Robot ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-:move-to-x1  a             pddl:Parameter ;
-        rdfs:label          "x1" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-:move-to-y1  a             pddl:Parameter ;
-        rdfs:label          "y1" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            3 .
-
-:move-to-x2  a             pddl:Parameter ;
-        rdfs:label          "x2" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            4 .
-
-:move-to-y2  a             pddl:Parameter ;
-        rdfs:label          "y2" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            5 .
-
-:pick-shelf   a                   rdfs:Class ;
-        oslc:instanceShape  pddl:ActionShape ;
-        rdfs:subClassOf     pddl:Action ;
-        rdfs:label          "pick-shelf" ;
-        pddl:parameter      :pick-shelf-rb, :pick-shelf-b, :pick-shelf-sh, :pick-shelf-x, :pick-shelf-y ;
-        pddl:precondition   [ a              pddl:And ;
-                              pddl:argument  [ a         :on-shelf ;
-                                              :on-shelf-b :pick-shelf-b;
-                                              :on-shelf-sh :pick-shelf-sh ] ;
-                             pddl:argument  [ a         :shelf-at ;
-                                              :shelf-at-sh :pick-shelf-sh;
-                                              :shelf-at-x :pick-shelf-x;
-                                              :shelf-at-y :pick-shelf-y ] ;
-                              pddl:argument  [ a         :robot-at ;
-                                               :robot-at-rb :pick-shelf-rb;
-                                               :robot-at-x :pick-shelf-x;
-                                               :robot-at-y :pick-shelf-y ] ;
-                              pddl:argument  [ a         :free-robot ;
-                                               :free-robot-rb :pick-shelf-rb ] ;
-                            ] ;
-        pddl:effect   [ a  pddl:And ;
-                        pddl:argument  [ a  :on-robot ;
-                                         :on-robot-b :pick-shelf-b;
-                                         :on-robot-rb :pick-shelf-rb ] ;
-                        pddl:argument  [ a pddl:Not ;
-                                         pddl:argument [ a         :on-shelf ;
-                                                          :on-shelf-b :pick-shelf-b;
-                                                          :on-shelf-sh :pick-shelf-sh ] ];
-                        pddl:argument  [ a pddl:Not ;
-                                         pddl:argument [ a         :free-robot ;
-                                                          :free-robot-rb :pick-shelf-rb ] ] ;
-                      ] .
-
-
-:pick-shelf-rb  a             pddl:Parameter ;
-        rdfs:label          "rb" ;
-        pddl:type           :Robot ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-:pick-shelf-b  a             pddl:Parameter ;
-        rdfs:label          "b" ;
-        pddl:type           :Box ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-:pick-shelf-sh  a             pddl:Parameter ;
-        rdfs:label          "sh" ;
-        pddl:type           :Shelf ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            3 .
-
-:pick-shelf-x  a             pddl:Parameter ;
-        rdfs:label          "x" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            4 .
-
-:pick-shelf-y  a             pddl:Parameter ;
-        rdfs:label          "y" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            5 .
-
-:drop-belt   a                   rdfs:Class ;
-        oslc:instanceShape  pddl:ActionShape ;
-        rdfs:label          "drop-belt" ;
-        rdfs:subClassOf     pddl:Action ;
-        pddl:parameter      :drop-belt-rb, :drop-belt-b, :drop-belt-cb, :drop-belt-x, :drop-belt-y ;
-        pddl:precondition   [ a              pddl:And ;
-                              pddl:argument  [ a  :on-robot ;
-                                               :on-robot-b :drop-belt-b;
-                                               :on-robot-rb :drop-belt-rb ] ;
-                              pddl:argument  [ a         :belt-at ;
-                                               :belt-at-cb :drop-belt-cb;
-                                               :belt-at-x :drop-belt-x;
-                                               :belt-at-y :drop-belt-y ] ;
-                              pddl:argument  [ a         :robot-at ;
-                                              :robot-at-rb :pick-shelf-rb;
-                                              :robot-at-x  :pick-shelf-x;
-                                              :robot-at-y  :pick-shelf-y ] ;
-                            ] ;
-        pddl:effect   [ a  pddl:And ;
-                        pddl:argument  [ a  :on-belt ;
-                                         :on-belt-b :drop-belt-b;
-                                         :on-belt-cb :drop-belt-cb ] ;
-                        pddl:argument  [ a pddl:Not ;
-                                        pddl:argument  [ a  :on-robot ;
-                                                         :on-robot-b :drop-belt-b;
-                                                         :on-robot-rb :drop-belt-rb ] ] ;
-                        pddl:argument [ a         :free-robot ;
-                                         :free-robot-rb :drop-belt-rb ] ;
-                      ] .
-
-
-:drop-belt-rb  a             pddl:Parameter ;
-        rdfs:label          "rb" ;
-        pddl:type           :Robot ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            1 .
-
-:drop-belt-b  a             pddl:Parameter ;
-        rdfs:label          "b" ;
-        pddl:type           :Box ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            2 .
-
-:drop-belt-cb  a             pddl:Parameter ;
-        rdfs:label          "cb" ;
-        pddl:type           :ConveyorBelt ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            3 .
-
-:drop-belt-x  a             pddl:Parameter ;
-        rdfs:label          "x" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            4 .
-
-:drop-belt-y  a             pddl:Parameter ;
-        rdfs:label          "y" ;
-        pddl:type           :Coord ;
-        oslc:instanceShape  pddl:ParameterShape ;
-        sh:order            5 .
-        """.trimIndent()
-
-        val model = OslcRdfHelper.modelFrom(ttl, Lang.TURTLE)
-        return model
-    }
-
-    fun genProblem(): Model {
-        val resources = HashSet<IResource>()
-        val problem = Problem(u("scott-warehouse-problem"))
-        resources.add(problem)
-
-        problem.label = "scott-warehouse-problem"
-        problem.domain = Link(u("scott-warehouse"))
-
-
-        // OBJECTS
-
-        val sh1 = shelf("sh1")
-        val rb1 = robot("rb1")
-        val cb1 = belt("cb1")
-        val b1 = box("b1")
-
-        val x0 = coord("x0")
-        val y0 = coord("y0")
-        val y10 = coord("y10")
-        val y20 = coord("y20")
-
-        val pddlObjects = hashSetOf(sh1, rb1, cb1, b1, x0, y0, y10, y20);
-        problem.pddlObject.addAll(pddlObjects.map { it.link })
-        resources += pddlObjects
-
-
-        // INIT STATE
-
-        val robotAt: InstanceWithResources<IExtendedResource> = robotAt(rb1, x0, y0)
-        val shelfAt = shelfAt(sh1, x0, y10)
-        val beltAt = beltAt(cb1, x0, y20)
-        val onShelf = onShelf(b1, sh1)
-        val freeRobot = freeRobot(rb1)
-
-
-        val initObjects = hashSetOf(robotAt, shelfAt, beltAt, onShelf, freeRobot)
-        problem.setInit(initObjects.map { it.instance.link }.toHashSet())
-        resources += initObjects.flatMap { it.resources }
-
-        // GOAL STATE
-
-        val goal = and(onBelt(b1, cb1))
-        problem.goal = goal.instance.link
-        resources += goal.resources
-
-
-        // misc
-
-        val minFn = this.minFn()
-        problem.minimize = minFn.link
-        resources += minFn
-
-        return JenaModelHelper.createJenaModel(resources.toArray())
-    }
-
-
-    private fun minFn(): RawResource {
-        val minFn = RawResource(u(UUID.randomUUID()))
+    fun minFn(): RawResource {
+        val minFn = RawResource(oslcHelper.u(UUID.randomUUID()))
         minFn.addType(ns(PDDL, "total-time"))
         return minFn
     }
 
-    private fun freeRobot(robot: IExtendedResource): InstanceWithResources<IExtendedResource> {
+    fun freeRobot(robot: IExtendedResource): InstanceWithResources<IExtendedResource> {
         val r = RawResource(u(UUID.randomUUID()))
         r.addType(u("free-robot"))
         r.setProperty(u("free-robot-rb"), robot.about)
         return InstanceWithResources(r, ImmutableSet.of(r, robot))
     }
 
-    private fun and(
-            vararg predicates: InstanceWithResources<IExtendedResource>): InstanceWithResources<IExtendedResource> {
+
+    fun canMove(wpFrom: IExtendedResource,
+                wpTo: IExtendedResource): InstanceWithResources<IExtendedResource> {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("CanMovePredicate"))
+        r.setProperty(u("CanMoveW1Param"), wpFrom.about)
+        r.setProperty(u("CanMoveW2Param"), wpTo.about)
+
+        return InstanceWithResources(r, ImmutableSet.of(r, wpFrom, wpTo))
+    }
+
+    fun and(
+        vararg predicates: InstanceWithResources<IExtendedResource>): InstanceWithResources<IExtendedResource> {
+        // I don't want to use Kotlin spread operator '*predicates' because it only works with arrays.
+        return and(predicates.asList())
+    }
+
+    fun and(
+        predicates: Collection<InstanceWithResources<IExtendedResource>>): InstanceWithResources<IExtendedResource> {
         val r = RawResource(u(UUID.randomUUID()))
         r.addType(ns(PDDL, "And"))
         r.setProperty(ns(PDDL, "argument"), predicates.map { it.instance.about })
@@ -496,40 +106,37 @@ class PlanRequestHelper {
         return InstanceWithResources(r, resources)
     }
 
-    private fun robotAt(robot: IExtendedResource, x: IExtendedResource,
-                        y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+    fun robotAt(robot: IExtendedResource,
+                wp: IExtendedResource): InstanceWithResources<IExtendedResource> {
         val r = RawResource(u(UUID.randomUUID()))
         r.addType(u("robot-at"))
         r.setProperty(u("robot-at-rb"), robot.about)
-        r.setProperty(u("robot-at-x"), x.about)
-        r.setProperty(u("robot-at-y"), y.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, robot, x, y))
+        r.setProperty(u("robot-at-wp"), wp.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, robot, wp))
     }
 
-    private fun beltAt(belt: IExtendedResource, x: IExtendedResource,
-                       y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+    fun beltAt(belt: IExtendedResource,
+               wp: IExtendedResource): InstanceWithResources<IExtendedResource> {
         val r = RawResource(u(UUID.randomUUID()))
         r.addType(u("belt-at"))
         r.setProperty(u("belt-at-cb"), belt.about)
-        r.setProperty(u("belt-at-x"), x.about)
-        r.setProperty(u("belt-at-y"), y.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, belt, x, y))
+        r.setProperty(u("belt-at-wp"), wp.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, belt, wp))
 
     }
 
-    private fun shelfAt(shelf: IExtendedResource, x: IExtendedResource,
-                        y: IExtendedResource): InstanceWithResources<IExtendedResource> {
+    fun shelfAt(shelf: IExtendedResource,
+                wp: IExtendedResource): InstanceWithResources<IExtendedResource> {
         val r = RawResource(u(UUID.randomUUID()))
         r.addType(u("shelf-at"))
         r.setProperty(u("shelf-at-sh"), shelf.about)
-        r.setProperty(u("shelf-at-x"), x.about)
-        r.setProperty(u("shelf-at-y"), y.about)
-        return InstanceWithResources(r, ImmutableSet.of(r, shelf, x, y))
+        r.setProperty(u("shelf-at-wp"), wp.about)
+        return InstanceWithResources(r, ImmutableSet.of(r, shelf, wp))
     }
 
 
-    private fun onShelf(box: IExtendedResource,
-                        shelf: IExtendedResource): InstanceWithResources<IExtendedResource> {
+    fun onShelf(box: IExtendedResource,
+                shelf: IExtendedResource): InstanceWithResources<IExtendedResource> {
         val r = RawResource(u(UUID.randomUUID()))
         r.addType(u("on-shelf"))
         r.setProperty(u("on-shelf-b"), box.about)
@@ -537,13 +144,20 @@ class PlanRequestHelper {
         return InstanceWithResources(r, ImmutableSet.of(r, shelf, box))
     }
 
-    private fun onBelt(box: IExtendedResource,
-                       belt: IExtendedResource): InstanceWithResources<IExtendedResource> {
+    fun onBelt(box: IExtendedResource,
+               belt: IExtendedResource): InstanceWithResources<IExtendedResource> {
         val r = RawResource(u(UUID.randomUUID()))
         r.addType(u("on-belt"))
         r.setProperty(u("on-belt-cb"), belt.about)
         r.setProperty(u("on-belt-b"), box.about)
         return InstanceWithResources(r, ImmutableSet.of(r, belt, box))
+    }
+
+    fun waypointLabel(x: Int, y: Int): String = "x${x}y${y}"
+
+    fun waypoint(x: Int, y: Int): IExtendedResource {
+        val id = waypointLabel(x, y)
+        return pddlInstance(id, "Waypoint")
     }
 
     fun shelf(id: String): IExtendedResource {
@@ -562,10 +176,6 @@ class PlanRequestHelper {
         return pddlInstance(id, "ConveyorBelt")
     }
 
-    fun coord(id: String): IExtendedResource {
-        return pddlInstance(id, "Coord")
-    }
-
     fun pddlInstance(id: String, type: String): IExtendedResource {
         val pddlResource = RawResource(u(id))
         pddlResource.setLabel(id)
@@ -574,156 +184,7 @@ class PlanRequestHelper {
         return pddlResource
     }
 
-    private fun buildInitState(tables: List<IResource>,
-                               blocks: List<Block>): InstanceMultiWithResources<IResource> {
-        /*
-          pddl:init [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :a
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :b
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :moved ;
-                          :moved-m :c
-                        ] ;
-              pddl:right 0
-            ] ,
-            [ a pddl:EQ ;
-              pddl:left [ a :total-moved ] ;
-              pddl:right 0
-            ] , */
-        val values: Collection<InstanceWithResources<IResource>> = blocks.map { b -> eq(moved(b), BigInteger.ZERO) }
-        val totalMoved = RawResource()
-        totalMoved.addType(u("total-moved"))
-        val totalMovedEq = eq(totalMoved, BigInteger.ZERO)
-
-        /*
-            [ a :on ;
-              :on-x :b ;
-              :on-y :table
-            ] ,
-            [ a :on ;
-              :on-x :a ;
-              :on-y :table
-            ] ,
-            [ a :on ;
-              :on-x :c ;
-              :on-y :a
-            ] ,
-            [ a :clear ;
-              :clear-x :b
-            ] ,
-            [ a :clear ;
-              :clear-x :c
-            ] ,
-            [ a :clear ;
-              :clear-x :table
-            ] ;
-         */
-
-        val allButLastBlocks = blocks.subList(0, blocks.size - 1)
-        val onBlocks = allButLastBlocks.map { b -> on(b.about, tables.first().about) }
-        val bONb = on(blocks.last().about, blocks.first().about)
-
-        val clearBlocks = blocks.subList(1, blocks.size).map { b -> clear(b.about) }
-        val clearTable = clear(tables.first().about)
-
-        val initResourcesBuilder = ImmutableSet.builder<IResource>()
-        initResourcesBuilder.addAll(values.map { v -> v.instance })
-        initResourcesBuilder.addAll(onBlocks)
-        initResourcesBuilder.addAll(clearBlocks)
-        initResourcesBuilder.add(bONb)
-        initResourcesBuilder.add(clearTable)
-        initResourcesBuilder.add(totalMovedEq)
-
-        val allResourcesBuilder = ImmutableSet.builder<IResource>()
-        allResourcesBuilder.addAll(tables)
-        allResourcesBuilder.addAll(blocks)
-        allResourcesBuilder.addAll(values.flatMap { v -> v.resources })
-        allResourcesBuilder.addAll(onBlocks)
-        allResourcesBuilder.addAll(clearBlocks)
-        allResourcesBuilder.add(bONb)
-        allResourcesBuilder.add(clearTable)
-        allResourcesBuilder.add(totalMoved)
-        allResourcesBuilder.add(totalMovedEq)
-
-        val initResources = initResourcesBuilder.build()
-        val allResources = allResourcesBuilder.build()
-
-        return InstanceMultiWithResources(initResources, allResources)
-    }
-
-
-    private fun buildGoalState(tables: ImmutableList<IResource>,
-                               blocks: ImmutableList<Block>?): InstanceWithResources<IResource> {
-        /*
-          pddl:goal [ a pddl:Or ;
-              pddl:argument [ a :on ;
-                              :on-x :b ;
-                              :on-y :c
-                            ] ,
-                            [ a :on ;
-                              :on-x :c ;
-                              :on-y :b
-                            ]
-            ] ;
-         */
-
-        // FIXME Andrew@2018-08-16: one of the goals is empty when serialised
-        val goal = Or(u(UUID.randomUUID()))
-
-        val bONc = on(u("b"), u("c"))
-        val cONb = on(u("c"), u("b"))
-        goal.setArgument(hashSetOf(bONc.link, cONb.link))
-
-        val instanceWithResources: InstanceWithResources<IResource> = InstanceWithResources(goal,
-                ImmutableList.of(goal, bONc, cONb))
-        return instanceWithResources
-    }
-
-    fun on(x: URI, y: URI): IResource {
-        val r = RawResource(u(UUID.randomUUID()))
-        r.addType(u("on"))
-        r.setProperty(u("on-x"), x)
-        r.setProperty(u("on-y"), y)
-        return r
-    }
-
-    fun eq(l: IResource, r: Any): IExtendedResource {
-        // FIXME Andrew@2018-08-14: EQ class
-        val equal = RawResource(u(UUID.randomUUID()))
-        equal.addType(ns(PDDL, "EQ"))
-        equal.setProperty(ns(PDDL, "left"), l.about)
-        equal.setProperty(ns(PDDL, "right"), r)
-
-        return equal
-    }
-
-    fun eq(l: InstanceWithResources<IResource>, r: Any): InstanceWithResources<IResource> {
-        val eqResource = eq(l.instance, r)
-        val builder = ImmutableSet.builder<IResource>()
-        builder.add(eqResource)
-        builder.addAll(l.resources)
-        builder.addAll(filterResources(r))
-        return InstanceWithResources(eqResource, builder.build())
-    }
-
-    private fun filterResources(r: Any): Collection<IResource> {
-        return when (r) {
-            is IResource     -> ImmutableSet.of(r)
-            is Collection<*> -> ImmutableSet.copyOf(r.filterIsInstance(IResource::class.java))
-            is Array<*>      -> ImmutableSet.copyOf(r.filterIsInstance(IResource::class.java))
-            else             -> ImmutableSet.of()
-        }
-    }
-
+    @Deprecated("not using coordinates any more + this predicate is from the BoxWorld domain")
     fun clear(what: URI): IExtendedResource {
         val clear = RawResource(u(UUID.randomUUID()))
         clear.addType(u("clear"))
@@ -731,8 +192,7 @@ class PlanRequestHelper {
         return clear
     }
 
-
-    private fun moved(b: Block): InstanceWithResources<IResource> {
+    fun moved(b: Block): InstanceWithResources<IExtendedResource> {
         val m = RawResource(u(UUID.randomUUID()))
         m.addType(u("moved"))
         m.setProperty(u("moved-m"), b.about)
@@ -740,14 +200,13 @@ class PlanRequestHelper {
         return InstanceWithResources(m, ImmutableSet.of(m, b))
     }
 
-
     fun buildLocation(): RawResource {
-        /*
+        /**
         :location
-          a rdfs:Class ;
-          rdfs:subClassOf pddl:PrimitiveType ;
-          oslc:instanceShape pddl:PrimitiveTypeShape ;
-          rdfs:label "location" .
+        a rdfs:Class ;
+        rdfs:subClassOf pddl:PrimitiveType ;
+        oslc:instanceShape pddl:PrimitiveTypeShape ;
+        rdfs:label "location" .
          */
         val location = RawResource(u("location"))
         location.types.add(ns(RDFS, "Class"))
@@ -757,11 +216,108 @@ class PlanRequestHelper {
         return location
     }
 
-    fun warehouseSize(i: Int, i1: Int) {
+    @Deprecated("not using coordinates any more + this predicate is from the BoxWorld domain")
+    fun on(x: URI, y: URI): IExtendedResource {
+        val r = RawResource(u(UUID.randomUUID()))
+        r.addType(u("on"))
+        r.setProperty(u("on-x"), x)
+        r.setProperty(u("on-y"), y)
+        return r
+    }
+
+    fun eq(l: IExtendedResource, r: Any): IExtendedResource {
+        // TODO Andrew@2019-02-18: https://github.com/EricssonResearch/scott-eu/issues/155
+        val equal = RawResource(u(UUID.randomUUID()))
+        equal.addType(ns(PDDL, "EQ"))
+        equal.setProperty(ns(PDDL, "left"), l.about)
+        equal.setProperty(ns(PDDL, "right"), r)
+
+        return equal
+    }
+
+    fun eq(l: InstanceWithResources<IExtendedResource>,
+           r: Any): InstanceWithResources<IExtendedResource> {
+        val eqResource = eq(l.instance, r)
+        val builder = ImmutableSet.builder<IExtendedResource>()
+        builder.add(eqResource)
+        builder.addAll(l.resources)
+        builder.addAll(filterResources(r))
+        return InstanceWithResources(eqResource, builder.build())
+    }
+
+    private fun filterResources(r: Any): Collection<IExtendedResource> {
+        return when (r) {
+            is IExtendedResource -> ImmutableSet.of(r)
+            is Collection<*>     -> ImmutableSet.copyOf(
+                r.filterIsInstance(IExtendedResource::class.java))
+            is Array<*>          -> ImmutableSet.copyOf(
+                r.filterIsInstance(IExtendedResource::class.java))
+            else                 -> ImmutableSet.of()
+        }
+    }
+
+    fun getProblem(resourceName: String): Model {
+        return AdaptorHelper.loadJenaModelFromResource(resourceName, Lang.TURTLE)
+    }
+
+    private fun planForProblem(problemModel: Model): Model {
+        log.trace("Problem request\n{}", RdfHelpers.modelToString(problemModel))
+        try {
+            val response = requestPlanManually(problemModel)
+            val responsePlan = ModelFactory.createDefaultModel()
+            RDFDataMgr.read(responsePlan, response, Lang.TURTLE)
+            log.trace("Plan response\n{}", RdfHelpers.modelToString(responsePlan))
+            return responsePlan
+        } catch (e: IOException) {
+            log.error("Something went wrong", e)
+            throw IllegalStateException(e)
+        }
 
     }
-}
 
-class RawResource(about: URI) : AbstractResource(about) {
-    constructor() : this(u(UUID.randomUUID()))
+    @Throws(IOException::class)
+    private fun requestPlanManually(problemModel: Model): InputStream {
+        val out = ByteArrayOutputStream()
+        RDFDataMgr.write(out, problemModel, RDFFormat.TURTLE_BLOCKS)
+
+        val client = HttpClientBuilder.create()
+            .build()
+        val uri = AdaptorHelper.p("planner.cf_uri")
+        log.debug("Using $uri as a Planner CF endpoint")
+        val post = HttpPost(uri)
+
+        post.setHeader("Content-type", WhcConfig.MIME_TURTLE)
+        post.setHeader("Accept", WhcConfig.MIME_TURTLE)
+        post.entity = ByteArrayEntity(out.toByteArray())
+
+        val response = client.execute(post)
+        val statusCode = response.statusLine.statusCode
+        log.debug("Status code from the Planner CF endpoint response: $statusCode")
+        if (statusCode >= 400) {
+            throw IllegalStateException("Planning request on $uri failed with the code $statusCode")
+        }
+        return response.entity.content
+    }
+
+    fun getPlanResources(planModel: Model, plan: Plan): Collection<IExtendedResource> {
+        val planResources = ArrayList<IExtendedResource>()
+//        planResources.add(plan)
+        val planSteps: MutableSet<Step> = plan.step
+        for (step in planSteps) {
+            step.order = (step.extendedProperties as Map<QName, Any>).getOrDefault(
+                QName(WhcConfig.NS_SHACL, "order"), null) as Int
+            val action = OslcHelpers.navTry(planModel, step.action, Action::class.java, DropBelt::class.java, MoveToWp::class.java, PickShelf::class.java)
+            // is already a LocalResource
+//            planResources.add(step)
+            planResources.add(action)
+            log.info("Step {}: {}", step.order, action)
+        }
+        return planResources
+    }
+
+    fun requestPlan(problemModel: Model): Model {
+        val planModel = planForProblem(problemModel)
+        RdfHelpers.skolemize(planModel)
+        return planModel
+    }
 }

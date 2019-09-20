@@ -8,11 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.executor.PlanExecutorManager;
 
-/**
- * TODO
- *
- * @since TODO
- */
 public class ExecutorServiceHelper {
     private final static Logger log = LoggerFactory.getLogger(ExecutorServiceHelper.class);
 

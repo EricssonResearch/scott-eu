@@ -57,15 +57,12 @@ import se.ericsson.cf.scott.sandbox.twin.TwinManager;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
 
 // Start of user code imports
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 // End of user code
 
 @OslcService(OslcConstants.OSLC_CORE_DOMAIN)
 @Path("catalog")
 public class ServiceProviderCatalogService
 {
-    private final static Logger log = LoggerFactory.getLogger(ServiceProviderCatalogService.class);
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
     @Context private UriInfo uriInfo;
@@ -113,7 +110,7 @@ public class ServiceProviderCatalogService
      */
     @GET
     @Path("{serviceProviderCatalogId}") // Required to distinguish from array result.  But, ignored.
-    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON, OslcMediaType.TEXT_TURTLE})
+    @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
     public ServiceProviderCatalog getServiceProviderCatalog()
     {
         ServiceProviderCatalog catalog =  ServiceProviderCatalogSingleton.getServiceProviderCatalog(httpServletRequest);

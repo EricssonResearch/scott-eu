@@ -12,10 +12,10 @@ COPY ./webapp-whc/pom.xml ./webapp-whc/pom.xml
 COPY ./webapp-svc-location/pom.xml ./webapp-svc-location/pom.xml
 
 COPY ./webapp-twin-robot/pom.xml ./webapp-twin-robot/pom.xml
-COPY ./webapp-twin-shelf/pom.xml ./webapp-twin-shelf/pom.xml
 
 #RUN mvn -f lyo-webapp-parent/pom.xml dependency:resolve  -B -q || true
-RUN mvn -f lyo-webapp-parent/pom.xml --fail-at-end dependency:go-offline -B -q || true
+RUN mvn -f lyo-webapp-parent/pom.xml --fail-at-end dependency:go-offline -B -q > /dev/null 2>&1 || true
 
 COPY . .
-RUN mvn -f lyo-webapp-parent/pom.xml --no-snapshot-updates -Dmaven.test.skip=true package -B -q
+#RUN mvn -f lyo-webapp-parent/pom.xml --no-snapshot-updates -Dmaven.test.skip=true install -B
+RUN mvn -f lyo-webapp-parent/pom.xml -Dmaven.test.skip=true install -B

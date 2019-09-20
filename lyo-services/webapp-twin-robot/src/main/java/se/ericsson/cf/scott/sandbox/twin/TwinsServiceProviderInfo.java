@@ -26,10 +26,10 @@ import java.io.Serializable;
 
 // Start of user code pre_class_code
 // End of user code
-public class TwinsServiceProviderInfo implements Serializable {
-    public final String name;
-    public final String twinKind;
-    public final String twinId;
+public class TwinsServiceProviderInfo {
+    public String name;
+    public String twinKind;
+    public String twinId;
 
     // Start of user code class_attributes
     // End of user code

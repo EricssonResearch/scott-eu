@@ -20,9 +20,6 @@ push:
 	docker image tag scott/webapp-twin-robot ${CI_REGISTRY_IMAGE}/webapp-twin-robot:${CI_COMMIT_REF_NAME}
 	docker push ${CI_REGISTRY_IMAGE}/webapp-twin-robot:${CI_COMMIT_REF_NAME}
 
-	docker image tag scott/webapp-twin-shelf ${CI_REGISTRY_IMAGE}/webapp-twin-shelf:${CI_COMMIT_REF_NAME}
-	docker push ${CI_REGISTRY_IMAGE}/webapp-twin-shelf:${CI_COMMIT_REF_NAME}
-
 	docker image tag scott/webapp-whc ${CI_REGISTRY_IMAGE}/webapp-whc:${CI_COMMIT_REF_NAME}
 	docker push ${CI_REGISTRY_IMAGE}/webapp-whc:${CI_COMMIT_REF_NAME}
 

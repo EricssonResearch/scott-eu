@@ -3,7 +3,6 @@ package se.ericsson.cf.scott.sandbox.whc.xtra.trs;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +17,6 @@ import org.eclipse.lyo.core.trs.ChangeEvent;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.IResource;
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper;
-import org.eclipse.lyo.oslc4j.trs.server.ChangeHistories;
 import org.eclipse.lyo.oslc4j.trs.server.HistoryData;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -26,31 +24,23 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * TODO
- *
- * @version $version-stub$
- * @since   TODO
- */
-public class WhcChangeHistories extends ChangeHistories {
+
+class WhcChangeHistories {
 
     private final static Logger log = LoggerFactory.getLogger(WhcChangeHistories.class);
 
-    // TODO Andrew@2018-02-26: extract a default "manual" implementation
-//    public static final WhcChangeHistories INSTANCE = new WhcChangeHistories();
     private final List<HistoryData>   history            = new ArrayList<>();
     private final Map<URI, IResource> trackedResourceMap = new HashMap<>();
     private final MqttClient client;
     private final String     topic;
 
     public WhcChangeHistories(MqttClient client, String topic, final long baseUpdateInterval) {
-        super(baseUpdateInterval);
+//        super(baseUpdateInterval);
         this.client = client;
         this.topic = topic;
     }
 
 
-    @Override
     public HistoryData[] getHistory(final HttpServletRequest httpServletRequest,
             final Date dateAfter) {
         // TODO Andrew@2018-02-26: less expensive implementation
@@ -61,12 +51,10 @@ public class WhcChangeHistories extends ChangeHistories {
                       .toArray(HistoryData[]::new);
     }
 
-    @Override
     protected void newChangeEvent(final ChangeEvent ce) {
         log.info("New ChangeEvent: {}", ce);
 
         IResource resource = getResourceForChangeEvent(ce);
-        // FIXME Andrew@2018-03-13: inline
         MqttMessage message = buildMqttMessage(ce, resource);
         try {
             if (!client.isConnected()) {
@@ -89,12 +77,6 @@ public class WhcChangeHistories extends ChangeHistories {
                                                                 HistoryData.CREATED);
         history.add(historyData);
         trackedResourceMap.put(resource.getAbout(), resource);
-        try {
-            super.buildBaseResourcesAndChangeLogs(null);
-        } catch (URISyntaxException e) {
-            log.error("Something went wrong with the URIs", e);
-        }
-
     }
 
     private MqttMessage buildMqttMessage(ChangeEvent changeEvent, IResource trackedResource) {

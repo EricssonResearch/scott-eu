@@ -1,8 +1,8 @@
 warehouse-controller:
-  image: wc
+  image: scott/misc-warehousecontroller
   ports:
    - "5001:5001"
   links:
    - ff-metric
 ff-metric:
-  image: ff-metric
+  image: scott/misc-ff-metric

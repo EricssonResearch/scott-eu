@@ -1,39 +1,40 @@
 package se.ericsson.cf.scott.sandbox.whc.xtra.planning
 
 import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.ModelFactory
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-/**
- * TODO
- *
- * @since   TODO
- */
+
 class PlanRequestBuilder {
     companion object {
-        val log = LoggerFactory.getLogger(javaClass)
+        val log: Logger = LoggerFactory.getLogger(PlanRequestBuilder::class.java)
     }
 
-    fun build() {
-        log.error("Nothing to build yet")
+    private lateinit var problemBuilder: ProblemBuilder
+    private lateinit var domain: Model
+
+    fun build(): Model {
+        val m = ModelFactory.createDefaultModel()
+
+        m.add(domain)
+
+        val state: ProblemRequestState = problemBuilder.build()
+        m.add(state.model)
+
+        log.debug("Completed building a planning request")
+        return m
     }
 
     fun domainFromModel(domain: Model): PlanRequestBuilder {
-        log.error("Domain init not implemented")
+        this.domain = domain
         return this
     }
 
-    fun warehouseSize(width: Int, height: Int): PlanRequestBuilder {
-        log.error("create width x height waypoints")
+    fun withStateBuilder(problemBuilder: ProblemBuilder): PlanRequestBuilder {
+        this.problemBuilder = problemBuilder
         return this
     }
 
-    fun robotsActive(activeCount: Int): PlanRequestBuilder {
-        log.error("create active & inactive robots with random placement")
-        return this
-    }
 
-    fun robotsInactive(inactiveCount: Int): PlanRequestBuilder {
-        log.error("create active & inactive robots with random placement")
-        return this
-    }
 }

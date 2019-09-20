@@ -1,5 +1,12 @@
 /m2_temp
 /license
 
+.gradle
+.settings
+
 # see https://github.com/eclipse/lyo.designer/issues/20
 /model-sandbox/domain-pddl
+/webapp-planner-placeholder/
+
+# MQTT lock files
+*.lck
