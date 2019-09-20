@@ -22,46 +22,46 @@ RUN mkdir -p /opt/PlannerServer && \
 
 WORKDIR /opt
 
-# RUN git clone -b 'V3.1.1' --depth 1 https://github.com/ClioPatria/ClioPatria.git && \
-#     git clone --depth=1 https://github.com/EricssonResearch/oslc_prolog.git && \
-#     mkdir -p /opt/PlannerServer/cpack && \
-#     mv oslc_prolog /opt/PlannerServer/cpack
-#
-#
-# # TODO use swipl image https://hub.docker.com/_/swipl/ or https://hub.docker.com/r/jrvosse/cliopatria/
-# FROM ubuntu:16.04
-# LABEL maintainer "leonid.mokrushin@ericsson.com"
-#
-# ARG PUBLIC_HOST=localhost
-# ARG PUBLIC_PORT=3020
-# ARG PREFIX_PATH=/
-# ARG EXPOSED_PREFIXES=*
-#
-# WORKDIR /opt
-#
-# COPY --from=build /opt/ /opt/
-#
-# RUN apt-get update && \
-#     apt-get -yq --no-install-recommends install software-properties-common && \
-#     apt-add-repository ppa:swi-prolog/devel && \
-#     apt-get update && \
-#     apt-get -yq --no-install-recommends install swi-prolog
-#
-# COPY . /opt/PlannerServer/cpack/planner_reasoner/
-#
-# WORKDIR /opt/PlannerServer
-#
-# COPY users.db .
-# COPY settings.db .
-#
-# RUN sh ../ClioPatria/configure && \
-#     sed -i 's|%PUBLIC_HOST%|'$PUBLIC_HOST'|g' settings.db && \
-#     sed -i 's/%PUBLIC_PORT%/'$PUBLIC_PORT'/g' settings.db && \
-#     sed -i 's|%PREFIX_PATH%|'$PREFIX_PATH'|g' settings.db && \
-#     sed -i 's/%EXPOSED_PREFIXES%/'$EXPOSED_PREFIXES'/g' settings.db && \
-#     swipl run.pl --after_load='cpack_configure(oslc_prolog), cpack_configure(planner_reasoner), halt'
-#
-#
-# EXPOSE 3020
-#
-# CMD ["swipl","run.pl"]
+RUN git clone -b 'V3.1.1' --depth 1 https://github.com/ClioPatria/ClioPatria.git && \
+    git clone --depth=1 https://github.com/EricssonResearch/oslc_prolog.git && \
+    mkdir -p /opt/PlannerServer/cpack && \
+    mv oslc_prolog /opt/PlannerServer/cpack
+
+
+# TODO use swipl image https://hub.docker.com/_/swipl/ or https://hub.docker.com/r/jrvosse/cliopatria/
+FROM ubuntu:16.04
+LABEL maintainer "leonid.mokrushin@ericsson.com"
+
+ARG PUBLIC_HOST=localhost
+ARG PUBLIC_PORT=3020
+ARG PREFIX_PATH=/
+ARG EXPOSED_PREFIXES=*
+
+WORKDIR /opt
+
+COPY --from=build /opt/ /opt/
+
+RUN apt-get update && \
+    apt-get -yq --no-install-recommends install software-properties-common && \
+    apt-add-repository ppa:swi-prolog/devel && \
+    apt-get update && \
+    apt-get -yq --no-install-recommends install swi-prolog
+
+COPY . /opt/PlannerServer/cpack/planner_reasoner/
+
+WORKDIR /opt/PlannerServer
+
+COPY users.db .
+COPY settings.db .
+
+RUN sh ../ClioPatria/configure && \
+    sed -i 's|%PUBLIC_HOST%|'$PUBLIC_HOST'|g' settings.db && \
+    sed -i 's/%PUBLIC_PORT%/'$PUBLIC_PORT'/g' settings.db && \
+    sed -i 's|%PREFIX_PATH%|'$PREFIX_PATH'|g' settings.db && \
+    sed -i 's/%EXPOSED_PREFIXES%/'$EXPOSED_PREFIXES'/g' settings.db && \
+    swipl run.pl --after_load='cpack_configure(oslc_prolog), cpack_configure(planner_reasoner), halt'
+
+
+EXPOSE 3020
+
+CMD ["swipl","run.pl"]
