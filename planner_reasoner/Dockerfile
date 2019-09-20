@@ -4,11 +4,14 @@ WORKDIR /tmp
 
 ARG CHECKSUM=146d456a93da57f2c2a0c51b6a4b8711be9626e3d07a2878a6d8edc61d01857b
 
-# wget https://fai.cs.uni-saarland.de/hoffmann/ff/Metric-FF-v2.0.tgz && \
 RUN apt-get update && \
     apt-get -yq install git wget build-essential flex bison
+
+# wget https://fai.cs.uni-saarland.de/hoffmann/ff/Metric-FF-v2.0.tgz && \
+# Uni Saarland was timing out from time to time and failing builds
+# VAL removed Makefile support without any release or tag, pinned the last make-based hash
 RUN mkdir -p /opt/PlannerServer && \
-    git clone --depth=1 https://github.com/KCL-Planning/VAL.git && \
+    git clone https://github.com/KCL-Planning/VAL.git && \
     wget https://aide.md.kth.se/uploads/Metric-FF-v2.0.tgz && \
     echo "$CHECKSUM Metric-FF-v2.0.tgz" | sha256sum -c - || exit 1 && \
     tar xfz Metric-FF-v2.0.tgz && \
@@ -16,7 +19,7 @@ RUN mkdir -p /opt/PlannerServer && \
     cd /tmp/Metric-FF-v2.0 && \
     make && \
     mv ff /opt/PlannerServer && \
-    cd /tmp/VAL && \
+    cd /tmp/VAL && git reset --hard a5565396007eee73ac36527fbf904142b3077c74 \
     make clean && make && \
     mv validate /opt/PlannerServer
 
