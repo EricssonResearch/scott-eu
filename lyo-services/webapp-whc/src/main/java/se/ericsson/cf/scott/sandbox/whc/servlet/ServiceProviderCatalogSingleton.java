@@ -29,9 +29,6 @@ package se.ericsson.cf.scott.sandbox.whc.servlet;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -42,8 +39,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-import org.eclipse.lyo.oslc4j.client.ServiceProviderRegistryURIs;
-import org.eclipse.lyo.oslc4j.core.model.Publisher;
+import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProviderCatalog;
@@ -56,14 +52,13 @@ import se.ericsson.cf.scott.sandbox.whc.ServiceProviderInfo;
 // End of user code
 
 /**
- * This is the OSLC service provider catalog for the Bugzilla adapter.  Service providers are
+ * This is the OSLC service provider catalog for the adapter.  Service providers are
  * not registered with the catalog until a request comes in to access either the catalog or a
  * specific service provider.   This request could be from an external consumer or an internal
  * request triggered by a consumer accessing a change request.
  *
- * The service providers are created and registered in the initServiceProvidersFromProducts()
- * method.  A list of accessible products is retrieved from Bugzilla and a ServiceProvider is
- * created and registered for each using the Bugzilla productId as the identifier.
+ * Information about the desired list of ServiceProviders is retrieved from the Manager.getServiceProviderInfos() method.
+ * A ServiceProvider is created and registered for each entry in that list.
  *
  * The registered service providers are refreshed on each catalog or service provider collection
  * request.
@@ -72,6 +67,8 @@ public class ServiceProviderCatalogSingleton
 {
     private static final ServiceProviderCatalog serviceProviderCatalog;
     private static final SortedMap<String, ServiceProvider> serviceProviders = new TreeMap<String, ServiceProvider>();
+    // Start of user code class_attributes
+    // End of user code
 
     static {
         serviceProviderCatalog = new ServiceProviderCatalog();
@@ -80,6 +77,9 @@ public class ServiceProviderCatalogSingleton
         serviceProviderCatalog.setTitle("Service Provider Catalog");
         serviceProviderCatalog.setDescription("Service Provider Catalog");
     }
+
+    // Start of user code class_methods
+    // End of user code
 
     private ServiceProviderCatalogSingleton()
     {
@@ -107,109 +107,49 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
-
-    private static URI constructServiceProviderURI(final String serviceProviderId)
-    {
-        String basePath = OSLC4JUtils.getServletURI();
-        Map<String, Object> pathParameters = new HashMap<String, Object>();
-        pathParameters.put("serviceProviderId", serviceProviderId);
-        String instanceURI = "serviceProviders/{serviceProviderId}";
-
-        final UriBuilder builder = UriBuilder.fromUri(basePath);
-        return builder.path(instanceURI).buildFromMap(pathParameters);
+    public static boolean containsServiceProvider(final String identifier) {
+        return serviceProviders.containsKey(identifier);
     }
 
-    private static String serviceProviderIdentifier(final String serviceProviderId)
-    {
-        String identifier = "/" + serviceProviderId;
-        return identifier;
+    public static boolean containsServiceProvider(final ServiceProvider serviceProvider) {
+        return containsServiceProvider(serviceProvider.getIdentifier());
     }
 
-    public static ServiceProvider getServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
+    // This version is for self-registration and thus package-protected
+    public static ServiceProvider register(final ServiceProvider serviceProvider)
+                                            throws URISyntaxException
     {
-        ServiceProvider serviceProvider;
-
+        if (containsServiceProvider(serviceProvider)) {
+            throw new IllegalArgumentException(String.format("The SP '%s' was already registered", serviceProvider.getIdentifier()));
+        }
         synchronized(serviceProviders)
         {
-            String identifier = serviceProviderIdentifier(serviceProviderId);
-            serviceProvider = serviceProviders.get(identifier);
-
-            //One retry refreshing the service providers
-            if (serviceProvider == null)
-            {
-                getServiceProviders(httpServletRequest);
-                serviceProvider = serviceProviders.get(identifier);
+            if (containsServiceProvider(serviceProvider)) {
+                throw new IllegalArgumentException(String.format("The SP '%s' was already registered", serviceProvider.getIdentifier()));
             }
-        }
-
-        if (serviceProvider != null)
-        {
-            return serviceProvider;
-        }
-
-        throw new WebApplicationException(Status.NOT_FOUND);
-    }
-
-    public static ServiceProvider registerServiceProvider(final HttpServletRequest httpServletRequest,
-                                                          final ServiceProvider serviceProvider,
-                                                          final String serviceProviderId)
-                                                throws URISyntaxException
-    {
-        synchronized(serviceProviders)
-        {
-            final URI serviceProviderURI = constructServiceProviderURI(serviceProviderId);
-            return registerServiceProviderNoSync(serviceProviderURI,
-                                                 serviceProvider,
-                                                 serviceProviderId);
+            return registerNoSync(serviceProvider);
         }
     }
 
     /**
     * Register a service provider with the OSLC catalog
     *
-    * @param serviceProviderURI
-    * @param serviceProvider
-    * @param productId
-    * @return
     */
-    private static ServiceProvider registerServiceProviderNoSync(final URI serviceProviderURI,
-                                                                 final ServiceProvider serviceProvider
-                                                                 , final String serviceProviderId)
+    private static ServiceProvider registerNoSync(final ServiceProvider serviceProvider)
     {
         final SortedSet<URI> serviceProviderDomains = getServiceProviderDomains(serviceProvider);
-
-        String identifier = serviceProviderIdentifier(serviceProviderId);
-        serviceProvider.setAbout(serviceProviderURI);
-        serviceProvider.setIdentifier(identifier);
-        serviceProvider.setCreated(new Date());
-        serviceProvider.setDetails(new URI[] {serviceProviderURI});
-
         serviceProviderCatalog.addServiceProvider(serviceProvider);
         serviceProviderCatalog.addDomains(serviceProviderDomains);
-
-        serviceProviders.put(identifier, serviceProvider);
-
+        serviceProviders.put(serviceProvider.getIdentifier(), serviceProvider);
         return serviceProvider;
     }
 
-    // This version is for self-registration and thus package-protected
-    static ServiceProvider registerServiceProvider(final ServiceProvider serviceProvider, final String serviceProviderId)
-                                            throws URISyntaxException
-    {
-        synchronized(serviceProviders)
-        {
-            final URI serviceProviderURI = constructServiceProviderURI(serviceProviderId);
-
-            return registerServiceProviderNoSync(serviceProviderURI, serviceProvider, serviceProviderId);
-        }
-    }
-
-    public static void deregisterServiceProvider(final String serviceProviderId)
+    public static void deregister(final ServiceProvider serviceProvider)
     {
         synchronized(serviceProviders)
         {
             final ServiceProvider deregisteredServiceProvider =
-                serviceProviders.remove(serviceProviderIdentifier(serviceProviderId));
+                serviceProviders.remove(serviceProvider.getIdentifier());
 
             if (deregisteredServiceProvider != null)
             {
@@ -233,6 +173,32 @@ public class ServiceProviderCatalogSingleton
         }
     }
 
+
+    public static ServiceProvider getServiceProvider(HttpServletRequest httpServletRequest, final String serviceProviderId)
+    {
+        ServiceProvider serviceProvider;
+
+        synchronized(serviceProviders)
+        {
+            String identifier = ServiceProvidersFactory.constructIdentifier(serviceProviderId);
+            serviceProvider = serviceProviders.get(identifier);
+
+            //One retry refreshing the service providers
+            if (serviceProvider == null)
+            {
+                getServiceProviders(httpServletRequest);
+                serviceProvider = serviceProviders.get(identifier);
+            }
+        }
+
+        if (serviceProvider != null)
+        {
+            return serviceProvider;
+        }
+
+        throw new WebApplicationException(Status.NOT_FOUND);
+    }
+
     private static SortedSet<URI> getServiceProviderDomains(final ServiceProvider serviceProvider)
     {
         final SortedSet<URI> domains = new TreeSet<URI>();
@@ -250,38 +216,24 @@ public class ServiceProviderCatalogSingleton
     }
 
     /**
-     * Retrieve a list of products from Bugzilla and construct a service provider for each.
-     *
-     * Each product ID is added to the parameter map which will be used during service provider
-     * creation to create unique URI paths for each Bugzilla product.  See @Path definition at
-     * the top of BugzillaChangeRequestService.
-     *
-     * @param httpServletRequest
-     */
+    * Retrieve the set of initial ServiceProviders as returned from the Manager.getServiceProviderInfos() method, and construct a service provider for each.
+    *
+    * Each ServiceProvider ID is added to the parameter map which will be used during service provider
+    * creation to create unique URI paths for each ServiceProvider. 
+    *
+    */
     protected static void initServiceProviders (HttpServletRequest httpServletRequest)
     {
         try {
             // Start of user code initServiceProviders
             // End of user code
 
-            String basePath = OSLC4JUtils.getServletURI();
-
             ServiceProviderInfo [] serviceProviderInfos = WarehouseControllerManager.getServiceProviderInfos(httpServletRequest);
             //Register each service provider
             for (ServiceProviderInfo serviceProviderInfo : serviceProviderInfos) {
-                String identifier = serviceProviderIdentifier(serviceProviderInfo.serviceProviderId);
-                if (!serviceProviders.containsKey(identifier)) {
-                    String serviceProviderName = serviceProviderInfo.name;
-                    String title = String.format("Service Provider '%s'", serviceProviderName);
-                    String description = String.format("%s (id: %s; kind: %s)",
-                        "Service Provider",
-                        identifier,
-                        "Service Provider");
-                    Publisher publisher = null;
-                    Map<String, Object> parameterMap = new HashMap<String, Object>();
-                    parameterMap.put("serviceProviderId", serviceProviderInfo.serviceProviderId);
-                    final ServiceProvider aServiceProvider = ServiceProvidersFactory.createServiceProvider(basePath, title, description, publisher, parameterMap);
-                    registerServiceProvider(aServiceProvider, serviceProviderInfo.serviceProviderId);
+                if (!containsServiceProvider(ServiceProvidersFactory.constructIdentifier(serviceProviderInfo))) {
+                    ServiceProvider aServiceProvider = ServiceProvidersFactory.createServiceProvider(serviceProviderInfo);
+                    register(aServiceProvider);
                 }
             }
         } catch (Exception e) {
@@ -290,4 +242,3 @@ public class ServiceProviderCatalogSingleton
         }
     }
 }
-

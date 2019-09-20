@@ -1,9 +1,21 @@
+
 # Sandobox-specific
-/webapp-planner-placeholder/
+webapp-planner-placeholder/
+/tmp
+
+# Misc
+
+TODO*.md
+TODO*.pdf
 
 # Maven
-*/target/
-*/overlays/
+dependency-reduced-pom.xml
+target/
+overlays/
+
+# Gradle
+.gradle/
+*/out/production/classes/
 
 # Acceleo
 *.lost

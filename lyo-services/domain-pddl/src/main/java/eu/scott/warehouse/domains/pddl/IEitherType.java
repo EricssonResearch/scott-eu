@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.annotation.OslcAllowedValue;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDescription;
@@ -86,9 +82,9 @@ public interface IEitherType
     @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.PRIMITIVETYPE_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Link> getMember();
+    public Set<Link> getMember();
 
 
-    public void setMember(final HashSet<Link> member );
+    public void setMember(final Set<Link> member );
 }
 

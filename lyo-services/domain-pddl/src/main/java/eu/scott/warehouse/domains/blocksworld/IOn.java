@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.annotation.OslcAllowedValue;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDescription;
@@ -77,15 +73,15 @@ public interface IOn
 {
 
 
-    @OslcName("onX")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onX")
+    @OslcName("on-x")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "on-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
     public Link getOnX();
 
-    @OslcName("onY")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "onY")
+    @OslcName("on-y")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "on-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)

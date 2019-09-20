@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.annotation.OslcAllowedValue;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDescription;
@@ -65,6 +61,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 
 // Start of user code imports
@@ -86,7 +83,7 @@ public interface IPredicate
     public Link getParameter();
 
     @OslcName("label")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsDomainConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("Parameter name.")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)

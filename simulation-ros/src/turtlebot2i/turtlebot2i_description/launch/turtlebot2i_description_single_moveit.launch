@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description.launch">
+    <arg name="robot_name" value="turtlebot2i"/>
+    <arg name="moveit"        default="true" /> 
+    <arg name="joint1"        default="PhantomXPincher_joint1" />
+    <arg name="joint2"        default="PhantomXPincher_joint2" />
+    <arg name="joint3"        default="PhantomXPincher_joint3" />
+    <arg name="joint4"        default="PhantomXPincher_joint4" />
+    <arg name="gripper1"      default="PhantomXPincher_gripperCenter_joint" />
+    <arg name="gripper2"      default="PhantomXPincher_gripperClose_joint" />
+
+  </include>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_description)/launch/turtlebot2i_description_moveit.rviz" />
+
+ <!-- <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find turtlebot2i_description)/rviz/turtlebot2i_single_robot.rviz" /> -->
+
+</launch>

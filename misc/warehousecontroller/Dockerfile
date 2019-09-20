@@ -1,15 +1,10 @@
-FROM ubuntu:16.10
-LABEL maintainer "konstantinos.vandikas@ericsson.com"
+FROM ubuntu:18.04
 
 # update/upgrade base system
-RUN apt-get update
-RUN apt-get -yq upgrade
+RUN apt-get update && apt-get -yq upgrade
 
 # install python, pip
-RUN apt-get install -yq python python-pip
-
-# upgrade pip
-RUN pip install --upgrade pip
+RUN apt-get install -yq python python-pip && pip install --upgrade pip
 
 # COPY mission2plan.py file to docker image
 RUN mkdir /opt/warehousecontroller
@@ -17,7 +12,7 @@ WORKDIR /opt/warehousecontroller
 COPY mission2plan.py .
 COPY requirements.txt .
 COPY kb.json .
-COPY mission.json . 
+COPY mission.json .
 COPY whdomain-2.pddl .
 
 # INSTALL requirements.txt

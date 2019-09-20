@@ -5,16 +5,105 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>se.ericsson.cf.scott.sandbox</groupId>
   <artifactId>sandbox-parent</artifactId>
+  <name>Sandbox :: Parent module</name>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <kotlin.version>1.3.41</kotlin.version>
+    <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+    <kotlin.compiler.languageVersion>1.3</kotlin.compiler.languageVersion>
+    <kotlin.compiler.apiVersion>1.3</kotlin.compiler.apiVersion>
+  </properties>
+
   <modules>
     <module>../domain-pddl</module>
+    <module>../lib-common</module>
 
     <module>../webapp-whc</module>
-    <module>../webapp-twin</module>
-    <!-- <module>../webapp-twin-shelf</module> -->
+    <module>../webapp-executor</module>
+    <module>../webapp-svc-location</module>
 
-    <!--<module>cli-whc</module>-->
+    <module>../webapp-twin-robot</module>
+
+<!--    <module>../flink-trs-twin</module>-->
   </modules>
+
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+<!--  <repositories>
+&lt;!&ndash;    <repository>
+      <id>central</id>
+      <name>scott-central</name>
+      <url>https://aide.md.kth.se/artifactory/scott-central</url>
+    </repository>&ndash;&gt;
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>scott-central</name>
+      <url>https://aide.md.kth.se/artifactory/scott-central</url>
+    </pluginRepository>
+  </pluginRepositories>-->
+  <repositories>
+    <repository>
+      <id>lyo-releases</id>
+      <name>Eclipse Lyo Releases</name>
+      <url>https://repo.eclipse.org/content/repositories/lyo-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>lyo-snapshots</id>
+      <name>Eclipse Lyo Snapshots</name>
+      <url>https://repo.eclipse.org/content/repositories/lyo-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+<!--    <repository>
+      <id>central</id>
+      <name>SCOTT sandbox</name>
+      <url>https://aide.md.kth.se/artifactory/scott-central</url>
+    </repository>-->
+    <repository>
+      <id>central</id>
+      <name>bintray</name>
+      <url>http://jcenter.bintray.com</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>rosjava</id>
+      <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jfrog</id>
+      <url>http://repo.jfrog.org/artifactory/libs-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

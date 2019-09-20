@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.annotation.OslcAllowedValue;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDescription;
@@ -65,6 +61,7 @@ import org.eclipse.lyo.oslc4j.core.model.Representation;
 import org.eclipse.lyo.oslc4j.core.model.ValueType;
 
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.pddl.IAction;
 import eu.scott.warehouse.domains.pddl.IConstant;
@@ -99,7 +96,7 @@ public interface IDomain
     @OslcValueType(ValueType.Resource)
     @OslcRange({PddlDomainConstants.CONSTANT_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Link> getConstant();
+    public Set<Link> getConstant();
 
     @OslcName("function")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "function")
@@ -107,7 +104,7 @@ public interface IDomain
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getFunction();
+    public Set<Link> getFunction();
 
     @OslcName("predicate")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "predicate")
@@ -115,7 +112,7 @@ public interface IDomain
     @OslcOccurs(Occurs.ZeroOrMany)
     @OslcValueType(ValueType.Resource)
     @OslcReadOnly(false)
-    public HashSet<Link> getPredicate();
+    public Set<Link> getPredicate();
 
     @OslcName("type")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "type")
@@ -127,7 +124,7 @@ public interface IDomain
     public Link getType();
 
     @OslcName("label")
-    @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "label")
+    @OslcPropertyDefinition(RdfsDomainConstants.RDFS_NAMSPACE + "label")
     @OslcDescription("Parameter name.")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.String)
@@ -136,9 +133,9 @@ public interface IDomain
 
 
     public void setAction(final Link action );
-    public void setConstant(final HashSet<Link> constant );
-    public void setFunction(final HashSet<Link> function );
-    public void setPredicate(final HashSet<Link> predicate );
+    public void setConstant(final Set<Link> constant );
+    public void setFunction(final Set<Link> function );
+    public void setPredicate(final Set<Link> predicate );
     public void setType(final Link type );
     public void setLabel(final String label );
 }

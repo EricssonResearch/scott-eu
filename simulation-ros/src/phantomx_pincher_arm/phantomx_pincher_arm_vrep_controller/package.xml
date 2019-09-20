@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <name>phantomx_pincher_arm_vrep_controller</name>
+  <version>1.0.0</version>
+  <description>ros_control for phanomXPincher back end for vrep (i.e. ~ gazebo_ros_control but for vrep and for a specific robot)</description>
+
+  <maintainer email="amadeu.nascimento.junior@ericsson.com">Amadeu do Nascimento Júnior</maintainer>
+
+  <license>MIT</license>
+
+  <author email="amadeu.nascimento.junior@ericsson.com">Amadeu do Nascimento Junior</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>rosconsole</run_depend>
+  <run_depend>roslib</run_depend>
+
+</package>

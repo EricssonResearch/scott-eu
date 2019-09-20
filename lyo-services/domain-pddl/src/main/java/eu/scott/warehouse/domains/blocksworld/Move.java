@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
@@ -71,13 +67,14 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
+import eu.scott.warehouse.domains.pddl.Action;
+
 import eu.scott.warehouse.domains.blocksworld.BworldDomainConstants;
 import eu.scott.warehouse.domains.blocksworld.Block;
 import eu.scott.warehouse.domains.blocksworld.LocationOrBlock;
 import eu.scott.warehouse.domains.blocksworld.LocationOrBlock;
 
 // Start of user code imports
-import eu.scott.warehouse.domains.pddl.Action;
 // End of user code
 
 // Start of user code preClassCode
@@ -94,20 +91,19 @@ public class Move
 {
     // Start of user code attributeAnnotation:moveB
     // End of user code
-    private Link moveB = new Link();
+    private Link moveB;
     // Start of user code attributeAnnotation:moveX
     // End of user code
-    private Link moveX = new Link();
+    private Link moveX;
     // Start of user code attributeAnnotation:moveY
     // End of user code
-    private Link moveY = new Link();
+    private Link moveY;
     
     // Start of user code classAttributes
     // End of user code
     // Start of user code classMethods
     // End of user code
     public Move()
-           throws URISyntaxException
     {
         super();
     
@@ -116,14 +112,12 @@ public class Move
     }
     
     public Move(final URI about)
-           throws URISyntaxException
     {
         super(about);
     
         // Start of user code constructor2
         // End of user code
     }
-    
     
     public static ResourceShape createResourceShape() throws OslcCoreApplicationException, URISyntaxException {
         return ResourceShapeFactory.createResourceShape(OSLC4JUtils.getServletURI(),
@@ -150,37 +144,10 @@ public class Move
             // End of user code
         }
         else {
-            result = getAbout().toString();
+            result = String.valueOf(getAbout());
         }
     
         // Start of user code toString_finalize
-        result = "Move{" + "block=" + moveB + ", from=" + moveX + ", to=" + moveY + '}';
-        // End of user code
-    
-        return result;
-    }
-    
-    public String toHtml()
-    {
-        return toHtml(false);
-    }
-    
-    public String toHtml(boolean asLocalResource)
-    {
-        String result = "";
-        // Start of user code toHtml_init
-        // End of user code
-    
-        if (asLocalResource) {
-            result = toString(true);
-            // Start of user code toHtml_bodyForLocalResource
-            // End of user code
-        }
-        else {
-            result = "<a href=\"" + getAbout() + "\" class=\"oslc-resource-link\">" + toString() + "</a>";
-        }
-    
-        // Start of user code toHtml_finalize
         // End of user code
     
         return result;
@@ -189,8 +156,8 @@ public class Move
     
     // Start of user code getterAnnotation:moveB
     // End of user code
-    @OslcName("moveB")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveB")
+    @OslcName("move-b")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-b")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.BLOCK_TYPE})
@@ -204,8 +171,8 @@ public class Move
     
     // Start of user code getterAnnotation:moveX
     // End of user code
-    @OslcName("moveX")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveX")
+    @OslcName("move-x")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-x")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.LOCATION_OR_BLOCK_TYPE})
@@ -219,8 +186,8 @@ public class Move
     
     // Start of user code getterAnnotation:moveY
     // End of user code
-    @OslcName("moveY")
-    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "moveY")
+    @OslcName("move-y")
+    @OslcPropertyDefinition(BworldDomainConstants.BLOCKSWORLD_DOMAIN_NAMSPACE + "move-y")
     @OslcOccurs(Occurs.ExactlyOne)
     @OslcValueType(ValueType.Resource)
     @OslcRange({BworldDomainConstants.LOCATION_OR_BLOCK_TYPE})
@@ -267,134 +234,6 @@ public class Move
     
         // Start of user code setterFinalize:moveY
         // End of user code
-    }
-    
-    
-    static public String moveBToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:moveBToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"move-b\">move-b: </LABEL>";
-    
-        // Start of user code "Mid:moveBToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:moveBToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String moveXToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:moveXToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"move-x\">move-x: </LABEL>";
-    
-        // Start of user code "Mid:moveXToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:moveXToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    static public String moveYToHtmlForCreation (final HttpServletRequest httpServletRequest)
-    {
-        String s = "";
-    
-        // Start of user code "Init:moveYToHtmlForCreation(...)"
-        // End of user code
-    
-        s = s + "<label for=\"move-y\">move-y: </LABEL>";
-    
-        // Start of user code "Mid:moveYToHtmlForCreation(...)"
-        // End of user code
-    
-        // Start of user code "Finalize:moveYToHtmlForCreation(...)"
-        // End of user code
-    
-        return s;
-    }
-    
-    
-    public String moveBToHtml()
-    {
-        String s = "";
-    
-        // Start of user code moveBtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((moveB == null) || (moveB.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new Block (moveB.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code moveBtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String moveXToHtml()
-    {
-        String s = "";
-    
-        // Start of user code moveXtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((moveX == null) || (moveX.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new LocationOrBlock (moveX.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code moveXtoHtml_finalize
-        // End of user code
-    
-        return s;
-    }
-    
-    public String moveYToHtml()
-    {
-        String s = "";
-    
-        // Start of user code moveYtoHtml_mid
-        // End of user code
-    
-        try {
-            if ((moveY == null) || (moveY.getValue() == null)) {
-                s = s + "<em>null</em>";
-            }
-            else {
-                s = s + (new LocationOrBlock (moveY.getValue())).toHtml(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    
-        // Start of user code moveYtoHtml_finalize
-        // End of user code
-    
-        return s;
     }
     
     

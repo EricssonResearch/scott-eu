@@ -1,8 +1,4 @@
-# ELIoT LWM2M Simulation
+## Getting started
 
-* ``CoapNode/`` Client source code
-* ``leshan/`` Server source code
-* ``demo/`` built artifacts running on docker container with image, deploy by ``run.sh``
-
-
-
+    docker-compose build
+    docker-compose up

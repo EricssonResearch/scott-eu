@@ -1,7 +1,8 @@
 .PHONY: build push
 
 build:
-	docker build -t ${CI_REGISTRY_IMAGE}/scott-robot-emulator .
+	docker build -t scott/robot-emulator .
 
 push:
-	docker push ${CI_REGISTRY_IMAGE}/scott-robot-emulator
+	docker image tag scott/robot-emulator ${CI_REGISTRY_IMAGE}/robot-emulator:$(CI_COMMIT_REF_NAME)
+	docker push ${CI_REGISTRY_IMAGE}/robot-emulator:$(CI_COMMIT_REF_NAME)

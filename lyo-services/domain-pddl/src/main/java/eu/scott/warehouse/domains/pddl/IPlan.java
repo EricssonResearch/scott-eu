@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.lyo.oslc4j.core.annotation.OslcAllowedValue;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDescription;
@@ -94,7 +90,7 @@ public interface IPlan
     @OslcValueType(ValueType.LocalResource)
     @OslcRange({PddlDomainConstants.STEP_TYPE})
     @OslcReadOnly(false)
-    public HashSet<Step> getStep();
+    public Set<Step> getStep();
 
     @OslcName("time")
     @OslcPropertyDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE + "time")
@@ -106,7 +102,7 @@ public interface IPlan
 
 
     public void setCost(final Float cost );
-    public void setStep(final HashSet<Step> step );
+    public void setStep(final Set<Step> step );
     public void setTime(final Float time );
 }
 

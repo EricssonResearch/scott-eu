@@ -1,0 +1,36 @@
+# Created on: Aug 23, 2018
+#     Author: Enyu Cao
+#     Based on example.launch, and was adjusted for Scott.
+# Configuration for subscribers to cmd_vel sources. 
+#
+# Typically automatic controllers, as ROS navigation stack should have the minimum priority
+# Safety controller and Keyboard operation have higher priority.
+# 
+# Note: this is only for one robot! Need to find a way for multiple robots.
+# Individual subscriber configuration:
+#   name:           Source name
+#   topic:          The topic that provides cmd_vel messages
+#   timeout:        Time in seconds without incoming messages to consider this topic inactive
+#   priority:       Priority: an UNIQUE unsigned integer from 0 (lowest) to MAX_INT 
+#   short_desc:     Short description (optional)
+
+subscribers:
+  - name:        "Navigation Controller"
+    topic:       "/turtlebot2i/cmd_vel_mux/navigation"     # /$(arg robot_name)
+    timeout:     0.5
+    priority:    1
+    short_desc:  "Navigation stack controller"
+#Safety
+  - name:        "Safety Controller"
+    topic:       "/turtlebot2i/cmd_vel_mux/safety_controller" # /$(arg robot_name)
+    timeout:     0.1
+    priority:    5
+    short_desc:  "Velocity comming from the risk assessment"
+#KeyOp
+  - name:        "Keyboard Controller"
+    topic:       "/turtlebot2i/cmd_vel_mux/keyop"  # /$(arg robot_name)
+    timeout:     0.1
+    priority:    10
+    short_desc:  "Velocity comming from the keyop"
+
+publisher:       "/turtlebot2i/commands/velocity" # "/$(arg robot_name)/commands/velocity"

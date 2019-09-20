@@ -45,3 +45,18 @@
   a lib:Namespace ;
   lib:mnemonic "pddle" ;
   lib:namespace <http://ontology.cf.ericsson.net/pddl_example/> .
+
+<warehouse_domain.ttl>
+  a lib:Ontology ;
+  dcterms:title "Warehouse Domain"^^rdf:XMLLiteral ;
+  lib:source <http://ontology.cf.ericsson.net/warehouse_domain#> .
+
+<warehouse_problem.ttl>
+  a lib:Ontology ;
+  dcterms:title "Warehouse Problem"^^rdf:XMLLiteral ;
+  lib:source <http://ontology.cf.ericsson.net/warehouse_problem#> .
+
+[ a lib:Namespace ;
+  lib:mnemonic "wh" ;
+  lib:namespace <http://ontology.cf.ericsson.net/warehouse/>
+] .
