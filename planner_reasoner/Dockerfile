@@ -11,15 +11,16 @@ RUN apt-get update && \
 # Uni Saarland was timing out from time to time and failing builds
 # VAL removed Makefile support without any release or tag, pinned the last make-based hash
 RUN mkdir -p /opt/PlannerServer && \
-    git clone https://github.com/KCL-Planning/VAL.git && \
     wget https://aide.md.kth.se/uploads/Metric-FF-v2.0.tgz && \
     echo "$CHECKSUM Metric-FF-v2.0.tgz" | sha256sum -c - || exit 1 && \
     tar xfz Metric-FF-v2.0.tgz && \
     rm Metric-FF-v2.0.tgz && \
     cd /tmp/Metric-FF-v2.0 && \
     make && \
-    mv ff /opt/PlannerServer && \
-    cd /tmp/VAL && git reset --hard a5565396007eee73ac36527fbf904142b3077c74 \
+    mv ff /opt/PlannerServer
+
+RUN git clone https://github.com/KCL-Planning/VAL.git && \
+    cd /tmp/VAL && git reset --hard a5565396007eee73ac36527fbf904142b3077c74 && \
     make clean && make && \
     mv validate /opt/PlannerServer
 
