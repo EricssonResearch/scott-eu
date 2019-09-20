@@ -1,29 +1,65 @@
-package se.ericsson.cf.scott.sandbox.whc.xtra.managers;
+/*
+ * Copyright (c) 2019 Ericsson Research and others
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import com.google.common.collect.Lists;
-import java.util.Collection;
-import java.util.concurrent.Executors;
-import org.eclipse.lyo.oslc4j.trs.client.config.TrsConsumerConfiguration;
-import org.eclipse.lyo.oslc4j.trs.client.config.TrsProviderConfiguration;
-import org.eclipse.lyo.oslc4j.trs.client.util.TrsConsumerUtils;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import se.ericsson.cf.scott.sandbox.whc.xtra.AdaptorHelper;
-import se.ericsson.cf.scott.sandbox.whc.xtra.WhcConfig;
+package se.ericsson.cf.scott.sandbox.whc.xtra.managers;
 
 
 public class TRSManager {
-    private final static Logger log = LoggerFactory.getLogger(TRSManager.class);
+//    private final static Logger log = LoggerFactory.getLogger(TRSManager.class);
 
-    public static void initTRSClient(final MqttClient mqttClient) {
-        final TrsConsumerConfiguration consumerConfig = new TrsConsumerConfiguration(
-            AdaptorHelper.p(WhcConfig.KB_QUERY_PROP), AdaptorHelper.p(WhcConfig.KB_UPDATE_PROP),
-            null, null,
-            Executors.newSingleThreadScheduledExecutor(), null, null);
-        final Collection<TrsProviderConfiguration> providerConfigs = Lists.newArrayList(
-            TrsProviderConfiguration.forMQTT(mqttClient,
-                AdaptorHelper.p(WhcConfig.MQTT_TOPIC_PROP)));
-        TrsConsumerUtils.buildHandlersSequential(consumerConfig, providerConfigs);
-    }
+//    public static void initTRSClient(final MqttClient mqttClient) throws MqttException {
+////        final IProviderEventHandler eventHandler = new LoggingProviderHandler();
+////        final MqttProviderHandler providerHandler = new MqttProviderHandler() {
+////            @Override
+////            public void handlePush(final ChangeEventMessageTR eventMessage) {
+////                log.
+////            }
+////        };
+//        final IMqttMessageListener messageListener = new MqttTrsEventListener((changeEventMessage, topic) -> {
+//            changeEventMessage.
+//            log.debug("CE from $topic: ${changeEventMessage}");
+//        });
+//        final String topic = AdaptorHelper.p(WhcConfig.MQTT_TOPIC_PROP);
+//
+//        mqttClient.subscribe(topic, messageListener);
+//
+//        log.info("TRS event listener registered on the '{}' topic", topic);
+//    }
+
+//    private static class LoggingProviderHandler implements IProviderEventHandler {
+//        private final static Logger log = LoggerFactory.getLogger(LoggingProviderHandler.class);
+//
+//        @Override
+//        public void finishCycle() {
+//
+//        }
+//
+//        @Override
+//        public void handleBaseMember(final BaseMember baseMember) {
+//
+//        }
+//
+//        @Override
+//        public void handleChangeEvent(final ChangeEventMessageTR eventMessageTR) {
+//            log.info("New CE received: {}", eventMessageTR.getChangeEvent());
+//        }
+//
+//        @Override
+//        public void rebase() {
+//
+//        }
+//    }
 }

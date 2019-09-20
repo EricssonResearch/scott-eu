@@ -85,7 +85,7 @@ public class ServletListener implements ServletContextListener  {
             logger.error("servletListner encountered IllegalArgumentException.", e);
         }
 
-        logger.info("servletListner contextInitialized.");
+        logger.debug("servletListner contextInitialized.");
 
         // Establish connection to data backbone etc ...
         TwinManager.contextInitializeServletListener(servletContextEvent);
@@ -118,7 +118,7 @@ public class ServletListener implements ServletContextListener  {
     private static Optional<String> generateBasePathEnv() {
         final Map<String, String> env = System.getenv();
         if(env.containsKey(BASE_ENV_KEY)) {
-            logger.info("Found {} env variable", BASE_ENV_KEY);
+            logger.debug("Found {} env variable", BASE_ENV_KEY);
             return Optional.of(env.get(BASE_ENV_KEY));
         }
         return Optional.empty();

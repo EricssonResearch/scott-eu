@@ -1,6 +1,23 @@
+/*
+ * Copyright (c) 2019 Ericsson Research and others
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package eu.scott.warehouse.lib
 
 import org.apache.jena.rdf.model.Model
+import org.apache.jena.vocabulary.RDF
 import org.eclipse.lyo.oslc4j.core.annotation.OslcName
 import org.eclipse.lyo.oslc4j.core.annotation.OslcNamespace
 import org.eclipse.lyo.oslc4j.core.annotation.OslcResourceShape
@@ -9,7 +26,6 @@ import org.eclipse.lyo.oslc4j.core.model.IExtendedResource
 import org.eclipse.lyo.oslc4j.core.model.IResource
 import org.eclipse.lyo.oslc4j.core.model.Link
 import org.eclipse.lyo.oslc4j.provider.jena.JenaModelHelper
-import org.eclipse.lyo.oslc4j.provider.jena.LyoJenaModelException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -23,10 +39,20 @@ val IResource.link: Link
         return Link(this.about)
     }
 
-val IResource.toTurtleString: String
+val IResource.toTurtle: String
     get() {
         val model = RdfHelpers.modelFromResources(this)
         return RdfHelpers.modelToString(model)
+    }
+
+val IResource.toModel: Model
+    get() {
+        return JenaModelHelper.createJenaModel(arrayOf(this))
+    }
+
+val Model.toTurtle: String?
+    get() {
+        return RdfHelpers.modelToString(this)
     }
 
 /**
@@ -89,7 +115,6 @@ object OslcHelpers {
 
     // TODO Andrew@2018-02-23: move to JMH
     // TODO Andrew@2018-02-23: create a stateful JMH that would keep resources hashed by URI
-    @Throws(LyoJenaModelException::class)
     @JvmStatic
     private fun <R : IResource> nav(m: Model, l: Link, rClass: Class<R>): R {
         val rs = JenaModelHelper.unmarshal(m, rClass)
@@ -101,22 +126,24 @@ object OslcHelpers {
         throw IllegalArgumentException("Link cannot be followed in this model")
     }
 
-    // TODO Andrew@2019-02-21: make sure we catch all exceptions here
     @SafeVarargs
     @JvmStatic
     fun navTry(m: Model, l: Link, vararg rClass: Class<out IExtendedResource>): IExtendedResource {
         if(l.value == null) {
             throw IllegalArgumentException("Link $l has no URI value")
         }
+        if(rClass.size > 1) {
+            log.debug("Fix RDFS reasoning in JMH!!!")
+        }
         for (aClass in rClass) {
             try {
-                return nav(m, l, aClass)
-            } catch (e: IllegalArgumentException) {
-                log.warn("Fix RDFS reasoning in JMH!!!")
-            }
+                val resource = nav(m, l, aClass)
+                log.debug("Found an instance of ${aClass.simpleName}")
+                return resource
+            } catch (e: IllegalArgumentException) {}
         }
-        // give up
 
+        // give up
         if(log.isTraceEnabled) {
             val builder = StringBuilder()
             builder.appendln("Resource with URI ${l.value} was not found in the Model:")
@@ -132,23 +159,33 @@ object OslcHelpers {
         throw IllegalArgumentException("Link ${l.value} cannot be followed in this model")
     }
 
-///*
-//    @SafeVarargs
-//    @JvmStatic
-//    fun navTry(m: Model, l: Link, vararg rClass: Class<out IExtendedResource>): IExtendedResource{
-//        for (aClass in rClass) {
-//            try {
-//                return nav(m, l, aClass)
-//            } catch (e: IllegalArgumentException) {
-//                log.warn("Fix RDFS reasoning in JMH!!!")
-//            }
-//
-//        }
-//        // give up
-//        throw IllegalArgumentException("Link cannot be followed in this model")
-//    }
-//*/
+    @JvmStatic
+    fun <T : IExtendedResource> findSubclasses(rClass: Class<T>,
+                                               m: Model): Set<T> {
+        val objects = HashSet<T>()
+        for (r in m.listResourcesWithProperty(RDF.type)) {
+            try {
+                val lyoOjbect: T = JenaModelHelper.unmarshal(r, rClass)
+                objects.add(lyoOjbect)
+            } catch (e: Throwable) {
+                log.trace("${r.localName} is not an instance of ${rClass.simpleName}")
+            }
+        }
 
+        if(objects.isNotEmpty()) {
+            return objects
+        }
+
+        throw IllegalArgumentException("There are no subclasses of ${rClass.simpleName} in this model")
+    }
+
+
+    @JvmStatic
+    fun <T : IExtendedResource> follow(l: Link, rClass: Class<T>, m: Model): T {
+        val resource = m.getResource(l.value.toString())
+        val obj = JenaModelHelper.unmarshal(resource, rClass)
+        return obj
+    }
 
     @JvmStatic
     fun hexHashCodeFor(aResource: IResource): String {

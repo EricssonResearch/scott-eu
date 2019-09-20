@@ -5,7 +5,7 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompanies this distribution.
- *  
+ *
  * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
  * and the Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
@@ -35,6 +35,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.UriBuilder;
 
+import javax.xml.namespace.QName;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.PrefixDefinition;
@@ -45,25 +46,24 @@ import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 
 import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
 
-import eu.scott.warehouse.domains.mission.MissionDomainConstants;
 import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.PlanExecutionService;
+import se.ericsson.cf.scott.sandbox.twin.services.ExecutionReportsService;
+
+import static se.ericsson.cf.scott.sandbox.twin.servlet.QNames.trs;
 
 // Start of user code imports
-import java.util.Date;
-import java.util.HashMap;
-import javax.ws.rs.core.UriBuilder;
-import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
-import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
+
 // End of user code
 
 public class TwinsServiceProvidersFactory
 {
     private static Class<?>[] RESOURCE_CLASSES =
     {
-        TwinsServiceProviderService1.class
+        PlanExecutionService.class, ExecutionReportsService.class
     };
 
     private TwinsServiceProvidersFactory()
@@ -99,7 +99,7 @@ public class TwinsServiceProvidersFactory
         return constructIdentifier(serviceProviderInfo.twinKind, serviceProviderInfo.twinId);
     }
 
-    public static ServiceProvider createServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo) 
+    public static ServiceProvider createServiceProvider(final TwinsServiceProviderInfo serviceProviderInfo)
             throws OslcCoreApplicationException, URISyntaxException, IllegalArgumentException {
         // Start of user code init
         // End of user code
@@ -136,7 +136,10 @@ public class TwinsServiceProvidersFactory
 ,
             new PrefixDefinition(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE_PREFIX, new URI(PddlDomainConstants.SCOTT_PDDL_2_1_SUBSET_SPEC_NAMSPACE))
 ,
-            new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE))
+            new PrefixDefinition(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE_PREFIX, new URI(ScottDomainConstants.SCOTT_WAREHOUSE_NAMSPACE))
+,
+            new PrefixDefinition(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE_PREFIX, new URI(TwinsDomainConstants.TWINS_DOMAIN_NAMSPACE)),
+            QNames.getTrsPrefix(), QNames.getTrsxPrefix()
         };
         serviceProvider.setPrefixDefinitions(prefixDefinitions);
 
@@ -146,7 +149,10 @@ public class TwinsServiceProvidersFactory
         serviceProvider.setDetails(new URI[] {serviceProviderURI});
 
         // Start of user code finalize
+        final Map<QName, Object> ext = serviceProvider.getExtendedProperties();
+        ext.put(trs("trackedResourceSet"), UriBuilder.fromUri(serviceProviderURI).path("trs").build());
         // End of user code
         return serviceProvider;
     }
+
 }

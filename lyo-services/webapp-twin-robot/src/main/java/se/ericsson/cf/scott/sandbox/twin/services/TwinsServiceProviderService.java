@@ -25,6 +25,9 @@
 
 package se.ericsson.cf.scott.sandbox.twin.services;
 
+import eu.scott.warehouse.lib.MqttTrsServices;
+import java.net.URI;
+import java.util.Collections;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,19 +38,23 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcDialog;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcQueryCapability;
 import org.eclipse.lyo.oslc4j.core.annotation.OslcService;
-import org.eclipse.lyo.oslc4j.core.model.Compact;
 import org.eclipse.lyo.oslc4j.core.model.OslcConstants;
 import org.eclipse.lyo.oslc4j.core.model.OslcMediaType;
 import org.eclipse.lyo.oslc4j.core.model.Service;
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
 
-import se.ericsson.cf.scott.sandbox.twin.TwinManager;
+import org.eclipse.lyo.oslc4j.trs.server.InmemPagedTrs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
+import se.ericsson.cf.scott.sandbox.twin.xtra.services.MqttTrsService;
 
 // Start of user code imports
 // End of user code
@@ -56,6 +63,8 @@ import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton
 @Path("twins")
 public class TwinsServiceProviderService
 {
+    private final static Logger log = LoggerFactory.getLogger(TwinsServiceProviderService.class);
+
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse httpServletResponse;
 
@@ -82,7 +91,7 @@ public class TwinsServiceProviderService
          usages = {OslcConstants.OSLC_USAGE_DEFAULT}
     )
     @GET
-    
+
     @Produces({OslcMediaType.APPLICATION_RDF_XML, OslcMediaType.APPLICATION_JSON_LD, OslcMediaType.TEXT_TURTLE, OslcMediaType.APPLICATION_XML, OslcMediaType.APPLICATION_JSON})
     public ServiceProvider[] getServiceProviders()
     {
@@ -105,12 +114,28 @@ public class TwinsServiceProviderService
         return ServiceProviderCatalogSingleton.getTwinsServiceProvider(httpServletRequest, twinKind, twinId);
     }
 
+    @Path("{twinKind}/{twinId}/trs")
+    public Object getServiceProviderTrs(
+        @PathParam("twinKind") final String twinKind, @PathParam("twinId") final String twinId,
+        @Context UriInfo info) {
+        httpServletResponse.addHeader("Oslc-Core-Version", "2.0");
+
+        String servletURI = OSLC4JUtils.getServletURI();
+        final URI subresourceBase = UriBuilder.fromUri(servletURI).path(info.getMatchedURIs().get(0)).build();
+
+        final InmemPagedTrs pagedTrs = new InmemPagedTrs(10, 10, subresourceBase,
+            Collections.emptyList());
+        final String mqttBroker = "tcp://mqtt.svc:1883";
+        final String mqttTopic = MqttTrsServices.trsMqttTopic(twinKind, twinId);
+        return new MqttTrsService(pagedTrs, subresourceBase.toString(), mqttBroker, mqttTopic);
+    }
+
     /**
      * HTML representation of a single OSLC Service Provider
      *
      * Forwards to serviceprovider_html.jsp to create the html document
      *
-     * @param serviceProviderId
+     * @param serviceProvideArId
      */
     @GET
     @Path("{twinKind}/{twinId}")

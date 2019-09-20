@@ -57,15 +57,17 @@ import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService;
 import se.ericsson.cf.scott.sandbox.twin.services.ResourceShapeService;
 
 import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.scott.ActionExecutionReport;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
+import eu.scott.warehouse.domains.scott.ExecutableAction;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
 import eu.scott.warehouse.domains.pddl.Step;
-import eu.scott.warehouse.domains.mission.MissionDomainConstants;
-import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
+import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
-import se.ericsson.cf.scott.sandbox.twin.services.TwinsServiceProviderService1;
+import se.ericsson.cf.scott.sandbox.twin.services.PlanExecutionService;
+import se.ericsson.cf.scott.sandbox.twin.services.ExecutionReportsService;
 import se.ericsson.cf.scott.sandbox.twin.services.IndependentServiceProviderService1;
 
 // Start of user code imports
@@ -73,7 +75,7 @@ import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
-import se.ericsson.cf.scott.sandbox.twin.xtra.services.AdaptorAdminService;
+import se.ericsson.cf.scott.sandbox.twin.xtra.services.TwinAdminService;
 // End of user code
 
 // Start of user code pre_class_code
@@ -114,7 +116,8 @@ public class Application extends javax.ws.rs.core.Application {
     {
         RESOURCE_CLASSES.addAll(JenaProvidersRegistry.getProviders());
         RESOURCE_CLASSES.addAll(Json4JProvidersRegistry.getProviders());
-        RESOURCE_CLASSES.add(TwinsServiceProviderService1.class);
+        RESOURCE_CLASSES.add(PlanExecutionService.class);
+        RESOURCE_CLASSES.add(ExecutionReportsService.class);
         RESOURCE_CLASSES.add(IndependentServiceProviderService1.class);
 
         // Catalog resources
@@ -129,7 +132,7 @@ public class Application extends javax.ws.rs.core.Application {
 //        RESOURCE_CLASSES.add(UniversalResourceSingleProvider.class);
         RESOURCE_CLASSES.add(TrackedResourceSetService.class);
 
-        RESOURCE_CLASSES.add(AdaptorAdminService.class);
+        RESOURCE_CLASSES.add(TwinAdminService.class);
         // End of user code
 
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_ALLOWED_VALUES,           AllowedValues.class);
@@ -150,7 +153,9 @@ public class Application extends javax.ws.rs.core.Application {
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(OslcConstants.PATH_SERVICE_PROVIDER_CATALOG, ServiceProviderCatalog.class);
 
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.ACTION_PATH, Action.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(ScottDomainConstants.ACTIONEXECUTIONREPORT_PATH, ActionExecutionReport.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinsDomainConstants.DEVICEREGISTRATIONMESSAGE_PATH, DeviceRegistrationMessage.class);
+        RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(ScottDomainConstants.EXECUTABLEACTION_PATH, ExecutableAction.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.PLAN_PATH, Plan.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(TwinsDomainConstants.PLANEXECUTIONREQUEST_PATH, PlanExecutionRequest.class);
         RESOURCE_SHAPE_PATH_TO_RESOURCE_CLASS_MAP.put(PddlDomainConstants.STEP_PATH, Step.class);
@@ -166,9 +171,9 @@ public class Application extends javax.ws.rs.core.Application {
         }
     }
 
-    @Override 
-    public Set<Class<?>> getClasses() { 
-        return RESOURCE_CLASSES; 
+    @Override
+    public Set<Class<?>> getClasses() {
+        return RESOURCE_CLASSES;
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {

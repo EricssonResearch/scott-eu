@@ -9,8 +9,5 @@ object TrsXConstants {
     fun type(name: String) = NS + name
 
     const val TYPE_TWIN = "twin"
-    const val TYPE_EXECUTOR = "plan_executor"
 
-    public val rdfLang: Lang = Lang.JSONLD
-    public val rdfFormat: RDFFormat = RDFFormat.JSONLD_PRETTY
 }

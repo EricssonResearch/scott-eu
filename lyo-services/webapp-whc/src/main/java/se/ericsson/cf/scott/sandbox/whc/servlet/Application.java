@@ -59,8 +59,6 @@ import eu.scott.warehouse.domains.pddl.Action;
 import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.RegistrationMessage;
 import eu.scott.warehouse.domains.pddl.Step;
-import eu.scott.warehouse.domains.mission.MissionDomainConstants;
-import eu.scott.warehouse.domains.RdfsDomainConstants;
 import eu.scott.warehouse.domains.pddl.PddlDomainConstants;
 import eu.scott.warehouse.domains.twins.TwinsDomainConstants;
 import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService1;
@@ -70,7 +68,7 @@ import se.ericsson.cf.scott.sandbox.whc.services.ServiceProviderService2;
 import java.util.Collections;
 
 import se.ericsson.cf.scott.sandbox.whc.xtra.WhcBinder;
-import se.ericsson.cf.scott.sandbox.whc.xtra.services.AdminResource;
+import se.ericsson.cf.scott.sandbox.whc.xtra.services.WhcAdminService;
 // End of user code
 
 // Start of user code pre_class_code
@@ -109,7 +107,7 @@ public class Application extends javax.ws.rs.core.Application {
 
         // Start of user code Custom Resource Classes
 //        RESOURCE_CLASSES.add(WhcTrsService.class);
-        RESOURCE_CLASSES.add(AdminResource.class);
+        RESOURCE_CLASSES.add(WhcAdminService.class);
 //        RESOURCE_CLASSES.add(TrackedResourceSetServiceDI.class);
         // End of user code
 
@@ -146,9 +144,9 @@ public class Application extends javax.ws.rs.core.Application {
         }
     }
 
-    @Override 
-    public Set<Class<?>> getClasses() { 
-        return RESOURCE_CLASSES; 
+    @Override
+    public Set<Class<?>> getClasses() {
+        return RESOURCE_CLASSES;
     }
 
     public static Map<String, Class<?>> getResourceShapePathToResourceClassMap() {

@@ -41,7 +41,7 @@ services:
   whc:
     image: scott/webapp-whc
     environment:
-#      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
       LYO_BASE: "http://whc.svc:8080/"
     networks:
       overlay:
@@ -60,23 +60,52 @@ services:
         condition: none
       resources:
         limits:
-          memory: 384m
+          memory: 512m
   twins:
     image: scott/webapp-twin-robot
     environment:
-#      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
       LYO_BASE: "http://twins.svc:8080/"
+      CONTAINER_SLOT: "{{.Task.Slot}}"
     networks:
       overlay:
         aliases:
-            - twins.svc
-    expose:
-      - 80
+          - twins.svc
+    depends_on:
+      - whc
+      - planner
+      - redis
+      - mqtt
     ports:
       - "9981:9999"
     deploy:
       labels:
         caddy.address: twins.svc
+        caddy.targetport: 8080
+        caddy.tls: "off"
+      replicas: 1
+      resources:
+        limits:
+          memory: 384m
+      restart_policy:
+        condition: none
+  svc-location:
+    image: scott/webapp-svc-location
+    environment:
+      JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
+      LYO_BASE: "http://location.svc:8080/"
+    networks:
+      overlay:
+        aliases:
+          - "location.svc"
+    ports:
+      - "9982:9999"
+    depends_on:
+      - redis
+      - mqtt
+    deploy:
+      labels:
+        caddy.address: location.svc
         caddy.targetport: 8080
         caddy.tls: "off"
       replicas: 1
@@ -101,7 +130,7 @@ services:
         condition: none
       resources:
         limits:
-          memory: 512m
+          memory: 384m
   mosquitto:
     image: scott/eclipse-mosquitto
     networks:
@@ -117,7 +146,95 @@ services:
         condition: none
       resources:
         limits:
-          memory: 192m
+          memory: 128m
+  redis:
+    image: redis:5-alpine
+    networks:
+      overlay:
+        aliases:
+            - redis.svc
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: none
+      resources:
+        limits:
+          memory: 128m
+
+#   # Kafka
+#   zookeeper:
+#     image: wurstmeister/zookeeper
+#     ports:
+#       - "2181:2181"
+#     networks:
+#      - overlay
+#     deploy:
+#       replicas: 1
+#       restart_policy:
+#         condition: any
+#       resources:
+#         limits:
+#           memory: 512m
+#   kafka:
+#     image: wurstmeister/kafka:latest
+#     ports:
+#       - target: 9094
+#         published: 9094
+#         protocol: tcp
+#         mode: host
+#     networks:
+#       - overlay
+#     environment:
+# #      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+#       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+# #      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
+#       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://kafka:9094
+#       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+#       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+#       KAFKA_CREATE_TOPICS: test:4:1
+#     deploy:
+#       replicas: 1
+#       restart_policy:
+#         condition: any
+#       resources:
+#         limits:
+#           memory: 1024m
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
+
+#   # Flink
+#   job-cluster:
+#     image: scott/flink-trs-twin
+#     ports:
+#       - "8881:8081"
+#     command: job-cluster --job-classname se.ericsson.cf.scott.sandbox.flink.StreamingJob -Djobmanager.rpc.address=job-cluster -Dparallelism.default=4
+#     networks:
+#       - overlay
+#     depends_on:
+#       - kafka
+#     deploy:
+#       replicas: 1
+#       resources:
+#         limits:
+#           memory: 768m
+#       restart_policy:
+#         condition: any
+
+#   taskmanager:
+#     image: scott/flink-trs-twin
+#     command: task-manager -Djobmanager.rpc.address=job-cluster
+#     networks:
+#       - overlay
+#     depends_on:
+#       - job-cluster
+#     deploy:
+#       replicas: 4
+#       resources:
+#         limits:
+#           memory: 512m
+#       restart_policy:
+#         condition: any
   # sandbox-executor:
   #   image: scott/webapp-executor
   #   # environment:
@@ -136,25 +253,5 @@ services:
   #         memory: 384m
   #     restart_policy:
   #       condition: on-failure
-  # svc-location:
-  #   image: scott/webapp-svc-location
-  #   # environment:
-  #   #   JAVA_OPTIONS: "-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n"
-  #   networks:
-  #     - overlay
-  #   ports:
-  #    - "8090:8080" # Jetty
-  #   #  - "9991:9999" # remote debugger
-  #   # depends_on:
-  #     # - warehouse-fuseki
-  #     # - mosquitto
-  #   deploy:
-  #     replicas: 1
-  #     resources:
-  #       limits:
-  #         memory: 384m
-  #     restart_policy:
-  #       condition: on-failure
-
 networks:
   overlay:

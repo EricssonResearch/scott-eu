@@ -324,9 +324,9 @@
             <children xmi:type="notation:Node" xmi:id="_vWNt4g_ZEeihFIT0HlPICw" type="3009" element="_vTgYEA_ZEeihFIT0HlPICw">
               <children xmi:type="notation:Node" xmi:id="_vWOU4A_ZEeihFIT0HlPICw" type="5004"/>
               <children xmi:type="notation:Node" xmi:id="_vWOU4Q_ZEeihFIT0HlPICw" type="7003">
-                <children xmi:type="notation:Node" xmi:id="_4DWKcBNlEeic--BxzbxoHg" type="3010" element="_4CsDIBNlEeic--BxzbxoHg">
-                  <styles xmi:type="notation:FontStyle" xmi:id="_4DWKcRNlEeic--BxzbxoHg" fontName=".AppleSystemUIFont"/>
-                  <layoutConstraint xmi:type="notation:Location" xmi:id="_4DWKchNlEeic--BxzbxoHg"/>
+                <children xmi:type="notation:Node" xmi:id="_qh7NEKWbEemxcdpeO4uwLQ" type="3010" element="_qdGXcKWbEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_qh7NEaWbEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_qh7NEqWbEemxcdpeO4uwLQ"/>
                 </children>
                 <children xmi:type="notation:Node" xmi:id="_4DWKcxNlEeic--BxzbxoHg" type="3010" element="_4CsqMRNlEeic--BxzbxoHg">
                   <styles xmi:type="notation:FontStyle" xmi:id="_4DWKdBNlEeic--BxzbxoHg" fontName=".AppleSystemUIFont"/>
@@ -463,9 +463,9 @@
                   <styles xmi:type="notation:FontStyle" xmi:id="_vWYs_Q_ZEeihFIT0HlPICw" fontName=".AppleSystemUIFont" fontHeight="8"/>
                   <layoutConstraint xmi:type="notation:Location" xmi:id="_vWYs_g_ZEeihFIT0HlPICw"/>
                 </children>
-                <children xmi:type="notation:Node" xmi:id="_vWZUAA_ZEeihFIT0HlPICw" type="3010" element="_vVeG8Q_ZEeihFIT0HlPICw">
-                  <styles xmi:type="notation:FontStyle" xmi:id="_vWZUAQ_ZEeihFIT0HlPICw" fontName=".AppleSystemUIFont" fontHeight="8"/>
-                  <layoutConstraint xmi:type="notation:Location" xmi:id="_vWZUAg_ZEeihFIT0HlPICw"/>
+                <children xmi:type="notation:Node" xmi:id="_qiAFkKWbEemxcdpeO4uwLQ" type="3010" element="_qd3McKWbEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_qiAFkaWbEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_qiAFkqWbEemxcdpeO4uwLQ"/>
                 </children>
                 <children xmi:type="notation:Node" xmi:id="_R1EjkKuqEeiXztvONuxTyg" type="3010" element="_RnbwMKuqEeiXztvONuxTyg">
                   <styles xmi:type="notation:FontStyle" xmi:id="_R1EjkauqEeiXztvONuxTyg" fontName=".SF NS Text"/>
@@ -664,6 +664,22 @@
                   <styles xmi:type="notation:FontStyle" xmi:id="_S18ysanyEeibYKtxaqrILw" fontName=".SF NS Text"/>
                   <layoutConstraint xmi:type="notation:Location" xmi:id="_S18ysqnyEeibYKtxaqrILw"/>
                 </children>
+                <children xmi:type="notation:Node" xmi:id="_2tWuIKfKEemxcdpeO4uwLQ" type="3010" element="_2lfLkKfKEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_2tWuIafKEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_2tWuIqfKEemxcdpeO4uwLQ"/>
+                </children>
+                <children xmi:type="notation:Node" xmi:id="_5QCGQKfKEemxcdpeO4uwLQ" type="3010" element="_5Pc3cKfKEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_5QCGQafKEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_5QCGQqfKEemxcdpeO4uwLQ"/>
+                </children>
+                <children xmi:type="notation:Node" xmi:id="_Agy-IKfLEemxcdpeO4uwLQ" type="3010" element="_AgVrIKfLEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_Agy-IafLEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_Agy-IqfLEemxcdpeO4uwLQ"/>
+                </children>
+                <children xmi:type="notation:Node" xmi:id="_Cs6QYKfLEemxcdpeO4uwLQ" type="3010" element="_CsPiAKfLEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_Cs6QYafLEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_Cs6QYqfLEemxcdpeO4uwLQ"/>
+                </children>
                 <styles xmi:type="notation:SortingStyle" xmi:id="_Sj7EAanxEeibYKtxaqrILw"/>
                 <styles xmi:type="notation:FilteringStyle" xmi:id="_Sj7EAqnxEeibYKtxaqrILw"/>
               </children>
@@ -749,6 +765,36 @@
               </children>
               <styles xmi:type="notation:ShapeStyle" xmi:id="_O7S_UWRgEem9SsWpTBIJCQ" fontName=".AppleSystemUIFont" fontHeight="8"/>
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="_O7S_UmRgEem9SsWpTBIJCQ" x="236" y="298"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_6jkEsKWbEemxcdpeO4uwLQ" type="3009" element="_6dVg4KWbEemxcdpeO4uwLQ">
+              <children xmi:type="notation:Node" xmi:id="_6jtOoKWbEemxcdpeO4uwLQ" type="5004"/>
+              <children xmi:type="notation:Node" xmi:id="_6jucwKWbEemxcdpeO4uwLQ" type="7003">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_6jucwaWbEemxcdpeO4uwLQ"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_6jucwqWbEemxcdpeO4uwLQ"/>
+              </children>
+              <styles xmi:type="notation:ShapeStyle" xmi:id="_6jkEsaWbEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6jkEsqWbEemxcdpeO4uwLQ" x="244" y="241"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_reoL4KfKEemxcdpeO4uwLQ" type="3009" element="_rOca0KfKEemxcdpeO4uwLQ">
+              <children xmi:type="notation:Node" xmi:id="_rfHUEKfKEemxcdpeO4uwLQ" type="5004"/>
+              <children xmi:type="notation:Node" xmi:id="_rfH7IKfKEemxcdpeO4uwLQ" type="7003">
+                <children xmi:type="notation:Node" xmi:id="_2tXVMKfKEemxcdpeO4uwLQ" type="3010" element="_2eqK0KfKEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_2tXVMafKEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_2tXVMqfKEemxcdpeO4uwLQ"/>
+                </children>
+                <children xmi:type="notation:Node" xmi:id="_AgzlMKfLEemxcdpeO4uwLQ" type="3010" element="_AfU-gKfLEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_AgzlMafLEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_AgzlMqfLEemxcdpeO4uwLQ"/>
+                </children>
+                <children xmi:type="notation:Node" xmi:id="_Cs7egKfLEemxcdpeO4uwLQ" type="3010" element="_Cqz-oKfLEemxcdpeO4uwLQ">
+                  <styles xmi:type="notation:FontStyle" xmi:id="_Cs7egafLEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+                  <layoutConstraint xmi:type="notation:Location" xmi:id="_Cs7egqfLEemxcdpeO4uwLQ"/>
+                </children>
+                <styles xmi:type="notation:SortingStyle" xmi:id="_rfH7IafKEemxcdpeO4uwLQ"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_rfJJQKfKEemxcdpeO4uwLQ"/>
+              </children>
+              <styles xmi:type="notation:ShapeStyle" xmi:id="_rerPMKfKEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_rerPMafKEemxcdpeO4uwLQ" x="365" y="186"/>
             </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_Sj2ykanxEeibYKtxaqrILw"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_Sj2ykqnxEeibYKtxaqrILw"/>
@@ -1325,6 +1371,70 @@
           <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_QS1V9hmhEem2dvzw-IY9Vg" id="(0.5,0.5)"/>
           <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_QS1V9xmhEem2dvzw-IY9Vg" id="(0.5,0.5)"/>
         </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_9bkzoKWbEemxcdpeO4uwLQ" type="4001" element="_9YPLwKWbEemxcdpeO4uwLQ" source="_LyrokGRgEem9SsWpTBIJCQ" target="_6jkEsKWbEemxcdpeO4uwLQ">
+          <children xmi:type="notation:Node" xmi:id="_9bnP4KWbEemxcdpeO4uwLQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_9bnP4aWbEemxcdpeO4uwLQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_9bn28KWbEemxcdpeO4uwLQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_9bn28aWbEemxcdpeO4uwLQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_9bpFEKWbEemxcdpeO4uwLQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_9bpFEaWbEemxcdpeO4uwLQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_9bkzoaWbEemxcdpeO4uwLQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_9bkzoqWbEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_9bkzo6WbEemxcdpeO4uwLQ" points="[0, 0, -172, 57]$[172, -57, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_9b0EMKWbEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_9b0EMaWbEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="__BzxoKWbEemxcdpeO4uwLQ" type="4001" element="_-_LUYKWbEemxcdpeO4uwLQ" source="_NoVioGRgEem9SsWpTBIJCQ" target="_6jkEsKWbEemxcdpeO4uwLQ">
+          <children xmi:type="notation:Node" xmi:id="__BzxpKWbEemxcdpeO4uwLQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="__BzxpaWbEemxcdpeO4uwLQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="__BzxpqWbEemxcdpeO4uwLQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="__Bzxp6WbEemxcdpeO4uwLQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="__B0YsKWbEemxcdpeO4uwLQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="__B0YsaWbEemxcdpeO4uwLQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="__BzxoaWbEemxcdpeO4uwLQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="__BzxoqWbEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="__Bzxo6WbEemxcdpeO4uwLQ" points="[0, 0, -96, 57]$[96, -57, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="__B0YsqWbEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="__B0Ys6WbEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_GyKvkKWcEemxcdpeO4uwLQ" type="4001" element="_Gvi5YKWcEemxcdpeO4uwLQ" source="_O7S_UGRgEem9SsWpTBIJCQ" target="_6jkEsKWbEemxcdpeO4uwLQ">
+          <children xmi:type="notation:Node" xmi:id="_GyLWoKWcEemxcdpeO4uwLQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_GyLWoaWcEemxcdpeO4uwLQ" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_GyLWoqWcEemxcdpeO4uwLQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_GyLWo6WcEemxcdpeO4uwLQ" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_GyLWpKWcEemxcdpeO4uwLQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_GyLWpaWcEemxcdpeO4uwLQ" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_GyKvkaWcEemxcdpeO4uwLQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_GyKvkqWcEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_GyKvk6WcEemxcdpeO4uwLQ" points="[0, 0, -8, 57]$[8, -57, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_GyL9sKWcEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_GyL9saWcEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_5QEigKfKEemxcdpeO4uwLQ" type="4001" element="_5P3uMKfKEemxcdpeO4uwLQ" source="_reoL4KfKEemxcdpeO4uwLQ" target="_6jkEsKWbEemxcdpeO4uwLQ">
+          <children xmi:type="notation:Node" xmi:id="_5QEihKfKEemxcdpeO4uwLQ" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEihafKEemxcdpeO4uwLQ" x="-1" y="-9"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_5QEihqfKEemxcdpeO4uwLQ" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEih6fKEemxcdpeO4uwLQ" x="2" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_5QEiiKfKEemxcdpeO4uwLQ" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5QEiiafKEemxcdpeO4uwLQ" x="2" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_5QEigafKEemxcdpeO4uwLQ"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_5QEigqfKEemxcdpeO4uwLQ" fontName=".AppleSystemUIFont"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_5QEig6fKEemxcdpeO4uwLQ" points="[-65, 19, 86, -27]$[-115, 35, 36, -11]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_5QGXsKfKEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_5QGXsafKEemxcdpeO4uwLQ" id="(0.5,0.5)"/>
+        </edges>
       </data>
     </ownedAnnotationEntries>
     <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_vSQa4A_ZEeihFIT0HlPICw" name="SCOTT PDDL 2.1 subset spec (pddl)" width="40" height="30">
@@ -1814,10 +1924,10 @@
           <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']"/>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_4CsDIBNlEeic--BxzbxoHg" name="argument: Boolean">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_qdGXcKWbEemxcdpeO4uwLQ" name="argument: Boolean">
           <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
           <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
-          <ownedStyle xmi:type="diagram:Square" xmi:id="_4CsqMBNlEeic--BxzbxoHg" labelSize="9" showIcon="false" labelAlignment="LEFT" color="0,0,0">
+          <ownedStyle xmi:type="diagram:Square" xmi:id="_qdIMoKWbEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" color="0,0,0">
             <description xmi:type="style:SquareDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']/@style"/>
           </ownedStyle>
           <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']"/>
@@ -2072,10 +2182,10 @@
           </ownedStyle>
           <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
         </ownedElements>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_vVeG8Q_ZEeihFIT0HlPICw" name="argument: Boolean">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_qd3McKWbEemxcdpeO4uwLQ" name="argument: Boolean">
           <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
           <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resourceProperties[name='argument']"/>
-          <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_87uGkJ-qEeiTWtQqaFdR4Q" labelSize="9" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_qd3zgKWbEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" labelPosition="node">
             <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']/@style"/>
           </ownedStyle>
           <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
@@ -2529,6 +2639,38 @@
           </ownedStyle>
           <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
         </ownedElements>
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_2lfLkKfKEemxcdpeO4uwLQ" name="executionSuccess: Boolean">
+          <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionSuccess']"/>
+          <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionSuccess']"/>
+          <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_2lhn0KfKEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+            <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']/@style"/>
+          </ownedStyle>
+          <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
+        </ownedElements>
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_5Pc3cKfKEemxcdpeO4uwLQ" name="action: ExecutableAction">
+          <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='action']"/>
+          <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='action']"/>
+          <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_5PdegKfKEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+            <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']/@style"/>
+          </ownedStyle>
+          <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
+        </ownedElements>
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_AgVrIKfLEemxcdpeO4uwLQ" name="executionBegin: DateTime">
+          <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionBegin']"/>
+          <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionBegin']"/>
+          <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_AgWSMKfLEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+            <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']/@style"/>
+          </ownedStyle>
+          <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
+        </ownedElements>
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_CsPiAKfLEemxcdpeO4uwLQ" name="executionEnd: DateTime">
+          <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
+          <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
+          <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_CsPiAafLEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+            <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']/@style"/>
+          </ownedStyle>
+          <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.PropertiesList']/@subNodeMappings[name='Specification.DomainSpecification.PropertiesList.Property']"/>
+        </ownedElements>
       </ownedDiagramElements>
       <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_YpJ84KnxEeibYKtxaqrILw" name="Coord" incomingEdges="_9ti1kKnxEeibYKtxaqrILw _-W1qMKnxEeibYKtxaqrILw _-p03oKnxEeibYKtxaqrILw">
         <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='Coord']"/>
@@ -2589,7 +2731,7 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']"/>
       </ownedDiagramElements>
-      <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_LuH4sGRgEem9SsWpTBIJCQ" name="drop-belt">
+      <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_LuH4sGRgEem9SsWpTBIJCQ" name="drop-belt" outgoingEdges="_9YPLwKWbEemxcdpeO4uwLQ">
         <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='drop-belt']"/>
         <semanticElements xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='drop-belt']"/>
         <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_LuQbkGRgEem9SsWpTBIJCQ" showIcon="false" borderSize="1" borderSizeComputationExpression="1" foregroundColor="255,255,255">
@@ -2597,7 +2739,7 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']"/>
       </ownedDiagramElements>
-      <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_Nl-yMGRgEem9SsWpTBIJCQ" name="move-to-wp">
+      <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_Nl-yMGRgEem9SsWpTBIJCQ" name="move-to-wp" outgoingEdges="_-_LUYKWbEemxcdpeO4uwLQ">
         <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='move-to-wp']"/>
         <semanticElements xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='move-to-wp']"/>
         <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_Nl-yMWRgEem9SsWpTBIJCQ" showIcon="false" borderSize="1" borderSizeComputationExpression="1" foregroundColor="255,255,255">
@@ -2605,13 +2747,56 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']"/>
       </ownedDiagramElements>
-      <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_O4-EEGRgEem9SsWpTBIJCQ" name="pick-shelf">
+      <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_O4-EEGRgEem9SsWpTBIJCQ" name="pick-shelf" outgoingEdges="_Gvi5YKWcEemxcdpeO4uwLQ">
         <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='pick-shelf']"/>
         <semanticElements xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='pick-shelf']"/>
         <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_O4-rIGRgEem9SsWpTBIJCQ" showIcon="false" borderSize="1" borderSizeComputationExpression="1" foregroundColor="255,255,255">
           <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']"/>
+      </ownedDiagramElements>
+      <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_6dVg4KWbEemxcdpeO4uwLQ" name="ExecutableAction" incomingEdges="_9YPLwKWbEemxcdpeO4uwLQ _-_LUYKWbEemxcdpeO4uwLQ _Gvi5YKWcEemxcdpeO4uwLQ _5P3uMKfKEemxcdpeO4uwLQ">
+        <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
+        <semanticElements xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ExecutableAction']"/>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_6df48KWbEemxcdpeO4uwLQ" showIcon="false" borderSize="1" borderSizeComputationExpression="1" foregroundColor="255,255,255">
+          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']"/>
+      </ownedDiagramElements>
+      <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_rOca0KfKEemxcdpeO4uwLQ" name="ActionExecutionReport" outgoingEdges="_5P3uMKfKEemxcdpeO4uwLQ">
+        <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ActionExecutionReport']"/>
+        <semanticElements xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ActionExecutionReport']"/>
+        <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+        <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+        <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_rO34oKfKEemxcdpeO4uwLQ" showIcon="false" borderSize="1" borderSizeComputationExpression="1" foregroundColor="255,255,255">
+          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']"/>
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_2eqK0KfKEemxcdpeO4uwLQ" name="executionSuccess: Boolean">
+          <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionSuccess']"/>
+          <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionSuccess']"/>
+          <ownedStyle xmi:type="diagram:Square" xmi:id="_2eqK0afKEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" color="0,0,0">
+            <description xmi:type="style:SquareDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']/@style"/>
+          </ownedStyle>
+          <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']"/>
+        </ownedElements>
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_AfU-gKfLEemxcdpeO4uwLQ" name="executionBegin: DateTime">
+          <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionBegin']"/>
+          <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionBegin']"/>
+          <ownedStyle xmi:type="diagram:Square" xmi:id="_AfU-gafLEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" color="0,0,0">
+            <description xmi:type="style:SquareDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']/@style"/>
+          </ownedStyle>
+          <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']"/>
+        </ownedElements>
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_Cqz-oKfLEemxcdpeO4uwLQ" name="executionEnd: DateTime">
+          <target xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
+          <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='executionEnd']"/>
+          <ownedStyle xmi:type="diagram:Square" xmi:id="_Cqz-oafLEemxcdpeO4uwLQ" labelSize="9" showIcon="false" labelAlignment="LEFT" color="0,0,0">
+            <description xmi:type="style:SquareDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']/@style"/>
+          </ownedStyle>
+          <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@containerMappings[name='Specification.DomainSpecification']/@subContainerMappings[name='Specification.DomainSpecification.Resource']/@subNodeMappings[name='Specification.DomainSpecification.Resource.LiteralProperty']"/>
+        </ownedElements>
       </ownedDiagramElements>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_9ti1kKnxEeibYKtxaqrILw" name="[at-y, at-x]" sourceNode="_rhbqcKnxEeibYKtxaqrILw" targetNode="_YpJ84KnxEeibYKtxaqrILw" endLabel="[1, 1]">
@@ -2986,6 +3171,40 @@
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToReferenceProperty']/@conditionnalStyles.1/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_QSsMARmhEem2dvzw-IY9Vg" labelSize="9" showIcon="false"/>
         <endLabelStyle xmi:type="diagram:EndLabelStyle" xmi:id="_QSsMAhmhEem2dvzw-IY9Vg" labelSize="9" showIcon="false"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToReferenceProperty']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_9YPLwKWbEemxcdpeO4uwLQ" sourceNode="_LuH4sGRgEem9SsWpTBIJCQ" targetNode="_6dVg4KWbEemxcdpeO4uwLQ">
+      <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='drop-belt']"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_9YPy0KWbEemxcdpeO4uwLQ" targetArrow="InputClosedArrow" size="2" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToParentResource']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_9YPy0aWbEemxcdpeO4uwLQ"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToParentResource']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_-_LUYKWbEemxcdpeO4uwLQ" sourceNode="_Nl-yMGRgEem9SsWpTBIJCQ" targetNode="_6dVg4KWbEemxcdpeO4uwLQ">
+      <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='move-to-wp']"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_-_L7cKWbEemxcdpeO4uwLQ" targetArrow="InputClosedArrow" size="2" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToParentResource']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_-_L7caWbEemxcdpeO4uwLQ"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToParentResource']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_Gvi5YKWcEemxcdpeO4uwLQ" sourceNode="_O4-EEGRgEem9SsWpTBIJCQ" targetNode="_6dVg4KWbEemxcdpeO4uwLQ">
+      <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='pick-shelf']"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_Gvi5YaWcEemxcdpeO4uwLQ" targetArrow="InputClosedArrow" size="2" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToParentResource']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_Gvi5YqWcEemxcdpeO4uwLQ"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToParentResource']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_5P3uMKfKEemxcdpeO4uwLQ" name="[Local: action]" sourceNode="_rOca0KfKEemxcdpeO4uwLQ" targetNode="_6dVg4KWbEemxcdpeO4uwLQ" endLabel="[1]">
+      <target xmi:type="oslc4j_ai:Resource" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ActionExecutionReport']"/>
+      <semanticElements xmi:type="oslc4j_ai:ResourceProperty" href="spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resourceProperties[name='action']"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_5P4VQKfKEemxcdpeO4uwLQ" lineStyle="dot" size="2" strokeColor="0,0,0">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToReferenceProperty']/@conditionnalStyles.1/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_5P4VQafKEemxcdpeO4uwLQ" labelSize="9" showIcon="false"/>
+        <endLabelStyle xmi:type="diagram:EndLabelStyle" xmi:id="_5P4VQqfKEemxcdpeO4uwLQ" labelSize="9" showIcon="false"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.lyo.tools.toolchain.design/description/ToolChainModel.odesign#//@ownedViewpoints[name='ToolchainViewpoint']/@ownedRepresentations[name='SpecificationDiagram']/@defaultLayer/@edgeMappings[name='Specification.ResourceToReferenceProperty']"/>
     </ownedDiagramElements>

@@ -17,8 +17,9 @@ class TwinRepository {
 
     fun registerTwin(message: RegistrationMessage) {
         // TODO Andrew@2019-04-21: send in the RegistrationMessage
+        // FIXME Andrew@2019-07-16: SP has a bnode with the description of the CF w/URI
         val cfUri: URI = UriBuilder.fromUri(message.serviceProvider.value)
-            .path("/planExecutionRequests/create")
+            .path("/service1/planExecutionRequests/create")
             .build()
         _twins += TwinInfo(message.twinId, message.label, cfUri.toString())
     }

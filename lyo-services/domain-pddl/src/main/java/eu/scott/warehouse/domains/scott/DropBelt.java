@@ -67,7 +67,7 @@ import org.eclipse.lyo.oslc4j.core.model.ResourceShape;
 import org.eclipse.lyo.oslc4j.core.model.ResourceShapeFactory;
 
 import eu.scott.warehouse.domains.scott.ScottDomainConstants;
-
+import eu.scott.warehouse.domains.scott.ExecutableAction;
 
 
 
@@ -83,7 +83,7 @@ import eu.scott.warehouse.domains.scott.ScottDomainConstants;
 @OslcName(ScottDomainConstants.DROP_BELT_LOCALNAME)
 @OslcResourceShape(title = "drop-belt Resource Shape", describes = ScottDomainConstants.DROP_BELT_TYPE)
 public class DropBelt
-    extends AbstractResource
+    extends ExecutableAction
     implements IDropBelt
 {
     

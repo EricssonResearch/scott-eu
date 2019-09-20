@@ -15,7 +15,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <kotlin.version>1.3.20</kotlin.version>
+    <kotlin.version>1.3.41</kotlin.version>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     <kotlin.compiler.languageVersion>1.3</kotlin.compiler.languageVersion>
     <kotlin.compiler.apiVersion>1.3</kotlin.compiler.apiVersion>
@@ -35,12 +35,24 @@
   </modules>
 
 
-  <repositories>
-    <repository>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+<!--  <repositories>
+&lt;!&ndash;    <repository>
       <id>central</id>
       <name>scott-central</name>
       <url>https://aide.md.kth.se/artifactory/scott-central</url>
-    </repository>
+    </repository>&ndash;&gt;
   </repositories>
   <pluginRepositories>
     <pluginRepository>
@@ -48,36 +60,8 @@
       <name>scott-central</name>
       <url>https://aide.md.kth.se/artifactory/scott-central</url>
     </pluginRepository>
-  </pluginRepositories>
-<!--
+  </pluginRepositories>-->
   <repositories>
-    <repository>
-      <id>scott</id>
-      <name>SCOTT sandbox</name>
-      <url>https://aide.md.kth.se/artifactory/scott</url>
-    </repository>
-&lt;!&ndash;    <repository>
-      <id>rosjava</id>
-      <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>&ndash;&gt;
-&lt;!&ndash;    <repository>
-      <id>jfrog</id>
-      <url>http://repo.jfrog.org/artifactory/libs-releases/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>central</id>
-      <name>bintray</name>
-      <url>http://jcenter.bintray.com</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>&ndash;&gt;
     <repository>
       <id>lyo-releases</id>
       <name>Eclipse Lyo Releases</name>
@@ -94,5 +78,32 @@
         <enabled>false</enabled>
       </releases>
     </repository>
-  </repositories>-->
+<!--    <repository>
+      <id>central</id>
+      <name>SCOTT sandbox</name>
+      <url>https://aide.md.kth.se/artifactory/scott-central</url>
+    </repository>-->
+    <repository>
+      <id>central</id>
+      <name>bintray</name>
+      <url>http://jcenter.bintray.com</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>rosjava</id>
+      <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jfrog</id>
+      <url>http://repo.jfrog.org/artifactory/libs-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

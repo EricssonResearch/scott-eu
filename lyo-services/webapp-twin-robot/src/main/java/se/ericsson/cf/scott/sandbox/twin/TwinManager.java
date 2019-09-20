@@ -24,41 +24,36 @@
 
 package se.ericsson.cf.scott.sandbox.twin;
 
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContextEvent;
-import java.util.List;
 
 import org.eclipse.lyo.oslc4j.core.model.ServiceProvider;
-import org.eclipse.lyo.oslc4j.core.model.AbstractResource;
-import se.ericsson.cf.scott.sandbox.twin.servlet.ServiceProviderCatalogSingleton;
-import se.ericsson.cf.scott.sandbox.twin.TwinsServiceProviderInfo;
-import se.ericsson.cf.scott.sandbox.twin.IndependentServiceProviderInfo;
-import eu.scott.warehouse.domains.pddl.Action;
+import eu.scott.warehouse.domains.scott.ActionExecutionReport;
 import eu.scott.warehouse.domains.twins.DeviceRegistrationMessage;
-import eu.scott.warehouse.domains.pddl.Plan;
 import eu.scott.warehouse.domains.twins.PlanExecutionRequest;
-import eu.scott.warehouse.domains.pddl.Step;
-
 
 // Start of user code imports
+import com.google.common.base.Strings;
 import java.net.URISyntaxException;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import org.apache.commons.lang.WordUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.eclipse.lyo.oslc4j.client.OslcClient;
 import org.eclipse.lyo.oslc4j.core.exception.OslcCoreApplicationException;
-
 import org.eclipse.paho.client.mqttv3.MqttException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.ericsson.cf.scott.sandbox.twin.servlet.TwinsServiceProvidersFactory;
 import se.ericsson.cf.scott.sandbox.twin.xtra.PlanExecutionService;
 import se.ericsson.cf.scott.sandbox.twin.xtra.TwinAdaptorHelper;
 import se.ericsson.cf.scott.sandbox.twin.xtra.factory.NaiveTrsFactories;
-import se.ericsson.cf.scott.sandbox.twin.xtra.trs.TrsEventKafkaPublisher;
+import se.ericsson.cf.scott.sandbox.twin.xtra.plans.TrsActionStatusHandler;
+import eu.scott.warehouse.lib.trs.ConcurrentMqttAppender;
+import eu.scott.warehouse.lib.trs.ConcurrentRedisOrderGenerator;
+import redis.clients.jedis.Jedis;
+import eu.scott.warehouse.lib.trs.ITrsLogAppender;
 // End of user code
 
 // Start of user code pre_class_code
@@ -71,15 +66,14 @@ public class TwinManager {
     private final static Logger log = LoggerFactory.getLogger(TwinManager.class);
     private static Random r;
     private static PlanExecutionService planExecutionService;
-    private static final TrsEventKafkaPublisher kafkaPublisher = new TrsEventKafkaPublisher(
-        "kafka:9092", "test");
+//    private static final TrsEventKafkaPublisher kafkaPublisher = new TrsEventKafkaPublisher(
+//        "kafka:9092", "test");
     // End of user code
 
-
     // Start of user code class_methods
-    public static TrsEventKafkaPublisher getKafkaPublisher() {
-        return kafkaPublisher;
-    }
+//    public static TrsEventKafkaPublisher getKafkaPublisher() {
+//        return kafkaPublisher;
+//    }
 
     // End of user code
 
@@ -92,15 +86,41 @@ public class TwinManager {
         TwinAdaptorHelper.setServletContext(servletContextEvent.getServletContext());
         r = new Random();
 
-        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        planExecutionService = new PlanExecutionService(executorService, new OslcClient());
 
         log.debug("Initialising the KB");
-        TwinAdaptorHelper.initStore(false);
 
-//        log.debug("Initialising the TRS Client");
-//        TwinAdaptorHelper.initTrsClient();
-        // End of user code
+        final Jedis jedis = new Jedis("redis.svc");
+
+        final String slot = System.getenv("CONTAINER_SLOT");
+        if(Strings.isNullOrEmpty(slot) || Integer.parseUnsignedInt(slot) != 1) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("Non-master node initialising...");
+            TwinAdaptorHelper.initStore(false);
+        } else {
+            log.warn("Clearing the state of the triplestore");
+            TwinAdaptorHelper.initStore(true);
+            log.warn("Clearing Redis keys");
+            Set<String> keys = jedis.keys("order:*");
+            for (String key : keys) {
+                jedis.del(key);
+            }
+        }
+
+        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        // TODO Andrew@2019-07-15: replace with something concurrent
+        final ConcurrentRedisOrderGenerator orderGenerator = new ConcurrentRedisOrderGenerator(
+            jedis);
+        final ITrsLogAppender logAppender = new ConcurrentMqttAppender(
+            TwinAdaptorHelper.getMqttClient(), orderGenerator);
+        final TrsActionStatusHandler statusHandler = new TrsActionStatusHandler(logAppender,
+            TwinAdaptorHelper.getExecutionReportRepository());
+        final OslcClient client = new OslcClient();
+        planExecutionService = new PlanExecutionService(executorService, client, statusHandler);
+       // End of user code
     }
 
     public static void contextDestroyServletListener(ServletContextEvent servletContextEvent)
@@ -141,11 +161,25 @@ public class TwinManager {
         PlanExecutionRequest newResource = null;
 
         // Start of user code createPlanExecutionRequest
-        log.info("Incoming plan: {}", aResource);
+        log.info("Incoming plan: {}", aResource.getPlan().getValue());
         newResource = aResource;
-        planExecutionService.fulfillRequest(aResource);
+        planExecutionService.fulfillRequest(aResource, twinKind, twinId);
         // End of user code
         return newResource;
+    }
+
+
+
+
+
+    public static ActionExecutionReport getActionExecutionReport(HttpServletRequest httpServletRequest, final String twinKind, final String twinId, final String actionExecutionReportId)
+    {
+        ActionExecutionReport aResource = null;
+
+        // Start of user code getActionExecutionReport
+        // TODO Implement code to return a resource
+        // End of user code
+        return aResource;
     }
 
 
@@ -180,6 +214,14 @@ public class TwinManager {
 
 
 
+    public static String getETagFromActionExecutionReport(final ActionExecutionReport aResource)
+    {
+        String eTag = null;
+        // Start of user code getETagFromActionExecutionReport
+        // TODO Implement code to return an ETag for a particular resource
+        // End of user code
+        return eTag;
+    }
     public static String getETagFromDeviceRegistrationMessage(final DeviceRegistrationMessage aResource)
     {
         String eTag = null;
