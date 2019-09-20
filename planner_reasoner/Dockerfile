@@ -2,10 +2,11 @@ FROM ubuntu:16.04 as build
 
 WORKDIR /tmp
 
+# wget https://fai.cs.uni-saarland.de/hoffmann/ff/Metric-FF-v2.0.tgz && \
 RUN mkdir -p /opt/PlannerServer && apt-get update && \
     apt-get -yq install git wget build-essential flex bison && \
     git clone --depth=1 https://github.com/KCL-Planning/VAL.git && \
-    wget https://fai.cs.uni-saarland.de/hoffmann/ff/Metric-FF-v2.0.tgz && \
+    wget https://aide.md.kth.se/uploads/Metric-FF-v2.0.tgz && \
     tar xfz Metric-FF-v2.0.tgz && \
     rm Metric-FF-v2.0.tgz && \
     cd /tmp/Metric-FF-v2.0 && \
