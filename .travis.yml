@@ -9,4 +9,4 @@ before_install:
 
 script:
   - make build
-  # - (cd misc && ./build.sh)
+  - (cd misc && ./build.sh)
