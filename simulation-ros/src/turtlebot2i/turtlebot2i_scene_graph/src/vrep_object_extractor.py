@@ -25,9 +25,10 @@ except:
     print ('')
 
 import yaml
-from shapely.geometry import Polygon, box
+from shapely.geometry import Polygon, box, LineString
 import numpy as np
-
+from matplotlib import pyplot as plt
+import copy
 
 class SceneObject:
     def __init__(self, name, pose, ori, size, vel, bbox_min, bbox_max, handle):
@@ -99,6 +100,8 @@ class VrepObjectExtractor:
         self.static_obj_list = []
         self.dynamic_obj_list = []
         self.robot_obj_list = []
+        self.appended_robot_name = []
+        self.wall_obj_list = []
 
     # Set the list of strings with static objects' names
     def set_static_obj_names(self, name_list):
@@ -112,6 +115,10 @@ class VrepObjectExtractor:
     def set_robot_names(self, name_list):
         self.robot_name_list = name_list
 
+    # Set the list of strings with walls' names
+    def set_wall_names(self, name_list):
+        self.wall_obj_name_list = name_list
+        
 
     # Create and start remote api connection with V-REP
     def start_connection(self, ip, port):
@@ -131,7 +138,7 @@ class VrepObjectExtractor:
     # Get information of all objects
     def get_all_objects_info(self):
         
-        obj_name_list = self.static_obj_name_list + self.dynamic_obj_name_list + self.robot_name_list
+        obj_name_list = self.static_obj_name_list + self.dynamic_obj_name_list + self.robot_name_list + self.wall_obj_name_list
         obj_list = []
 
         for obj_name in obj_name_list:
@@ -164,6 +171,28 @@ class VrepObjectExtractor:
             bbox_min = [obj_pose[0]-size_x/2.0, obj_pose[1]-size_y/2.0, obj_pose[2]-size_z/2.0]
             bbox_max = [obj_pose[0]+size_x/2.0, obj_pose[1]+size_y/2.0, obj_pose[2]+size_z/2.0]
 
+            ##ADDED TO FIX THE ORIENTATION PROBLEM##
+            #calculating the bounding box
+            X_min = bbox_min[0]
+            Y_min = bbox_min[1]
+            X_max = bbox_max[0]
+            Y_max = bbox_max[1]
+            x_pos = obj_pose[0]
+            y_pos = obj_pose[1]
+            z_rot = obj_ori[2]
+            #rotation on each object (calc refer to: http://www.euclideanspace.com/maths/geometry/affine/aroundPoint/matrix2d/)
+            r00 =  np.cos(z_rot)
+            r01 = -np.sin(z_rot)
+            r10 =  np.sin(z_rot)
+            r11 =  np.cos(z_rot)
+            bbox_X_min_rotated = r00*X_min + r01*Y_min + x_pos - r00*x_pos - r01*y_pos
+            bbox_Y_min_rotated = r10*X_min + r11*Y_min + y_pos - r10*x_pos - r11*y_pos
+            bbox_X_max_rotated = r00*X_max + r01*Y_max + x_pos - r00*x_pos - r01*y_pos
+            bbox_Y_max_rotated = r10*X_max + r11*Y_max + y_pos - r10*x_pos - r11*y_pos
+            bbox_min = [bbox_X_min_rotated, bbox_Y_min_rotated]
+            bbox_max = [bbox_X_max_rotated, bbox_Y_max_rotated]
+            ##END OF FIXING THE ORIENTATION PROBLEM## 
+
             # Get velocity
             returnCode, param_vel_x = vrep.simxGetObjectFloatParameter(self.clientID, obj_handle, 11, self.operation_mode)
             returnCode, param_vel_y = vrep.simxGetObjectFloatParameter(self.clientID, obj_handle, 12, self.operation_mode)
@@ -171,6 +200,8 @@ class VrepObjectExtractor:
             returnCode, param_vel_r = vrep.simxGetObjectFloatParameter(self.clientID, obj_handle, 14, self.operation_mode)
     
             obj_vel = np.array([param_vel_x, param_vel_y, param_vel_z, param_vel_r])
+
+
    
             # Add object to static, dynamic or robot list 
             if (obj_name in self.static_obj_name_list):
@@ -179,13 +210,27 @@ class VrepObjectExtractor:
             elif (obj_name in self.dynamic_obj_name_list):
                 obj = SceneObject(obj_name, obj_pose, obj_ori, obj_size, obj_vel, bbox_min, bbox_max, obj_handle)
                 self.dynamic_obj_list.append(obj)
-            else:
+            elif (obj_name in self.wall_obj_name_list):
+                obj = SceneObject(obj_name, obj_pose, obj_ori, obj_size, obj_vel, bbox_min, bbox_max, obj_handle)
+                self.wall_obj_list.append(obj)
+            elif (obj_name in self.robot_name_list):
                 obj = Robot(obj_name, obj_pose, obj_ori, obj_size, obj_vel, bbox_min, bbox_max, obj_handle)
                 self.get_robot_vision_sensor_info(obj)
-                self.robot_obj_list.append(obj)
+                if obj_name not in self.appended_robot_name: #to avoid double insertion of robot; 
+                #it happened because we call extractor.get_all_objects_info() twice in scene graph generator when we initialized the extractor
+                    self.robot_obj_list.append(obj)
+                    self.appended_robot_name.append(obj_name)
         
         return obj_list
-
+    
+    # Check if there is any robot in V-REP
+    def get_available_robot(self):
+        available_robot = []
+        for robot_obj in self.robot_obj_list:
+            returnCode, obj_pose = vrep.simxGetObjectPosition(self.clientID, robot_obj.handle, -1, self.operation_mode)
+            if returnCode == 0:
+                available_robot.append(robot_obj)
+        return available_robot
 
     # Get robot's vision sensor info
     def get_robot_vision_sensor_info(self, robot):
@@ -225,7 +270,6 @@ class VrepObjectExtractor:
         else:
             param_perspective_angle_x = 2*np.arctan(np.tan(param_perspective_angle/2)*ratio)
             param_perspective_angle_y = param_perspective_angle
-
         return VisionSensor(vision_sensor_name, \
                             param_resolution_x, \
                             param_resolution_y, \
@@ -363,21 +407,60 @@ class VrepObjectExtractor:
 
     # Get objects that are in the vision sensor FOV
     def get_objects_from_vision_sensor(self, vision_sensor):
-    
         obj_list_detected = []
-
-        obj_list = self.static_obj_list + self.dynamic_obj_list + self.robot_obj_list
+        obj_visible = []
+        obj_list = self.static_obj_list + self.dynamic_obj_list + self.wall_obj_list #+ self.robot_obj_list
 
         if (vision_sensor == None):
             return None
-
         pol_fov = Polygon([vision_sensor.fov['upper_base'][0], vision_sensor.fov['upper_base'][1], vision_sensor.fov['lower_base'][0], vision_sensor.fov['lower_base'][1]])
+        foc = vision_sensor.fov['upper_base'][0]
+
+        #print([vision_sensor.fov['upper_base'][0], vision_sensor.fov['upper_base'][1], vision_sensor.fov['lower_base'][0], vision_sensor.fov['lower_base'][1]])
+        #fig = plt.figure(1, figsize=(5,5), dpi=90)
+        #ax = fig.add_subplot(111)
+        #x,y= pol_fov.exterior.xy
+        #ax.plot(x, y)
 
         for obj in obj_list:
             pol_obj = box(obj.bbox_min[0], obj.bbox_min[1], obj.bbox_max[0], obj.bbox_max[1])
-
             if pol_fov.intersects(pol_obj):
                 obj_list_detected.append(obj)
-
-        return obj_list_detected
+            #x,y= pol_obj.exterior.xy
+            #ax.plot(x, y)
+        for obj in obj_list_detected:
+            other_obj = []#copy.deepcopy(obj_list_detected)
+            for temp_obj in obj_list_detected:
+                if obj.name != temp_obj.name:
+                    other_obj.append(temp_obj)
+            x,y= box(obj.bbox_min[0], obj.bbox_min[1], obj.bbox_max[0], obj.bbox_max[1]).exterior.xy
+            i = 0 #no of line
+            visible = True
+            while visible and i<len(x):
+                test_line = LineString([foc, (x[i], y[i])])
+                for another_obj in other_obj:
+                    another_obj_box = box(another_obj.bbox_min[0], another_obj.bbox_min[1], another_obj.bbox_max[0], another_obj.bbox_max[1])
+                    if test_line.intersects(another_obj_box):
+                        visible = False
+                i += 1
+            if visible:
+                obj_visible.append(obj)
+            else: #If each corner is obstructed by other object, check the middle point
+                mid_point = (((max(x)+min(x))/2), ((max(y)+min(y))/2))
+                test_line = LineString([foc, mid_point])
+                visible = True
+                for another_obj in other_obj:
+                    another_obj_box = box(another_obj.bbox_min[0], another_obj.bbox_min[1], another_obj.bbox_max[0], another_obj.bbox_max[1])
+                    if test_line.intersects(another_obj_box):
+                        visible = False
+                if visible:
+                    obj_visible.append(obj)
+            #'''
+            #x,y= pol_obj.exterior.xy
+            #ax.plot(x, y)
+            #print(obj.name)
+            #print(obj.bbox_min[0], obj.bbox_min[1], obj.bbox_max[0], obj.bbox_max[1])
+            
+        #plt.show()
+        return obj_visible
         

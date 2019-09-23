@@ -1,6 +1,6 @@
-function pointCloud()
+function pointCloud(current_time)
 
-    local header = {seq = 0, stamp = simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
+    local header = {seq = 0, stamp = current_time, frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
     local data = {}
     local height = 160 
     local width  = 120
@@ -47,11 +47,14 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 	camera_handle=sim.getObjectAssociatedWithScript(sim.handle_self)
 	camera_name=sim.getObjectName(camera_handle)
 	
-	
-	
-    object_camera_rgb = sim.getObjectHandle(camera_name..'_rgb')
-    object_camera_depth = sim.getObjectHandle(camera_name..'_depth')
-	
+	camera_id = string.sub(camera_name,-1)
+	if tonumber(camera_id) then
+		object_camera_rgb = sim.getObjectHandle('camera_rgb#'..camera_id)
+    	object_camera_depth = sim.getObjectHandle('camera_depth#'..camera_id)
+	else
+		object_camera_rgb = sim.getObjectHandle('camera_rgb')
+    	object_camera_depth = sim.getObjectHandle('camera_depth')
+	end
 
 	robot_id = sim.getStringSignal("robot_id")
 	-- Get object handler
@@ -88,12 +91,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 	else
 		result1=sim.setExplicitHandling(object_camera_rgb, 1) -- disable camera rgb
 	end
-		
-		
-
-	
-    
 end 
+
+
 
 if (sim_call_type==sim.childscriptcall_cleanup) then 
 	if(not(simROS==nil))then
@@ -104,12 +104,14 @@ if (sim_call_type==sim.childscriptcall_cleanup) then
 end 
 
 if (sim_call_type==sim.childscriptcall_sensing) then
-	if(sim.getExplicitHandling(object_camera_rgb) == false) then
+
+	current_time = simROS.getTime()
+	if(sim.getExplicitHandling(object_camera_rgb) == 0) then
         local data,w,h = sim.getVisionSensorCharImage(colorCam)
 
         -- Publish camera RGB image to ROS
 	    d = {}
-        d['header'] = {seq=0, stamp=simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."_rgb_optical_frame"}
+        d['header'] = {seq=0, stamp=current_time, frame_id = robot_id..'/'..sensor_name.."_rgb_optical_frame"}
 	    d['height'] = h
 	    d['width'] = w
 	    d['encoding'] = 'rgb8'
@@ -118,21 +120,38 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 	    d['data'] = data
 	    simROS.publish(pubKinectRgb,d)
 	end
-	if(sim.getExplicitHandling(object_camera_depth) == false) then
+	if(sim.getExplicitHandling(object_camera_depth) == 0) then
         -- Publish camera depth image to ROS
-        data,w,h = sim.getVisionSensorCharImage(depthCam)
+--[[        data,w,h = sim.getVisionSensorCharImage(depthCam)
 	    d = {}
-        d['header'] = {seq=0, stamp=simROS.getTime(), frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
+        d['header'] = {seq=0, stamp=current_time, frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
 	    d['height'] = h
 	    d['width'] = w
-	    d['encoding'] = 'rgb8'
-	    d['is_bigendian'] = 1
-	    d['step'] = w*3
+	    d['encoding'] = 'rgb8'--'16UC1' 
+	    d['is_bigendian'] = 1 --1
+	    d['step'] = w*4
 	    d['data'] = data
+	    simROS.publish(pubKinectDepth,d)--]]
+
+
+    	-- Publish the image of the active vision sensor:
+
+	   	--local res,nearClippingPlane=sim.getObjectFloatParameter(object_camera_depth,sim.visionfloatparam_near_clipping)
+	   	--local res,farClippingPlane=sim.getObjectFloatParameter(object_camera_depth,sim.visionfloatparam_far_clipping)
+	   	local data = sim.getVisionSensorDepthBuffer(object_camera_depth+sim.handleflag_codedstring)
+	    local res = sim.getVisionSensorResolution(object_camera_depth)
+
+	    d={}
+	    d['header']={seq=0, stamp=current_time, frame_id = robot_id..'/'..sensor_name.."_depth_optical_frame"}
+	    d['height']=res[2]
+	    d['width']=res[1]
+	    d['encoding']='32FC1' 
+	    d['is_bigendian']=0
+	    d['step']=res[1]*4
+	    d['data']=data
 	    simROS.publish(pubKinectDepth,d)
 
         -- Publish camera point cloud to ROS
-        pointCloud()
-        
+        pointCloud(current_time)
     end      
 end

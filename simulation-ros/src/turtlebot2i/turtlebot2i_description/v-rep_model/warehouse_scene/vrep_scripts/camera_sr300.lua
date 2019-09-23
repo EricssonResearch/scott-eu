@@ -46,10 +46,16 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 	camera_handle=sim.getObjectAssociatedWithScript(sim.handle_self)
 	camera_name=sim.getObjectName(camera_handle)
 	
-	
-	
-    object_camera_rgb = sim.getObjectHandle(camera_name..'_rgb')
-    object_camera_depth = sim.getObjectHandle(camera_name..'_depth')
+	hashtag_check = string.sub(camera_name,-2,-2)
+	print(hashtag_check)
+	if hashtag_check == '#' then
+		camera_id = string.sub(camera_name,-1)
+		object_camera_rgb = sim.getObjectHandle('camera_sr300_rgb#'..camera_id)
+    	object_camera_depth = sim.getObjectHandle('camera_sr300_depth#'..camera_id)
+	else
+		object_camera_rgb = sim.getObjectHandle('camera_sr300_rgb')
+    	object_camera_depth = sim.getObjectHandle('camera_sr300_depth')
+	end
 	
 
 	robot_id = sim.getStringSignal("robot_id")

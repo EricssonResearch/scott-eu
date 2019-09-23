@@ -1,2 +1,4 @@
 pydot==1.2.4
 pyparsing==2.2.0
+tensorflow==1.13.1
+keras==2.2.4
