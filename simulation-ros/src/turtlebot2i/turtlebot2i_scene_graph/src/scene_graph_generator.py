@@ -110,7 +110,7 @@ def init():
     extractor.set_static_obj_names(['stairs', 'slidingDoor',
                                     'dockstation_body',
                                     'ConcreteBox','ConcreteBox#0','ConcreteBox#1','ConcreteBox#2','ConcreteBox#3','ConcreteBox#4','ConcreteBox#5','ConcreteBox#6',
-                                    'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm','80cmHighPillar100cm0',
+                                    'ConcreteBox#7','ConcreteBox#8','ConcreteBox#9','80cmHighPillar100cm','80cmHighPillar100cm0','ShelfBody','ShelfBody#0','ShelfBody#1','ShelfBodySimple','ShelfBodySimple#0','ShelfBodySimple#1',
                                     'ConveyorBeltBody', 'ConveyorBeltBody#0', 'ConveyorBeltBody#1','ConveyorBeltBody#2', 'ConveyorBeltBody#3', 'ConveyorBeltBody#4', 'ConveyorBeltBody#5', 'ConveyorBeltBody#6', 'ConveyorBeltBody#7', 'ConveyorBeltBody#8', 'ConveyorBeltBody#9'])
     extractor.set_dynamic_obj_names(['Walking_Bill#0','Walking_Bill#1','Walking_Bill#2','Walking_Bill#3','Walking_Bill#4','Bill','Bill#5','Bill#0'])
     extractor.set_robot_names(['turtlebot2i','turtlebot2i#0'])

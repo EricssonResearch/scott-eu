@@ -192,7 +192,7 @@ end
 
 
 
-
+--[[
 if (sim_call_type==sim.syscb_actuation) then
 
 if (firstRun==nil) then
@@ -258,3 +258,4 @@ end
 
 if (sim_call_type==sim.syscb_cleanup) then
 end
+--]]
