@@ -3,7 +3,6 @@
 build:
 	docker build -f sandbox.Dockerfile -t scott/sandbox-base .
 	docker build -f twin-robot.Dockerfile -t scott/webapp-twin-robot .
-	docker build -f twin-shelf.Dockerfile -t scott/webapp-twin-shelf .
 	docker build -f whc.Dockerfile  -t scott/webapp-whc .
 	docker build -f executor.Dockerfile  -t scott/webapp-executor .
 	docker build -f svc-location.Dockerfile  -t scott/webapp-svc-location .

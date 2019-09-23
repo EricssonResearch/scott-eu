@@ -13,7 +13,7 @@
  * Contributors:
  *
  *     Jad El-khoury        - initial implementation of client code
- *
+ *     
  *******************************************************************************/
 // End of user code
 
@@ -36,11 +36,10 @@ public class GenericRequiredAdaptorClient
 
     // Start of user code class_attributes
     // End of user code
-
+    
     // Start of user code class_methods
     // End of user code
 
-/*
     static String serviceProviderCatalogURI = "http://your.host.com/adaptor/services/catalog/singleton";
 
     public static ServiceProviderCatalog getServiceProviderCatalog() throws Exception {
@@ -59,6 +58,5 @@ public class GenericRequiredAdaptorClient
         // End of user code
         return catalog;
     }
-*/
 
 }
