@@ -43,10 +43,9 @@ def display_instances(image, boxes, masks, ids, names, scores):
             continue
 
         y1, x1, y2, x2 = boxes[i]
-        label = names[i]
-
+        label = names[ids[i]]
         print (i,' label: ',label)
-        color = class_dict[class_names[ids[i]]]
+        color = class_dict[label]
         score = scores[i] if scores is not None else None
         caption = '{} {:.2f}'.format(label, score) if score else label
         if label != 'Floor':
