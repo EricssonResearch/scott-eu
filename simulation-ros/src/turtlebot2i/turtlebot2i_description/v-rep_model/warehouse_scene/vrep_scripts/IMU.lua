@@ -28,17 +28,30 @@ if (sim_call_type == sim.childscriptcall_initialization) then
 
     robot_id = sim.getStringSignal("robot_id")
 
-    -- Initialize Gyro sensor
-    gyro_object = sim.getObjectHandle('GyroSensor_reference')
-    oldTransformationMatrix = sim.getObjectMatrix(gyro_object, -1)
+    robot_id_number = string.sub(robot_id,-1)
+    if tonumber(robot_id_number) then
+        -- Initialize Gyro sensor
+        gyro_object = sim.getObjectHandle('GyroSensor_reference#'..robot_id_number)
+        oldTransformationMatrix = sim.getObjectMatrix(gyro_object, -1)
+        -- Initialize Accelerometer
+        acc_mass_object = sim.getObjectHandle('Accelerometer_mass#'..robot_id_number)
+        acc_force_object = sim.getObjectHandle('Accelerometer_forceSensor#'..robot_id_number)
+        result,mass = sim.getObjectFloatParameter(acc_mass_object, sim.shapefloatparam_mass)
+        -- Initialize GPS
+        gps_object = sim.getObjectHandle('GPS_reference#'..robot_id_number)
+    else
+        -- Initialize Gyro sensor
+        gyro_object = sim.getObjectHandle('GyroSensor_reference')
+        oldTransformationMatrix = sim.getObjectMatrix(gyro_object, -1)
+        -- Initialize Accelerometer
+        acc_mass_object = sim.getObjectHandle('Accelerometer_mass')
+        acc_force_object = sim.getObjectHandle('Accelerometer_forceSensor')
+        result,mass = sim.getObjectFloatParameter(acc_mass_object, sim.shapefloatparam_mass)
+        -- Initialize GPS
+        gps_object = sim.getObjectHandle('GPS_reference')
+    end
 
-    -- Initialize Accelerometer
-    acc_mass_object = sim.getObjectHandle('Accelerometer_mass')
-    acc_force_object = sim.getObjectHandle('Accelerometer_forceSensor')
-    result,mass = sim.getObjectFloatParameter(acc_mass_object, sim.shapefloatparam_mass)
-
-    -- Initialize GPS
-    gps_object = sim.getObjectHandle('GPS_reference')
+    
 
     xShiftAmplitude = 0
     yShiftAmplitude = 0
@@ -50,8 +63,8 @@ if (sim_call_type == sim.childscriptcall_initialization) then
     lastTime = sim.getSimulationTime()
 	
     -- ROS publisher 
-    pubIMU = simROS.advertise(modelBaseName..'/sensors/imu', 'sensor_msgs/Imu')
-    pubGlobalPose = simROS.advertise(modelBaseName..'/sensors/global_pose', 'geometry_msgs/PoseStamped')
+    pubIMU = simROS.advertise(robot_id..'/sensors/imu', 'sensor_msgs/Imu')
+    pubGlobalPose = simROS.advertise(robot_id..'/sensors/global_pose', 'geometry_msgs/PoseStamped')
 --    pubIMU = simROS.advertise('/vrep_ros_interface/turtlebot/sensors/imu', 'sensor_msgs/Imu')
 end 
 

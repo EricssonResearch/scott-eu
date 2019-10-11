@@ -2,11 +2,17 @@
 function setCirlceSize_cb(msg)
     --Since 'setObjectSize' doesn't work, we have to use 'Scale', so we need to record the previous scale.
     --BUG: if the size is not changed (or just slightly changed), the following code will waste calculation power.
-    sim.scaleObject(zoneRed_handle,msg.critical_zone_radius/previous_critical_zone_radius,msg.critical_zone_radius/previous_critical_zone_radius,0,0)  
-    sim.scaleObject(zoneYellow_handle,msg.warning_zone_radius/previous_warning_zone_radius,msg.warning_zone_radius/previous_warning_zone_radius,0,0)
-    sim.scaleObject(zoneGreen_handle,msg.clear_zone_radius/previous_clear_zone_radius,msg.clear_zone_radius/previous_clear_zone_radius,0,0)
-    --sim.scaleObject(obj_handle,scale,scale,0,0) 
-    printf("New circle size received (seq): %d",msg.header.seq)
+    critical_scale = msg.critical_zone_radius/previous_critical_zone_radius
+    warning_scale  = msg.warning_zone_radius/previous_warning_zone_radius
+    clear_scale    = msg.clear_zone_radius/previous_clear_zone_radius
+    sim.scaleObject(zoneRed_handle,    critical_scale, critical_scale,0,0)
+    sim.scaleObject(zoneYellow_handle, warning_scale,  warning_scale, 0,0)
+    sim.scaleObject(zoneGreen_handle,  clear_scale,    clear_scale,   0,0)
+    --sim.setObjectSizeValues(zoneRed_handle,   {msg.critical_zone_radius, msg.critical_zone_radius ,0})
+    --sim.setObjectSizeValues(zoneYellow_handle,{msg.warning_zone_radius,  msg.warning_zone_radius  ,0})
+    --sim.setObjectSizeValues(zoneGreen_handle, {msg.clear_zone_radius,    msg.clear_zone_radius    ,0})
+    --sim.scaleObject(obj_handle,scale,scale,0,0)
+    --printf("New circle size received (seq): %d | %2.2f",msg.header.seq, msg.clear_zone_radius)
     previous_clear_zone_radius = msg.clear_zone_radius
     previous_warning_zone_radius = msg.warning_zone_radius
     previous_critical_zone_radius = msg.critical_zone_radius
@@ -15,7 +21,9 @@ end
 function setVels_scale_cb(msg)
    --velScale = msg.data--.scale  --a number: 0-2
    --print("setVels_scale:")
-   print("This should not be triggered.")
+   rightVelScale = msg.right_vel_scale
+   leftVelScale = msg.left_vel_scale
+   --print("This should not be triggered.")
    --printf("setVels_scale:%d",msg.data)
 end
 
@@ -23,21 +31,29 @@ function setVels_cb(msg)
    -- not sure if a scale factor must be applied
    local linVel = msg.linear.x-- in m/s
    local rotVel = msg.angular.z*interWheelDistance -- in rad/s
-   
-   --  Check if motor is enabled 
+
+   --  Check if motor is enabled
    if (motor_power == 1) then
-       velocityRight = (linVel+rotVel)*velScale
-       velocityLeft  = (linVel-rotVel)*velScale
-       printf("linVel=%2.2f,rotVel=%2.2f",linVel,rotVel)--print(linVel)
-       if (velScale>1) then
+       if ((linVel==0.0) and (rotVel==0.0)) then
+           velocityRight = rightVelScale - leftVelScale
+           velocityLeft  = leftVelScale - rightVelScale
+       elseif ((rightVelScale==0.0) and (leftVelScale==0.0)) then
+           velocityRight = 0.4*rotVel
+           velocityLeft  =-0.4*rotVel
+       else
+            velocityRight = (linVel+rotVel)*rightVelScale
+            velocityLeft  = (linVel-rotVel)*leftVelScale
+        end
+       printf("linVel=%2.2f,rotVel=%2.2f | rightVelScale=%2.2f,leftVelScale=%2.2f",linVel,rotVel,rightVelScale,leftVelScale)--print(linVel)
+       --if (velScale>1) then
            --print("speed up!")
-       end
-       if (velScale<1) then
+       --end
+       --if (velScale<1) then
            --print("slow down!")
-       end
+       --end
    else
-       velocityRight = 0 
-       velocityLeft  = 0 
+       velocityRight = 0
+       velocityLeft  = 0
    end
 end
 
@@ -46,7 +62,7 @@ function setMotor_cb(msg)
     motor_power = msg.state
 end
 
-if (sim_call_type==sim.childscriptcall_initialization) then 
+if (sim_call_type==sim.childscriptcall_initialization) then
 	if(simROS==nil)then
 		print('Warning: ' .. sim.getObjectName(sim.getObjectAssociatedWithScript(sim.handle_self)) .. ' cannot find simROS.')
 	end
@@ -55,7 +71,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     local sceneFullName = sim.getStringParameter(sim.stringparam_scene_name)
     local objectHandle = sim.getObjectAssociatedWithScript(sim.handle_self)
     root_name = sim.getObjectName(objectHandle)
-   
+
     -- Set robot name to enable multiple robots in the scene
     robot_number, robot_name = sim.getNameSuffix(root_name)
 
@@ -80,7 +96,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 
 
     -- Disable proximity sensors (Comment the lines below if want to enable some sensor)
-    --sim.setExplicitHandling(object_dock_station_ir_sensor, 1) 
+    --sim.setExplicitHandling(object_dock_station_ir_sensor, 1)
 
 
     robot_id = sim.getStringSignal('robot_id')
@@ -100,10 +116,24 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     rotVel = 0
     motor_power = 1 --Enable motors by default
     velScale = 1 -- Scale is 1 by default
-    previous_clear_zone_radius = 1.0
-    previous_warning_zone_radius = 1.0
-    previous_critical_zone_radius = 1.0
-   
+    leftVelScale = 1.0  -- Scale is 1 by default
+    rightVelScale = 1.0 -- Scale is 1 by default
+    previous_clear_zone_radius    = 0.5
+    previous_warning_zone_radius  = 0.5
+    previous_critical_zone_radius = 0.5
+
+
+    t_frontBumper = sim.getObjectHandle('bumper_front_joint')
+    t_leftBumper  = sim.getObjectHandle('bumper_left_joint')
+    t_rightBumper = sim.getObjectHandle('bumper_right_joint')
+
+    f_cliff_handle = sim.getObjectHandle('cliff_sensor_front')
+    l_cliff_handle = sim.getObjectHandle('cliff_sensor_left')
+    r_cliff_handle = sim.getObjectHandle('cliff_sensor_right')
+
+    l_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_left')
+    r_wheel_drop_handle = sim.getObjectHandle('wheel_drop_sensor_right')
+
     dock_station_ir_handle = sim.getObjectHandle('dock_station_ir_sensor')
     dock_station_handle = sim.getObjectHandle('dockstation')
 
@@ -126,32 +156,37 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     --wheel_drop_sensor = 255
 
     ----------------------------- ROS STUFF --------------------------------
-	if(not(simROS==nil))then
-		pubDockIR = simROS.advertise(robot_id..'/sensors/dock_ir', 'kobuki_msgs/DockInfraRed')
-		simROS.publisherTreatUInt8ArrayAsString(pubDockIR)
-		-- Odometry
-		pubPose = simROS.advertise(robot_id..'/odom', 'nav_msgs/Odometry')
-		simROS.publisherTreatUInt8ArrayAsString(pubPose)
-		-- Sensor State
-		pubState = simROS.advertise(robot_id..'/sensors/core', 'kobuki_msgs/SensorState')
-		simROS.publisherTreatUInt8ArrayAsString(pubState)
+    -- Bumper
+	pubBumper = simROS.advertise(robot_id..'/events/bumper', 'kobuki_msgs/BumperEvent')
+    -- Cliff
+	pubCliff = simROS.advertise(robot_id..'/events/cliff', 'kobuki_msgs/CliffEvent')
+    -- Wheel Drop
+	pubWheelDrop = simROS.advertise(robot_id..'/events/wheel_drop', 'kobuki_msgs/WheelDropEvent')
+	--  Docking IR
+    pubDockIR = simROS.advertise(robot_id..'/sensors/dock_ir', 'kobuki_msgs/DockInfraRed')
+	simROS.publisherTreatUInt8ArrayAsString(pubDockIR)
+    -- Odometry
+    pubPose = simROS.advertise(robot_id..'/odom', 'nav_msgs/Odometry')
+    simROS.publisherTreatUInt8ArrayAsString(pubPose)
+    -- Sensor State
+    pubState = simROS.advertise(robot_id..'/sensors/core', 'kobuki_msgs/SensorState')
+    simROS.publisherTreatUInt8ArrayAsString(pubState)
 
-		-- Commands
-		subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
-		subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
-		--subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','std_msgs/Float64','setVels_scale_cb')
-		subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')  
-	end
+    -- Commands
+    subCmdVel = simROS.subscribe(robot_id..'/commands/velocity','geometry_msgs/Twist','setVels_cb')
+    subCmdMotor = simROS.subscribe(robot_id..'/commands/motor_power','kobuki_msgs/MotorPower','setMotor_cb')
+    subCmdVelScale = simROS.subscribe(robot_id..'/safety/vel_scale','turtlebot2i_safety/VelocityScale','setVels_scale_cb')
+    subCmdCircleSize = simROS.subscribe(robot_id..'/safety/safety_zone','turtlebot2i_safety/SafetyZone','setCirlceSize_cb')
     --------------------END ------------------------------------
-end 
+end
 
-if (sim_call_type == sim.childscriptcall_sensing) then 
+if (sim_call_type == sim.childscriptcall_sensing) then
 
 	if(not(simROS==nil))then
 		-- Docking IR
 		local dock_ir_proximity = 255
 		local dock_ir_orientation = 255
-		
+
 		---- DOCK IR ----
 		local max_range = 0.8 -- check a way to get this value from VREP
 		local detect_angle = 0
@@ -165,9 +200,9 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 		res, detect_dist, detect_point, detect_obj_handle, detect_surf = simCheckProximitySensorEx(dock_station_ir_handle, dock_station_ir_emitter_collection_handle, detection_mode, detection_threshold, detection_max_angle)
 
 		dock_ir_data = {0, 0, 0}
-		
+
 		charger_state = sim.getIntegerSignal(robot_name .. '_charger_state')
-		
+
 		if (detect_dist ~= nil) then
 
 			ir_emitter_name = simGetObjectName(detect_obj_handle)
@@ -215,7 +250,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 
 			-- Set state to "Charging" if the robot is very close and in front of the docking station
 			if (detect_proximity < 0.10 and ir_emitter_pos_code == 2 and dock_ir_dist_ori == 2 and charger_state == 0) then
-				charger_state = 6  -- DOCKING_CHARGING 
+				charger_state = 6  -- DOCKING_CHARGING
 			end
 
 			dock_ir_data[ir_emitter_pos_code] = dock_ir_dist_ori
@@ -233,8 +268,8 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 		--    ros_dock_ir["data"] = string.char(8 * dock_ir_dist_ori)
 		--end
 
-		simROS.publish(pubDockIR, ros_dock_ir)     
-		
+		simROS.publish(pubDockIR, ros_dock_ir)
+
 		-- Odometry
 		local transformNow = sim.getObjectMatrix(mainBodyHandle,-1)
 		local pose_orientationNow = sim.multiplyMatrices(invOriginMatrix, transformNow)
@@ -253,44 +288,44 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 		local ros_pose = {}
 		ros_pose['header'] = {seq = 0,stamp=simROS.getTime(), frame_id = robot_id..'/odom'}
 		local cov = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-		
+
 		local quaternion_ros = {}
 		quaternion_ros["x"] = r_quaternion[1]
 		quaternion_ros["y"] = r_quaternion[2]
 		quaternion_ros["z"] = r_quaternion[3]
 		quaternion_ros["w"] = r_quaternion[4]
-		
+
 		local position_ros = {}
 		position_ros["x"] = r_position[1]
 		position_ros["y"] = r_position[2]
 		position_ros["z"] = r_position[3]
-		
+
 		local quaternion_map_odom_ros = {}
 		quaternion_map_odom_ros["x"] = r_map_odom_quaternion[1]
 		quaternion_map_odom_ros["y"] = r_map_odom_quaternion[2]
 		quaternion_map_odom_ros["z"] = r_map_odom_quaternion[3]
 		quaternion_map_odom_ros["w"] = r_map_odom_quaternion[4]
-		
+
 		local position_map_odom_ros = {}
 		position_map_odom_ros["x"] = r_map_odom_position[1]
 		position_map_odom_ros["y"] = r_map_odom_position[2]
 		position_map_odom_ros["z"] = r_map_odom_position[3]
-		
+
 		local pose_r = {position=position_ros, orientation=quaternion_ros}
 		ros_pose['pose'] = {pose=pose_r, covariance = cov}
-		
+
 		local linear_speed = {}
 		linear_speed["x"] = r_linear_velocity[1]
 		linear_speed["y"] = r_linear_velocity[2]
 		linear_speed["z"] = r_linear_velocity[3]
-		
+
 		local angular_speed = {}
 		angular_speed["x"] = r_angular_velocity[1]
 		angular_speed["y"] = r_angular_velocity[2]
 		angular_speed["z"] = r_angular_velocity[3]
 		ros_pose['twist'] = {twist = {linear = linear_speed, angular = angular_speed}, covariance = cov}
 		ros_pose['child_frame_id'] = robot_id..'/base_footprint'
-		simROS.publish(pubPose, ros_pose)     
+		simROS.publish(pubPose, ros_pose)
 
 		time = simROS.getTime()
 
@@ -303,7 +338,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 			child_frame_id = robot_id..'/base_footprint',
 			transform = {
 				translation = position_ros,
-				rotation = quaternion_ros 
+				rotation = quaternion_ros
 			}
 		}
 
@@ -331,7 +366,7 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 				stamp = time,
 				frame_id = robot_id..'/base_link'
 			},
-			
+
 			time_stamp = time,
 			--bumper = bumper_state,
 			--wheel_drop = wheel_drop_sensor_state,
@@ -353,9 +388,9 @@ if (sim_call_type == sim.childscriptcall_sensing) then
 		simROS.publish(pubState, ros_sensor_state)
 	end
 
-end 
+end
 
-if (sim_call_type == sim.childscriptcall_cleanup) then 
+if (sim_call_type == sim.childscriptcall_cleanup) then
     -- ROS Shutdown
 	if(not(simROS==nil))then
 		simROS.shutdownPublisher(pubPose)
@@ -365,9 +400,9 @@ if (sim_call_type == sim.childscriptcall_cleanup) then
 		simROS.shutdownPublisher(pubDockIR)
 		simROS.shutdownSubscriber(subCmdVel)
 	end
-end 
+end
 
-if (sim_call_type == sim.childscriptcall_actuation) then 
+if (sim_call_type == sim.childscriptcall_actuation) then
     s = sim.getObjectSizeFactor(objHandle) -- make sure that if we scale the robot during simulation, other values are scaled too!
     v0 = 0.4*s
     wheelDiameter = 0.085*s
@@ -379,25 +414,25 @@ if (sim_call_type == sim.childscriptcall_actuation) then
         p = sim.boolOr32(sim.getModelProperty(objHandle),sim.modelproperty_not_dynamic)
         sim.setModelProperty(objHandle,p)
         dt = sim.getSimulationTimeStep()
- 
+
         p = sim.getJointPosition(leftJoint)
         sim.setJointPosition(leftJoint,p+velocityLeft*dt*2/wheelDiameter)
-        
+
         p = sim.getJointPosition(rightJoint)
         sim.setJointPosition(rightJoint,p+velocityRight*dt*2/wheelDiameter)
-        
+
         linMov = dt*(velocityLeft+velocityRight)/2.0
         rotMov = dt*math.atan((velocityRight-velocityLeft)/interWheelDistance)
-        
+
         position = sim.getObjectPosition(objHandle, sim.handle_parent)
         orientation = sim.getObjectOrientation(objHandle, sim.handle_parent)
-        
+
         xDir = {math.cos(orientation[3]), math.sin(orientation[3]), 0.0}
-        
+
         position[1] = position[1] +xDir[1]*linMov
         position[2] = position[2] + xDir[2]*linMov
         orientation[3] = orientation[3] + rotMov
-        
+
         sim.setObjectPosition(objHandle, sim.handle_parent, position)
         sim.setObjectOrientation(objHandle, sim.handle_parent, orientation)
     else
@@ -409,4 +444,4 @@ if (sim_call_type == sim.childscriptcall_actuation) then
         sim.setJointTargetVelocity(leftJoint, velocityLeft*2/wheelDiameter)
         sim.setJointTargetVelocity(rightJoint, velocityRight*2/wheelDiameter)
     end
-end 
+end
