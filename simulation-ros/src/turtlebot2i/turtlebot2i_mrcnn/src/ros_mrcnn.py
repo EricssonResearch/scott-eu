@@ -60,7 +60,7 @@ from turtlebot2i_safety.msg import VelocityScale
 LOG_DIR = os.path.join(ROOT_DIR, "logs")
 #MODEL_PATH = os.path.join(ROOT_DIR, "models/mask_rcnn_coco.h5")
 MODEL_PATH = os.path.join(ROOT_DIR,"models/mrcnn.h5")
-#MODEL_PATH = "/home/etrrhmd/coco_vrepall_1002.h5"
+
 
 class ShapesConfig(Config):
     """Configuration for training on the toy shapes dataset.
@@ -127,6 +127,11 @@ class ros_mask_rcnn:
         # Set topics
         self.bridge = CvBridge()
         self.check = False
+        self.to_display = True
+        option = input("Do you want to display the inference result and scene graph? (yes/no): ") 
+        
+        if option.lower() != 'yes':
+            self.to_display = False
 
         # Use ApproximateTimeSynchronizer if depth and rgb camera doesn't havse same timestamp, otherwise use Time Synchronizer if both cameras have same timestamp.
         self.image_sub = message_filters.Subscriber('/turtlebot2i/camera/rgb/raw_image', Image)
@@ -195,10 +200,10 @@ class ros_mask_rcnn:
             results = self.model.detect([cv_image], verbose=1)
 
             r = results[0]
-
-            img_out = display_instances(
-                cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
-            )
+            if self.to_display == True:
+                img_out = display_instances(
+                    cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
+                )
             
             #if len(r['class_ids']) > 0:
 
@@ -297,7 +302,8 @@ class ros_mask_rcnn:
             #cv2.imshow('cv_depth_image', cv_depth_image)
             #cv2.waitKey(0)
             # s = Source(dot, filename="scene_graph", format="png")
-            self.dot.render('scene_graph.gv', view= not self.check)
+            if self.to_display == True:
+                self.dot.render('scene_graph.gv', view= not self.check)
 
             if self.check == False:
                 # s.view()
