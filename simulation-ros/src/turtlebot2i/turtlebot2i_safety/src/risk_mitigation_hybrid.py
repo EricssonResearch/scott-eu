@@ -281,7 +281,7 @@ class ReinforceAgent():
 EPISODES = 3000
 if __name__ == '__main__':
     try:
-        rospy.init_node('hybrid_training_rl_py')
+        rospy.init_node('risk_mitigation_hybrid_py')
         training_mode = False
         env = Env()
         agent = ReinforceAgent(env,training_mode)

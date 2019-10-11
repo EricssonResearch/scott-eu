@@ -14,8 +14,8 @@
   <node pkg="turtlebot2i_safety" name="zone_generation_py"     type="zone_generation.py"     output="screen"/> 
 
   <!-- RL module  --> 
-  <node pkg="turtlebot2i_safety" name="training_mlp_py"        type="training_mlp.py"        output="screen"/>
-  <!-- <node pkg="turtlebot2i_safety" name="training_cnn_py"        type="training_cnn.py"        output="screen"/>  --> 
-  <!-- <node pkg="turtlebot2i_safety" name="hybrid_training_rl_py"  type="training_hybrid.py"     output="screen"/>  --> 
+  <node pkg="turtlebot2i_safety" name="risk_mitigation_mlp_py"        type="risk_mitigation_mlp.py"        output="screen"/>
+  <!-- <node pkg="turtlebot2i_safety" name="risk_mitigation_cnn_py"        type="risk_mitigation_cnn.py"        output="screen"/>  --> 
+  <!-- <node pkg="turtlebot2i_safety" name="risk_mitigation_hybrid_py"     type="risk_mitigation_hybrid.py"     output="screen"/>  --> 
 
 </launch>
