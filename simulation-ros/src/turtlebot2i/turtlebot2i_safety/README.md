@@ -16,17 +16,27 @@ The risk assessment rules are stored in the `assessment_rules.py`.
 
 The risk mitigation using fuzzy logic system is implemented in ´risk_mitigation_fls.py´ and the rules are stored in the `mitigation_rules.py`.
 
-The risk mitigation using reinforcement learning with fully connected network is implemented in  `training_mlp.py` 
+The risk mitigation using reinforcement learning with fully connected network is implemented in  `risk_mitigation_mlp.py` 
 
-The risk mitigation using reinforcement learning with convoloutional neural network is implemented in  `training_cnn.py` 
+The risk mitigation using reinforcement learning with convoloutional neural network is implemented in  `risk_mitigation_cnn.py` 
 
-The risk mitigation using reinforcement learning with hybrid network is implemented in  `training_hybrid.py` 
+The risk mitigation using reinforcement learning with hybrid network is implemented in  `risk_mitigation_hybrid.py` 
 
 # 3. Running the Risk Assessment and Mitigation (Risk Management)
 
-Before running the risk assessment and risk mitigation module, make sure the scene graph generator module is running.
+Before running the risk assessment and risk mitigation module, make sure the simulation, navigation, and scene graph generator module is running.
+The simulation scenario must be running and have the correct map. The map can be checked by running the navigation module:
+ 
+```
+roslaunch turtlebot2i_navigation turtlebot2i_navigation_single.launch
+```
+The scene graph generator can be run by calling:
+```
+rosrun turtlebot2i_scene_graph scene_graph_generator.py
+```
 
-The risk assessment can be run by executing the following:
+
+The risk assessment can be run by executing the both commands:
 ```
 rosrun turtlebot2i_safety risk_assessment.py
 rosrun turtlebot2i_safety zone_generation.py
@@ -36,12 +46,9 @@ The risk mitigation can be run by executing one of the following commands:
 ```
 rosrun turtlebot2i_safety risk_mitigation_fls.py
 ```
-or (replace `XXX` with either `mlp`, `cnn`, or `hybrid`)
-```
-rosrun turtlebot2i_safety training_mlp.py
-```
+or you can replace `fls` with either `mlp`, `cnn`, or `hybrid` to run the reinforcement learning models.
 
-Alternatively, it is possible to run the launch script (this script also runs the scenegraph generator module along with the risk assessment and risk mitigation modules):
+Alternatively, it is possible to run the launch script (this script also runs the navigation and scenegraph generator modules along with the risk assessment and risk mitigation modules):
 ```
 roslaunch turtlebot2i_safety turtlebot2i_safety_fls.launch 
 ```
@@ -71,7 +78,7 @@ Follow the scripts in the `Labeling_tools` folder.
 
 # 5. Training mode
 
-To train the risk mitigation module using reinforcement learning, change the following variables in the file `training_XXX.py`:
+To train the risk mitigation module using reinforcement learning, change the following variables in the file `risk_mitigation_XXX.py`:
 
 On ReinforceAgent initialization:
 ```

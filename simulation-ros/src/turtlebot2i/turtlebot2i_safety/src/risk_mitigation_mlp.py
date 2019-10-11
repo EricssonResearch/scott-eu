@@ -138,7 +138,7 @@ class ReinforceAgent():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('training_mlp_py')
+        rospy.init_node('risk_mitigation_mlp_py')
         pub_result = rospy.Publisher('result', Float32MultiArray, queue_size=5)
         pub_get_action = rospy.Publisher('get_action', Float32MultiArray, queue_size=5)
         result = Float32MultiArray()
