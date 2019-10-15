@@ -27,8 +27,10 @@ class ReinforceAgent():
         self.dirPath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src/models/mlp_')
         self.result = Float32MultiArray()
 
-        self.load_model = True
-        self.load_episode = 885#340 #0
+        #self.load_model = True # Inference
+        self.load_model = False # Training
+        #self.load_episode = 885 # Inference
+        self.load_episode = 0 # Training
         self.state_size = state_size
         self.action_size = action_size
         self.episode_step = 6000
@@ -155,7 +157,8 @@ if __name__ == '__main__':
         start_time = time.time()
 
         print('start training')
-        training_mode = False
+        #training_mode = False  # Inference
+        training_mode = True    # Training
         if training_mode:
             for e in range(agent.load_episode + 1, EPISODES):
                 done = False
