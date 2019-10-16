@@ -8,7 +8,7 @@ import rospy
 import std_msgs.msg
 from graphviz import Digraph
 from shapely.geometry import box
-from turtlebot2i_safety.msg import SceneGraph 
+from turtlebot2i_scene_graph.msg import SceneGraph 
 from vrep_object_extractor import VrepObjectExtractor
 
 pi = math.pi

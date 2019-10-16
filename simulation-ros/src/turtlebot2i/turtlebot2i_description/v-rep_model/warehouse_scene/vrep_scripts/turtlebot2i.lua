@@ -12,7 +12,7 @@ function setCirlceSize_cb(msg)
     --sim.setObjectSizeValues(zoneYellow_handle,{msg.warning_zone_radius,  msg.warning_zone_radius  ,0})
     --sim.setObjectSizeValues(zoneGreen_handle, {msg.clear_zone_radius,    msg.clear_zone_radius    ,0})
     --sim.scaleObject(obj_handle,scale,scale,0,0)
-    --printf("New circle size received (seq): %d | %2.2f",msg.header.seq, msg.clear_zone_radius)
+    printf("New circle size received (seq): %d | %2.2f",msg.header.seq, msg.clear_zone_radius)
     previous_clear_zone_radius = msg.clear_zone_radius
     previous_warning_zone_radius = msg.warning_zone_radius
     previous_critical_zone_radius = msg.critical_zone_radius

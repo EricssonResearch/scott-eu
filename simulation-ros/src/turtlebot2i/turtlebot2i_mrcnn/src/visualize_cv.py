@@ -24,7 +24,7 @@ def apply_mask(image, mask, color, alpha=0.5):
         )
     return image
 
-def display_instances(image, boxes, masks, ids, names, scores):
+def display_instances(image, boxes, masks, ids, names, scores, show_window=False):
     """
         take the image and results and apply the mask, box, and Label
     """
@@ -57,9 +57,12 @@ def display_instances(image, boxes, masks, ids, names, scores):
         new_image = cv2.putText(
             new_image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2
         )
-    cv2.imshow('frame', new_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+
+    if show_window:
+        cv2.imshow('frame', new_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
     return new_image
 
 def draw_bbox_label(image, boxes, ids, names, scores):

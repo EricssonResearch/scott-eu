@@ -21,7 +21,8 @@
 
 # Force loading python 3 version of cv2
 import importlib.util
-spec = importlib.util.spec_from_file_location("cv2", "/usr/local/lib/python3.5/dist-packages/cv2/python-3.5/cv2.cpython-35m-x86_64-linux-gnu.so")
+#spec = importlib.util.spec_from_file_location("cv2", "/usr/local/lib/python3.5/dist-packages/cv2/python-3.5/cv2.cpython-35m-x86_64-linux-gnu.so")
+spec = importlib.util.spec_from_file_location("cv2", "/usr/local/lib/python3.5/dist-packages/cv2/cv2.cpython-35m-x86_64-linux-gnu.so")
 cv2 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(cv2)
 #import cv2
@@ -43,7 +44,7 @@ from visualize_cv import display_instances, class_names
 import os
 import sys
 ROOT_DIR = os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')) 
-LIB_PATH = os.path.join(ROOT_DIR, "mrcnn/lib/mask_rcnn-2.1-py3.6.1.egg/mask_rcnn-2.1-py3.6.1")
+LIB_PATH = os.path.join(ROOT_DIR, "mrcnn/lib/mask_rcnn-2.1-py3.6.1.egg")
 print (LIB_PATH)
 sys.path.append(LIB_PATH)
 
@@ -100,15 +101,6 @@ class InferenceConfig(ShapesConfig):
     GPU_COUNT = 1
     IMAGES_PER_GPU = 1
 
-
-def depth_callback(image, depth_image):
-    try:
-        print ('inside callback')
-        print (type(image),type(depth_image))
-
-    except CvBridgeError as e:
-        print(e)
-
 class ros_mask_rcnn:
 
     def __init__(self):
@@ -128,22 +120,20 @@ class ros_mask_rcnn:
         self.bridge = CvBridge()
         self.check = False
         self.to_display = True
-        option = input("Do you want to display the inference result and scene graph? (yes/no): ") 
-        
-        if option.lower() != 'yes':
-            self.to_display = False
+       
+        self.to_display = rospy.get_param('/mrcnn/display_results', False)
+
+        #option = input("Do you want to display the inference result and scene graph? (yes/no): ") 
+        #if option.lower() != 'yes':
+        #    self.to_display = False
 
         # Use ApproximateTimeSynchronizer if depth and rgb camera doesn't havse same timestamp, otherwise use Time Synchronizer if both cameras have same timestamp.
         self.image_sub = message_filters.Subscriber('/turtlebot2i/camera/rgb/raw_image', Image)
         self.image_depth_sub = message_filters.Subscriber('/turtlebot2i/camera/depth/raw_image', Image)
         self.ts = message_filters.TimeSynchronizer([self.image_sub, self.image_depth_sub], queue_size=1)
-        #self.image_sub = message_filters.Subscriber('/image_raw', Image) #topic from the actual camera
-        #self.image_depth_sub = message_filters.Subscriber('/camera/depth/image_raw', Image) #topic from the actual camera
-        #self.ts = message_filters.ApproximateTimeSynchronizer([self.image_sub, self.image_depth_sub], queue_size=1, slop = 0.5) #use for unsynchronize image (RGB and depth)
-        print ('calling callback')
         self.ts.registerCallback(self.callback)
 
-        #self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
+        self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
         self.scenegraph_pub = rospy.Publisher('/turtlebot2i/scene_graph', SceneGraph, queue_size=10)
         self.time_start_list = []
         self.time_sg_end_list = []
@@ -166,6 +156,7 @@ class ros_mask_rcnn:
         #isOverlapping = (x1min < x2max and x2min < x1max and y1min < y2max and y2min < y1max)
         #print (isOverlapping)
         #return isOverlapping
+
     def get_type(self, i):
         if re.match(r'Wall', i):
             obj_type = 3 #wall
@@ -176,10 +167,10 @@ class ros_mask_rcnn:
         else:
             obj_type = 0 # static objects
         return obj_type
+
     def callback(self, image, depth_image):
 
         try:
-            print ('indie calling')
             self.time_start_list.append(time.time())
             farClippingPlane = 3.5
             nearClippingPlane = 0.0099999
@@ -200,10 +191,10 @@ class ros_mask_rcnn:
             results = self.model.detect([cv_image], verbose=1)
 
             r = results[0]
-            if self.to_display == True:
-                img_out = display_instances(
-                    cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
-                )
+            #if self.to_display == True:
+            img_out = display_instances(
+                cv_image, r['rois'], r['masks'], r['class_ids'], class_names, r['scores'], show_window=self.to_display 
+            )
             
             #if len(r['class_ids']) > 0:
 
@@ -317,7 +308,7 @@ class ros_mask_rcnn:
             print ('Time taken to decribe: ', time.time() - end)
 
             self.scenegraph_pub.publish(sg_message)
-            #self.image_pub.publish(self.bridge.cv2
+            self.image_pub.publish(self.bridge.cv2_to_imgmsg(img_out, "bgr8"))
 
             self.time_sg_end_list.append(time.time())
             last_duration = self.time_sg_end_list[-1] - self.time_start_list[-1]
@@ -326,11 +317,13 @@ class ros_mask_rcnn:
         except CvBridgeError as e:
             print(e)
 
-    def vel_scale_callback(self, data):
-        self.time_all_end_list.append(time.time())
-        if len(self.time_all_end_list) == 100:
-            np.savez('/home/etrrhmd/duration_result/time_duration_sg_camera.npz', time_start_list=self.time_start_list, time_sg_end_list=self.time_sg_end_list, time_all_end_list=self.time_all_end_list)
-            print("saving file")
+
+
+#    def vel_scale_callback(self, data):
+#        self.time_all_end_list.append(time.time())
+#        if len(self.time_all_end_list) == 100:
+#            np.savez('/home/etrrhmd/duration_result/time_duration_sg_camera.npz', time_start_list=self.time_start_list, time_sg_end_list=self.time_sg_end_list, time_all_end_list=self.time_all_end_list)
+#            print("saving file")
 
 if __name__ == '__main__':
     rospy.init_node('mask_rcnn_py')

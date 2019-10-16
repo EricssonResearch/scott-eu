@@ -1,6 +1,7 @@
 # 1. Overview 
 
 This ROS package makes possible perform object detection and segmentation using Mask R-CNN method.   
+The inference output is also converted into scene graph structure.
 
 # 2. Mask R-CNN for Object Detection and Segmentation
 
@@ -39,7 +40,8 @@ Follow the instructions in https://stackoverflow.com/questions/49221565/unable-t
 4. Install MRCNN library (install the required depences):
 
 ```
-sudo pip3 install tensorflow
+roscd turtlebot2i_mrcnn
+pip3 install -r requirements.txt
 ```
 
 5. The Pretrained MRCNN models is in models folder.
@@ -69,10 +71,12 @@ rosrun turtlebot2i_mrcnn ros_mrcnn.py
 
 The detection output will be available in the `/turtlebot2i/mrcnn_out` topic.
 
+4. mrcnn node will subscribe to RGB image (`/turtlebot2i/camera/rgb/raw_image`) and depth image topics (`/turtlebot2i/camera/depth/raw_image`). Rename the topics if you are publishing topics with different names.
+
 
 # 4. Training the Model
 
-If want to train new model, first, get images from rosbag or manually get a set of images.
+If want to train a new model, first, get images from rosbag or manually get a set of images.
 
 1. (Optional step) If you want to create a training dataset from rosbag
 
