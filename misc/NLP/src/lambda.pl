@@ -28,6 +28,8 @@
                   lambda/2,
                   lambdaTestSuite/0]).
 
+:- debug.
+
 :- use_module(readLine,[readLine/1]).
 
 :- use_module(comsemPredicates,[infix/0,
@@ -37,7 +39,8 @@
 
 :- use_module(betaConversion,[betaConvert/2]).
 
-%% :- use_module(sentenceTestSuite,[sentence/2]).
+%% NB! Yifei had it commented out
+:- use_module(sentenceTestSuite,[sentence/2]).
 
 :- use_module(parseRDF,[parseRDF/2,
           first_atom_uppercase/2,
