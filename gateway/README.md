@@ -31,6 +31,14 @@ To run this setup:
 
 You should see messages being exchanged. The backend does both live unmarshalling to annotation-less Kotlin data classes as well as to the OSLC resources over a dynamically loaded `GatewayDiscoveryService`.
 
+Commands:
+
+```
+(cd api && mvn clean install)
+(cd svc-example && mvn clean package)
+(cd backend && mvn clean package && java -Djava.ext.dirs=$JAVA_HOME/jre/lib/ext:../../svc-sample/target/:../../api/target/ -cp '../../svc-example/target/*:./gateway-backend-0.0.1-SNAPSHOT-jar-with-dependencies.jar' eu.scottproject.wp10.gw.backend.MainKt)
+```
+
 ## Message format
 
 **To be implemented**. Currently, the whole message is one arbitrary `msgBody`.
