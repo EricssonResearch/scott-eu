@@ -36,7 +36,7 @@ Commands:
 ```
 (cd api && mvn clean install)
 (cd svc-example && mvn clean package)
-(cd backend && mvn clean package && java -Djava.ext.dirs=$JAVA_HOME/jre/lib/ext:../../svc-sample/target/:../../api/target/ -cp '../../svc-example/target/*:./gateway-backend-0.0.1-SNAPSHOT-jar-with-dependencies.jar' eu.scottproject.wp10.gw.backend.MainKt)
+(cd backend && mvn clean package && cd target && java -Djava.ext.dirs=$JAVA_HOME/jre/lib/ext:../../svc-sample/target/:../../api/target/ -cp '../../svc-example/target/*:./gateway-backend-0.0.1-SNAPSHOT-jar-with-dependencies.jar' eu.scottproject.wp10.gw.backend.MainKt)
 ```
 
 ## Message format
