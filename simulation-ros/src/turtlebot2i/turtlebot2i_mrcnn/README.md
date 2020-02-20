@@ -47,6 +47,14 @@ pip3 install -r requirements.txt
 5. The Pretrained MRCNN models is in models folder.
 
 
+### 3.1.1 Setup to Run on GPU
+
+1. Install Cuda 9.0
+
+2. Install CuDNN 7.4.1 (runtime) for Cuda 9.0
+
+3. Install tensorflow-gpu 1.8.0
+
 ## 3.2. Running Mask R-CNN node
 
 1. Set the model path in the ros_mrcnn.py code. To do so, change the `LOG_DIR` and `MODEL_PATH` variables:
@@ -72,6 +80,14 @@ rosrun turtlebot2i_mrcnn ros_mrcnn.py
 The detection output will be available in the `/turtlebot2i/mrcnn_out` topic.
 
 4. mrcnn node will subscribe to RGB image (`/turtlebot2i/camera/rgb/raw_image`) and depth image topics (`/turtlebot2i/camera/depth/raw_image`). Rename the topics if you are publishing topics with different names.
+
+**If the "NameError: name 'reduce' is not defined" error message appears in the terminal, please, do the following:
+- Open the file `/opt/ros/kinetic/lib/python2.7/dist-packages/message_filters/__init__.py` and add the following line after the import block:
+
+```
+from functiontools import reduce
+
+```
 
 
 # 4. Training the Model
