@@ -130,7 +130,8 @@ class ros_mask_rcnn:
         # Use ApproximateTimeSynchronizer if depth and rgb camera doesn't havse same timestamp, otherwise use Time Synchronizer if both cameras have same timestamp.
         self.image_sub = message_filters.Subscriber('/turtlebot2i/camera/rgb/raw_image', Image)
         self.image_depth_sub = message_filters.Subscriber('/turtlebot2i/camera/depth/raw_image', Image)
-        self.ts = message_filters.TimeSynchronizer([self.image_sub, self.image_depth_sub], queue_size=1)
+        #self.ts = message_filters.TimeSynchronizer([self.image_sub, self.image_depth_sub], queue_size=1)
+        self.ts = message_filters.ApproximateTimeSynchronizer([self.image_sub, self.image_depth_sub], 10, 0.1)
         self.ts.registerCallback(self.callback)
 
         self.image_pub = rospy.Publisher("/turtlebot2i/mrcnn_out", Image, queue_size=1)
