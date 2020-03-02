@@ -229,7 +229,7 @@ def vel_scale_callback(data):
     global time_start_list, time_sg_end_list, time_all_end_list
     time_all_end_list.append(time.time())
     if len(time_all_end_list) == 100:
-        np.savez('/home/etrrhmd/duration_result/time_duration_sg_vrep.npz', time_start_list=time_start_list, time_sg_end_list=time_sg_end_list, time_all_end_list=time_all_end_list)
+        np.savez('/home/turtlebot/thesis2019/duration_result/time_duration_sg_vrep.npz', time_start_list=time_start_list, time_sg_end_list=time_sg_end_list, time_all_end_list=time_all_end_list)
         print("saving file")
 
 if __name__ == '__main__':

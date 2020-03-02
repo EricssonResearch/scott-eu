@@ -155,6 +155,16 @@ def init_risk_assessment():
     global risk_assessment_instance
     risk_assessment_instance = ctrl.ControlSystemSimulation(ra_fls)
 
+    #init RA instance
+    time_1 = time.time()
+    risk_assessment_instance.input['type']      = 0
+    risk_assessment_instance.input['distance']  = 1
+    risk_assessment_instance.input['direction'] = 0
+    risk_assessment_instance.input['speed']     = 0
+    risk_assessment_instance.input['orientation'] = 0
+    risk_assessment_instance.compute()
+    print("init RA time:", time.time()-time_1)
+
 def cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation):
     risk_assessment_instance.input['type'] = object_type
     risk_assessment_instance.input['distance'] = object_distance
@@ -227,30 +237,34 @@ def parse_dot_file(graph):
             else:
                print "Node not match!!"
                print node_info
-    if (highest_risk!=0.0):
-        safe_risk_pub.publish(risk_message)
+    #if (highest_risk!=0.0):
+    #    safe_risk_pub.publish(risk_message)
         #pub_safe_vel(1.0, 1.0) 
-    else:
-        pub_safe_vel(1.0, 1.0) 
+    #else:
+    #    pub_safe_vel(1.0, 1.0) 
     #pub_safe_vel(0, 0) 
-    risk_val_pub.publish(highest_risk)
+    #risk_val_pub.publish(highest_risk)
     #global    time_previous
     #run_time = time.time() - time_previous
     #print 'Calc. time for S-G=',run_time,'sec'   #0.0139169692993 sec for calc,
     #print 'Calc. Freq. for S-G=',1/run_time,'Hz' #max. 71.8547248681 Hz
     #time_previous = time.time()
+    #duration = time_end - time_start
+    return highest_risk, risk_message
 
 def topic_callback(data):
     global time_duration_list
     time_previous = time.time()
 
     graph = pydot.graph_from_dot_data(data.sg_data) #From string
-    parse_dot_file(graph)
-
-    time_duration_list.append(time.time()-time_previous)
-    print("Risk assesment duration :",np.mean(time_duration_list))
-    if len(time_duration_list) == 100:
-        np.savez('/home/etrrhmd/duration_result/time_duration_ra.npz', time_duration_list=time_duration_list[10:])
+    highest_risk, risk_message = parse_dot_file(graph)
+    if highest_risk > 0.0:
+        time_duration_list.append(time.time()-time_previous)
+        safe_risk_pub.publish(risk_message)
+        #print("Risk assesment duration :",np.mean(time_duration_list))
+        if len(time_duration_list) == 100:
+            np.savez('/home/turtlebot/thesis2019/duration_result/time_duration_ra.npz', time_duration_list=time_duration_list)
+    risk_val_pub.publish(highest_risk)
 
     #rospy.loginfo("The highest risk is %f",risk_result,data.header.stamp)
 
@@ -281,5 +295,5 @@ if __name__ == "__main__":
     safe_risk_pub = rospy.Publisher('/turtlebot2i/safety/obstacles_risk', SafetyRisk, queue_size=10)
     # Dont't use "/turtlebot2i/commands/velocity'
     # Use "/turtlebot2i/cmd_vel_mux/safety_controller" with "vel_mux" package.
-
+    print("risk_assessment.py is now running!")
     rospy.spin()

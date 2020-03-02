@@ -89,11 +89,19 @@ def init_risk_mitigation():
     risk_mitigation_fls = ctrl.ControlSystem(mitigation_rule_list)
     risk_mitigation_instance = ctrl.ControlSystemSimulation(risk_mitigation_fls)
 
+    #init RM FLS 
+    time_1 = time.time()
+    risk_mitigation_instance.input['distance']   = 1
+    risk_mitigation_instance.input['direction']  = 0
+    risk_mitigation_instance.input['risk_input'] = 1
+    risk_mitigation_instance.compute()
+    print("init RM time:", time.time()-time_1)
+
 def cal_safe_vel(object_distance,object_direction,object_risk):
     risk_mitigation_instance.input['distance']   = object_distance
     risk_mitigation_instance.input['direction']  = object_direction
     risk_mitigation_instance.input['risk_input'] = object_risk
-    print("RM input value; distance:",object_distance,"| direction:",object_direction,"| risk value:",object_risk)
+    #print("RM input value; distance:",object_distance,"| direction:",object_direction,"| risk value:",object_risk)
     risk_mitigation_instance.compute()
     return risk_mitigation_instance.output['left'],risk_mitigation_instance.output['right']
 
@@ -110,12 +118,13 @@ def risk_callback(data):
 
     i = np.argmax(data.risk_value)
     left_vel_scale,right_vel_scale = cal_safe_vel(data.distance[i], data.direction[i], data.risk_value[i])
+    time_end = time.time()
     pub_safe_vel(left_vel_scale, right_vel_scale)
 
-    time_duration_list.append(time.time()-time_previous)
-    print("Risk mitigation duration:",np.mean(time_duration_list))
+    time_duration_list.append(time_end-time_previous)
+    #print("Risk mitigation duration:",np.mean(time_duration_list))
     if len(time_duration_list) == 100:
-        np.savez('/home/etrrhmd/duration_result/time_duration_rm_fls.npz', time_duration_list=time_duration_list[10:])
+        np.savez('/home/turtlebot/thesis2019/duration_result/time_duration_rm_fls.npz', time_duration_list=time_duration_list)
 
 if __name__ == '__main__':
     try:

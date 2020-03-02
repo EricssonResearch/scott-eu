@@ -25,10 +25,10 @@
   </phantomx_pincher_arm>
 
   <joint name="scanse_lidar_joint" type="fixed">
-    <!--<origin xyz="0 0 0.485"
-            rpy="0 0 0"/>-->
-    <origin xyz="0.20 0 0.05"
+    <origin xyz="-0.05 0.001 0.485"
             rpy="0 0 0"/>
+    <!--<origin xyz="0.20 0 0.05"
+            rpy="0 0 0"/>-->
     <parent link="base_link"/>
     <child link="lidar/scan" />
   </joint>

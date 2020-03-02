@@ -55,6 +55,8 @@ def rule_list_generator(object_distance,object_direction,object_risk_input,left_
     rule038= ctrl.Rule(object_distance['Near'] & object_direction['Left'],       (left_speed['Slow'],right_speed['Stop']))
     rule039= ctrl.Rule(object_distance['Near'] & object_direction['Right'],      (left_speed['Stop'],right_speed['Slow']))
     
+    #rule040= ctrl.Rule(object_direction['BigRear'],  (left_speed['Fast'], right_speed['Fast']))
+    
 
-    rule_list = [rule001, rule002, rule003,rule004, rule005, rule006, rule007, rule008, rule009, rule010,rule011, rule012, rule013,rule014, rule015, rule016,rule017, rule018, rule019, rule020,rule021, rule022, rule023,rule024, rule025, rule026, rule027, rule028, rule029, rule030,rule031, rule032, rule033,rule034, rule035, rule036, rule037, rule038, rule039]
+    rule_list = [rule001, rule002, rule003,rule004, rule005, rule006, rule007, rule008, rule009, rule010,rule011, rule012, rule013,rule014, rule015, rule016,rule017, rule018, rule019, rule020,rule021, rule022, rule023,rule024, rule025, rule026, rule027, rule028, rule029, rule030,rule031, rule032, rule033,rule034, rule035, rule036, rule037, rule038, rule039 ] #rule040
     return rule_list

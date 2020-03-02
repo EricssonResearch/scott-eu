@@ -48,6 +48,8 @@
       <remap from="cmd_vel" to="/$(arg robot_name)/commands/velocity"/>
       <remap from="cmd_vel" to="/$(arg robot_name)/cmd_vel_mux/navigation" if="$(arg cmd_vel_mux)"/>
 
+
+
       <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
       <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
       <rosparam file="$(find turtlebot2i_navigation)/config/global_costmap_params.yaml" command="load" />
@@ -65,11 +67,11 @@
       </rosparam>
 
       <remap from="map" to="/map" />
-
     </node>
 
     <!--Static TF from /map to robot /odom -->
-    <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 1 /map /$(arg robot_name)/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 1 map /$(arg robot_name)/odom 100" />
+    <!--<node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 1 map /odom 100" />-->
 
     <!-- Include only if $moveit==true -->
     <group if="$(arg moveit)">

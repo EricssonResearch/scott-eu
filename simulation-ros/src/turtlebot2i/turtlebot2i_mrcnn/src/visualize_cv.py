@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 import sys
 
-class_names = ['BG', 'SlidingDoor', 'Wall', 'Shelf', 'Robot', 'Human', 'ConveyorBelt', 'Dockstation', 'Product']
+#class_names = ['BG', 'SlidingDoor', 'Wall', 'Shelf', 'Robot', 'Human', 'ConveyorBelt', 'Dockstation', 'Product']
+class_names = ['BG', 'person']
 
 def random_colors(N):
     np.random.seed(1)
@@ -51,8 +52,8 @@ def display_instances(image, boxes, masks, ids, names, scores):
         image = cv2.putText(
             image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2
         )
-    # cv2.imshow('frame', image)
-    # cv2.waitKey(0)
+    cv2.imshow('frame', image)
+    cv2.waitKey(0)
     return image
 
 #if __name__ == '__main__':
