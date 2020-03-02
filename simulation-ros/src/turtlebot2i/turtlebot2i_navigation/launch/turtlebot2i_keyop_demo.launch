@@ -1,0 +1,21 @@
+<!--
+  Raw keyop configuration for working with the default kobuki launcher (minimal.launch). 
+ -->
+
+<launch>
+
+  <arg name="robot_name" default="turtlebot2i"/>
+
+  <!-- Command Velocity Multiplexer -->
+  <arg name="cmd_vel_mux"   default="false"     doc="cmd_vel_mux enabled (1) or disabled (0)"/>
+
+  <node pkg="kobuki_keyop" type="keyop" name="keyop" output="screen">
+    <remap from="keyop/motor_power" to="/$(arg robot_name)/commands/motor_power"/>
+    <remap from="keyop/cmd_vel" to="/$(arg robot_name)/keyop/velocity"/>
+    <param name="linear_vel_step"  value="0.05" type="double"/>
+    <param name="linear_vel_max"   value="1.5"  type="double"/>
+    <param name="angular_vel_step" value="0.33" type="double"/>
+    <param name="angular_vel_max"  value="6.6"  type="double"/>
+    <param name="wait_for_connection_" value="true" type="bool"/>
+  </node>
+</launch>

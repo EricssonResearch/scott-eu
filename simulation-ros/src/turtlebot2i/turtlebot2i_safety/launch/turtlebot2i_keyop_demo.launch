@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+
+
+  <include file="$(find kobuki_node)/launch/minimal.launch" />
+  <include file="$(find sweep_ros)/launch/sweep2scan.launch" />
+  <!--  <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_keyop.launch" /> -->
+  <node pkg="turtlebot2i_safety"     name="run_demo"          type="run_demo.py"     output="screen"/>
+  <!-- <node pkg="turtlebot2i_safety"     name="rm_fls_demo"       type="rm_fls_demo.py"  output="screen"/> -->
+  <group ns="j0">
+        <node name="ds4_joystick" pkg="joy" type="joy_node">
+                <param name="dev" value="/dev/input/js0" />
+        </node>
+    </group>
+
+</launch>

@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <!-- Turtlebot2i -->
+  <arg name="base"        default="kobuki"      doc="mobile base type [kobuki]"/>
+  <arg name="stacks"      default="interbotix"  doc="stack type displayed in visualisation/simulation [interbotix]"/>
+  <arg name="3d_sensor"   default="astra"       doc="3d sensor types [zr300, astra]"/>
+  <arg name="3d_sensor2"  default="sr300"       doc="3d sensor types [zr300, astra]"/>
+
+
+  <!-- Robot Description -->
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find turtlebot2i_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro'" />
+
+
+  <!-- Robot Arm -->
+  <arg name="joint1"        default="PhantomXPincher_joint1_1" />
+  <arg name="joint2"        default="PhantomXPincher_joint1_2" />
+  <arg name="joint3"        default="PhantomXPincher_joint1_3" />
+  <arg name="joint4"        default="PhantomXPincher_joint1_4" />
+  <arg name="gripper1"      default="PhantomXPincher_gripperClose_joint_1" />
+  <arg name="gripper2"      default="PhantomXPincher_gripperClose_joint_1" />
+  <arg name="port"          default="19997" />
+  <arg name="ns"            default="" /> 
+  <arg name="moveit"        default="false" /> 
+  <!--<rosparam param="joints"  subst_value="true" />-->
+
+  <!-- Command Velocity Multiplexer -->
+  <arg name="cmd_vel_mux"   default="false"     doc="cmd_vel_mux enabled (1) or disabled (0)"/>
+  
+  <!-- Spawn Robots (Turtlebot2i + Pincher Arm) -->
+  <arg name="robot_name" default="turtlebot2i"/>
+  <group ns="$(arg robot_name)">
+
+    <!-- Robot description -->
+    <param name="robot_description" command="$(arg urdf_file)" />
+    <param name="tf_prefix" value="$(arg robot_name)"/>
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+      <param name="publish_frequency" type="double" value="50.0" />
+    </node>
+
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+    <!-- Navigation  -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="log">
+<!--      <param name="controller_frequency" value="5.0" />-->
+      <remap from="cmd_vel" to="/$(arg robot_name)/navigation/velocity"/>
+      <remap from="cmd_vel" to="/$(arg robot_name)/cmd_vel_mux/navigation" if="$(arg cmd_vel_mux)"/>
+
+
+
+      <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/base_local_planner_params.yaml" command="load" />
+
+      <rosparam subst_value="true">
+          local_costmap/laser_scan_sensor/sensor_frame: /$(arg robot_name)/lidar/scan_unused
+          local_costmap/laser_scan_sensor/topic: /$(arg robot_name)/lidar/scan_unused
+          global_costmap/laser_scan_sensor/sensor_frame: /$(arg robot_name)/lidar/scan_unused
+          global_costmap/laser_scan_sensor/topic: /$(arg robot_name)/lidar/scan_unused
+          global_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
+          local_costmap/global_frame: /$(arg robot_name)/odom
+          local_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
+      </rosparam>
+
+      <remap from="map" to="/map" />
+    </node>
+
+    <!--Static TF from /map to robot /odom -->
+    <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 1 map /$(arg robot_name)/odom 100" />
+    <!--<node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 1 map /odom 100" />-->
+
+    <node pkg="turtlebot2i_navigation" name="speed_scaling"        type="speed_scaling.py"     output="screen"/>
+
+    <!-- Include only if $moveit==true -->
+    <group if="$(arg moveit)">
+      <param name="vrep_ip"     value="127.0.0.10" />
+      <param name="vrep_port"   value="$(arg port)" />
+      <rosparam param="joints" subst_value="true">
+        - $(arg joint1)
+        - $(arg joint2)
+        - $(arg joint3)
+        - $(arg joint4)
+        - $(arg gripper1)
+        - $(arg gripper2)
+      </rosparam> 
+  
+      <node name="vrep_controller" pkg="phantomx_pincher_arm_vrep_controller" type="controller_remoteApi" />
+  
+      <!-- Start controllers -->
+      <!-- Joint trajectory controller (this is not a low-level controller) -->
+      <rosparam file="$(find phantomx_pincher_arm_vrep_controller)/control/phantomXPincher.yaml" command="load" /> 
+  
+      <node name="controller_manager_spawner" pkg="controller_manager" type="spawner" args="phantom_controller gripper_controller joint_states" />
+  
+      <include file="$(find phantomx_pincher_arm_moveit)/launch/named_pose_director.launch" >
+        <arg name="load_moveit" value="true"/>
+      </include>
+    </group>
+
+  </group>
+
+</launch>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="cmd_vel_mux" default="false"/>
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
+    <param name="frame_id" value="/map"/>
+  </node>
+
+  <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_demo.launch">
+    <arg name="robot_name" value="turtlebot2i"/>
+    <arg name="moveit" value="false"/>
+    <arg name="cmd_vel_mux" value="$(arg cmd_vel_mux)"/>
+  </include>
+  <include file="$(find kobuki_node)/launch/minimal.launch" />
+  <include file="$(find sweep_ros)/launch/sweep2scan.launch" />
+  <!-- <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_keyop_demo.launch" /> -->
+  <node pkg="turtlebot2i_safety" name="run_demo"        type="run_demo.py"     output="screen"/>
+  <node pkg="turtlebot2i_safety" name="rm_fls_demo"     type="rm_fls_demo.py"  output="screen"/>
+  <node name="ds4_joystick" pkg="joy" type="joy_node">
+    <param name="dev" value="/dev/input/js0" />
+  </node>
+  
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_single_robot.rviz" />
+
+</launch>
