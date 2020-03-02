@@ -127,7 +127,7 @@ def init_subscription():
     rospy.Subscriber('/turtlebot2i/safety/risk_val', Float64, risk_callback)
     rospy.Subscriber('/turtlebot2i/safety/safety_zone', SafetyZone, safety_zone_callback)
     rospy.Subscriber('/turtlebot2i/odom', Odometry, speed_callback)
-    #rospy.Subscriber("/turtlebot2i/events/bumper", BumperEvent, bumper_callback)
+    rospy.Subscriber("/turtlebot2i/events/bumper", BumperEvent, bumper_callback)
     rospy.Subscriber("/turtlebot2i/events/button",ButtonEvent, ButtonEventCallback)
 
 def init_publisher():
@@ -330,14 +330,15 @@ def lidar_callback(data):
 '''
 
 def bumper_callback(data):
-    global n_collision, collision_flag
+    global n_collision, collision_flag, button, led1
     if data.state == 1 and not collision_flag:
+    	button = 0
+        led1 = Led.BLACK
+        led1_pub.publish(led1)
+        client.cancel_all_goals()
         print("collision happen!")
         collision_flag = True
         n_collision += 1
-        sound_pub.publish(Sound.OFF)
-        led2_pub.publish(Led.RED)
-        client.cancel_all_goals()
     elif data.state == 0 and collision_flag:
         collision_flag = False
         led2_pub.publish(Led.BLACK)

@@ -20,6 +20,7 @@
   <node name="ds4_joystick" pkg="joy" type="joy_node">
     <param name="dev" value="/dev/input/js0" />
   </node>
+  <include file="$(find astra_camera)/launch/astrapro.launch"/>
   
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_single_robot.rviz" />
 
