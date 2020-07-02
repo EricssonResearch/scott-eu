@@ -40,10 +40,11 @@ The main advatage of ROS is that (in most of the cases) it dispenses the necessi
 
 # 5. Installation
 
-## 1. Install V-REP
+## 5.1. Install V-REP
 
-If using simulated environment, install V-REP from: http://www.coppeliarobotics.com/downloads.html
-Download the latest version of **V-REP Pro** or **V-REP Pro Edu**. The **V-REP Player** version was not tested here.
+If using simulated environment, download **V-REP Pro** or **V-REP Pro Edu**. The **V-REP Player** version was not tested here.
+
+In this tutorial, the [V-REP 3.5](https://www.coppeliarobotics.com/previousVersions) was used. Other versions (e.g. CoppeliaSim) might not work.
 
 In the next section you will install ROS and V-REP ROS Interface.
 
@@ -62,7 +63,7 @@ For example, if you have V-REP under Home, add following two lines to **~/.bashr
 export VREP_ROOT_DIR=~/V-REP_PRO_EDU_V3_5_0_Linux
 export VREP_ROOT=~/V-REP_PRO_EDU_V3_5_0_Linux
 ```
-## 2. Install ROS Kinect.
+## 5.2. Install ROS Kinect.
 Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
 
 * When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
@@ -139,7 +140,7 @@ Don't forget to source it manually if you don't want to restart the terminal. Ch
   $ ./install.sh
   
 ```
-## 3. Running the Simulated Environment
+## 5.3. Running the Simulated Environment
 
 1. Start ROS CORE
     ```
@@ -164,8 +165,18 @@ Don't forget to source it manually if you don't want to restart the terminal. Ch
     $ roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
     ```
     If everything is configured correctly, the terminal should show "KeyOp: connected". Otherwise, check whether roscore is running, whether V-rep scene is running and whether V-rep loaded RosInterface successfully.
+
+### 5.3.1. Simulated Warehouse
+
+The main simulation scene used in project is the warehouse environment. This scene is found in the [turtlebot2i_description/v-rep_model](https://github.com/EricssonResearch/scott-eu/tree/master/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model) folder.
+
+- To load the main scene, open the `warehouse_turtlebot2i.ttt` file.
+- To add more elements, it is necessary to edit the lua files under [turtlebot2i_description/v-rep_model/warehouse_scene/vrep_scripts](https://github.com/EricssonResearch/scott-eu/tree/master/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_scene/vrep_scripts) folder.
+    - Each lua file corresponds to a particular object in the scene.
     
-## 4. Using Python VREP Remote API (Optional)
+**Note:** Additional information can be found in [**Turtlebot2i V-rep model** documentation](https://github.com/EricssonResearch/scott-eu/tree/master/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model).
+
+## 5.4. Using Python VREP Remote API (Optional)
 
 To use the python remote API provided by VREP, some adjustments are necessary:
 
@@ -183,7 +194,7 @@ To use the python remote API provided by VREP, some adjustments are necessary:
     ```
 
 
-## To bring up mobile base + navigation + robotics arm + manipulation planning.
+## 5.5. Running Example: Bringing up mobile base + navigation + robotics arm + manipulation planning.
 
 1. Run the scene containing the turtlebot2i
 
