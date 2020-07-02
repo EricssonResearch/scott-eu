@@ -25,7 +25,7 @@ The main components of the architecture in the simulated scenario setting are:
 
 The following diagram depicts the architecture representing the components of the simulated scenario.
 
-![ROS Architecture](https://github.com/EricssonResearch/scott-eu/blob/simulation-ros/simulation-ros/doc/ROS_multirobot_architecture_simulated.png)
+![ROS Architecture](https://github.com/EricssonResearch/scott-eu/blob/master/simulation-ros/doc/ROS_multirobot_architecture_simulated.png "ROS Architecture")
 
 
 ### 2.2. Real Robots Scenario
@@ -42,7 +42,7 @@ The main components of the architecture in the real robot setting are:
 
 The following diagram depicts the architecture representing the components of the real robot scenario.
 
-![ROS Architecture](https://github.com/EricssonResearch/scott-eu/blob/simulation-ros/simulation-ros/doc/ROS_multirobot_architecture_real.png)
+![ROS Architecture](https://github.com/EricssonResearch/scott-eu/blob/master/simulation-ros/doc/ROS_multirobot_architecture_real.png "ROS Architecture")
 
 
 ### 2.3. Digital Twins
