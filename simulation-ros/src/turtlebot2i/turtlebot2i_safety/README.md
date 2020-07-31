@@ -32,13 +32,17 @@ pip install -r src/requirements.txt
 
 ## 2.1. Simulated Scenario Setup
 
+Follow this section if the risk mitigation will be run a simulated setup.
+
 ### 2.1.1. Loading V-REP scenario
 
-1. Open the `warehouse_scene.ttt` scenario in V-REP.
-2. Open the scipt parameters of the *Scene_Builder* element.
-3. In *Value* field of  *Parameter properties*, use:
-- `Scene_Builder_test1.lua` for testing the risk management.
-- `Scene_Builder_training.lua` for training the reinforcement learning-based risk mitigation models.
+In order to run the safety package, the right V-REP scene should be loaded. To do that, the following steps should be followed:
+
+1. Open `turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_scene/warehouse_scene.ttt` scenario in V-REP.
+2. After loading the scene (will be empty at this stage), open the script parameters of *Scene_Builder* element (found in Scene hierarchy). To do that, double-click *Scipt Parameters* button (represented as a three thin rectangle icon, at left of the a document icon).
+3. In the *Script Parameters* diagram, select `Scene_Builder_File_Name`. In *Value* field of *Parameter properties* , use:
+- `Scene_Builder_test1.lua` for **testing the risk management**.
+- `Scene_Builder_training.lua` for **training the reinforcement learning-based risk mitigation models** .
 
 ### 2.1.1. Setting Occupancy Grid Maps
 
@@ -46,7 +50,10 @@ pip install -r src/requirements.txt
 ```
 roscd turtlebot2i_mapping/maps
 ```
-2. Edit `map.yaml` and uncomment the lines for risk mitigation training or test.
+2. Edit `map.yaml` and make changes to load the correct occupancy grid map for risk mitigation. In this file, the `image` attribure shold be set as one of the following values:
+  - `image: map_test1.pgm` -> Use this setup when loading the `Scene_Builder_test1.lua`
+  - `image: map_training.pgm` -> Use this setup when loading the `Scene_Builder_training.lua`
+3. In the `map.yaml` file, make sure that `origin` attribute is set correctly. Suggested values for each scene is already in this file. 
 
 ## 2.2. Running the Risk Assessment 
 
