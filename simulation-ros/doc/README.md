@@ -40,15 +40,15 @@ The main advatage of ROS is that (in most of the cases) it dispenses the necessi
 
 # 5. Installation
 
-## 5.1. Install V-REP
+## 5.1. V-REP Installation
 
-If using simulated environment, download **V-REP Pro** or **V-REP Pro Edu**. The **V-REP Player** version was not tested here.
+For simulated environment, download **V-REP Pro** or **V-REP Pro Edu**. The **V-REP Player** version was not tested here.
 
 In this tutorial, the [V-REP 3.5](https://www.coppeliarobotics.com/previousVersions) was used. Other versions (e.g. CoppeliaSim) might not work.
 
-In the next section you will install ROS and V-REP ROS Interface.
+Installation instructions can be found in [V-REP official documentation](https://www.coppeliarobotics.com/helpFiles/index.html).
 
-Set the following **VREP_ROOT** environment variables by running the following lines in the terminal (replace the <path_to_vrep> by the full path to the V-REP folder), and several lines will be added to **~/.bashrc**:
+After installing V-REP, set the following `VREP_ROOT` environment variables by running the following lines in the terminal (replace the `<path_to_vrep>` by the full path to the V-REP folder), and several lines will be added to `~/.bashrc`:
 
 ```
 echo "export VREP_ROOT_DIR=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux" >> ~/.bashrc
@@ -63,12 +63,15 @@ For example, if you have V-REP under Home, add following two lines to **~/.bashr
 export VREP_ROOT_DIR=~/V-REP_PRO_EDU_V3_5_0_Linux
 export VREP_ROOT=~/V-REP_PRO_EDU_V3_5_0_Linux
 ```
-## 5.2. Install ROS Kinect.
-Instructions can be found in this link: http://wiki.ros.org/kinetic/Installation
+## 5.2. Setting ROS Environment
+
+We strongly recommend to use **ROS Kinect** distribution.
+
+Instructions to install ROS Kinect can be found in this link: http://wiki.ros.org/kinetic/Installation
 
 * When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
 "
-* Follow the "recommended" installation for ease of use.
+* Please, **follow the "recommended" ROS installation before proceeding to the steps below**.
 
 1. Install Turttlebot2i packages from ROS
   ```
@@ -147,16 +150,16 @@ Don't forget to source it manually if you don't want to restart the terminal. Ch
     $ roscore
     ```
 
-2. Open Vrep and load a scene
+2. Open V-REP and load a scene
     ```
     cd /<path_to_vrep>
     ./vrep.sh
     ```
-    - All the scenes are stored in the *turtlebot2i_description/v-rep_model* folder of ROS workspace. V-REP scenes have .ttt extension.
-    - Try opening the "warehouse_turtlebot2i.ttt" file from V-REP (File -> Open Scene...).
+    - After loading V-REP, open the warehouse scenario scenario (File -> Open Scene...), which is locate in `turtlebot2i/turtlebot2i_description/v-rep_model/v-rep_model/warehouse_scene/warehouse_scene.ttt`. V-REP scenes have `.ttt` extension.
     - Press play button to start the simulation.
+    - **For additional details** please check the [Turtlebot2i V-Rep Model and Warehouse Scenes documentation](https://github.com/EricssonResearch/scott-eu/blob/master/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/README.md).
     
-    **Note:** Without a running roscore, Vrep cannot communicate with other components. In case of that, check the terminal and make sure ROS plugin is loaded successfully.
+    **Note:** Without a running roscore, V-REP cannot communicate with other components. In case of that, check the terminal and make sure that ROS plugin is loaded successfully.
    
 3. Run ROS programs
     All the ROS programs are stored in the ROS package. The instructions to run the programs can be found in the README.md files located in each package.
