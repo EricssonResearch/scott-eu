@@ -6,7 +6,21 @@ This folder contains the V-Rep scene files. All working scenes are under the `v-
 - This scene will be empty when opened.
 - Objects are spawned after the simulation has started.
 
-## 1.1. Warehouse V-REP Models
+## 1.1 Warehouse Scene Builders
+
+By default, starting the warehouse scene will load the `turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_scene/vrep_scripts/Scene_Builder.lua` script that defines which elements are going to be instantiated.
+
+To modify the scenario, it is possible to modify the `Scene_Builder.lua` script or create a new scene builder file.
+
+### 1.1.1 Setting/Loading a Custom Scene Builder Script
+
+If a scene builder different from `Scene_Builder.lua` needs to be loaded, the following steps should be taken:
+
+1. Open `turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_scene/warehouse_scene.ttt` scenario in V-REP.
+2. After loading the scene (will be empty at this stage), open the script parameters of *Scene_Builder* element (found in Scene hierarchy). To do that, double-click *Scipt Parameters* button (represented as a three thin rectangle icon, at left of the a document icon).
+3. In the *Script Parameters* diagram, select `Scene_Builder_File_Name`. In *Value* field of *Parameter properties* , specify the desired scene builder script file name.
+
+## 1.2. Warehouse V-REP Models
 
 The folder `v-rep_model/warehouse_scene/vrep_models/` contains the custom V-REP models to build the warehouse scene. The V-REP models are represented by `.ttm` files that contain geometrical and physical properties of the object.
 
@@ -20,7 +34,7 @@ The models in this folder can be organized in these groups:
 - Models of the workers (Bill):
     - Working_Bill.ttm
 
-## 1.2. Scripts of the Warehouse V-REP Models
+## 1.3. Scripts of the Warehouse V-REP Models
 
 The folder `v-rep_model/warehouse_scene/vrep_scripts/` contains scripts that specify the way models are spawned in the scene. For instance, it is possible to define the number of robots in the scene, sensors of the robot, position of the warehouse machineries and so on. The V-REP models are represented by `.lua` files.
 
@@ -36,7 +50,7 @@ Similarly as in V-REP models, scripts in this folder can be organized in groups:
     - Turtlebot2i mobile robot: turtlebot2i.lua
         -  There are also other scripts attached to turtlebot2i: GPS.lua, IMU.lua, lidar.lua, camera.lua, camera_SR300.lua, battery.lua
 
-### 1.2.3. Setting turtlebot2i Cameras
+### 1.3.1. Setting turtlebot2i Cameras
 
 By default, all turtlebot2i sensors are enabled, however the cameras can be disabled in sake of processing time.
 
@@ -45,7 +59,7 @@ By default, all turtlebot2i sensors are enabled, however the cameras can be disa
 3. Change either `rgb_enabled` or `depth_enabled` boolean values.
     - In general, depth sensor demands a lot of processing.
 
-### 1.2.4. Models Spawned in the Simulation
+### 1.3.2. Models Spawned in the Simulation
 
 By default, predefined objects and scene objects are instantiated when the simulation is started. However, it is also possible to remove or add models in the scene.
 
