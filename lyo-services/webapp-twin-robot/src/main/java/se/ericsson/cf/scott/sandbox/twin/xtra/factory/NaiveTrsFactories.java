@@ -6,7 +6,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.eclipse.lyo.oslc4j.core.OSLC4JUtils;
 import org.eclipse.lyo.oslc4j.trs.server.InmemPagedTrs;
 import org.eclipse.lyo.oslc4j.trs.server.PagedTrs;
-import org.eclipse.lyo.oslc4j.trs.server.ResourceEventHandler;
+import org.eclipse.lyo.oslc4j.trs.server.TrsEventHandler;
 import org.eclipse.lyo.oslc4j.trs.server.service.TrackedResourceSetService;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.InstantiationService;
@@ -41,18 +41,18 @@ public class NaiveTrsFactories {
         }
     }
 
-    public static class ResourceEventHandlerFactory implements Factory<ResourceEventHandler> {
+    public static class ResourceEventHandlerFactory implements Factory<TrsEventHandler> {
 
         @Inject InstantiationService instantiationService;
 
         @Override
-        public ResourceEventHandler provide() {
+        public TrsEventHandler provide() {
             // TODO Andrew@2019-05-02: try to decouple those things and rely on InstantiationService
             return getInmemPagedTrs();
         }
 
         @Override
-        public void dispose(final ResourceEventHandler instance) {
+        public void dispose(final TrsEventHandler instance) {
 
         }
     }

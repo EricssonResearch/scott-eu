@@ -27,7 +27,7 @@ public class StoreManager {
             // TODO Andrew@2017-07-18: Remember to deactivate when switch to more persistent arch
             store.removeAll();
             return store;
-        } catch (IOException | ARQException | HttpException e) {
+        } catch (ARQException | HttpException e) {
             log.error(
                     "SPARQL Store failed to initialise with the URIs query={};update={}",
                     p("store.query"), p("store.update"), e

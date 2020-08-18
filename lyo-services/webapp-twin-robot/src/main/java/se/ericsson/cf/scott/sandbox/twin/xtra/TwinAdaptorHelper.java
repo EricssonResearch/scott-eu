@@ -173,7 +173,7 @@ public class TwinAdaptorHelper {
                 store.removeAll();
             }
             setStore(store);
-        } catch (IOException | ARQException e) {
+        } catch (ARQException e) {
             log.error("Failed to initialise Lyo Store with SPARQL endpoints: query={}; update={}", query_endpoint,
                       update_endpoint
             );
