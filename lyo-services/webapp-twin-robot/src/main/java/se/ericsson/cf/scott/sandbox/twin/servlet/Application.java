@@ -82,7 +82,7 @@ import se.ericsson.cf.scott.sandbox.twin.xtra.services.TwinAdminService;
 import java.util.Collections;
 
 import org.eclipse.lyo.oslc4j.trs.server.PagedTrs;
-import org.eclipse.lyo.oslc4j.trs.server.ResourceEventHandler;
+import org.eclipse.lyo.oslc4j.trs.server.TrsEventHandler;
 // End of user code
 
 /**
@@ -105,7 +105,7 @@ public class Application extends javax.ws.rs.core.Application {
             protected void configure() {
                 bindFactory(new NaiveTrsFactories.PagedTrsFactory()).to(PagedTrs.class);
                 bindFactory(new NaiveTrsFactories.ResourceEventHandlerFactory()).to(
-                    ResourceEventHandler.class);
+                    TrsEventHandler.class);
             }
         });
     }
