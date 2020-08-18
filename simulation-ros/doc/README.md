@@ -65,7 +65,7 @@ export VREP_ROOT=~/V-REP_PRO_EDU_V3_5_0_Linux
 ```
 ## 5.2. Setting ROS Environment
 
-We strongly recommend to use **ROS Kinect** distribution.
+We strongly recommend to use **ROS Kinetic** distribution.
 
 Instructions to install ROS Kinect can be found in this link: http://wiki.ros.org/kinetic/Installation
 
@@ -80,10 +80,12 @@ Instructions to install ROS Kinect can be found in this link: http://wiki.ros.or
 
 2. Create the Turtlebot2i workspace by clonning the SCOTT repository
   ```
+  $ sudo apt install git
   $ git clone https://github.com/EricssonResearch/scott-eu.git
   ```
 *As of 7/Mar/2018 you need to change to a subbranch by doing: 
 ```
+$ cd scott-eu
 $ git checkout simulation-ros 
 ```
 In the future it might not be necessary
