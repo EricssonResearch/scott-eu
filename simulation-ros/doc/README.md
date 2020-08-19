@@ -154,7 +154,7 @@ Don't forget to source it manually if you don't want to restart the terminal. Ch
 
 2. Open V-REP and load a scene
     ```
-    cd /<path_to_vrep>
+    cd $VREP_ROOT
     ./vrep.sh
     ```
     - After loading V-REP, open the warehouse scenario scenario (File -> Open Scene...), which is locate in `turtlebot2i/turtlebot2i_description/v-rep_model/v-rep_model/warehouse_scene/warehouse_scene.ttt`. V-REP scenes have `.ttt` extension.
