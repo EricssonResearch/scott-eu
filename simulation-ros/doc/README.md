@@ -73,45 +73,29 @@ Instructions to install ROS Kinect can be found in this link: http://wiki.ros.or
 "
 * Please, **follow the "recommended" ROS installation before proceeding to the steps below**.
 
-1. Install Turttlebot2i packages from ROS
+Step 1. Install Turttlebot2i packages from ROS
   ```
   $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0 ros-kinetic-joint-* ros-kinetic-position-controllers ros-kinetic-effort-controllers
   ```
 
-2. Create the Turtlebot2i workspace by clonning the SCOTT repository
+Step 2. Create the Turtlebot2i workspace by clonning the SCOTT repository
   ```
   $ sudo apt install git
   $ git clone https://github.com/EricssonResearch/scott-eu.git
+  $ cd scott-eu
   ```
-*As of 7/Mar/2018 you need to change to a subbranch by doing: 
-```
-$ cd scott-eu
-$ git checkout simulation-ros 
-```
-In the future it might not be necessary
 
-3. Setup the catkin workspace and set ROS environment variables
+Step 3. Setup the catkin workspace and set ROS environment variables
 
-  Read these instructions, but use the existing workspace (/scott-eu/simulation-ros): 
-http://wiki.ros.org/catkin/Tutorials/create_a_workspace
-
-* Be careful to always select the "kinetic" version of ROS
-
-Install catkin python tools:
+Install catkin python tools and xsltproc (required by the vrep_ros_interface):
 
 ```
-$ sudo apt-get install python-catkin-tools
+$ sudo apt-get install python-catkin-tools xsltproc
 ```
 
-4. Install xsltproc (required by the vrep_ros_interface)
+Step 4. Compile the repository from the `simulation-ros` workspace root
 
-```
-$ sudo apt-get install xsltproc
-```
-
-5. Compile the repository from the simulation-ros workspace root
-
-Go to /scott-eu/simulation-ros and run:
+Go to the existing workspace under `/scott-eu/simulation-ros` and run:
 
   ```
   $ catkin build
@@ -120,16 +104,16 @@ Go to /scott-eu/simulation-ros and run:
 
 Now you should have 10 packages built suceessfully.
 
-6. Install V-REP ROS Interface
+> Also read these instructions but do not create a new workspace: 
+> http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+>
+> NB! Be careful to always select the "kinetic" version of ROS
+
+Step 5. Install V-REP ROS Interface
 
 Add this line to ~/.bashrc:
 ```
-$ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/<path_to_repository>/scott-eu/simulation-ros
-```
-
-For example,
-```
-$ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/scott-eu/simulation-ros
+$ cat "export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/scott-eu/simulation-ros" >> ~/.bashrc
 ```
 
 And you can check the ROS_PACKAGE_PATH in the terminal:
@@ -137,14 +121,15 @@ And you can check the ROS_PACKAGE_PATH in the terminal:
 ```
 $ echo $ROS_PACKAGE_PATH
 ```
+
 Don't forget to source it manually if you don't want to restart the terminal. Check whether you can find the ROS package **vrep_ros_interface** and now install it:
 
 ```
   $ source ~/.bashrc
   $ roscd vrep_ros_interface
-  $ ./install.sh
-  
+  $ ./install.sh  
 ```
+
 ## 5.3. Running the Simulated Environment
 
 1. Start ROS CORE
