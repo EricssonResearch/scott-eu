@@ -133,11 +133,13 @@ Don't forget to source it manually if you don't want to restart the terminal. Ch
 ## 5.3. Running the Simulated Environment
 
 1. Start ROS CORE
+
     ```
     $ roscore
     ```
 
 2. Open V-REP and load a scene
+
     ```
     cd $VREP_ROOT
     ./vrep.sh
@@ -148,8 +150,10 @@ Don't forget to source it manually if you don't want to restart the terminal. Ch
     
     **Note:** Without a running roscore, V-REP cannot communicate with other components. In case of that, check the terminal and make sure that ROS plugin is loaded successfully.
    
-3. Run ROS programs
-    All the ROS programs are stored in the ROS package. The instructions to run the programs can be found in the README.md files located in each package.
+3. Running ROS Nodes
+
+    All ROS programs are stored in the corresponding ROS package (e.g. turtlebot2i_navigation, turtlebot2i_safety). The instructions to run the programs can be found in the README.md files located in each package.
+    
     Example to run the keyboard teleoperation:
     ```
     $ roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
@@ -182,26 +186,5 @@ To use the python remote API provided by VREP, some adjustments are necessary:
     echo "export PYTHONPATH=$PYTHONPATH:$VREP_ROOT/programming/remoteApiBindings/python/python" >> ~/.bashrc
     source ~/.bashrc
     ```
-
-
-## 5.5. Running Example: Bringing up mobile base + navigation + robotics arm + manipulation planning.
-
-1. Run the scene containing the turtlebot2i
-
-```
-./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v3_recharge.ttt
-```
-
-```
-./vrep.sh -s /path/to/turtlebot2i_description/v_rep_model/warehouse_turtlebot2i_v4.ttt
-```
-
-
-2. Launch a rosfile that will bring up moveit and rviz to visualize and control the whole robot
-
-```
-roslaunch turtlebot2i_bringup turtlebot2i_full.launch
-```
-
 
 
