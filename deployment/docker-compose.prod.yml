@@ -1,26 +1,45 @@
-version: '3.3'
+version: "3.3"
 
 services:
-  planner-reasoner:
-    image: "${CI_REGISTRY_IMAGE}/planner-reasoner:${CI_COMMIT_REF_NAME}"
-    environment:
-      - PORT=3020 # internal port
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:alpine
     networks:
       - overlay
     ports:
-      - "3021:3020" # mapping of external port to internal port
+      - 8080:8080
+    command: -port 8080 -log stdout
+    # TODO why
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: none
+  planner:
+    image: scott/planner-reasoner
+    environment:
+      - PORT=3020 # internal port
+    networks:
+      overlay:
+        aliases:
+          - planner.svc
+    #    ports:
+    #      - "3021:3020" # external:internal
     stdin_open: true
     deploy:
-      replicas: 2
-      placement:
-        constraints: [node.role == worker]
+      labels:
+        caddy.address: planner.svc
+        caddy.targetport: 3020
+        caddy.tls: "off"
+      replicas: 1
       restart_policy:
-        condition: on-failure
+        # debug only
+        condition: none
       resources:
         limits:
-          memory: 512m
+          memory: 384m
   sandbox-whc:
-    image: "${CI_REGISTRY_IMAGE}/webapp-whc:${CI_COMMIT_REF_NAME}"
+    image: "scott/webapp-whc"
     networks:
       - overlay
     ports:
@@ -38,8 +57,59 @@ services:
     depends_on:
       - warehouse-fuseki
       - mosquitto
+  planner-reasoner:
+    image: "scott/planner-reasoner"
+    environment:
+      - PORT=3020 # internal port
+    networks:
+      - overlay
+    ports:
+      - "3021:3020" # mapping of external port to internal port
+    stdin_open: true
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 512m
+  sandbox-twin:
+    image: "scott/webapp-twin-robot"
+    networks:
+      - overlay
+    ports:
+      - "8081:8080"
+    depends_on:
+      - warehouse-fuseki
+      - mosquitto
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          memory: 512m
+      placement:
+        constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
+  svc-location:
+    image: "scott/webapp-svc-location"
+    networks:
+      - overlay
+    ports:
+      - "8090:8080"
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          memory: 512m
+      placement:
+        constraints: [node.role == worker]
+      restart_policy:
+        condition: on-failure
   sandbox-executor:
-    image: "${CI_REGISTRY_IMAGE}/webapp-executor:${CI_COMMIT_REF_NAME}"
+    image: "scott/webapp-executor"
     networks:
       - overlay
     ports:
@@ -55,41 +125,8 @@ services:
         constraints: [node.role == worker]
       restart_policy:
         condition: on-failure
-  sandbox-twin:
-    image: "${CI_REGISTRY_IMAGE}/webapp-twin-robot:${CI_COMMIT_REF_NAME}"
-    networks:
-      - overlay
-    ports:
-     - "8081:8080"
-    depends_on:
-      - warehouse-fuseki
-      - mosquitto
-    deploy:
-      replicas: 3
-      resources:
-        limits:
-          memory: 512m
-      placement:
-        constraints: [node.role == worker]
-      restart_policy:
-        condition: on-failure
-  svc-location:
-    image: "${CI_REGISTRY_IMAGE}/webapp-svc-location:${CI_COMMIT_REF_NAME}"
-    networks:
-      - overlay
-    ports:
-     - "8090:8080"
-    deploy:
-      replicas: 3
-      resources:
-        limits:
-          memory: 512m
-      placement:
-        constraints: [node.role == worker]
-      restart_policy:
-        condition: on-failure
   warehouse-fuseki:
-    image: "${CI_REGISTRY_IMAGE}/jena-fuseki:${CI_COMMIT_REF_NAME}"
+    image: "scott/jena-fuseki"
     networks:
       - overlay
     ports:
@@ -104,7 +141,7 @@ services:
         limits:
           memory: 1024m
   mosquitto:
-    image: "${CI_REGISTRY_IMAGE}/eclipse-mosquitto:${CI_COMMIT_REF_NAME}"
+    image: "scott/eclipse-mosquitto"
     networks:
       - overlay
     ports:
@@ -119,6 +156,5 @@ services:
       resources:
         limits:
           memory: 384m
-
 networks:
   overlay:
