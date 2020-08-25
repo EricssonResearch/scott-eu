@@ -3,19 +3,16 @@
   <adaptorInterfaces name="Warehouse Controller" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.whc" javaFilesBasePath="../webapp-whc/src/main/java/" jspFilesBasePath="../webapp-whc/src/main/webapp/" javascriptFilesBasePath="../webapp-whc/src/main/webapp/">
     <serviceProviderCatalog title="Service Provider Catalog" description="Service Provider Catalog">
       <serviceProviders title="Twin SP" description="Service Provider">
-        <services>
-          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']"/>
-          <basicCapabilities>
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='SCOTT%20PDDL%202.1%20subset%20spec']/@resources[name='Plan']"/>
-          </basicCapabilities>
-        </services>
-        <services domainSpecification="//@specification/@domainSpecifications[name='MissionOntology']" serviceNamespace="independantOfServiceProvider">
+        <services domainSpecification="//@specification/@domainSpecifications[name='MissionOntology']">
           <creationFactories title="RegistrationCF" label="Registration Creation Factory" creationURI="register">
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='Twins%20Domain']/@resources[name='RegistrationMessage']"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#_sJLsINGhEeqi_PBLP5rI0w"/>
           </creationFactories>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>
+    <webServices name="PlanWS" serviceUrlPattern="plans" resourceUrlPattern="[ResourceType]/{id}">
+      <resourceTypes href="../model-domain-pddl/spec.xmi#_kKjosNGhEeqi_PBLP5rI0w"/>
+    </webServices>
     <specification/>
     <requiredAdaptors xsi:type="oslc4j_ai:GenericRequiredAdaptor" serviceProviderCatalogURI="http://your.host.com/adaptor/services/catalog/singleton" name="GenericRequiredAdaptor"/>
   </adaptorInterfaces>
@@ -37,26 +34,22 @@
         <services>
           <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='Twins%20Domain']"/>
           <creationFactories title="PlanFactory" label="CF to schedule new plans for execution" creationURI="create">
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='Twins%20Domain']/@resources[name='PlanExecutionRequest']"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#_sJMTMNGhEeqi_PBLP5rI0w"/>
           </creationFactories>
           <usages>planExecution</usages>
         </services>
-        <services>
-          <domainSpecification href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']"/>
-          <basicCapabilities instanceID="">
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='SCOTT%20Warehouse']/@resources[name='ActionExecutionReport']"/>
-          </basicCapabilities>
-          <usages>executionReports</usages>
-        </services>
       </serviceProviders>
       <serviceProviders title="Independent" description="Generic SP for SP-independent services" serviceNamespace="independent">
-        <services domainSpecification="//@specification/@domainSpecifications[name='MissionOntology']" serviceNamespace="independantOfServiceProvider">
+        <services domainSpecification="//@specification/@domainSpecifications[name='MissionOntology']">
           <creationFactories title="Registration CF" label="Twin Registration factory" creationURI="register">
-            <resourceTypes href="../model-domain-pddl/spec.xmi#//@domainSpecifications[name='Twins%20Domain']/@resources[name='DeviceRegistrationMessage']"/>
+            <resourceTypes href="../model-domain-pddl/spec.xmi#_sJMTMdGhEeqi_PBLP5rI0w"/>
           </creationFactories>
         </services>
       </serviceProviders>
     </serviceProviderCatalog>
+    <webServices name="ExecReportWS" serviceUrlPattern="reports" resourceUrlPattern="{id}">
+      <resourceTypes href="../model-domain-pddl/spec.xmi#_sJM6QNGhEeqi_PBLP5rI0w"/>
+    </webServices>
     <specification/>
   </adaptorInterfaces>
   <adaptorInterfaces name="PlanExecutor" javaClassBaseNamespace="se.ericsson.cf.scott.sandbox.executor" javaFilesBasePath="../webapp-executor/src/main/java/" jspFilesBasePath="../webapp-executor/src/main/webapp/" javascriptFilesBasePath="../webapp-executor/src/main/webapp/">
@@ -85,31 +78,31 @@
   </adaptorInterfaces>
   <specification>
     <domainSpecifications name="MissionOntology" namespaceURI="http://ontology.cf.ericsson.net/mission_ontology/" namespacePrefix="//@specification/@domainPrefixes[name='mission']">
-      <resources name="Goal"/>
-      <resources name="MoveGoal" extends="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Goal']" resourceProperties="//@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='selector'] //@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='destination']"/>
-      <resources name="Selector"/>
-      <resources name="DirectSelector" extends="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Selector']" resourceProperties="//@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='item']"/>
-      <resources name="TypeSelector" extends="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Selector']" resourceProperties="//@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='itemType'] //@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='count']"/>
-      <resources name="WildcardSelector" extends="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Selector']" resourceProperties="//@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='itemType']"/>
-      <resources name="CompositeSelector" extends="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Selector']" resourceProperties="//@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='selector']"/>
-      <resources name="LocationSelector" extends="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Selector']" resourceProperties="//@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='selector'] //@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='location']"/>
-      <resources name="Location"/>
-      <resources name="Mission" resourceProperties="//@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='goal'] //@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='responseTimeout'] //@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='missionDeadline']"/>
-      <resources name="AgentRequest" resourceProperties="//@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='adaptor_id'] //@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='trs_topic'] //@specification/@domainSpecifications[name='MissionOntology']/@resourceProperties[name='trs_server']"/>
-      <resources name="RegistrationRequest" extends="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='AgentRequest']"/>
-      <resources name="DeregistrationRequest" extends="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='AgentRequest']"/>
-      <resourceProperties title="" name="selector" valueType="LocalResource" representation="reference" range="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Selector']"/>
-      <resourceProperties name="destination" valueType="Resource" range="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Location']"/>
-      <resourceProperties name="item" valueType="Resource"/>
-      <resourceProperties name="itemType" valueType="Resource"/>
-      <resourceProperties name="count" valueType="Integer"/>
-      <resourceProperties name="responseTimeout" valueType="Double"/>
-      <resourceProperties name="missionDeadline" valueType="DateTime"/>
-      <resourceProperties name="goal" valueType="LocalResource" range="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Goal']"/>
-      <resourceProperties name="location" valueType="Resource" range="//@specification/@domainSpecifications[name='MissionOntology']/@resources[name='Location']"/>
-      <resourceProperties name="adaptor_id" valueType="String"/>
-      <resourceProperties title="" name="trs_topic" valueType="URI" description="Should be a field on the TRS Server resource, but it's too much work to extend it now"/>
-      <resourceProperties name="trs_server" valueType="URI"/>
+      <resources id="_sJRywNGhEeqi_PBLP5rI0w" name="Goal"/>
+      <resources id="_sJRywdGhEeqi_PBLP5rI0w" name="MoveGoal" extends="_sJRywNGhEeqi_PBLP5rI0w" resourceProperties="_sJUPAtGhEeqi_PBLP5rI0w _sJU2ENGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJRywtGhEeqi_PBLP5rI0w" name="Selector"/>
+      <resources id="_sJSZ0NGhEeqi_PBLP5rI0w" name="DirectSelector" extends="_sJRywtGhEeqi_PBLP5rI0w" resourceProperties="_sJSZ0dGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJSZ0tGhEeqi_PBLP5rI0w" name="TypeSelector" extends="_sJRywtGhEeqi_PBLP5rI0w" resourceProperties="_sJTA4NGhEeqi_PBLP5rI0w _sJTA4dGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJTA4tGhEeqi_PBLP5rI0w" name="WildcardSelector" extends="_sJRywtGhEeqi_PBLP5rI0w" resourceProperties="_sJTA4NGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJTn8NGhEeqi_PBLP5rI0w" name="CompositeSelector" extends="_sJRywtGhEeqi_PBLP5rI0w" resourceProperties="_sJUPAtGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJTn8dGhEeqi_PBLP5rI0w" name="LocationSelector" extends="_sJRywtGhEeqi_PBLP5rI0w" resourceProperties="_sJUPAtGhEeqi_PBLP5rI0w _sJVdIdGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJTn8tGhEeqi_PBLP5rI0w" name="Location"/>
+      <resources id="_sJTn89GhEeqi_PBLP5rI0w" name="Mission" resourceProperties="_sJVdINGhEeqi_PBLP5rI0w _sJUPANGhEeqi_PBLP5rI0w _sJUPAdGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJWEMtGhEeqi_PBLP5rI0w" name="AgentRequest" resourceProperties="_sJVdItGhEeqi_PBLP5rI0w _sJWEMNGhEeqi_PBLP5rI0w _sJWEMdGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJWrQNGhEeqi_PBLP5rI0w" name="RegistrationRequest" extends="_sJWEMtGhEeqi_PBLP5rI0w"/>
+      <resources id="_sJWrQdGhEeqi_PBLP5rI0w" name="DeregistrationRequest" extends="_sJWEMtGhEeqi_PBLP5rI0w"/>
+      <resourceProperties id="_sJUPAtGhEeqi_PBLP5rI0w" title="" name="selector" valueType="LocalResource" range="_sJRywtGhEeqi_PBLP5rI0w" representation="reference"/>
+      <resourceProperties id="_sJU2ENGhEeqi_PBLP5rI0w" name="destination" valueType="Resource" range="_sJTn8tGhEeqi_PBLP5rI0w"/>
+      <resourceProperties id="_sJSZ0dGhEeqi_PBLP5rI0w" name="item" valueType="Resource"/>
+      <resourceProperties id="_sJTA4NGhEeqi_PBLP5rI0w" name="itemType" valueType="Resource"/>
+      <resourceProperties id="_sJTA4dGhEeqi_PBLP5rI0w" name="count" valueType="Integer"/>
+      <resourceProperties id="_sJUPANGhEeqi_PBLP5rI0w" name="responseTimeout" valueType="Double"/>
+      <resourceProperties id="_sJUPAdGhEeqi_PBLP5rI0w" name="missionDeadline" valueType="DateTime"/>
+      <resourceProperties id="_sJVdINGhEeqi_PBLP5rI0w" name="goal" valueType="LocalResource" range="_sJRywNGhEeqi_PBLP5rI0w"/>
+      <resourceProperties id="_sJVdIdGhEeqi_PBLP5rI0w" name="location" valueType="Resource" range="_sJTn8tGhEeqi_PBLP5rI0w"/>
+      <resourceProperties id="_sJVdItGhEeqi_PBLP5rI0w" name="adaptor_id" valueType="String"/>
+      <resourceProperties id="_sJWEMNGhEeqi_PBLP5rI0w" title="" name="trs_topic" description="Should be a field on the TRS Server resource, but it's too much work to extend it now" valueType="URI"/>
+      <resourceProperties id="_sJWEMdGhEeqi_PBLP5rI0w" name="trs_server" valueType="URI"/>
       <generationSetting javaClassPackageName="eu.scott.warehouse.domains.mission" javaFilesPath="../domain-pddl/src/main/java"/>
     </domainSpecifications>
     <domainPrefixes name="mission"/>
