@@ -13,7 +13,7 @@
     <arg name="cmd_vel_mux" value="$(arg cmd_vel_mux)"/>
   </include>
   <include file="$(find kobuki_node)/launch/minimal.launch" />
-  <include file="$(find sweep_ros)/launch/sweep2scan.launch" />
+  <!-- <include file="$(find sweep_ros)/launch/sweep2scan.launch" />  --> <!-- old lidar -->
   <!-- <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_keyop_demo.launch" /> -->
   <node pkg="turtlebot2i_safety" name="run_demo"        type="run_demo.py"     output="screen"/>
   <node pkg="turtlebot2i_safety" name="rm_fls_demo"     type="rm_fls_demo.py"  output="screen"/>
@@ -21,6 +21,29 @@
     <param name="dev" value="/dev/input/js0" />
   </node>
   <include file="$(find astra_camera)/launch/astrapro.launch"/>
+
+  <node name="hokuyo" pkg="hokuyo_node" type="hokuyo_node" respawn="false" output="screen">
+    <remap from="scan" to="turtlebot2i/lidar/scan"/>
+    <!-- Starts up faster, but timestamps will be inaccurate. --> 
+    <param name="calibrate_time" type="bool" value="false"/> 
+    
+    <!-- Set the port to connect to here -->
+    <param name="port" type="string" value="/dev/ttyACM0"/> 
+  
+    <param name="intensity" type="bool" value="false"/>
+  
+    <param name="use_inf" type="bool" value="false"/>
+
+    <param name="target_frame" type="string" value="turtlebot2i/lidar/scan"/>
+
+    <remap from="cloud_in" to="pc2"/>
+
+    
+  </node>
+  <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">
+        <rosparam command="load" file="$(find hokuyo_node)/cfg/hokuyo_config.yaml" /> 
+        
+  </node>
   
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_single_robot.rviz" />
 

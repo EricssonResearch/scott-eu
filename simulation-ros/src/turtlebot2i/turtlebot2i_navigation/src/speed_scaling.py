@@ -35,12 +35,18 @@ def joystick_callback(joystick_data):
     #data.linear.x
     #data.angular.z
     speed = Twist()
+    ''' #commented; this part is for PS4 controller
     if joystick_data.axes[6] == 0.0 and joystick_data.axes[7] == 0.0: 
         speed.linear.x  = 0.5 * joystick_data.axes[1] #max 1.5
         speed.angular.z = 2.0 * joystick_data.axes[0] #max 6.6
     else:
         speed.linear.x  = 0.1 * joystick_data.axes[7] #max 1.5
         speed.angular.z = 0.4 * joystick_data.axes[6] #max 6.6
+    '''
+    #this part is for PS4 controller
+    speed.linear.x  = 0.3 * joystick_data.axes[1] #max 1.5
+    speed.angular.z = 2.0 * joystick_data.axes[0] #max 6.6
+
     new_speed = speed
     #robot_speed     = math.sqrt(data.twist.twist.linear.x**2 + data.twist.twist.linear.y**2) 
     if speed.linear.x < 0.0:

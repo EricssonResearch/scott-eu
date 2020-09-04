@@ -53,6 +53,7 @@ find_package(catkin REQUIRED COMPONENTS
    SafetyZone.msg
    VelocityScale.msg
    SafetyRisk.msg
+   BoundingBox.msg
  )
 
 ## Generate services in the 'srv' folder
