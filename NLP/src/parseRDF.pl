@@ -33,6 +33,9 @@
 :- rdf_register_prefix(pddl,'http://ontology.cf.ericsson.net/pddl/').
 :- rdf_register_prefix(pddle,'http://ontology.cf.ericsson.net/pddl_example/.').
 
+:- discontiguous parseRDF:find_text/2.
+:- discontiguous lambda:s/3.
+
 parseRDF([FOL], _):-
 	find_text(FOL,_).
 %%   	assemble_goal(TurtText,Turtgoal).

@@ -47,6 +47,8 @@
           find_subject/3,
           find_predicate/4]).
 
+
+
 :- [englishGrammar].
 :- [englishLexicon].
 :- [semLexLambda].
