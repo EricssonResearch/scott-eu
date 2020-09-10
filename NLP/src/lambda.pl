@@ -65,8 +65,8 @@
 lambda:-
 	readLine(Sentence),
         lambda(Sentence,Sems),
-	printRepresentations(Sems),
-  parseRDF(Sems,_).
+	printRepresentations(Sems).
+%%  parseRDF(Sems,_).
 %%  printRepresentations(RDF).
 
 lambda(Sentence,Sems):-
