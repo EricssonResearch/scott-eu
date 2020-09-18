@@ -113,7 +113,7 @@ Step 5. Install V-REP ROS Interface
 
 Add this line to ~/.bashrc:
 ```
-$ cat "export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/scott-eu/simulation-ros" >> ~/.bashrc
+$ echo "export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/scott-eu/simulation-ros" >> ~/.bashrc
 ```
 
 And you can check the ROS_PACKAGE_PATH in the terminal:
