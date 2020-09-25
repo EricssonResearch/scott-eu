@@ -34,7 +34,11 @@ pip install -r src/requirements.txt
 
 Follow this section if the risk mitigation will be run a simulated setup.
 
-### 2.1.1. Loading V-REP scenario
+### 2.1.1. Preparing V-REP remote API
+
+The V-REP remote API shold be configured. Please check the [Using Python VREP Remote API](https://github.com/EricssonResearch/scott-eu/tree/master/simulation-ros/doc#54-using-python-vrep-remote-api-optional) tutorial.
+
+### 2.1.2. Loading V-REP scenario
 
 In order to run the safety package, the right V-REP scene should be loaded. To do that, the following steps should be followed:
 
@@ -44,7 +48,7 @@ In order to run the safety package, the right V-REP scene should be loaded. To d
 - `Scene_Builder_test1.lua` for **testing the risk management**.
 - `Scene_Builder_training.lua` for **training the reinforcement learning-based risk mitigation models** .
 
-### 2.1.1. Setting Occupancy Grid Maps
+### 2.1.3. Setting Occupancy Grid Maps
 
 1. Move to turtlebot2i mapping package:
 ```
@@ -63,14 +67,43 @@ The simulation scenario must be running and have the correct map. The map can be
 ```
 roslaunch turtlebot2i_navigation turtlebot2i_navigation_single.launch
 ```
-The scene graph generator can be run by calling:
+1. Run **scene_graph_generator** node:
 ```
 rosrun turtlebot2i_scene_graph scene_graph_generator.py
 ```
 
-The risk assessment can be run by executing the both commands:
+The node will take a while (might take few minutes) to start generating the scene graphs because of the initialization procedures.
+The following messages should be produced:
+```
+[INFO] [1601017284.064582]: Connected to remote API server
+[INFO] [1601017284.065025]: Getting scene properties (this can take a while)...
+[INFO] [1601017437.905251]: Finished getting scene properties!
+
+[INFO] [1601017437.905841]: Started getting scene objects from vision sensor FOV...
+```
+
+**Note:** The scene graph is directly generated through V-REP remote API, threfore the scene understanding is not used in this case. To use scene understanding's graph, please check the [turtlebot2i_mrcnn](https://github.com/EricssonResearch/scott-eu/tree/master/simulation-ros/src/turtlebot2i/turtlebot2i_mrcnn) or [turtlebot2i_msdn](https://github.com/EricssonResearch/scott-eu/tree/master/simulation-ros/src/turtlebot2i/turtlebot2i_msdn) packages. 
+
+2. Run **risk_assessment** node:
 ```
 rosrun turtlebot2i_safety risk_assessment.py
+```
+
+The following messages should be produced:
+```
+init_var ok
+init_regEx ok
+init_fls_common_part
+init_fls_common_part ok
+/some/path/scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/rules/ra_full.data
+FLS exists!
+init_risk_assessment ok
+Initializing parse node finished
+initialization finished, Risk assesment ready!
+```
+
+3. Run **zone_generation** node:
+```
 rosrun turtlebot2i_safety zone_generation.py
 ```
 
