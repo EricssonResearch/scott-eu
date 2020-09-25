@@ -17,7 +17,18 @@ As a ongoing work, the generator is under modification to use the output generat
 
 # 3. Running the Scene Graph Generator
 
-## 3.1. Running ROS node
+## 3.1. Preparing V-REP remote API
+
+The V-REP remote API shold be configured. Please check the [Using Python VREP Remote API](https://github.com/EricssonResearch/scott-eu/tree/master/simulation-ros/doc#54-using-python-vrep-remote-api-optional) tutorial.
+
+## 3.2. Installing pre-requisites
+
+Install graphviz and shapely packages:
+```
+$ pip install graphviz shapely
+```
+
+## 3.3. Running ROS node
 
 Execute the following code in the terminal:
 ```
@@ -26,7 +37,7 @@ rosrun turtlebot2i_scene_graph ros_scene_graph_generator.py
 
 The generated scene graph will be available in the `/turtlebot2i/scene_graph` topic.
 
-## 3.2. Execute as a standalone application
+## 3.4. Execute as a standalone application
 
 Execute the following code in the terminal:
 ```
