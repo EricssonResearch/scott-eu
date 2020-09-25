@@ -241,6 +241,10 @@ def topic_callback(data):
     #time_previous = time.time()
 
     graph = pydot.graph_from_dot_data(data.sg_data) #From string
+
+    if (type(graph) is list):
+        graph = graph[0]
+
     parse_dot_file(graph)
 
     #time_duration_list.append(time.time()-time_previous)
