@@ -27,7 +27,7 @@ def init_var():
     # Safety zone size
     global fls_max_far, IZW, range_degree,range_degree,range_meter, range_meter_per_second,range_risk, idx_degree
     fls_max_far = 3.0 #meter
-    IZW = 0.4
+    IZW = 0.5#0.4
     step_meter = 0.02
     step_meter_per_second = 0.02
     step_risk = 0.05
@@ -215,7 +215,7 @@ def risk_callback(data):
 
 def lidar_and_camera_setup(data):
     global camera_fov, camera_res_width, camera_mid_width, lidar_initialized
-    camera_fov = 60.0
+    camera_fov = 90.0
     camera_res_width = 640
     camera_mid_width = camera_res_width / 2.0
 
@@ -261,16 +261,19 @@ def lidar_callback(data):
     sensor_reads = np.array(sensor_reads)
     nan_indexes = np.isnan(sensor_reads)
     sensor_reads[nan_indexes] = lidar_max_distance + 1
-    lidar_closest_idx  = np.argmin(sensor_reads)
-    lidar_closest_dist = sensor_reads[lidar_closest_idx]
+    sensor_reads = np.array(list(value if value > 0.049999999999999 else lidar_max_distance + 1 for value in sensor_reads ))
+    # sensor_reads_list = (value for value in sensor_reads ifnp.array( value > 0.049999999999999)
+    # print (sensor_reads)
+    lidar_closest_dist = min (sensor_reads) 
+    lidar_closest_idx  = sensor_reads.tolist().index(lidar_closest_dist)
+    # lidar_closest_dist = sensor_reads[lidar_closest_idx]
     lidar_closest_dir  = lidar_closest_idx * idx_per_deg + (-camera_fov) # (-camera_fov) OR lidar_min_deg
     object_dict = {}
-    object_dict['distance']  = [lidar_closest_dist] 
+    object_dict['distance']  = [lidar_closest_dist]
     object_dict['direction'] = [lidar_closest_dir]
     #print('len(sensor_reads) : ',len(sensor_reads))
     #print('sensor reads',sensor_reads[int(len(sensor_reads)/2)])
     
-    print('lidar closest direction: ',lidar_closest_dir, lidar_closest_idx, 'lidar closest distance : ',lidar_closest_dist, min(sensor_reads))
     object_dict['risk_val']  = [cal_risk(lidar_closest_dist, lidar_closest_dir)]
 
     #risk_val = cal_risk(closest_dist, closest_idx) #risk analysis
@@ -283,7 +286,10 @@ def lidar_callback(data):
     speed_l, speed_r = cal_safe_vel(object_dict['distance'][riskiest_object_n], object_dict['direction'][riskiest_object_n], object_dict['direction'][riskiest_object_n]) #risk mitigation
     pub_safe_vel(speed_l, speed_r)
     #print(riskiest_object_n, object_dict['risk_val'], object_dict['direction'],speed_l, speed_r)
-    risk_val = object_dict['direction'][riskiest_object_n]
+    risk_val = object_dict['risk_val'][riskiest_object_n]
+    #print('lidar closest direction: ',lidar_closest_dir, lidar_closest_idx, 'lidar closest distance : ',lidar_closest_dist)#, min(sensor_reads))
+    print('Risk value: ', risk_val, ' Speed l : ', speed_l, ' Speed r : ', speed_r)
+
     prev_obstacle_zone = obstacle_zone
     if risk_val > 3.0:
     	led2_pub.publish(Led.RED)
