@@ -1,11 +1,16 @@
 global_costmap:
- global_frame: /map
- robot_base_frame: /turtlebot2i/base_footprint
- update_frequency: 10
- static_map: true
+ global_frame: map
+ robot_base_frame: turtlebot2i/base_footprint
+ update_frequency: 5
+# static_map: true
  rolling_window: true
 # width: 8.0
 # height: 8.0
  width: 40.0
  height: 40.0
  resolution: 0.05
+
+ plugins:
+     - {name: static_layer,            type: "costmap_2d::StaticLayer"}
+     - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
+     - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}

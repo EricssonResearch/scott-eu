@@ -27,10 +27,10 @@ class ReinforceAgent():
         self.dirPath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src/models/mlp_')
         self.result = Float32MultiArray()
 
-        #self.load_model = True # Inference
-        self.load_model = False # Training
-        #self.load_episode = 885 # Inference
-        self.load_episode = 0 # Training
+        self.load_model = True # Inference
+        #self.load_model = False # Training
+        self.load_episode = 885 # Inference
+        #self.load_episode = 0 # Training
         self.state_size = state_size
         self.action_size = action_size
         self.episode_step = 6000
@@ -53,6 +53,7 @@ class ReinforceAgent():
         self.episodes = []
 
         if self.load_model:
+            print(self.dirPath + str(self.load_episode) + ".h5");
             self.model.set_weights(load_model(self.dirPath + str(self.load_episode) + ".h5").get_weights())
 
             with open(self.dirPath + str(self.load_episode) + '.json') as outfile:
@@ -96,6 +97,7 @@ class ReinforceAgent():
         else:
             q_value = self.model.predict(state.reshape(1, len(state)))
             self.q_value = q_value
+            print("Q_value_max: " + str(np.argmax(q_value[0])))
             return np.argmax(q_value[0])
 
     def appendMemory(self, state, action, reward, next_state, done):
@@ -157,8 +159,8 @@ if __name__ == '__main__':
         start_time = time.time()
 
         print('start training')
-        #training_mode = False  # Inference
-        training_mode = True    # Training
+        training_mode = False  # Inference
+        #training_mode = True    # Training
         if training_mode:
             for e in range(agent.load_episode + 1, EPISODES):
                 done = False

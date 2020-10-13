@@ -6,9 +6,9 @@
 
     - arm : TODO: supported arms?
 -->    
-<robot name="turtlebot" xmlns:xacro="http://ros.org/wiki/xacro">
+  <robot name="turtlebot" xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find robot_description)/urdf/turtlebot_library.urdf.xacro" />
+  <include filename="$(find robot_description)/urdf/turtlebot_library.urdf.xacro" />
   <kobuki/>
 
   <stack_interbotix parent="base_link"/>

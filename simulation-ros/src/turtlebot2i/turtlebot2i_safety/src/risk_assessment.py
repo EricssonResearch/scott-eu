@@ -179,6 +179,7 @@ def pub_safe_vel(left_vel_scale,right_vel_scale):
 def parse_dot_file(graph):
     global left_vel_scale, right_vel_scale, highest_risk
     min_left_vel_scale, min_right_vel_scale = 1.0, 1.0
+    graph = graph[0]
     robot_self_node = graph.get_node('robot')[0]
     if (robot_self_node.get_name()=='robot'):
         node_info= robot_self_node.__get_attribute__("label")

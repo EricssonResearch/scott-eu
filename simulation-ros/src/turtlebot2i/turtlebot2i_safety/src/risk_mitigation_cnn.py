@@ -124,6 +124,7 @@ class ReinforceAgent():
             with self.graph.as_default():
                 q_value = self.model.predict(state)
             self.q_value = q_value
+            print("Q_value_max: " + str(np.argmax(q_value[0])))
             return np.argmax(q_value[0])
 
     def appendMemory(self, state, action, reward, next_state, done):
