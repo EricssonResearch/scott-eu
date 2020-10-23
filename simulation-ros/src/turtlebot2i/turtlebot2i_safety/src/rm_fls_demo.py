@@ -27,7 +27,7 @@ def init_var():
     # Safety zone size
     global fls_max_far, IZW, range_degree,range_degree,range_meter, range_meter_per_second,range_risk, idx_degree
     fls_max_far = 3.0 #meter
-    IZW = 0.5#0.4
+    IZW = 0.4
     step_meter = 0.02
     step_meter_per_second = 0.02
     step_risk = 0.05
@@ -115,6 +115,7 @@ def init_fls_common_part(): #copy this function from risk_management.py; TO DO: 
 
 
 def init_risk_assessment():
+    global fls_name
     range_type = np.arange(0, 2+1, 1)
     # New Antecedent/Consequent objects
     object_risk        = ctrl.Consequent(range_risk, 'risk')
@@ -126,6 +127,7 @@ def init_risk_assessment():
     object_risk['High'] =  fuzz.trimf(range_risk, [2, 3, 4])
     object_risk['VeryHigh'] =  fuzz.trimf(range_risk, [3, 4, 4])
 
+    #fls_name = "/rules/ra_full.data"
     fls_name = "/rules/ra_demo.data"
     fls_data_path = package_path + fls_name
     print(fls_data_path)
@@ -179,12 +181,22 @@ def init_risk_mitigation():
     risk_mitigation_fls = ctrl.ControlSystem(mitigation_rule_list)
     risk_mitigation_instance = ctrl.ControlSystemSimulation(risk_mitigation_fls)
 
-def cal_risk(object_distance,object_direction):
-    risk_assessment_instance.input['distance'] = min(fls_max_far, object_distance)
-    risk_assessment_instance.input['direction'] = object_direction
-    risk_assessment_instance.compute()
-    #risk_result = risk_assessment_instance.output['risk']
-    return risk_assessment_instance.output['risk']
+def cal_risk(object_type,object_distance,object_direction,object_speed,object_orientation):
+    if fls_name == "/rules/ra_demo.data":
+        risk_assessment_instance.input['distance'] = min(fls_max_far, object_distance)
+        risk_assessment_instance.input['direction'] = object_direction
+        risk_assessment_instance.compute()
+        #risk_result = risk_assessment_instance.output['risk']
+        return risk_assessment_instance.output['risk']
+    else:
+        risk_assessment_instance.input['type'] = object_type
+        risk_assessment_instance.input['distance'] = object_distance
+        risk_assessment_instance.input['direction'] = object_direction
+        risk_assessment_instance.input['speed'] =   object_speed
+        risk_assessment_instance.input['orientation'] = object_orientation
+
+        risk_assessment_instance.compute()
+        return risk_assessment_instance.output['risk']
 
 def cal_safe_vel(object_distance,object_direction,object_risk):
     risk_mitigation_instance.input['distance']   = object_distance
@@ -215,7 +227,7 @@ def risk_callback(data):
 
 def lidar_and_camera_setup(data):
     global camera_fov, camera_res_width, camera_mid_width, lidar_initialized
-    camera_fov = 90.0
+    camera_fov = 60.0#90.0
     camera_res_width = 640
     camera_mid_width = camera_res_width / 2.0
 
@@ -247,6 +259,47 @@ def lidar_and_camera_setup(data):
     init_lidar_sub.unregister()
     print('Lidar has been setup')
 
+
+def detect_multi_object(lidar_array):
+    dist_threshold = 2.0
+    obstacle_threshold = 0.30
+    first_index_list = []
+    last_index_list = []
+    for i in range(len(lidar_array)-1):
+        if (lidar_array[i] < dist_threshold) and (abs(lidar_array[i+1] - lidar_array[i])>obstacle_threshold) and (len(first_index_list)==len(last_index_list)):
+            first_index_list.append(i)
+        elif ((abs(lidar_array[i+1] - lidar_array[i])>obstacle_threshold) and (len(first_index_list)!=len(last_index_list))):
+            last_index_list.append(i)
+    if (len(first_index_list)!=len(last_index_list)):
+        last_index_list.append(len(lidar_array)-1)
+    index_threshold = 15
+    current_index = 0
+    total_length = len(first_index_list)-1
+    while current_index < total_length:
+        if (first_index_list[current_index+1]-last_index_list[current_index] <= index_threshold):
+            del first_index_list[current_index+1]
+            del last_index_list[current_index]
+            total_length-=1
+        else:
+            current_index+=1
+
+    object_dict = {}
+    object_dict['distance']  = []
+    object_dict['direction'] = []    
+    object_dict['risk_val']  = []
+
+    for i in range(len(first_index_list)):
+        section = lidar_array[first_index_list[i]:last_index_list[i]]
+        lidar_closest_dist = np.min(section)
+        lidar_closest_idx = first_index_list[i] + np.argmin(section)
+        lidar_closest_dir  = lidar_closest_idx * idx_per_deg + (-camera_fov) # (-camera_fov) OR lidar_min_deg
+        object_dict['distance'].append(lidar_closest_dist)
+        object_dict['direction'].append(lidar_closest_dir)    
+        object_dict['risk_val'].append(cal_risk(0,lidar_closest_dist, lidar_closest_dir,0,0))
+    return object_dict
+    #TODO: make the RM calculates all the values, then take min or average of the generated scaling speed
+
+
 def lidar_callback(data):
     global detected_object
     obstacle_zone = 2.0
@@ -262,33 +315,54 @@ def lidar_callback(data):
     nan_indexes = np.isnan(sensor_reads)
     sensor_reads[nan_indexes] = lidar_max_distance + 1
     sensor_reads = np.array(list(value if value > 0.049999999999999 else lidar_max_distance + 1 for value in sensor_reads ))
+    
+    object_dict = detect_multi_object(sensor_reads) #added for multi object detection
+    
     # sensor_reads_list = (value for value in sensor_reads ifnp.array( value > 0.049999999999999)
     # print (sensor_reads)
     lidar_closest_dist = min (sensor_reads) 
     lidar_closest_idx  = sensor_reads.tolist().index(lidar_closest_dist)
     # lidar_closest_dist = sensor_reads[lidar_closest_idx]
     lidar_closest_dir  = lidar_closest_idx * idx_per_deg + (-camera_fov) # (-camera_fov) OR lidar_min_deg
-    object_dict = {}
-    object_dict['distance']  = [lidar_closest_dist]
-    object_dict['direction'] = [lidar_closest_dir]
+
+    #object_dict = {} #commented for multi object detection
+    #adding 1 object from the reading
+    #object_dict['distance']  = [lidar_closest_dist]
+    #object_dict['direction'] = [lidar_closest_dir]
+    #object_dict['risk_val']  = [cal_risk(lidar_closest_dist, lidar_closest_dir)]
+    if len(object_dict['distance']) == 0:
+        object_dict['distance'].append(lidar_closest_dist)
+        object_dict['direction'].append(lidar_closest_dir)
+        object_dict['risk_val'].append(cal_risk(0, lidar_closest_dist, lidar_closest_dir,0.0, 0.0))#0:obstacle type == static
+        
     #print('len(sensor_reads) : ',len(sensor_reads))
     #print('sensor reads',sensor_reads[int(len(sensor_reads)/2)])
     
-    object_dict['risk_val']  = [cal_risk(lidar_closest_dist, lidar_closest_dir)]
 
     #risk_val = cal_risk(closest_dist, closest_idx) #risk analysis
+    #Calculating the risk from scenegraph
     for single_object in detected_object:
         object_dict['distance'].append(single_object['distance'])
         object_dict['direction'].append(single_object['object_direction'])
-        object_dict['risk_val'].append(cal_risk(single_object['distance'], single_object['object_direction']))
+        object_dict['risk_val'].append(cal_risk(2,single_object['distance'], single_object['object_direction'], 0.0, 0.0)) #2:obstacle type == human
     riskiest_object_n = np.argmax(object_dict['risk_val'])
-
-    speed_l, speed_r = cal_safe_vel(object_dict['distance'][riskiest_object_n], object_dict['direction'][riskiest_object_n], object_dict['direction'][riskiest_object_n]) #risk mitigation
+    
+    #speed_l, speed_r = cal_safe_vel(object_dict['distance'][riskiest_object_n], object_dict['direction'][riskiest_object_n], object_dict['risk_val'][riskiest_object_n]) #risk mitigation
+    speed_l_list = []
+    speed_r_list = []
+    for i in range(len(object_dict['distance'])):
+        speed_L, speed_R = cal_safe_vel(object_dict['distance'][i], object_dict['direction'][i], object_dict['risk_val'][i]) #risk mitigation
+        speed_l_list.append(speed_L* object_dict['risk_val'][i])
+        speed_r_list.append(speed_R* object_dict['risk_val'][i])
+    speed_l = np.sum(speed_l_list)/np.sum(object_dict['risk_val'])
+    speed_r = np.sum(speed_r_list)/np.sum(object_dict['risk_val'])
     pub_safe_vel(speed_l, speed_r)
     #print(riskiest_object_n, object_dict['risk_val'], object_dict['direction'],speed_l, speed_r)
     risk_val = object_dict['risk_val'][riskiest_object_n]
+    #print(len(object_dict['risk_val']))
+    print(object_dict)
     #print('lidar closest direction: ',lidar_closest_dir, lidar_closest_idx, 'lidar closest distance : ',lidar_closest_dist)#, min(sensor_reads))
-    print('Risk value: ', risk_val, ' Speed l : ', speed_l, ' Speed r : ', speed_r)
+    #print('Risk value: ', risk_val, ' Speed l : ', speed_l, ' Speed r : ', speed_r)
 
     prev_obstacle_zone = obstacle_zone
     if risk_val > 3.0:

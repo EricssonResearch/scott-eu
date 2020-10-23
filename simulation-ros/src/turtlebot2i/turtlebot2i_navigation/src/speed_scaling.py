@@ -28,19 +28,19 @@ def speed_callback(data):
     	new_speed.linear.x  = (vel_r + vel_l) / 2.0 
     	new_speed.angular.z = (vel_r - vel_l) / interWheelDistance
     velocity_publisher.publish(new_speed)
-    print("scaling speed received:",l_scale,r_scale,"| linear speed: ",new_speed.linear.x,"angular speed: ",new_speed.angular.z)
+    #print("scaling speed received:",l_scale,r_scale,"| linear speed: ",new_speed.linear.x,"angular speed: ",new_speed.angular.z)
 
 def joystick_callback(joystick_data):
-    global r_scale, l_scale, interWheelDistance, new_speed, loop_checker, speed
+    global r_scale, l_scale, interWheelDistance, new_speed, loop_checker
     #data.linear.x
     #data.angular.z
-    #speed = Twist()
+    speed = Twist()
     #''' #commented; this part is for PS4 controller
     if joystick_data.axes[6] == 0.0 and joystick_data.axes[7] == 0.0: 
         speed.linear.x  = 0.5 * joystick_data.axes[1] #max 1.5
         speed.angular.z = 1.0 * joystick_data.axes[0] #max 6.6
     else:
-        speed.linear.x  = 0.2 * joystick_data.axes[7] #max 1.5
+        speed.linear.x  = 0.1 * joystick_data.axes[7] #max 1.5
         speed.angular.z = 0.4 * joystick_data.axes[6] #max 6.6
     #'''
     #this part is for PS3 controller
@@ -87,7 +87,7 @@ def speed_scale_callback(data):
     #print("scaling speed received:",l_scale,r_scale)
 
 def led_callback(data):
-    global nav_sub, joystick_mode, speed
+    global nav_sub, joystick_mode
     joystick_mode = False
     if data.value == Led.BLACK:
     	nav_sub.unregister()
@@ -96,8 +96,6 @@ def led_callback(data):
     	nav_sub.unregister()
         joystick_mode = True
         #nav_sub = rospy.Subscriber('/turtlebot2i/keyop/velocity', Twist, speed_callback)
-        speed = Twist()
-        velocity_publisher.publish(speed)
         nav_sub = rospy.Subscriber('/joy', Joy, joystick_callback)
     	print("Subscribed to keyop")
     elif data.value == Led.ORANGE or data.value == Led.RED:
@@ -131,7 +129,6 @@ if __name__ == '__main__':
         joystick_mode = False
         new_speed = Twist()
         loop_checker = False
-        speed = Twist()
         velocity_publisher = rospy.Publisher('/turtlebot2i/commands/velocity', Twist, queue_size=10)
         sound_pub          = rospy.Publisher('/turtlebot2i/commands/sound', Sound,  queue_size=10)
         led2_pub  = rospy.Publisher('/turtlebot2i/commands/led2', Led,  queue_size=10)
@@ -145,7 +142,7 @@ if __name__ == '__main__':
         while not rospy.is_shutdown():
             if joystick_mode and loop_checker:
                 velocity_publisher.publish(new_speed)
-                print("[joystick loop] linear speed: ",new_speed.linear.x,"angular speed: ",new_speed.angular.z)
+                #print("[joystick loop] linear speed: ",new_speed.linear.x,"angular speed: ",new_speed.angular.z)
         #rospy.spin()
     except rospy.ROSInterruptException:
     #except KeyboardInterrupt:
