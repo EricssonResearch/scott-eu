@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="mode" default="1" doc="Operation modes: 0 = Teleop; 1 = Lidar Random Walk; 3 = Kobuki Random Walker" />
+
+  <!-- Turtlebot2i base nodes-->
+  <include file="$(find turtlebot2i_bringup)/launch/minimal.launch" />
+
+  <include file="$(find turtlebot2i_bringup)/launch/lidar_sensor.launch">
+    <arg name="lidar_sensor" value="rplidar" />
+    <arg name="serial_port" value="/dev/ttyUSB1" />
+    <arg name="lidar_frame" value="lidar_link" />
+  </include>
+
+  <!--<include file="$(find astra_camera)/launch/astrapro.launch"/>-->
+  <include file="$(find astra_launch)/launch/astrapro.launch"/>
+
+  <!-- Teleop -->
+  <group if="$(eval arg('mode') == 0)">
+
+    <node pkg="turtlebot_teleop" type="turtlebot_teleop_joy" name="turtlebot_teleop_joystick">
+      <param name="scale_angular" value="1.0"/>
+      <param name="scale_linear" value="0.2"/>
+      <param name="axis_deadman" value="10"/>
+      <param name="axis_linear" value="1"/>
+      <param name="axis_angular" value="0"/>
+      <remap from="turtlebot_teleop_joystick/cmd_vel" to="/mobile_base/commands/velocity_raw"/>
+    </node>
+
+    <node pkg="joy" type="joy_node" name="joystick"/>
+
+  </group>
+
+  <!-- Lidar-based Random Walk -->
+  <group if="$(eval arg('mode') == 1)">
+
+    <node pkg="turtlebot2i_navigation" name="random_walk" type="random_walk.py" output="screen">
+      <param name="max_vel_x"                                   value="0.12"/>
+      <param name="max_vel_z"                                   value="1.0"/>
+      <remap from="/mobile_base/commands/velocity" to="/mobile_base/commands/velocity_raw"/>
+    </node>
+
+  </group>
+
+  <!-- Kobuki Random Walker -->
+  <group if="$(eval arg('mode') == 2)">
+
+    <!--<include file="$(find kobuki_random_walker)/launch/random_walker_app.launch" />-->
+
+    <node pkg="nodelet" type="nodelet" name="kobuki_random_walker_controller"
+      args="load kobuki_random_walker/RandomWalkerControllerNodelet mobile_base_nodelet_manager">
+      <param name="update_rate"                                       value="10.0"/>
+      <!--<param name="linear_velocity"                                   value="0.1"/>-->
+      <param name="linear_velocity"                                   value="0.2"/>
+      <param name="angular_velocity"                                  value="1.0"/>
+      <remap from="kobuki_random_walker_controller/events/bumper"     to="mobile_base/events/bumper"/>
+      <remap from="kobuki_random_walker_controller/events/cliff"      to="mobile_base/events/cliff"/>
+      <remap from="kobuki_random_walker_controller/events/wheel_drop" to="mobile_base/events/wheel_drop"/>
+      <remap from="kobuki_random_walker_controller/commands/led1"     to="mobile_base/commands/led1"/>
+      <remap from="kobuki_random_walker_controller/commands/led2"     to="mobile_base/commands/led2"/>
+      <remap from="kobuki_random_walker_controller/commands/velocity" to="mobile_base/commands/velocity_raw"/>
+    </node>
+
+  </group>
+
+  <!-- Safety nodes -->
+  <node pkg="turtlebot2i_safety" name="rm_fls_demo" type="rm_fls_demo_rplidar_simple.py" output="screen"/>
+  <node pkg="turtlebot2i_navigation" name="speed_scaling" type="speed_scaling_simple.py" output="screen"/>
+
+  <!--<include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_velocity_smoother.launch"/>-->
+
+</launch>

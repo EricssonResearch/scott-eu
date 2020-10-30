@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<launch>
+  
+  <arg name="lidar_sensor" default="$(env TURTLEBOT_LIDAR_SENSOR)" />
+  <arg name="lidar_frame" default="lidar_link" />
+  <arg name="serial_port" default="/dev/ttyUSB1" />
+  <arg name="rotation_speed" default="10" />
+  <arg name="min_ang" default="-2.26893" />
+  <arg name="max_ang" default="2.26893" />
+
+  <!-- Lidar Sensor(s) -->
+  <include if="$(eval arg('lidar_sensor') == 'sweep')" file="$(find turtlebot2i_bringup)/launch/includes/sweep2scan.launch">
+    <arg name="serial_port" value="$(arg serial_port)" />
+    <arg name="frame_id" value="$(arg lidar_frame)" />
+    <arg name="rotation_speed" value="$(arg rotation_speed)" />
+  </include>
+
+  <include if="$(eval arg('lidar_sensor') == 'rplidar')" file="$(find turtlebot2i_bringup)/launch/includes/rplidar.launch">
+    <arg name="serial_port" value="$(arg serial_port)" />
+    <arg name="frame_id" value="$(arg lidar_frame)" />
+  </include>
+
+  <include if="$(eval arg('lidar_sensor') == 'sick')" file="$(find turtlebot2i_bringup)/launch/includes/sick_tim551.launch">
+    <arg name="frame_id" value="$(arg lidar_frame)" />
+    <arg name="min_ang" value="$(arg min_ang)" />
+    <arg name="max_ang" value="$(arg max_ang)" />
+  </include>
+  
+</launch>
