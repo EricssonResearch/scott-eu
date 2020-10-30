@@ -18,6 +18,7 @@ import cPickle as pickle
 from sensor_msgs.msg import LaserScan
 
 from kobuki_msgs.msg import  Led, Sound
+from std_msgs.msg import Float64
 
 def init_var():
     '''
@@ -272,7 +273,8 @@ def detect_multi_object(lidar_array):
             last_index_list.append(i)
     if (len(first_index_list)!=len(last_index_list)):
         last_index_list.append(len(lidar_array)-1)
-    index_threshold = 15
+    
+    index_threshold = 30#15
     current_index = 0
     total_length = len(first_index_list)-1
     while current_index < total_length:
@@ -316,7 +318,11 @@ def lidar_callback(data):
     sensor_reads[nan_indexes] = lidar_max_distance + 1
     sensor_reads = np.array(list(value if value > 0.049999999999999 else lidar_max_distance + 1 for value in sensor_reads ))
     
-    object_dict = detect_multi_object(sensor_reads) #added for multi object detection
+    object_dict = {}
+    object_dict['distance']  = []
+    object_dict['direction'] = []    
+    object_dict['risk_val']  = []
+    #object_dict = detect_multi_object(sensor_reads) #added for multi object detection
     
     # sensor_reads_list = (value for value in sensor_reads ifnp.array( value > 0.049999999999999)
     # print (sensor_reads)
@@ -360,7 +366,8 @@ def lidar_callback(data):
     #print(riskiest_object_n, object_dict['risk_val'], object_dict['direction'],speed_l, speed_r)
     risk_val = object_dict['risk_val'][riskiest_object_n]
     #print(len(object_dict['risk_val']))
-    print(object_dict)
+    risk_val_pub.publish(risk_val)
+    #print(object_dict)
     #print('lidar closest direction: ',lidar_closest_dir, lidar_closest_idx, 'lidar closest distance : ',lidar_closest_dist)#, min(sensor_reads))
     #print('Risk value: ', risk_val, ' Speed l : ', speed_l, ' Speed r : ', speed_r)
 
@@ -394,8 +401,9 @@ if __name__ == '__main__':
         lidar_initialized = False
         #while not lidar_initialized:
         init_lidar_sub = rospy.Subscriber('/turtlebot2i/lidar/scan', LaserScan, lidar_and_camera_setup) 
-        while not lidar_initialized:
+        while not lidar_initialized: 
             print('waiting lidar to be set')
+            rospy.sleep(2)
         #print('lidar_initialized:',lidar_initialized)
         #init_lidar_sub.unregister()
         init_var()
@@ -408,6 +416,7 @@ if __name__ == '__main__':
         print("init_risk_mitigation ok")
         safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10)
         led2_pub  = rospy.Publisher('/turtlebot2i/commands/led2', Led,  queue_size=10)
+        risk_val_pub = rospy.Publisher('/turtlebot2i/safety/risk_val', Float64)
         #rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, risk_callback) 
 
         rospy.Subscriber('/turtlebot2i/lidar/scan', LaserScan, lidar_callback) 

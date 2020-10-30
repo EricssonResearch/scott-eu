@@ -17,6 +17,7 @@
   <!-- <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_keyop_demo.launch" /> -->
   <node pkg="turtlebot2i_safety" name="run_demo"        type="run_demo.py"     output="screen"/>
   <node pkg="turtlebot2i_safety" name="rm_fls_demo"     type="rm_fls_demo.py"  output="screen"/>
+  <node pkg="turtlebot2i_safety" name="action_graph"     type="action_graph.py"  output="screen"/>
   <node name="ds4_joystick" pkg="joy" type="joy_node">
     <param name="dev" value="/dev/input/js0" />
     <param name="autorepeat_rate" value="5" />

@@ -109,10 +109,10 @@ def move_random(x_size, y_size):
 
     client.send_goal(goal)
     print("Goal position is sent! waiting the robot to finish....")
-    wait = client.wait_for_result(timeout=rospy.Duration(1200.0)) #timeout in seconds
-    if not wait:
-        rospy.logerr("Action server not available or timeout!")
-        rospy.signal_shutdown("Action server not available!")
+    wait = client.wait_for_result(timeout=rospy.Duration(10.0)) #timeout in seconds
+    #if not wait:
+    #    rospy.logerr("Action server not available or timeout!")
+    #    rospy.signal_shutdown("Action server not available!")
 
 
 
@@ -173,27 +173,28 @@ def ButtonEventCallback(data):
     rospy.loginfo("Button %s was %s."%(button, state))
 
 def move_forward():
-	print("move forward")
-	global robot_position, robot_orientation
-	global goal, client
-	goal.target_pose.header.frame_id = "map"
-	goal.target_pose.header.stamp = rospy.Time.now()
-	#print("rob orient",robot_orientation)
-	direction = euler_from_quaternion([robot_orientation.x, robot_orientation.y, robot_orientation.z, robot_orientation.w])[2]
-	print("direction:",direction)
-	new_position = robot_position
-	new_position.x = robot_position.x + np.cos(direction)
-	new_position.y = robot_position.y + np.sin(direction)
-	goal.target_pose.pose.position = new_position
-	goal.target_pose.pose.orientation = robot_orientation
-	client.send_goal(goal)
-	print("rob pos: ", robot_position)
-	print("rob goal:", new_position)
-	print("Goal position is sent! waiting the robot to finish....")
-	wait = client.wait_for_result(timeout=rospy.Duration(1200.0)) #timeout in seconds
-	if not wait:
-		rospy.logerr("Action server not available or timeout!")
-		rospy.signal_shutdown("Action server not available!")
+    print("move forward")
+    global robot_position, robot_orientation
+    global goal, client
+    goal.target_pose.header.frame_id = "map"
+    goal.target_pose.header.stamp = rospy.Time.now()
+    #print("rob orient",robot_orientation)
+    direction = euler_from_quaternion([robot_orientation.x, robot_orientation.y, robot_orientation.z, robot_orientation.w])[2]
+    print("direction:",direction)
+    new_position = robot_position
+    path_length = 5.0
+    new_position.x = robot_position.x + np.cos(direction)*path_length
+    new_position.y = robot_position.y + np.sin(direction)*path_length
+    goal.target_pose.pose.position = new_position
+    goal.target_pose.pose.orientation = robot_orientation
+    client.send_goal(goal)
+    print("rob pos: ", robot_position)
+    print("rob goal:", new_position)
+    print("Goal position is sent! waiting the robot to finish....")
+    wait = client.wait_for_result(timeout=rospy.Duration(1200.0)) #timeout in seconds
+    if not wait:
+        rospy.logerr("Action server not available or timeout!")
+        rospy.signal_shutdown("Action server not available!")
 
 def summarize_running_test():
     global warning_duration, critical_duration
@@ -395,7 +396,7 @@ if __name__ == '__main__':
         while not rospy.is_shutdown():
             if led1 == Led.RED and random_run:
                 print("move randomly")
-                move_random(1.5, 1.5)
+                move_random(7.5, 7.5)
         summarize_running_test()
     except rospy.ROSInterruptException:
     #except KeyboardInterrupt:
