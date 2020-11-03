@@ -18,7 +18,7 @@ import cPickle as pickle
 from sensor_msgs.msg import LaserScan
 
 from kobuki_msgs.msg import  Led, Sound
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Float64MultiArray
 
 def init_var():
     '''
@@ -316,7 +316,7 @@ def lidar_callback(data):
     sensor_reads = np.array(sensor_reads)
     nan_indexes = np.isnan(sensor_reads)
     sensor_reads[nan_indexes] = lidar_max_distance + 1
-    sensor_reads = np.array(list(value if value > 0.049999999999999 else lidar_max_distance + 1 for value in sensor_reads ))
+    sensor_reads = np.array(list(value if value > 0.0499 else lidar_max_distance + 1 for value in sensor_reads ))
     
     object_dict = {}
     object_dict['distance']  = []
@@ -339,11 +339,17 @@ def lidar_callback(data):
     if len(object_dict['distance']) == 0:
         object_dict['distance'].append(lidar_closest_dist)
         object_dict['direction'].append(lidar_closest_dir)
-        object_dict['risk_val'].append(cal_risk(0, lidar_closest_dist, lidar_closest_dir,0.0, 0.0))#0:obstacle type == static
+        #object_dict['risk_val'].append(cal_risk(0, lidar_closest_dist, lidar_closest_dir,0.0, 0.0))#0:obstacle type == static
+        object_dict['risk_val'].append(min(4.0,1.1*cal_risk(0, lidar_closest_dist, lidar_closest_dir,0.0, 0.0)))#0:obstacle type == static
         
     #print('len(sensor_reads) : ',len(sensor_reads))
     #print('sensor reads',sensor_reads[int(len(sensor_reads)/2)])
-    
+    camera_x_pos = 640 - int(lidar_closest_dir*320/camera_fov + 320)
+    list_for_lidar_pointer = [lidar_closest_dist, camera_x_pos, object_dict['risk_val'][0]]
+    #print(list_for_lidar_pointer)
+    pointer_data = Float64MultiArray()
+    pointer_data.data = np.array(list_for_lidar_pointer)
+    pointer_pub.publish(pointer_data)
 
     #risk_val = cal_risk(closest_dist, closest_idx) #risk analysis
     #Calculating the risk from scenegraph
@@ -362,7 +368,10 @@ def lidar_callback(data):
         speed_r_list.append(speed_R* object_dict['risk_val'][i])
     speed_l = np.sum(speed_l_list)/np.sum(object_dict['risk_val'])
     speed_r = np.sum(speed_r_list)/np.sum(object_dict['risk_val'])
-    pub_safe_vel(speed_l, speed_r)
+    if len(object_dict['distance']) > 1:
+        pub_safe_vel(0.8*speed_l, 0.8*speed_r) #when there is human, max speed is only 80%
+    else:
+        pub_safe_vel(speed_l, speed_r)    
     #print(riskiest_object_n, object_dict['risk_val'], object_dict['direction'],speed_l, speed_r)
     risk_val = object_dict['risk_val'][riskiest_object_n]
     #print(len(object_dict['risk_val']))
@@ -373,13 +382,13 @@ def lidar_callback(data):
 
     prev_obstacle_zone = obstacle_zone
     if risk_val > 3.0:
-    	led2_pub.publish(Led.RED)
+        led2_pub.publish(Led.RED)
     elif risk_val > 2.0:
-    	led2_pub.publish(Led.ORANGE)
+        led2_pub.publish(Led.ORANGE)
     elif risk_val > 1.0:
-    	led2_pub.publish(Led.GREEN)
+        led2_pub.publish(Led.GREEN)
     else:
-    	led2_pub.publish(Led.BLACK)
+        led2_pub.publish(Led.BLACK)
 
 def object_detection_callback(data):
     global detected_object
@@ -417,6 +426,7 @@ if __name__ == '__main__':
         safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=10)
         led2_pub  = rospy.Publisher('/turtlebot2i/commands/led2', Led,  queue_size=10)
         risk_val_pub = rospy.Publisher('/turtlebot2i/safety/risk_val', Float64)
+        pointer_pub = rospy.Publisher('/turtlebot2i/safety/lidar_pointer', Float64MultiArray)
         #rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, risk_callback) 
 
         rospy.Subscriber('/turtlebot2i/lidar/scan', LaserScan, lidar_callback) 
@@ -424,5 +434,5 @@ if __name__ == '__main__':
         print("risk_mitigation_fls.py is now running!")
         rospy.spin()
     except rospy.ROSInterruptException:
-    	led2_pub.publish(Led.BLACK)
+        led2_pub.publish(Led.BLACK)
         pass
