@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="mode" default="1" doc="Operation modes: 0 = Teleop; 1 = Lidar Random Walk; 3 = Kobuki Random Walker" />
+  <arg name="mode" default="0" doc="Operation modes: 0 = Teleop; 1 = Lidar Random Walk; 3 = Kobuki Random Walker" />
 
   <!-- Turtlebot2i base nodes-->
   <include file="$(find turtlebot2i_bringup)/launch/minimal.launch" />
@@ -13,7 +13,11 @@
   </include>
 
   <!--<include file="$(find astra_camera)/launch/astrapro.launch"/>-->
-  <include file="$(find astra_launch)/launch/astrapro.launch"/>
+  <!--<include file="$(find astra_launch)/launch/astrapro.launch"/>-->
+  <include file="$(find turtlebot2i_bringup)/launch/3dsensor.launch">
+    <arg name="scan_processing" value="false"/>
+    <param name="/camera/rgb/astra_pro_uvc/camera_info_url" value="file://$(env ROS_HOME)/camera_info/rgb_Astra_Orbbec.yaml" />
+  </include>
 
   <!-- Teleop -->
   <group if="$(eval arg('mode') == 0)">

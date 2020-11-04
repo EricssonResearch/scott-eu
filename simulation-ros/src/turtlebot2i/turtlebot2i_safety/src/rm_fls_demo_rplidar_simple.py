@@ -3,7 +3,7 @@
 
 import rospy
 import rospkg
-from turtlebot2i_safety.msg import VelocityScale, SafetyRisk
+from turtlebot2i_safety.msg import VelocityScale, SafetyRisk, SafetyZone
 import std_msgs.msg
 
 # Fuzzy logic packages
@@ -90,7 +90,7 @@ def init_fls_common_part(): #copy this function from risk_management.py; TO DO: 
     object_direction['Left']        = fuzz.trimf(range_degree, [n_fl, n_left, n_far_l])
     #rear_d_p1                       = fuzz.trapmf(range_degree, [n_left, n_far_l, n_sensors,n_sensors])
     #null,object_direction['BigRear']=fuzz.fuzzy_or(range_degree,rear_d_p1,idx_degree,rear_d_p2)
-    print("init_fls_common_part")
+    #rospy.logdebug("init_fls_common_part")
 
 
 def init_risk_assessment():
@@ -107,16 +107,16 @@ def init_risk_assessment():
 
     fls_name = "/rules/ra_demo.data"
     fls_data_path = package_path + fls_name
-    print(fls_data_path)
+    #print(fls_data_path)
 
     #if os.path.exists(fls_name):
     if os.path.exists(fls_data_path):
-        print("FLS demo exists!")
+        rospy.loginfo("FLS demo exists!")
         #f = open(fls_name,'rb')
         f = open(fls_data_path,'rb')
         ra_fls = pickle.load(f)
     else:
-        print("Init FLS demo")
+        rospy.loginfo("Init FLS demo")
         from assessment_rules_demo import rule_list_generator
         assessment_rule_list=rule_list_generator(object_distance,object_direction, object_risk)
         ra_fls = ctrl.ControlSystem(assessment_rule_list)
@@ -194,11 +194,13 @@ def risk_callback(data):
 
 def lidar_callback(data):
     min_reading = 0.3
-    obstacle_zone = 2.0
-    r_warning = 0.3
-    r_critical = 0.15
     #fov = 120
     fov = 180
+
+    obstacle_zone = 2.0
+    r_clear = 0.6
+    r_warning = 0.45
+    r_critical = 0.35
 
     # Select the index range that covers 120 degrees FOV in front of the robot
     #fov_min_idx = int((3.14 + 3.14/6.0) / data.angle_increment)        # --> 120 deg FOV
@@ -254,6 +256,28 @@ def lidar_callback(data):
         print("critical_zone")
         led1_pub.publish(Led.RED)
     '''
+
+    # Publish obstacles' safey info
+    safety_data = SafetyRisk()
+    safety_data.distance.append(closest_dist)
+    safety_data.direction.append(closest_dir)
+    safety_data.risk_value.append(risk_val)
+
+    safety_pub.publish(safety_data)
+
+   
+    # Publish safey zone sizes
+    zone_size = SafetyZone()
+    zone_size.header = std_msgs.msg.Header()
+    zone_size.header.stamp = rospy.Time.now()
+    zone_size.header.frame_id = "base_footprint"
+    zone_size.critical_zone_radius = r_critical 
+    zone_size.warning_zone_radius  = r_warning
+    zone_size.clear_zone_radius    = r_clear
+    safe_zone_pub.publish(zone_size)
+
+
+    #rospy.loginfo("closest_dist: %s  closest_dir: %s", closest_dist, closest_dir)
     #print("closest_dist: ",closest_dist, "| closest_dir: ",closest_dir, "| closest_dir: ", closest_dir, "| risk_val: ",risk_val, "| speed_l: ",speed_l,"| _r",speed_r)
     
     
@@ -262,19 +286,23 @@ if __name__ == '__main__':
     try:
         rospy.init_node('rm_fls_demo_py')
         init_var()
-        print("init_var ok")
+        rospy.logdebug("init_var ok")
         init_fls_common_part()
-        print("init_fls_common_part ok")
+        rospy.logdebug("init_fls_common_part ok")
         init_risk_assessment()
-        print("init_risk_assessment ok")
+        rospy.logdebug("init_risk_assessment ok")
         init_risk_mitigation()
-        print("init_risk_mitigation ok")
+        rospy.logdebug("init_risk_mitigation ok")
+
         safe_vel_pub = rospy.Publisher('/mobile_base/safety/vel_scale', VelocityScale, queue_size=10)
         led2_pub  = rospy.Publisher('/mobile_base/commands/led2', Led,  queue_size=10)
-        #rospy.Subscriber('/turtlebot2i/safety/obstacles_risk', SafetyRisk, risk_callback) 
+        safety_pub  = rospy.Publisher('/mobile_base/safety/obstacles', SafetyRisk,  queue_size=10)
+        safe_zone_pub = rospy.Publisher('/mobile_base/safety/safety_zone', SafetyZone, queue_size=10)
         rospy.Subscriber('/scan', LaserScan, lidar_callback)
-        print("risk_mitigation_fls.py is now running!")
+
+        rospy.loginfo("risk_mitigation_fls.py is now running!")
         rospy.spin()
+
     except rospy.ROSInterruptException:
     	led2_pub.publish(Led.BLACK)
         pass
