@@ -50,7 +50,9 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     objHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
 
     robot_id = sim.getStringSignal('robot_id')
+    print("THIS IS ROBOT ID: " + robot_id)
     robot_name = sim.getStringSignal('robot_name')
+    print("THIS IS ROBOT NAME: " + robot_name)
 
     sim.setIntegerSignal(robot_name .. '_charger_state', 0)  -- Battery is discharging
 

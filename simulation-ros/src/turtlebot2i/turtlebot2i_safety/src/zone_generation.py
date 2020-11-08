@@ -34,18 +34,21 @@ def lidar_callback(data):
     #sensor_reads = data.ranges[4:n_sensors+4]
     min_distance = min(sensor_reads[4:n_sensors+4]) 
     #robot max speed = 0.52
-    clear_zone_radius    = 0.32+12*speed/10.0 #at max: 0.944
-    warning_zone_radius  = 0.31+6*speed/10.0 #at max: 0.622
-    critical_zone_radius = 0.195+0.1 # = 0.295 #Robot diameter= 0.4
+    #clear_zone_radius    = 0.32+12*speed/10.0 #at max: 0.944
+    #warning_zone_radius  = 0.31+6*speed/10.0 #at max: 0.622
+    #critical_zone_radius = 0.195+0.1 # = 0.295 #Robot diameter= 0.4
+    clear_zone_radius = 0.944  # at max: 0.944 0.640
+    warning_zone_radius = 0.622  # at max: 0.622 0.460
+    critical_zone_radius = 0.295  # = 0.295 #Robot diameter= 0.4 0.280
 
-    if risk_val == 0.0:
-        available_space = min_distance
-        if warning_zone_radius > available_space:
-            warning_zone_radius  = available_space - 0.002
-            clear_zone_radius    = available_space + 0.02
-        elif clear_zone_radius > available_space:
-            warning_zone_radius  = warning_zone_radius 
-            clear_zone_radius    = available_space + 0.02
+    # if risk_val == 0.0:
+    #     available_space = min_distance
+    #     if warning_zone_radius > available_space:
+    #         warning_zone_radius  = available_space - 0.002
+    #         clear_zone_radius    = available_space + 0.02
+    #     elif clear_zone_radius > available_space:
+    #         warning_zone_radius  = warning_zone_radius
+    #         clear_zone_radius    = available_space + 0.02
     pub_zone_size(critical_zone_radius,warning_zone_radius, clear_zone_radius)
     lidar_pub.publish(data)
 

@@ -25,7 +25,7 @@ subscribers:
     topic:       "/turtlebot2i/cmd_vel_mux/safety_controller" # /$(arg robot_name)
     timeout:     0.1
     priority:    5000
-    short_desc:  "Velocity comming from the risk assessment"
+    short_desc:  "Velocity coming from the risk assessment"
 #KeyOp
   - name:        "Keyboard Controller"
     topic:       "/turtlebot2i/cmd_vel_mux/key_op"  # /$(arg robot_name)

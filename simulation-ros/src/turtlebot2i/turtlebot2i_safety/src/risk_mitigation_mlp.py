@@ -27,10 +27,10 @@ class ReinforceAgent():
         self.dirPath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src/models/mlp_')
         self.result = Float32MultiArray()
 
-        self.load_model = True # Inference
-        #self.load_model = False # Training
-        self.load_episode = 885 # Inference
-        #self.load_episode = 0 # Training
+        # self.load_model = True # Inference
+        self.load_model = True # Training
+        # self.load_episode = 110 # Inference
+        self.load_episode = 0 # Training
         self.state_size = state_size
         self.action_size = action_size
         self.episode_step = 6000
@@ -49,6 +49,8 @@ class ReinforceAgent():
 
         self.updateTargetModel()
 
+        self.randomActions = [0] * self.action_size
+        self.actions = [0] * self.action_size
         self.scores   = []
         self.episodes = []
 
@@ -91,14 +93,27 @@ class ReinforceAgent():
         self.target_model.set_weights(self.model.get_weights())
 
     def getAction(self, state):
+        #print(str(state[-2]) + " and " + str(state[-1]))
         if np.random.rand() <= self.epsilon:
             self.q_value = np.zeros(self.action_size)
-            return random.randrange(self.action_size)
+            act = random.randrange(self.action_size)
+            self.randomActions[act] = self.randomActions[act] + 1
+            with open("/home/eiucale/randActions.txt", "w") as outfile:
+                for index, item in enumerate(self.randomActions):
+                    if (item != 0):
+                        outfile.write("{}. {}\n\n".format(index, item))
         else:
             q_value = self.model.predict(state.reshape(1, len(state)))
             self.q_value = q_value
-            print("Q_value_max: " + str(np.argmax(q_value[0])))
-            return np.argmax(q_value[0])
+            act = np.argmax(q_value[0])
+            self.actions[act] = self.actions[act] + 1
+            with open("/home/eiucale/actions.txt", "w") as outfile:
+                for index, item in enumerate(self.actions):
+                    if (item != 0):
+                        outfile.write("{}. {}\n\n".format(index, item))
+            print("Q_value_max: " + str(act))
+        return act
+
 
     def appendMemory(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
@@ -159,40 +174,63 @@ if __name__ == '__main__':
         start_time = time.time()
 
         print('start training')
-        training_mode = False  # Inference
+        training_mode = True  # Inference
+
         #training_mode = True    # Training
         if training_mode:
+            state = env.reset()
             for e in range(agent.load_episode + 1, EPISODES):
                 done = False
-                state = env.reset()
                 score = 0
+                started = False
                 for t in range(agent.episode_step):
-                    action = agent.getAction(state)
+                    state, done, _ = env.step(None, False)
+                    nearest_obstacle_distance  = min(state[:12])
+                    safe_zone_radius = state[-1]
+                    #print(safe_zone_radius)
+                    #print(state[-2])
+                    print(nearest_obstacle_distance)
 
-                    next_state, reward, done = env.step(action)
+                    if nearest_obstacle_distance < safe_zone_radius + 0.05:
+                        started = True
+                        print("Start ep")
+                    else:
+                        if started:
+                            done = True
+                            started = False
+                            state, _, done = env.step(None, False)
+                            env.publishScaleSpeed(1.0, 1.0)
+                            print("Finish ep")
 
-                    agent.appendMemory(state, action, reward, next_state, done)
+                    print(started)
 
-                    if len(agent.memory) >= agent.train_start:
-                        if global_step <= agent.target_update:
-                            agent.trainModel()
-                        else:
-                            agent.trainModel(True)
+                    if started:
+                        action = agent.getAction(state)
 
-                    score += reward
-                    state = next_state
-                    get_action.data = [env.action_list[action][0], env.action_list[action][1], score, reward]
-                    pub_get_action.publish(get_action)
+                        next_state, reward, done = env.step(action, True)
 
-                    if e % 5 == 0:
-                        agent.model.save(agent.dirPath + str(e) + '.h5')
-                        with open(agent.dirPath + str(e) + '.json', 'w') as outfile:
-                            json.dump(param_dictionary, outfile)
-                        np.savez(agent.dirPath + str(e) + '.npz', scores=agent.scores, episodes=agent.episodes)
+                        agent.appendMemory(state, action, reward, next_state, done)
 
-                    if t >= 2000:
-                        rospy.loginfo("Time out!!")
-                        done = True
+                        if len(agent.memory) >= agent.train_start:
+                            if global_step <= agent.target_update:
+                                agent.trainModel()
+                            else:
+                                agent.trainModel(True)
+
+                        score += reward
+                        state = next_state
+                        get_action.data = [env.action_list[action][0], env.action_list[action][1], score, reward]
+                        pub_get_action.publish(get_action)
+
+                        if e % 5 == 0:
+                            agent.model.save(agent.dirPath + str(e) + '.h5')
+                            with open(agent.dirPath + str(e) + '.json', 'w') as outfile:
+                                json.dump(param_dictionary, outfile)
+                            np.savez(agent.dirPath + str(e) + '.npz', scores=agent.scores, episodes=agent.episodes)
+
+                        if t >= 2000:
+                            rospy.loginfo("Time out!!")
+                            done = True
 
                     if done:
                         result.data = [score, np.max(agent.q_value)]
@@ -208,14 +246,14 @@ if __name__ == '__main__':
                         param_keys = ['epsilon']
                         param_values = [agent.epsilon]
                         param_dictionary = dict(zip(param_keys, param_values))
+                        done = False
+                        global_step += 1
+                        if global_step % agent.target_update == 0:
+                            rospy.loginfo("UPDATE TARGET NETWORK")
+                        if agent.epsilon > agent.epsilon_min:
+                            agent.epsilon *= agent.epsilon_decay
                         break
 
-                    global_step += 1
-                    if global_step % agent.target_update == 0:
-                        rospy.loginfo("UPDATE TARGET NETWORK")
-
-                if agent.epsilon > agent.epsilon_min:
-                    agent.epsilon *= agent.epsilon_decay
         else:
             agent.epsilon = 0.0
             prev_action = 0
@@ -234,19 +272,27 @@ if __name__ == '__main__':
                     env.publishScaleSpeed(1.0, 1.0)    
                 else:
                     state, done = env.getState(data)
-                    action = agent.getAction(np.asarray(state))
-                    #time_end = time.time()
-                    env.publishScaleSpeed(env.action_list[action][0], env.action_list[action][1])
+                    nearest_obstacle_distance = min(state[:12])
+                    safe_zone_radius = state[-1]
+                    # print(safe_zone_radius)
+                    # print(state[-2])
+                    print(nearest_obstacle_distance)
 
-                    # time_duration_list.append(time_end-time_previous)
+                    if nearest_obstacle_distance < safe_zone_radius + 0.05:
+                        action = agent.getAction(np.asarray(state))
+                    #time_end = time.time()
+                        env.publishScaleSpeed(env.action_list[action][0], env.action_list[action][1])
+                        if prev_action != action:
+                            print("action:", action)
+                            prev_action = action
+                    else:
+                        env.publishScaleSpeed(1.0, 1.0)
+
+                        # time_duration_list.append(time_end-time_previous)
                     # if len(time_duration_list) == 100:
                     #     dirPath = os.path.dirname(os.path.realpath(__file__))
                     #     savePath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'time_duration/time_duration_rm_mlp.npz')
                     #     np.savez(savePath, time_duration_list=time_duration_list)
-
-                    if prev_action != action:
-                        print("action:",action)
-                        prev_action = action
 
     except rospy.ROSInterruptException:
         env.vrep_control.shutdown()

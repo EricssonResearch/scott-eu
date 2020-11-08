@@ -52,10 +52,7 @@
       <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
       <rosparam file="$(find turtlebot2i_navigation)/config/global_costmap_params.yaml" command="load" />
       <rosparam file="$(find turtlebot2i_navigation)/config/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find turtlebot2i_navigation)/config/dwa_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find turtlebot2i_navigation)/config/navfn_global_planner_params.yaml" command="load" />
-      <rosparam file="$(find turtlebot2i_navigation)/config/move_base_params.yaml" command="load" />
-      <rosparam file="$(find turtlebot2i_navigation)/config/trajectory_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot2i_navigation)/config/base_local_planner_params.yaml" command="load" />
 
       <rosparam subst_value="true">
           local_costmap/laser_scan_sensor/sensor_frame: $(arg robot_name)/lidar/scan

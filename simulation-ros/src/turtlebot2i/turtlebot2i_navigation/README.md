@@ -19,7 +19,7 @@ In the figure below is represented the pipeline of the robot navigation (extract
 
 The *move_base* can be executed by running the following command:
 ```
-roslaunch turtlebot2i_navigation turtlebot2i_navigation_single.launch
+roslaunch turtlebot2i_navigation move_base.launch
 ```
 
 The parameters of the navigation algorithm can be changed by editing the configuration in the __config__ folder.
@@ -32,7 +32,7 @@ Additional information to use rviz for navigation can be found in this link: htt
 
 **Note:** The launch file is set up to subscribe predefined topics of a turtlebot2i robot. To change the topic, just edit the move_base.launch file:
 ```
-rosed turtlebot2i_navigation turtlebot2i_navigation_single.launch
+rosed turtlebot2i_navigation move_base.launch 
 ```
 
 **Note 2:** A more detailed description of using the navigation stack can be found in this link: http://wiki.ros.org/navigation/Tutorials/RobotSetup

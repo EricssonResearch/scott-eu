@@ -113,7 +113,8 @@ class VrepManipulation():
         returnCode = vrep.simxSetObjectPosition(self.clientID, self.conv8, -1, np.array([0.25, 4.5, 0.113]), vrep.simx_opmode_oneshot_wait)
         returnCode = vrep.simxSetObjectPosition(self.clientID, self.conv9, -1, np.array([-9.0, 5.0, 0.113]), vrep.simx_opmode_oneshot_wait)
 
-    def reset_robot_pos(self):  
+    def reset_robot_pos(self):
+        print("RESET ROBOT POS REACHED")
         #reset robot position to origin
         
         returnCode = vrep.simxRemoveModel(self.clientID, self.robot_handle, vrep.simx_opmode_oneshot_wait)
@@ -349,6 +350,7 @@ class Env():
         self.pub_safe_vel.publish(vel_scale_message)
 
     def respawn_goal(self, reset=False):
+        print("RESPAWN GOAL REACHED")
         if reset:
             self.vrep_control.changeScenario()
 

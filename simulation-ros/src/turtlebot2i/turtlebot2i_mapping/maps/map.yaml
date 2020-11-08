@@ -1,10 +1,10 @@
-#image: map_1.pgm         # Default
-image: map_test1.pgm      # Risk mitigation test
-#image: map_training.pgm  # Risk mitigation training
+#image: map_1.pgm         # Default#
+#image: map_test1.pgm      # Risk mitigation test
+image: map_training.pgm  # Risk mitigation training
 resolution: 0.050000
 #origin: [-3.0, -5.0, 0.000000]   # Default
-origin: [-5.5, -5.0, 0.000000]    # Risk mitigation test
-#origin: [-10.0, -7.5, 0.000000]  # Risk mitigation training
+#origin: [-5.5, -5.0, 0.000000]    # Risk mitigation test
+origin: [-10.0, -7.5, 0.000000]  # Risk mitigation training
 negate: 0
 occupied_thresh: 0.65
 free_thresh: 0.196

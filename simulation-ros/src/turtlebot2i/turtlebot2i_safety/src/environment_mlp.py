@@ -113,7 +113,8 @@ class VrepManipulation():
         returnCode = vrep.simxSetObjectPosition(self.clientID, self.conv8, -1, np.array([0.25, 4.5, 0.113]), vrep.simx_opmode_oneshot_wait)
         returnCode = vrep.simxSetObjectPosition(self.clientID, self.conv9, -1, np.array([-9.0, 5.0, 0.113]), vrep.simx_opmode_oneshot_wait)
 
-    def reset_robot_pos(self):  
+    def reset_robot_pos(self):
+        print("RESET ROBOT POS REACHED")
         #reset robot position to origin
         
         returnCode = vrep.simxRemoveModel(self.clientID, self.robot_handle, vrep.simx_opmode_oneshot_wait)
@@ -183,10 +184,9 @@ class Env():
                     [-9.0,-6.5]]
         self.target_idx = random.randrange(0, len(self.target_list))
 
-        #self.heading = 0
-        self.action_list = [[0.0, 1.2], [0.0, 0.8], [0.0, 0.4], [0.4, 1.2], [0.4, 0.8], [0.8, 1.2], [0.0, 0.0], [0.4, 0.4], [0.8, 0.8], [1.2, 1.2], [1.2, 0.8], [0.8, 0.4], [1.2, 0.4], [0.4, 0.0], [0.8, 0.0], [1.2, 0.0]]
+        self.action_list = [[0.0, 0.0], [0.2, 0.2], [0.4, 0.4], [0.6, 0.6], [0.7, 0.7], [0.8, 0.8], [0.9, 0.9], [1.0, 1.0], [1.1, 1.1], [1.2, 1.2], [1.3, 1.3], [1.4, 1.4]]
         self.action_size = len(self.action_list)
-        self.get_goalbox = False
+        #self.get_goalbox = False
         self.position = Pose()
         self.prev_position = Pose()
         self.orientation = 0.0
@@ -201,6 +201,7 @@ class Env():
 
         self.robot_linear_speed  = 0.0 
         self.robot_angular_speed = 0.0
+        self.statistics = [0] * 100
 
         self.origin = Point((0.0, 0.0))
         self.camera_near_clipping = 0.2 #0.01 #in meters
@@ -320,7 +321,10 @@ class Env():
             self.collision = False
 
         if self.getGoalDistance() < 0.5:
-            self.get_goalbox = True
+            print("Goal reached!")
+            self.statistics[7] = self.statistics[7] + 1
+            #self.get_goalbox = False
+            self.respawn_goal(reset=True)
         return obstacle_distances + [self.robot_linear_speed, self.robot_angular_speed, self.risk_max, self.r_warning, self.r_clear], done
 
     def publishScaleSpeed(self, left_vel_scale, right_vel_scale):
@@ -365,46 +369,88 @@ class Env():
         nearest_obstacle_distance  = min(state[:12])
         nearest_obstacle_direction = np.argmin(state[:12]) #index 0 start from right side of the robot
 
-        yaw_reward = 1.0
-        if (nearest_obstacle_direction <= self.n_direction/3-1):#obstacle is on the right 
-            if (action >= 10):                    #robot turns right
-                yaw_reward = -(action-9)/6
-        elif (nearest_obstacle_direction >= self.n_direction*2/3):#obstacle is on the left
-            if (action <= 5):                   #robot turns left
-                yaw_reward = -(6-action)/6
-        else:#obstacle is in the front
-            if (action in [6,7,8,9]):
-                yaw_reward = -(action-5)/4
+        # yaw_reward = 1.0
+        # if (nearest_obstacle_direction <= self.n_direction/3-1):#obstacle is on the right
+        #     if (action >= 10):                    #robot turns right
+        #         yaw_reward = -(action-9)*risk_max/6
+        # elif (nearest_obstacle_direction >= self.n_direction*2/3):#obstacle is on the left
+        #     if (action <= 5):                   #robot turns left
+        #         yaw_reward = -(6-action)*risk_max/6
+        # else:#obstacle is in the front
+        #     if (action in [6,7,8,9]):
+        #         yaw_reward = -(action-5)*risk_max/4
         
         distance_rate = 1.0 / max(nearest_obstacle_distance, 0.175)
+        scaling = self.action_list[action][0]
 
-        if nearest_obstacle_distance < self.r_critical:
-            reward = (yaw_reward * distance_rate) -50
-        elif nearest_obstacle_distance < self.r_warning:
-            reward = (yaw_reward * distance_rate) -10
-        elif self.distance2D(self.prev_position, self.position) > 0.017:
-            if nearest_obstacle_distance < self.r_clear:
-                reward = (yaw_reward * distance_rate) + 1
+        if nearest_obstacle_distance < self.r_critical + 0.03: #r_critical + offset
+            reward = (distance_rate) * 10 - 100
+            self.statistics[1] = self.statistics[1] + 1
+            if state[-5] * scaling > 0.2:
+                self.statistics[11] = self.statistics[11] + 1
+                reward = - 50
             else:
-                reward = 1
+                self.statistics[12] = self.statistics[12] + 1
+                reward = reward + 20
+        elif nearest_obstacle_distance < state[-2] + 0.05: #r_warning state[-2] + offset
+            self.statistics[2] = self.statistics[2] + 1
+            reward =  - 30
+            if state[-5] * scaling < 0.2 or state[-5] * scaling > 0.3:
+                self.statistics[21] = self.statistics[21] + 1
+                reward = reward - 15
+            else:
+                self.statistics[22] = self.statistics[22] + 1
+                reward = reward + 20
+        elif nearest_obstacle_distance < state[-1]+ 0.05: #r_clear state[-1] + offset
+            reward = - 20
+            self.statistics[3] = self.statistics[3] + 1
+            if state[-5] * scaling < 0.3 or state[-5] * scaling > 0.4:
+                self.statistics[31] = self.statistics[31] + 1
+                reward = reward - 15
+            else:
+                self.statistics[32] = self.statistics[32] + 1
+                reward = reward + 20
         else:
-            reward = -1
+            self.statistics[4] = self.statistics[4] + 1
+            reward = 10
+            if state[-5] * scaling < 0.4:
+                self.statistics[41] = self.statistics[41] + 1
+                reward = reward - 25
+            else:
+                self.statistics[42] = self.statistics[42] + 1
+                reward = reward + 20
+
+        if self.distance2D(self.prev_position, self.position) > 0.03:
+            self.statistics[5] = self.statistics[5] + 1
+            reward = reward +  10
+        self.prev_position = self.position
 
         if done:
+            self.statistics[6] = self.statistics[6] + 1
             rospy.loginfo("Collision!!")
-            reward = -5000
-            self.publishScaleSpeed(0.0, 0.0)
+            reward = reward - 5000
+            self.publishScaleSpeed(1.0, 1.0)
+            self.reset()
+            self.prev_position = Pose()
 
-        if self.get_goalbox:
-            rospy.loginfo("Goal!!")
-            self.publishScaleSpeed(0.0, 0.0)
-            self.respawn_goal(reset=True)
-            self.get_goalbox = False
+        #if self.get_goalbox:
+        #    rospy.loginfo("Goal!!")
+        #    self.respawn_goal(reset=True)
+        #    self.get_goalbox = False
+
+        print(reward)
+
+        with open("/home/eiucale/stats.txt", "w") as outfile:
+            for index, item in enumerate(self.statistics):
+                if(item != 0):
+                    outfile.write("{}. {}\n\n".format(index, item))
 
         return reward
 
-    def step(self, action):
-        self.publishScaleSpeed(self.action_list[action][0], self.action_list[action][1])
+    def step(self, action, active):
+        reward = None
+        if active:
+            self.publishScaleSpeed(self.action_list[action][0], self.action_list[action][1])
         data = None
         while data is None:
             try:
@@ -414,7 +460,8 @@ class Env():
                 pass
 
         state, done = self.getState(data)
-        reward = self.setReward(state, done, action)
+        if active:
+            reward = self.setReward(state, done, action)
 
         return np.asarray(state), reward, done
 

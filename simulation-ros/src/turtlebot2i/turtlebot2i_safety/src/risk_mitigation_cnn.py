@@ -28,7 +28,7 @@ class ReinforceAgent():
         self.result = Float32MultiArray()
 
         self.load_model = True
-        self.load_episode = 315#571#340 #0
+        self.load_episode = 108
         self.env = env
         self.stack_len = 20
         self.state_stack = deque(maxlen=self.stack_len)
@@ -55,6 +55,8 @@ class ReinforceAgent():
 
         self.updateTargetModel()
 
+        self.randomActions = [0] * self.action_size
+        self.actions = [0] * self.action_size
         self.scores   = []
         self.episodes = []
         self.maxQval  = []
@@ -117,15 +119,29 @@ class ReinforceAgent():
         self.target_model.set_weights(self.model.get_weights())
 
     def getAction(self, state):
+        print(state)
+        #print(str(state[-2]) + " and " + str(state[-1]))
         if np.random.rand() <= self.epsilon:
             self.q_value = np.zeros(self.action_size)
-            return random.randrange(self.action_size)
+            act = random.randrange(self.action_size)
+            self.randomActions[act] = self.randomActions[act] + 1
+            with open("/home/eiucale/randActions.txt", "w") as outfile:
+                for index, item in enumerate(self.randomActions):
+                    if (item != 0):
+                        outfile.write("{}. {}\n\n".format(index, item))
         else:
             with self.graph.as_default():
                 q_value = self.model.predict(state)
             self.q_value = q_value
-            print("Q_value_max: " + str(np.argmax(q_value[0])))
-            return np.argmax(q_value[0])
+            act = np.argmax(q_value[0])
+            self.actions[act] = self.actions[act] + 1
+            with open("/home/eiucale/actions.txt", "w") as outfile:
+                for index, item in enumerate(self.actions):
+                    if (item != 0):
+                        outfile.write("{}. {}\n\n".format(index, item))
+            print("Q_value_max: " + str(act))
+        return act
+
 
     def appendMemory(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
