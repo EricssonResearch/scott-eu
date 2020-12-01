@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 Sets up Linux network namespaces for communication over the WiFi network simulated by ns-3.
 
