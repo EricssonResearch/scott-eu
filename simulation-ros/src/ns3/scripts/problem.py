@@ -63,7 +63,7 @@ class Network:
 class MobileDevice:
     """Mobile device."""
 
-    def __init__(self, computing_ability, cpu_energy_consumption, transmit_power, bs_distance, task):
+    def __init__(self, computing_ability, cpu_energy_consumption, transmit_power, bs_distance, lambda_energy, task):
         """
         Constructs a mobile device.
 
@@ -71,12 +71,16 @@ class MobileDevice:
         :param cpu_energy_consumption: energy consumption per CPU cycle (J/cycle)
         :param transmit_power: transmit power (W)
         :param bs_distance: distance from BS in the cell (m)
+        :param lambda_energy: weight of energy consumption in offloading decision. It must be in the range [0,1] and
+            the lambda_latency = 1 - lambda_energy.
         :param task: task
         """
         self.computing_ability = computing_ability
         self.cpu_energy_consumption = cpu_energy_consumption
         self.transmit_power = transmit_power
         self.bs_distance = bs_distance
+        self.lambda_energy = lambda_energy
+        self.lambda_latency = 1 - lambda_energy
         self.task = task
 
     def compute_task(self):
@@ -130,11 +134,11 @@ class Task:
 
 
 class Problem:
-    def __init__(self, settings='paper', seed=None):
+    def __init__(self, n_mobile_devices, settings='guo_et_al', seed=None):
         if seed is not None:
             np.random.seed(seed)
 
-        if settings == 'paper':
+        if settings == 'guo_et_al':
             self.network = Network(
                 n_channels=50,
                 channel_bandwidth=40e6,                 # 40 MHz
@@ -147,7 +151,6 @@ class Problem:
                 computing_ability=4e9                   # 4 GHz
             )
 
-            n_mobile_devices = 10
             input_sizes = np.linspace(300e3, 800e3, num=n_mobile_devices)       # 300-800 KB
             cpu_cycles = np.linspace(100e6, 1e9, num=n_mobile_devices)          # 100-1000 Megacycles
             max_latencies = np.random.uniform(0.4, 2, size=n_mobile_devices)    # 0.1-2 s (randomly)
@@ -159,7 +162,37 @@ class Problem:
                     cpu_energy_consumption=500e-12,     # 500 mJ/Gigacycle (equal for all)
                     transmit_power=100e-3,              # 100 mW (equal for all)
                     bs_distance=bs_distances[i],
+                    lambda_energy=1,
                     task=Task(input_sizes[i], cpu_cycles[i], max_latencies[i])
+                )
+                for i in range(n_mobile_devices)
+            ])
+        elif settings == 'chen_et_al':
+            self.network = Network(
+                n_channels=50,
+                channel_bandwidth=1e9,
+                fiber_bandwidth=1e9,
+                background_noise=1e-13,
+                path_loss=4
+            )
+
+            self.mec_server = MECServer(
+                computing_ability=10e9
+            )
+
+            computing_abilities = np.random.choice([0.5e9, 0.8e9, 1e9], size=n_mobile_devices)
+            max_latencies = np.random.uniform(0.4, 2, size=n_mobile_devices)
+            bs_distances = np.random.uniform(0, 50, size=n_mobile_devices)
+            lambdas_energy = np.random.choice([0, 0.5, 1], size=n_mobile_devices)
+
+            self.mobile_devices = np.array([
+                MobileDevice(
+                    computing_ability=computing_abilities[i],
+                    cpu_energy_consumption=500e-12,
+                    transmit_power=100e-3,
+                    bs_distance=bs_distances[i],
+                    lambda_energy=lambdas_energy[i],
+                    task=Task(5000e3, 1000e6, max_latencies[i])
                 )
                 for i in range(n_mobile_devices)
             ])

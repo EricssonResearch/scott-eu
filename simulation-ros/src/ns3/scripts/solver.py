@@ -25,7 +25,7 @@ class Solver:
         return np.array(list(zip(latencies, energies)))
 
     @abstractmethod
-    def solve(self):
+    def solve(self, **kwargs):
         raise NotImplementedError
 
     def evaluate(self, solution):
@@ -44,7 +44,7 @@ class Solver:
             latencies[idx_edge] = edge_computations[:, 0]
             energies[idx_edge] = edge_computations[:, 1]
 
-        # satisfying constraint C1
-        c1_ok = np.where(latencies <= self._max_latencies, True, False)
+        # satisfying latency constraint
+        latencies_ok = np.where(latencies <= self._max_latencies, True, False)
 
-        return latencies, energies, c1_ok
+        return latencies, energies, latencies_ok
