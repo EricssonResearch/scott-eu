@@ -54,6 +54,8 @@ class Network:
             uplink_data_rate = self.channel_bandwidth * np.log2(1 + signal_power / interference_power)
 
             # latency from MD to MEC server
+            if uplink_data_rate == 0:   # underflow
+                uplink_data_rate += np.finfo(float).eps
             latency = md.task.input_size / uplink_data_rate + md.task.input_size / self.fiber_bandwidth
             latencies[i] = latency
 
@@ -134,67 +136,39 @@ class Task:
 
 
 class Problem:
-    def __init__(self, n_mobile_devices, settings='guo_et_al', seed=None):
+    def __init__(self, n_mobile_devices, seed=None):
         if seed is not None:
             np.random.seed(seed)
 
-        if settings == 'guo_et_al':
-            self.network = Network(
-                n_channels=50,
-                channel_bandwidth=40e6,                 # 40 MHz
-                fiber_bandwidth=1e9,                    # 1 Gbps
-                background_noise=1e-13,                 # -100 dBm
-                path_loss=2
+        self.network = Network(
+            n_channels=50,
+            channel_bandwidth=40e6,                 # 40 MHz
+            fiber_bandwidth=1e9,                    # 1 Gbps
+            background_noise=1e-13,                 # -100 dBm
+            path_loss=4
+        )
+
+        self.mec_server = MECServer(
+            computing_ability=10e9                  # 10 GHz
+        )
+
+        computing_abilities = np.random.choice([0.5e9, 0.8e9, 1e9], size=n_mobile_devices)  # 0.5-0.8-1 GHz
+        input_sizes = np.random.uniform(300e3, 800e3, size=n_mobile_devices)                # 300-800 KB
+        cpu_cycles = np.random.uniform(100e6, 1e9, size=n_mobile_devices)                   # 100-1000 Megacycles
+        max_latencies = np.random.uniform(0.1, 2, size=n_mobile_devices)                    # 0.1-2 s
+        bs_distances = np.random.uniform(0, 50, size=n_mobile_devices)                      # 0-50 m
+        lambdas_energy = np.random.choice([0, 0.5, 1], size=n_mobile_devices)
+        # lambdas_energy = np.zeros(n_mobile_devices)
+        # lambdas_energy = np.ones(n_mobile_devices)
+
+        self.mobile_devices = np.array([
+            MobileDevice(
+                computing_ability=computing_abilities[i],
+                cpu_energy_consumption=500e-12,     # 500 mJ/Gigacycle (equal for all)
+                transmit_power=100e-3,              # 100 mW (equal for all)
+                bs_distance=bs_distances[i],
+                lambda_energy=lambdas_energy[i],
+                task=Task(input_sizes[i], cpu_cycles[i], max_latencies[i])
             )
-
-            self.mec_server = MECServer(
-                computing_ability=4e9                   # 4 GHz
-            )
-
-            input_sizes = np.linspace(300e3, 800e3, num=n_mobile_devices)       # 300-800 KB
-            cpu_cycles = np.linspace(100e6, 1e9, num=n_mobile_devices)          # 100-1000 Megacycles
-            max_latencies = np.random.uniform(0.4, 2, size=n_mobile_devices)    # 0.1-2 s (randomly)
-            bs_distances = np.random.uniform(0, 50, size=n_mobile_devices)      # 0-50 m (randomly)
-
-            self.mobile_devices = np.array([
-                MobileDevice(
-                    computing_ability=0.8e9,            # 0.8 GHz (equal for all)
-                    cpu_energy_consumption=500e-12,     # 500 mJ/Gigacycle (equal for all)
-                    transmit_power=100e-3,              # 100 mW (equal for all)
-                    bs_distance=bs_distances[i],
-                    lambda_energy=1,
-                    task=Task(input_sizes[i], cpu_cycles[i], max_latencies[i])
-                )
-                for i in range(n_mobile_devices)
-            ])
-        elif settings == 'chen_et_al':
-            self.network = Network(
-                n_channels=50,
-                channel_bandwidth=1e9,
-                fiber_bandwidth=1e9,
-                background_noise=1e-13,
-                path_loss=4
-            )
-
-            self.mec_server = MECServer(
-                computing_ability=10e9
-            )
-
-            computing_abilities = np.random.choice([0.5e9, 0.8e9, 1e9], size=n_mobile_devices)
-            max_latencies = np.random.uniform(0.4, 2, size=n_mobile_devices)
-            bs_distances = np.random.uniform(0, 50, size=n_mobile_devices)
-            lambdas_energy = np.random.choice([0, 0.5, 1], size=n_mobile_devices)
-
-            self.mobile_devices = np.array([
-                MobileDevice(
-                    computing_ability=computing_abilities[i],
-                    cpu_energy_consumption=500e-12,
-                    transmit_power=100e-3,
-                    bs_distance=bs_distances[i],
-                    lambda_energy=lambdas_energy[i],
-                    task=Task(5000e3, 1000e6, max_latencies[i])
-                )
-                for i in range(n_mobile_devices)
-            ])
-        else:
-            raise ValueError('invalid settings')
+            for i in range(n_mobile_devices)
+        ])
