@@ -56,7 +56,7 @@ def compare(solvers, min_mobile_devices, max_mobile_devices, step_mobile_devices
             latencies_ok.append(latencies_ok_run.mean())
             execution_times.append(execution_times_run.mean())
 
-        width = 0.6
+        width = 1
         offset = (i - (len(solvers) - 1) / 2) * width
         plt.figure(1)
         plt.bar(n_mobile_devices + offset, latencies, width=width, label=s)

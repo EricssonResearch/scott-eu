@@ -8,7 +8,7 @@ class GameTheoreticSolver(Solver):
     def __init__(self, problem):
         Solver.__init__(self, problem)
 
-    def solve(self, **kwargs):
+    def solve(self, time_steps=500):
         solution = np.zeros(self._n_mobile_devices, dtype=bool)
 
         while True:
@@ -30,15 +30,18 @@ class GameTheoreticSolver(Solver):
                     new_solution[i] = False
                     continue
 
-                # optimal decision
-                local_overhead = md.lambda_latency * local_latency + md.lambda_energy * local_energy
-                edge_overhead = md.lambda_latency * edge_latency + md.lambda_energy * edge_energy
-                new_solution[i] = False if local_overhead < edge_overhead else True
+                # optimal decision + constraint C1 (max permissible latency)
+                if local_latency < md.task.max_latency and local_energy < edge_energy:
+                    new_solution[i] = False
+                elif edge_latency < md.task.max_latency and edge_energy < local_energy:
+                    new_solution[i] = True
+                else:
+                    new_solution[i] = False     # does not satisfy constraint C1
 
             # check convergence
             idx_candidates = np.where(new_solution != solution)[0]
             if len(idx_candidates) == 0:
-                break
+                break   # converged
 
             # update policy
             idx_winner = np.random.choice(idx_candidates)

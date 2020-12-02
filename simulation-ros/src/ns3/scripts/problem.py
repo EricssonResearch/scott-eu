@@ -27,7 +27,7 @@ class Network:
         :param n_channels: number of orthogonal frequency channels
         :param channel_bandwidth: channel bandwidth (Hz)
         :param fiber_bandwidth: uplink data rate of optical fiber network (bit/s)
-        :param background_noise: background noise power (TODO: unit of measure)
+        :param background_noise: background noise power
         :param path_loss: path loss factor
         """
         self.n_channels = n_channels
@@ -65,7 +65,7 @@ class Network:
 class MobileDevice:
     """Mobile device."""
 
-    def __init__(self, computing_ability, cpu_energy_consumption, transmit_power, bs_distance, lambda_energy, task):
+    def __init__(self, computing_ability, cpu_energy_consumption, transmit_power, bs_distance, task):
         """
         Constructs a mobile device.
 
@@ -73,23 +73,18 @@ class MobileDevice:
         :param cpu_energy_consumption: energy consumption per CPU cycle (J/cycle)
         :param transmit_power: transmit power (W)
         :param bs_distance: distance from BS in the cell (m)
-        :param lambda_energy: weight of energy consumption in offloading decision. It must be in the range [0,1] and
-            the lambda_latency = 1 - lambda_energy.
         :param task: task
         """
         self.computing_ability = computing_ability
         self.cpu_energy_consumption = cpu_energy_consumption
         self.transmit_power = transmit_power
         self.bs_distance = bs_distance
-        self.lambda_energy = lambda_energy
-        self.lambda_latency = 1 - lambda_energy
         self.task = task
 
     def compute_task(self):
         """
-        Simulates computation of a task.
+        Simulates local computation of the task.
 
-        :param task: task to compute
         :return: tuple (latency, energy)
         """
         latency = self.task.cpu_cycles / self.computing_ability
@@ -157,9 +152,6 @@ class Problem:
         cpu_cycles = np.random.uniform(100e6, 1e9, size=n_mobile_devices)                   # 100-1000 Megacycles
         max_latencies = np.random.uniform(0.1, 2, size=n_mobile_devices)                    # 0.1-2 s
         bs_distances = np.random.uniform(0, 50, size=n_mobile_devices)                      # 0-50 m
-        lambdas_energy = np.random.choice([0, 0.5, 1], size=n_mobile_devices)
-        # lambdas_energy = np.zeros(n_mobile_devices)
-        # lambdas_energy = np.ones(n_mobile_devices)
 
         self.mobile_devices = np.array([
             MobileDevice(
@@ -167,7 +159,6 @@ class Problem:
                 cpu_energy_consumption=500e-12,     # 500 mJ/Gigacycle (equal for all)
                 transmit_power=100e-3,              # 100 mW (equal for all)
                 bs_distance=bs_distances[i],
-                lambda_energy=lambdas_energy[i],
                 task=Task(input_sizes[i], cpu_cycles[i], max_latencies[i])
             )
             for i in range(n_mobile_devices)

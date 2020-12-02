@@ -9,29 +9,34 @@ from solver import Solver
 class BruteForceSolver(Solver):
     def __init__(self, problem):
         Solver.__init__(self, problem)
-        self.lambdas_latency = np.array([md.lambda_latency for md in self.mobile_devices])
-        self.lambdas_energy = np.array([md.lambda_energy for md in self.mobile_devices])
 
     def solve(self, **kwargs):
         offloading_decision = [False, True]
         combinations = it.product(*[offloading_decision for _ in range(self._n_mobile_devices)])
         combinations = np.array(list(combinations))
 
-        best_overhead = None
+        best_latency_ok = None
+        best_energy = None
         best_solution = None
 
         for solution in tqdm(combinations, desc='Combinations'):
-            # constraint about number of wireless channels
+            # constraint C2: number of wireless channels
             if solution.sum() > self.network.n_channels:
                 continue
 
             # evaluate solution
-            latencies, energies, _ = self.evaluate(solution)
+            latencies, energies, latencies_ok = self.evaluate(solution)
+
+            # constraint C1: max permissible latency
+            latency_ok = latencies_ok.sum()
+            if best_latency_ok is not None and latency_ok < best_latency_ok:
+                continue
 
             # update best solution
-            overhead = (self.lambdas_latency * latencies + self.lambdas_energy * energies).sum()
-            if best_overhead is None or overhead < best_overhead:
-                best_overhead = overhead
+            energy = energies.sum()
+            if best_energy is None or energy < best_energy:
+                best_latency_ok = latency_ok
+                best_energy = energy
                 best_solution = solution
 
         if best_solution is None:
