@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>turtlebot2i_edge</name>
+  <version>0.0.0</version>
+  <description>The edge computing package for turtlebot2i</description>
+
+  <license>Apache</license>
+  <maintainer email="alberto.hata@ericsson.com">Alberto Hata</maintainer>
+  <author email="franco.ruggeri@ericsson.com">Franco Ruggeri</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+</package>
