@@ -1,6 +1,6 @@
 <launch>
     <group ns="turtlebot2i">
-        <node pkg="ns3" name="ns3" type="ros_ns3" output="screen"/>
+        <node pkg="turtlebot2i_edge" name="ns3_wifi" type="ros_ns3" output="screen"/>
     </group>
 
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_keyop.launch"/>
