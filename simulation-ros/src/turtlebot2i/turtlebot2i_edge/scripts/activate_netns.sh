@@ -15,10 +15,10 @@ echo "network namespace: $nns"
 
 # set environment variables for ROS
 export ROS_HOSTNAME=$nns
-export ROS_MASTER_URI="http://global_nns:11311"
+export ROS_MASTER_URI="http://global:11311"
 
 # run shell in network namespace
-if [ "$nns" != "global_nns" ]; then
+if [ $nns != "global" ]; then
     ip netns exec $nns bash
 else
     bash

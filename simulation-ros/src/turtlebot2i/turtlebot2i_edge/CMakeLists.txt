@@ -56,6 +56,12 @@ find_library(
   HINTS $ENV{NS3_ROOT}/build/lib
   REQUIRED
 )
+find_library(
+  NS3_NETANIM_LIBRARY
+  NAMES ns3-dev-netanim-optimized ns3-dev-netanim-debug
+  HINTS $ENV{NS3_ROOT}/build/lib
+  REQUIRED
+)
 
 list(
   APPEND NS3_LIBRARIES
@@ -67,6 +73,7 @@ list(
   ${NS3_TAP_BRIDGE_LIBRARY}
   ${NS3_MOBILITY_LIBRARY}
   ${NS3_STATS_LIBRARY}
+  ${NS3_NETANIM_LIBRARY}
 )
 
 catkin_package(CATKIN_DEPENDS roscpp rospy std_msgs)
@@ -80,6 +87,15 @@ target_link_libraries(
   ${catkin_LIBRARIES}
   ${Threads_LIBRARIES}
   ${NS3_LIBRARIES}
+)
+
+add_executable(${PROJECT_NAME}_ns3_wifi_adhoc src/ns3_wifi_adhoc.cpp)
+set_target_properties(${PROJECT_NAME}_ns3_wifi_adhoc PROPERTIES OUTPUT_NAME ns3_wifi_adhoc PREFIX "")
+target_link_libraries(
+        ${PROJECT_NAME}_ns3_wifi_adhoc
+        ${catkin_LIBRARIES}
+        ${Threads_LIBRARIES}
+        ${NS3_LIBRARIES}
 )
 
 # TODO

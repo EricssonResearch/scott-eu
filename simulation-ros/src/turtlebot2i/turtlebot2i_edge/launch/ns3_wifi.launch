@@ -1,7 +1,8 @@
 <launch>
-    <group ns="turtlebot2i">
-        <node pkg="turtlebot2i_edge" name="ns3_wifi" type="ns3_wifi" output="screen" required="true"/>
-    </group>
+    <node pkg="turtlebot2i_edge" name="ns3_wifi_adhoc" type="ns3_wifi_adhoc" output="screen"
+          args="--robots=1 --server-x=2 --server-y=0 --server-z=0">
+        <remap from="odom0" to="/turtlebot2i/odom"/>
+    </node>
 
-    <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_keyop.launch"/>
+    <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch"/>
 </launch>
