@@ -1,6 +1,7 @@
 <launch>
-    <node pkg="turtlebot2i_edge" name="ns3_wifi_adhoc" type="ns3_wifi_adhoc" output="screen"
-          args="--robots=1 --server-x=2 --server-y=0 --server-z=0">
+    <rosparam command="load" file="$(find turtlebot2i_edge)/config/mec_server.yaml"/>
+
+    <node pkg="turtlebot2i_edge" name="ns3_wifi_adhoc" type="ns3_wifi_adhoc" output="screen">
         <remap from="odom0" to="/turtlebot2i/odom"/>
     </node>
 

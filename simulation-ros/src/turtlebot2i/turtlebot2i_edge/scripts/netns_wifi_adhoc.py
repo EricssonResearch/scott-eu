@@ -38,8 +38,8 @@ def get_global_netns():
     return 'global'
 
 
-def get_netns(i):
-    return 'netns%d' % i
+def get_netns(i, n_netns):
+    return 'robot%d' % i if i != n_netns-1 else 'mec_server'
 
 
 def get_wifi_net_devices(i):
@@ -110,7 +110,7 @@ def setup_direct(netns, veth_pair):
 
 def setup_network(n_netns):
     for i in range(n_netns):
-        netns = get_netns(i)
+        netns = get_netns(i, n_netns)
         setup_netns(netns)
         setup_indirect(netns, *get_wifi_net_devices(i))
         setup_direct(netns, get_direct_net_devices(i))
@@ -135,7 +135,7 @@ def setup_firewall(n_netns):
 
 def setup_dns(n_netns):
     global_netns = get_global_netns()
-    network_namespaces = [get_netns(i) for i in range(n_netns)]
+    network_namespaces = [get_netns(i, n_netns) for i in range(n_netns)]
 
     # global network namespace
     with open(Path('/') / 'etc' / 'hosts', mode='a') as f:
@@ -202,7 +202,7 @@ def clean_direct(veth_pair):
 
 def clean_network(n_netns):
     for i in range(n_netns):
-        netns = get_netns(i)
+        netns = get_netns(i, n_netns)
         clean_indirect(*get_wifi_net_devices(i))
         clean_direct(get_direct_net_devices(i))
         clean_netns(netns)
@@ -219,7 +219,7 @@ def clean_firewall(n_netns):
 
 def clean_dns(n_netns):
     global_netns = get_global_netns()
-    network_namespaces = {get_netns(i) for i in range(n_netns)} | {global_netns}
+    network_namespaces = {get_netns(i, n_netns) for i in range(n_netns)} | {global_netns}
 
     # global network namespace
     with open(Path('/') / 'etc' / 'hosts') as f:
@@ -259,7 +259,7 @@ def spawn(n_netns):
     print('Spawning shells for %d network namespaces...' % n_netns)
     spawn_netns(get_global_netns())
     for i in range(n_netns):
-        spawn_netns(get_netns(i))
+        spawn_netns(get_netns(i, n_netns))
 
 
 def get_cmd_args():

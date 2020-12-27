@@ -124,7 +124,7 @@ void setup_network(const ns3::Ptr<ns3::Node> &ap, const ns3::NodeContainer &robo
     ns3::Ipv4GlobalRoutingHelper::PopulateRoutingTables();
 }
 
-void update_position(const ns3::Ptr<ns3::Node> &robot, const nav_msgs::Odometry::ConstPtr &msg) {
+void updatePosition(const ns3::Ptr<ns3::Node> &robot, const nav_msgs::Odometry::ConstPtr &msg) {
     ns3::Ptr<ns3::MobilityModel> mobility_model = robot->GetObject<ns3::MobilityModel>();    // TODO: funziona? senno' devo mettere ConstantPositionMobilityModel
     const geometry_msgs::Point &position = msg->pose.pose.position;
     mobility_model->SetPosition({position.x, position.y, position.z});
@@ -135,7 +135,7 @@ void run_ros_node(ns3::NodeContainer &robots) {
     ros::NodeHandle node_handle;
     for (auto it=robots.Begin(); it != robots.End(); it++) {
         ns3::Ptr<ns3::Node> robot = *it;
-        auto callback = [robot](const nav_msgs::Odometry::ConstPtr &msg) { update_position(robot, msg); };
+        auto callback = [robot](const nav_msgs::Odometry::ConstPtr &msg) { updatePosition(robot, msg); };
         ros::Subscriber subscriber = node_handle.subscribe<nav_msgs::Odometry>("odom", 1000, callback);
     }
     ros::spin();
@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
     setup_network(ap, robots, server);
 
 //    ROS_INFO("Starting ROS node...");
-//    std::thread thread(run_ros_node, robots);   // on a second thread, because...
+//    std::thread thread(runRosNode, robots);   // on a second thread, because...
 
     ROS_INFO("Starting ns-3 simulation...");
     ns3::Simulator::Run();      // ...this thread simulates the network
