@@ -217,9 +217,9 @@ class Env():
                                     [self.camera_far_clipping*cos(radians(self.direction_list[i+1])),self.camera_far_clipping*sin(radians(self.direction_list[i+1]))],
                                     [self.camera_far_clipping*cos(radians(self.direction_list[i])),  self.camera_far_clipping*sin(radians(self.direction_list[i]))]]))
 
-        self.r_critical = 0.205
-        self.r_warning  = 0.31
-        self.r_clear    = 0.32
+        #self.r_critical = 0.205
+        #self.r_warning  = 0.31
+        #self.r_clear    = 0.32
         self.collision  = False
 
         self.risk_max           = 0.0

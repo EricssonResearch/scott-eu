@@ -28,7 +28,7 @@ class ReinforceAgent():
         self.result = Float32MultiArray()
 
         # self.load_model = True # Inference
-        self.load_model = True # Training
+        self.load_model = False # Training
         # self.load_episode = 110 # Inference
         self.load_episode = 0 # Training
         self.state_size = state_size
@@ -43,6 +43,7 @@ class ReinforceAgent():
         self.batch_size = 64
         self.train_start = 64
         self.memory = deque(maxlen=1000000)
+
 
         self.model = self.buildModel()
         self.target_model = self.buildModel()
@@ -97,6 +98,7 @@ class ReinforceAgent():
         if np.random.rand() <= self.epsilon:
             self.q_value = np.zeros(self.action_size)
             act = random.randrange(self.action_size)
+            # printing statistics
             self.randomActions[act] = self.randomActions[act] + 1
             with open("/home/eiucale/randActions.txt", "w") as outfile:
                 for index, item in enumerate(self.randomActions):
@@ -106,6 +108,8 @@ class ReinforceAgent():
             q_value = self.model.predict(state.reshape(1, len(state)))
             self.q_value = q_value
             act = np.argmax(q_value[0])
+
+            # printing statistics
             self.actions[act] = self.actions[act] + 1
             with open("/home/eiucale/actions.txt", "w") as outfile:
                 for index, item in enumerate(self.actions):

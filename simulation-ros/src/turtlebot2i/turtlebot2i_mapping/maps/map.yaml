@@ -1,4 +1,4 @@
-#image: map_1.pgm         # Default#
+#image: map_1.pgm         # Default
 #image: map_test1.pgm      # Risk mitigation test
 image: map_training.pgm  # Risk mitigation training
 resolution: 0.050000

@@ -1,0 +1,3320 @@
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.989107591626
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.77
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.889105270352
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.859093116367
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.839107863454
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.779115339694
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.759110350347
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.729159244485
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.699283060035
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.599719095119
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.729473684211
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.539960725829
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.509999542191
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.31063906071
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.309044271729
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.307609867436
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.30914575681
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.30974958395
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.308762368457
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.309202441702
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.307087071765
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.314285203678
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.316125075212
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.31724023106
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.314133703686
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.313658987363
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.313218239945
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.309710852854
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.308266543291
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.307991135271
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.310806187975
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 7
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.316129344892
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.318986276205
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.319397056495
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. 10
+NearestObs. 0.319605927334
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.329378544837
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.329255131276
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.328470926827
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.326047988487
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.965119020033
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.77
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.944853476379
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.77
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.922661542392
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.891930073177
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.979124842576
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.208421052632
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.928873935872
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.22
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.898753633575
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.150526315789
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.86850419722
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.173684210526
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.848363137609
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.162105263158
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.787799114698
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.150526315789
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.569910461547
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.344473684211
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.539312392997
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.303947368421
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.507873338792
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.324210526316
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.474789465578
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.385
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.458942655317
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.344473684211
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.509518197091
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.445789473684
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.48648639793
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.445789473684
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.474970956571
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.729473684211
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.451640251344
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.458514811872
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.729473684211
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.438228198953
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.428115548129
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.418964126432
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.729473684211
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.404456923584
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.401113919313
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.400618774054
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.401889161467
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.434836049605
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.426825015815
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.729473684211
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.420680855299
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.394485017413
+SpeedScale. 0.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. 30
+Speed. 0.22
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.379103349822
+SpeedScale. 0.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. 30
+Speed. 0.22
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.364367065657
+SpeedScale. 1.2
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.66
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -100
+NearestObs. 0.308363322829
+SpeedScale. 0.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -90
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.989070944493
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.173684210526
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.98924122875
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.208421052632
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.928937393625
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.173684210526
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.907881041799
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.196842105263
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.853824084758
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.104210526316
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.801443639147
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.127368421053
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.789194074776
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.127368421053
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.718621487731
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.173684210526
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.667795777219
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.196842105263
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.626517942053
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.115789473684
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.605782696431
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.185263157895
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.595142944738
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.185263157895
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.564737675972
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.173684210526
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.554198495867
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.173684210526
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.472973641904
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.465536725738
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.472940340104
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.470502810054
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.456002296119
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.454236800899
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.459111726444
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.489499898924
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.508491630802
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.77
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.52852172669
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.542523889907
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.55444244615
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.569974930953
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -20
+Speed. 0.22
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.619567143856
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.77
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.631354411109
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.77
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.660568714398
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.66
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.689898190809
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.705600103329
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.739890209389
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.758688075526
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.964545381824
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.162105263158
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.916896638802
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.127368421053
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.888165371318
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -140
+Speed. 0.0
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.868787502191
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.115789473684
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.839500256165
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.104210526316
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.819829887583
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.104210526316
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.799929567098
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.115789473684
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.779944221952
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.115789473684
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.749860239571
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.104210526316
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.729738359637
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.104210526316
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.729927890776
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.277894736842
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.758015727033
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. 30
+Speed. 0.347368421053
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.771724426854
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.526842105263
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.780177425043
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.521052631579
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.77973667294
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.486315789474
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.790241589833
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.486315789474
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.790988922867
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.451578947368
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.801811728443
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.521052631579
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.802396803004
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.486315789474
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.835096697521
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.521052631579
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.85620311537
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.521052631579
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.877466788043
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.451578947368
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.89802637698
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.567368421053
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.918556785182
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.729473684211
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.928866537273
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.688947368421
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.929091032723
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. 30
+Speed. 0.347368421053
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.92930607981
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.277894736842
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.92952031926
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.66
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.989881611916
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.22
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.949613928442
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.208421052632
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.919448894296
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.208421052632
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.869001675937
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.848687533453
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.729473684211
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.828358400622
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.688947368421
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.808422655487
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.607894736842
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.747543539106
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.526842105263
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.704014237017
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.567368421053
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.682598739364
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.526842105263
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.650744060736
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.486315789474
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.96906405958
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.949377126273
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.929585858426
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -100
+Total. -90
+Speed. 0.0
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.899774318256
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.729473684211
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.879906239233
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.729473684211
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.849914856276
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.688947368421
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.829721667608
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.986254831178
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.22
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.939959415357
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.66
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.898633175996
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.22
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.876574056057
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.66
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.853320703429
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.22
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.830625403639
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.66
+
+Direction. 7
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.792391085098
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.66
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.786946286985
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.798782555583
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.809771248236
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.762101951522
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.66
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.770422581347
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.767698898222
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.766624762972
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.774917613544
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.777307989337
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.729473684211
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.793650057957
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.971094862328
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.22
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.940262507527
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.22
+
+Direction. 7
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.856616779012
+SpeedScale. 0.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.22
+
+Direction. 7
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.835510006934
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.22
+
+Direction. 7
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.803645100115
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.196842105263
+
+Direction. 7
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.750142345721
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.196842105263
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.744263818034
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.185263157895
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.712897660412
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.150526315789
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.692045910549
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.138947368421
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.681787486225
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.150526315789
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.67165568351
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.162105263158
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.917222275407
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.555789473684
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.927340673488
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.625263157895
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.93756378952
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.625263157895
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.947946531937
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.625263157895
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.958416226771
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.66
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.968785788783
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.77
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.989208120366
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.486315789474
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.974643900408
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.953700062791
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.933297198156
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.77
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.91218650758
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.858106283598
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.77
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.835789321222
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.729473684211
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.770445022018
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.688947368421
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.757668502158
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.648421052632
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.705619444386
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. 0
+Total. 10
+Speed. 0.486315789474
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.64208238484
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. 0
+Total. 25
+Speed. 0.445789473684
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.958388534814
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.66
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.908940391047
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.22
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.859195999373
+SpeedScale. 0.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -30
+Speed. 0.208421052632
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.829203937138
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.22
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.779571080339
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.22
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.759739609097
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.208421052632
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.72980650575
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.196842105263
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.709869418334
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.196842105263
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.679986478689
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.196842105263
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.659987129295
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.729473684211
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.649999835514
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.607894736842
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.629965541533
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.486315789474
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.609734765501
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.138947368421
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.609525786074
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.382105263158
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.5540799434
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.364736842105
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.525500916503
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0
+
+Direction. 11
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.517438931237
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.324210526316
+
+Direction. 7
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.975307081205
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.729473684211
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.9651601477
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.625263157895
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.944826675606
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 50
+Total. 10
+Speed. 0.521052631579
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.934030677191
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.486315789474
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.892991614027
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.590526315789
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.849802776959
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. 30
+Speed. 0.347368421053
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.837853390477
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.555789473684
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.796911987628
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.486315789474
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.77546987916
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.521052631579
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.754108407487
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.555789473684
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.732796792872
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.688947368421
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.729544046423
+SpeedScale. 0.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.0984210526316
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.679649285559
+SpeedScale. 0.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.104210526316
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.64957500941
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.729473684211
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.61892456359
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.58887398558
+SpeedScale. 0.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.11
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.558944871584
+SpeedScale. 0.2
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.11
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.528060872743
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.508040358079
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.77
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.487703925796
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.77
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.946968888753
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. 50
+Total. 60
+Speed. 0.77
+
+Direction. 8
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.907259071039
+SpeedScale. 0.7
+GoalRWD. 50
+SpeedRWD. -40
+Total. 40
+Speed. 0.385
+
+Direction. 7
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.801129360467
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. -40
+Total. -10
+Speed. 0.364736842105
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.758033705754
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. -40
+Total. -10
+Speed. 0.344473684211
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.738087047877
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. -40
+Total. -10
+Speed. 0.324210526316
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.678989594409
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -140
+Speed. 0.0463157894737
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.649014353897
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.104210526316
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.599080524726
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.0926315789474
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.579072396682
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.0810526315789
+
+Direction. 6
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.55902413166
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0694736842105
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.538673620189
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0694736842105
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.51750936141
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 5
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.504195700167
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.473947112676
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.461788992397
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.454411114705
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 4
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.454979166254
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.44430015711
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.444323784685
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.433734538268
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.433465898471
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 3
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.434392792777
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0231578947368
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.422996234352
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0231578947368
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.422997101017
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0231578947368
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.423118555938
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0231578947368
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.423537014411
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0231578947368
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.423705259829
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.422716640825
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.411776429969
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 2
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.411885673673
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.411089198361
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.411356938736
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.398631061337
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.398690493057
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.398743601453
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 1
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.398913562373
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.397807827493
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.397887305682
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.388641370416
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.388726326893
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.387558861663
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.387622030959
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.38635602814
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.386699465612
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0231578947368
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.378023914384
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.37856238162
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.376711166382
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.377214521678
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.377767051902
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.377622104633
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.37846140443
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.368215296394
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.367997635137
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.368588783648
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0347368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.369148876916
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.370499500024
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.390821301582
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.375650963865
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.377477229373
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.401279323892
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.403858873304
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0463157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.406750589212
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0578947368421
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.399025871263
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0578947368421
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.402150141643
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0578947368421
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.405227509871
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0694736842105
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.411495934356
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -125
+Speed. 0.0694736842105
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.41838870017
+SpeedScale. 0.7
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.243157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.4260007179
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.173684210526
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.430549426402
+SpeedScale. 0.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.138947368421
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.435658394695
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.486315789474
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.437229949585
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.648421052632
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.438318721461
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.567368421053
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.439621944387
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.688947368421
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.440571007077
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.283684210526
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.421184324432
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -80
+Speed. 0.243157894737
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.411227960787
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.324210526316
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.413816685906
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.283684210526
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.416258751714
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.283684210526
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.4181041174
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.324210526316
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.419952063233
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.283684210526
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.421871064578
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.283684210526
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.423221604749
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.324210526316
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.421328381726
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.283684210526
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.418516775789
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.283684210526
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.408277011684
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. -25
+Speed. 0.324210526316
+
+Direction. 0
+CollisionRWD. 0
+ObsRwd. 20
+NearestObs. 0.403127422338
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 20
+Speed. 0.283684210526
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.838377516169
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. -40
+Speed. 0.277894736842
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.821207464185
+SpeedScale. 1.2
+GoalRWD. 0
+SpeedRWD. 0
+Total. 30
+Speed. 0.382105263158
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.812600192692
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.567368421053
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.796137660977
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.607894736842
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.776974992775
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.688947368421
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.767951222143
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.688947368421
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. 30
+NearestObs. 0.728998932167
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. 0
+Total. 30
+Speed. 0.364736842105
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.699638430963
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -100
+Total. -140
+Speed. 0.243157894737
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.699803109885
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.567368421053
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -40
+NearestObs. 0.68978237756
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -80
+Speed. 0.729473684211
+
+Direction. 9
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.659987799874
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.77
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.639973897776
+SpeedScale. 1.4
+GoalRWD. 0
+SpeedRWD. -40
+Total. -65
+Speed. 0.688947368421
+
+Direction. 10
+CollisionRWD. 0
+ObsRwd. -25
+NearestObs. 0.629916759632
+SpeedScale. 1.4
+GoalRWD. 50
+SpeedRWD. -40
+Total. -15
+Speed. 0.688947368421
+
