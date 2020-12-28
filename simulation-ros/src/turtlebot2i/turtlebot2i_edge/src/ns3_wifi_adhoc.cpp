@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
         !ros::param::get("mec_server/position/y", mec_server_pos.y) ||
         !ros::param::get("mec_server/position/z", mec_server_pos.z)) {
         ROS_ERROR("Parameters for MEC server not present");
-        return 1;
+        return -1;
     }
 
     ROS_INFO("Setting up network...");

@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs)
+list(APPEND CATKIN_DEPENDS roscpp rospy message_filters nav_msgs sensor_msgs)
+
+find_package(catkin REQUIRED COMPONENTS ${CATKIN_DEPENDS})
 find_package(Threads REQUIRED)
 
 find_library(
@@ -76,32 +78,19 @@ list(
   ${NS3_NETANIM_LIBRARY}
 )
 
-catkin_package(CATKIN_DEPENDS roscpp rospy std_msgs)
+catkin_python_setup()
+catkin_package(CATKIN_DEPENDS ${CATKIN_DEPENDS})
 
 include_directories(include ${catkin_INCLUDE_DIRS} $ENV{NS3_ROOT}/build)
 
-add_executable(${PROJECT_NAME}_ns3_wifi src/ns3_wifi.cpp)
-set_target_properties(${PROJECT_NAME}_ns3_wifi PROPERTIES OUTPUT_NAME ns3_wifi PREFIX "")
-target_link_libraries(
-  ${PROJECT_NAME}_ns3_wifi
-  ${catkin_LIBRARIES}
-  ${Threads_LIBRARIES}
-  ${NS3_LIBRARIES}
-)
-
 add_executable(${PROJECT_NAME}_ns3_wifi_adhoc src/ns3_wifi_adhoc.cpp)
 set_target_properties(${PROJECT_NAME}_ns3_wifi_adhoc PROPERTIES OUTPUT_NAME ns3_wifi_adhoc PREFIX "")
-target_link_libraries(
-        ${PROJECT_NAME}_ns3_wifi_adhoc
-        ${catkin_LIBRARIES}
-        ${Threads_LIBRARIES}
-        ${NS3_LIBRARIES}
-)
+target_link_libraries(${PROJECT_NAME}_ns3_wifi_adhoc ${catkin_LIBRARIES} ${Threads_LIBRARIES} ${NS3_LIBRARIES})
+
 
 # TODO
 #catkin_install_python(
-#  PROGRAMS
-#  scripts/my_python_script
+#  PROGRAMS scripts.....
 #  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 #)
 

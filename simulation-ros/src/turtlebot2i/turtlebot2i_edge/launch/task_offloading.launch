@@ -1,0 +1,10 @@
+<launch>
+    <node pkg="turtlebot2i_edge" name="task_offloading" type="task_offloading.py" ns="turtlebot2i" output="screen">
+        <remap from="camera_rgb" to="camera/rgb/raw_imag"/>
+        <remap from="camera_depth" to="camera/depth/raw_imag"/>
+        <remap from="robot_rgb" to="mec_server/camera/depth/raw_imag"/>
+        <remap from="robot_depth" to="mec_server/camera/depth/raw_imag"/>
+    </node>
+
+    <node pkg="turtlebot2i_scene_graph" name="scene_graph_generator" type="scene_graph_generator.py" output="screen"/>
+</launch>
