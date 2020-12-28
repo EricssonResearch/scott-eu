@@ -44,10 +44,13 @@ function sysCall_init()
     addModel('ConcreteBox1', {1.0,-1.5,0.5}, {0,0,0})
     addModel('ConcreteBox1', {1.0,-3.5,0.5}, {0,0,0})
 
-    -- Robots
+    -- Dock stations (1 for each robot, otherwise there are errors!)
     addModel('dockstation', {-5.25,-4.000,0.063}, {0,0,math.pi/2})
-    addModel('turtlebot2i', {-4.5,-3.5,0.063}, {0,0,math.pi/2})
-    addModel('turtlebot2i', {8,-3.5,0.063}, {0,0,math.pi/2})
+    addModel('dockstation', {8.5,-4.000,0.063}, {0,0,-math.pi/2})
+
+    -- Robots
+    addModel('turtlebot2i', {-4.8,-4,0.063}, {0,0,math.pi/2})
+    addModel('turtlebot2i', {8,-4,0.063}, {0,0,math.pi/2})
 
 end
 
