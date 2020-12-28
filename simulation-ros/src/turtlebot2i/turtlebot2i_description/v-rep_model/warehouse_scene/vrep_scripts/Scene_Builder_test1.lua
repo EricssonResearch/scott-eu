@@ -52,13 +52,13 @@ function sysCall_init()
     --5 walking humans:
     --addModel('walkingBill_round',{-1.5, 1.0,0},{0,0,math.pi/2})
     --addModel('walkingBill_round',{ 1.0, 4.5,0},{0,0,0})
-    addModel('Walking_Bill',{-1.5, 1.0,0},{0,0,math.pi/2})
-    addModel('Walking_Bill',{ 1.0, 4.5,0},{0,0,0})
-    addModel('Walking_Bill',{ 8.5, -1.5,0},{0,0, math.pi/2})
-    addModel('Walking_Bill',{ 5.5,  1.5,0},{0,0, 0})
-    addModel('Walking_Bill',{ 0.0, -1.0,0},{0,0, 0})
-    addModel('Working_Bill',{ 8.5,  4.0,0},{0,0,math.pi/2}) 
-    addModel('Working_Bill',{ 1.0,  1.0,0},{0,0,0})--]]
+    ----addModel('Walking_Bill',{-1.5, 1.0,0},{0,0,math.pi/2})
+    ----addModel('Walking_Bill',{ 1.0, 4.5,0},{0,0,0})
+    ----addModel('Walking_Bill',{ 8.5, -1.5,0},{0,0, math.pi/2})
+    ----addModel('Walking_Bill',{ 5.5,  1.5,0},{0,0, 0})
+    ----addModel('Walking_Bill',{ 0.0, -1.0,0},{0,0, 0})
+    ----addModel('Working_Bill',{ 8.5,  4.0,0},{0,0,math.pi/2}) 
+    ----addModel('Working_Bill',{ 1.0,  1.0,0},{0,0,0})--]]
 
     -------------------------Wall section bellow-------------------------------
 
