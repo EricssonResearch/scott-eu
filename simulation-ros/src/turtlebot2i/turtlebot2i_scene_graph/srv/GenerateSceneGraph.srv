@@ -1,0 +1,4 @@
+sensor_msgs/Image image_rgb
+sensor_msgs/Image image_depth
+---
+turtlebot2i_scene_graph/SceneGraph scene_graph

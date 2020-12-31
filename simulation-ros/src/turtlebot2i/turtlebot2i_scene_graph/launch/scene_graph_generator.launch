@@ -1,0 +1,12 @@
+<launch>
+    <arg name="robot_name" default="turtlebot2i"/>
+    <arg name="mode" default="service"/>    <!-- service or topic -->
+
+    <node name="scene_graph_generator" pkg="turtlebot2i_scene_graph" type="scene_graph_generator.py"
+          ns="$(arg robot_name)" args="$(arg mode)" output="screen">
+        <rosparam command="load" file="$(find turtlebot2i_scene_graph)/config/vrep.yaml"/>
+        <param name="robot/name" type="str" value="$(arg robot_name)"/>
+        <remap from="camera/rgb/raw_image" to="edge/camera/rgb/raw_image"/>
+        <remap from="camera/depth/raw_image" to="edge/camera/depth/raw_image"/>
+    </node>
+</launch>

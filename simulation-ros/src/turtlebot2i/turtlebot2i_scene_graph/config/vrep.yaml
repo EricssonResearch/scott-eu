@@ -1,0 +1,3 @@
+vrep:
+  host: global
+  port: 19997

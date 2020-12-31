@@ -21,7 +21,7 @@ As a ongoing work, the generator is under modification to use the output generat
 
 Execute the following code in the terminal:
 ```
-rosrun turtlebot2i_scene_graph ros_scene_graph_generator.py 
+roslaunch turtlebot2i_scene_graph scene_graph_generator.launch 
 ```
 
 The generated scene graph will be available in the `/turtlebot2i/scene_graph` topic.
@@ -35,7 +35,7 @@ cd src
 python vrep_scene_graph_generator.py
 ```
 
-The generated scene graph will be stored in the `sg_robot` folder
+The generated scene graph will be stored in the `scene_graph` folder
 Inside the folder, it will be available the generated graph in image format.
 
 
