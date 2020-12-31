@@ -3,7 +3,9 @@
 import sys
 import argparse
 import rospy
-from turtlebot2i_scene_graph import VrepObjectExtractor, SceneGraphGenerator
+from turtlebot2i_scene_graph import VrepObjectExtractor, SceneGraphGenerator, make_message
+from turtlebot2i_scene_graph.msg import SceneGraph
+from turtlebot2i_scene_graph.srv import GenerateSceneGraph, GenerateSceneGraphResponse
 
 # TODO: check that there are all the objects, maybe do some config files? how to avoid hardcoding?
 
@@ -88,6 +90,18 @@ DYNAMIC_OBJECTS = [
 ]
 
 
+def generate_scene_graph(generator):
+    scene_graph = generator.generate_scene_graph()
+    scene_graph = make_message(scene_graph)
+    return GenerateSceneGraphResponse(scene_graph)
+
+
+def publish_scene_graph(generator, publisher):
+    scene_graph = generator.generate_scene_graph()
+    scene_graph = make_message(scene_graph)
+    publisher.publish(scene_graph)
+
+
 def main():
     rospy.init_node('scene_graph_generator', anonymous=True)
 
@@ -109,8 +123,28 @@ def main():
     extractor = VrepObjectExtractor(host, port, WALLS, ROBOTS, STATIC_OBJECTS, DYNAMIC_OBJECTS)
     rospy.loginfo('Initialization completed')
 
-    SceneGraphGenerator(robot, extractor, mode=args.mode)
-    rospy.spin()
+    generator = SceneGraphGenerator(robot, extractor)
+
+    if args.mode == 'service':
+        rospy.loginfo('Starting ROS service...')
+        rospy.Service(
+            name='generate_scene_graph',
+            service_class=GenerateSceneGraph,
+            handler=lambda: generate_scene_graph(generator),
+            buff_size=2 ** 20   # 1 MB, enough for camera images
+        )
+        rospy.spin()
+
+    elif args.mode == 'topic':
+        rospy.loginfo('Starting publishing...')
+        publisher = rospy.Publisher('scene_graph', SceneGraph, queue_size=1)
+        rate = rospy.Rate(30)   # 30 FPS
+        while not rospy.is_shutdown():
+            publish_scene_graph(generator, publisher)
+            rate.sleep()
+
+    else:
+        raise ValueError
 
 
 if __name__ == '__main__':

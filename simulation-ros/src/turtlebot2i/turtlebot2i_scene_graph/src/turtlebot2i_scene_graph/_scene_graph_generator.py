@@ -1,36 +1,13 @@
-import rospy
 import re
 from graphviz import Digraph
-from std_msgs.msg import Header
-from sensor_msgs.msg import Image
 from turtlebot2i_scene_graph._utils import get_distance_bbox, get_velocity, get_direction, get_type, get_orientation
 from turtlebot2i_scene_graph._utils import get_size, get_overlap_bbox
-from turtlebot2i_scene_graph.msg import SceneGraph
-from turtlebot2i_scene_graph.srv import GenerateSceneGraph, GenerateSceneGraphResponse
 
 
-def _prepare_message(scene_graph):
-    scene_graph_msg = SceneGraph()
-    scene_graph_msg.header = Header()
-    scene_graph_msg.header.stamp = rospy.Time.now()
-    scene_graph_msg.sg_data = scene_graph.source
-    return scene_graph_msg
-
-
-class SceneGraphGenerator:
-    def __init__(self, robot, extractor, mode='service'):
+class SceneGraphGenerator(object):
+    def __init__(self, robot, extractor):
         self.robot = robot
         self.extractor = extractor
-
-        if mode == 'service':
-            rospy.loginfo('Starting ROS service...')
-            rospy.Service('generate_scene_graph', GenerateSceneGraph, self._generate_scene_graph_service, buff_size=2**20)
-        elif mode == 'topic':
-            rospy.loginfo('Starting publishing...')
-            self._scene_graph_pub = rospy.Publisher('scene_graph', SceneGraph, queue_size=1)
-            rospy.Subscriber('camera/rgb/raw_image', Image, self._generate_scene_graph_topic)
-        else:
-            rospy.logwarn('Invalid mode, neither service nor topic')
 
     def generate_scene_graph(self):
         robot = next(r for r in self.extractor.robots if r.name == self.robot)
@@ -91,12 +68,3 @@ class SceneGraphGenerator:
                 scene_graph.edge('floor', o.name, label='on')
 
         return scene_graph
-
-    def _generate_scene_graph_service(self, images):
-        scene_graph = self.generate_scene_graph()
-        scene_graph_msg = _prepare_message(scene_graph)
-        return GenerateSceneGraphResponse(scene_graph_msg)
-
-    def _generate_scene_graph_topic(self, image_rgb, image_depth):
-        scene_graph = self.generate_scene_graph()
-        self._scene_graph_pub.publish(scene_graph)

@@ -111,7 +111,7 @@ def main():
     extractor = VrepObjectExtractor(args.vrep_host, args.vrep_port, WALLS, ROBOTS, STATIC_OBJECTS, DYNAMIC_OBJECTS)
     print('Initialization completed')
 
-    scene_graph_generator = SceneGraphGenerator(args.robot, extractor, mode=None)
+    scene_graph_generator = SceneGraphGenerator(args.robot, extractor)
 
     for _ in range(10):
         time_cost = time.time()

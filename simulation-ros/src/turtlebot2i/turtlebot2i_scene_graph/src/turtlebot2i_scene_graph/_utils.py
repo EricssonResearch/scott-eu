@@ -1,6 +1,17 @@
+import rospy
 import math
 import re
 from shapely.geometry import box
+from std_msgs.msg import Header
+from turtlebot2i_scene_graph.msg import SceneGraph
+
+
+def make_message(scene_graph):
+    scene_graph_msg = SceneGraph()
+    scene_graph_msg.header = Header()
+    scene_graph_msg.header.stamp = rospy.Time.now()
+    scene_graph_msg.sg_data = scene_graph.source
+    return scene_graph_msg
 
 
 def get_distance(i, j):
