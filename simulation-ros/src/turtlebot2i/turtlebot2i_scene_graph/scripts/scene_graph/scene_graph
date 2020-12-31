@@ -1,8 +1,0 @@
-// warehouse
-digraph {
-	node [shape=record]
-	robot [label="{turtlebot2i|camera_rgb|velocity: 0.00}"]
-	warehouse [label=warehouse]
-	floor [label="{floor|size: 25*25}"]
-	warehouse -> floor
-}
