@@ -13,7 +13,6 @@ http://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm
 import rospy
 import vrep
 import socket
-import time
 import numpy as np
 from shapely.geometry import Polygon, box, LineString
 
@@ -120,30 +119,21 @@ class Robot(SceneObject):
 
 
 class VrepObjectExtractor:
-    def __init__(self, host, port, walls, robots, static_objects, dynamic_objects):
+    def __init__(self):
+        self.clientID = -1
+        self.init_streaming = False
+        self.walls = None
+        self.robots = None
+        self.static_objects = None
+        self.dynamic_objects = None
+
+    def start_connection(self, host, port):
         """
-        Constructs V-REP object extractor.
+        Opens remote API connection with V-REP. If there are other open connections, they are closed.
 
         :param host: hostname or IP address of V-REP remote API server
         :param port: port of V-REP remote API server
-        :param walls: names of the walls in the V-REP scene
-        :param robots: names of the robots in the V-REP scene
-        :param static_objects: names of the static objects in the V-REP scene
-        :param dynamic_objects: names of the dynamic objects in the V-REP scene
         """
-        self.clientID = -1
-        self.mode = vrep.simx_opmode_buffer
-
-        self.first_time = self.mode is vrep.simx_opmode_buffer  # True if data streaming mode
-        self.start_connection(host, port)
-        self.walls = self._get_objects(walls)
-        self.robots = self._get_robots(robots)
-        self.static_objects = self._get_objects(static_objects)
-        self.dynamic_objects = self._get_objects(dynamic_objects)
-        self.first_time = False
-
-    def start_connection(self, host, port):
-        """Opens remote API connection with V-REP. If there are other open connections, they are closed."""
         # close old connection
         if self.clientID != -1:
             vrep.simxFinish(self.clientID)
@@ -155,13 +145,27 @@ class VrepObjectExtractor:
             raise Exception('Connection to V-REP remote API server failed')
 
     def close_connection(self):
-        """Close remote API connection with V-REP."""
+        """Closes remote API connection with V-REP."""
         vrep.simxFinish(self.clientID)
 
-    def detect_objects(self, robot):
-        """Get objects that are in the FOV of the robot's vision sensor."""
-        detected_objects = []
+    def load_objects(self, walls, robots, static_objects, dynamic_objects):
+        """
+        Loads specified objects.
 
+        :param walls: names of the walls in the V-REP scene
+        :param robots: names of the robots in the V-REP scene
+        :param static_objects: names of the static objects in the V-REP scene
+        :param dynamic_objects: names of the dynamic objects in the V-REP scene
+        """
+        self.init_streaming = True
+        self.walls = self._get_objects(walls, object_type='static')
+        self.robots = self._get_robots(robots)
+        self.static_objects = self._get_objects(static_objects, object_type='static')
+        self.dynamic_objects = self._get_objects(dynamic_objects, object_type='dynamic')
+        self.init_streaming = False
+
+    def detect_objects(self, robot):
+        """Get objects visible for the robot."""
         self._refresh()
 
         pol_fov = Polygon([
@@ -172,68 +176,68 @@ class VrepObjectExtractor:
         ])
         foc = robot.vision_sensor.fov['upper_base'][0]
 
-        # fig = plt.figure(1, figsize=(5,5), dpi=90)
-        # ax = fig.add_subplot(111)
-        # x,y= pol_fov.exterior.xy
-        # ax.plot(x, y)
-
+        # objects in FOV
         objects = self.walls + self.static_objects + self.dynamic_objects + self.robots
-        visible_objects = []
+        detected_objects = []
         for o in objects:
             pol_obj = box(o.bbox_min[0], o.bbox_min[1], o.bbox_max[0], o.bbox_max[1])
+            print('object: ' + o.name + ' - pol_obj: ' + str(pol_obj))
             if pol_fov.intersects(pol_obj) and o is not robot:
                 detected_objects.append(o)
-            # x,y= pol_obj.exterior.xy
-            # ax.plot(x, y)
 
-        for o in detected_objects:
-            other_obj = []  # copy.deepcopy(obj_list_detected)
-            for temp_obj in detected_objects:
-                if o.name != temp_obj.name:
-                    other_obj.append(temp_obj)
-            x, y = box(o.bbox_min[0], o.bbox_min[1], o.bbox_max[0], o.bbox_max[1]).exterior.xy
+        print('detected: ' + str([do.name for do in detected_objects]))
+
+        # visible objects
+        visible_objects = []
+        for do in detected_objects:
+            other_objects = [o for o in detected_objects if o is not do]
+            x, y = box(do.bbox_min[0], do.bbox_min[1], do.bbox_max[0], do.bbox_max[1]).exterior.xy
+
             i = 0  # no of line
             visible = True
             while visible and i < len(x):
                 test_line = LineString([foc, (x[i], y[i])])
-                for another_obj in other_obj:
-                    another_obj_box = box(another_obj.bbox_min[0], another_obj.bbox_min[1], another_obj.bbox_max[0],
-                                          another_obj.bbox_max[1])
-                    if test_line.intersects(another_obj_box):
+                for oo in other_objects:
+                    other_object_box = box(oo.bbox_min[0], oo.bbox_min[1], oo.bbox_max[0], oo.bbox_max[1])
+                    if test_line.intersects(other_object_box):
                         visible = False
                 i += 1
+
             if visible:
-                visible_objects.append(o)
-            else:  # If each corner is obstructed by other object, check the middle point
+                visible_objects.append(do)
+            else:  # if each corner is obstructed by other object, check the middle point
                 mid_point = (((max(x) + min(x)) / 2), ((max(y) + min(y)) / 2))
                 test_line = LineString([foc, mid_point])
                 visible = True
-                for another_obj in other_obj:
-                    another_obj_box = box(another_obj.bbox_min[0], another_obj.bbox_min[1], another_obj.bbox_max[0],
-                                          another_obj.bbox_max[1])
-                    if test_line.intersects(another_obj_box):
+                for oo in other_objects:
+                    other_object_box = box(oo.bbox_min[0], oo.bbox_min[1], oo.bbox_max[0],
+                                           oo.bbox_max[1])
+                    if test_line.intersects(other_object_box):
                         visible = False
                 if visible:
-                    visible_objects.append(o)
+                    visible_objects.append(do)
 
-            # x,y= pol_obj.exterior.xy
-            # ax.plot(x, y)
-            # print(obj.name)
-            # print(obj.bbox_min[0], obj.bbox_min[1], obj.bbox_max[0], obj.bbox_max[1])
+        print('visible: ' + str([vo.name for vo in visible_objects]))
 
-        # plt.show()
         return visible_objects
 
-    def _get_objects(self, object_names):
+    def _get_objects(self, object_names, object_type):
         objects = []
         for object_name in object_names:
             object_handle = self._get_object_handle(object_name)
             if object_handle is None:
                 continue
 
-            object_info = self._get_object_info(object_handle)
+            if object_type == 'static':
+                object_info = self._get_object_info(object_handle, vrep.simx_opmode_oneshot_wait)
+            elif object_type == 'dynamic':
+                object_info = self._get_dynamic_object_info(object_handle)
+            else:
+                raise ValueError('Type must be either static or dynamic')
             object_ = SceneObject(object_name, object_handle)
-            object_.set_info(*object_info)
+
+            if object_info is not None:
+                object_.set_info(*object_info)
             objects.append(object_)
         return objects
 
@@ -249,11 +253,10 @@ class VrepObjectExtractor:
             if robot_handle is None:
                 continue
 
-            robot_info = self._get_object_info(robot_handle)
+            self._get_dynamic_object_info(robot_handle)
             vision_sensor = self._get_vision_sensor(vision_sensor_name)
             robot = Robot(robot_name, robot_handle, vision_sensor)
             vision_sensor.robot = robot
-            robot.set_info(*robot_info)
             robots.append(robot)
         return robots
     
@@ -262,15 +265,12 @@ class VrepObjectExtractor:
         if vision_sensor_handle is None:
             raise Exception('Robot with no vision sensor')
 
-        # we get the info to to initialize the data streaming, but we cannot set it because we do not have the robot
-        # reference yet, so the fov cannot be computed
-        _ = self._get_vision_sensor_info(vision_sensor_handle)
+        self._get_vision_sensor_info(vision_sensor_handle)
         vision_sensor = VisionSensor(vision_sensor_name, vision_sensor_handle)
         return vision_sensor
 
-    def _get_object_info(self, object_handle):
-        # start data streaming
-        if self.first_time:
+    def _get_dynamic_object_info(self, object_handle):
+        if self.init_streaming:
             mode = vrep.simx_opmode_streaming
             vrep.simxGetObjectPosition(self.clientID, object_handle, -1, mode)
             vrep.simxGetObjectOrientation(self.clientID, object_handle, -1, mode)
@@ -284,19 +284,22 @@ class VrepObjectExtractor:
             vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 12, mode)
             vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 13, mode)
             vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 14, mode)
-            time.sleep(0.1)     # streaming takes a while to get ready
+            return None
 
+        return self._get_object_info(object_handle, vrep.simx_opmode_buffer)
+
+    def _get_object_info(self, object_handle, mode):
         # get pose and orientation
-        _, pose = vrep.simxGetObjectPosition(self.clientID, object_handle, -1, self.mode)
-        _, orientation = vrep.simxGetObjectOrientation(self.clientID, object_handle, -1, self.mode)
+        _, pose = vrep.simxGetObjectPosition(self.clientID, object_handle, -1, mode)
+        _, orientation = vrep.simxGetObjectOrientation(self.clientID, object_handle, -1, mode)
 
         # get size
-        _, param_min_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 21, self.mode)
-        _, param_min_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 22, self.mode)
-        _, param_min_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 23, self.mode)
-        _, param_max_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 24, self.mode)
-        _, param_max_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 25, self.mode)
-        _, param_max_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 26, self.mode)
+        _, param_min_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 21, mode)
+        _, param_min_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 22, mode)
+        _, param_min_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 23, mode)
+        _, param_max_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 24, mode)
+        _, param_max_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 25, mode)
+        _, param_max_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 26, mode)
         size_x = param_max_x - param_min_x
         size_y = param_max_y - param_min_y
         size_z = param_max_z - param_min_z
@@ -323,17 +326,16 @@ class VrepObjectExtractor:
         bbox_max = np.array([bbox_x_max_rotated, bbox_y_max_rotated, z_max])
 
         # get velocity
-        _, param_vel_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 11, self.mode)
-        _, param_vel_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 12, self.mode)
-        _, param_vel_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 13, self.mode)
-        _, param_vel_r = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 14, self.mode)
+        _, param_vel_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 11, mode)
+        _, param_vel_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 12, mode)
+        _, param_vel_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 13, mode)
+        _, param_vel_r = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 14, mode)
         velocity = np.array([param_vel_x, param_vel_y, param_vel_z, param_vel_r])
 
         return pose, orientation, size, velocity, bbox_min, bbox_max
 
     def _get_vision_sensor_info(self, vision_sensor_handle):
-        # start data streaming
-        if self.first_time:
+        if self.init_streaming:
             mode = vrep.simx_opmode_streaming
             vrep.simxGetObjectPosition(self.clientID, vision_sensor_handle, -1, mode)
             vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1000, mode)
@@ -341,14 +343,15 @@ class VrepObjectExtractor:
             vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1002, mode)
             vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1003, mode)
             vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1004, mode)
-            time.sleep(0.1)     # streaming takes a while to get ready
+            return None
 
-        _, pose = vrep.simxGetObjectPosition(self.clientID, vision_sensor_handle, -1, self.mode)
-        _, param_near_clipping = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1000, self.mode)
-        _, param_far_clipping = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1001, self.mode)
-        _, param_resolution_x = vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1002, self.mode)
-        _, param_resolution_y = vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1003, self.mode)
-        _, param_perspective_angle = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1004, self.mode)
+        mode = vrep.simx_opmode_buffer
+        _, pose = vrep.simxGetObjectPosition(self.clientID, vision_sensor_handle, -1, mode)
+        _, param_near_clipping = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1000, mode)
+        _, param_far_clipping = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1001, mode)
+        _, param_resolution_x = vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1002, mode)
+        _, param_resolution_y = vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1003, mode)
+        _, param_perspective_angle = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1004, mode)
 
         try:
             ratio = param_resolution_x / param_resolution_y
@@ -374,11 +377,14 @@ class VrepObjectExtractor:
 
     def _refresh(self):
         for dynamic_object in self.dynamic_objects:
-            dynamic_object_info = self._get_object_info(dynamic_object)
-            dynamic_object.set_info(*dynamic_object_info)
+            dynamic_object_info = self._get_dynamic_object_info(dynamic_object)
+            if dynamic_object_info is not None:
+                dynamic_object.set_info(*dynamic_object_info)
 
         for robot in self.robots:
-            robot_info = self._get_object_info(robot.handle)
-            robot.set_info(*robot_info)
+            robot_info = self._get_dynamic_object_info(robot.handle)
+            if robot_info is not None:
+                robot.set_info(*robot_info)
             vision_sensor_info = self._get_vision_sensor_info(robot.vision_sensor.handle)
-            robot.vision_sensor.set_info(*vision_sensor_info)
+            if vision_sensor_info is not None:
+                robot.vision_sensor.set_info(*vision_sensor_info)

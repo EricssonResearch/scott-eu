@@ -2,9 +2,10 @@
     <arg name="robot_name" default="turtlebot2i"/>
     <arg name="mode" default="topic"/>    <!-- service or topic -->
 
+    <rosparam command="load" file="$(find turtlebot2i_scene_graph)/config/vrep.yaml"/>
+
     <node name="scene_graph_generator" pkg="turtlebot2i_scene_graph" type="scene_graph_generator.py"
           ns="$(arg robot_name)" args="$(arg mode)" output="screen">
-        <rosparam command="load" file="$(find turtlebot2i_scene_graph)/config/vrep.yaml"/>
         <param name="robot/name" type="str" value="$(arg robot_name)"/>
     </node>
 </launch>
