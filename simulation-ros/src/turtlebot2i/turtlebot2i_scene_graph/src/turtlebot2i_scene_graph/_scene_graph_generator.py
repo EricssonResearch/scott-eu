@@ -57,7 +57,6 @@ class SceneGraphGenerator(object):
                 scene_graph.edge('warehouse', o.name, label='on')
             elif re.match(r'product*', o.name):
                 for obj_support in detected_objects:
-                    # if get_support_bbox(obj, obj_support):
                     if get_overlap_bbox(o, obj_support):
                         scene_graph.edge(obj_support.name, o.name, label='on')
                         break

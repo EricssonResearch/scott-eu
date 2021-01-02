@@ -6,6 +6,12 @@
 --**************************
 
 function sysCall_init()
+    -- Remote API server
+    -- Note that each client must connect to a different port (see https://forum.coppeliarobotics.com/viewtopic.php?t=1009)
+    -- For the edge scene, we need one client on the robot and one client on the edge, so 2 clients per robot
+    simRemoteApi.start(20000)
+    simRemoteApi.start(20001)
+
 
     -- Floor
     addModel('Floor10x15m', {2,0,0}, {0,0,0})
@@ -46,11 +52,9 @@ function sysCall_init()
 
     -- Dock stations (1 for each robot, otherwise there are errors!)
     addModel('dockstation', {-5.25,-4.000,0.063}, {0,0,math.pi/2})
-    addModel('dockstation', {8.5,-4.000,0.063}, {0,0,-math.pi/2})
 
     -- Robots
     addModel('turtlebot2i', {-4.8,-4,0.063}, {0,0,math.pi/2})
-    addModel('turtlebot2i', {8,-4,0.063}, {0,0,math.pi/2})
 
 end
 

@@ -10,6 +10,8 @@ simRemoteApi.start(19999)
 http://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm
 """
 
+from __future__ import division
+
 import rospy
 import vrep
 import socket
@@ -128,8 +130,7 @@ class VrepObjectExtractor:
         self.dynamic_objects = None
 
     def start_connection(self, host, port):
-        """
-        Opens remote API connection with V-REP. If there are other open connections, they are closed.
+        """Opens remote API connection with V-REP. If there are other open connections, they are closed.
 
         :param host: hostname or IP address of V-REP remote API server
         :param port: port of V-REP remote API server
@@ -149,8 +150,7 @@ class VrepObjectExtractor:
         vrep.simxFinish(self.clientID)
 
     def load_objects(self, walls, robots, static_objects, dynamic_objects):
-        """
-        Loads specified objects.
+        """Loads specified objects.
 
         :param walls: names of the walls in the V-REP scene
         :param robots: names of the robots in the V-REP scene
@@ -181,11 +181,8 @@ class VrepObjectExtractor:
         detected_objects = []
         for o in objects:
             pol_obj = box(o.bbox_min[0], o.bbox_min[1], o.bbox_max[0], o.bbox_max[1])
-            print('object: ' + o.name + ' - pol_obj: ' + str(pol_obj))
             if pol_fov.intersects(pol_obj) and o is not robot:
                 detected_objects.append(o)
-
-        print('detected: ' + str([do.name for do in detected_objects]))
 
         # visible objects
         visible_objects = []
@@ -216,8 +213,6 @@ class VrepObjectExtractor:
                         visible = False
                 if visible:
                     visible_objects.append(do)
-
-        print('visible: ' + str([vo.name for vo in visible_objects]))
 
         return visible_objects
 

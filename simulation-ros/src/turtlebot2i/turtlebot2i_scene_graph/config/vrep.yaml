@@ -1,7 +1,4 @@
 vrep:
-  host: global
-  port: 19997
-
   walls: [
       80cmHighWall100cm, 80cmHighWall100cm0, 80cmHighWall100cm1, 80cmHighWall100cm2, 80cmHighWall100cm3,
       80cmHighWall100cm4, 80cmHighWall100cm5, 80cmHighWall100cm6, 80cmHighWall100cm7, 80cmHighWall100cm8,

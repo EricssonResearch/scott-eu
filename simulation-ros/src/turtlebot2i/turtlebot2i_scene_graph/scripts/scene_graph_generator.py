@@ -3,9 +3,18 @@
 import sys
 import argparse
 import rospy
-from turtlebot2i_scene_graph import VrepObjectExtractor, SceneGraphGenerator, make_message
+from std_msgs.msg import Header
+from turtlebot2i_scene_graph import VrepObjectExtractor, SceneGraphGenerator
 from turtlebot2i_scene_graph.msg import SceneGraph
 from turtlebot2i_scene_graph.srv import GenerateSceneGraph, GenerateSceneGraphResponse
+
+
+def make_message(scene_graph):
+    scene_graph_msg = SceneGraph()
+    scene_graph_msg.header = Header()
+    scene_graph_msg.header.stamp = rospy.Time.now()
+    scene_graph_msg.sg_data = scene_graph.source
+    return scene_graph_msg
 
 
 def generate_scene_graph(generator):
@@ -31,8 +40,8 @@ def main():
     rospy.loginfo('Mode: %s' % args.mode)
 
     rospy.loginfo('Getting parameters from parameter server...')
-    host = rospy.get_param('/vrep/host')
-    port = rospy.get_param('/vrep/port')
+    host = rospy.get_param('~vrep/host')
+    port = rospy.get_param('~vrep/port')
     walls = rospy.get_param('/vrep/walls')
     robots = rospy.get_param('/vrep/robots')
     static_objects = rospy.get_param('/vrep/static_objects')
@@ -50,14 +59,13 @@ def main():
     generator = SceneGraphGenerator(robot, extractor)
 
     if args.mode == 'service':
-        rospy.loginfo('Starting ROS service to generate scene graph...')
         rospy.Service(
             name='generate_scene_graph',
             service_class=GenerateSceneGraph,
             handler=lambda request: generate_scene_graph(generator),
             buff_size=2 ** 20   # 1 MB, enough for camera images
         )
-        rospy.loginfo('Running...')
+        rospy.loginfo('ROS service to generate scene graph ready')
         rospy.spin()
 
     elif args.mode == 'topic':

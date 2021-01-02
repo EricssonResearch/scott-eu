@@ -1,5 +1,7 @@
 <launch>
     <arg name="robot_name" default="turtlebot2i"/>
+    <arg name="vrep_host" default="localhost"/>
+    <arg name="vrep_port" default="19997"/>
     <arg name="mode" default="topic"/>    <!-- service or topic -->
 
     <rosparam command="load" file="$(find turtlebot2i_scene_graph)/config/vrep.yaml" ns="/"/>
@@ -7,5 +9,7 @@
     <node name="scene_graph_generator" pkg="turtlebot2i_scene_graph" type="scene_graph_generator.py"
           ns="$(arg robot_name)" args="$(arg mode)" output="screen">
         <param name="robot/name" type="str" value="$(arg robot_name)"/>
+        <param name="vrep/host" type="str" value="$(arg vrep_host)"/>
+        <param name="vrep/port" type="int" value="$(arg vrep_port)"/>
     </node>
 </launch>
