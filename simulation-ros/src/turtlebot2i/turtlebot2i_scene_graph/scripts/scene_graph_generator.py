@@ -50,17 +50,18 @@ def main():
     generator = SceneGraphGenerator(robot, extractor)
 
     if args.mode == 'service':
-        rospy.loginfo('Starting ROS service...')
+        rospy.loginfo('Starting ROS service to generate scene graph...')
         rospy.Service(
             name='generate_scene_graph',
             service_class=GenerateSceneGraph,
-            handler=lambda: generate_scene_graph(generator),
+            handler=lambda request: generate_scene_graph(generator),
             buff_size=2 ** 20   # 1 MB, enough for camera images
         )
+        rospy.loginfo('Running...')
         rospy.spin()
 
     elif args.mode == 'topic':
-        rospy.loginfo('Starting publishing...')
+        rospy.loginfo('Publishing scene graph...')
         publisher = rospy.Publisher('scene_graph', SceneGraph, queue_size=1)
         rate = rospy.Rate(30)   # 30 FPS
         while not rospy.is_shutdown():

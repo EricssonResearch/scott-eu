@@ -1,0 +1,10 @@
+<launch>
+    <arg name="robot_name"/>
+
+    <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" ns="$(arg robot_name)" output="screen">
+        <remap from="robot/generate_scene_graph" to="generate_scene_graph"/>
+        <remap from="edge/generate_scene_graph" to="/edge/$(arg robot_name)/generate_scene_graph"/>
+    </node>
+
+    <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch"/>
+</launch>

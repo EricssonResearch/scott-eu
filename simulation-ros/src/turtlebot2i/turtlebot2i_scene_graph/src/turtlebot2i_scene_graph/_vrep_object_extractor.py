@@ -373,6 +373,7 @@ class VrepObjectExtractor:
         if return_code != 0:
             rospy.logwarn('%s not found' % object_name)
             return None
+        rospy.loginfo('%s found' % object_name)
         return handle
 
     def _refresh(self):
