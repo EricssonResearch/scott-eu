@@ -1,5 +1,5 @@
 from gym.envs.registration import register
-from turtlebot2i_edge.task_offloading_env import TaskOffloadingEnv
+from turtlebot2i_edge._task_offloading_env import TaskOffloadingEnv
 
 register(
     id='TaskOffloading-v0',

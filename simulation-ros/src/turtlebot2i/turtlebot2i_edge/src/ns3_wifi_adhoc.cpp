@@ -85,9 +85,9 @@ void updatePosition(const ns3::Ptr<ns3::Node> &robot, const nav_msgs::Odometry::
 void runRosNode(const ns3::NodeContainer &robots) {
     ros::NodeHandle node_handle;
     std::vector<ros::Subscriber> subscribers;
-    for (auto it=robots.Begin(); it != robots.End(); it++) {
-        ns3::Ptr<ns3::Node> robot = *it;
-        std::string topic = "odom" + std::to_string(robot->GetId());
+    for (int i=0; i<robots.GetN(); i++) {
+        ns3::Ptr<ns3::Node> robot = robots.Get(i);
+        std::string topic = "odom_" + std::to_string(i);
         auto callback = [robot](const nav_msgs::Odometry::ConstPtr& msg) { updatePosition(robot, msg); };
         ros::Subscriber subscriber = node_handle.subscribe<nav_msgs::Odometry>(topic, 1, callback);
         subscribers.push_back(subscriber);
@@ -96,33 +96,30 @@ void runRosNode(const ns3::NodeContainer &robots) {
 }
 
 int main(int argc, char **argv) {
-    int n_robots = 1;
-    ns3::Vector mec_server_pos = {0, 0, 0};
+    int n_robots;
+    ns3::Vector mec_server_pos;
 
-    ROS_INFO("Parsing command line arguments...");
     ros::init(argc, argv, "ns3_wifi_adhoc");
-    ns3::CommandLine cmd(__FILE__);
-    cmd.AddValue("robots", "Number of robots", n_robots);
-    cmd.Parse (argc, argv);
 
     ROS_INFO("Getting parameters from parameter server...");
-    if (!ros::param::get("mec_server/position/x", mec_server_pos.x) ||
-        !ros::param::get("mec_server/position/y", mec_server_pos.y) ||
-        !ros::param::get("mec_server/position/z", mec_server_pos.z)) {
-        ROS_ERROR("Parameters for MEC server not present");
+    if (!ros::param::get("~mec_server/position/x", mec_server_pos.x) ||
+        !ros::param::get("~mec_server/position/y", mec_server_pos.y) ||
+        !ros::param::get("~mec_server/position/z", mec_server_pos.z) ||
+        !ros::param::get("~robots/n", n_robots)) {
+        ROS_ERROR("ROS parameter server does not contain the necessary parameters");
         return -1;
     }
-
-    ROS_INFO("Setting up network...");
     ROS_INFO("Number of robots: %d", n_robots);
     ROS_INFO("Position of MEC server: {%f, %f, %f}", mec_server_pos.x, mec_server_pos.y, mec_server_pos.z);
+
+    ROS_INFO("Setting up network...");
     std::pair<ns3::NodeContainer,ns3::NodeContainer> nodes = setupNetwork(n_robots, mec_server_pos);
     ns3::NodeContainer& robots = nodes.first;
 
     ROS_INFO("Starting ROS node...");
     std::thread thread(runRosNode, robots);     // on a second thread, because...
 
-    ROS_INFO("Starting ns-3 simulation...");
+    ROS_INFO("Simulating network...");
     ns3::Simulator::Run();                      // ...this thread simulates the network
 
     thread.join();                              // gracefully let the robot thread stop

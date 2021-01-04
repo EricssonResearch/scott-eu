@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+
 import gym
 import rospy
+import turtlebot2i_edge     # DO NOT remove, this registers gym environment
 
 EPISODES = 1
 TIME_STEPS = 1000
@@ -16,8 +19,8 @@ def main():
             env.render()
 
             # action = env.action_space.sample()  # random
-            # action = 0                          # all robot
-            action = 1                          # all edge
+            action = 0                          # all robot
+            # action = 1                          # all edge
 
             observation, reward, done, info = env.step(action)
 
