@@ -1,10 +1,20 @@
 <launch>
     <arg name="robot_name"/>
+    <arg name="vrep_port"/>
 
-    <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" ns="$(arg robot_name)" output="screen">
-        <remap from="robot/generate_scene_graph" to="generate_scene_graph"/>
-        <remap from="edge/generate_scene_graph" to="/edge/$(arg robot_name)/generate_scene_graph"/>
-    </node>
+    <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+        <arg name="vrep_host" value="global"/>
+        <arg name="vrep_port" value="$(arg vrep_port)"/>
+        <arg name="mode" value="service"/>
+    </include>
 
-    <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch"/>
+    <group ns="$(arg robot_name)">
+        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" output="screen"/>
+
+        <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" output="screen">
+            <remap from="robot/generate_scene_graph" to="generate_scene_graph_proxy"/>
+            <remap from="edge/generate_scene_graph" to="/edge/$(arg robot_name)/generate_scene_graph_proxy"/>
+        </node>
+    </group>
 </launch>

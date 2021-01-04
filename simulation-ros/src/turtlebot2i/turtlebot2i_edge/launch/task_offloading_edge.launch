@@ -1,0 +1,16 @@
+<launch>
+    <arg name="robot_name"/>
+    <arg name="vrep_port"/>
+
+    <group ns="edge">
+        <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch">
+            <arg name="robot_name" value="$(arg robot_name)"/>
+            <arg name="vrep_host" value="global"/>
+            <arg name="vrep_port" value="$(arg vrep_port)"/>
+            <arg name="mode" value="service"/>
+        </include>
+
+        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" ns="$(arg robot_name)"
+              output="screen"/>
+    </group>
+</launch>
