@@ -4,6 +4,7 @@ import rospy
 import message_filters
 from gym import Env
 from gym.spaces import Discrete, Dict, Box
+from gym.utils.seeding import np_random
 from std_msgs.msg import Header
 from sensor_msgs.msg import Image
 from turtlebot2i_scene_graph.msg import SceneGraph
@@ -48,6 +49,9 @@ class TaskOffloadingEnv(Env):
             persistent=True     # reduce overhead over the network
         )
 
+        self.rng = None
+        self.seed()
+
     def step(self, action):
         assert self.action_space.contains(action)
 
@@ -69,7 +73,7 @@ class TaskOffloadingEnv(Env):
 
         self._scene_graph_pub.publish(response.scene_graph)
 
-        rospy.loginfo('Communication latency= %d.%06d s' % (response.communication_latency.secs, response.communication_latency.nsecs))
+        rospy.loginfo('Communication latency = %d.%06d s' % (response.communication_latency.secs, response.communication_latency.nsecs))
         rospy.loginfo('Execution latency = %d.%06d s' % (response.execution_latency.secs, response.execution_latency.nsecs))
 
         # TODO
@@ -95,7 +99,7 @@ class TaskOffloadingEnv(Env):
         pass    # TODO
 
     def seed(self, seed=None):
-        # TODO
+        self.rng, seed = np_random(seed)
         return [seed]
 
     def _save_camera_image(self, image_rgb, image_depth):
