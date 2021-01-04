@@ -12,6 +12,10 @@
   <depend>roscpp</depend>
   <depend>rospy</depend>
   <depend>message_filters</depend>
+  <depend>std_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
+  <depend>turtlebot2i_scene_graph</depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
 </package>

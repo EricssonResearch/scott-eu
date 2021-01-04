@@ -5,9 +5,10 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-list(APPEND CATKIN_DEPENDS roscpp rospy message_filters nav_msgs sensor_msgs)
+list(APPEND MSG_DEPENDS std_msgs nav_msgs sensor_msgs turtlebot2i_scene_graph)
+list(APPEND CATKIN_DEPENDS roscpp rospy message_filters ${MSG_DEPENDS})
 
-find_package(catkin REQUIRED COMPONENTS ${CATKIN_DEPENDS})
+find_package(catkin REQUIRED COMPONENTS ${CATKIN_DEPENDS} message_generation)
 find_package(Threads REQUIRED)
 
 find_library(
@@ -79,7 +80,11 @@ list(
 )
 
 catkin_python_setup()
-catkin_package(CATKIN_DEPENDS ${CATKIN_DEPENDS})
+
+add_service_files(FILES GenerateSceneGraph.srv)
+generate_messages(DEPENDENCIES ${MSG_DEPENDS})
+
+catkin_package(CATKIN_DEPENDS ${CATKIN_DEPENDS} message_runtime)
 
 include_directories(include ${catkin_INCLUDE_DIRS} $ENV{NS3_ROOT}/build)
 
@@ -87,19 +92,22 @@ add_executable(${PROJECT_NAME}_ns3_wifi_adhoc src/ns3_wifi_adhoc.cpp)
 set_target_properties(${PROJECT_NAME}_ns3_wifi_adhoc PROPERTIES OUTPUT_NAME ns3_wifi_adhoc PREFIX "")
 target_link_libraries(${PROJECT_NAME}_ns3_wifi_adhoc ${catkin_LIBRARIES} ${Threads_LIBRARIES} ${NS3_LIBRARIES})
 
+install(
+  TARGETS ${PROJECT_NAME}_ns3_wifi_adhoc
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
-# TODO
-#catkin_install_python(
-#  PROGRAMS scripts.....
-#  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-#)
+catkin_install_python(
+  PROGRAMS scripts/task_offloading.py scripts/scene_graph_proxy.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
-#install(
-#  DIRECTORY include/${PROJECT_NAME}/
-#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#  FILES_MATCHING PATTERN "*.h"
-#)
+install(
+  DIRECTORY launch config
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
-#install(TARGETS ${PROJECT_NAME}_node
-#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-#)
+install(
+  PROGRAMS scripts/activate_netns.sh scripts/netns_wifi_adhoc.py
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts
+)
