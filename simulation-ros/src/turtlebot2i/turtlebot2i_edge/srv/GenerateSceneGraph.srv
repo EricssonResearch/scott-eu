@@ -2,6 +2,6 @@ Header header
 sensor_msgs/Image image_rgb
 sensor_msgs/Image image_depth
 ---
-time communication_latency
-time execution_latency
+duration communication_latency
+duration execution_latency
 turtlebot2i_scene_graph/SceneGraph scene_graph

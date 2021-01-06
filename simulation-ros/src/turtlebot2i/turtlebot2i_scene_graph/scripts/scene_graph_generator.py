@@ -20,7 +20,7 @@ def make_message(scene_graph):
 def generate_scene_graph(generator):
     scene_graph = generator.generate_scene_graph()
     scene_graph = make_message(scene_graph)
-    return GenerateSceneGraphResponse(scene_graph)
+    return GenerateSceneGraphResponse(scene_graph=scene_graph)
 
 
 def publish_scene_graph(generator, publisher):
@@ -39,7 +39,7 @@ def main():
     args = parser.parse_args(argv[1:])
     rospy.loginfo('Mode: %s' % args.mode)
 
-    rospy.loginfo('Getting parameters from parameter server...')
+    rospy.loginfo('Getting V-REP parameters...')
     host = rospy.get_param('~vrep/host')
     port = rospy.get_param('~vrep/port')
     walls = rospy.get_param('/vrep/walls')
@@ -72,9 +72,12 @@ def main():
         rospy.loginfo('Publishing scene graph...')
         publisher = rospy.Publisher('scene_graph', SceneGraph, queue_size=1)
         rate = rospy.Rate(30)   # 30 FPS
-        while not rospy.is_shutdown():
-            publish_scene_graph(generator, publisher)
-            rate.sleep()
+        try:
+            while not rospy.is_shutdown():
+                publish_scene_graph(generator, publisher)
+                rate.sleep()
+        except rospy.ROSException:
+            pass
 
     else:
         raise ValueError

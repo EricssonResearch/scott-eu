@@ -13,7 +13,6 @@ def stamp(request):
 
 def main():
     rospy.init_node('stamper')
-
     rospy.Service(
         name='stamp',
         service_class=Stamp,

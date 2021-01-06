@@ -13,6 +13,7 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 from turtlebot2i_edge import NaiveAgent
+from turtlebot2i_edge import VrepRobotController
 
 
 def get_model(env):
@@ -42,11 +43,46 @@ def main():
     rospy.loginfo('Agent: %s' % args.agent)
     rospy.loginfo('Mode: %s' % args.mode)
 
+    rospy.loginfo('Getting map limits...')
+    x_lim = (rospy.get_param('~map/x/min'), rospy.get_param('~map/x/max'))
+    y_lim = (rospy.get_param('~map/y/min'), rospy.get_param('~map/y/max'))
+    rospy.loginfo('Limits for x: (%f, %f)' % (x_lim[0], x_lim[1]))
+    rospy.loginfo('Limits for y: (%f, %f)' % (y_lim[0], y_lim[1]))
+
+    rospy.loginfo('Getting V-REP parameters...')
+    vrep_host = rospy.get_param('~vrep/host')
+    vrep_port = rospy.get_param('~vrep/port')
+    robot = rospy.get_param('~robot/name')
+    rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
+    rospy.loginfo('Robot: %s' % robot)
+
+    rospy.loginfo('Getting RL parameters')
+    transmit_power = rospy.get_param('~rl/robot/transmit_power')
+    w_latency = rospy.get_param('~rl/reward/w_latency')
+    w_energy = rospy.get_param('~rl/reward/w_energy')
+    w_risk = rospy.get_param('~rl/reward/w_risk')
+    rospy.loginfo('Transmit power: %f W' % transmit_power)
+    rospy.loginfo('Latency weight: %f' % w_latency)
+    rospy.loginfo('Energy weight: %f' % w_energy)
+    rospy.loginfo('Risk weight: %f' % w_risk)
+
     rospy.loginfo('Initializing environment...')
-    env = gym.make('TaskOffloading-v0')
+    vrep_robot_controller = VrepRobotController(robot)
+    vrep_robot_controller.start_connection(vrep_host, vrep_port)
+    env = gym.make(
+        id='TaskOffloading-v0',
+        vrep_robot_controller=vrep_robot_controller,
+        x_lim=x_lim,
+        y_lim=y_lim,
+        transmit_power=transmit_power,
+        w_latency=w_latency,
+        w_energy=w_energy,
+        w_risk=w_risk
+    )
     env.seed(1)
 
     rospy.loginfo('Initializing agent...')
+    filepath = '%s_weights.h5f' % args.agent
     if args.agent == 'dqn':
         agent = DQNAgent(
             model=get_model(env),
@@ -58,7 +94,8 @@ def main():
         )
         agent.compile(Adam(lr=1e-3), metrics=['mae'])
         if args.mode != 'train':
-            agent.load_weights('%s_weights.h5f' % args.agent)
+            rospy.loginfo('Loading weights from %s...' % filepath)
+            agent.load_weights(filepath)
     else:
         agent = NaiveAgent(mode=args.agent)
         if args.mode == 'train':
@@ -72,7 +109,8 @@ def main():
             visualize=True,
             verbose=2
         )
-        agent.save_weights('%s_weights.h5f' % args.agent, overwrite=True)
+        rospy.loginfo('Saving weights to %s' % filepath)
+        agent.save_weights(filepath, overwrite=True)
     elif args.mode == 'test':
         rospy.loginfo('Testing...')
         agent.test(

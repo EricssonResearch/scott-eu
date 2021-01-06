@@ -35,7 +35,7 @@ Execute the following code in the terminal:
 ```
 roscd turtlebot2i_scene_graph
 cd src
-python scripts/vrep_scene_graph_generator.py
+python scripts/scene_graph_generator_standalone.py
 ```
 
 The generated scene graph will be stored in the `scene_graph` folder

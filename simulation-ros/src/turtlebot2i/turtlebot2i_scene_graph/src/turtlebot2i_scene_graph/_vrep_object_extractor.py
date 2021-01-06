@@ -1,22 +1,10 @@
-"""
-Make sure to have the remote API server running in V-REP.
-
-By default, V-REP launches it on port 19997, so you do not need to do anything if you connect to this port.
-See https://forum.coppeliarobotics.com/viewtopic.php?t=7514.
-
-Alternatively, you can open a server on other ports adding the following in a child script of a V-REP scene:
-simRemoteApi.start(19999)
-
-http://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm
-"""
-
 from __future__ import division
 
 import rospy
 import vrep
-import socket
 import numpy as np
 from shapely.geometry import Polygon, box, LineString
+from turtlebot2i_scene_graph import VrepClient
 
 
 class SceneObject(object):
@@ -120,34 +108,14 @@ class Robot(SceneObject):
         self.vision_sensor = vision_sensor
 
 
-class VrepObjectExtractor:
+class VrepObjectExtractor(VrepClient):
     def __init__(self):
-        self.clientID = -1
+        super(VrepObjectExtractor, self).__init__()
         self.init_streaming = False
         self.walls = None
         self.robots = None
         self.static_objects = None
         self.dynamic_objects = None
-
-    def start_connection(self, host, port):
-        """Opens remote API connection with V-REP. If there are other open connections, they are closed.
-
-        :param host: hostname or IP address of V-REP remote API server
-        :param port: port of V-REP remote API server
-        """
-        # close old connection
-        if self.clientID != -1:
-            vrep.simxFinish(self.clientID)
-
-        # start new connection
-        ip = socket.gethostbyname(host)
-        self.clientID = vrep.simxStart(ip, port, True, True, 5000, 5)
-        if self.clientID == -1:
-            raise Exception('Connection to V-REP remote API server failed')
-
-    def close_connection(self):
-        """Closes remote API connection with V-REP."""
-        vrep.simxFinish(self.clientID)
 
     def load_objects(self, walls, robots, static_objects, dynamic_objects):
         """Loads specified objects.

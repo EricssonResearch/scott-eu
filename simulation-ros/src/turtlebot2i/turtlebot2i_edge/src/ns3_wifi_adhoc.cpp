@@ -102,10 +102,10 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "ns3_wifi_adhoc");
 
     ROS_INFO("Getting parameters from parameter server...");
-    if (!ros::param::get("~mec_server/position/x", mec_server_pos.x) ||
-        !ros::param::get("~mec_server/position/y", mec_server_pos.y) ||
-        !ros::param::get("~mec_server/position/z", mec_server_pos.z) ||
-        !ros::param::get("~robots/n", n_robots)) {
+    if (!ros::param::get("/network/mec_server/position/x", mec_server_pos.x) ||
+        !ros::param::get("/network/mec_server/position/y", mec_server_pos.y) ||
+        !ros::param::get("/network/mec_server/position/z", mec_server_pos.z) ||
+        !ros::param::get("/network/robots/n", n_robots)) {
         ROS_ERROR("ROS parameter server does not contain the necessary parameters");
         return -1;
     }

@@ -39,7 +39,7 @@ def get_global_netns():
 
 
 def get_netns(i, n_netns):
-    return 'robot%d' % i if i != n_netns-1 else 'mec_server'
+    return 'robot_%d' % i if i != n_netns-1 else 'mec_server'
 
 
 def get_wifi_net_devices(i):

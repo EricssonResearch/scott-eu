@@ -8,9 +8,13 @@
 function sysCall_init()
     -- Remote API server
     -- Note that each client must connect to a different port (see https://forum.coppeliarobotics.com/viewtopic.php?t=1009)
-    -- For the edge scene, we need one client on the robot and one client on the edge, so 2 clients per robot
+    -- For the edge scene, we need 3 clients per robot:
+    -- * 1 client on the scene_graph_generator node on the edge
+    -- * 1 client on the scene_graph_generator node on the robot
+    -- * 1 client on the task_offloading node (on the robot)
     simRemoteApi.start(20000)
     simRemoteApi.start(20001)
+    simRemoteApi.start(20002)
 
 
     -- Floor

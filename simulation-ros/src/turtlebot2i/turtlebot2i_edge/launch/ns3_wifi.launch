@@ -1,9 +1,11 @@
 <launch>
-    <node name="ns3_wifi_adhoc" pkg="turtlebot2i_edge" type="ns3_wifi_adhoc" output="screen">
-        <rosparam command="load" file="$(find turtlebot2i_edge)/config/mec_server.yaml"/>
-        <param name="robots/n" type="int" value="1"/>
-        <remap from="odom_0" to="/turtlebot2i/odom"/>
-    </node>
+    <rosparam command="load" file="$(find turtlebot2i_edge)/config/network.yaml" ns="/"/>
 
-    <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch"/>
+    <node name="ns3_wifi_adhoc" pkg="turtlebot2i_edge" type="ns3_wifi_adhoc" output="screen">
+        <remap from="odom_0" to="/turtlebot2i/odom"/>
+        <remap from="odom_1" to="/turtlebot2i_0/odom"/>
+        <remap from="odom_2" to="/turtlebot2i_1/odom"/>
+        <remap from="odom_3" to="/turtlebot2i_2/odom"/>
+        <remap from="odom_4" to="/turtlebot2i_3/odom"/>
+    </node>
 </launch>

@@ -1,2 +1,3 @@
+from turtlebot2i_scene_graph._vrep_client import VrepClient
 from turtlebot2i_scene_graph._vrep_object_extractor import VrepObjectExtractor
 from turtlebot2i_scene_graph._scene_graph_generator import SceneGraphGenerator

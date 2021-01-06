@@ -6,6 +6,7 @@ class NaiveAgent(Agent):
     def __init__(self, mode='random', **kwargs):
         super(NaiveAgent, self).__init__(**kwargs)
         self.mode = mode
+        self.compiled = True
 
         if mode not in {'all_robot', 'all_edge', 'random'}:
             raise ValueError('Invalid mode')

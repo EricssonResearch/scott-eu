@@ -25,8 +25,8 @@ def main():
     rospy.init_node('scene_graph_proxy')
 
     rospy.loginfo('Waiting for ROS service to generate scene graph...')
-    rospy.wait_for_service('generate_scene_graph')
     generate_scene_graph = rospy.ServiceProxy('generate_scene_graph', GenerateSceneGraphOut)
+    generate_scene_graph.wait_for_service()
 
     rospy.Service(
         name='generate_scene_graph_proxy',
