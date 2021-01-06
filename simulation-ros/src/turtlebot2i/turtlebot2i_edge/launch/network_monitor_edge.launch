@@ -1,0 +1,3 @@
+<launch>
+    <node name="stamper" pkg="turtlebot2i_edge" type="stamper.py" ns="edge" output="screen"/>
+</launch>

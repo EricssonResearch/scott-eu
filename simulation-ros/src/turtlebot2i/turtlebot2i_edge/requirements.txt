@@ -7,3 +7,5 @@ tqdm~=4.53.0
 Keras~=2.2.4
 tensorflow~=1.13.1
 keras-rl~=0.4.2
+actionlib~=1.12.1
+tf~=1.12.1

@@ -5,10 +5,20 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-list(APPEND MSG_DEPENDS std_msgs nav_msgs sensor_msgs turtlebot2i_scene_graph)
-list(APPEND CATKIN_DEPENDS roscpp rospy message_filters ${MSG_DEPENDS})
+list(
+  APPEND MSG_DEPENDS
+  std_msgs
+  nav_msgs
+  sensor_msgs
+  geometry_msgs
+  move_base_msgs
+  actionlib_msgs
+  turtlebot2i_scene_graph
+)
+list(APPEND CATKIN_RUN_DEPENDS roscpp rospy message_filters actionlib message_runtime ${MSG_DEPENDS})
+list(APPEND CATKIN_BUILD_DEPENDS roscpp rospy message_filters actionlib message_generation ${MSG_DEPENDS})
 
-find_package(catkin REQUIRED COMPONENTS ${CATKIN_DEPENDS} message_generation)
+find_package(catkin REQUIRED COMPONENTS ${CATKIN_BUILD_DEPENDS})
 find_package(Threads REQUIRED)
 
 find_library(
@@ -81,10 +91,11 @@ list(
 
 catkin_python_setup()
 
-add_service_files(FILES GenerateSceneGraph.srv)
+add_message_files(FILES NetworkLatency.msg NetworkThroughput.msg)
+add_service_files(FILES GenerateSceneGraph.srv Stamp.srv)
 generate_messages(DEPENDENCIES ${MSG_DEPENDS})
 
-catkin_package(CATKIN_DEPENDS ${CATKIN_DEPENDS} message_runtime)
+catkin_package(CATKIN_DEPENDS ${CATKIN_RUN_DEPENDS})
 
 include_directories(include ${catkin_INCLUDE_DIRS} $ENV{NS3_ROOT}/build)
 
@@ -98,7 +109,12 @@ install(
 )
 
 catkin_install_python(
-  PROGRAMS scripts/task_offloading.py scripts/scene_graph_proxy.py
+  PROGRAMS
+  scripts/task_offloading.py
+  scripts/scene_graph_proxy.py
+  scripts/network_latency_monitor.py
+  scripts/network_throughput_monitor.py
+  scripts/stamper.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

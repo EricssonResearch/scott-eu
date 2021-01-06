@@ -1,0 +1,7 @@
+rl:
+  robot:
+    transmit_power: 100e-3  # Watt
+  reward:
+    w_latency: 0.33
+    w_energy: 0.33
+    w_risk: 0.33

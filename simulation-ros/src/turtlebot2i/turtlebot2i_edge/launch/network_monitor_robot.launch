@@ -1,0 +1,12 @@
+<launch>
+    <arg name="robot_name" default="turtlebot2i"/>
+
+    <rosparam command="load" file="$(find turtlebot2i_edge)/config/network.yaml" ns="/"/>
+
+    <group ns="$(arg robot_name)">
+        <remap from="edge/stamp" to="/edge/stamp"/>
+        <node name="network_latency_monitor" pkg="turtlebot2i_edge" type="network_latency_monitor.py" output="screen"/>
+        <node name="network_throughput_monitor" pkg="turtlebot2i_edge" type="network_throughput_monitor.py"
+              output="screen"/>
+    </group>
+</launch>
