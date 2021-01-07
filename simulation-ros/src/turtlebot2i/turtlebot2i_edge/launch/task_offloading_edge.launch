@@ -1,6 +1,8 @@
 <launch>
     <arg name="robot_name" default="turtlebot2i"/>
 
+    <include file="$(find turtlebot2i_edge)/launch/network_monitor_edge.launch"/>
+
     <group ns="edge">
         <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch">
             <arg name="robot_name" value="$(arg robot_name)"/>

@@ -10,6 +10,7 @@
 
     <group ns="$(arg robot_name)">
         <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" output="screen"/>
+        <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py" output="screen"/>
 
         <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" args="all_edge test"
               output="screen">
@@ -22,6 +23,7 @@
 
             <remap from="robot/generate_scene_graph" to="generate_scene_graph_proxy"/>
             <remap from="edge/generate_scene_graph" to="/edge/$(arg robot_name)/generate_scene_graph_proxy"/>
+            <remap from="edge/stamp" to="/edge/stamp"/>
         </node>
     </group>
 </launch>

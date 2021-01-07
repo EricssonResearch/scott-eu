@@ -15,8 +15,8 @@ list(
   actionlib_msgs
   turtlebot2i_scene_graph
 )
-list(APPEND CATKIN_RUN_DEPENDS roscpp rospy message_filters actionlib message_runtime ${MSG_DEPENDS})
-list(APPEND CATKIN_BUILD_DEPENDS roscpp rospy message_filters actionlib message_generation ${MSG_DEPENDS})
+list(APPEND CATKIN_RUN_DEPENDS roscpp rospy actionlib message_filters cv_bridge message_runtime ${MSG_DEPENDS})
+list(APPEND CATKIN_BUILD_DEPENDS roscpp rospy actionlib message_filters cv_bridge message_generation ${MSG_DEPENDS})
 
 find_package(catkin REQUIRED COMPONENTS ${CATKIN_BUILD_DEPENDS})
 find_package(Threads REQUIRED)

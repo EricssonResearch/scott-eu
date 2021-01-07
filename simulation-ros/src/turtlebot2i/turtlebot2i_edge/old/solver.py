@@ -19,7 +19,7 @@ class Solver:
         mobile_devices = self.mobile_devices[idx_edge]
         network_latencies = self.network.transmit(mobile_devices)
         mec_latencies = np.array([self.mec_server.compute_task(md.task) for md in mobile_devices])
-        transmit_powers = np.array([md.transmit_power for md in mobile_devices])
+        transmit_powers = np.array([md.robot_transmit_power for md in mobile_devices])
         latencies = network_latencies + mec_latencies
         energies = latencies * transmit_powers
         return np.array(list(zip(latencies, energies)))

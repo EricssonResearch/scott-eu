@@ -44,12 +44,12 @@ class Network:
         :return: 1D numpy array, latencies
         """
         gains = [md.bs_distance ** (-self.path_loss) for md in mobile_devices]
-        tot_power = sum([g * md.transmit_power for g, md in zip(gains, mobile_devices)])
+        tot_power = sum([g * md.robot_transmit_power for g, md in zip(gains, mobile_devices)])
         latencies = np.zeros(len(mobile_devices))
 
         for i, md in enumerate(mobile_devices):
             # Shannon-Hartley theorem
-            signal_power = md.transmit_power * gains[i]
+            signal_power = md.robot_transmit_power * gains[i]
             interference_power = tot_power - signal_power + self.background_noise
             uplink_data_rate = self.channel_bandwidth * np.log2(1 + signal_power / interference_power)
 

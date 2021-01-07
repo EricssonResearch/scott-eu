@@ -13,7 +13,6 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 from turtlebot2i_edge import NaiveAgent
-from turtlebot2i_edge import VrepRobotController
 
 
 def get_model(env):
@@ -43,41 +42,44 @@ def main():
     rospy.loginfo('Agent: %s' % args.agent)
     rospy.loginfo('Mode: %s' % args.mode)
 
-    rospy.loginfo('Getting map limits...')
-    x_lim = (rospy.get_param('~map/x/min'), rospy.get_param('~map/x/max'))
-    y_lim = (rospy.get_param('~map/y/min'), rospy.get_param('~map/y/max'))
-    rospy.loginfo('Limits for x: (%f, %f)' % (x_lim[0], x_lim[1]))
-    rospy.loginfo('Limits for y: (%f, %f)' % (y_lim[0], y_lim[1]))
-
-    rospy.loginfo('Getting V-REP parameters...')
+    rospy.loginfo('Getting parameters...')
+    map_x_lim = (rospy.get_param('~map/x/min'), rospy.get_param('~map/x/max'))
+    map_y_lim = (rospy.get_param('~map/y/min'), rospy.get_param('~map/y/max'))
     vrep_host = rospy.get_param('~vrep/host')
     vrep_port = rospy.get_param('~vrep/port')
-    robot = rospy.get_param('~robot/name')
-    rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
-    rospy.loginfo('Robot: %s' % robot)
-
-    rospy.loginfo('Getting RL parameters')
-    transmit_power = rospy.get_param('~rl/robot/transmit_power')
+    mec_server = rospy.get_param('/network/mec_server/host')
+    robot_name = rospy.get_param('~robot/name')
+    robot_compute_power = rospy.get_param('~rl/robot/compute_power')
+    robot_transmit_power = rospy.get_param('~rl/robot/transmit_power')
     w_latency = rospy.get_param('~rl/reward/w_latency')
     w_energy = rospy.get_param('~rl/reward/w_energy')
-    w_risk = rospy.get_param('~rl/reward/w_risk')
-    rospy.loginfo('Transmit power: %f W' % transmit_power)
+    w_model = rospy.get_param('~rl/reward/w_model')
+
+    rospy.loginfo('Map limit for x: (%f, %f)' % (map_x_lim[0], map_x_lim[1]))
+    rospy.loginfo('Map limits for y: (%f, %f)' % (map_y_lim[0], map_y_lim[1]))
+    rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
+    rospy.loginfo('MEC server: %s' % mec_server)
+    rospy.loginfo('Robot name: %s' % robot_name)
+    rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
+    rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
     rospy.loginfo('Latency weight: %f' % w_latency)
     rospy.loginfo('Energy weight: %f' % w_energy)
-    rospy.loginfo('Risk weight: %f' % w_risk)
+    rospy.loginfo('Model weight: %f' % w_model)
 
     rospy.loginfo('Initializing environment...')
-    vrep_robot_controller = VrepRobotController(robot)
-    vrep_robot_controller.start_connection(vrep_host, vrep_port)
     env = gym.make(
         id='TaskOffloading-v0',
-        vrep_robot_controller=vrep_robot_controller,
-        x_lim=x_lim,
-        y_lim=y_lim,
-        transmit_power=transmit_power,
+        vrep_host=vrep_host,
+        vrep_port=vrep_port,
+        mec_server=mec_server,
+        x_lim=map_x_lim,
+        y_lim=map_y_lim,
+        robot_name=robot_name,
+        robot_compute_power=robot_compute_power,
+        robot_transmit_power=robot_transmit_power,
         w_latency=w_latency,
         w_energy=w_energy,
-        w_risk=w_risk
+        w_model=w_model
     )
     env.seed(1)
 
