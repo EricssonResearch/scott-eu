@@ -21,7 +21,7 @@ catkin_install_python(
 )
 
 install(
-  DIRECTORY launch
+  DIRECTORY launch config msg srv
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 

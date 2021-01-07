@@ -23,7 +23,7 @@ def main():
 
     network_monitor = NetworkMonitor(host, throughput=True)
     rospy.loginfo('Publishing network throughput...')
-    publisher = rospy.Publisher('network_throughput', NetworkThroughput, queue_size=1)
+    publisher = rospy.Publisher('network/throughput', NetworkThroughput, queue_size=1)
 
     rate = rospy.Rate(1)
     try:

@@ -12,7 +12,7 @@ from gym.utils.seeding import np_random
 from tf.transformations import quaternion_from_euler
 from turtlebot2i_edge import VrepRobotController, NetworkMonitor
 from cv_bridge import CvBridge
-from std_msgs.msg import Header
+from std_msgs.msg import Header, Float64
 from actionlib_msgs.msg import GoalStatus
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
@@ -63,10 +63,10 @@ class TaskOffloadingEnv(Env):
         self.w_energy = w_energy
         self.w_model = w_model
 
-        self._vrep_robot_controller = VrepRobotController(robot_name)
+        self._vrep_robot_controller = VrepRobotController()
         self._vrep_robot_controller.start_connection(vrep_host, vrep_port)
+        self._vrep_robot_controller.load_robot(robot_name)
         self._network_monitor = NetworkMonitor(mec_server, throughput=True)
-        self._cv_bridge = CvBridge()
 
         rospy.loginfo('Waiting for ROS action server to move base...')
         self._move_base_client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
@@ -88,18 +88,20 @@ class TaskOffloadingEnv(Env):
         self._scene_graph_pub = rospy.Publisher('scene_graph', SceneGraph, queue_size=1)
 
         self._risk_value = None
-        self._risk_lock = threading.Lock()              # rospy callbacks are not thread-safe
-        rospy.Subscriber('risk_value', self._save_risk_value, queue_size=1)
+        self._risk_lock = threading.Lock()                  # rospy callbacks are not thread-safe
+        rospy.Subscriber('safety/risk_val', Float64, self._save_risk_value, queue_size=1)
 
-        self._camera_image_rgb_current = None           # to use in next action (ROS message)
-        self._camera_image_rgb_last = None              # most recent from topic (ROS message)
-        self._camera_image_rgb_last_robot = None        # used in last action on robot (image)
-        self._camera_image_rgb_last_edge = None         # used in last action on edge (image)
+        self._camera_image_rgb_current = None               # to use in next action (ROS message)
         self._camera_image_depth_current = None
-        self._camera_image_depth_last = None
+        self._camera_image_rgb_last_robot = None            # used in last action on robot (image)
         self._camera_image_depth_last_robot = None
+        self._camera_image_rgb_last_edge = None             # used in last action on edge (image)
         self._camera_image_depth_last_edge = None
-        self._camera_image_lock = threading.Lock()      # rospy callbacks are not thread-safe
+        self._cv_bridge = CvBridge()                        # for conversions ROS message <-> image
+
+        self._camera_image_rgb_last = None                  # most recent from topic (ROS message)
+        self._camera_image_depth_last = None
+        self._camera_image_last_lock = threading.Lock()     # rospy callbacks are not thread-safe
         camera_rgb_sub = message_filters.Subscriber('camera/rgb/raw_image', Image)
         camera_depth_sub = message_filters.Subscriber('camera/depth/raw_image', Image)
         camera_sub = message_filters.TimeSynchronizer([camera_rgb_sub, camera_depth_sub], queue_size=1)
@@ -164,18 +166,19 @@ class TaskOffloadingEnv(Env):
         return observation, reward, done, {}
 
     def reset(self):
+        self._move_base_client.cancel_all_goals()
+
         start = None
         goal = None
         reachable = False
-
         while not reachable:
             start = self._sample_pose()
             goal = self._sample_pose()
             response = self._check_path(start=start, goal=goal)
-            reachable = len(response.poses) > 0
+            reachable = len(response.plan.poses) > 0
         goal = MoveBaseGoal(target_pose=goal)
 
-        self._vrep_robot_controller.move_robot(start)
+        self._vrep_robot_controller.move_robot(start.pose)
         self._move_base_client.send_goal(goal)
 
         self._last_observation = self._observe()
@@ -203,7 +206,7 @@ class TaskOffloadingEnv(Env):
 
         pose = Pose(
             position=Point(x, y, 0.063),
-            orientation=Quaternion(quaternion_from_euler(0, 0, yaw))
+            orientation=Quaternion(*list(quaternion_from_euler(0, 0, yaw)))
         )
         pose_stamped = PoseStamped(
             header=Header(stamp=rospy.Time.now(), frame_id='map'),
@@ -216,9 +219,11 @@ class TaskOffloadingEnv(Env):
         throughput = self._network_monitor.measure_throughput()
 
         with self._risk_lock:
-            risk_value = self._risk_value   # TODO: qua e' sbagliato, perche' magari il risk value e' pubblicato dopo che si passa da qui
+            risk_value = self._risk_value
+        if risk_value is None:
+            risk_value = 5      # unknown => high
 
-        with self._camera_image_lock:
+        with self._camera_image_last_lock:
             self._camera_image_rgb_current = self._camera_image_rgb_last
             self._camera_image_depth_current = self._camera_image_depth_last
 
@@ -231,12 +236,15 @@ class TaskOffloadingEnv(Env):
         self._camera_image_rgb_current = self._cv_bridge.cv2_to_imgmsg(camera_image_rgb_current, 'rgb8')
         self._camera_image_depth_current = self._cv_bridge.cv2_to_imgmsg(camera_image_depth_current, 'passthrough')
 
-        temporal_coherence = (
-            np.sum(camera_image_rgb_current - self._camera_image_rgb_last_robot),
-            np.sum(camera_image_depth_current - self._camera_image_depth_last_robot),
-            np.sum(camera_image_rgb_current - self._camera_image_rgb_last_edge),
-            np.sum(camera_image_depth_current - self._camera_image_depth_last_edge)
-        )
+        temporal_coherence = np.full(4, np.inf)
+        if self._camera_image_rgb_last_robot is not None:
+            temporal_coherence[0] = np.sum(camera_image_rgb_current - self._camera_image_rgb_last_robot)
+        if self._camera_image_depth_last_robot is not None:
+            temporal_coherence[1] = np.sum(camera_image_depth_current - self._camera_image_depth_last_robot)
+        if self._camera_image_rgb_last_edge is not None:
+            temporal_coherence[2] = np.sum(camera_image_rgb_current - self._camera_image_rgb_last_edge)
+        if self._camera_image_depth_last_edge is not None:
+            temporal_coherence[3] = np.sum(camera_image_depth_current - self._camera_image_depth_last_edge)
 
         return {
             'rtt': (rtt_min, rtt_avg, rtt_max, rtt_mdev),
@@ -273,7 +281,7 @@ class TaskOffloadingEnv(Env):
         return self._move_base_client.get_state() == GoalStatus.SUCCEEDED
 
     def _save_camera_image(self, image_rgb, image_depth):
-        with self._camera_image_lock:
+        with self._camera_image_last_lock:
             self._camera_image_rgb_last = image_rgb
             self._camera_image_depth_last = image_depth
 

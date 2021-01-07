@@ -4,7 +4,6 @@ from __future__ import print_function
 
 import sys
 import argparse
-import gym
 import rospy
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten
@@ -12,7 +11,7 @@ from keras.optimizers import Adam
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
-from turtlebot2i_edge import NaiveAgent
+from turtlebot2i_edge import TaskOffloadingEnv, NaiveAgent
 
 
 def get_model(env):
@@ -67,13 +66,12 @@ def main():
     rospy.loginfo('Model weight: %f' % w_model)
 
     rospy.loginfo('Initializing environment...')
-    env = gym.make(
-        id='TaskOffloading-v0',
+    env = TaskOffloadingEnv(
         vrep_host=vrep_host,
         vrep_port=vrep_port,
         mec_server=mec_server,
-        x_lim=map_x_lim,
-        y_lim=map_y_lim,
+        map_x_lim=map_x_lim,
+        map_y_lim=map_y_lim,
         robot_name=robot_name,
         robot_compute_power=robot_compute_power,
         robot_transmit_power=robot_transmit_power,

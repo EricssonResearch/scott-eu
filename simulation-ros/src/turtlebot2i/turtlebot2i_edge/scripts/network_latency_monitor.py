@@ -25,7 +25,7 @@ def main():
     host = rospy.get_param('/network/mec_server/host')
     rospy.loginfo('MEC server: %s' % host)
 
-    publisher = rospy.Publisher('network_latency', NetworkLatency, queue_size=1)
+    publisher = rospy.Publisher('network/latency', NetworkLatency, queue_size=1)
     rospy.loginfo('Publishing network latency...')
     network_monitor = NetworkMonitor(host, throughput=False)
 
