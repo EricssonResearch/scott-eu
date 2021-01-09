@@ -7,7 +7,7 @@
   </include>
 
   <!-- Scene Graph Generator  -->
-  <node pkg="turtlebot2i_scene_graph" name="sg_generator" type="scene_graph_generator.py" output="screen"/>
+  <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch"/>
 
   <!-- Scene Graph Parser+ Risk assessment  --> 
   <node pkg="turtlebot2i_safety" name="risk_assessment"        type="risk_assessment.py"     output="screen"/>
