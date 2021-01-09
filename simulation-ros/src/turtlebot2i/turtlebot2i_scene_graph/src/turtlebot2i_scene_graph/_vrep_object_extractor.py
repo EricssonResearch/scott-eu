@@ -111,7 +111,6 @@ class Robot(SceneObject):
 class VrepObjectExtractor(VrepClient):
     def __init__(self):
         super(VrepObjectExtractor, self).__init__()
-        self.init_streaming = False
         self.walls = None
         self.robots = None
         self.static_objects = None
@@ -125,17 +124,16 @@ class VrepObjectExtractor(VrepClient):
         :param static_objects: names of the static objects in the V-REP scene
         :param dynamic_objects: names of the dynamic objects in the V-REP scene
         """
-        self.init_streaming = True
-        self.walls = self._get_objects(walls, object_type='static')
+        self.walls = self._get_objects(walls)
         self.robots = self._get_robots(robots)
-        self.static_objects = self._get_objects(static_objects, object_type='static')
-        self.dynamic_objects = self._get_objects(dynamic_objects, object_type='dynamic')
-        self.init_streaming = False
+        self.static_objects = self._get_objects(static_objects)
+        self.dynamic_objects = self._get_dynamic_objects(dynamic_objects)
+        objects = self.walls + self.robots + self.static_objects + self.dynamic_objects
+        for object_ in objects:
+            rospy.loginfo('%s found' % object_.name)
 
     def detect_objects(self, robot):
         """Get objects visible for the robot."""
-        self._refresh()
-
         pol_fov = Polygon([
             robot.vision_sensor.fov['upper_base'][0],
             robot.vision_sensor.fov['upper_base'][1],
@@ -184,25 +182,63 @@ class VrepObjectExtractor(VrepClient):
 
         return visible_objects
 
-    def _get_objects(self, object_names, object_type):
+    def refresh_objects(self):
+        """Refreshes dynamic objects and robots."""
+        for dynamic_object in self.dynamic_objects:
+            dynamic_object_info = self._get_object_info(dynamic_object.handle, vrep.simx_opmode_buffer)
+            if dynamic_object_info is None:
+                rospy.logwarn('Streaming not ready for %s, using blocking mode (slower)...' % dynamic_object.name)
+                dynamic_object_info = self._get_object_info(dynamic_object.handle, vrep.simx_opmode_blocking)
+                self._init_dynamic_object_streaming(dynamic_object.handle)  # because blocking request cancels streaming
+            dynamic_object.set_info(*dynamic_object_info)
+
+        for robot in self.robots:
+            # robot handle changed => re-initialize (e.g. robot re-loaded in reinforcement learning environment)
+            robot_handle = self._get_object_handle(robot.name)
+            if robot_handle != robot.handle:
+                robot.handle = robot_handle
+                robot.vision_sensor.handle = self._get_object_handle(robot.vision_sensor.name)
+                self._init_dynamic_object_streaming(robot_handle)
+                self._init_vision_sensor_streaming(robot.vision_sensor.handle)
+
+            robot_info = self._get_object_info(robot.handle, vrep.simx_opmode_buffer)
+            if robot_info is None:
+                rospy.logwarn('Streaming not ready for %s, using blocking mode (slower)...' % robot.name)
+                robot_info = self._get_object_info(robot.handle, vrep.simx_opmode_blocking)
+                self._init_dynamic_object_streaming(robot.handle)
+            robot.set_info(*robot_info)
+
+            vision_sensor_info = self._get_vision_sensor_info(robot.vision_sensor.handle, vrep.simx_opmode_buffer)
+            if vision_sensor_info is None:
+                rospy.logwarn('Streaming not ready for %s, using blocking mode (slower)...' % robot.vision_sensor.name)
+                vision_sensor_info = self._get_vision_sensor_info(robot.vision_sensor.handle, vrep.simx_opmode_blocking)
+                self._init_vision_sensor_streaming(robot.vision_sensor.handle)
+            robot.vision_sensor.set_info(*vision_sensor_info)
+
+    def _get_objects(self, object_names):
         objects = []
         for object_name in object_names:
             object_handle = self._get_object_handle(object_name)
             if object_handle is None:
                 continue
 
-            if object_type == 'static':
-                object_info = self._get_object_info(object_handle, vrep.simx_opmode_blocking)
-            elif object_type == 'dynamic':
-                object_info = self._get_dynamic_object_info(object_handle)
-            else:
-                raise ValueError('Type must be either static or dynamic')
+            object_info = self._get_object_info(object_handle, vrep.simx_opmode_oneshot_wait)
             object_ = SceneObject(object_name, object_handle)
-
-            if object_info is not None:
-                object_.set_info(*object_info)
+            object_.set_info(*object_info)
             objects.append(object_)
         return objects
+
+    def _get_dynamic_objects(self, object_names):
+        dynamic_objects = []
+        for object_name in object_names:
+            object_handle = self._get_object_handle(object_name)
+            if object_handle is None:
+                continue
+                
+            self._init_dynamic_object_streaming(object_handle)
+            dynamic_object = SceneObject(object_name, object_handle)
+            dynamic_objects.append(dynamic_object)
+        return dynamic_objects
 
     def _get_robots(self, robot_names):
         robots = []
@@ -216,53 +252,46 @@ class VrepObjectExtractor(VrepClient):
             if robot_handle is None:
                 continue
 
-            self._get_dynamic_object_info(robot_handle)
-            vision_sensor = self._get_vision_sensor(vision_sensor_name)
+            vision_sensor_handle = self._get_object_handle(vision_sensor_name)
+            if vision_sensor_handle is None:
+                raise Exception('Robot with no vision sensor')
+    
+            vision_sensor = VisionSensor(vision_sensor_name, vision_sensor_handle)
+            self._init_dynamic_object_streaming(robot_handle)
+            self._init_vision_sensor_streaming(vision_sensor.handle)
             robot = Robot(robot_name, robot_handle, vision_sensor)
             vision_sensor.robot = robot
             robots.append(robot)
         return robots
-    
-    def _get_vision_sensor(self, vision_sensor_name):
-        vision_sensor_handle = self._get_object_handle(vision_sensor_name)
-        if vision_sensor_handle is None:
-            raise Exception('Robot with no vision sensor')
-
-        self._get_vision_sensor_info(vision_sensor_handle)
-        vision_sensor = VisionSensor(vision_sensor_name, vision_sensor_handle)
-        return vision_sensor
-
-    def _get_dynamic_object_info(self, object_handle):
-        if self.init_streaming:
-            mode = vrep.simx_opmode_streaming
-            vrep.simxGetObjectPosition(self.clientID, object_handle, -1, mode)
-            vrep.simxGetObjectOrientation(self.clientID, object_handle, -1, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 21, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 22, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 23, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 24, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 25, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 26, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 11, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 12, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 13, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 14, mode)
-            return None
-
-        return self._get_object_info(object_handle, vrep.simx_opmode_buffer)
 
     def _get_object_info(self, object_handle, mode):
         # get pose and orientation
-        _, pose = vrep.simxGetObjectPosition(self.clientID, object_handle, -1, mode)
-        _, orientation = vrep.simxGetObjectOrientation(self.clientID, object_handle, -1, mode)
+        rc, pose = vrep.simxGetObjectPosition(self.clientID, object_handle, -1, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, orientation = vrep.simxGetObjectOrientation(self.clientID, object_handle, -1, mode)
+        if rc != vrep.simx_return_ok:
+            return None
 
         # get size
-        _, param_min_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 21, mode)
-        _, param_min_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 22, mode)
-        _, param_min_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 23, mode)
-        _, param_max_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 24, mode)
-        _, param_max_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 25, mode)
-        _, param_max_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 26, mode)
+        rc, param_min_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 21, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_min_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 22, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_min_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 23, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_max_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 24, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_max_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 25, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_max_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 26, mode)
+        if rc != vrep.simx_return_ok:
+            return None
         size_x = param_max_x - param_min_x
         size_y = param_max_y - param_min_y
         size_z = param_max_z - param_min_z
@@ -289,38 +318,43 @@ class VrepObjectExtractor(VrepClient):
         bbox_max = np.array([bbox_x_max_rotated, bbox_y_max_rotated, z_max])
 
         # get velocity
-        _, param_vel_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 11, mode)
-        _, param_vel_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 12, mode)
-        _, param_vel_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 13, mode)
-        _, param_vel_r = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 14, mode)
+        rc, param_vel_x = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 11, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_vel_y = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 12, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_vel_z = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 13, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_vel_r = vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 14, mode)
+        if rc != vrep.simx_return_ok:
+            return None
         velocity = np.array([param_vel_x, param_vel_y, param_vel_z, param_vel_r])
 
         return pose, orientation, size, velocity, bbox_min, bbox_max
 
-    def _get_vision_sensor_info(self, vision_sensor_handle):
-        if self.init_streaming:
-            mode = vrep.simx_opmode_streaming
-            vrep.simxGetObjectPosition(self.clientID, vision_sensor_handle, -1, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1000, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1001, mode)
-            vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1002, mode)
-            vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1003, mode)
-            vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1004, mode)
+    def _get_vision_sensor_info(self, vision_sensor_handle, mode):
+        rc, pose = vrep.simxGetObjectPosition(self.clientID, vision_sensor_handle, -1, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_near_clipping = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1000, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_far_clipping = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1001, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_resolution_x = vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1002, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_resolution_y = vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1003, mode)
+        if rc != vrep.simx_return_ok:
+            return None
+        rc, param_perspective_angle = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1004, mode)
+        if rc != vrep.simx_return_ok:
             return None
 
-        mode = vrep.simx_opmode_buffer
-        _, pose = vrep.simxGetObjectPosition(self.clientID, vision_sensor_handle, -1, mode)
-        _, param_near_clipping = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1000, mode)
-        _, param_far_clipping = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1001, mode)
-        _, param_resolution_x = vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1002, mode)
-        _, param_resolution_y = vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1003, mode)
-        _, param_perspective_angle = vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1004, mode)
-
-        try:
-            ratio = param_resolution_x / param_resolution_y
-        except ZeroDivisionError:
-            return None
-
+        ratio = param_resolution_x / param_resolution_y
         if ratio > 1:
             param_perspective_angle_x = param_perspective_angle
             param_perspective_angle_y = 2 * np.arctan(np.tan(param_perspective_angle / 2) / ratio)
@@ -332,23 +366,32 @@ class VrepObjectExtractor(VrepClient):
                 param_perspective_angle_y, param_near_clipping, param_far_clipping)
 
     def _get_object_handle(self, object_name):
-        return_code, handle = vrep.simxGetObjectHandle(self.clientID, object_name, vrep.simx_opmode_blocking)
-        if return_code != 0:
+        rc, handle = vrep.simxGetObjectHandle(self.clientID, object_name, vrep.simx_opmode_oneshot_wait)
+        if rc != 0:
             rospy.logwarn('%s not found' % object_name)
             return None
-        rospy.loginfo('%s found' % object_name)
         return handle
+    
+    def _init_dynamic_object_streaming(self, object_handle):
+        mode = vrep.simx_opmode_streaming
+        vrep.simxGetObjectPosition(self.clientID, object_handle, -1, mode)
+        vrep.simxGetObjectOrientation(self.clientID, object_handle, -1, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 21, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 22, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 23, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 24, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 25, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 26, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 11, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 12, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 13, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, object_handle, 14, mode)
 
-    def _refresh(self):
-        for dynamic_object in self.dynamic_objects:
-            dynamic_object_info = self._get_dynamic_object_info(dynamic_object)
-            if dynamic_object_info is not None:
-                dynamic_object.set_info(*dynamic_object_info)
-
-        for robot in self.robots:
-            robot_info = self._get_dynamic_object_info(robot.handle)
-            if robot_info is not None:
-                robot.set_info(*robot_info)
-            vision_sensor_info = self._get_vision_sensor_info(robot.vision_sensor.handle)
-            if vision_sensor_info is not None:
-                robot.vision_sensor.set_info(*vision_sensor_info)
+    def _init_vision_sensor_streaming(self, vision_sensor_handle):
+        mode = vrep.simx_opmode_streaming
+        vrep.simxGetObjectPosition(self.clientID, vision_sensor_handle, -1, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1000, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1001, mode)
+        vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1002, mode)
+        vrep.simxGetObjectIntParameter(self.clientID, vision_sensor_handle, 1003, mode)
+        vrep.simxGetObjectFloatParameter(self.clientID, vision_sensor_handle, 1004, mode)

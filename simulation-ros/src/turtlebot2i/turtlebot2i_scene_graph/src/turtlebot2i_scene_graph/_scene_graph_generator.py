@@ -10,6 +10,7 @@ class SceneGraphGenerator(object):
         self.extractor = extractor
 
     def generate_scene_graph(self):
+        self.extractor.refresh_objects()
         robot = next(r for r in self.extractor.robots if r.name == self.robot)
         detected_objects = self.extractor.detect_objects(robot)
 

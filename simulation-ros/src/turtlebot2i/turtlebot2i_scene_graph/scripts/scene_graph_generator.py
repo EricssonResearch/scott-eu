@@ -20,7 +20,8 @@ def make_message(scene_graph):
 def generate_scene_graph(generator):
     scene_graph = generator.generate_scene_graph()
     scene_graph = make_message(scene_graph)
-    return GenerateSceneGraphResponse(scene_graph=scene_graph)
+    rospy.loginfo('Scene graph generated')
+    return GenerateSceneGraphResponse(scene_graph)
 
 
 def publish_scene_graph(generator, publisher):

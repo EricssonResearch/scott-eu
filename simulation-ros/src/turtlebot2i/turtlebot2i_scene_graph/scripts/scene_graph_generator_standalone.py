@@ -37,7 +37,7 @@ def main():
     print('Connecting to V-REP, can take a while...')
     extractor = VrepObjectExtractor()
     extractor.start_connection(args.vrep_host, args.vrep_port)
-    extractor.load_objects(*load_objects('../config/vrep.yaml'))
+    extractor.load_objects(*load_objects('config/vrep.yaml'))
     print('Initialization completed')
 
     scene_graph_generator = SceneGraphGenerator(args.robot, extractor)
