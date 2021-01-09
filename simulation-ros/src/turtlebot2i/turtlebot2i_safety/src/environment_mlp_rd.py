@@ -488,18 +488,18 @@ class Env():
                     reward = +65 / maxRisk * (scaled_speed_factor + 1)
                 else:
                     self.statistics[212] = self.statistics[212] + 1
-                    reward = -20 * maxRisk / (scaled_speed_factor + 1)
+                    reward = -40 * maxRisk / (scaled_speed_factor + 1)
             elif scaled_speed >= 0.2 and scaled_speed < 0.35:
                 self.statistics[22] = self.statistics[22] + 1
                 if nearest_obstacle_distance <= clear_zone and nearest_obstacle_distance > self.r_critical:
                     self.statistics[221] = self.statistics[221] + 1
-                    reward = + 25 * maxRisk * (scaled_speed_factor + 1)
+                    reward = +50 * maxRisk * (scaled_speed_factor + 1)
                 elif nearest_obstacle_distance > clear_zone:
                     self.statistics[222] = self.statistics[222] + 1
                     reward = -65 / maxRisk / (scaled_speed_factor + 1)
                 else:
                     self.statistics[223] = self.statistics[223] + 1
-                    reward = -15 * maxRisk * (scaled_speed_factor + 1)
+                    reward = -35 * maxRisk * (scaled_speed_factor + 1)
             elif scaled_speed < 0.2:
                 self.statistics[23] = self.statistics[23] + 1
                 if nearest_obstacle_distance < self.r_critical:
@@ -507,7 +507,7 @@ class Env():
                     reward = +50 / maxRisk / (scaled_speed_factor + 1)
                 else:
                     self.statistics[232] = self.statistics[232] + 1
-                    reward = -25 * maxRisk * (scaled_speed_factor + 1)
+                    reward = -35 * maxRisk * (scaled_speed_factor + 1)
 
 
         elif i == 2:  # getting closer to goal
@@ -555,26 +555,26 @@ class Env():
                 self.statistics[51] = self.statistics[51] + 1
                 if rotSpeed > 0.10:
                     self.statistics[511] = self.statistics[511] + 1
-                    reward = +75 * maxRisk * (scaled_speed_factor + 1)
+                    reward = +60 * maxRisk * (scaled_speed_factor + 1)
                 else:
                     self.statistics[512] = self.statistics[512] + 1
-                    reward = -60 * maxRisk * (scaled_speed_factor + 1)
+                    reward = -45 * maxRisk * (scaled_speed_factor + 1)
             elif direction > 3 or direction <= 7: #obstacle in the center
                 self.statistics[52] = self.statistics[52] + 1
                 if rotSpeed < 0.10 or rotSpeed > -0.10:
                     self.statistics[521] = self.statistics[521] + 1
-                    reward = -60 * maxRisk * (scaled_speed_factor + 1)
+                    reward = -45 * maxRisk * (scaled_speed_factor + 1)
                 else:
                     self.statistics[522] = self.statistics[522] + 1
-                    reward = +75 * maxRisk * (scaled_speed_factor + 1)
+                    reward = +60 * maxRisk * (scaled_speed_factor + 1)
             elif direction > 7: #obstacle on the right
                 self.statistics[53] = self.statistics[53] + 1
                 if rotSpeed < -0.10:
                     self.statistics[531] = self.statistics[531] + 1
-                    reward = +75 * maxRisk * (scaled_speed_factor + 1)
+                    reward = +60 * maxRisk * (scaled_speed_factor + 1)
                 else:
                     self.statistics[532] = self.statistics[532] + 1
-                    reward = -60 * maxRisk * (scaled_speed_factor + 1)
+                    reward = -45 * maxRisk * (scaled_speed_factor + 1)
         # if self.get_goalbox:
         #    rospy.loginfo("Goal!!")
         #    self.respawn_goal(reset=True)

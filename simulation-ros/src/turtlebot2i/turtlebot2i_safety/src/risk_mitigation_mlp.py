@@ -28,9 +28,9 @@ class ReinforceAgent():
         self.result = Float32MultiArray()
 
         # self.load_model = True # Inference
-        self.load_model = False # Training
+        self.load_model = True # Training
         # self.load_episode = 110 # Inference
-        self.load_episode = 0 # Training
+        self.load_episode = 100 # Training
         self.state_size = state_size
         self.action_size = action_size
         self.episode_step = 6000
