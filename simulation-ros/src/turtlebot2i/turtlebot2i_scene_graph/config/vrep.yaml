@@ -1,67 +1,67 @@
 vrep:
   walls: [
-#      80cmHighWall100cm, 80cmHighWall100cm0, 80cmHighWall100cm1, 80cmHighWall100cm2, 80cmHighWall100cm3,
-#      80cmHighWall100cm4, 80cmHighWall100cm5, 80cmHighWall100cm6, 80cmHighWall100cm7, 80cmHighWall100cm8,
-#
-#      80cmHighWall200cm, 80cmHighWall200cm0, 80cmHighWall200cm1, 80cmHighWall200cm2, 80cmHighWall200cm3,
-#      80cmHighWall200cm4, 80cmHighWall200cm5, 80cmHighWall200cm6, 80cmHighWall200cm7, 80cmHighWall200cm8,
-#
-#      80cmHighWall250cm, 80cmHighWall250cm0, 80cmHighWall250cm1, 80cmHighWall250cm2, 80cmHighWall250cm3,
-#      80cmHighWall250cm4, 80cmHighWall250cm5, 80cmHighWall250cm6, 80cmHighWall250cm7, 80cmHighWall250cm8,
-#
-#      80cmHighWall300cm, 80cmHighWall300cm0, 80cmHighWall300cm1, 80cmHighWall300cm2, 80cmHighWall300cm3,
-#      80cmHighWall300cm4, 80cmHighWall300cm5, 80cmHighWall300cm6, 80cmHighWall300cm7, 80cmHighWall300cm8,
-#
-#      80cmHighWall500cm, 80cmHighWall500cm0, 80cmHighWall500cm1, 80cmHighWall500cm2, 80cmHighWall500cm3,
-#      80cmHighWall500cm4, 80cmHighWall500cm5, 80cmHighWall500cm6, 80cmHighWall500cm7, 80cmHighWall500cm8,
-#
-#      80cmHighWall750cm, 80cmHighWall750cm0, 80cmHighWall750cm1, 80cmHighWall750cm2, 80cmHighWall750cm3,
-#      80cmHighWall750cm4, 80cmHighWall750cm5, 80cmHighWall750cm6, 80cmHighWall750cm7, 80cmHighWall750cm8,
-#
-#      80cmHighWall1000cm, 80cmHighWall1000cm0, 80cmHighWall1000cm1, 80cmHighWall1000cm2, 80cmHighWall1000cm3,
-#      80cmHighWall1000cm4, 80cmHighWall1000cm5, 80cmHighWall1000cm6, 80cmHighWall1000cm7, 80cmHighWall1000cm8,
-#
-#      80cmHighWall1500cm, 80cmHighWall1500cm0, 80cmHighWall1500cm1, 80cmHighWall1500cm2, 80cmHighWall1500cm3,
-#      80cmHighWall1500cm4, 80cmHighWall1500cm5, 80cmHighWall1500cm6, 80cmHighWall1500cm7, 80cmHighWall1500cm8,
-#
-#      80cmHighWall2000cm, 80cmHighWall2000cm0, 80cmHighWall2000cm1, 80cmHighWall2000cm2, 80cmHighWall2000cm3,
-#      80cmHighWall2000cm4, 80cmHighWall2000cm5, 80cmHighWall2000cm6, 80cmHighWall2000cm7, 80cmHighWall2000cm8,
+      80cmHighWall100cm, 80cmHighWall100cm0, 80cmHighWall100cm1, 80cmHighWall100cm2, 80cmHighWall100cm3,
+      80cmHighWall100cm4, 80cmHighWall100cm5, 80cmHighWall100cm6, 80cmHighWall100cm7, 80cmHighWall100cm8,
+
+      80cmHighWall200cm, 80cmHighWall200cm0, 80cmHighWall200cm1, 80cmHighWall200cm2, 80cmHighWall200cm3,
+      80cmHighWall200cm4, 80cmHighWall200cm5, 80cmHighWall200cm6, 80cmHighWall200cm7, 80cmHighWall200cm8,
+
+      80cmHighWall250cm, 80cmHighWall250cm0, 80cmHighWall250cm1, 80cmHighWall250cm2, 80cmHighWall250cm3,
+      80cmHighWall250cm4, 80cmHighWall250cm5, 80cmHighWall250cm6, 80cmHighWall250cm7, 80cmHighWall250cm8,
+
+      80cmHighWall300cm, 80cmHighWall300cm0, 80cmHighWall300cm1, 80cmHighWall300cm2, 80cmHighWall300cm3,
+      80cmHighWall300cm4, 80cmHighWall300cm5, 80cmHighWall300cm6, 80cmHighWall300cm7, 80cmHighWall300cm8,
+
+      80cmHighWall500cm, 80cmHighWall500cm0, 80cmHighWall500cm1, 80cmHighWall500cm2, 80cmHighWall500cm3,
+      80cmHighWall500cm4, 80cmHighWall500cm5, 80cmHighWall500cm6, 80cmHighWall500cm7, 80cmHighWall500cm8,
+
+      80cmHighWall750cm, 80cmHighWall750cm0, 80cmHighWall750cm1, 80cmHighWall750cm2, 80cmHighWall750cm3,
+      80cmHighWall750cm4, 80cmHighWall750cm5, 80cmHighWall750cm6, 80cmHighWall750cm7, 80cmHighWall750cm8,
+
+      80cmHighWall1000cm, 80cmHighWall1000cm0, 80cmHighWall1000cm1, 80cmHighWall1000cm2, 80cmHighWall1000cm3,
+      80cmHighWall1000cm4, 80cmHighWall1000cm5, 80cmHighWall1000cm6, 80cmHighWall1000cm7, 80cmHighWall1000cm8,
+
+      80cmHighWall1500cm, 80cmHighWall1500cm0, 80cmHighWall1500cm1, 80cmHighWall1500cm2, 80cmHighWall1500cm3,
+      80cmHighWall1500cm4, 80cmHighWall1500cm5, 80cmHighWall1500cm6, 80cmHighWall1500cm7, 80cmHighWall1500cm8,
+
+      80cmHighWall2000cm, 80cmHighWall2000cm0, 80cmHighWall2000cm1, 80cmHighWall2000cm2, 80cmHighWall2000cm3,
+      80cmHighWall2000cm4, 80cmHighWall2000cm5, 80cmHighWall2000cm6, 80cmHighWall2000cm7, 80cmHighWall2000cm8,
   ]
 
   robots: [
-#      turtlebot2i, turtlebot2i#0, turtlebot2i#1, turtlebot2i#2, turtlebot2i#3, turtlebot2i#4, turtlebot2i#5,
-#      turtlebot2i#6, turtlebot2i#7, turtlebot2i#8, turtlebot2i#9
+      turtlebot2i, turtlebot2i#0, turtlebot2i#1, turtlebot2i#2, turtlebot2i#3, turtlebot2i#4, turtlebot2i#5,
+      turtlebot2i#6, turtlebot2i#7, turtlebot2i#8, turtlebot2i#9
   ]
 
   static_objects: [
-#      80cmHighPillar100cm, 80cmHighPillar100cm0, 80cmHighPillar100cm1, 80cmHighPillar100cm2, 80cmHighPillar100cm3,
-#      80cmHighPillar100cm4, 80cmHighPillar100cm5, 80cmHighPillar100cm6, 80cmHighPillar100cm7, 80cmHighPillar100cm8,
-#
-#      ConcreteBox, ConcreteBox0, ConcreteBox1, ConcreteBox2, ConcreteBox3, ConcreteBox4, ConcreteBox5,
-#      ConcreteBox6, ConcreteBox7, ConcreteBox8, ConcreteBox9,
-#
-#      ConcreteBox#0, ConcreteBox#1, ConcreteBox#2, ConcreteBox#3, ConcreteBox#4, ConcreteBox#5,
-#      ConcreteBox#6, ConcreteBox#7, ConcreteBox#8, ConcreteBox#9, ConcreteBox#10, ConcreteBox#11,
-#      ConcreteBox#12, ConcreteBox#13, ConcreteBox#14, ConcreteBox#15, ConcreteBox#16, ConcreteBox#17,
-#      ConcreteBox#18, ConcreteBox#19,
-#
-#      ConveyorBelt, ConveyorBelt#0, ConveyorBelt#1, ConveyorBelt#2, ConveyorBelt#3, ConveyorBelt#4, ConveyorBelt#5,
-#      ConveyorBelt#6, ConveyorBelt#7, ConveyorBelt#8, ConveyorBelt#9,
-#
-#      ShelfBodySimple, ShelfBodySimple#1, ShelfBodySimple#2, ShelfBodySimple#3, ShelfBodySimple#4, ShelfBodySimple#5,
-#      ShelfBodySimple#6, ShelfBodySimple#7, ShelfBodySimple#8, ShelfBodySimple#9,
-#
-#      ShelfBody, ShelfBody#1, ShelfBody#2, ShelfBody#3, ShelfBody#4, ShelfBody#5, ShelfBody#6, ShelfBody#7, ShelfBody#8,
-#      ShelfBody#9,
-#
-#      dockstation_body, dockstation_body#0, dockstation_body#1, dockstation_body#2, dockstation_body#3,
-#      dockstation_body#4, dockstation_body#5, dockstation_body#6, dockstation_body#7, dockstation_body#8,
-#      dockstation_body#9
+      80cmHighPillar100cm, 80cmHighPillar100cm0, 80cmHighPillar100cm1, 80cmHighPillar100cm2, 80cmHighPillar100cm3,
+      80cmHighPillar100cm4, 80cmHighPillar100cm5, 80cmHighPillar100cm6, 80cmHighPillar100cm7, 80cmHighPillar100cm8,
+
+      ConcreteBox, ConcreteBox0, ConcreteBox1, ConcreteBox2, ConcreteBox3, ConcreteBox4, ConcreteBox5,
+      ConcreteBox6, ConcreteBox7, ConcreteBox8, ConcreteBox9,
+
+      ConcreteBox#0, ConcreteBox#1, ConcreteBox#2, ConcreteBox#3, ConcreteBox#4, ConcreteBox#5,
+      ConcreteBox#6, ConcreteBox#7, ConcreteBox#8, ConcreteBox#9, ConcreteBox#10, ConcreteBox#11,
+      ConcreteBox#12, ConcreteBox#13, ConcreteBox#14, ConcreteBox#15, ConcreteBox#16, ConcreteBox#17,
+      ConcreteBox#18, ConcreteBox#19,
+
+      ConveyorBelt, ConveyorBelt#0, ConveyorBelt#1, ConveyorBelt#2, ConveyorBelt#3, ConveyorBelt#4, ConveyorBelt#5,
+      ConveyorBelt#6, ConveyorBelt#7, ConveyorBelt#8, ConveyorBelt#9,
+
+      ShelfBodySimple, ShelfBodySimple#1, ShelfBodySimple#2, ShelfBodySimple#3, ShelfBodySimple#4, ShelfBodySimple#5,
+      ShelfBodySimple#6, ShelfBodySimple#7, ShelfBodySimple#8, ShelfBodySimple#9,
+
+      ShelfBody, ShelfBody#1, ShelfBody#2, ShelfBody#3, ShelfBody#4, ShelfBody#5, ShelfBody#6, ShelfBody#7, ShelfBody#8,
+      ShelfBody#9,
+
+      dockstation_body, dockstation_body#0, dockstation_body#1, dockstation_body#2, dockstation_body#3,
+      dockstation_body#4, dockstation_body#5, dockstation_body#6, dockstation_body#7, dockstation_body#8,
+      dockstation_body#9
   ]
 
   dynamic_objects: [
-#      Bill, Bill#0, Bill#1, Bill#2, Bill#3, Bill#4, Bill#5, Bill#6, Bill#7, Bill#8, Bill#9, Bill#10,
-#
-#      Walking_Bill, Walking_Bill#0, Walking_Bill#1, Walking_Bill#2, Walking_Bill#3, Walking_Bill#6, Walking_Bill#7,
-#      Walking_Bill#8, Walking_Bill#9, Walking_Bill#10, Walking_Bill#11, Walking_Bill#12, Walking_Bill#13,
+      Bill, Bill#0, Bill#1, Bill#2, Bill#3, Bill#4, Bill#5, Bill#6, Bill#7, Bill#8, Bill#9, Bill#10,
+
+      Walking_Bill, Walking_Bill#0, Walking_Bill#1, Walking_Bill#2, Walking_Bill#3, Walking_Bill#6, Walking_Bill#7,
+      Walking_Bill#8, Walking_Bill#9, Walking_Bill#10, Walking_Bill#11, Walking_Bill#12, Walking_Bill#13,
   ]

@@ -192,7 +192,7 @@ class VrepObjectExtractor(VrepClient):
                 continue
 
             if object_type == 'static':
-                object_info = self._get_object_info(object_handle, vrep.simx_opmode_oneshot_wait)
+                object_info = self._get_object_info(object_handle, vrep.simx_opmode_blocking)
             elif object_type == 'dynamic':
                 object_info = self._get_dynamic_object_info(object_handle)
             else:
@@ -332,7 +332,7 @@ class VrepObjectExtractor(VrepClient):
                 param_perspective_angle_y, param_near_clipping, param_far_clipping)
 
     def _get_object_handle(self, object_name):
-        return_code, handle = vrep.simxGetObjectHandle(self.clientID, object_name, vrep.simx_opmode_oneshot_wait)
+        return_code, handle = vrep.simxGetObjectHandle(self.clientID, object_name, vrep.simx_opmode_blocking)
         if return_code != 0:
             rospy.logwarn('%s not found' % object_name)
             return None
