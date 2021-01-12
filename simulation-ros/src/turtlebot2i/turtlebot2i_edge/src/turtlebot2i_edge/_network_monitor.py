@@ -11,7 +11,7 @@ class NetworkMonitor:
 
         if throughput:
             rospy.loginfo('Waiting for ROS service to measure throughput...')
-            self._stamp = rospy.ServiceProxy('edge/stamp', Stamp, persistent=True)  # TODO: persistent? se il server si disconnette?
+            self._stamp = rospy.ServiceProxy('edge/stamp', Stamp)
             self._stamp.wait_for_service()
 
     def measure_latency(self, count=10):

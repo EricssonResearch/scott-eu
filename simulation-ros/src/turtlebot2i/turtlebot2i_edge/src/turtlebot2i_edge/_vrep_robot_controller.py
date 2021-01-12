@@ -1,19 +1,20 @@
+import os
 import vrep
 from turtlebot2i_scene_graph import VrepClient
 
 
 class VrepRobotController(VrepClient):
-    def __init__(self):
+    def __init__(self, models_path):
         super(VrepRobotController, self).__init__()
         self._robot = None      # handle
+        self._model_path = os.path.join(models_path, 'turtlebot2i.ttm')
 
     def load_robot(self, robot):
-        return_code, self._robot = vrep.simxGetObjectHandle(self.clientID, robot, vrep.simx_opmode_oneshot_wait)
-        if return_code != 0:
+        return_code, self._robot = vrep.simxGetObjectHandle(self.clientID, robot, vrep.simx_opmode_blocking)
+        if return_code != vrep.simx_return_ok:
             raise ValueError('%s not found' % robot)
 
-    def move_robot(self, pose):
-        position = (pose.position.x, pose.position.y, pose.position.z)
-        orientation = (pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w)
-        vrep.simxSetObjectPosition(self.clientID, self._robot, -1, position, vrep.simx_opmode_oneshot_wait)
-        vrep.simxSetObjectQuaternion(self.clientID, self._robot, -1, orientation, vrep.simx_opmode_oneshot_wait)
+    def reset(self):
+        if self._robot is not None:
+            vrep.simxRemoveModel(self.clientID, self._robot, vrep.simx_opmode_blocking)
+        _, self._robot = vrep.simxLoadModel(self.clientID, self._model_path, 0, vrep.simx_opmode_blocking)

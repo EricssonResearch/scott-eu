@@ -1,3 +1,4 @@
+from __future__ import print_function
 from __future__ import division
 
 import threading
@@ -13,16 +14,15 @@ from tf.transformations import quaternion_from_euler
 from turtlebot2i_edge import VrepRobotController, NetworkMonitor
 from cv_bridge import CvBridge
 from std_msgs.msg import Header, Float64
-from actionlib_msgs.msg import GoalStatus
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-from nav_msgs.srv import GetPlan
 from turtlebot2i_scene_graph.msg import SceneGraph
 from turtlebot2i_edge.srv import GenerateSceneGraph, GenerateSceneGraphRequest, GenerateSceneGraphResponse
 
-# TODO: parametrize image size (maybe robot and edge have different size? will see when I look for good networks)
+# TODO: parametrize (maybe robot and edge have different image size? will see when I look for good networks)
 IMAGE_SIZE = (224, 224)
+HIGH_RISK_VALUE = 5     # from risk assessment
 
 
 class TaskOffloadingEnv(Env):
@@ -37,13 +37,15 @@ class TaskOffloadingEnv(Env):
     - risk_value
     - temporal_coherence (sum of absolute differences): last robot rgb, last robot depth, last edge rgb, last edge depth
     - confidence: confidence last robot, confidence last edge (probabilities [0,1])
+
+    TODO: done=True when bumping (so that reset is called)?
     """
 
     metadata = {'render.modes': ['human', 'ansi']}
 
     action_space = Discrete(4)
     observation_space = Dict(
-        rtt=Box(low=0, high=np.inf, shape=(3,), dtype=np.float32),
+        rtt=Box(low=0, high=np.inf, shape=(4,), dtype=np.float32),
         packet_loss=Box(low=0, high=1, shape=(1,), dtype=np.float32),
         throughput=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         risk_value=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
@@ -51,38 +53,39 @@ class TaskOffloadingEnv(Env):
         # TODO: add confidence of prediction in observation
     )
 
-    def __init__(self, vrep_host, vrep_port, mec_server, map_x_lim, map_y_lim, robot_name, robot_compute_power,
-                 robot_transmit_power, w_latency, w_energy, w_model):
+    def __init__(self, vrep_host, vrep_port, vrep_models_path, mec_server, move_base_goals, robot_name,
+                 robot_compute_power, robot_transmit_power, w_latency, w_energy, w_model):
         super(TaskOffloadingEnv, self).__init__()
 
-        self.map_x_lim = map_x_lim
-        self.map_y_lim = map_y_lim
+        self.move_base_goals = move_base_goals
         self.robot_compute_power = robot_compute_power
         self.robot_transmit_power = robot_transmit_power
         self.w_latency = w_latency
         self.w_energy = w_energy
         self.w_model = w_model
 
-        self._vrep_robot_controller = VrepRobotController()
+        self._vrep_robot_controller = VrepRobotController(vrep_models_path)
         self._vrep_robot_controller.start_connection(vrep_host, vrep_port)
         self._vrep_robot_controller.load_robot(robot_name)
         self._network_monitor = NetworkMonitor(mec_server, throughput=True)
+        self._cv_bridge = CvBridge()    # for conversions ROS message <-> image
 
         rospy.loginfo('Waiting for ROS action server to move base...')
         self._move_base_client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
         self._move_base_client.wait_for_server()
-        self._check_path = rospy.ServiceProxy('move_base_node/make_plan', GetPlan)
-        self._check_path.wait_for_service()
 
-        rospy.loginfo('Waiting for ROS services to generate scene graph on robot and on edge...')
+        self._position_goal = None
+        self._position_current = None
+        self._position_current_lock = threading.Lock()      # rospy callbacks are not thread-safe
+
+        rospy.loginfo('Waiting for ROS services to generate scene graph on robot...')
         self._generate_scene_graph_robot = rospy.ServiceProxy('robot/generate_scene_graph', GenerateSceneGraph)
-        self._generate_scene_graph_edge = rospy.ServiceProxy(
-            name='edge/generate_scene_graph',
-            service_class=GenerateSceneGraph,
-            persistent=True     # reduce overhead over the network
-        )
         self._generate_scene_graph_robot.wait_for_service()
+
+        rospy.loginfo('Waiting for ROS services to generate scene graph on edge...')
+        self._generate_scene_graph_edge = rospy.ServiceProxy('edge/generate_scene_graph', GenerateSceneGraph)
         self._generate_scene_graph_edge.wait_for_service()
+
         self._scene_graph_last_robot = None
         self._scene_graph_last_edge = None
         self._scene_graph_pub = rospy.Publisher('scene_graph', SceneGraph, queue_size=1)
@@ -97,8 +100,6 @@ class TaskOffloadingEnv(Env):
         self._camera_image_depth_last_robot = None
         self._camera_image_rgb_last_edge = None             # used in last action on edge (image)
         self._camera_image_depth_last_edge = None
-        self._cv_bridge = CvBridge()                        # for conversions ROS message <-> image
-
         self._camera_image_rgb_last = None                  # most recent from topic (ROS message)
         self._camera_image_depth_last = None
         self._camera_image_last_lock = threading.Lock()     # rospy callbacks are not thread-safe
@@ -109,6 +110,10 @@ class TaskOffloadingEnv(Env):
 
         self._rng = None
         self._last_observation = None
+        self._new_observation = None
+        self._action = None
+        self._step = None
+
         self.seed()
         self.reset()
 
@@ -124,7 +129,6 @@ class TaskOffloadingEnv(Env):
         )
 
         if action == 0:
-            rospy.loginfo('Computing scene graph on robot...')
             response = self._generate_scene_graph_robot(request)
             self._scene_graph_last_robot = response.scene_graph
             self._camera_image_rgb_last_robot = self._cv_bridge.imgmsg_to_cv2(self._camera_image_rgb_current, 'rgb8')
@@ -132,7 +136,6 @@ class TaskOffloadingEnv(Env):
                                                                                 'passthrough')
 
         elif action == 1:
-            rospy.loginfo('Computing scene graph on edge...')
             response = self._generate_scene_graph_edge(request)
             self._scene_graph_last_edge = response.scene_graph
             self._camera_image_rgb_last_edge = self._cv_bridge.imgmsg_to_cv2(self._camera_image_rgb_current, 'rgb8')
@@ -141,54 +144,91 @@ class TaskOffloadingEnv(Env):
 
         elif action == 2:
             response = GenerateSceneGraphResponse(
-                communication_latency=0,
-                execution_latency=0,
+                communication_latency=rospy.Duration(0, 0),
+                execution_latency=rospy.Duration(0, 0),
                 scene_graph=self._scene_graph_last_robot
             )
 
         elif action == 3:
             response = GenerateSceneGraphResponse(
-                communication_latency=0,
-                execution_latency=0,
+                communication_latency=rospy.Duration(0, 0),
+                execution_latency=rospy.Duration(0, 0),
                 scene_graph=self._scene_graph_last_edge
             )
 
         else:
             raise ValueError
 
-        self._scene_graph_pub.publish(response.scene_graph)
+        if response.scene_graph.sg_data != '':  # empty if action=2 or action=3 without previous computation
+            self._scene_graph_pub.publish(response.scene_graph)
 
-        observation = self._observe()
-        reward = self._get_reward(action, response)
+        self._last_observation = self._new_observation
+        self._action = action
+        self._step += 1
+
+        self._new_observation = self._observe()
+        reward = self._get_reward(response)
         done = self._done()
-        self._last_observation = observation    # after calculating the reward
 
-        return observation, reward, done, {}
+        return self._new_observation, reward, done, {}
 
     def reset(self):
-        self._move_base_client.cancel_all_goals()
+        self._move_base_client.cancel_goal()
+        self._vrep_robot_controller.reset()
 
-        start = None
-        goal = None
-        reachable = False
-        while not reachable:
-            start = self._sample_pose()
-            goal = self._sample_pose()
-            response = self._check_path(start=start, goal=goal)
-            reachable = len(response.plan.poses) > 0
-        goal = MoveBaseGoal(target_pose=goal)
+        self._scene_graph_last_robot = None
+        self._scene_graph_last_edge = None
 
-        self._vrep_robot_controller.move_robot(start.pose)
-        self._move_base_client.send_goal(goal)
+        self._camera_image_rgb_current = None
+        self._camera_image_depth_current = None
+        self._camera_image_rgb_last_robot = np.zeros(IMAGE_SIZE + (3,))
+        self._camera_image_depth_last_robot = np.zeros(IMAGE_SIZE)
+        self._camera_image_rgb_last_edge = np.zeros(IMAGE_SIZE + (3,))
+        self._camera_image_depth_last_edge = np.zeros(IMAGE_SIZE)
+        with self._camera_image_last_lock:
+            self._camera_image_rgb_last = None
+            self._camera_image_depth_last = None
 
-        self._last_observation = self._observe()
-        return self._last_observation
+        idx_goal = self._rng.choice(len(self.move_base_goals))
+        x, y = self.move_base_goals[idx_goal]
+        z = 0.063
+        yaw = self._rng.uniform(-np.pi, np.pi)
+
+        pose = Pose(
+            position=Point(x, y, z),
+            orientation=Quaternion(*list(quaternion_from_euler(0, 0, yaw)))
+        )
+        pose_stamped = PoseStamped(
+            header=Header(stamp=rospy.Time.now(), frame_id='map'),
+            pose=pose
+        )
+        goal = MoveBaseGoal(target_pose=pose_stamped)
+        self._move_base_client.send_goal(goal, feedback_cb=self._save_position)
+
+        self._position_goal = np.array((x, y))
+        with self._position_current_lock:
+            self._position_current = None
+
+        self._new_observation = self._observe()
+        self._step = 1
+
+        rospy.loginfo('Environment reset with goal %s' % str(self.move_base_goals[idx_goal]))
+        return self._new_observation
 
     def render(self, mode='human'):
         if mode == 'human':
-            pass    # TODO
+            rospy.loginfo('Step = %d' % self._step)
+            rospy.loginfo('Action = %s' % str(self._action))
+            rospy.loginfo('Last observation = %s' % str(self._last_observation))
+            rospy.loginfo('New observation = %s' % str(self._new_observation))
+
         elif mode == 'ansi':
-            pass    # TODO
+            output = ('Step = %d\n' % self._step) + \
+                     ('Action = %d\n' % self._action) + \
+                     ('Last observation = %s' % self._last_observation) + \
+                     ('New observation = %s' % self._new_observation)
+            return output
+
         else:
             super(TaskOffloadingEnv, self).render(mode=mode)
 
@@ -196,55 +236,44 @@ class TaskOffloadingEnv(Env):
         pass    # nothing to do
 
     def seed(self, seed=None):
-        self._rng, seed = np_random(seed)
-        return [seed]
-
-    def _sample_pose(self):
-        x = np.random.uniform(self.map_x_lim[0], self.map_x_lim[1])
-        y = np.random.uniform(self.map_y_lim[0], self.map_y_lim[1])
-        yaw = np.random.uniform(-np.pi, np.pi)
-
-        pose = Pose(
-            position=Point(x, y, 0.063),
-            orientation=Quaternion(*list(quaternion_from_euler(0, 0, yaw)))
-        )
-        pose_stamped = PoseStamped(
-            header=Header(stamp=rospy.Time.now(), frame_id='map'),
-            pose=pose
-        )
-        return pose_stamped
+        self._rng, seed_ = np_random(seed)
+        if seed is not None:
+            rospy.loginfo('Seed set to %d' % seed)
+        return [seed_]
 
     def _observe(self):
+        self._camera_image_rgb_current = None
+        self._camera_image_depth_current = None
+        while self._camera_image_rgb_current is None or self._camera_image_depth_current is None:
+            with self._camera_image_last_lock:
+                self._camera_image_rgb_current = self._camera_image_rgb_last
+                self._camera_image_depth_current = self._camera_image_depth_last
+            if self._camera_image_rgb_current is None:
+                rospy.wait_for_message('camera/rgb/raw_image', Image)
+            if self._camera_image_rgb_current is None:
+                rospy.wait_for_message('camera/depth/raw_image', Image)
+
+        camera_image_rgb_current = self._cv_bridge.imgmsg_to_cv2(self._camera_image_rgb_current, 'rgb8')
+        camera_image_depth_current = self._cv_bridge.imgmsg_to_cv2(self._camera_image_depth_current, 'passthrough')
+        camera_image_rgb_current = cv2.resize(camera_image_rgb_current, IMAGE_SIZE)
+        camera_image_depth_current = cv2.resize(camera_image_depth_current, IMAGE_SIZE)
+        self._camera_image_rgb_current = self._cv_bridge.cv2_to_imgmsg(camera_image_rgb_current, 'rgb8')
+        self._camera_image_depth_current = self._cv_bridge.cv2_to_imgmsg(camera_image_depth_current, 'passthrough')
+
+        temporal_coherence = (
+            np.sum(np.abs(camera_image_rgb_current - self._camera_image_rgb_last_robot)),
+            np.sum(np.abs(camera_image_depth_current - self._camera_image_depth_last_robot)),
+            np.sum(np.abs(camera_image_rgb_current - self._camera_image_rgb_last_edge)),
+            np.sum(np.abs(camera_image_depth_current - self._camera_image_depth_last_edge))
+        )
+
         rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss = self._network_monitor.measure_latency()
         throughput = self._network_monitor.measure_throughput()
 
         with self._risk_lock:
             risk_value = self._risk_value
         if risk_value is None:
-            risk_value = 5      # unknown => high
-
-        with self._camera_image_last_lock:
-            self._camera_image_rgb_current = self._camera_image_rgb_last
-            self._camera_image_depth_current = self._camera_image_depth_last
-
-        camera_image_rgb_current = self._cv_bridge.imgmsg_to_cv2(self._camera_image_rgb_current, 'rgb8')
-        camera_image_depth_current = self._cv_bridge.imgmsg_to_cv2(self._camera_image_depth_current, 'passthrough')
-
-        camera_image_rgb_current = cv2.resize(camera_image_rgb_current, IMAGE_SIZE)
-        camera_image_depth_current = cv2.resize(camera_image_depth_current, IMAGE_SIZE)
-
-        self._camera_image_rgb_current = self._cv_bridge.cv2_to_imgmsg(camera_image_rgb_current, 'rgb8')
-        self._camera_image_depth_current = self._cv_bridge.cv2_to_imgmsg(camera_image_depth_current, 'passthrough')
-
-        temporal_coherence = np.full(4, np.inf)
-        if self._camera_image_rgb_last_robot is not None:
-            temporal_coherence[0] = np.sum(camera_image_rgb_current - self._camera_image_rgb_last_robot)
-        if self._camera_image_depth_last_robot is not None:
-            temporal_coherence[1] = np.sum(camera_image_depth_current - self._camera_image_depth_last_robot)
-        if self._camera_image_rgb_last_edge is not None:
-            temporal_coherence[2] = np.sum(camera_image_rgb_current - self._camera_image_rgb_last_edge)
-        if self._camera_image_depth_last_edge is not None:
-            temporal_coherence[3] = np.sum(camera_image_depth_current - self._camera_image_depth_last_edge)
+            risk_value = HIGH_RISK_VALUE        # unknown => high
 
         return {
             'rtt': (rtt_min, rtt_avg, rtt_max, rtt_mdev),
@@ -254,31 +283,42 @@ class TaskOffloadingEnv(Env):
             'temporal_coherence': temporal_coherence,
         }
 
-    def _get_reward(self, action, response):
+    def _get_reward(self, response):
         communication_latency = response.communication_latency.to_sec()
         execution_latency = response.execution_latency.to_sec()
         latency = communication_latency + execution_latency
 
-        if action == 0:
+        if self._action == 0:
             energy = self.robot_transmit_power * communication_latency
-        elif action == 1:
+        elif self._action == 1:
             energy = self.robot_compute_power * execution_latency
         else:
             energy = 0
 
         # TODO: get from response
-        m_ap = 0.5 if action == 0 or action == 3 else 0.8
-        confidence = 0.5 if action == 0 or action == 3 else 0.8
+        m_ap = 0.5 if self._action == 0 or self._action == 3 else 0.8
+        confidence = 0.5 if self._action == 0 or self._action == 3 else 0.8
 
-        reward_latency = 1 / latency
-        reward_energy = 1 / energy
+        reward_latency = 1 / latency if latency != 0 else 10
+        reward_energy = 1 / energy if energy != 0 else 10
         reward_model = m_ap + confidence
 
+        # TODO: add risk and temporal coherence
         reward = self.w_latency * reward_latency + self.w_energy * reward_energy + self.w_model * reward_model
         return reward
 
     def _done(self):
-        return self._move_base_client.get_state() == GoalStatus.SUCCEEDED
+        # move base does not reach exactly the goal, so we allow an error margin of 0.5 (TODO: why?)
+        with self._position_current_lock:
+            if self._position_current is not None:
+                return np.linalg.norm(self._position_goal - self._position_current) < 0.5
+        return False
+
+    def _save_position(self, feedback):
+        with self._position_current_lock:
+            x = feedback.base_position.pose.position.x
+            y = feedback.base_position.pose.position.y
+            self._position_current = np.array((x, y))
 
     def _save_camera_image(self, image_rgb, image_depth):
         with self._camera_image_last_lock:
@@ -287,4 +327,4 @@ class TaskOffloadingEnv(Env):
 
     def _save_risk_value(self, risk_value):
         with self._risk_lock:
-            self._risk_value = risk_value
+            self._risk_value = risk_value.data

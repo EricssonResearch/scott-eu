@@ -2,30 +2,31 @@
 
 from __future__ import print_function
 
+import os
 import sys
 import argparse
 import rospy
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Flatten
+from gym.spaces import flatdim
+from keras import Input, Model
+from keras.layers import Flatten, Dense
 from keras.optimizers import Adam
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
-from turtlebot2i_edge import TaskOffloadingEnv, NaiveAgent
+from rl.callbacks import TrainIntervalLogger
+from turtlebot2i_edge import TaskOffloadingEnv, TaskOffloadingProcessor, NaiveAgent
 
 
 def get_model(env):
-    model = Sequential()
-    model.add(Flatten(input_shape=(1,) + env.observation_space.shape))
-    model.add(Dense(16))
-    model.add(Activation('relu'))
-    model.add(Dense(16))
-    model.add(Activation('relu'))
-    model.add(Dense(16))
-    model.add(Activation('relu'))
-    model.add(Dense(env.action_space.n))
-    model.add(Activation('linear'))
-    print(model.summary())
+    inputs = Input(shape=(1, flatdim(env.observation_space)))
+    x = Flatten()(inputs)
+    x = Dense(16, activation='relu')(x)
+    x = Dense(16, activation='relu')(x)
+    x = Dense(16, activation='relu')(x)
+    outputs = Dense(env.action_space.n)(x)
+
+    model = Model(inputs=inputs, outputs=outputs)
+    model.summary()
     return model
 
 
@@ -42,36 +43,41 @@ def main():
     rospy.loginfo('Mode: %s' % args.mode)
 
     rospy.loginfo('Getting parameters...')
-    map_x_lim = (rospy.get_param('~map/x/min'), rospy.get_param('~map/x/max'))
-    map_y_lim = (rospy.get_param('~map/y/min'), rospy.get_param('~map/y/max'))
     vrep_host = rospy.get_param('~vrep/host')
     vrep_port = rospy.get_param('~vrep/port')
+    vrep_models_path = rospy.get_param('/vrep/models_path')
     mec_server = rospy.get_param('/network/mec_server/host')
+    move_base_goals = rospy.get_param('~rl/goals')
     robot_name = rospy.get_param('~robot/name')
     robot_compute_power = rospy.get_param('~rl/robot/compute_power')
     robot_transmit_power = rospy.get_param('~rl/robot/transmit_power')
     w_latency = rospy.get_param('~rl/reward/w_latency')
     w_energy = rospy.get_param('~rl/reward/w_energy')
     w_model = rospy.get_param('~rl/reward/w_model')
+    models_path = rospy.get_param('~models/path')
 
-    rospy.loginfo('Map limit for x: (%f, %f)' % (map_x_lim[0], map_x_lim[1]))
-    rospy.loginfo('Map limits for y: (%f, %f)' % (map_y_lim[0], map_y_lim[1]))
     rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
     rospy.loginfo('MEC server: %s' % mec_server)
+    rospy.loginfo('Move base goals: %s' % str(move_base_goals))
     rospy.loginfo('Robot name: %s' % robot_name)
     rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
     rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
     rospy.loginfo('Latency weight: %f' % w_latency)
     rospy.loginfo('Energy weight: %f' % w_energy)
     rospy.loginfo('Model weight: %f' % w_model)
+    rospy.loginfo('Path of models: %s' % models_path)
+
+    if not os.path.exists(models_path):
+        os.mkdir(models_path)
+    filepath = os.path.join(models_path, '%s_weights.h5f' % args.agent)
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
         vrep_host=vrep_host,
         vrep_port=vrep_port,
+        vrep_models_path=vrep_models_path,
         mec_server=mec_server,
-        map_x_lim=map_x_lim,
-        map_y_lim=map_y_lim,
+        move_base_goals=move_base_goals,
         robot_name=robot_name,
         robot_compute_power=robot_compute_power,
         robot_transmit_power=robot_transmit_power,
@@ -82,9 +88,9 @@ def main():
     env.seed(1)
 
     rospy.loginfo('Initializing agent...')
-    filepath = '%s_weights.h5f' % args.agent
     if args.agent == 'dqn':
         agent = DQNAgent(
+            processor=TaskOffloadingProcessor(),
             model=get_model(env),
             nb_actions=env.action_space.n,
             memory=SequentialMemory(limit=50000, window_length=1),
@@ -105,8 +111,9 @@ def main():
         rospy.loginfo('Training...')
         agent.fit(
             env=env,
-            nb_steps=1000,
-            visualize=True,
+            nb_steps=100,
+            visualize=False,
+            callbacks=[TrainIntervalLogger(1)],
             verbose=2
         )
         rospy.loginfo('Saving weights to %s' % filepath)
@@ -116,7 +123,7 @@ def main():
         agent.test(
             env=env,
             nb_episodes=5,
-            visualize=True
+            visualize=False
         )
     else:
         raise ValueError
