@@ -48,6 +48,8 @@ def main():
     static_objects = rospy.get_param('/vrep/static_objects')
     dynamic_objects = rospy.get_param('/vrep/dynamic_objects')
     robot = rospy.get_param('~robot/name')
+    if '_' in robot:
+        robot = robot.split('_')[0] + '#' + robot.split('_')[1]
     rospy.loginfo('V-REP remote API server: %s:%d' % (host, port))
     rospy.loginfo('Robot: %s' % robot)
 
