@@ -15,10 +15,13 @@
     </include>
 
     <group ns="$(arg robot_name)">
-        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" output="screen"/>
+        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" output="screen">
+            <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_edge.yaml"/>
+        </node>
+
         <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py" output="screen"/>
 
-        <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" args="dqn test" output="screen">
+        <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" args="dqn train" output="screen">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/rl.yaml"/>
 
             <param name="robot/name" type="str" value="$(arg robot_name)"/>

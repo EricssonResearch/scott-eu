@@ -4,6 +4,5 @@ network:
     position:
       x: 7
       y: 4.5
-      z: 0
   robots:
     n: 1

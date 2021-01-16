@@ -12,6 +12,8 @@
         </include>
 
         <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" ns="$(arg robot_name)"
-              output="screen"/>
+              output="screen">
+            <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_edge.yaml"/>
+        </node>
     </group>
 </launch>

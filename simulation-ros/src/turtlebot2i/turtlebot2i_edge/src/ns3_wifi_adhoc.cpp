@@ -104,13 +104,12 @@ int main(int argc, char **argv) {
     ROS_INFO("Getting parameters from parameter server...");
     if (!ros::param::get("/network/mec_server/position/x", mec_server_pos.x) ||
         !ros::param::get("/network/mec_server/position/y", mec_server_pos.y) ||
-        !ros::param::get("/network/mec_server/position/z", mec_server_pos.z) ||
         !ros::param::get("/network/robots/n", n_robots)) {
         ROS_ERROR("ROS parameter server does not contain the necessary parameters");
         return -1;
     }
     ROS_INFO("Number of robots: %d", n_robots);
-    ROS_INFO("Position of MEC server: {%f, %f, %f}", mec_server_pos.x, mec_server_pos.y, mec_server_pos.z);
+    ROS_INFO("Position of MEC server: {%f, %f}", mec_server_pos.x, mec_server_pos.y);
 
     ROS_INFO("Setting up network...");
     std::pair<ns3::NodeContainer,ns3::NodeContainer> nodes = setupNetwork(n_robots, mec_server_pos);

@@ -12,6 +12,7 @@ list(
   sensor_msgs
   geometry_msgs
   move_base_msgs
+  kobuki_msgs
   actionlib_msgs
   turtlebot2i_scene_graph
 )

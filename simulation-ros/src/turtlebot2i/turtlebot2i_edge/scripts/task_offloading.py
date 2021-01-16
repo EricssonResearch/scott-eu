@@ -13,7 +13,7 @@ from keras.optimizers import Adam
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
-from rl.callbacks import TrainIntervalLogger
+from rl.callbacks import ModelIntervalCheckpoint, TrainIntervalLogger, FileLogger
 from turtlebot2i_edge import TaskOffloadingEnv, TaskOffloadingProcessor, NaiveAgent
 
 
@@ -45,7 +45,6 @@ def main():
     rospy.loginfo('Getting parameters...')
     vrep_host = rospy.get_param('~vrep/host')
     vrep_port = rospy.get_param('~vrep/port')
-    vrep_models_path = rospy.get_param('/vrep/models_path')
     mec_server = rospy.get_param('/network/mec_server/host')
     move_base_goals = rospy.get_param('~rl/goals')
     robot_name = rospy.get_param('~robot/name')
@@ -53,8 +52,9 @@ def main():
     robot_transmit_power = rospy.get_param('~rl/robot/transmit_power')
     w_latency = rospy.get_param('~rl/reward/w_latency')
     w_energy = rospy.get_param('~rl/reward/w_energy')
-    w_model = rospy.get_param('~rl/reward/w_model')
     models_path = rospy.get_param('~models/path')
+    if '_' in robot_name:
+        robot_name = robot_name.split('_')[0] + '#' + robot_name.split('_')[1]
 
     rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
     rospy.loginfo('MEC server: %s' % mec_server)
@@ -62,20 +62,19 @@ def main():
     rospy.loginfo('Robot name: %s' % robot_name)
     rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
     rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
-    rospy.loginfo('Latency weight: %f' % w_latency)
-    rospy.loginfo('Energy weight: %f' % w_energy)
-    rospy.loginfo('Model weight: %f' % w_model)
+    rospy.loginfo('Latency weight in reward: %f' % w_latency)
+    rospy.loginfo('Energy weight in reward: %f' % w_energy)
     rospy.loginfo('Path of models: %s' % models_path)
 
     if not os.path.exists(models_path):
         os.mkdir(models_path)
-    filepath = os.path.join(models_path, '%s_weights.h5f' % args.agent)
+    model_path = os.path.join(models_path, '%s_weights.h5f' % args.agent)
+    log_path = os.path.join(models_path, '%s_logs.h5f' % args.agent)
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
         vrep_host=vrep_host,
         vrep_port=vrep_port,
-        vrep_models_path=vrep_models_path,
         mec_server=mec_server,
         move_base_goals=move_base_goals,
         robot_name=robot_name,
@@ -83,7 +82,6 @@ def main():
         robot_transmit_power=robot_transmit_power,
         w_latency=w_latency,
         w_energy=w_energy,
-        w_model=w_model
     )
     env.seed(1)
 
@@ -100,8 +98,8 @@ def main():
         )
         agent.compile(Adam(lr=1e-3), metrics=['mae'])
         if args.mode != 'train':
-            rospy.loginfo('Loading weights from %s...' % filepath)
-            agent.load_weights(filepath)
+            rospy.loginfo('Loading weights from %s...' % model_path)
+            agent.load_weights(model_path)
     else:
         agent = NaiveAgent(mode=args.agent)
         if args.mode == 'train':
@@ -111,13 +109,13 @@ def main():
         rospy.loginfo('Training...')
         agent.fit(
             env=env,
-            nb_steps=100,
-            visualize=False,
-            callbacks=[TrainIntervalLogger(1)],
+            nb_steps=1000,
+            visualize=True,
+            callbacks=[ModelIntervalCheckpoint(model_path, 100), TrainIntervalLogger(10), FileLogger(log_path)],
             verbose=2
         )
-        rospy.loginfo('Saving weights to %s' % filepath)
-        agent.save_weights(filepath, overwrite=True)
+        rospy.loginfo('Saving weights to %s' % model_path)
+        agent.save_weights(model_path, overwrite=True)
     elif args.mode == 'test':
         rospy.loginfo('Testing...')
         agent.test(

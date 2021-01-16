@@ -4,4 +4,5 @@ sensor_msgs/Image image_depth
 ---
 duration communication_latency
 duration execution_latency
+float32 model_m_ap
 turtlebot2i_scene_graph/SceneGraph scene_graph
