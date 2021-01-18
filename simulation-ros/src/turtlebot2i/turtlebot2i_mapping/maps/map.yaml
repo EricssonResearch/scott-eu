@@ -1,11 +1,21 @@
-#image: map_1.pgm         # Default#
-#image: map_test1.pgm      # Risk mitigation test
-image: map_training.pgm  # Risk mitigation training
-resolution: 0.050000
-#origin: [-3.0, -5.0, 0.000000]   # Default
-#origin: [-5.5, -5.0, 0.000000]    # Risk mitigation test
-origin: [-10.0, -7.5, 0.000000]  # Risk mitigation training
+resolution: 0.05
+
+# Default
+#image: map_1.pgm
+#origin: [-3.0, -5.0, 0.000000]
+
+# Risk mitigation test
+#image: map_test1.pgm
+#origin: [-5.5, -5.0, 0.000000]
+
+# Risk mitigation training
+#image: map_training.pgm
+#origin: [-10.0, -7.5, 0.000000]
+
+# Task offloading training
+image: map_edge_training.pgm
+origin: [-30, -30, 0]
+
 negate: 0
 occupied_thresh: 0.65
 free_thresh: 0.196
-

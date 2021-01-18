@@ -91,12 +91,22 @@ if clientID!=-1:
         returnCode, objects_handles,  intData, objects_orientations, stringData=vrep.simxGetObjectGroupData(clientID,objectType,dataType,operationMode)
 
         # get indexes of relevant elements in the warehouse
-        ground_object = 'Floor10x10m'#'Floor10x15m' #'Floor15x20m' #
-        obj_list = [ground_object, 'ConveyorBeltBody', 'ShelfBody', 'DockStationBody', 'product', 'ConcreteBox']
+        ground_object = 'Floor50x50m'   # set here the right floor
+        obj_list = [
+            ground_object,
+            'ConveyorBeltBody',
+            'ShelfBody',
+            'dockstation_body',
+            'product',
+            'ConcreteBox',
+            '_doorBoard',
+            'Laptop',
+            'Table'
+        ]
 
         obj_index_list = [objects_names.index(i) for i in objects_names if re.match(r'(#\d|)\b|'.join(obj_list)+'*', i)]
-
         obj_index_list += [objects_names.index(i) for i in objects_names if re.match('.*HighWall.*', i)]
+        obj_index_list += [objects_names.index(i) for i in objects_names if re.match('.*HighPillar.*', i)]
 
         # filter the necessary object poses and orientations
         obj_pos_list = np.reshape(np.array(objects_poses), (-1,3))
@@ -161,7 +171,7 @@ if clientID!=-1:
     map_width  = obj_node_list[ground_object].size[0]+0.1
     map_height = obj_node_list[ground_object].size[1]+0.1
 
-    map_resolution = 0.10
+    map_resolution = 0.05
 
     map_cells_x = int(round(map_width / map_resolution))
     map_cells_y = int(round(map_height / map_resolution))
