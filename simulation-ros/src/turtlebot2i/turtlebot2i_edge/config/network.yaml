@@ -2,7 +2,7 @@ network:
   mec_server:
     host: mec_server
     position:
-      x: 7
-      y: 4.5
+      x: 15
+      y: 15
   robots:
     n: 1
