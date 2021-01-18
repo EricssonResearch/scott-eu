@@ -50,6 +50,6 @@ TrajectoryPlannerROS:
 ## clearing_rotation_allowed : false
 #
 ## dwa: false
- xy_goal_tolerance: 0.5
+ xy_goal_tolerance: 0.1
  meter_scoring: true
  

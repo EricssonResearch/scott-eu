@@ -9,12 +9,12 @@ global_costmap:
      obstacle_range: 2.5
      raytrace_range: 3.0
  inflation_layer:
-     inflation_radius: 0.3 #0.15 #
+     inflation_radius: 0.3
      cost_scaling_factor: 10
  global_frame: map
  robot_base_frame: turtlebot2i/base_footprint
- update_frequency: 5 #10
+ update_frequency: 5
  rolling_window: true
- width: 40.0
- height: 40.0
+ width: 100.0
+ height: 100.0
  resolution: 0.05
