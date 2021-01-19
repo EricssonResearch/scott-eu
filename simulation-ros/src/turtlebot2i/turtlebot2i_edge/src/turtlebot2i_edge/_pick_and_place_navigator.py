@@ -2,6 +2,7 @@ import threading
 import numpy as np
 import rospy
 import actionlib
+from gym.utils.seeding import np_random
 from tf.transformations import quaternion_from_euler
 from std_msgs.msg import Header
 from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
@@ -23,8 +24,8 @@ class PickAndPlaceNavigator:
         # it is recursive because check_goal() calls send_goal(), which can call again check_goal() for a feedback
         self._lock = threading.RLock()
 
-        if seed is not None:
-            np.random.seed(seed)
+        self._rng = None
+        self.seed(seed=seed)
 
     def start(self):
         rospy.loginfo('Navigator started')
@@ -38,17 +39,20 @@ class PickAndPlaceNavigator:
             self._move_base_client.cancel_all_goals()
         rospy.loginfo('Navigator stopped')
 
+    def seed(self, seed=None):
+        self._rng, seed_ = np_random(seed)
+
     def _send_goal(self):
         if self._goal is None or self._goal in self.place_goals:
             goals = self.pick_goals
         else:
             goals = self.place_goals
 
-        idx_goal = np.random.choice(len(goals))
+        idx_goal = self._rng.choice(len(goals))
         self._goal = goals[idx_goal]
         x, y = self._goal
         z = 0.063
-        yaw = np.random.uniform(-np.pi, np.pi)
+        yaw = self._rng.uniform(-np.pi, np.pi)
 
         pose = Pose(
             position=Point(x, y, z),
