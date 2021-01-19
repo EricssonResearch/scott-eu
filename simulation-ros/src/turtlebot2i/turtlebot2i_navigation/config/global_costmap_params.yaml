@@ -1,8 +1,8 @@
 global_costmap:
  plugins: 
-     - {name: static_map,       type: "costmap_2d::StaticLayer"}
-     - {name: obstacles,        type: "costmap_2d::ObstacleLayer"}
-     - {name: inflation_layer,  type: "costmap_2d::InflationLayer"}
+     - {name: static_map, type: "costmap_2d::StaticLayer"}
+     - {name: obstacles, type: "costmap_2d::ObstacleLayer"}
+     - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
  obstacles:
      observation_sources: base_scan
      base_scan: {data_type: LaserScan, sensor_frame: turtlebot2i/lidar/scan, clearing: true, marking: true, topic: /turtlebot2i/lidar/scan}
