@@ -71,8 +71,8 @@ find_library(
   REQUIRED
 )
 find_library(
-  NS3_NETANIM_LIBRARY
-  NAMES ns3-dev-netanim-optimized ns3-dev-netanim-debug
+  NS3_BUILDINGS_LIBRARY
+  NAMES ns3-dev-buildings-optimized ns3-dev-netanim-debug
   HINTS $ENV{NS3_ROOT}/build/lib
   REQUIRED
 )
@@ -87,7 +87,7 @@ list(
   ${NS3_TAP_BRIDGE_LIBRARY}
   ${NS3_MOBILITY_LIBRARY}
   ${NS3_STATS_LIBRARY}
-  ${NS3_NETANIM_LIBRARY}
+  ${NS3_BUILDINGS_LIBRARY}
 )
 
 catkin_python_setup()

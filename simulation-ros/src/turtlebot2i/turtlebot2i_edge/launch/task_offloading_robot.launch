@@ -1,8 +1,6 @@
 <launch>
     <arg name="robot_name" default="turtlebot2i"/>
 
-    <param name="/vrep/models_path" value="$(find turtlebot2i_description)/v-rep_model/warehouse_scene/vrep_models"/>
-
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
     </include>

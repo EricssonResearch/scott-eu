@@ -19,7 +19,7 @@
 #include <ns3/point-to-point-module.h>
 #include <ns3/tap-bridge-module.h>
 #include <ns3/mobility-module.h>
-#include <ns3/netanim-module.h>
+#include <ns3/buildings-module.h>
 
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
@@ -58,10 +58,22 @@ void setupWifi(const ns3::NodeContainer &robots, const ns3::Ptr<ns3::Node> &mec_
     ns3::MobilityHelper mobility;
     mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
     mobility.Install(nodes);
+    ns3::BuildingsHelper::Install(nodes);
 
     // set position of mec_server
     ns3::Ptr<ns3::MobilityModel> mobility_model = mec_server->GetObject<ns3::MobilityModel>();
     mobility_model->SetPosition(mec_server_pos);
+}
+
+ns3::Ptr<ns3::Building> setupWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y) {
+    ns3::Ptr<ns3::Building> warehouse = ns3::CreateObject<ns3::Building>();
+    warehouse->SetBoundaries(boundaries);
+    warehouse->SetBuildingType (ns3::Building::Commercial);
+    warehouse->SetExtWallsType (ns3::Building::ConcreteWithWindows);
+    warehouse->SetNFloors(1);
+    warehouse->SetNRoomsX(n_rooms_x);
+    warehouse->SetNRoomsY(n_rooms_y);
+    return warehouse;
 }
 
 std::pair<ns3::NodeContainer,ns3::NodeContainer> setupNetwork(int n_robots, ns3::Vector mec_server_pos) {
@@ -96,15 +108,25 @@ void runRosNode(const ns3::NodeContainer &robots) {
 }
 
 int main(int argc, char **argv) {
-    int n_robots;
     ns3::Vector mec_server_pos;
+    ns3::Box warehouse_boundaries;
+    int n_robots, n_rooms_x, n_rooms_y;
+    double x_min, x_max, y_min, y_max;
 
     ros::init(argc, argv, "ns3_wifi_adhoc");
 
     ROS_INFO("Getting parameters from parameter server...");
     if (!ros::param::get("/network/mec_server/position/x", mec_server_pos.x) ||
         !ros::param::get("/network/mec_server/position/y", mec_server_pos.y) ||
-        !ros::param::get("/network/robots/n", n_robots)) {
+        !ros::param::get("/network/robots/n", n_robots) ||
+        !ros::param::get("/network/warehouse/rooms/x_min", warehouse_boundaries.xMin) ||
+        !ros::param::get("/network/warehouse/rooms/x_max", warehouse_boundaries.xMax) ||
+        !ros::param::get("/network/warehouse/rooms/y_min", warehouse_boundaries.yMin) ||
+        !ros::param::get("/network/warehouse/rooms/y_max", warehouse_boundaries.yMax) ||
+        !ros::param::get("/network/warehouse/rooms/z_min", warehouse_boundaries.zMin) ||
+        !ros::param::get("/network/warehouse/rooms/z_max", warehouse_boundaries.zMax) ||
+        !ros::param::get("/network/warehouse/rooms/n_x", n_rooms_x) ||
+        !ros::param::get("/network/warehouse/rooms/n_y", n_rooms_y)) {
         ROS_ERROR("ROS parameter server does not contain the necessary parameters");
         return -1;
     }
@@ -114,6 +136,9 @@ int main(int argc, char **argv) {
     ROS_INFO("Setting up network...");
     std::pair<ns3::NodeContainer,ns3::NodeContainer> nodes = setupNetwork(n_robots, mec_server_pos);
     ns3::NodeContainer& robots = nodes.first;
+
+    ROS_INFO("Setting up warehouse...");
+    ns3::Ptr<ns3::Building> warehouse = setupWarehouse(warehouse_boundaries, n_rooms_x, n_rooms_y);
 
     ROS_INFO("Starting ROS node...");
     std::thread thread(runRosNode, robots);     // on a second thread, because...
