@@ -1,5 +1,6 @@
 from turtlebot2i_edge._naive_agent import NaiveAgent
 from turtlebot2i_edge._vrep_robot_controller import VrepRobotController
+from turtlebot2i_edge._pick_and_place_navigator import PickAndPlaceNavigator
 from turtlebot2i_edge._network_monitor import NetworkMonitor
 from turtlebot2i_edge._task_offloading_env import TaskOffloadingEnv
 from turtlebot2i_edge._task_offloading_processor import TaskOffloadingProcessor

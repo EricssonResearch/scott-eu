@@ -1,0 +1,74 @@
+import threading
+import numpy as np
+import rospy
+import actionlib
+from tf.transformations import quaternion_from_euler
+from std_msgs.msg import Header
+from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+
+
+class PickAndPlaceNavigator:
+    def __init__(self, pick_goals, place_goals, seed=None):
+        self.pick_goals = pick_goals
+        self.place_goals = place_goals
+        self._goal = None
+        self._active = False
+
+        rospy.loginfo('Waiting for ROS action server to move base...')
+        self._move_base_client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+        self._move_base_client.wait_for_server()
+
+        # this lock protects self._active and self._move_base_client
+        # it is recursive because check_goal() calls send_goal(), which can call again check_goal() for a feedback
+        self._lock = threading.RLock()
+
+        if seed is not None:
+            np.random.seed(seed)
+
+    def start(self):
+        rospy.loginfo('Navigator started')
+        with self._lock:
+            self._active = True
+        self._send_goal()
+
+    def stop(self):
+        with self._lock:
+            self._active = False
+            self._move_base_client.cancel_all_goals()
+        rospy.loginfo('Navigator stopped')
+
+    def _send_goal(self):
+        if self._goal is None or self._goal in self.place_goals:
+            goals = self.pick_goals
+        else:
+            goals = self.place_goals
+
+        idx_goal = np.random.choice(len(goals))
+        self._goal = goals[idx_goal]
+        x, y = self._goal
+        z = 0.063
+        yaw = np.random.uniform(-np.pi, np.pi)
+
+        pose = Pose(
+            position=Point(x, y, z),
+            orientation=Quaternion(*list(quaternion_from_euler(0, 0, yaw)))
+        )
+        pose_stamped = PoseStamped(
+            header=Header(stamp=rospy.Time.now(), frame_id='map'),
+            pose=pose
+        )
+        goal = MoveBaseGoal(target_pose=pose_stamped)
+
+        with self._lock:
+            self._move_base_client.send_goal(goal, feedback_cb=self._check_goal)
+        rospy.loginfo('New goal: %s' % str(self._goal))
+
+    def _check_goal(self, feedback):
+        # move base reaches the goal with a certain tolerance (see xy_goal_tolerance in local planner parameters)
+        position = np.array((feedback.base_position.pose.position.x, feedback.base_position.pose.position.y))
+        if np.linalg.norm(self._goal - position) < 0.5:
+            with self._lock:
+                if self._active:
+                    self._move_base_client.cancel_goal()
+            self._send_goal()
