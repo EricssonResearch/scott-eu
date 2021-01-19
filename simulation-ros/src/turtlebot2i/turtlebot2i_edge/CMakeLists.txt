@@ -100,12 +100,12 @@ catkin_package(CATKIN_DEPENDS ${CATKIN_RUN_DEPENDS})
 
 include_directories(include ${catkin_INCLUDE_DIRS} $ENV{NS3_ROOT}/build)
 
-add_executable(${PROJECT_NAME}_ns3_wifi_adhoc src/ns3_wifi_adhoc.cpp)
-set_target_properties(${PROJECT_NAME}_ns3_wifi_adhoc PROPERTIES OUTPUT_NAME ns3_wifi_adhoc PREFIX "")
-target_link_libraries(${PROJECT_NAME}_ns3_wifi_adhoc ${catkin_LIBRARIES} ${Threads_LIBRARIES} ${NS3_LIBRARIES})
+add_executable(${PROJECT_NAME}_ns3_wifi src/ns3_wifi.cpp)
+set_target_properties(${PROJECT_NAME}_ns3_wifi PROPERTIES OUTPUT_NAME ns3_wifi PREFIX "")
+target_link_libraries(${PROJECT_NAME}_ns3_wifi ${catkin_LIBRARIES} ${Threads_LIBRARIES} ${NS3_LIBRARIES})
 
 install(
-  TARGETS ${PROJECT_NAME}_ns3_wifi_adhoc
+  TARGETS ${PROJECT_NAME}_ns3_wifi
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -125,6 +125,6 @@ install(
 )
 
 install(
-  PROGRAMS scripts/activate_netns.sh scripts/netns_wifi_adhoc.py
+  PROGRAMS scripts/activate_netns.sh scripts/netns_wifi.py
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts
 )

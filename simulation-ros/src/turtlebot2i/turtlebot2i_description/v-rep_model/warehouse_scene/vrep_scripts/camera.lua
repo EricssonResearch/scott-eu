@@ -42,7 +42,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 	end
 	
 	rgb_enabled=true --camera
-	depth_enabled=true --camera
+	depth_enabled=false --camera
 	
 	camera_handle=sim.getObjectAssociatedWithScript(sim.handle_self)
 	camera_name=sim.getObjectName(camera_handle)
