@@ -4,10 +4,9 @@ Make sure to have the remote API server running in V-REP.
 By default, V-REP launches it on port 19997, so you do not need to do anything if you connect to this port.
 See https://forum.coppeliarobotics.com/viewtopic.php?t=7514.
 
-Alternatively, you can open a server on other ports adding the following in a child script of a V-REP scene:
-simRemoteApi.start(19999)
+Alternatively, you can open a server on other ports in two ways: temporary or continuous.
 
-http://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm
+See https://www.coppeliarobotics.com/helpFiles/en/remoteApiServerSide.htm
 """
 
 import vrep
@@ -17,26 +16,31 @@ import socket
 class VrepClient(object):
     def __init__(self):
         self.clientID = -1
+        self._host = None
+        self._port = None
 
-    def start_connection(self, host, port):
+    def open_connection(self, host, port):
         """Opens remote API connection with V-REP. If there are other open connections, they are closed.
 
         :param host: hostname or IP address of V-REP remote API server
         :param port: port of V-REP remote API server
         """
-        # close old connection
-        if self.is_connected():
-            vrep.simxFinish(self.clientID)
-
-        # start new connection
-        ip = socket.gethostbyname(host)
-        self.clientID = vrep.simxStart(ip, port, True, True, 5000, 5)
-        if not self.is_connected():
+        self._host = socket.gethostbyname(host)
+        self._port = port
+        self.close_connection()
+        self.clientID = vrep.simxStart(self._host, self._port, True, True, 5000, 5)
+        if not self._is_connected():
             raise Exception('Connection to V-REP remote API server failed')
 
     def close_connection(self):
         """Closes remote API connection with V-REP."""
-        vrep.simxFinish(self.clientID)
+        if self._is_connected():
+            vrep.simxFinish(self.clientID)
 
-    def is_connected(self):
+    def reset_connection(self):
+        """Closes and re-opens connection to the same remote API server"""
+        self.close_connection()
+        self.open_connection(self._host, self._port)
+
+    def _is_connected(self):
         return self.clientID != -1

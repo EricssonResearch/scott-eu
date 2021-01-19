@@ -55,7 +55,7 @@ def main():
 
     rospy.loginfo('Connecting to V-REP, can take a while...')
     extractor = VrepObjectExtractor()
-    extractor.start_connection(host, port)
+    extractor.open_connection(host, port)
     extractor.load_objects(walls, robots, static_objects, dynamic_objects)
     rospy.loginfo('Initialization completed')
 

@@ -112,9 +112,9 @@ class VrepObjectExtractor(VrepClient):
     def __init__(self):
         super(VrepObjectExtractor, self).__init__()
         self.walls = None
-        self.robots = None
         self.static_objects = None
         self.dynamic_objects = None
+        self.robots = None
 
     def load_objects(self, walls, robots, static_objects, dynamic_objects):
         """Loads specified objects.
@@ -125,10 +125,10 @@ class VrepObjectExtractor(VrepClient):
         :param dynamic_objects: names of the dynamic objects in the V-REP scene
         """
         self.walls = self._get_objects(walls)
-        self.robots = self._get_robots(robots)
         self.static_objects = self._get_objects(static_objects)
         self.dynamic_objects = self._get_dynamic_objects(dynamic_objects)
-        objects = self.walls + self.robots + self.static_objects + self.dynamic_objects
+        self.robots = self._get_robots(robots)
+        objects = self.walls + self.static_objects + self.dynamic_objects + self.robots
         for object_ in objects:
             rospy.loginfo('%s found' % object_.name)
 
@@ -183,24 +183,36 @@ class VrepObjectExtractor(VrepClient):
         return visible_objects
 
     def refresh_objects(self):
-        """Refreshes dynamic objects and robots."""
+        """Refreshes robots and dynamic objects."""
+        # refresh handles
+        scene_restarted = False
+        objects = self.dynamic_objects + self.robots
+        for object_ in objects:
+            object_handle = self._get_object_handle(object_.name)
+            if object_handle != object_.handle:
+                object_.handle = object_handle
+                scene_restarted = True
+
+        # reload dynamic objects and robots if scene has been restarted
+        if scene_restarted:
+            rospy.logwarn('Reloading dynamic objects and robots...')
+            dynamic_objects = [object_.name for object_ in self.dynamic_objects]
+            robots = [robot.name for robot in self.robots]
+            self.reset_connection()
+            self.dynamic_objects = self._get_dynamic_objects(dynamic_objects)
+            self.robots = self._get_robots(robots)
+
+        # refresh dynamic objects
         for dynamic_object in self.dynamic_objects:
             dynamic_object_info = self._get_object_info(dynamic_object.handle, vrep.simx_opmode_buffer)
             if dynamic_object_info is None:
                 rospy.logwarn('Streaming not ready for %s, using blocking mode (slower)...' % dynamic_object.name)
                 dynamic_object_info = self._get_object_info(dynamic_object.handle, vrep.simx_opmode_blocking)
-                self._init_dynamic_object_streaming(dynamic_object.handle)  # because blocking request cancels streaming
+                self._init_dynamic_object_streaming(dynamic_object.handle)      # blocking request cancels streaming
             dynamic_object.set_info(*dynamic_object_info)
 
+        # refresh robots
         for robot in self.robots:
-            # robot handle changed => re-initialize (e.g. robot re-loaded in reinforcement learning environment)
-            robot_handle = self._get_object_handle(robot.name)
-            if robot_handle != robot.handle:
-                robot.handle = robot_handle
-                robot.vision_sensor.handle = self._get_object_handle(robot.vision_sensor.name)
-                self._init_dynamic_object_streaming(robot_handle)
-                self._init_vision_sensor_streaming(robot.vision_sensor.handle)
-
             robot_info = self._get_object_info(robot.handle, vrep.simx_opmode_buffer)
             if robot_info is None:
                 rospy.logwarn('Streaming not ready for %s, using blocking mode (slower)...' % robot.name)
