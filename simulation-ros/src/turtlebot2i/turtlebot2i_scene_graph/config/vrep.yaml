@@ -26,6 +26,15 @@ vrep:
 
       80cmHighWall2000cm, 80cmHighWall2000cm0, 80cmHighWall2000cm1, 80cmHighWall2000cm2, 80cmHighWall2000cm3,
       80cmHighWall2000cm4, 80cmHighWall2000cm5, 80cmHighWall2000cm6, 80cmHighWall2000cm7, 80cmHighWall2000cm8,
+
+      240cmHighWall910cm, 240cmHighWall910cm0, 240cmHighWall910cm1, 240cmHighWall910cm2, 240cmHighWall910cm3,
+      240cmHighWall910cm4, 240cmHighWall910cm5, 240cmHighWall910cm6, 240cmHighWall910cm7, 240cmHighWall910cm8,
+
+      240cmHighWall750cm, 240cmHighWall750cm0, 240cmHighWall750cm1, 240cmHighWall750cm2, 240cmHighWall750cm3,
+      240cmHighWall750cm4, 240cmHighWall750cm5, 240cmHighWall750cm6, 240cmHighWall750cm7, 240cmHighWall750cm8,
+
+      240cmHighWall1000cm, 240cmHighWall1000cm0, 240cmHighWall1000cm1, 240cmHighWall1000cm2, 240cmHighWall1000cm3,
+      240cmHighWall1000cm4, 240cmHighWall1000cm5, 240cmHighWall1000cm6, 240cmHighWall1000cm7, 240cmHighWall1000cm8
   ]
 
   robots: [
