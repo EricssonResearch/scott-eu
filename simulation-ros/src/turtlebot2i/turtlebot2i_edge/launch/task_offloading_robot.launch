@@ -1,6 +1,8 @@
 <launch>
     <arg name="robot_name" default="turtlebot2i"/>
 
+    <rosparam command="load" file="$(find turtlebot2i_edge)/config/pick_and_place.yaml" ns="/"/>
+
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
@@ -22,7 +24,6 @@
         <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" args="dqn train" output="screen">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/rl.yaml"/>
 
-            <param name="robot/name" type="str" value="$(arg robot_name)"/>
             <param name="vrep/host" type="str" value="global"/>
             <param name="vrep/port" type="int" value="20002"/>
             <param name="models/path" type="str" value="$(find turtlebot2i_edge)/models"/>

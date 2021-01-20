@@ -20,7 +20,7 @@ class PickAndPlaceNavigator:
         self._move_base_client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
         self._move_base_client.wait_for_server()
 
-        # this lock protects self._active and self._move_base_client
+        # this lock protects self._active, self._goal and self._move_base_client
         # it is recursive because check_goal() calls send_goal(), which can call again check_goal() for a feedback
         self._lock = threading.RLock()
 
@@ -28,7 +28,7 @@ class PickAndPlaceNavigator:
         self.seed(seed=seed)
 
     def start(self):
-        rospy.loginfo('Navigator started')
+        rospy.loginfo('Pick-and-place navigator started')
         with self._lock:
             self._active = True
         self._send_goal()
@@ -36,21 +36,25 @@ class PickAndPlaceNavigator:
     def stop(self):
         with self._lock:
             self._active = False
+            self._goal = None
             self._move_base_client.cancel_all_goals()
-        rospy.loginfo('Navigator stopped')
+        rospy.loginfo('Pick-and-place navigator stopped')
 
     def seed(self, seed=None):
         self._rng, seed_ = np_random(seed)
 
     def _send_goal(self):
-        if self._goal is None or self._goal in self.place_goals:
-            goals = self.pick_goals
-        else:
-            goals = self.place_goals
+        with self._lock:
+            if self._goal is None or self._goal in self.place_goals:
+                goals = self.pick_goals
+            else:
+                goals = self.place_goals
 
         idx_goal = self._rng.choice(len(goals))
-        self._goal = goals[idx_goal]
-        x, y = self._goal
+        with self._lock:
+            self._goal = goals[idx_goal]
+
+        x, y = goals[idx_goal]
         z = 0.063
         yaw = self._rng.uniform(-np.pi, np.pi)
 
@@ -71,8 +75,8 @@ class PickAndPlaceNavigator:
     def _check_goal(self, feedback):
         # move base reaches the goal with a certain tolerance (see xy_goal_tolerance in local planner parameters)
         position = np.array((feedback.base_position.pose.position.x, feedback.base_position.pose.position.y))
-        if np.linalg.norm(self._goal - position) < 0.5:
-            with self._lock:
+        with self._lock:
+            if np.linalg.norm(self._goal - position) < 0.5:
                 if self._active:
                     self._move_base_client.cancel_goal()
-            self._send_goal()
+                    self._send_goal()

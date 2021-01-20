@@ -111,7 +111,6 @@ int main(int argc, char **argv) {
     ns3::Vector mec_server_pos;
     ns3::Box warehouse_boundaries;
     int n_robots, n_rooms_x, n_rooms_y;
-    double x_min, x_max, y_min, y_max;
 
     ros::init(argc, argv, "ns3_wifi_adhoc");
 

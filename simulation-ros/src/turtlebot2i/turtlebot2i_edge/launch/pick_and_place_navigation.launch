@@ -1,12 +1,12 @@
 <launch>
     <arg name="robot_name" default="turtlebot2i"/>
 
+    <rosparam command="load" file="$(find turtlebot2i_edge)/config/pick_and_place.yaml" ns="/"/>
+
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
 
     <node name="pick_and_place_navigation" pkg="turtlebot2i_edge" type="pick_and_place_navigation.py" ns="turtlebot2i"
-          output="screen">
-        <rosparam command="load" file="$(find turtlebot2i_edge)/config/pick_and_place.yaml"/>
-    </node>
+          output="screen"/>
 </launch>

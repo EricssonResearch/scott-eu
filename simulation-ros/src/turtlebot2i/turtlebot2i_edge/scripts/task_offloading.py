@@ -46,25 +46,23 @@ def main():
     vrep_host = rospy.get_param('~vrep/host')
     vrep_port = rospy.get_param('~vrep/port')
     mec_server = rospy.get_param('/network/mec_server/host')
-    move_base_goals = rospy.get_param('~rl/goals')
-    robot_name = rospy.get_param('~robot/name')
+    pick_goals = rospy.get_param('/pick_and_place/goals/pick')
+    place_goals = rospy.get_param('/pick_and_place/goals/place')
     robot_compute_power = rospy.get_param('~rl/robot/compute_power')
     robot_transmit_power = rospy.get_param('~rl/robot/transmit_power')
     w_latency = rospy.get_param('~rl/reward/w_latency')
     w_energy = rospy.get_param('~rl/reward/w_energy')
     models_path = rospy.get_param('~models/path')
-    if '_' in robot_name:
-        robot_name = robot_name.split('_')[0] + '#' + robot_name.split('_')[1]
 
     rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
     rospy.loginfo('MEC server: %s' % mec_server)
-    rospy.loginfo('Move base goals: %s' % str(move_base_goals))
-    rospy.loginfo('Robot name: %s' % robot_name)
+    rospy.loginfo('Goals where to pick products: %s' % str(pick_goals))
+    rospy.loginfo('Goals where to place products: %s' % str(place_goals))
     rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
     rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
     rospy.loginfo('Latency weight in reward: %f' % w_latency)
     rospy.loginfo('Energy weight in reward: %f' % w_energy)
-    rospy.loginfo('Path of models: %s' % models_path)
+    rospy.loginfo('RL models path of models: %s' % models_path)
 
     if not os.path.exists(models_path):
         os.mkdir(models_path)
@@ -76,12 +74,13 @@ def main():
         vrep_host=vrep_host,
         vrep_port=vrep_port,
         mec_server=mec_server,
-        move_base_goals=move_base_goals,
-        robot_name=robot_name,
+        pick_goals=pick_goals,
+        place_goals=place_goals,
         robot_compute_power=robot_compute_power,
         robot_transmit_power=robot_transmit_power,
         w_latency=w_latency,
         w_energy=w_energy,
+        vrep_scene_graph_extraction=True
     )
     env.seed(1)
 
