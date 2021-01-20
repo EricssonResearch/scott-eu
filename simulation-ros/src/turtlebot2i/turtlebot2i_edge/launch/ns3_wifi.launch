@@ -1,7 +1,7 @@
 <launch>
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/network.yaml" ns="/"/>
 
-    <node name="ns3_wifi_adhoc" pkg="turtlebot2i_edge" type="ns3_wifi_adhoc" output="screen">
+    <node name="ns3_wifi" pkg="turtlebot2i_edge" type="ns3_wifi" output="screen">
         <remap from="odom_0" to="/turtlebot2i/odom"/>
         <remap from="odom_1" to="/turtlebot2i_0/odom"/>
         <remap from="odom_2" to="/turtlebot2i_1/odom"/>

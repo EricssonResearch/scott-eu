@@ -25,7 +25,20 @@
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Point.h>
 
-void setupWifi(const ns3::NodeContainer &robots, const ns3::Ptr<ns3::Node> &mec_server, const ns3::Vector &mec_server_pos) {
+ns3::Ptr<ns3::Building> setupWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y) {
+    ns3::Ptr<ns3::Building> warehouse = ns3::CreateObject<ns3::Building>();
+    warehouse->SetBoundaries(boundaries);
+    warehouse->SetBuildingType (ns3::Building::Commercial);
+    warehouse->SetExtWallsType (ns3::Building::ConcreteWithWindows);
+    warehouse->SetNFloors(1);
+    warehouse->SetNRoomsX(n_rooms_x);
+    warehouse->SetNRoomsY(n_rooms_y);
+    return warehouse;
+}
+
+std::pair<ns3::NodeContainer,ns3::Ptr<ns3::Node>> setupWifi(int n_robots, ns3::Vector mec_server_pos) {
+    ns3::NodeContainer robots(n_robots);
+    ns3::Ptr<ns3::Node> mec_server = ns3::CreateObject<ns3::Node>();
     ns3::NodeContainer nodes(robots, mec_server);
 
     // settings
@@ -63,35 +76,28 @@ void setupWifi(const ns3::NodeContainer &robots, const ns3::Ptr<ns3::Node> &mec_
     // set position of mec_server
     ns3::Ptr<ns3::MobilityModel> mobility_model = mec_server->GetObject<ns3::MobilityModel>();
     mobility_model->SetPosition(mec_server_pos);
-}
-
-ns3::Ptr<ns3::Building> setupWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y) {
-    ns3::Ptr<ns3::Building> warehouse = ns3::CreateObject<ns3::Building>();
-    warehouse->SetBoundaries(boundaries);
-    warehouse->SetBuildingType (ns3::Building::Commercial);
-    warehouse->SetExtWallsType (ns3::Building::ConcreteWithWindows);
-    warehouse->SetNFloors(1);
-    warehouse->SetNRoomsX(n_rooms_x);
-    warehouse->SetNRoomsY(n_rooms_y);
-    return warehouse;
-}
-
-std::pair<ns3::NodeContainer,ns3::NodeContainer> setupNetwork(int n_robots, ns3::Vector mec_server_pos) {
-    ns3::GlobalValue::Bind("SimulatorImplementationType", ns3::StringValue("ns3::RealtimeSimulatorImpl"));
-    ns3::GlobalValue::Bind("ChecksumEnabled", ns3::BooleanValue(true));
-
-    ns3::NodeContainer robots(n_robots);
-    ns3::Ptr<ns3::Node> mec_server = ns3::CreateObject<ns3::Node>();
-    setupWifi(robots, mec_server, mec_server_pos);
 
     return {robots, mec_server};
 }
 
+void setupSimulation() {
+    ns3::GlobalValue::Bind("SimulatorImplementationType", ns3::StringValue("ns3::RealtimeSimulatorImpl"));
+    ns3::GlobalValue::Bind("ChecksumEnabled", ns3::BooleanValue(true));
+}
+
 void updatePosition(const ns3::Ptr<ns3::Node> &robot, const nav_msgs::Odometry::ConstPtr &msg) {
-    ns3::Ptr<ns3::MobilityModel> mobility_model = robot->GetObject<ns3::MobilityModel>();
+    // update position in ns-3
     const geometry_msgs::Point& position = msg->pose.pose.position;
+    ns3::Ptr<ns3::MobilityModel> mobility_model = robot->GetObject<ns3::MobilityModel>();
     mobility_model->SetPosition({position.x, position.y, position.z});
-    ROS_INFO("Position of Robot %d: {%f, %f, %f}", robot->GetId(), position.x, position.y, position.z);
+    ns3::Ptr<ns3::MobilityBuildingInfo> mobility_building_info = robot->GetObject<ns3::MobilityBuildingInfo>();
+    mobility_building_info->MakeConsistent(mobility_model);
+
+    // print update
+    int id = robot->GetId();
+    int room_x = mobility_building_info->GetRoomNumberX();
+    int room_y = mobility_building_info->GetRoomNumberY();
+    ROS_INFO("Robot %d is in room {%d,%d}, position {%f,%f,%f}", id, room_x, room_y, position.x, position.y, position.z);
 }
 
 void runRosNode(const ns3::NodeContainer &robots) {
@@ -132,12 +138,12 @@ int main(int argc, char **argv) {
     ROS_INFO("Number of robots: %d", n_robots);
     ROS_INFO("Position of MEC server: {%f, %f}", mec_server_pos.x, mec_server_pos.y);
 
+    // important: don't alter the order of these function calls (1. simulation, 2. building, 3. network)
     ROS_INFO("Setting up network...");
-    std::pair<ns3::NodeContainer,ns3::NodeContainer> nodes = setupNetwork(n_robots, mec_server_pos);
-    ns3::NodeContainer& robots = nodes.first;
-
-    ROS_INFO("Setting up warehouse...");
+    setupSimulation();
     ns3::Ptr<ns3::Building> warehouse = setupWarehouse(warehouse_boundaries, n_rooms_x, n_rooms_y);
+    std::pair<ns3::NodeContainer,ns3::Ptr<ns3::Node>> nodes = setupWifi(n_robots, mec_server_pos);
+    ns3::NodeContainer& robots = nodes.first;
 
     ROS_INFO("Starting ROS node...");
     std::thread thread(runRosNode, robots);     // on a second thread, because...

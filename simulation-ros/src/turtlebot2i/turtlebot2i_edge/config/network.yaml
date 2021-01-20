@@ -14,5 +14,5 @@ network:
       x_max: 20
       y_min: -20
       y_max: 20
-      z_min: 0
+      z_min: -1
       z_max: 10   # height of warehouse
