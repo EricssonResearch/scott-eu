@@ -42,7 +42,7 @@ class NetworkMonitor:
 
             time_elapsed = time_end - time_start
             time_elapsed = time_elapsed.to_sec()
-            throughput = size * 8 / time_elapsed
+            throughput = size * 8 * 1e-6 / time_elapsed     # Mbps
         except rospy.ROSException, rospy.ServiceException:
             throughput = 0
 

@@ -1,2 +1,2 @@
 Header header
-float32 throughput
+float32 throughput  # Mbps
