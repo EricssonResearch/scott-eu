@@ -70,7 +70,7 @@ def init_regEx():
     '''
     Here we initialize the regluar experssion pattern.
     '''
-    name_pattern  = "(\w+#?\d?)"
+    name_pattern  = "(\w+#?\d*)"
     float_pattern = "(-?\d+\.\d+)"
     integer_pattern = "(\d+)"
     global sg_pattern,vel_pattern
