@@ -233,7 +233,8 @@ class TaskOffloadingEnv(Env):
             super(TaskOffloadingEnv, self).render(mode=mode)
 
     def close(self):
-        pass    # nothing to do
+        self._pick_and_place_navigator.stop()
+        self._vrep_scene_controller.close_connection()
 
     def seed(self, seed=None):
         self._rng, seed_ = np_random(seed)
@@ -310,8 +311,8 @@ class TaskOffloadingEnv(Env):
             temporal_incoherence = 0
 
         # latency=0.1 s => +1 (the lower, the better... saturates at 5)
-        reward_latency = self.w_latency * max(0.1 / latency if latency != 0 else 5, 5)
-        reward_energy = self.w_energy * max(1 / energy if energy != 0 else 5, 5)
+        reward_latency = self.w_latency * min(0.1 / latency if latency != 0 else 5, 5)
+        reward_energy = self.w_energy * min(1 / energy if energy != 0 else 5, 5)
 
         # edge => +1 (better instance segmentation)
         reward_model = 1 if (self._action == 1 or self._action == 3) else 0
@@ -327,6 +328,10 @@ class TaskOffloadingEnv(Env):
 
         print()
         print('risk_value: %f' % risk_value)
+        print('communication latency: %f' % communication_latency)
+        print('execution latency: %f' % execution_latency)
+        print('latency: %f' % latency)
+        print('energy: %f' % energy)
         print('reward_latency: %f' % reward_latency)
         print('reward_energy: %f' % reward_energy)
         print('reward_model: %f' % reward_model)
