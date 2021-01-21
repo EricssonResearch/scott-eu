@@ -44,21 +44,28 @@ class TaskOffloadingEnv(Env):
         temporal_coherence=Box(low=0, high=np.inf, shape=(2,), dtype=np.float32)
     )
 
-    def __init__(self, vrep_host, vrep_port, mec_server, pick_goals, place_goals, robot_compute_power,
-                 robot_transmit_power, w_latency, w_energy, vrep_scene_graph_extraction=False):
+    def __init__(self, mec_server, pick_goals, place_goals,
+                 robot_compute_power, robot_transmit_power, w_latency, w_energy,
+                 vrep_simulation=False, vrep_host='localhost', vrep_port=19997,
+                 vrep_scene_graph_extraction=False):
         super(TaskOffloadingEnv, self).__init__()
+
+        if not vrep_simulation and vrep_scene_graph_extraction:
+            raise ValueError('Cannot extract scene graph from V-REP if it is not a simulation')
 
         self.robot_compute_power = robot_compute_power
         self.robot_transmit_power = robot_transmit_power
         self.w_latency = w_latency
         self.w_energy = w_energy
+        self.vrep_simulation = vrep_simulation
         self.vrep_scene_graph_extraction = vrep_scene_graph_extraction
 
         self._pick_and_place_navigator = PickAndPlaceNavigator(pick_goals, place_goals)
         self._network_monitor = NetworkMonitor(mec_server)
         self._cv_bridge = CvBridge()                        # for conversions ROS message <-> image
         self._vrep_scene_controller = VrepSceneController()
-        self._vrep_scene_controller.open_connection(vrep_host, vrep_port)
+        if vrep_simulation:
+            self._vrep_scene_controller.open_connection(vrep_host, vrep_port)
 
         rospy.loginfo('Waiting for ROS services to generate scene graph on robot...')
         self._generate_scene_graph_robot = rospy.ServiceProxy('robot/generate_scene_graph', GenerateSceneGraph)
@@ -167,8 +174,9 @@ class TaskOffloadingEnv(Env):
         # - action=1 when the network is not available
         # - action=2 or action=3 without previous computation
         if response.scene_graph.sg_data != '':
-            rospy.logwarn('Bad decision, no scene graph available')
             self._scene_graph_pub.publish(response.scene_graph)
+        else:
+            rospy.logwarn('Bad decision, no scene graph available')
 
         self._last_observation = self._new_observation
         self._action = action
@@ -181,7 +189,8 @@ class TaskOffloadingEnv(Env):
 
     def reset(self):
         self._pick_and_place_navigator.stop()
-        self._vrep_scene_controller.reset()
+        if self.vrep_simulation:
+            self._vrep_scene_controller.reset()
 
         self._scene_graph_last_robot = None
         self._scene_graph_last_edge = None
@@ -326,17 +335,17 @@ class TaskOffloadingEnv(Env):
         # risk_value+1 so that when risk_value=0 the robot is motivated to decide well anyway
         reward = (risk_value+1) * (reward_latency + reward_model + reward_temporal_coherence) + reward_energy
 
-        print()
-        print('risk_value: %f' % risk_value)
-        print('communication latency: %f' % communication_latency)
-        print('execution latency: %f' % execution_latency)
-        print('latency: %f' % latency)
-        print('energy: %f' % energy)
-        print('reward_latency: %f' % reward_latency)
-        print('reward_energy: %f' % reward_energy)
-        print('reward_model: %f' % reward_model)
-        print('reward_temporal_coherence: %f' % reward_temporal_coherence)
-        print('reward: %f' % reward)
+        # print()
+        # print('risk_value: %f' % risk_value)
+        # print('communication latency: %f' % communication_latency)
+        # print('execution latency: %f' % execution_latency)
+        # print('latency: %f' % latency)
+        # print('energy: %f' % energy)
+        # print('reward_latency: %f' % reward_latency)
+        # print('reward_energy: %f' % reward_energy)
+        # print('reward_model: %f' % reward_model)
+        # print('reward_temporal_coherence: %f' % reward_temporal_coherence)
+        # print('reward: %f' % reward)
 
         return reward
 

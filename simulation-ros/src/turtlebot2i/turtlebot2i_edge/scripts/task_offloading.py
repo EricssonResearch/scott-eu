@@ -71,8 +71,6 @@ def main():
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
-        vrep_host=vrep_host,
-        vrep_port=vrep_port,
         mec_server=mec_server,
         pick_goals=pick_goals,
         place_goals=place_goals,
@@ -80,6 +78,9 @@ def main():
         robot_transmit_power=robot_transmit_power,
         w_latency=w_latency,
         w_energy=w_energy,
+        vrep_simulation=True,
+        vrep_host=vrep_host,
+        vrep_port=vrep_port,
         vrep_scene_graph_extraction=True
     )
     env.seed(1)
@@ -109,7 +110,7 @@ def main():
         agent.fit(
             env=env,
             nb_steps=1000,
-            visualize=True,
+            visualize=False,
             callbacks=[ModelIntervalCheckpoint(model_path, 100), TrainIntervalLogger(10), FileLogger(log_path)],
             verbose=2
         )
