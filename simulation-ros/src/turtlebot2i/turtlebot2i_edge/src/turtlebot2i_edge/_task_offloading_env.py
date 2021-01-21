@@ -44,7 +44,7 @@ class TaskOffloadingEnv(Env):
         temporal_coherence=Box(low=0, high=np.inf, shape=(2,), dtype=np.float32)
     )
 
-    def __init__(self, mec_server, pick_goals, place_goals,
+    def __init__(self, mec_server, pick_goals, place_goals, pick_and_place_per_episode,
                  robot_compute_power, robot_transmit_power, w_latency, w_energy,
                  vrep_simulation=False, vrep_host='localhost', vrep_port=19997,
                  vrep_scene_graph_extraction=False):
@@ -53,6 +53,7 @@ class TaskOffloadingEnv(Env):
         if not vrep_simulation and vrep_scene_graph_extraction:
             raise ValueError('Cannot extract scene graph from V-REP if it is not a simulation')
 
+        self.pick_and_place_per_episode = pick_and_place_per_episode
         self.robot_compute_power = robot_compute_power
         self.robot_transmit_power = robot_transmit_power
         self.w_latency = w_latency
@@ -136,6 +137,7 @@ class TaskOffloadingEnv(Env):
 
         elif action == 1:
             try:
+                self._generate_scene_graph_edge.wait_for_service(timeout=0.1)
                 response = self._generate_scene_graph_edge(request)
                 self._scene_graph_last_edge = response.scene_graph
                 self._camera_image_rgb_last_edge = self._cv_bridge.imgmsg_to_cv2(self._camera_image_rgb_current, 'rgb8')
@@ -351,7 +353,11 @@ class TaskOffloadingEnv(Env):
 
     def _done(self):
         with self._collision_lock:
-            return self._collision
+            if self._collision:
+                return True
+        if self._pick_and_place_navigator.completed_pick_and_place >= self.pick_and_place_per_episode:
+            return True
+        return False
 
     def _save_camera_image_rgb(self, image_rgb):
         with self._camera_image_last_lock:

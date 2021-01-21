@@ -20,6 +20,7 @@ list(APPEND CATKIN_RUN_DEPENDS roscpp rospy actionlib message_filters cv_bridge 
 list(APPEND CATKIN_BUILD_DEPENDS roscpp rospy actionlib message_filters cv_bridge message_generation ${MSG_DEPENDS})
 
 find_package(catkin REQUIRED COMPONENTS ${CATKIN_BUILD_DEPENDS})
+find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
 find_library(
@@ -72,7 +73,7 @@ find_library(
 )
 find_library(
   NS3_BUILDINGS_LIBRARY
-  NAMES ns3-dev-buildings-optimized ns3-dev-netanim-debug
+  NAMES ns3-dev-buildings-optimized ns3-dev-buildings-debug
   HINTS $ENV{NS3_ROOT}/build/lib
   REQUIRED
 )

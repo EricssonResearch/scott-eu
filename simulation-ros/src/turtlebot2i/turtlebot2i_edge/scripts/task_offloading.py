@@ -67,6 +67,7 @@ def main():
         mec_server=mec_server,
         pick_goals=pick_goals,
         place_goals=place_goals,
+        pick_and_place_per_episode=10,
         robot_compute_power=robot_compute_power,
         robot_transmit_power=robot_transmit_power,
         w_latency=w_latency,
@@ -100,6 +101,7 @@ def main():
     else:
         raise ValueError('Invalid agent')
 
+    # TODO: add metrics
     if mode == 'train':
         rospy.loginfo('Training...')
         agent.fit(
@@ -115,8 +117,9 @@ def main():
         rospy.loginfo('Testing...')
         agent.test(
             env=env,
-            nb_episodes=5,
-            visualize=False
+            nb_episodes=1,
+            visualize=True,
+            verbose=2
         )
     else:
         raise ValueError

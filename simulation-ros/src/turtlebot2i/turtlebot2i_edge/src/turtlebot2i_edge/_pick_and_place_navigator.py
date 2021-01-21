@@ -13,16 +13,16 @@ class PickAndPlaceNavigator:
     def __init__(self, pick_goals, place_goals, seed=None):
         self.pick_goals = pick_goals
         self.place_goals = place_goals
+        self.completed_pick_and_place = 0
         self._goal = None
         self._active = False
+
+        # it is recursive because check_goal() calls send_goal(), which can call again check_goal() for a feedback
+        self._lock = threading.RLock()
 
         rospy.loginfo('Waiting for ROS action server to move base...')
         self._move_base_client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
         self._move_base_client.wait_for_server()
-
-        # this lock protects self._active, self._goal and self._move_base_client
-        # it is recursive because check_goal() calls send_goal(), which can call again check_goal() for a feedback
-        self._lock = threading.RLock()
 
         self._rng = None
         self.seed(seed=seed)
@@ -30,6 +30,7 @@ class PickAndPlaceNavigator:
     def start(self):
         rospy.loginfo('Pick-and-place navigator started')
         with self._lock:
+            self.completed_pick_and_place = 0
             self._active = True
         self._send_goal()
 
@@ -77,6 +78,18 @@ class PickAndPlaceNavigator:
         position = np.array((feedback.base_position.pose.position.x, feedback.base_position.pose.position.y))
         with self._lock:
             if np.linalg.norm(self._goal - position) < 0.5:
+                if self._goal in self.place_goals:
+                    self.completed_pick_and_place += 1
                 if self._active:
                     self._move_base_client.cancel_goal()
                     self._send_goal()
+
+    @property
+    def completed_pick_and_place(self):
+        with self._lock:
+            return self._completed_pick_and_place
+
+    @completed_pick_and_place.setter
+    def completed_pick_and_place(self, completed_pick_and_place):
+        with self._lock:
+            self._completed_pick_and_place = completed_pick_and_place

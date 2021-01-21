@@ -19,7 +19,7 @@ def main():
         handler=stamp,
         buff_size=2**20     # 1 MB
     )
-    rospy.loginfo('ROS service to generate scene graph with proxy ready')
+    rospy.loginfo('ROS service to stamp ready')
     rospy.spin()
 
 
