@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import sys
-import argparse
 import rospy
 from std_msgs.msg import Header
 from turtlebot2i_edge import NetworkMonitor
@@ -31,17 +29,11 @@ def publish_network_throughput(network_monitor, publisher):
 def main():
     rospy.init_node('network_latency_monitor')
 
-    rospy.loginfo('Parsing command line arguments...')
-    argv = rospy.myargv(sys.argv)
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--no-throughput', action='store_true', default=False)
-    args = parser.parse_args(argv[1:])
-    throughput = not args.no_throughput
-    rospy.loginfo('Throughput: %s' % str(throughput))
-
     rospy.loginfo('Getting server parameters...')
     host = rospy.get_param('/network/mec_server/host')
+    throughput = rospy.get_param('~throughput')
     rospy.loginfo('MEC server: %s' % host)
+    rospy.loginfo('Throughput: %s' % str(throughput))
 
     network_monitor = NetworkMonitor(host, throughput=throughput)
     pub_latency = rospy.Publisher('network/latency', NetworkLatency, queue_size=1)

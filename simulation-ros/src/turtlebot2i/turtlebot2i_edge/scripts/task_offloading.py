@@ -3,8 +3,6 @@
 from __future__ import print_function
 
 import os
-import sys
-import argparse
 import rospy
 from gym.spaces import flatdim
 from keras import Input, Model
@@ -33,16 +31,9 @@ def get_model(env):
 def main():
     rospy.init_node('task_offloading')
 
-    rospy.loginfo('Parsing command line arguments...')
-    argv = rospy.myargv(sys.argv)
-    parser = argparse.ArgumentParser()
-    parser.add_argument('agent', type=str, choices=['dqn', 'all_robot', 'all_edge', 'random'])
-    parser.add_argument('mode', type=str, choices=['train', 'test'])
-    args = parser.parse_args(argv[1:])
-    rospy.loginfo('Agent: %s' % args.agent)
-    rospy.loginfo('Mode: %s' % args.mode)
-
     rospy.loginfo('Getting parameters...')
+    agent = rospy.get_param('~agent')
+    mode = rospy.get_param('~mode')
     vrep_host = rospy.get_param('~vrep/host')
     vrep_port = rospy.get_param('~vrep/port')
     mec_server = rospy.get_param('/network/mec_server/host')
@@ -54,6 +45,8 @@ def main():
     w_energy = rospy.get_param('~rl/reward/w_energy')
     models_path = rospy.get_param('~rl/models/path')
 
+    rospy.loginfo('Agent: %s' % agent)
+    rospy.loginfo('Mode: %s' % mode)
     rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
     rospy.loginfo('MEC server: %s' % mec_server)
     rospy.loginfo('Goals where to pick products: %s' % str(pick_goals))
@@ -66,8 +59,8 @@ def main():
 
     if not os.path.exists(models_path):
         os.mkdir(models_path)
-    model_path = os.path.join(models_path, '%s_weights.h5f' % args.agent)
-    log_path = os.path.join(models_path, '%s_logs.h5f' % args.agent)
+    model_path = os.path.join(models_path, '%s_weights.h5f' % agent)
+    log_path = os.path.join(models_path, '%s_logs.h5f' % agent)
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
@@ -86,7 +79,7 @@ def main():
     env.seed(1)
 
     rospy.loginfo('Initializing agent...')
-    if args.agent == 'dqn':
+    if agent == 'dqn':
         agent = DQNAgent(
             processor=TaskOffloadingProcessor(),
             model=get_model(env),
@@ -97,15 +90,17 @@ def main():
             policy=BoltzmannQPolicy()
         )
         agent.compile(Adam(lr=1e-3), metrics=['mae'])
-        if args.mode != 'train':
+        if mode != 'train':
             rospy.loginfo('Loading weights from %s...' % model_path)
             agent.load_weights(model_path)
-    else:
-        agent = NaiveAgent(mode=args.agent)
-        if args.mode == 'train':
+    elif agent == 'all_robot' or 'all_edge' or 'random':
+        agent = NaiveAgent(mode=agent)
+        if mode == 'train':
             raise ValueError('Naive agents do not need to be trained')
+    else:
+        raise ValueError('Invalid agent')
 
-    if args.mode == 'train':
+    if mode == 'train':
         rospy.loginfo('Training...')
         agent.fit(
             env=env,
@@ -116,7 +111,7 @@ def main():
         )
         rospy.loginfo('Saving weights to %s' % model_path)
         agent.save_weights(model_path, overwrite=True)
-    elif args.mode == 'test':
+    elif mode == 'test':
         rospy.loginfo('Testing...')
         agent.test(
             env=env,
