@@ -113,8 +113,7 @@ catkin_install_python(
   PROGRAMS
   scripts/task_offloading.py
   scripts/scene_graph_proxy.py
-  scripts/network_latency_monitor.py
-  scripts/network_throughput_monitor.py
+  scripts/network_monitor.py
   scripts/stamper.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
