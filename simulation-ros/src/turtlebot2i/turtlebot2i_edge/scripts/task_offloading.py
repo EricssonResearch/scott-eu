@@ -52,7 +52,7 @@ def main():
     robot_transmit_power = rospy.get_param('~rl/robot/transmit_power')
     w_latency = rospy.get_param('~rl/reward/w_latency')
     w_energy = rospy.get_param('~rl/reward/w_energy')
-    models_path = rospy.get_param('~models/path')
+    models_path = rospy.get_param('~rl/models/path')
 
     rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
     rospy.loginfo('MEC server: %s' % mec_server)
@@ -62,7 +62,7 @@ def main():
     rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
     rospy.loginfo('Latency weight in reward: %f' % w_latency)
     rospy.loginfo('Energy weight in reward: %f' % w_energy)
-    rospy.loginfo('RL models path of models: %s' % models_path)
+    rospy.loginfo('RL models path: %s' % models_path)
 
     if not os.path.exists(models_path):
         os.mkdir(models_path)

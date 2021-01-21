@@ -26,7 +26,7 @@
 
             <param name="vrep/host" type="str" value="global"/>
             <param name="vrep/port" type="int" value="20002"/>
-            <param name="models/path" type="str" value="$(find turtlebot2i_edge)/models"/>
+            <param name="rl/models/path" type="str" value="$(find turtlebot2i_edge)/models"/>
 
             <remap from="robot/generate_scene_graph" to="generate_scene_graph_proxy"/>
             <remap from="edge/generate_scene_graph" to="/edge/$(arg robot_name)/generate_scene_graph_proxy"/>

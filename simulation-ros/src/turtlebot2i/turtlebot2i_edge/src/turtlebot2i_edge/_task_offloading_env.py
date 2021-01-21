@@ -31,7 +31,7 @@ class TaskOffloadingEnv(Env):
     - packet_loss (percentage [0,1])
     - throughput (bit/s uplink)
     - risk_value
-    - temporal_incoherence (mean of absolute differences): last robot rgb, last robot depth, last edge rgb, last edge depth
+    - temporal_coherence (mean of absolute differences): last robot rgb, last edge rgb
     """
 
     metadata = {'render.modes': ['human', 'ansi']}
@@ -40,9 +40,8 @@ class TaskOffloadingEnv(Env):
     observation_space = Dict(
         rtt=Box(low=0, high=np.inf, shape=(4,), dtype=np.float32),
         packet_loss=Box(low=0, high=1, shape=(1,), dtype=np.float32),
-        throughput=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         risk_value=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
-        temporal_incoherence=Box(low=0, high=np.inf, shape=(2,), dtype=np.float32)
+        temporal_coherence=Box(low=0, high=np.inf, shape=(2,), dtype=np.float32)
     )
 
     def __init__(self, vrep_host, vrep_port, mec_server, pick_goals, place_goals, robot_compute_power,
@@ -56,7 +55,7 @@ class TaskOffloadingEnv(Env):
         self.vrep_scene_graph_extraction = vrep_scene_graph_extraction
 
         self._pick_and_place_navigator = PickAndPlaceNavigator(pick_goals, place_goals)
-        self._network_monitor = NetworkMonitor(mec_server, throughput=True)
+        self._network_monitor = NetworkMonitor(mec_server)
         self._cv_bridge = CvBridge()                        # for conversions ROS message <-> image
         self._vrep_scene_controller = VrepSceneController()
         self._vrep_scene_controller.open_connection(vrep_host, vrep_port)
@@ -168,6 +167,7 @@ class TaskOffloadingEnv(Env):
         # - action=1 when the network is not available
         # - action=2 or action=3 without previous computation
         if response.scene_graph.sg_data != '':
+            rospy.logwarn('Bad decision, no scene graph available')
             self._scene_graph_pub.publish(response.scene_graph)
 
         self._last_observation = self._new_observation
@@ -264,14 +264,13 @@ class TaskOffloadingEnv(Env):
             camera_image_depth_current = np.zeros(IMAGE_SIZE)
         self._camera_image_depth_current = self._cv_bridge.cv2_to_imgmsg(camera_image_depth_current, 'passthrough')
 
-        # temporal incoherence is in [0,1] (pixels are scaled to [0,1])
-        temporal_incoherence = (
-            np.mean(np.abs(camera_image_rgb_current - self._camera_image_rgb_last_robot)) / 255,
-            np.mean(np.abs(camera_image_rgb_current - self._camera_image_rgb_last_edge)) / 255,
+        # temporal coherence is in [0,1] (pixels are scaled to [0,1])
+        temporal_coherence = (
+            1 - np.mean(np.abs(camera_image_rgb_current - self._camera_image_rgb_last_robot)) / 255,
+            1 - np.mean(np.abs(camera_image_rgb_current - self._camera_image_rgb_last_edge)) / 255,
         )
 
         rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss = self._network_monitor.measure_latency()
-        throughput = self._network_monitor.measure_throughput()
 
         with self._risk_lock:
             risk_value = self._risk_value
@@ -281,15 +280,14 @@ class TaskOffloadingEnv(Env):
         return {
             'rtt': (rtt_min, rtt_avg, rtt_max, rtt_mdev),
             'packet_loss': packet_loss,
-            'throughput': throughput,
             'risk_value': risk_value,
-            'temporal_incoherence': temporal_incoherence
+            'temporal_coherence': temporal_coherence
         }
 
     def _get_reward(self, response):
-        # no scene graph => penalty
+        # no scene graph
         if response.scene_graph.sg_data == '':
-            return -10
+            return 0
 
         communication_latency = response.communication_latency.to_sec()
         execution_latency = response.execution_latency.to_sec()
@@ -304,27 +302,29 @@ class TaskOffloadingEnv(Env):
             energy = 0
 
         if self._action == 2:
-            temporal_incoherence = self._last_observation['temporal_incoherence'][0]
+            temporal_coherence = self._last_observation['temporal_coherence'][0]
         elif self._action == 3:
-            temporal_incoherence = self._last_observation['temporal_incoherence'][1]
+            temporal_coherence = self._last_observation['temporal_coherence'][1]
         else:
-            temporal_incoherence = 0
+            temporal_coherence = 1
 
-        # latency=0.1 s => +1 (the lower, the better... saturates at 5)
-        reward_latency = self.w_latency * min(0.1 / latency if latency != 0 else 5, 5)
+        # latency=1 s => +1 (the lower, the better... saturates at 5)
+        reward_latency = self.w_latency * min(1 / latency if latency != 0 else 5, 5)
         reward_energy = self.w_energy * min(1 / energy if energy != 0 else 5, 5)
 
         # edge => +1 (better instance segmentation)
         reward_model = 1 if (self._action == 1 or self._action == 3) else 0
 
-        # temporal_incoherence=1 => -10 (so high because there is +5 from latency/energy)
-        # temporal_incoherence=0 => 0
-        # 0 < temporal_incoherence < 1 => sigmoid trend (gets quickly high)
-        reward_temporal_incoherence = - 10 * (2 / (1 + np.exp(-5*temporal_incoherence)) - 1)
+        # temporal_coherence=0 => -reward_without_temporal_coherence (penalty so that total reward is 0)
+        # temporal_coherence=1 => -0 (no penalty)
+        # 0 < temporal_coherence < 1 => degree 4 trend (to be high, it must be very coherent)
+        # see below for the meaning of reward_without_temporal_coherence
+        reward_without_temporal_coherence = (risk_value+1) * (reward_latency + reward_model) + reward_energy
+        reward_temporal_coherence = (temporal_coherence**4 - 1) * reward_without_temporal_coherence
 
-        # the higher risk, the more we are interested in having good latency and accurate scene graph
+        # # the higher risk, the more we are interested in having good latency and accurate scene graph
         # risk_value+1 so that when risk_value=0 the robot is motivated to decide well anyway
-        reward = (risk_value+1) * (reward_latency + reward_model + reward_temporal_incoherence) + reward_energy
+        reward = (risk_value+1) * (reward_latency + reward_model + reward_temporal_coherence) + reward_energy
 
         print()
         print('risk_value: %f' % risk_value)
@@ -335,7 +335,7 @@ class TaskOffloadingEnv(Env):
         print('reward_latency: %f' % reward_latency)
         print('reward_energy: %f' % reward_energy)
         print('reward_model: %f' % reward_model)
-        print('reward_temporal_incoherence: %f' % reward_temporal_incoherence)
+        print('reward_temporal_coherence: %f' % reward_temporal_coherence)
         print('reward: %f' % reward)
 
         return reward
