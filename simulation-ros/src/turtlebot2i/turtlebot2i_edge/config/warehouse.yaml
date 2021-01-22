@@ -1,0 +1,10 @@
+warehouse:
+  x_min: -20
+  x_max: 20
+  y_min: -20
+  y_max: 20
+  z_min: -1
+  z_max: 10   # height of warehouse
+  rooms:
+    n_x: 4
+    n_y: 4

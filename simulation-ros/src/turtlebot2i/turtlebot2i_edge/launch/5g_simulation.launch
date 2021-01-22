@@ -1,0 +1,12 @@
+<launch>
+    <rosparam command="load" file="$(find turtlebot2i_edge)/config/5g.yaml" ns="/"/>
+    <rosparam command="load" file="$(find turtlebot2i_edge)/config/warehouse.yaml" ns="/"/>
+    <param name="/network/type" value="5g"/>
+
+    <node name="network_simulation" pkg="turtlebot2i_edge" type="network_simulation" output="screen">
+        <remap from="odom_0" to="/turtlebot2i/odom"/>
+        <remap from="odom_1" to="/turtlebot2i_0/odom"/>
+        <remap from="odom_2" to="/turtlebot2i_1/odom"/>
+        <remap from="odom_3" to="/turtlebot2i_2/odom"/>
+    </node>
+</launch>

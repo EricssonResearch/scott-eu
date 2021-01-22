@@ -1,0 +1,9 @@
+network:
+  mec_server:
+    host: mec_server
+  gnb:
+    position:
+      x: 15
+      y: 15
+  robots:
+    n: 1

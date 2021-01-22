@@ -8,7 +8,7 @@
  *                                  .254  .1
  *
  * Robots and MEC server are "real" nodes run within network namespaces, so there is a tap net device for each one.
- * The network namespaces must be set up with turtlebot2i_edge/scripts/netns_wifi.py.
+ * The network namespaces must be set up with turtlebot2i_edge/scripts/netns.py.
  * The positions of the robots are updated according to the positions in V-REP.
  *
  * Adapted from:

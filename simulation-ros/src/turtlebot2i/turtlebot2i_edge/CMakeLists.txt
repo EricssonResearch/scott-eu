@@ -20,7 +20,6 @@ list(APPEND CATKIN_RUN_DEPENDS roscpp rospy actionlib message_filters cv_bridge 
 list(APPEND CATKIN_BUILD_DEPENDS roscpp rospy actionlib message_filters cv_bridge message_generation ${MSG_DEPENDS})
 
 find_package(catkin REQUIRED COMPONENTS ${CATKIN_BUILD_DEPENDS})
-find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
 find_library(
@@ -38,6 +37,18 @@ find_library(
 find_library(
   NS3_WIFI_LIBRARY
   NAMES ns3-dev-wifi-optimized ns3-dev-wifi-debug
+  HINTS $ENV{NS3_ROOT}/build/lib
+  REQUIRED
+)
+find_library(
+  NS3_LTE_LIBRARY
+  NAMES ns3-dev-lte-optimized ns3-dev-lte-debug
+  HINTS $ENV{NS3_ROOT}/build/lib
+  REQUIRED
+)
+find_library(
+  NS3_NR_LIBRARY
+  NAMES ns3-dev-nr-optimized ns3-dev-nr-debug
   HINTS $ENV{NS3_ROOT}/build/lib
   REQUIRED
 )
@@ -66,14 +77,14 @@ find_library(
   REQUIRED
 )
 find_library(
-  NS3_STATS_LIBRARY
-  NAMES ns3-dev-stats-optimized ns3-dev-stats-debug
+  NS3_BUILDINGS_LIBRARY
+  NAMES ns3-dev-buildings-optimized ns3-dev-buildings-debug
   HINTS $ENV{NS3_ROOT}/build/lib
   REQUIRED
 )
 find_library(
-  NS3_BUILDINGS_LIBRARY
-  NAMES ns3-dev-buildings-optimized ns3-dev-buildings-debug
+  NS3_STATS_LIBRARY
+  NAMES ns3-dev-stats-optimized ns3-dev-stats-debug
   HINTS $ENV{NS3_ROOT}/build/lib
   REQUIRED
 )
@@ -83,12 +94,14 @@ list(
   ${NS3_CORE_LIBRARY}
   ${NS3_NETWORK_LIBRARY}
   ${NS3_WIFI_LIBRARY}
+  ${NS3_LTE_LIBRARY}
+  ${NS3_NR_LIBRARY}
   ${NS3_POINT_TO_POINT_LIBRARY}
   ${NS3_INTERNET_LIBRARY}
   ${NS3_TAP_BRIDGE_LIBRARY}
   ${NS3_MOBILITY_LIBRARY}
-  ${NS3_STATS_LIBRARY}
   ${NS3_BUILDINGS_LIBRARY}
+  ${NS3_STATS_LIBRARY}
 )
 
 catkin_python_setup()
@@ -97,16 +110,36 @@ add_message_files(FILES NetworkLatency.msg NetworkThroughput.msg)
 add_service_files(FILES GenerateSceneGraph.srv Stamp.srv)
 generate_messages(DEPENDENCIES ${MSG_DEPENDS})
 
-catkin_package(CATKIN_DEPENDS ${CATKIN_RUN_DEPENDS})
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES network_simulation
+  CATKIN_DEPENDS ${CATKIN_RUN_DEPENDS}
+)
 
 include_directories(include ${catkin_INCLUDE_DIRS} $ENV{NS3_ROOT}/build)
 
-add_executable(${PROJECT_NAME}_ns3_wifi src/ns3_wifi.cpp)
-set_target_properties(${PROJECT_NAME}_ns3_wifi PROPERTIES OUTPUT_NAME ns3_wifi PREFIX "")
-target_link_libraries(${PROJECT_NAME}_ns3_wifi ${catkin_LIBRARIES} ${Threads_LIBRARIES} ${NS3_LIBRARIES})
+add_library(${PROJECT_NAME}_network src/wireless.cpp src/5g.cpp src/wifi.cpp)
+target_link_libraries(${PROJECT_NAME}_network ${NS3_LIBRARIES} ${Threads_LIBRARIES})
+
+add_executable(${PROJECT_NAME}_network_simulation src/network_simulation.cpp)
+set_target_properties(${PROJECT_NAME}_network_simulation PROPERTIES OUTPUT_NAME network_simulation PREFIX "")
+target_link_libraries(${PROJECT_NAME}_network_simulation ${catkin_LIBRARIES} ${PROJECT_NAME}_network)
 
 install(
-  TARGETS ${PROJECT_NAME}_ns3_wifi
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+)
+
+install(
+  TARGETS ${PROJECT_NAME}_network
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+
+install(
+  TARGETS ${PROJECT_NAME}_network_simulation
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -125,6 +158,6 @@ install(
 )
 
 install(
-  PROGRAMS scripts/activate_netns.sh scripts/netns_wifi.py
+  PROGRAMS scripts/activate_netns.sh scripts/netns.py
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts
 )

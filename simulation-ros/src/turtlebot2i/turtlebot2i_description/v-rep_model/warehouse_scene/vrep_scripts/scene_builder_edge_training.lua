@@ -19,7 +19,7 @@ function sysCall_init()
     addModel('240cmHighWall4000cm', {20,0,1.2}, {0,0,0})
     addModel('240cmHighWall4000cm', {-20,0,1.2}, {0,0,0})
 
-    -- Rooms {*,4} (office is in {4,4})
+    -- Rooms in row 4 (office is in {4,4})
     addModel('240cmHighWall750cm', {-10,13.75,1.2}, {0,0,0})
     addModel('240cmHighWall750cm', {0,13.75,1.2}, {0,0,0})
     addModel('240cmHighWall910cm', {10,14.55,1.2}, {0,0,0})
@@ -29,7 +29,7 @@ function sysCall_init()
     addModel('240cmHighWall750cm', {3.75,10,1.2}, {0,0,math.pi/2})
     addModel('240cmHighWall1000cm', {15,10,1.2}, {0,0,math.pi/2})
 
-    -- Rooms {*,3} (dockstations are in {4,3})
+    -- Rooms in row 3 (dockstations are in {4,3})
     addModel('240cmHighWall1000cm', {-10,5,1.2}, {0,0,0})
     addModel('240cmHighWall1000cm', {0,5,1.2}, {0,0,0})
     addModel('240cmHighWall1000cm', {10,5,1.2}, {0,0,0})
@@ -38,7 +38,7 @@ function sysCall_init()
     addModel('240cmHighWall1000cm', {5,0,1.2}, {0,0,math.pi/2})
     addModel('240cmHighWall750cm', {13.75,0,1.2}, {0,0,math.pi/2})
 
-    -- Rooms {*,2}
+    -- Rooms in row 2
     addModel('240cmHighWall1000cm', {-10,-5,1.2}, {0,0,0})
     addModel('240cmHighWall1000cm', {0,-5,1.2}, {0,0,0})
     addModel('240cmHighWall1000cm', {10,-5,1.2}, {0,0,0})
@@ -47,12 +47,12 @@ function sysCall_init()
     addModel('240cmHighWall750cm', {3.75,-10,1.2}, {0,0,math.pi/2})
     addModel('240cmHighWall750cm', {13.75,-10,1.2}, {0,0,math.pi/2})
 
-    -- Rooms {*,1}
+    -- Rooms in row 1
     addModel('240cmHighWall750cm', {-10,-16.25,1.2}, {0,0,0})
     addModel('240cmHighWall750cm', {0,-16.25,1.2}, {0,0,0})
     addModel('240cmHighWall750cm', {10,-16.25,1.2}, {0,0,0})
 
-    -- Laptop (edge server)
+    -- Laptop (MEC server)
     addModel('Laptop', {15,15,0.8274}, {-1,0,-math.pi/2})
     addModel('Table', {15,15,0.6476}, {0,0,0})
 
