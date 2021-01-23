@@ -146,6 +146,7 @@ def setup_firewall(direct_net_devices, indirect_net_devices):
     n_netns = len(direct_net_devices)
 
     # bridge does not look at iptables
+    run_cmd('modprobe br_netfilter')
     with open('/proc/sys/net/bridge/bridge-nf-call-iptables', mode='w') as f:
         f.write('0')
 
@@ -174,7 +175,7 @@ def setup_dns(direct_net_devices, indirect_net_devices):
     # other network namespaces
     for i, netns in enumerate(network_namespaces):
         path = Path('/') / 'etc' / 'netns' / netns
-        path.mkdir(exist_ok=True)
+        path.mkdir(exist_ok=True, parents=True)
 
         with open(path / 'hosts', mode='w') as f:
             # needed for ROS (e.g. ROS_HOSTNAME=robot0, robot0 must be resolvable)
