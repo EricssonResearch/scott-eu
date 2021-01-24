@@ -33,7 +33,8 @@ class NetworkMonitor:
             summary = re.findall(r'rtt min/avg/max/mdev = (\S+)', output)[0]
             rtt_min, rtt_avg, rtt_max, rtt_mdev = (float(x) * 1e-3 for x in summary.split('/'))
         else:
-            rtt_min = rtt_avg = rtt_max = rtt_mdev = np.inf
+            rtt_min = rtt_avg = rtt_max = np.inf
+            rtt_mdev = 0
 
         return rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss
 

@@ -1,5 +1,6 @@
+# YOLACT with ResNet50-FPN backbone
 model:
-  m_ap: 0.5     # TODO
-  execution_latency:
-    secs: 1     # TODO
-    nsecs: 0
+  m_ap: 0.282           # on COCO test-dev (https://github.com/dbolya/yolact)
+  execution_latency:    # with i7-8650U using COCO test-dev
+    secs: 0
+    nsecs: 780000000

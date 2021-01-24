@@ -1,5 +1,6 @@
+# Mask R-CNN with ResNet101-FPN backbone
 model:
-  m_ap: 0.8     # TODO
-  execution_latency:
-    secs: 1     # TODO
-    nsecs: 0
+  m_ap: 0.357         # on COCO test-dev (https://research.fb.com/wp-content/uploads/2017/08/maskrcnn.pdf)
+  execution_latency:  # with Nvidia Tesla M40 GPU (https://research.fb.com/wp-content/uploads/2017/08/maskrcnn.pdf)
+    secs: 0
+    nsecs: 195000000
