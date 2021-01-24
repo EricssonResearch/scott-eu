@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Author: George F. Riley <riley@ece.gatech.edu>
+ *
+ * Edited by Franco Ruggeri <franco.ruggeri@ericsson.com>
  */
 
 #include "ns3/log.h"
@@ -81,6 +83,9 @@ BulkSendApplication::GetTypeId (void)
     .AddTraceSource ("TxWithSeqTsSize", "A new packet is created with SeqTsSizeHeader",
                      MakeTraceSourceAccessor (&BulkSendApplication::m_txTraceWithSeqTsSize),
                      "ns3::PacketSink::SeqTsSizeCallback")
+    .AddTraceSource ("Completed", "Transfer is completed",
+                     MakeTraceSourceAccessor (&BulkSendApplication::m_completedTrace),
+                     "ns3::BulkSendApplication::CompletedCallback")
   ;
   return tid;
 }
@@ -125,6 +130,14 @@ BulkSendApplication::DoDispose (void)
   Application::DoDispose ();
 }
 
+void
+BulkSendApplication::Start (void)
+{
+  NS_LOG_FUNCTION (this);
+  Simulator::Schedule(Seconds (0), &BulkSendApplication::StartApplication, this);
+}
+
+
 // Application Methods
 void BulkSendApplication::StartApplication (void) // Called at time specified by Start
 {
@@ -132,7 +145,7 @@ void BulkSendApplication::StartApplication (void) // Called at time specified by
   Address from;
 
   // Create the socket if not already
-  if (!m_socket)
+  if (!m_socket) 
     {
       m_socket = Socket::CreateSocket (GetNode (), m_tid);
       int ret = -1;
@@ -283,6 +296,7 @@ void BulkSendApplication::SendData (const Address &from, const Address &to)
     {
       m_socket->Close ();
       m_connected = false;
+      m_completedTrace (this->GetNode());
     }
 }
 

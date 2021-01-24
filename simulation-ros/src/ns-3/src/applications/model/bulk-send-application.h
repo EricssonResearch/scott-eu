@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Author: George F. Riley <riley@ece.gatech.edu>
+ *
+ * Edited by Franco Ruggeri <franco.ruggeri@ericsson.com>
  */
 
 #ifndef BULK_SEND_APPLICATION_H
@@ -27,6 +29,7 @@
 #include "ns3/ptr.h"
 #include "ns3/traced-callback.h"
 #include "ns3/seq-ts-size-header.h"
+#include "ns3/double.h"
 
 namespace ns3 {
 
@@ -106,6 +109,15 @@ public:
    */
   Ptr<Socket> GetSocket (void) const;
 
+  /**
+   * TracedCallback signature for a reception of transfer statistics at transfer completed
+   *
+   * \param latency Latency of transfer
+   */
+  typedef void (* CompletedCallback)(const Node &node);
+
+  void Start (void);
+
 protected:
   virtual void DoDispose (void);
 private:
@@ -137,6 +149,9 @@ private:
 
   /// Callback for tracing the packet Tx events, includes source, destination,  the packet sent, and header
   TracedCallback<Ptr<const Packet>, const Address &, const Address &, const SeqTsSizeHeader &> m_txTraceWithSeqTsSize;
+
+  /// Callback for tracing the transfer statistics (latency and throughput) at completion time
+  TracedCallback<const Ptr<Node> &> m_completedTrace;
 
 private:
   /**
