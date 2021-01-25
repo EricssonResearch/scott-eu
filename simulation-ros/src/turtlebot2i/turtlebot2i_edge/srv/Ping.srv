@@ -1,0 +1,7 @@
+uint64 n_packets
+---
+float64 rtt_min         # ms
+float64 rtt_avg         # ms
+float64 rtt_max         # ms
+float64 rtt_mdev        # ms
+float64 packet_loss     # 0-1 (percentage)

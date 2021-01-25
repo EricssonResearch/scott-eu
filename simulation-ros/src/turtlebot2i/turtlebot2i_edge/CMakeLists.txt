@@ -113,7 +113,7 @@ list(
 
 catkin_python_setup()
 
-add_service_files(FILES GenerateSceneGraph.srv Stamp.srv)
+add_service_files(FILES GenerateSceneGraph.srv MeasureNetwork.srv Stamp.srv Ping.srv)
 generate_messages(DEPENDENCIES ${MSG_DEPENDS})
 
 catkin_package(

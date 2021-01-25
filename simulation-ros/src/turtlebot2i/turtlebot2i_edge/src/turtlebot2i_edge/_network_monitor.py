@@ -6,21 +6,49 @@ from turtlebot2i_edge.srv import Stamp
 
 
 class NetworkMonitor:
-    def __init__(self, server_host, throughput=False):
+    def __init__(self, server_host, ns3_simulation=False):
         self.server_host = server_host
-        self.throughput = throughput
+        self.ns3_simulation = ns3_simulation
 
-        if throughput:
-            rospy.loginfo('Waiting for ROS service to measure throughput...')
-            self._stamp = rospy.ServiceProxy('edge/stamp', Stamp)
-            self._stamp.wait_for_service()
+        rospy.loginfo('Waiting for ROS service to stamp...')
+        self._stamp = rospy.ServiceProxy('edge/stamp', Stamp)
+        self._stamp.wait_for_service()
 
     def measure_latency(self, time=1):
         """Measure RTT and packet loss of the network using a ping test.
 
-        :param time: int, seconds the measurement must take (deadline for ping test)
+        :param time: int, duration of the measurement in seconds
         :return: rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss
         """
+        if self.ns3_simulation:
+            self._ns3_ping(time)
+        else:
+            return self._ping(time)
+
+    def measure_throughput(self, n_bytes=2**20):
+        """Measures the throughput of the network using a ROS service.
+
+        :param n_bytes: int, bytes to send for the measurement. Since there is a communication overhead given by the
+            TCP 3-way handshake and the ROS service, the higher the size, the better the approximation of the
+            throughput. Do not use a too small value.
+        :return: throughput (Mbps)
+        """
+        try:
+            self._stamp.wait_for_service(timeout=0.1)
+            bytes_ = b'\x00' * n_bytes
+            time_start = rospy.Time.now()
+            response = self._stamp(bytes=bytes_)
+            time_end = response.header.stamp
+
+            time_elapsed = time_end - time_start
+            time_elapsed = time_elapsed.to_sec()
+            throughput = n_bytes * 8 * 1e-6 / time_elapsed
+        except rospy.ROSException, rospy.ServiceException:
+            throughput = 0
+
+        return throughput
+
+    def _ping(self, time):
         ping = subprocess.Popen(
             args=['ping', self.server_host, '-A', '-w', str(time)],
             stdout=subprocess.PIPE,
@@ -38,28 +66,5 @@ class NetworkMonitor:
 
         return rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss
 
-    def measure_throughput(self, size=2**20):
-        """Measures the throughput of the network using a ROS service.
-
-        :param size: int, bytes to send for the measurement. Since there is a communication overhead given by the TCP
-            3-way handshake and the ROS service, the higher the size, the better the approximation of the throughput.
-            Do not use a small value.
-        :return: throughput (Mbps)
-        """
-        if not self.throughput:
-            raise Exception('NetworkMonitor initialized with throughput=False')
-
-        try:
-            self._stamp.wait_for_service(timeout=0.1)
-            bytes_ = b'\x00' * size
-            time_start = rospy.Time.now()
-            response = self._stamp(bytes=bytes_)
-            time_end = response.header.stamp
-
-            time_elapsed = time_end - time_start
-            time_elapsed = time_elapsed.to_sec()
-            throughput = size * 8 * 1e-6 / time_elapsed
-        except rospy.ROSException, rospy.ServiceException:
-            throughput = 0
-
-        return throughput
+    def _ns3_ping(self, time):
+        pass    # TODO
