@@ -83,9 +83,6 @@ BulkSendApplication::GetTypeId (void)
     .AddTraceSource ("TxWithSeqTsSize", "A new packet is created with SeqTsSizeHeader",
                      MakeTraceSourceAccessor (&BulkSendApplication::m_txTraceWithSeqTsSize),
                      "ns3::PacketSink::SeqTsSizeCallback")
-    .AddTraceSource ("Completed", "Transfer is completed",
-                     MakeTraceSourceAccessor (&BulkSendApplication::m_completedTrace),
-                     "ns3::BulkSendApplication::CompletedCallback")
   ;
   return tid;
 }
@@ -131,12 +128,20 @@ BulkSendApplication::DoDispose (void)
 }
 
 void
-BulkSendApplication::Start (void)
+BulkSendApplication::StartNow (void)
 {
   NS_LOG_FUNCTION (this);
+  m_totBytes = 0;
+  m_unsentPacket = 0;
   Simulator::Schedule(Seconds (0), &BulkSendApplication::StartApplication, this);
 }
 
+void
+BulkSendApplication::StopNow (void)
+{
+  NS_LOG_FUNCTION (this);
+  Simulator::Schedule(Seconds (0), &BulkSendApplication::StopApplication, this);
+}
 
 // Application Methods
 void BulkSendApplication::StartApplication (void) // Called at time specified by Start
@@ -201,10 +206,10 @@ void BulkSendApplication::StartApplication (void) // Called at time specified by
 void BulkSendApplication::StopApplication (void) // Called at time specified by Stop
 {
   NS_LOG_FUNCTION (this);
-
   if (m_socket != 0)
     {
       m_socket->Close ();
+      m_socket = 0;
       m_connected = false;
     }
   else
@@ -246,7 +251,8 @@ void BulkSendApplication::SendData (const Address &from, const Address &to)
           SeqTsSizeHeader header;
           header.SetSeq (m_seq++);
           header.SetSize (toSend);
-          NS_ABORT_IF (toSend < header.GetSerializedSize ());
+//          NS_ABORT_IF (toSend < header.GetSerializedSize ());
+          toSend = std::max (toSend, static_cast<uint64_t>(header.GetSerializedSize ()));
           packet = Create<Packet> (toSend - header.GetSerializedSize ());
           // Trace before adding header, for consistency with PacketSink
           m_txTraceWithSeqTsSize (packet, from, to, header);
@@ -295,8 +301,8 @@ void BulkSendApplication::SendData (const Address &from, const Address &to)
   if (m_totBytes == m_maxBytes && m_connected)
     {
       m_socket->Close ();
+      m_socket = 0;
       m_connected = false;
-      m_completedTrace (this->GetNode());
     }
 }
 

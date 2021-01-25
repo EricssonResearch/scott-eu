@@ -2,9 +2,10 @@
 #include <turtlebot2i_edge/wireless.h>
 #include "ns3/mobility-module.h"
 #include "ns3/internet-module.h"
-#include "ns3/applications-module.h"
 
-WirelessNetwork::WirelessNetwork(int n_robots) : sending_(n_robots), sending_mutex_(n_robots), sending_cv_(n_robots) {
+WirelessNetwork::WirelessNetwork(int n_robots) :
+        stamping_(n_robots), to_stamp_(n_robots), stamped_(n_robots), stamping_mutex_(n_robots), stamping_cv_(n_robots),
+        pinging_(n_robots), pinging_mutex_(n_robots), pinging_cv_(n_robots) {
     ns3::GlobalValue::Bind("SimulatorImplementationType", ns3::StringValue("ns3::RealtimeSimulatorImpl"));
     ns3::GlobalValue::Bind("ChecksumEnabled", ns3::BooleanValue(true));
 
@@ -21,9 +22,28 @@ WirelessNetwork::~WirelessNetwork() {
 }
 
 void WirelessNetwork::createApplications() {
+    /*
+     * Note that the correct interface of the MEC server is the second one (index 1), since we install the internet
+     * stack in the constructor (see https://www.nsnam.org/wiki/HOWTO_use_IP_interface_indexes).
+     */
+
+    ns3::ApplicationContainer apps;
     ns3::Ipv4Address any = ns3::Ipv4Address::GetAny();
+    ns3::Ipv4Address server_address = mec_server_->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
+
     ns3::PacketSinkHelper packet_sink_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(any, 2000));
-    ns3::ApplicationContainer packet_sinks = packet_sink_helper.Install(mec_server_);
+    packet_sink_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
+    apps = packet_sink_helper.Install(mec_server_);
+    apps.Get(0)->TraceConnectWithoutContext("RxWithSeqTsSize", ns3::MakeCallback(&WirelessNetwork::packetSinkRx, this));
+
+    ns3::BulkSendHelper bulk_send_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(server_address, 2000));
+    bulk_send_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
+    apps = bulk_send_helper.Install(robots_);
+    apps.Stop(ns3::Seconds(0.1));
+
+    // TODO
+//    ns3::UdpEchoServerHelper udp_echo_server_helper(9);
+//    apps = udp_echo_server_helper.Install(mec_server_);
 }
 
 void WirelessNetwork::createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y) {
@@ -41,15 +61,26 @@ void WirelessNetwork::simulate() {
     ns3::Simulator::Run();
 }
 
-void WirelessNetwork::transferCompleted(const ns3::Ptr<ns3::Node> &robot) {
+void WirelessNetwork::packetSinkRx(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &from, const ns3::Address &to,
+                                   const ns3::SeqTsSizeHeader &header) {
+    (void) packet;
+
     // get robot_id
-    auto it = std::find_if(robots_.Begin(), robots_.End(), [robot](const ns3::Ptr<ns3::Node> &r) { return r == robot; });
+    ns3::Ipv4Address robot_address = ns3::InetSocketAddress::ConvertFrom(from).GetIpv4();
+    auto it = std::find_if(robots_.Begin(), robots_.End(), [robot_address](const ns3::Ptr<ns3::Node> &robot) {
+        ns3::Ipv4Address robot_address_ = robot->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
+        return robot_address_ == robot_address;
+    });
     int robot_id = it - robots_.Begin();
 
-    // save stats and notify
-    std::unique_lock<std::mutex> ul(sending_mutex_[robot_id]);
-    sending_[robot_id] = false;
-    sending_cv_[robot_id].notify_one();
+    // check whether the transfer has been completed
+    int n_bytes = header.GetSize();
+    std::unique_lock<std::mutex> ul(stamping_mutex_[robot_id]);
+    stamped_[robot_id] += n_bytes;
+    if (stamped_[robot_id] >= to_stamp_[robot_id]) {
+        stamping_[robot_id] = false;
+        stamping_cv_[robot_id].notify_one();
+    }
 }
 
 void WirelessNetwork::offload(int robot_id, int n_bytes) {
@@ -59,30 +90,66 @@ void WirelessNetwork::offload(int robot_id, int n_bytes) {
      * we cannot make assumptions (even because the behavior may change in the future). Therefore, we must synchronize
      * the threads using mutex and condition variable. If the callback is called from the current thread, mutex and
      * condition variable are superfluous but the code still works.
-     *
-     * Note also that the correct interface of the MEC server is the second one (index 1), since we install the internet
-     * stack in the constructor (see https://www.nsnam.org/wiki/HOWTO_use_IP_interface_indexes).
      */
 
     ns3::Ptr<ns3::Node> robot = robots_.Get(robot_id);
 
-    // install app
-    ns3::Ipv4Address dest_ip = mec_server_->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
-    ns3::BulkSendHelper bulk_send_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(dest_ip, 2000));
-    bulk_send_helper.SetAttribute("MaxBytes", ns3::UintegerValue(n_bytes));
-    ns3::ApplicationContainer apps = bulk_send_helper.Install(robot);
-
     // transfer bytes
-    std::unique_lock<std::mutex> ul(sending_mutex_[robot_id]);
-    sending_[robot_id] = true;
+    std::unique_lock<std::mutex> ul(stamping_mutex_[robot_id]);
+    stamped_[robot_id] = 0;
+    to_stamp_[robot_id] = n_bytes;
+    stamping_[robot_id] = true;
     ul.unlock();
-    ns3::Ptr<ns3::BulkSendApplication> app = ns3::StaticCast<ns3::BulkSendApplication>(apps.Get(0));
-    app->TraceConnectWithoutContext("Latency", ns3::MakeCallback(&WirelessNetwork::transferCompleted, this));
-    app->Send();
+    ns3::Ptr<ns3::BulkSendApplication> app = ns3::StaticCast<ns3::BulkSendApplication>(robot->GetApplication(0));
+    app->SetMaxBytes(n_bytes);
+    app->StartNow();
 
     // wait for completion
     ul.lock();
-    sending_cv_[robot_id].wait(ul, [this, robot_id]() { return !sending_[robot_id]; });
+    stamping_cv_[robot_id].wait(ul, [this, robot_id]() { return !stamping_[robot_id]; });
+    app->StopNow();
+}
+
+void WirelessNetwork::echoClientTx(ns3::Ptr<const ns3::Packet> packet) {
+//    ns3::Icmpv4Header icmp_header;
+//    packet->PeekHeader(icmp_header);
+    // TODO
+}
+
+void WirelessNetwork::echoClientRx(ns3::Ptr<const ns3::Packet> packet) {
+    // TODO
+}
+
+turtlebot2i_edge::Ping::Response WirelessNetwork::ping(int robot_id, int n_packets) {
+//    ns3::Ptr<ns3::Node> robot = robots_.Get(robot_id);
+//
+//    // install app
+//    ns3::Ipv4Address server_address = mec_server_->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
+//    ns3::UdpEchoClientHelper client (server_address, 9);
+//    client.SetAttribute ("MaxPackets", ns3::UintegerValue(n_packets));
+//    client.SetAttribute ("PacketSize", ns3::UintegerValue(56));
+//    ns3::ApplicationContainer apps = client.Install(robot);
+//
+//    // ping
+//    std::unique_lock<std::mutex> ul(stamping_mutex_[robot_id]);
+//    pinging_[robot_id] = true;
+//    ul.unlock();
+//    ns3::Ptr<ns3::UdpEchoClient> app = ns3::StaticCast<ns3::UdpEchoClient>(apps.Get(0));
+//    app->TraceConnectWithoutContext("Tx", ns3::MakeCallback(&WirelessNetwork::echoClientTx, this));
+//    app->TraceConnectWithoutContext("Rx", ns3::MakeCallback(&WirelessNetwork::echoClientRx, this));
+//    app->StartNow();
+//
+//    // wait for completion
+//    ul.lock();
+//    pinging_cv_[robot_id].wait(ul, [this, robot_id]() { return !pinging_[robot_id]; });
+//
+    turtlebot2i_edge::Ping::Response response;
+    response.rtt_min = 0;   // TODO
+    response.rtt_avg = 0;   // TODO
+    response.rtt_max = 0;   // TODO
+    response.rtt_mdev = 0;  // TODO
+    response.packet_loss = 0;   // TODO
+    return response;
 }
 
 int WirelessNetwork::nRobots() const {

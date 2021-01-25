@@ -110,13 +110,14 @@ public:
   Ptr<Socket> GetSocket (void) const;
 
   /**
-   * TracedCallback signature for a reception of transfer statistics at transfer completed
-   *
-   * \param latency Latency of transfer
+   * Start application immediately.
    */
-  typedef void (* CompletedCallback)(const Node &node);
+  void StartNow (void);
 
-  void Start (void);
+  /**
+   * Stop application immediately.
+   */
+  void StopNow (void);
 
 protected:
   virtual void DoDispose (void);
@@ -149,9 +150,6 @@ private:
 
   /// Callback for tracing the packet Tx events, includes source, destination,  the packet sent, and header
   TracedCallback<Ptr<const Packet>, const Address &, const Address &, const SeqTsSizeHeader &> m_txTraceWithSeqTsSize;
-
-  /// Callback for tracing the transfer statistics (latency and throughput) at completion time
-  TracedCallback<const Ptr<Node> &> m_completedTrace;
 
 private:
   /**

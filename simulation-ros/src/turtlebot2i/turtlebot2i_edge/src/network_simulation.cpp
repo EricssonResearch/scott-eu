@@ -25,6 +25,12 @@ bool stamp(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtle
     return true;
 }
 
+bool ping(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Ping::Request &request,
+          turtlebot2i_edge::Ping::Response &response) {
+    response = network->ping(robot_id, request.n_packets);
+    return true;
+}
+
 void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     ros::NodeHandle node_handle;
 
@@ -39,7 +45,7 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
 
     std::vector<ros::ServiceServer> service_servers;
     for (int i=0; i<network->nRobots(); i++) {
-        std::string service = "offload_" + std::to_string(i);
+        std::string service = "stamp_" + std::to_string(i);
         auto callback = [network, i](turtlebot2i_edge::Stamp::Request &request,
                                      turtlebot2i_edge::Stamp::Response &response) {
             return stamp(network, i, request, response);
@@ -48,7 +54,19 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
                 <turtlebot2i_edge::Stamp::Request, turtlebot2i_edge::Stamp::Response>(service, callback);
         service_servers.push_back(service_server);
     }
-    ROS_INFO("ROS service to stamp ready");
+    ROS_INFO("ROS services to stamp ready");
+
+    for (int i=0; i<network->nRobots(); i++) {
+        std::string service = "ping_" + std::to_string(i);
+        auto callback = [network, i](turtlebot2i_edge::Ping::Request &request,
+                                     turtlebot2i_edge::Ping::Response &response) {
+            return ping(network, i, request, response);
+        };
+        ros::ServiceServer service_server = node_handle.advertiseService
+                <turtlebot2i_edge::Ping::Request, turtlebot2i_edge::Ping::Response>(service, callback);
+        service_servers.push_back(service_server);
+    }
+    ROS_INFO("ROS services to ping ready");
 
     ros::spin();
 }
@@ -64,14 +82,14 @@ int main(int argc, char **argv) {
     ROS_INFO("Getting parameters from parameter server...");
     if (!ros::param::get("/network/type", network_type) ||
         !ros::param::get("/network/robots/n", n_robots) ||
-        !ros::param::get("/warehouse/x_min", warehouse_boundaries.xMin) ||
-        !ros::param::get("/warehouse/x_max", warehouse_boundaries.xMax) ||
-        !ros::param::get("/warehouse/y_min", warehouse_boundaries.yMin) ||
-        !ros::param::get("/warehouse/y_max", warehouse_boundaries.yMax) ||
-        !ros::param::get("/warehouse/z_min", warehouse_boundaries.zMin) ||
-        !ros::param::get("/warehouse/z_max", warehouse_boundaries.zMax) ||
-        !ros::param::get("/warehouse/rooms/n_x", n_rooms_x) ||
-        !ros::param::get("/warehouse/rooms/n_y", n_rooms_y)) {
+        !ros::param::get("/network/warehouse/x_min", warehouse_boundaries.xMin) ||
+        !ros::param::get("/network/warehouse/x_max", warehouse_boundaries.xMax) ||
+        !ros::param::get("/network/warehouse/y_min", warehouse_boundaries.yMin) ||
+        !ros::param::get("/network/warehouse/y_max", warehouse_boundaries.yMax) ||
+        !ros::param::get("/network/warehouse/z_min", warehouse_boundaries.zMin) ||
+        !ros::param::get("/network/warehouse/z_max", warehouse_boundaries.zMax) ||
+        !ros::param::get("/network/warehouse/rooms/n_x", n_rooms_x) ||
+        !ros::param::get("/network/warehouse/rooms/n_y", n_rooms_y)) {
         ROS_ERROR("ROS parameter server does not contain the necessary parameters");
         return -1;
     }
