@@ -1,0 +1,6 @@
+<launch>
+    <arg name="robot_name" default="turtlebot2i"/>
+
+    <node name="network_monitor" pkg="turtlebot2i_edge" type="network_monitor.py" ns="$(arg robot_name)"
+          output="screen"/>
+</launch>

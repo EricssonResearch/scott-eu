@@ -2,8 +2,13 @@
     <arg name="robot_name" default="turtlebot2i"/>
     <arg name="agent" default="dqn"/>
     <arg name="mode" default="train"/>
+    <arg name="network_type" default="wifi"/>
 
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/pick_and_place.yaml" ns="/"/>
+
+    <include file="$(find turtlebot2i_edge)/launch/network_simulation.launch">
+        <arg name="network_type" value="$(arg network_type)"/>
+    </include>
 
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
@@ -12,13 +17,19 @@
     <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
         <arg name="vrep_host" value="global"/>
-        <arg name="vrep_port" value="20001"/>
+        <arg name="vrep_port" value="20000"/>
         <arg name="mode" value="service"/>
     </include>
 
     <group ns="$(arg robot_name)">
-        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" output="screen">
+        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" ns="edge" output="screen">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_edge.yaml"/>
+            <param name="on_edge" type="bool" value="True"/>
+        </node>
+
+        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" output="screen">
+            <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_robot.yaml"/>
+            <param name="on_edge" type="bool" value="False"/>
         </node>
 
         <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py" output="screen"/>
@@ -30,12 +41,8 @@
             <param name="mode" type="str" value="$(arg mode)"/>
 
             <param name="vrep/host" type="str" value="global"/>
-            <param name="vrep/port" type="int" value="20002"/>
+            <param name="vrep/port" type="int" value="20001"/>
             <param name="rl/models/path" type="str" value="$(find turtlebot2i_edge)/models"/>
-
-            <remap from="robot/generate_scene_graph" to="generate_scene_graph_proxy"/>
-            <remap from="edge/generate_scene_graph" to="/edge/$(arg robot_name)/generate_scene_graph_proxy"/>
-            <remap from="edge/stamp" to="/edge/stamp"/>
         </node>
     </group>
 </launch>
