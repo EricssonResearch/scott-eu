@@ -6,6 +6,7 @@
 #include <geometry_msgs/Point.h>
 #include <turtlebot2i_edge/5g.h>
 #include <turtlebot2i_edge/wifi.h>
+#include <turtlebot2i_edge/Stamp.h>
 
 void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_id, const nav_msgs::Odometry::ConstPtr &msg) {
     const geometry_msgs::Point& position = msg->pose.pose.position;
@@ -15,15 +16,40 @@ void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_i
              position.y, position.z);
 }
 
-void updatePositions(const std::shared_ptr<WirelessNetwork> &network) {
+bool stamp(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Stamp::Request &request,
+           turtlebot2i_edge::Stamp::Response &response) {
+    int n_bytes = request.bytes.size();
+    network->offload(robot_id, n_bytes);
+    response.header.stamp = ros::Time::now();
+    ROS_INFO("Robot %d stamped %d bytes", robot_id, n_bytes);
+    return true;
+}
+
+void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     ros::NodeHandle node_handle;
+
+    ROS_INFO("Updating positions...");
     std::vector<ros::Subscriber> subscribers;
-    for (int i=0; i< network->nRobots(); i++) {
+    for (int i=0; i<network->nRobots(); i++) {
         std::string topic = "odom_" + std::to_string(i);
         auto callback = [network, i](const nav_msgs::Odometry::ConstPtr &msg) { updatePosition(network, i, msg); };
         ros::Subscriber subscriber = node_handle.subscribe<nav_msgs::Odometry>(topic, 1, callback);
         subscribers.push_back(subscriber);
     }
+
+    std::vector<ros::ServiceServer> service_servers;
+    for (int i=0; i<network->nRobots(); i++) {
+        std::string service = "offload_" + std::to_string(i);
+        auto callback = [network, i](turtlebot2i_edge::Stamp::Request &request,
+                                     turtlebot2i_edge::Stamp::Response &response) {
+            return stamp(network, i, request, response);
+        };
+        ros::ServiceServer service_server = node_handle.advertiseService
+                <turtlebot2i_edge::Stamp::Request, turtlebot2i_edge::Stamp::Response>(service, callback);
+        service_servers.push_back(service_server);
+    }
+    ROS_INFO("ROS service to stamp ready");
+
     ros::spin();
 }
 
@@ -88,10 +114,11 @@ int main(int argc, char **argv) {
 
     ROS_INFO("Setting up network...");
     network->createNetwork();
+    network->createApplications();                  // important: after creating network
     network->createWarehouse(warehouse_boundaries, n_rooms_x, n_rooms_y);
 
-    ROS_INFO("Starting to update positions...");
-    std::thread thread(updatePositions, network);   // on a second thread, because...
+    ROS_INFO("Starting ROS node...");
+    std::thread thread(runRosNode, network);   // on a second thread, because...
 
     ROS_INFO("Simulating network...");
     network->simulate();                            // ...this simulates the network

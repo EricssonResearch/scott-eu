@@ -88,6 +88,12 @@ find_library(
   HINTS $ENV{NS3_ROOT}/build/lib
   REQUIRED
 )
+find_library(
+  NS3_APPLICATIONS_LIBRARY
+  NAMES ns3-dev-applications-optimized ns3-dev-applications-debug
+  HINTS $ENV{NS3_ROOT}/build/lib
+  REQUIRED
+)
 
 list(
   APPEND NS3_LIBRARIES
@@ -102,11 +108,11 @@ list(
   ${NS3_MOBILITY_LIBRARY}
   ${NS3_BUILDINGS_LIBRARY}
   ${NS3_STATS_LIBRARY}
+  ${NS3_APPLICATIONS_LIBRARY}
 )
 
 catkin_python_setup()
 
-add_message_files(FILES NetworkLatency.msg NetworkThroughput.msg)
 add_service_files(FILES GenerateSceneGraph.srv Stamp.srv)
 generate_messages(DEPENDENCIES ${MSG_DEPENDS})
 

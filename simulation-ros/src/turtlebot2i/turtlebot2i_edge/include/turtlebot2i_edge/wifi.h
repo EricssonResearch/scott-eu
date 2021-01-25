@@ -1,7 +1,7 @@
 /*
  * Simulates the following network:
  *
- *                  WiFi
+ *                 WiFi 10.0.0.0/24
  *      *       *       ...     *       *
  *      |       |               |       |
  *   robot1  robot2          robotN  MEC server

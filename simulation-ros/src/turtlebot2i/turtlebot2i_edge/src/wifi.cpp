@@ -2,6 +2,7 @@
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/wifi-module.h"
+#include "ns3/internet-module.h"
 #include "ns3/tap-bridge-module.h"
 
 WifiNetwork::WifiNetwork(int n_robots) : WirelessNetwork(n_robots) {
@@ -33,14 +34,12 @@ void WifiNetwork::createNetwork() {
     // install net devices
     ns3::NetDeviceContainer net_devices = wifi_helper.Install(phy_helper, mac_helper, nodes);
 
-    // install TapBridge net devices to communicate with OS's taps
-    ns3::TapBridgeHelper tap_bridge_helper;
-    tap_bridge_helper.SetAttribute("Mode", ns3::StringValue("UseLocal"));
-    for (int i=0; i<nodes.GetN(); i++) {
-        std::string tap = std::string("w") + std::to_string(i) + "tap";
-        tap_bridge_helper.SetAttribute("DeviceName", ns3::StringValue(tap));
-        tap_bridge_helper.Install(nodes.Get(i), net_devices.Get(i));
-    }
+    // assign IP addresses
+    ns3::Ipv4AddressHelper ipv4_address_helper;
+    ipv4_address_helper.SetBase("10.0.0.0", "/24");
+    ipv4_address_helper.Assign(net_devices);
+
+    phy_helper.EnablePcap("ciao", net_devices);
 }
 
 void WifiNetwork::setMecServerPosition(const ns3::Vector &position) {
