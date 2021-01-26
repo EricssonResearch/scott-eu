@@ -17,7 +17,7 @@ from kobuki_msgs.msg import BumperEvent
 from turtlebot2i_scene_graph.msg import SceneGraph
 from turtlebot2i_edge.srv import GenerateSceneGraph, GenerateSceneGraphRequest, GenerateSceneGraphResponse
 
-IMAGE_SIZE = (224, 224)
+IMAGE_SIZE = (224, 224)     # TODO: parameterize! YOLACT gets a certain size, mask R-CNN another one
 HIGH_RISK_VALUE = 5     # from risk assessment
 
 

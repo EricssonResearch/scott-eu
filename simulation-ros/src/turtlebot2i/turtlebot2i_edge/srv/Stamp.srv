@@ -1,3 +1,5 @@
 uint8[] bytes
+duration max_duration
 ---
 Header header
+uint64 stamped

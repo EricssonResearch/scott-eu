@@ -17,23 +17,19 @@ class WirelessNetwork {
     ns3::Ptr<ns3::Building> warehouse_;
 
     std::vector<bool> stamping_;
-    std::vector<int> to_stamp_;                 // number of bytes to offload
-    std::vector<int> stamped_;                  // already offloaded
+    std::vector<int> to_stamp_;                 // total number of bytes to stamp
+    std::vector<int> stamped_;                  // number of bytes stamped so far
     std::vector<std::mutex> stamping_mutex_;
     std::vector<std::condition_variable> stamping_cv_;
 
     std::vector<bool> pinging_;
-    std::vector<double> rtt_min_;
-    std::vector<double> rtt_avg_;
-    std::vector<double> rtt_max_;
-    std::vector<double> rtt_mdev_;
-    std::vector<double> packet_loss_;
+    std::vector<PingResult> ping_results_;
     std::vector<std::mutex> pinging_mutex_;
     std::vector<std::condition_variable> pinging_cv_;
 
     int getRobotId(const ns3::Address &address);
-    void checkTransferCompleted(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
-                                const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
+    void updateStampedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
+                            const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
     void saveRttStats(const ns3::Ptr<ns3::Node> &robot, double rtt_min, double rtt_avg, double rtt_max, double rtt_mdev,
                       double packet_loss);
 
@@ -54,8 +50,8 @@ public:
     void createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y);
     void simulate();
 
-    void offload(int robot_id, int n_bytes);                    // robot -> MEC server
-    PingResult ping(int robot_id, const ns3::Time &duration);   // robot -> MEC server
+    int stamp(int robot_id, int n_bytes, const ns3::Time &max_duration);    // robot -> MEC server
+    PingResult ping(int robot_id, const ns3::Time &duration);               // robot -> MEC server
 
     int nRobots() const;
     std::pair<int,int> getRobotRoom(int robot_id) const;

@@ -6,9 +6,12 @@ from turtlebot2i_edge.srv import Stamp, StampResponse
 
 
 def stamp(request):
-    rospy.loginfo('Stamped %d bytes' % len(request.bytes))
-    response = StampResponse(header=Header(stamp=rospy.Time.now()))
-    return response
+    to_stamp = len(request.bytes)
+    rospy.loginfo('Stamped %d bytes' % to_stamp)
+    return StampResponse(
+        header=Header(stamp=rospy.Time.now()),
+        stamped=request.to_stamp
+    )
 
 
 def main():

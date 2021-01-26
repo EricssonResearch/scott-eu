@@ -38,24 +38,27 @@ class NetworkMonitor:
             ping_result.packet_loss
         )
 
-    def measure_throughput(self, n_bytes=2**20):
+    def measure_throughput(self, n_bytes=2**20, max_duration=1):
         """Measures the throughput of the network using a ROS service.
 
         :param n_bytes: int, bytes to send for the measurement. Since there is a communication overhead given by the
             TCP 3-way handshake and the ROS service, the higher the size, the better the approximation of the
             throughput. Do not use a too small value.
+        :param max_duration: double, max duration of the measurement in seconds
         :return: throughput (Mbps)
         """
+        max_duration = rospy.Time.from_sec(max_duration)
         try:
             self._stamp.wait_for_service(timeout=0.1)
             bytes_ = b'\x00' * n_bytes
             time_start = rospy.Time.now()
-            response = self._stamp(bytes=bytes_)
+            response = self._stamp(bytes=bytes_, max_duration=max_duration)
             time_end = response.header.stamp
+            stamped = response.stamped
 
             time_elapsed = time_end - time_start
             time_elapsed = time_elapsed.to_sec()
-            throughput = n_bytes * 8 * 1e-6 / time_elapsed
+            throughput = stamped * 8 * 1e-6 / time_elapsed
         except rospy.ROSException, rospy.ServiceException:
             throughput = 0
 

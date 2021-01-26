@@ -6,12 +6,11 @@
 
 WirelessNetwork::WirelessNetwork(int n_robots) :
         stamping_(n_robots), to_stamp_(n_robots), stamped_(n_robots), stamping_mutex_(n_robots), stamping_cv_(n_robots),
-        pinging_(n_robots), rtt_min_(n_robots), rtt_avg_(n_robots), rtt_max_(n_robots), rtt_mdev_(n_robots),
-        packet_loss_(n_robots), pinging_mutex_(n_robots), pinging_cv_(n_robots) {
+        pinging_(n_robots), ping_results_(n_robots), pinging_mutex_(n_robots), pinging_cv_(n_robots) {
     ns3::GlobalValue::Bind("SimulatorImplementationType", ns3::StringValue("ns3::RealtimeSimulatorImpl"));
     ns3::GlobalValue::Bind("ChecksumEnabled", ns3::BooleanValue(true));
 
-    robots_ = ns3::NodeContainer(n_robots);
+    robots_ = ns3::NodeContainer(n_robots);         // first nodes, so that they get IDs in [0, n_robots-1]
     mec_server_ = ns3::CreateObject<ns3::Node>();
 
     addMobility(robots_);
@@ -39,7 +38,7 @@ void WirelessNetwork::createApplications() {
     packet_sink_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
     apps = packet_sink_helper.Install(mec_server_);
     apps.Get(0)->TraceConnectWithoutContext("RxWithSeqTsSize", ns3::MakeCallback(
-            &WirelessNetwork::checkTransferCompleted, this));
+            &WirelessNetwork::updateStampedBytes, this));
 
     ns3::UdpEchoServerHelper udp_echo_server_helper(9);
     udp_echo_server_helper.Install(mec_server_);
@@ -86,8 +85,8 @@ int WirelessNetwork::getRobotId(const ns3::Address &address) {
     return robot_id;
 }
 
-void WirelessNetwork::checkTransferCompleted(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
-                                             const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header) {
+void WirelessNetwork::updateStampedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
+                                         const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header) {
     (void) packet;
     (void) server_address;
     int robot_id = getRobotId(robot_address);
@@ -103,20 +102,22 @@ void WirelessNetwork::checkTransferCompleted(ns3::Ptr<const ns3::Packet> packet,
 
 void WirelessNetwork::saveRttStats(const ns3::Ptr<ns3::Node> &robot, double rtt_min, double rtt_avg, double rtt_max,
                                    double rtt_mdev, double packet_loss) {
-    // since the robots are the first nodes created in the constructor, their IDs are in [0, n_robots-1]
     int robot_id = robot->GetId();
+    bool all_lost = std::abs(packet_loss - 1) < std::numeric_limits<double>::epsilon();
+    double max_double = std::numeric_limits<double>::max();
 
     std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
-    rtt_min_[robot_id] = rtt_min;
-    rtt_avg_[robot_id] = rtt_avg;
-    rtt_max_[robot_id] = rtt_max;
-    rtt_mdev_[robot_id] = rtt_mdev;
-    packet_loss_[robot_id] = packet_loss;
+    PingResult &ping_result = ping_results_[robot_id];
+    ping_result.rtt_min = all_lost ? max_double : rtt_min;
+    ping_result.rtt_avg = all_lost ? max_double : rtt_avg;
+    ping_result.rtt_max = all_lost ? max_double : rtt_max;
+    ping_result.rtt_mdev = all_lost ? 0 : rtt_mdev;
+    ping_result.packet_loss = packet_loss;
     pinging_[robot_id] = false;
     pinging_cv_[robot_id].notify_one();
 }
 
-void WirelessNetwork::offload(int robot_id, int n_bytes) {
+int WirelessNetwork::stamp(int robot_id, int n_bytes, const ns3::Time &max_duration) {
     /*
      * Important: the callback transferCompleted() might be called either from the current thread or from the thread
      * simulating the network (blocked in ns3::Simulator::Run()). It depends on the implementation of the ns-3 core,
@@ -138,9 +139,13 @@ void WirelessNetwork::offload(int robot_id, int n_bytes) {
     app->Start(ns3::Seconds(0));
 
     ul.lock();
-    stamping_cv_[robot_id].wait(ul, [this, robot_id]() { return !stamping_[robot_id]; });
+    stamping_cv_[robot_id].wait_for(ul, std::chrono::duration<double>(max_duration.GetSeconds()),
+                                    [this, robot_id]() { return !stamping_[robot_id]; });
+    int stamped = stamped_[robot_id];
     ul.unlock();
+
     app->Stop(ns3::Seconds(0));
+    return stamped;
 }
 
 PingResult WirelessNetwork::ping(int robot_id, const ns3::Time &duration) {
@@ -158,7 +163,7 @@ PingResult WirelessNetwork::ping(int robot_id, const ns3::Time &duration) {
 
     ul.lock();
     pinging_cv_[robot_id].wait(ul, [this, robot_id]() { return !pinging_[robot_id]; });
-    return {rtt_min_[robot_id], rtt_avg_[robot_id], rtt_max_[robot_id], rtt_mdev_[robot_id], packet_loss_[robot_id]};
+    return ping_results_[robot_id];
 }
 
 int WirelessNetwork::nRobots() const {

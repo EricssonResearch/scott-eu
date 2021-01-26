@@ -19,10 +19,12 @@ void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_i
 
 bool stamp(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Stamp::Request &request,
            turtlebot2i_edge::Stamp::Response &response) {
-    int n_bytes = request.bytes.size();
-    network->offload(robot_id, n_bytes);
+    int to_stamp = request.bytes.size();
+    int stamped = network->stamp(robot_id, to_stamp, ns3::Seconds(request.max_duration.toSec()));
+    double percentage = 100 * static_cast<double>(stamped) / to_stamp;
     response.header.stamp = ros::Time::now();
-    ROS_INFO("Robot %d stamped %d bytes", robot_id, n_bytes);
+    response.stamped = stamped;
+    ROS_INFO("Robot %d stamped %d bytes out of %d (%f%%)", robot_id, stamped, to_stamp, percentage);
     return true;
 }
 
