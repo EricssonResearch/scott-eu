@@ -22,7 +22,6 @@
 #include "ns3/socket.h"
 #include "ns3/uinteger.h"
 #include "ns3/boolean.h"
-#include "ns3/inet-socket-address.h"
 #include "ns3/packet.h"
 #include "ns3/trace-source-accessor.h"
 
@@ -60,7 +59,11 @@ V4Ping::GetTypeId (void)
     .AddTraceSource ("Rtt",
                      "The rtt calculated by the ping.",
                      MakeTraceSourceAccessor (&V4Ping::m_traceRtt),
-                     "ns3::Time::TracedCallback");
+                     "ns3::Time::TracedCallback")
+    .AddTraceSource ("RttStats",
+                     "The rtt calculated by the ping with the node.",
+                     MakeTraceSourceAccessor (&V4Ping::m_traceRttStats),
+                     "ns3::V4Ping::RttStatsCallback");
   ;
   return tid;
 }
@@ -70,7 +73,7 @@ V4Ping::V4Ping ()
     m_size (56),
     m_socket (0),
     m_seq (0),
-    m_verbose (false),
+    m_verbose (),
     m_recv (0)
 {
   NS_LOG_FUNCTION (this);
@@ -152,9 +155,9 @@ V4Ping::Receive (Ptr<Socket> socket)
                       Time sendTime = i->second;
                       NS_ASSERT (Simulator::Now () >= sendTime);
                       Time delta = Simulator::Now () - sendTime;
-
                       m_sent.erase (i);
-                      m_avgRtt.Update (delta.GetMilliSeconds ());
+//                      m_avgRtt.Update (delta.GetMilliSeconds());
+                      m_avgRtt.Update (delta.GetSeconds() * 1e3);   // not GetMilliseconds(), it casts to integer, so the resolution would be 10^-3
                       m_recv++;
                       m_traceRtt (delta);
 
@@ -238,6 +241,23 @@ V4Ping::Send ()
   delete[] data;
 }
 
+void
+V4Ping::Start (const Time &delay)
+{
+  NS_LOG_FUNCTION (this);
+  m_seq = 0;
+  m_recv = 0;
+  m_avgRtt.Reset ();
+  Simulator::Schedule(delay, &V4Ping::StartApplication, this);
+}
+
+void
+V4Ping::Stop (const Time &delay)
+{
+  NS_LOG_FUNCTION (this);
+  Simulator::Schedule(delay, &V4Ping::StopApplication, this);
+}
+
 void 
 V4Ping::StartApplication (void)
 {
@@ -275,7 +295,15 @@ V4Ping::StopApplication (void)
   if (m_socket)
     {
       m_socket->Close ();
+      m_socket = 0;
     }
+
+  double rttMin = m_avgRtt.Min ();
+  double rttAvg = m_avgRtt.Avg ();
+  double rttMax = m_avgRtt.Max ();
+  double rttMdev = m_avgRtt.Stddev ();
+  double packetLoss = (m_seq - m_recv) / m_seq;
+  m_traceRttStats (GetNode(), rttMin, rttAvg, rttMax, rttMdev, packetLoss);
 
   if (m_verbose)
     {
@@ -283,12 +311,12 @@ V4Ping::StopApplication (void)
       os.precision (4);
       os << "--- " << m_remote << " ping statistics ---\n" 
          << m_seq << " packets transmitted, " << m_recv << " received, "
-         << ((m_seq - m_recv) * 100 / m_seq) << "% packet loss, "
+         << packetLoss * 100 << "% packet loss, "
          << "time " << (Simulator::Now () - m_started).As (Time::MS) << "\n";
 
       if (m_avgRtt.Count () > 0)
-        os << "rtt min/avg/max/mdev = " << m_avgRtt.Min () << "/" << m_avgRtt.Avg () << "/"
-           << m_avgRtt.Max () << "/" << m_avgRtt.Stddev ()
+        os << "rtt min/avg/max/mdev = " << rttMin << "/" << rttAvg << "/"
+           << rttMax << "/" << rttMdev
            << " ms\n";
       std::cout << os.str ();
     }

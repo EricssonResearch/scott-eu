@@ -110,14 +110,14 @@ public:
   Ptr<Socket> GetSocket (void) const;
 
   /**
-   * Start application immediately.
+   * Start application
    */
-  void StartNow (void);
+  void Start (const Time &delay);
 
   /**
-   * Stop application immediately.
+   * Stop application
    */
-  void StopNow (void);
+  void Stop (const Time &delay);
 
 protected:
   virtual void DoDispose (void);

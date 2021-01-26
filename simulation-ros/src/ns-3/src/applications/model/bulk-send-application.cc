@@ -128,19 +128,19 @@ BulkSendApplication::DoDispose (void)
 }
 
 void
-BulkSendApplication::StartNow (void)
+BulkSendApplication::Start (const Time &delay)
 {
   NS_LOG_FUNCTION (this);
   m_totBytes = 0;
   m_unsentPacket = 0;
-  Simulator::Schedule(Seconds (0), &BulkSendApplication::StartApplication, this);
+  Simulator::Schedule(delay, &BulkSendApplication::StartApplication, this);
 }
 
 void
-BulkSendApplication::StopNow (void)
+BulkSendApplication::Stop (const Time &delay)
 {
   NS_LOG_FUNCTION (this);
-  Simulator::Schedule(Seconds (0), &BulkSendApplication::StopApplication, this);
+  Simulator::Schedule(delay, &BulkSendApplication::StopApplication, this);
 }
 
 // Application Methods
