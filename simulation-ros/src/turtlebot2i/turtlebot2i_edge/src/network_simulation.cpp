@@ -7,6 +7,7 @@
 #include <turtlebot2i_edge/5g.h>
 #include <turtlebot2i_edge/wifi.h>
 #include <turtlebot2i_edge/Stamp.h>
+#include <turtlebot2i_edge/Ping.h>
 
 void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_id, const nav_msgs::Odometry::ConstPtr &msg) {
     const geometry_msgs::Point& position = msg->pose.pose.position;
@@ -27,7 +28,15 @@ bool stamp(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtle
 
 bool ping(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Ping::Request &request,
           turtlebot2i_edge::Ping::Response &response) {
-    response = network->ping(robot_id, request.n_packets);
+    double duration = request.duration.toSec();
+    PingResult result = network->ping(robot_id, ns3::Seconds(duration));
+    response.header.stamp = ros::Time::now();
+    response.rtt_min = result.rtt_min;
+    response.rtt_avg = result.rtt_avg;
+    response.rtt_max = result.rtt_max;
+    response.rtt_mdev = result.rtt_mdev;
+    response.packet_loss = result.packet_loss;
+    ROS_INFO("Robot %d executed a ping test of %f seconds", robot_id, duration);
     return true;
 }
 

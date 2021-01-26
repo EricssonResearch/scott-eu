@@ -2,7 +2,8 @@ import rospy
 import subprocess
 import re
 import numpy as np
-from turtlebot2i_edge.srv import Stamp
+from std_msgs.msg import Header
+from turtlebot2i_edge.srv import Stamp, Ping, PingResponse
 
 
 class NetworkMonitor:
@@ -14,16 +15,28 @@ class NetworkMonitor:
         self._stamp = rospy.ServiceProxy('edge/stamp', Stamp)
         self._stamp.wait_for_service()
 
-    def measure_latency(self, time=1):
+        if ns3_simulation:
+            rospy.loginfo('Waiting for ROS service to ping...')
+            self._ping = rospy.ServiceProxy('edge/ping', Ping)
+            self._ping.wait_for_service()
+        else:
+            self._ping = self._linux_ping
+
+    def measure_latency(self, duration=1):
         """Measure RTT and packet loss of the network using a ping test.
 
-        :param time: int, duration of the measurement in seconds
+        :param duration: int, duration of the measurement in seconds
         :return: rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss
         """
-        if self.ns3_simulation:
-            self._ns3_ping(time)
-        else:
-            return self._ping(time)
+        duration = rospy.Time.from_sec(duration)
+        ping_result = self._ping(duration)
+        return (    # return tuple, not ROS message, to be consistent with throughput
+            ping_result.rtt_min,
+            ping_result.rtt_avg,
+            ping_result.rtt_max,
+            ping_result.rtt_mdev,
+            ping_result.packet_loss
+        )
 
     def measure_throughput(self, n_bytes=2**20):
         """Measures the throughput of the network using a ROS service.
@@ -48,9 +61,10 @@ class NetworkMonitor:
 
         return throughput
 
-    def _ping(self, time):
+    def _linux_ping(self, duration):
+        duration = duration.secs
         ping = subprocess.Popen(
-            args=['ping', self.server_host, '-A', '-w', str(time)],
+            args=['ping', self.server_host, '-A', '-w', str(duration)],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
@@ -64,7 +78,11 @@ class NetworkMonitor:
             rtt_min = rtt_avg = rtt_max = np.inf
             rtt_mdev = 0
 
-        return rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss
-
-    def _ns3_ping(self, time):
-        pass    # TODO
+        return PingResponse(
+            header=Header(stamp=rospy.Time.now()),
+            rtt_min=rtt_min,
+            rtt_avg=rtt_avg,
+            rtt_max=rtt_max,
+            rtt_mdev=rtt_mdev,
+            packet_loss=packet_loss
+        )

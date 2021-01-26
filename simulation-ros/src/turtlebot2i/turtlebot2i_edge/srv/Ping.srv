@@ -1,5 +1,6 @@
-uint64 n_packets
+duration duration
 ---
+Header header
 float64 rtt_min         # ms
 float64 rtt_avg         # ms
 float64 rtt_max         # ms

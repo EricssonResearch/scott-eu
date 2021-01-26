@@ -14,5 +14,10 @@
         <remap from="stamp_1" to="/turtlebot2i_0/edge/stamp"/>
         <remap from="stamp_2" to="/turtlebot2i_1/edge/stamp"/>
         <remap from="stamp_3" to="/turtlebot2i_2/edge/stamp"/>
+
+        <remap from="ping_0" to="/turtlebot2i/edge/ping"/>
+        <remap from="ping_1" to="/turtlebot2i_0/edge/ping"/>
+        <remap from="ping_2" to="/turtlebot2i_1/edge/ping"/>
+        <remap from="ping_3" to="/turtlebot2i_2/edge/ping"/>
     </node>
 </launch>

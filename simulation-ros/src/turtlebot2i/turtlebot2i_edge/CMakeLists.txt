@@ -65,6 +65,12 @@ find_library(
   REQUIRED
 )
 find_library(
+  NS3_INTERNET_APPS_LIBRARY
+  NAMES ns3-dev-internet-apps-optimized ns3-dev-internet-apps-debug
+  HINTS $ENV{NS3_ROOT}/build/lib
+  REQUIRED
+)
+find_library(
   NS3_TAP_BRIDGE_LIBRARY
   NAMES ns3-dev-tap-bridge-optimized ns3-dev-tap-bridge-debug
   HINTS $ENV{NS3_ROOT}/build/lib
@@ -104,6 +110,7 @@ list(
   ${NS3_NR_LIBRARY}
   ${NS3_POINT_TO_POINT_LIBRARY}
   ${NS3_INTERNET_LIBRARY}
+  ${NS3_INTERNET_APPS_LIBRARY}
   ${NS3_TAP_BRIDGE_LIBRARY}
   ${NS3_MOBILITY_LIBRARY}
   ${NS3_BUILDINGS_LIBRARY}

@@ -1,13 +1,15 @@
 #pragma once
 
-#include <ros/ros.h>
 #include <mutex>
 #include <condition_variable>
-#include <turtlebot2i_edge/Ping.h>
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/buildings-module.h"
 #include "ns3/applications-module.h"
+
+typedef struct {
+    double rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss;
+} PingResult;
 
 class WirelessNetwork {
     ns3::NodeContainer robots_;
@@ -21,13 +23,19 @@ class WirelessNetwork {
     std::vector<std::condition_variable> stamping_cv_;
 
     std::vector<bool> pinging_;
+    std::vector<double> rtt_min_;
+    std::vector<double> rtt_avg_;
+    std::vector<double> rtt_max_;
+    std::vector<double> rtt_mdev_;
+    std::vector<double> packet_loss_;
     std::vector<std::mutex> pinging_mutex_;
     std::vector<std::condition_variable> pinging_cv_;
 
-    void packetSinkRx(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &from, const ns3::Address &to,
-                      const ns3::SeqTsSizeHeader &header);
-    void echoClientTx(ns3::Ptr<const ns3::Packet> packet);
-    void echoClientRx(ns3::Ptr<const ns3::Packet> packet);
+    int getRobotId(const ns3::Address &address);
+    void checkTransferCompleted(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
+                                const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
+    void saveRttStats(const ns3::Ptr<ns3::Node> &robot, double rtt_min, double rtt_avg, double rtt_max, double rtt_mdev,
+                      double packet_loss);
 
 protected:
     static void addMobility(const ns3::NodeContainer &nodes);
@@ -46,8 +54,8 @@ public:
     void createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y);
     void simulate();
 
-    void offload(int robot_id, int n_bytes);                                // robot -> MEC server
-    turtlebot2i_edge::Ping::Response ping(int robot_id, int n_packets);     // robot -> MEC server
+    void offload(int robot_id, int n_bytes);                    // robot -> MEC server
+    PingResult ping(int robot_id, const ns3::Time &duration);   // robot -> MEC server
 
     int nRobots() const;
     std::pair<int,int> getRobotRoom(int robot_id) const;
