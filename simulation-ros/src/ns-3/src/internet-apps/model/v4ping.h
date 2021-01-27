@@ -18,7 +18,6 @@
 #define V4PING_H
 
 #include "ns3/application.h"
-#include "ns3/inet-socket-address.h"
 #include "ns3/traced-callback.h"
 #include "ns3/average.h"
 #include <map>
@@ -53,25 +52,6 @@ public:
    */
   V4Ping ();
   virtual ~V4Ping ();
-
-  /**
-   * Start application
-   */
-  void Start (const Time &delay);
-
-  /**
-   * Stop application
-   */
-  void Stop (const Time &delay);
-
-  /**
-   * TracedCallback signature for a reception with addresses and RTT
-   *
-   * \param from Local (client) address
-   * \param to Remote (server) address
-   * \param rtt RTT for received echo reply
-   */
-  typedef void (* RttStatsCallback)(const Ptr<Node> &node, double rttMin, double rttAvg, double rttMax, double rttMdev, double packetLoss);
 
 private:
   /**
@@ -127,7 +107,6 @@ private:
   uint16_t m_seq;
   /// TracedCallback for RTT measured by ICMP ECHOs
   TracedCallback<Time> m_traceRtt;
-  TracedCallback<const Ptr<Node> &, double, double, double, double, double> m_traceRttStats;
   /// produce ping-style output if true
   bool m_verbose;
   /// received packets counter

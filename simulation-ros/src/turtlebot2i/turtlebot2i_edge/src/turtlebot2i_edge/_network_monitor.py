@@ -17,34 +17,32 @@ class NetworkMonitor:
 
         if ns3_simulation:
             rospy.loginfo('Waiting for ROS service to ping...')
-            self._ping = rospy.ServiceProxy('edge/ping', Ping)
-            self._ping.wait_for_service()
+            self._ns3_ping = rospy.ServiceProxy('edge/ping', Ping)
+            self._ns3_ping.wait_for_service()
         else:
-            self._ping = self._linux_ping
+            self._ns3_ping = None
 
-    def measure_latency(self, duration=1):
+    def measure_rtt(self, max_rtt=0.2):
         """Measure RTT and packet loss of the network using a ping test.
 
-        :param duration: int, duration of the measurement in seconds
-        :return: rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss
+        :param max_rtt: float, max duration of ping test
+        :return: RTT
         """
-        duration = rospy.Time.from_sec(duration)
-        ping_result = self._ping(duration)
-        return (    # return tuple, not ROS message, to be consistent with throughput
-            ping_result.rtt_min,
-            ping_result.rtt_avg,
-            ping_result.rtt_max,
-            ping_result.rtt_mdev,
-            ping_result.packet_loss
-        )
+        if self.ns3_simulation:
+            max_rtt = rospy.Time.from_sec(max_rtt)
+            response = self._ns3_ping(max_rtt=max_rtt)
+            rtt = response.rtt
+        else:
+            rtt = self._ping(max_rtt=max_rtt)
+        return rtt
 
-    def measure_throughput(self, n_bytes=2**20, max_duration=1):
+    def measure_throughput(self, n_bytes=2**20, max_duration=0.2):
         """Measures the throughput of the network using a ROS service.
 
         :param n_bytes: int, bytes to send for the measurement. Since there is a communication overhead given by the
             TCP 3-way handshake and the ROS service, the higher the size, the better the approximation of the
             throughput. Do not use a too small value.
-        :param max_duration: double, max duration of the measurement in seconds
+        :param max_duration: float, max duration of the measurement in seconds
         :return: throughput (Mbps)
         """
         max_duration = rospy.Time.from_sec(max_duration)
@@ -64,10 +62,10 @@ class NetworkMonitor:
 
         return throughput
 
-    def _linux_ping(self, duration):
-        duration = duration.secs
+    def _ping(self, max_rtt):
+        # TODO: use scapy or other libraries, Linux ping does not support timeout < 1 second
         ping = subprocess.Popen(
-            args=['ping', self.server_host, '-A', '-w', str(duration)],
+            args=['ping', self.server_host, '-c', '1', '-w', str(max_rtt)],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )

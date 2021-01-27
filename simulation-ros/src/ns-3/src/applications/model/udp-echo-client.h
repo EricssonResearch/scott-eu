@@ -130,6 +130,31 @@ public:
    */
   void SetFill (uint8_t *fill, uint32_t fillSize, uint32_t dataSize);
 
+  /**
+   * Start application
+   */
+  void Start (const Time &delay);
+
+  /**
+   * Stop application
+   */
+  void Stop (const Time &delay);
+
+
+  /**
+   * TracedCallback signature for received packet with node and time
+   *
+   * \param [in] packet The packet.
+   */
+  typedef void (* RxWithTimeTracedCallback) (const Ptr<Node> &from, const Time &time);
+
+  /**
+   * TracedCallback signature for lost packets with node
+   *
+   * \param [in] packet The packet.
+   */
+  typedef void (* LostPacketsTracedCallback) (const Ptr<Node> &from, uint32_t lostPackets);
+
 protected:
   virtual void DoDispose (void);
 
@@ -165,6 +190,7 @@ private:
   uint8_t *m_data; //!< packet payload data
 
   uint32_t m_sent; //!< Counter for sent packets
+  uint32_t m_recv; //!< Counter for received packets
   Ptr<Socket> m_socket; //!< Socket
   Address m_peerAddress; //!< Remote peer address
   uint16_t m_peerPort; //!< Remote peer port
@@ -182,6 +208,11 @@ private:
   /// Callbacks for tracing the packet Rx events, includes source and destination addresses
   TracedCallback<Ptr<const Packet>, const Address &, const Address &> m_rxTraceWithAddresses;
 
+  /// Callbacks for tracing the packet Rx events, includes source and destination addresses + reception time
+  TracedCallback<const Ptr<Node> &, const Time &> m_rxTraceWithTime;
+
+  /// Callbacks for tracing the packet loss, includes source and destination addresses
+  TracedCallback<const Ptr<Node> &, uint32_t> m_lostPacketsTrace;
 };
 
 } // namespace ns3

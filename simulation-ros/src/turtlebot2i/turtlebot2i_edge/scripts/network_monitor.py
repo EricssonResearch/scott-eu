@@ -7,16 +7,12 @@ from turtlebot2i_edge.srv import MeasureNetwork, MeasureNetworkResponse
 
 
 def measure_network(network_monitor, _):
-    rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss = network_monitor.measure_latency()
+    rtt = network_monitor.measure_rtt()
     throughput = network_monitor.measure_throughput()
     rospy.loginfo('Network measured')
     return MeasureNetworkResponse(
         header=Header(stamp=rospy.Time.now()),
-        rtt_min=rtt_min,
-        rtt_avg=rtt_avg,
-        rtt_max=rtt_max,
-        rtt_mdev=rtt_mdev,
-        packet_loss=packet_loss,
+        rtt=rtt,
         throughput=throughput
     )
 

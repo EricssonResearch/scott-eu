@@ -1,12 +1,12 @@
 #include <thread>
+#include <sstream>
 #include <turtlebot2i_edge/wireless.h>
 #include "ns3/mobility-module.h"
 #include "ns3/internet-module.h"
-#include "ns3/internet-apps-module.h"
 
 WirelessNetwork::WirelessNetwork(int n_robots) :
         stamping_(n_robots), to_stamp_(n_robots), stamped_(n_robots), stamping_mutex_(n_robots), stamping_cv_(n_robots),
-        pinging_(n_robots), ping_results_(n_robots), pinging_mutex_(n_robots), pinging_cv_(n_robots) {
+        pinging_(n_robots), rtt_(n_robots), pinging_mutex_(n_robots), pinging_cv_(n_robots) {
     ns3::GlobalValue::Bind("SimulatorImplementationType", ns3::StringValue("ns3::RealtimeSimulatorImpl"));
     ns3::GlobalValue::Bind("ChecksumEnabled", ns3::BooleanValue(true));
 
@@ -48,13 +48,15 @@ void WirelessNetwork::createApplications() {
     apps = bulk_send_helper.Install(robots_);
     apps.Stop(ns3::Seconds(0.1));
 
-    ns3::V4PingHelper ping_helper(server_address);
-    ping_helper.SetAttribute("Interval", ns3::TimeValue(ns3::Seconds(0.1)));
-    apps = ping_helper.Install(robots_);
+    ns3::UdpEchoClientHelper udp_echo_client_helper(server_address, 9);
+    udp_echo_client_helper.SetAttribute("MaxPackets", ns3::UintegerValue(1));
+    udp_echo_client_helper.SetAttribute("PacketSize", ns3::UintegerValue(56));  // like Linux ping
+    apps = udp_echo_client_helper.Install(robots_);
     apps.Stop(ns3::Seconds(0.1));
     for (auto it=apps.Begin(); it!=apps.End(); it++) {
         ns3::Ptr<ns3::Application> app = *it;
-        app->TraceConnectWithoutContext("RttStats", ns3::MakeCallback(&WirelessNetwork::saveRttStats, this));
+        app->TraceConnectWithoutContext("RxWithTime", ns3::MakeCallback(&WirelessNetwork::handleGoodPing, this));
+        app->TraceConnectWithoutContext("LostPackets", ns3::MakeCallback(&WirelessNetwork::handleBadPing, this));
     }
 }
 
@@ -74,13 +76,23 @@ void WirelessNetwork::simulate() {
 }
 
 int WirelessNetwork::getRobotId(const ns3::Address &address) {
-    ns3::Ipv4Address robot_address = ns3::InetSocketAddress::ConvertFrom(address).GetIpv4();
+    ns3::Ipv4Address robot_address;
+    if (ns3::Ipv4Address::IsMatchingType(address))
+        robot_address = ns3::Ipv4Address::ConvertFrom(address);
+    else if (ns3::InetSocketAddress::IsMatchingType(address))
+        robot_address = ns3::InetSocketAddress::ConvertFrom(address).GetIpv4();
+    else
+        throw std::logic_error("Non-matching address type");
+
     auto it = std::find_if(robots_.Begin(), robots_.End(), [robot_address](const ns3::Ptr<ns3::Node> &robot) {
         ns3::Ipv4Address robot_address_ = robot->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
         return robot_address_ == robot_address;
     });
-    if (it == robots_.End())
-        throw std::logic_error("No robot associated to this address");
+    if (it == robots_.End()) {
+        std::ostringstream oss;
+        oss << "No robot associated to address " << robot_address;
+        throw std::logic_error(oss.str());
+    }
     int robot_id = it - robots_.Begin();
     return robot_id;
 }
@@ -100,21 +112,23 @@ void WirelessNetwork::updateStampedBytes(ns3::Ptr<const ns3::Packet> packet, con
     }
 }
 
-void WirelessNetwork::saveRttStats(const ns3::Ptr<ns3::Node> &robot, double rtt_min, double rtt_avg, double rtt_max,
-                                   double rtt_mdev, double packet_loss) {
+void WirelessNetwork::handleGoodPing(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time) {
     int robot_id = robot->GetId();
-    bool all_lost = std::abs(packet_loss - 1) < std::numeric_limits<double>::epsilon();
-    double max_double = std::numeric_limits<double>::max();
-
     std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
-    PingResult &ping_result = ping_results_[robot_id];
-    ping_result.rtt_min = all_lost ? max_double : rtt_min;
-    ping_result.rtt_avg = all_lost ? max_double : rtt_avg;
-    ping_result.rtt_max = all_lost ? max_double : rtt_max;
-    ping_result.rtt_mdev = all_lost ? 0 : rtt_mdev;
-    ping_result.packet_loss = packet_loss;
+    rtt_[robot_id] = time.GetSeconds() * 1e3 - rtt_[robot_id];
     pinging_[robot_id] = false;
     pinging_cv_[robot_id].notify_one();
+}
+
+void WirelessNetwork::handleBadPing(const ns3::Ptr<ns3::Node> &robot, uint32_t lost_packets) {
+    int robot_id = robot->GetId();
+
+    if (lost_packets > 0) {
+        std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
+        rtt_[robot_id] = std::numeric_limits<double>::max();
+        pinging_[robot_id] = false;
+        pinging_cv_[robot_id].notify_one();
+    }
 }
 
 int WirelessNetwork::stamp(int robot_id, int n_bytes, const ns3::Time &max_duration) {
@@ -148,22 +162,21 @@ int WirelessNetwork::stamp(int robot_id, int n_bytes, const ns3::Time &max_durat
     return stamped;
 }
 
-PingResult WirelessNetwork::ping(int robot_id, const ns3::Time &duration) {
+double WirelessNetwork::ping(int robot_id, const ns3::Time &max_rtt) {
     ns3::Ptr<ns3::Node> robot = robots_.Get(robot_id);
-    ns3::Ptr<ns3::V4Ping> app = ns3::StaticCast<ns3::V4Ping>(robot->GetApplication(1));
-    ns3::TimeValue interval;
-    app->GetAttribute("Interval", interval);
+    ns3::Ptr<ns3::UdpEchoClient> app = ns3::StaticCast<ns3::UdpEchoClient>(robot->GetApplication(1));
 
     std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
+    rtt_[robot_id] = ns3::Simulator::Now().GetSeconds() * 1e3;  // not GetMilliSeconds() because it rounds to integer
     pinging_[robot_id] = true;
     ul.unlock();
 
-    app->Stop(duration);            // before starting!
+    app->Stop(max_rtt);            // before starting!
     app->Start(ns3::Seconds(0));
 
     ul.lock();
     pinging_cv_[robot_id].wait(ul, [this, robot_id]() { return !pinging_[robot_id]; });
-    return ping_results_[robot_id];
+    return rtt_[robot_id];
 }
 
 int WirelessNetwork::nRobots() const {

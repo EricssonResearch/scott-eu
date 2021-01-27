@@ -79,6 +79,12 @@ UdpEchoClient::GetTypeId (void)
     .AddTraceSource ("RxWithAddresses", "A packet has been received",
                      MakeTraceSourceAccessor (&UdpEchoClient::m_rxTraceWithAddresses),
                      "ns3::Packet::TwoAddressTracedCallback")
+    .AddTraceSource ("RxWithTime", "A packet has been received",
+                     MakeTraceSourceAccessor (&UdpEchoClient::m_rxTraceWithTime),
+                     "ns3::UdpEchoClient::RxWithTimeTracedCallback")
+    .AddTraceSource ("LostPackets", "A packet has been received",
+                     MakeTraceSourceAccessor (&UdpEchoClient::m_lostPacketsTrace),
+                     "ns3::UdpEchoClient::LostPacketsTracedCallback")
   ;
   return tid;
 }
@@ -87,6 +93,7 @@ UdpEchoClient::UdpEchoClient ()
 {
   NS_LOG_FUNCTION (this);
   m_sent = 0;
+  m_recv = 0;
   m_socket = 0;
   m_sendEvent = EventId ();
   m_data = 0;
@@ -123,6 +130,25 @@ UdpEchoClient::DoDispose (void)
 {
   NS_LOG_FUNCTION (this);
   Application::DoDispose ();
+}
+
+void
+UdpEchoClient::Start (const Time &delay)
+{
+  NS_LOG_FUNCTION (this);
+  m_sent = 0;
+  m_recv = 0;
+  m_sendEvent = EventId ();
+  m_data = 0;
+  m_dataSize = 0;
+  Simulator::Schedule(delay, &UdpEchoClient::StartApplication, this);
+}
+
+void
+UdpEchoClient::Stop (const Time &delay)
+{
+  NS_LOG_FUNCTION (this);
+  Simulator::Schedule(delay, &UdpEchoClient::StopApplication, this);
 }
 
 void 
@@ -184,11 +210,14 @@ UdpEchoClient::StopApplication ()
 
   if (m_socket != 0) 
     {
+      Address localAddress;
+      m_socket->GetSockName (localAddress);
+      m_lostPacketsTrace (GetNode (), m_sent - m_recv);
+
       m_socket->Close ();
       m_socket->SetRecvCallback (MakeNullCallback<void, Ptr<Socket> > ());
       m_socket = 0;
     }
-
   Simulator::Cancel (m_sendEvent);
 }
 
@@ -400,6 +429,7 @@ UdpEchoClient::HandleRead (Ptr<Socket> socket)
       socket->GetSockName (localAddress);
       m_rxTrace (packet);
       m_rxTraceWithAddresses (packet, from, localAddress);
+      m_rxTraceWithTime (GetNode(), Simulator::Now ());
     }
 }
 

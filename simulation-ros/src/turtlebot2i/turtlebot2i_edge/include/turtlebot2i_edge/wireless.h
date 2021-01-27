@@ -7,10 +7,6 @@
 #include "ns3/buildings-module.h"
 #include "ns3/applications-module.h"
 
-typedef struct {
-    double rtt_min, rtt_avg, rtt_max, rtt_mdev, packet_loss;
-} PingResult;
-
 class WirelessNetwork {
     ns3::NodeContainer robots_;
     ns3::Ptr<ns3::Node> mec_server_;
@@ -23,15 +19,15 @@ class WirelessNetwork {
     std::vector<std::condition_variable> stamping_cv_;
 
     std::vector<bool> pinging_;
-    std::vector<PingResult> ping_results_;
+    std::vector<double> rtt_;
     std::vector<std::mutex> pinging_mutex_;
     std::vector<std::condition_variable> pinging_cv_;
 
     int getRobotId(const ns3::Address &address);
     void updateStampedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
                             const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
-    void saveRttStats(const ns3::Ptr<ns3::Node> &robot, double rtt_min, double rtt_avg, double rtt_max, double rtt_mdev,
-                      double packet_loss);
+    void handleGoodPing(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time);
+    void handleBadPing(const ns3::Ptr<ns3::Node> &robot, uint32_t lost_packets);
 
 protected:
     static void addMobility(const ns3::NodeContainer &nodes);
@@ -51,7 +47,7 @@ public:
     void simulate();
 
     int stamp(int robot_id, int n_bytes, const ns3::Time &max_duration);    // robot -> MEC server
-    PingResult ping(int robot_id, const ns3::Time &duration);               // robot -> MEC server
+    double ping(int robot_id, const ns3::Time &max_rtt);                    // robot -> MEC server
 
     int nRobots() const;
     std::pair<int,int> getRobotRoom(int robot_id) const;

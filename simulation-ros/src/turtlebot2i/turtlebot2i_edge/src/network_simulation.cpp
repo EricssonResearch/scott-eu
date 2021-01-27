@@ -30,15 +30,9 @@ bool stamp(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtle
 
 bool ping(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Ping::Request &request,
           turtlebot2i_edge::Ping::Response &response) {
-    double duration = request.duration.toSec();
-    PingResult result = network->ping(robot_id, ns3::Seconds(duration));
-    response.header.stamp = ros::Time::now();
-    response.rtt_min = result.rtt_min;
-    response.rtt_avg = result.rtt_avg;
-    response.rtt_max = result.rtt_max;
-    response.rtt_mdev = result.rtt_mdev;
-    response.packet_loss = result.packet_loss;
-    ROS_INFO("Robot %d executed a ping test of %f seconds", robot_id, duration);
+    double max_rtt = request.max_rtt.toSec();
+    response.rtt = network->ping(robot_id, ns3::Seconds(max_rtt));
+    ROS_INFO("Robot %d executed a ping test", robot_id);
     return true;
 }
 
