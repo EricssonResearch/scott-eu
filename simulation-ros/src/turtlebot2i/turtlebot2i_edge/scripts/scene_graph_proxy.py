@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import time
 from turtlebot2i_scene_graph.srv import GenerateSceneGraph as GenerateSceneGraphOut
 from turtlebot2i_edge.srv import GenerateSceneGraph as GenerateSceneGraphIn
 from turtlebot2i_edge.srv import GenerateSceneGraphResponse, Stamp
@@ -12,33 +13,21 @@ class ModelPerformance:
         self.execution_latency = execution_latency
 
 
-def on_edge_proxy(stamp, generate_scene_graph, model_performance, request):
-    try:
-        # communication latency
-        time_start = rospy.Time.now()
-        response = stamp(bytes=request.data, max_duration=1)
-        time_end = response.header.stamp
-        communication_latency = time_end - time_start
-        if response.stamped != len(request.data):
+def proxy(generate_scene_graph, model_performance, request, stamp=None):
+    # communicate over the network if on-edge proxy
+    if stamp is not None:
+        n_bytes = len(request.image_rgb.data) + len(request.image_depth.data)
+        bytes_ = b'\x00' * n_bytes
+        response = stamp(bytes=bytes_, max_duration=rospy.Time.from_sec(2))
+        if response.stamped != n_bytes:   # timeout
             return None
+    communication_latency = rospy.Time.now() - request.header.stamp
 
-        # scene graph
-        response = generate_scene_graph()
-        scene_graph = response.scene_graph
-    except rospy.ROSException, rospy.ServiceException:
-        return None
-
-    return GenerateSceneGraphResponse(
-        communication_latency=communication_latency,
-        execution_latency=model_performance.execution_latency,
-        model_m_ap=model_performance.m_ap,
-        scene_graph=scene_graph
-    )
-
-
-def on_robot_proxy(generate_scene_graph, model_performance, request):
-    communication_latency = request.header.stamp - rospy.Time.now()     # not 0 because of inter-process communication
+    # generate scene graph
+    time_start = time.time()
     response = generate_scene_graph()
+    time_elapsed = time.time() - time_start
+    time.sleep(model_performance.execution_latency.to_sec() - time_elapsed)
 
     return GenerateSceneGraphResponse(
         communication_latency=communication_latency,
@@ -69,19 +58,15 @@ def main():
 
     if on_edge:
         rospy.loginfo('Waiting for ROS service to stamp...')
-        stamp = rospy.ServiceProxy('edge/stamp', Stamp)
+        stamp = rospy.ServiceProxy('stamp', Stamp)
         stamp.wait_for_service()
-
-        def proxy(request):
-            return on_edge_proxy(stamp, generate_scene_graph, model_performance, request)
     else:
-        def proxy(request):
-            return on_robot_proxy(generate_scene_graph, model_performance, request)
+        stamp = None
 
     rospy.Service(
         name='generate_scene_graph_proxy',
         service_class=GenerateSceneGraphIn,
-        handler=proxy,
+        handler=lambda request: proxy(generate_scene_graph, model_performance, request, stamp=stamp),
         buff_size=2**20     # 1 MB, enough for camera images
     )
     rospy.loginfo('ROS service to generate scene graph with proxy ready')
