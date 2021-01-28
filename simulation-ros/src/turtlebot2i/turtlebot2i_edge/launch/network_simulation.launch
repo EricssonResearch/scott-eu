@@ -1,10 +1,11 @@
 <launch>
     <arg name="network_type" default="wifi"/>
+    <arg name="output" default="screen"/>
 
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/network.yaml" ns="/"/>
     <param name="/network/type" value="$(arg network_type)"/>
 
-    <node name="network_simulation" pkg="turtlebot2i_edge" type="network_simulation" output="screen">
+    <node name="network_simulation" pkg="turtlebot2i_edge" type="network_simulation" output="$(arg output)">
         <remap from="odom_0" to="/turtlebot2i/odom"/>
         <remap from="odom_1" to="/turtlebot2i_0/odom"/>
         <remap from="odom_2" to="/turtlebot2i_1/odom"/>

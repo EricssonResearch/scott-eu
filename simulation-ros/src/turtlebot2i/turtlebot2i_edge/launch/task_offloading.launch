@@ -8,6 +8,12 @@
 
     <include file="$(find turtlebot2i_edge)/launch/network_simulation.launch">
         <arg name="network_type" value="$(arg network_type)"/>
+        <arg name="output" value="log"/>
+    </include>
+
+    <include file="$(find turtlebot2i_edge)/launch/network_monitor.launch">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+        <arg name="output" value="log"/>
     </include>
 
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch">
@@ -16,15 +22,17 @@
 
     <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
-        <arg name="vrep_host" value="global"/>
+        <arg name="vrep_host" value="localhost"/>
         <arg name="vrep_port" value="20000"/>
         <arg name="mode" value="service"/>
+        <arg name="output" value="log"/>
     </include>
 
     <group ns="$(arg robot_name)">
         <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" ns="edge" output="screen">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_edge.yaml"/>
             <param name="on_edge" type="bool" value="True"/>
+            <remap from="generate_scene_graph" to="/$(arg robot_name)/generate_scene_graph"/>
         </node>
 
         <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" output="screen">
@@ -40,7 +48,7 @@
             <param name="agent" type="str" value="$(arg agent)"/>
             <param name="mode" type="str" value="$(arg mode)"/>
 
-            <param name="vrep/host" type="str" value="global"/>
+            <param name="vrep/host" type="str" value="localhost"/>
             <param name="vrep/port" type="int" value="20001"/>
             <param name="rl/models/path" type="str" value="$(find turtlebot2i_edge)/models"/>
         </node>

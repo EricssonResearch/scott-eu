@@ -67,11 +67,11 @@ class TaskOffloadingEnv(Env):
             self._vrep_scene_controller.open_connection(vrep_host, vrep_port)
 
         rospy.loginfo('Waiting for ROS service to generate scene graph on robot...')
-        self._generate_scene_graph_robot = rospy.ServiceProxy('generate_scene_graph', GenerateSceneGraph)
+        self._generate_scene_graph_robot = rospy.ServiceProxy('generate_scene_graph_proxy', GenerateSceneGraph)
         self._generate_scene_graph_robot.wait_for_service()
 
         rospy.loginfo('Waiting for ROS service to generate scene graph on edge...')
-        self._generate_scene_graph_edge = rospy.ServiceProxy('edge/generate_scene_graph', GenerateSceneGraph)
+        self._generate_scene_graph_edge = rospy.ServiceProxy('edge/generate_scene_graph_proxy', GenerateSceneGraph)
         self._generate_scene_graph_edge.wait_for_service()
 
         rospy.loginfo('Waiting for ROS service to measure the network...')
