@@ -148,13 +148,6 @@ public:
    */
   typedef void (* RxWithTimeTracedCallback) (const Ptr<Node> &from, const Time &time);
 
-  /**
-   * TracedCallback signature for lost packets with node
-   *
-   * \param [in] packet The packet.
-   */
-  typedef void (* LostPacketsTracedCallback) (const Ptr<Node> &from, uint32_t lostPackets);
-
 protected:
   virtual void DoDispose (void);
 
@@ -210,9 +203,6 @@ private:
 
   /// Callbacks for tracing the packet Rx events, includes source and destination addresses + reception time
   TracedCallback<const Ptr<Node> &, const Time &> m_rxTraceWithTime;
-
-  /// Callbacks for tracing the packet loss, includes source and destination addresses
-  TracedCallback<const Ptr<Node> &, uint32_t> m_lostPacketsTrace;
 };
 
 } // namespace ns3

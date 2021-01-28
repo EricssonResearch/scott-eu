@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
     ns3::Box warehouse_boundaries;
     int n_robots, n_rooms_x, n_rooms_y;
 
-    ros::init(argc, argv, "ns3_5g");
+    ros::init(argc, argv, "network_simulation");
 
     ROS_INFO("Getting parameters from parameter server...");
     if (!ros::param::get("/network/type", network_type) ||

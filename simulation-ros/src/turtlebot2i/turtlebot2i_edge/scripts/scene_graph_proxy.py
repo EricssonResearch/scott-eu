@@ -18,7 +18,7 @@ def on_edge_proxy(stamp, generate_scene_graph, model_performance, request):
         # communication latency
         stamp.wait_for_service(timeout=0.1)
         time_start = rospy.Time.now()
-        response = stamp(bytes=request.data)
+        response = stamp(bytes=request.data, max_duration=0)    # 0 => no timeout
         time_end = response.header.stamp
         communication_latency = time_end - time_start
 

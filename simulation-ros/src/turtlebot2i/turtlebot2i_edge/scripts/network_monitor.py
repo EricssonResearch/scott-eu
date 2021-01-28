@@ -7,6 +7,8 @@ from turtlebot2i_edge.srv import MeasureNetwork, MeasureNetworkResponse
 
 
 def measure_network(network_monitor, _):
+    # important: RTT before throughput
+    # otherwise, in case of timeout for the throughput, there might be packets still in the network that affect the RTT
     rtt = network_monitor.measure_rtt()
     throughput = network_monitor.measure_throughput()
     rospy.loginfo('Network measured')

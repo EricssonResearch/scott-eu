@@ -22,7 +22,7 @@ class NetworkMonitor:
         else:
             self._ns3_ping = None
 
-    def measure_rtt(self, max_rtt=0.2):
+    def measure_rtt(self, max_rtt=0.1):
         """Measure RTT and packet loss of the network using a ping test.
 
         :param max_rtt: float, max duration of ping test
@@ -36,7 +36,7 @@ class NetworkMonitor:
             rtt = self._ping(max_rtt=max_rtt)
         return rtt
 
-    def measure_throughput(self, n_bytes=2**20, max_duration=0.2):
+    def measure_throughput(self, n_bytes=2**20, max_duration=0.1):
         """Measures the throughput of the network using a ROS service.
 
         :param n_bytes: int, bytes to send for the measurement. Since there is a communication overhead given by the

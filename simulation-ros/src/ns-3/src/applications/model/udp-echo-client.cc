@@ -82,9 +82,6 @@ UdpEchoClient::GetTypeId (void)
     .AddTraceSource ("RxWithTime", "A packet has been received",
                      MakeTraceSourceAccessor (&UdpEchoClient::m_rxTraceWithTime),
                      "ns3::UdpEchoClient::RxWithTimeTracedCallback")
-    .AddTraceSource ("LostPackets", "A packet has been received",
-                     MakeTraceSourceAccessor (&UdpEchoClient::m_lostPacketsTrace),
-                     "ns3::UdpEchoClient::LostPacketsTracedCallback")
   ;
   return tid;
 }
@@ -210,10 +207,6 @@ UdpEchoClient::StopApplication ()
 
   if (m_socket != 0) 
     {
-      Address localAddress;
-      m_socket->GetSockName (localAddress);
-      m_lostPacketsTrace (GetNode (), m_sent - m_recv);
-
       m_socket->Close ();
       m_socket->SetRecvCallback (MakeNullCallback<void, Ptr<Socket> > ());
       m_socket = 0;

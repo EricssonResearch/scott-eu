@@ -38,8 +38,6 @@ void WifiNetwork::createNetwork() {
     ns3::Ipv4AddressHelper ipv4_address_helper;
     ipv4_address_helper.SetBase("10.0.0.0", "/24");
     ipv4_address_helper.Assign(net_devices);
-
-    phy_helper.EnablePcap("ciao", net_devices);
 }
 
 void WifiNetwork::setMecServerPosition(const ns3::Vector &position) {

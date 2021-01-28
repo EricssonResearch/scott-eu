@@ -26,8 +26,7 @@ class WirelessNetwork {
     int getRobotId(const ns3::Address &address);
     void updateStampedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
                             const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
-    void handleGoodPing(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time);
-    void handleBadPing(const ns3::Ptr<ns3::Node> &robot, uint32_t lost_packets);
+    void saveRtt(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time);
 
 protected:
     static void addMobility(const ns3::NodeContainer &nodes);

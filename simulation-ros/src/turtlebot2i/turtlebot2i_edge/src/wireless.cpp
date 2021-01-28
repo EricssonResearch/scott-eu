@@ -55,8 +55,7 @@ void WirelessNetwork::createApplications() {
     apps.Stop(ns3::Seconds(0.1));
     for (auto it=apps.Begin(); it!=apps.End(); it++) {
         ns3::Ptr<ns3::Application> app = *it;
-        app->TraceConnectWithoutContext("RxWithTime", ns3::MakeCallback(&WirelessNetwork::handleGoodPing, this));
-        app->TraceConnectWithoutContext("LostPackets", ns3::MakeCallback(&WirelessNetwork::handleBadPing, this));
+        app->TraceConnectWithoutContext("RxWithTime", ns3::MakeCallback(&WirelessNetwork::saveRtt, this));
     }
 }
 
@@ -112,23 +111,12 @@ void WirelessNetwork::updateStampedBytes(ns3::Ptr<const ns3::Packet> packet, con
     }
 }
 
-void WirelessNetwork::handleGoodPing(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time) {
+void WirelessNetwork::saveRtt(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time) {
     int robot_id = robot->GetId();
     std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
     rtt_[robot_id] = time.GetSeconds() * 1e3 - rtt_[robot_id];
     pinging_[robot_id] = false;
     pinging_cv_[robot_id].notify_one();
-}
-
-void WirelessNetwork::handleBadPing(const ns3::Ptr<ns3::Node> &robot, uint32_t lost_packets) {
-    int robot_id = robot->GetId();
-
-    if (lost_packets > 0) {
-        std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
-        rtt_[robot_id] = std::numeric_limits<double>::max();
-        pinging_[robot_id] = false;
-        pinging_cv_[robot_id].notify_one();
-    }
 }
 
 int WirelessNetwork::stamp(int robot_id, int n_bytes, const ns3::Time &max_duration) {
@@ -153,8 +141,11 @@ int WirelessNetwork::stamp(int robot_id, int n_bytes, const ns3::Time &max_durat
     app->Start(ns3::Seconds(0));
 
     ul.lock();
-    stamping_cv_[robot_id].wait_for(ul, std::chrono::duration<double>(max_duration.GetSeconds()),
-                                    [this, robot_id]() { return !stamping_[robot_id]; });
+    if (max_duration.GetMilliSeconds() == 0)    // GetMilliSeconds() returns an integer, so == is ok
+        stamping_cv_[robot_id].wait(ul, [this, robot_id]() { return !stamping_[robot_id]; });
+    else
+        stamping_cv_[robot_id].wait_for(ul, std::chrono::duration<double>(max_duration.GetSeconds()),
+                                        [this, robot_id]() { return !stamping_[robot_id]; });
     int stamped = stamped_[robot_id];
     ul.unlock();
 
@@ -171,12 +162,16 @@ double WirelessNetwork::ping(int robot_id, const ns3::Time &max_rtt) {
     pinging_[robot_id] = true;
     ul.unlock();
 
-    app->Stop(max_rtt);            // before starting!
     app->Start(ns3::Seconds(0));
 
     ul.lock();
-    pinging_cv_[robot_id].wait(ul, [this, robot_id]() { return !pinging_[robot_id]; });
-    return rtt_[robot_id];
+    pinging_cv_[robot_id].wait_for(ul, std::chrono::duration<double>(max_rtt.GetSeconds()),
+                                   [this, robot_id]() { return !pinging_[robot_id]; });
+    double rtt = pinging_[robot_id] ? std::numeric_limits<double>::max() : rtt_[robot_id];
+    ul.unlock();
+
+    app->Stop(ns3::Seconds(0));
+    return rtt;
 }
 
 int WirelessNetwork::nRobots() const {
