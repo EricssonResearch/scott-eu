@@ -36,7 +36,6 @@ def main():
     mode = rospy.get_param('~mode')
     vrep_host = rospy.get_param('~vrep/host')
     vrep_port = rospy.get_param('~vrep/port')
-    mec_server = rospy.get_param('/network/mec_server/host')
     pick_goals = rospy.get_param('/pick_and_place/goals/pick')
     place_goals = rospy.get_param('/pick_and_place/goals/place')
     robot_compute_power = rospy.get_param('~rl/robot/compute_power')
@@ -48,7 +47,6 @@ def main():
     rospy.loginfo('Agent: %s' % agent)
     rospy.loginfo('Mode: %s' % mode)
     rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
-    rospy.loginfo('MEC server: %s' % mec_server)
     rospy.loginfo('Goals where to pick products: %s' % str(pick_goals))
     rospy.loginfo('Goals where to place products: %s' % str(place_goals))
     rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
@@ -64,7 +62,6 @@ def main():
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
-        mec_server=mec_server,
         pick_goals=pick_goals,
         place_goals=place_goals,
         pick_and_place_per_episode=10,

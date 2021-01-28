@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import rospy
-import numpy as np
 from turtlebot2i_scene_graph.srv import GenerateSceneGraph as GenerateSceneGraphOut
 from turtlebot2i_edge.srv import GenerateSceneGraph as GenerateSceneGraphIn
 from turtlebot2i_edge.srv import GenerateSceneGraphResponse, Stamp
@@ -16,20 +15,20 @@ class ModelPerformance:
 def on_edge_proxy(stamp, generate_scene_graph, model_performance, request):
     try:
         # communication latency
-        stamp.wait_for_service(timeout=0.1)
         time_start = rospy.Time.now()
-        response = stamp(bytes=request.data, max_duration=0)    # 0 => no timeout
+        response = stamp(bytes=request.data, max_duration=1)
         time_end = response.header.stamp
         communication_latency = time_end - time_start
+        if response.stamped != len(request.data):
+            return None
 
         # scene graph
         response = generate_scene_graph()
         scene_graph = response.scene_graph
     except rospy.ROSException, rospy.ServiceException:
-        communication_latency = np.inf
-        scene_graph = None
+        return None
 
-    GenerateSceneGraphResponse(
+    return GenerateSceneGraphResponse(
         communication_latency=communication_latency,
         execution_latency=model_performance.execution_latency,
         model_m_ap=model_performance.m_ap,

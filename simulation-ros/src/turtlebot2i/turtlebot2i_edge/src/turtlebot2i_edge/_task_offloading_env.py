@@ -15,8 +15,11 @@ from sensor_msgs.msg import Image
 from kobuki_msgs.msg import BumperEvent
 from turtlebot2i_scene_graph.msg import SceneGraph
 from turtlebot2i_edge.srv import GenerateSceneGraph, GenerateSceneGraphRequest, GenerateSceneGraphResponse
+from turtlebot2i_edge.srv import MeasureNetwork
 
-HIGH_RISK_VALUE = 5     # from risk assessment
+# TODO: should not be hardcoded
+HIGH_RISK_VALUE = 5             # from risk assessment
+IMAGE_DEPTH_SIZE = (640, 480)   # Astra PRO (https://orbbec3d.com/product-astra-pro/)
 
 
 class TaskOffloadingEnv(Env):
@@ -36,8 +39,7 @@ class TaskOffloadingEnv(Env):
 
     action_space = Discrete(3)
     observation_space = Dict(
-        rtt=Box(low=0, high=np.inf, shape=(4,), dtype=np.float32),
-        packet_loss=Box(low=0, high=1, shape=(1,), dtype=np.float32),
+        rtt=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         throughput=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         risk_value=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         temporal_coherence=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32)
@@ -75,7 +77,7 @@ class TaskOffloadingEnv(Env):
         self._generate_scene_graph_edge.wait_for_service()
 
         rospy.loginfo('Waiting for ROS service to measure the network...')
-        self._measure_network = rospy.ServiceProxy('measure_network', GenerateSceneGraph)
+        self._measure_network = rospy.ServiceProxy('measure_network', MeasureNetwork)
         self._measure_network.wait_for_service()
 
         self._collision = False
@@ -135,7 +137,6 @@ class TaskOffloadingEnv(Env):
 
         elif action == 1:
             try:
-                self._generate_scene_graph_edge.wait_for_service(timeout=0.1)
                 response = self._generate_scene_graph_edge(request)
                 self._scene_graph_last = response.scene_graph
                 self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
@@ -251,13 +252,17 @@ class TaskOffloadingEnv(Env):
 
         # temporal coherence is in [0,1] (pixels are scaled to [0,1])
         image_rgb_observation = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
-        temporal_coherence = 1 - np.mean(np.abs(image_rgb_observation - self._image_rgb_last)) / 255
-        if self._image_depth_observation is not None:
-            image_depth_observation = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
-            temporal_coherence_depth = 1 - np.mean(np.abs(image_depth_observation - self._image_depth_last)) / 255
-            temporal_coherence = (temporal_coherence + temporal_coherence_depth) / 2
+        if self._image_rgb_last is not None:
+            temporal_coherence = 1 - np.mean(np.abs(image_rgb_observation - self._image_rgb_last)) / 255
+            if self._image_depth_observation is not None:
+                image_depth_observation = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
+                temporal_coherence_depth = 1 - np.mean(np.abs(image_depth_observation - self._image_depth_last)) / 255
+                temporal_coherence = (temporal_coherence + temporal_coherence_depth) / 2
         else:
-            image_depth_observation = np.zeros(image_rgb_observation.shape[:2])
+            temporal_coherence = 0      # no previous computation => no temporal coherence
+
+        if self._image_depth_observation is None:
+            image_depth_observation = np.zeros(IMAGE_DEPTH_SIZE)
             self._image_depth_observation = self._cv_bridge.cv2_to_imgmsg(image_depth_observation, 'passthrough')
 
         with self._risk_lock:
@@ -266,8 +271,7 @@ class TaskOffloadingEnv(Env):
             risk_value = HIGH_RISK_VALUE        # unknown => high
 
         return {
-            'rtt': (network_state.rtt_min, network_state.rtt_avg, network_state.rtt_max, network_state.rtt_mdev),
-            'packet_loss': network_state.packet_loss,
+            'rtt': network_state.rtt,
             'throughput': network_state.throughput,
             'risk_value': risk_value,
             'temporal_coherence': temporal_coherence
