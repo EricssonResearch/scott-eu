@@ -1,7 +1,0 @@
-rl:
-  robot:
-    compute_power: 10       # 10 W, see https://askgeek.io/en/cpus/Intel/Celeron-J3455
-    transmit_power: 0.1     # 100 mW, transmit power of WiFi at 2.4 GHz, see https://metis.fi/en/2017/10/txpower/
-  reward:
-    w_latency: 1
-    w_energy: 0

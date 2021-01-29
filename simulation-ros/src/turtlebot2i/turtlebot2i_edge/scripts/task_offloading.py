@@ -38,21 +38,35 @@ def main():
     vrep_port = rospy.get_param('~vrep/port')
     pick_goals = rospy.get_param('/pick_and_place/goals/pick')
     place_goals = rospy.get_param('/pick_and_place/goals/place')
-    robot_compute_power = rospy.get_param('~rl/robot/compute_power')
-    robot_transmit_power = rospy.get_param('~rl/robot/transmit_power')
-    w_latency = rospy.get_param('~rl/reward/w_latency')
-    w_energy = rospy.get_param('~rl/reward/w_energy')
+    max_rtt = rospy.get_param('~env/observation/max_rtt')
+    max_throughput = rospy.get_param('~env/observation/max_throughput')
+    max_duration_throughput = rospy.get_param('~env/observation/max_duration_throughput')
+    w_latency = rospy.get_param('~env/reward/w_latency')
+    w_energy = rospy.get_param('~env/reward/w_energy')
+    robot_compute_power = rospy.get_param('~env/reward/robot/compute_power')
+    robot_transmit_power = rospy.get_param('~env/reward/robot/transmit_power')
+    max_risk_value = rospy.get_param('~env/task/max_risk_value')
+    network_image_size = rospy.get_param('~env/action/network_image_size')
+    depth_image_size = rospy.get_param('~env/task/depth_image_size')
     models_path = rospy.get_param('~rl/models/path')
+    network_image_size = (network_image_size['width'], network_image_size['height'])
+    depth_image_size = (depth_image_size['width'], depth_image_size['height'])
 
     rospy.loginfo('Agent: %s' % agent)
     rospy.loginfo('Mode: %s' % mode)
     rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
     rospy.loginfo('Goals where to pick products: %s' % str(pick_goals))
     rospy.loginfo('Goals where to place products: %s' % str(place_goals))
-    rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
-    rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
+    rospy.loginfo('Max RTT: %f ms' % max_rtt)
+    rospy.loginfo('Max throughput: %f Mbps' % max_throughput)
+    rospy.loginfo('Max duration of throughput measurement: %f s' % max_duration_throughput)
     rospy.loginfo('Latency weight in reward: %f' % w_latency)
     rospy.loginfo('Energy weight in reward: %f' % w_energy)
+    rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
+    rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
+    rospy.loginfo('Max risk value: %f' % max_risk_value)
+    rospy.loginfo('Image size over the network: (%d,%d)' % (network_image_size[0], network_image_size[1]))
+    rospy.loginfo('Depth image size (if depth camera disabled): (%d,%d)' % (depth_image_size[0], depth_image_size[1]))
     rospy.loginfo('RL models path: %s' % models_path)
 
     if not os.path.exists(models_path):
@@ -62,13 +76,19 @@ def main():
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
+        max_rtt=max_rtt,
+        max_throughput=max_throughput,
+        max_duration_throughput=max_duration_throughput,
+        max_risk_value=max_risk_value,
+        network_image_size=network_image_size,
+        depth_image_size=depth_image_size,
+        w_latency=w_latency,
+        w_energy=w_energy,
+        robot_compute_power=robot_compute_power,
+        robot_transmit_power=robot_transmit_power,
         pick_goals=pick_goals,
         place_goals=place_goals,
         pick_and_place_per_episode=10,
-        robot_compute_power=robot_compute_power,
-        robot_transmit_power=robot_transmit_power,
-        w_latency=w_latency,
-        w_energy=w_energy,
         vrep_simulation=True,
         vrep_host=vrep_host,
         vrep_port=vrep_port,
@@ -79,11 +99,11 @@ def main():
     rospy.loginfo('Initializing agent...')
     if agent == 'dqn':
         agent = DQNAgent(
-            processor=TaskOffloadingProcessor(),
+            processor=TaskOffloadingProcessor(env),
             model=get_model(env),
             nb_actions=env.action_space.n,
             memory=SequentialMemory(limit=50000, window_length=1),
-            nb_steps_warmup=10,
+            nb_steps_warmup=50,
             target_model_update=1e-2,
             policy=BoltzmannQPolicy()
         )
@@ -104,7 +124,7 @@ def main():
         agent.fit(
             env=env,
             nb_steps=10000,
-            visualize=False,
+            visualize=True,
             callbacks=[ModelIntervalCheckpoint(model_path, 100), TrainIntervalLogger(10), FileLogger(log_path)],
             verbose=2
         )

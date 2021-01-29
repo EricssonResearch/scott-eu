@@ -1,12 +1,12 @@
 network:
   mec_server:
     host: mec_server
-    position:   # only for WiFi
+    position:         # used only for WiFi
       x: 15
       y: 15
   robots:
     n: 1
-  gnb:          # only for 5G
+  gnb:                # used only for 5G
     position:
       x: 15
       y: 15
@@ -16,7 +16,7 @@ network:
     y_min: -20
     y_max: 20
     z_min: -1
-    z_max: 10   # height of warehouse
+    z_max: 10         # height of warehouse
     rooms:
       n_x: 4
       n_y: 4

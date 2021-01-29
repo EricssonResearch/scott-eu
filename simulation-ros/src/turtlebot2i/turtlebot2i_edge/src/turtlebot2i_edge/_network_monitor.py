@@ -25,13 +25,13 @@ class NetworkMonitor:
     def measure_rtt(self, max_rtt=0.1):
         """Measure RTT and packet loss of the network using a ping test.
 
-        :param max_rtt: float, max duration of ping test
+        :param max_rtt: float, max duration of ping test in seconds
         :return: RTT
         """
         if self.ns3_simulation:
             max_rtt = rospy.Time.from_sec(max_rtt)
             response = self._ns3_ping(max_rtt=max_rtt)
-            rtt = response.rtt
+            rtt = response.rtt.to_sec() * 1e3
         else:
             rtt = self._ping(max_rtt=max_rtt)
         return rtt
@@ -53,7 +53,6 @@ class NetworkMonitor:
             response = self._stamp(bytes=bytes_, max_duration=max_duration)
             time_end = response.header.stamp
             stamped = response.stamped
-
             time_elapsed = time_end - time_start
             time_elapsed = time_elapsed.to_sec()
             throughput = stamped * 8 * 1e-6 / time_elapsed

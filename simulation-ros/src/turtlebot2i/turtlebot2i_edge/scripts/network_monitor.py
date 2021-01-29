@@ -1,20 +1,22 @@
 #!/usr/bin/env python
 
+from __future__ import division
+
 import rospy
 from std_msgs.msg import Header
 from turtlebot2i_edge import NetworkMonitor
 from turtlebot2i_edge.srv import MeasureNetwork, MeasureNetworkResponse
 
 
-def measure_network(network_monitor, _):
+def measure_network(network_monitor, request):
     # important: RTT before throughput
     # otherwise, in case of timeout for the throughput, there might be packets still in the network that affect the RTT
-    rtt = network_monitor.measure_rtt()
-    throughput = network_monitor.measure_throughput()
+    rtt = network_monitor.measure_rtt(max_rtt=request.max_rtt.to_sec())
+    throughput = network_monitor.measure_throughput(max_duration=request.max_duration_throughput.to_sec())
     rospy.loginfo('Network measured')
     return MeasureNetworkResponse(
         header=Header(stamp=rospy.Time.now()),
-        rtt=rtt,
+        rtt=rospy.Duration.from_sec(rtt / 1e3),
         throughput=throughput
     )
 

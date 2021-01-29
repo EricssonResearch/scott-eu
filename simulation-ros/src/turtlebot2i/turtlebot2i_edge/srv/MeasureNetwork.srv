@@ -1,4 +1,6 @@
+duration max_rtt
+duration max_duration_throughput
 ---
 Header header
-float64 rtt             # ms
-float32 throughput      # Mbps
+duration rtt
+float64 throughput      # Mbps

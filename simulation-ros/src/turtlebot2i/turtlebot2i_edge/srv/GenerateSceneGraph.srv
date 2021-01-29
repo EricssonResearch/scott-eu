@@ -1,6 +1,7 @@
 Header header
 sensor_msgs/Image image_rgb
 sensor_msgs/Image image_depth
+duration max_latency
 ---
 duration communication_latency
 duration execution_latency

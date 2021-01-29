@@ -2,6 +2,7 @@
 
 import rospy
 import time
+from pympler.asizeof import asizeof
 from turtlebot2i_scene_graph.srv import GenerateSceneGraph as GenerateSceneGraphOut
 from turtlebot2i_edge.srv import GenerateSceneGraph as GenerateSceneGraphIn
 from turtlebot2i_edge.srv import GenerateSceneGraphResponse, Stamp
@@ -14,20 +15,24 @@ class ModelPerformance:
 
 
 def proxy(generate_scene_graph, model_performance, request, stamp=None):
-    # communicate over the network if on-edge proxy
+    # in the simulation with ns-3, the proxy is not really on the edge
+    # here we transfer the bytes in ns-3 to have the correct delay
     if stamp is not None:
-        n_bytes = len(request.image_rgb.data) + len(request.image_depth.data)
+        n_bytes = asizeof(request)
         bytes_ = b'\x00' * n_bytes
-        response = stamp(bytes=bytes_, max_duration=rospy.Time.from_sec(2))
+        response = stamp(bytes=bytes_, max_duration=rospy.Time.from_sec(5))
         if response.stamped != n_bytes:   # timeout
             return None
     communication_latency = rospy.Time.now() - request.header.stamp
 
     # generate scene graph
-    time_start = time.time()
+    time_start = rospy.Time.now()
     response = generate_scene_graph()
-    time_elapsed = time.time() - time_start
-    time.sleep(model_performance.execution_latency.to_sec() - time_elapsed)
+    time_elapsed = rospy.Time.now() - time_start
+    time_sleep = model_performance.execution_latency - time_elapsed
+    time_sleep = time_sleep.to_sec()
+    if time_sleep > 0:
+        time.sleep(time_sleep)
 
     return GenerateSceneGraphResponse(
         communication_latency=communication_latency,

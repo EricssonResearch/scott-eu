@@ -2,6 +2,7 @@ from __future__ import print_function
 from __future__ import division
 
 import threading
+import cv2
 import numpy as np
 import rospy
 import message_filters
@@ -17,10 +18,6 @@ from turtlebot2i_scene_graph.msg import SceneGraph
 from turtlebot2i_edge.srv import GenerateSceneGraph, GenerateSceneGraphRequest, GenerateSceneGraphResponse
 from turtlebot2i_edge.srv import MeasureNetwork
 
-# TODO: should not be hardcoded
-HIGH_RISK_VALUE = 5             # from risk assessment
-IMAGE_DEPTH_SIZE = (640, 480)   # Astra PRO (https://orbbec3d.com/product-astra-pro/)
-
 
 class TaskOffloadingEnv(Env):
     """
@@ -28,7 +25,7 @@ class TaskOffloadingEnv(Env):
     actions: 0 -> robot, 1 -> edge, 3 -> last output
 
     observations:
-    - rtt: min, avg, max, mdev
+    - rtt (ms)
     - packet_loss (percentage [0,1])
     - throughput (Mbps uplink)
     - risk_value
@@ -42,23 +39,30 @@ class TaskOffloadingEnv(Env):
         rtt=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         throughput=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         risk_value=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
-        temporal_coherence=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32)
+        temporal_coherence=Box(low=0, high=1, shape=(1,), dtype=np.float32)
     )
 
-    def __init__(self, pick_goals, place_goals, pick_and_place_per_episode,
+    def __init__(self, max_rtt, max_throughput, max_duration_throughput, max_risk_value,
+                 network_image_size, depth_image_size,
                  robot_compute_power, robot_transmit_power, w_latency, w_energy,
-                 vrep_simulation=False, vrep_host='localhost', vrep_port=19997,
-                 vrep_scene_graph_extraction=False):
+                 pick_goals, place_goals, pick_and_place_per_episode,
+                 vrep_simulation=False, vrep_host='localhost', vrep_port=19997, vrep_scene_graph_extraction=False):
         super(TaskOffloadingEnv, self).__init__()
 
         if not vrep_simulation and vrep_scene_graph_extraction:
             raise ValueError('Cannot extract scene graph from V-REP if it is not a simulation')
 
-        self.pick_and_place_per_episode = pick_and_place_per_episode
+        self.max_rtt = max_rtt
+        self.max_throughput = max_throughput
+        self.max_duration_throughput = max_duration_throughput
+        self.max_risk_value = max_risk_value
+        self.network_image_size = network_image_size
+        self.depth_image_size = depth_image_size
         self.robot_compute_power = robot_compute_power
         self.robot_transmit_power = robot_transmit_power
         self.w_latency = w_latency
         self.w_energy = w_energy
+        self.pick_and_place_per_episode = pick_and_place_per_episode
         self.vrep_simulation = vrep_simulation
         self.vrep_scene_graph_extraction = vrep_scene_graph_extraction
 
@@ -122,27 +126,35 @@ class TaskOffloadingEnv(Env):
     def step(self, action):
         assert self.action_space.contains(action)
 
-        request = GenerateSceneGraphRequest(
-            header=Header(stamp=rospy.Time.now()),
-            image_rgb=self._image_rgb_observation,
-            image_depth=self._image_depth_observation
-        )
-
         if action == 0:
-            response = self._generate_scene_graph_robot(request)
+            response = self._generate_scene_graph_robot(
+                header=Header(stamp=rospy.Time.now()),
+                image_rgb=self._image_rgb_observation,
+                image_depth=self._image_depth_observation
+            )
             self._scene_graph_last = response.scene_graph
             self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
-            if self._image_depth_observation is not None:
-                self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
+            self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
 
         elif action == 1:
+            image_rgb = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
+            image_depth = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
+            image_rgb = cv2.resize(image_rgb, self.network_image_size)
+            image_depth = cv2.resize(image_depth, self.network_image_size)
+            image_rgb = self._cv_bridge.cv2_to_imgmsg(image_rgb, 'rgb8')
+            image_depth = self._cv_bridge.cv2_to_imgmsg(image_depth, 'passthrough')
+
             try:
-                response = self._generate_scene_graph_edge(request)
+                self._generate_scene_graph_edge.wait_for_service(timeout=0.1)
+                response = self._generate_scene_graph_edge(
+                    header=Header(stamp=rospy.Time.now()),
+                    image_rgb=image_rgb,
+                    image_depth=image_depth
+                )
                 self._scene_graph_last = response.scene_graph
                 self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
-                if self._image_depth_observation is not None:
-                    self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
-            except rospy.ROSException, rospy.ServiceException:
+                self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
+            except (rospy.ROSException, rospy.ServiceException):
                 response = GenerateSceneGraphResponse(
                     communication_latency=rospy.Duration(0, 0),
                     execution_latency=rospy.Duration(0, 0),
@@ -239,7 +251,12 @@ class TaskOffloadingEnv(Env):
         return [seed_]
 
     def _observe(self):
-        network_state = self._measure_network()
+        response = self._measure_network(
+            max_rtt=rospy.Duration.from_sec(self.max_rtt / 1e3),
+            max_duration_throughput=rospy.Duration.from_sec(self.max_duration_throughput)
+        )
+        rtt = response.rtt.to_sec() * 1e3
+        throughput = response.throughput
 
         # most recent images (while loop because the camera image messages are filtered by the time synchronizer)
         self._image_rgb_observation = None
@@ -251,28 +268,28 @@ class TaskOffloadingEnv(Env):
                 rospy.wait_for_message('camera/rgb/raw_image', Image)
 
         # temporal coherence is in [0,1] (pixels are scaled to [0,1])
-        image_rgb_observation = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
+        image_rgb = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
         if self._image_rgb_last is not None:
-            temporal_coherence = 1 - np.mean(np.abs(image_rgb_observation - self._image_rgb_last)) / 255
+            temporal_coherence = 1 - np.mean(np.abs(image_rgb - self._image_rgb_last)) / 255
             if self._image_depth_observation is not None:
-                image_depth_observation = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
-                temporal_coherence_depth = 1 - np.mean(np.abs(image_depth_observation - self._image_depth_last)) / 255
+                image_depth = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
+                temporal_coherence_depth = 1 - np.mean(np.abs(image_depth - self._image_depth_last)) / 255
                 temporal_coherence = (temporal_coherence + temporal_coherence_depth) / 2
         else:
             temporal_coherence = 0      # no previous computation => no temporal coherence
 
         if self._image_depth_observation is None:
-            image_depth_observation = np.zeros(IMAGE_DEPTH_SIZE)
-            self._image_depth_observation = self._cv_bridge.cv2_to_imgmsg(image_depth_observation, 'passthrough')
+            image_depth = np.zeros(self.depth_image_size)
+            self._image_depth_observation = self._cv_bridge.cv2_to_imgmsg(image_depth, 'passthrough')
 
         with self._risk_lock:
             risk_value = self._risk_value
         if risk_value is None:
-            risk_value = HIGH_RISK_VALUE        # unknown => high
+            risk_value = self.max_risk_value    # unknown => high
 
         return {
-            'rtt': network_state.rtt,
-            'throughput': network_state.throughput,
+            'rtt': rtt,
+            'throughput': throughput,
             'risk_value': risk_value,
             'temporal_coherence': temporal_coherence
         }
@@ -300,30 +317,30 @@ class TaskOffloadingEnv(Env):
         reward_energy = self.w_energy * min(1 / energy if energy != 0 else 5, 5)
 
         # edge => +1 (better instance segmentation)
-        reward_model = 1 if (self._action == 1 or self._action == 3) else 0
+        reward_accuracy = 1 if (self._action == 1 or self._action == 3) else 0
 
-        # temporal_coherence=0 => -reward_without_temporal_coherence (penalty so that total reward is 0)
+        # the higher risk, the more we are interested in having good latency and accurate scene graph
+        # risk_value+1 so that when risk_value=0 the robot is motivated to decide well anyway
+        reward_partial = (risk_value+1) * (reward_latency + reward_accuracy) + reward_energy
+
+        # temporal_coherence=0 => -reward_partial (penalty so that total reward is 0)
         # temporal_coherence=1 => -0 (no penalty)
         # 0 < temporal_coherence < 1 => degree 4 trend (to be high, it must be very coherent)
-        # see below for the meaning of reward_without_temporal_coherence
-        reward_without_temporal_coherence = (risk_value+1) * (reward_latency + reward_model) + reward_energy
-        reward_temporal_coherence = (temporal_coherence**4 - 1) * reward_without_temporal_coherence
+        # see below for the meaning of reward_partial
+        reward_temporal_coherence = (temporal_coherence**4 - 1) * reward_partial
+        reward = reward_partial + reward_temporal_coherence
 
-        # # the higher risk, the more we are interested in having good latency and accurate scene graph
-        # risk_value+1 so that when risk_value=0 the robot is motivated to decide well anyway
-        reward = (risk_value+1) * (reward_latency + reward_model + reward_temporal_coherence) + reward_energy
-
-        # print()
-        # print('risk_value: %f' % risk_value)
-        # print('communication latency: %f' % communication_latency)
-        # print('execution latency: %f' % execution_latency)
-        # print('latency: %f' % latency)
-        # print('energy: %f' % energy)
-        # print('reward_latency: %f' % reward_latency)
-        # print('reward_energy: %f' % reward_energy)
-        # print('reward_model: %f' % reward_model)
-        # print('reward_temporal_coherence: %f' % reward_temporal_coherence)
-        # print('reward: %f' % reward)
+        print()
+        print('risk_value: %f' % risk_value)
+        print('communication latency: %f' % communication_latency)
+        print('execution latency: %f' % execution_latency)
+        print('latency: %f' % latency)
+        print('energy: %f' % energy)
+        print('reward_latency: %f' % reward_latency)
+        print('reward_energy: %f' % reward_energy)
+        print('reward_model: %f' % reward_accuracy)
+        print('reward_temporal_coherence: %f' % reward_temporal_coherence)
+        print('reward: %f' % reward)
 
         return reward
 

@@ -43,7 +43,7 @@
         <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py" output="screen"/>
 
         <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" output="screen">
-            <rosparam command="load" file="$(find turtlebot2i_edge)/config/rl.yaml"/>
+            <rosparam command="load" file="$(find turtlebot2i_edge)/config/env.yaml"/>
 
             <param name="agent" type="str" value="$(arg agent)"/>
             <param name="mode" type="str" value="$(arg mode)"/>

@@ -16,7 +16,7 @@ void WifiNetwork::createNetwork() {
 
     // general settings
     ns3::WifiHelper wifi_helper;
-    wifi_helper.SetStandard(ns3::WIFI_STANDARD_80211n_5GHZ);    // throughput 100 Mbps, TODO: check with simulation
+    wifi_helper.SetStandard(ns3::WIFI_STANDARD_80211n_5GHZ);    // high throughput
     wifi_helper.SetRemoteStationManager("ns3::ConstantRateWifiManager",
                                         "DataMode", ns3::StringValue("HtMcs7"),
                                         "ControlMode", ns3::StringValue("HtMcs0"));
