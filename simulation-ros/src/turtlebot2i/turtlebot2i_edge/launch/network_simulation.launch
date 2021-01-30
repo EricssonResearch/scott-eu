@@ -11,10 +11,15 @@
         <remap from="odom_2" to="/turtlebot2i_1/odom"/>
         <remap from="odom_3" to="/turtlebot2i_2/odom"/>
 
-        <remap from="stamp_0" to="/turtlebot2i/edge/stamp"/>
-        <remap from="stamp_1" to="/turtlebot2i_0/edge/stamp"/>
-        <remap from="stamp_2" to="/turtlebot2i_1/edge/stamp"/>
-        <remap from="stamp_3" to="/turtlebot2i_2/edge/stamp"/>
+        <remap from="upload_0" to="/turtlebot2i/edge/upload"/>
+        <remap from="upload_1" to="/turtlebot2i_0/edge/upload"/>
+        <remap from="upload_2" to="/turtlebot2i_1/edge/upload"/>
+        <remap from="upload_3" to="/turtlebot2i_2/edge/upload"/>
+
+        <remap from="download_0" to="/turtlebot2i/edge/download"/>
+        <remap from="download_1" to="/turtlebot2i_0/edge/download"/>
+        <remap from="download_2" to="/turtlebot2i_1/edge/download"/>
+        <remap from="download_3" to="/turtlebot2i_2/edge/download"/>
 
         <remap from="ping_0" to="/turtlebot2i/edge/ping"/>
         <remap from="ping_1" to="/turtlebot2i_0/edge/ping"/>

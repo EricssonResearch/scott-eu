@@ -17,14 +17,26 @@ void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_i
              position.y, position.z);
 }
 
-bool stamp(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Stamp::Request &request,
-           turtlebot2i_edge::Stamp::Response &response) {
-    int to_stamp = request.bytes.size();
-    int stamped = network->stamp(robot_id, to_stamp, ns3::Seconds(request.max_duration.toSec()));
-    double percentage = 100 * static_cast<double>(stamped) / to_stamp;
+bool transfer(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Stamp::Request &request,
+              turtlebot2i_edge::Stamp::Response &response, bool upload) {
+    int to_transfer = request.bytes.size();
+    int transferred;
+
+    if (upload)
+        transferred = network->upload(robot_id, to_transfer, ns3::Seconds(request.max_duration.toSec()));
+    else
+        transferred = network->download(robot_id, to_transfer, ns3::Seconds(request.max_duration.toSec()));
+
     response.header.stamp = ros::Time::now();
-    response.stamped = stamped;
-    ROS_INFO("Robot %d stamped %d bytes out of %d (%f%%)", robot_id, stamped, to_stamp, percentage);
+    response.stamped = transferred;
+
+    double percentage = 100 * static_cast<double>(transferred) / to_transfer;
+    if (upload)
+        ROS_INFO("Robot %d transferred %d bytes out of %d (%f%%) to MEC server",
+                 robot_id, transferred, to_transfer, percentage);
+    else
+        ROS_INFO("MEC server transferred %d bytes out of %d (%f%%) to robot %d",
+                 transferred, to_transfer, percentage, robot_id);
     return true;
 }
 
@@ -50,16 +62,28 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
 
     std::vector<ros::ServiceServer> service_servers;
     for (int i=0; i<network->nRobots(); i++) {
-        std::string service = "stamp_" + std::to_string(i);
+        std::string service = "upload_" + std::to_string(i);
         auto callback = [network, i](turtlebot2i_edge::Stamp::Request &request,
                                      turtlebot2i_edge::Stamp::Response &response) {
-            return stamp(network, i, request, response);
+            return transfer(network, i, request, response, true);
         };
         ros::ServiceServer service_server = node_handle.advertiseService
                 <turtlebot2i_edge::Stamp::Request, turtlebot2i_edge::Stamp::Response>(service, callback);
         service_servers.push_back(service_server);
     }
-    ROS_INFO("ROS services to stamp ready");
+    ROS_INFO("ROS services to upload ready");
+
+    for (int i=0; i<network->nRobots(); i++) {
+        std::string service = "download_" + std::to_string(i);
+        auto callback = [network, i](turtlebot2i_edge::Stamp::Request &request,
+                                     turtlebot2i_edge::Stamp::Response &response) {
+            return transfer(network, i, request, response, false);
+        };
+        ros::ServiceServer service_server = node_handle.advertiseService
+                <turtlebot2i_edge::Stamp::Request, turtlebot2i_edge::Stamp::Response>(service, callback);
+        service_servers.push_back(service_server);
+    }
+    ROS_INFO("ROS services to download ready");
 
     for (int i=0; i<network->nRobots(); i++) {
         std::string service = "ping_" + std::to_string(i);

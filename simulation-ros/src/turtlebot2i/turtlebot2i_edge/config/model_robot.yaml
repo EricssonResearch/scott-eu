@@ -1,6 +1,4 @@
 # YOLACT with ResNet50-FPN backbone
 model:
-  m_ap: 0.282           # on COCO test-dev (https://github.com/dbolya/yolact)
-  execution_latency:    # with i7-8650U, optimized by OpenVINO
-    secs: 0
-    nsecs: 550000000
+  m_ap: 0.282                 # on COCO test-dev (https://github.com/dbolya/yolact)
+  execution_latency: 0.55     # with i7-8650U, optimized by OpenVINO

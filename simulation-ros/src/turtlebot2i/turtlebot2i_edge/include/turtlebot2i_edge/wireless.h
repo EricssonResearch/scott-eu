@@ -12,11 +12,17 @@ class WirelessNetwork {
     ns3::Ptr<ns3::Node> mec_server_;
     ns3::Ptr<ns3::Building> warehouse_;
 
-    std::vector<bool> stamping_;
-    std::vector<int> to_stamp_;                 // total number of bytes to stamp
-    std::vector<int> stamped_;                  // number of bytes stamped so far
-    std::vector<std::mutex> stamping_mutex_;
-    std::vector<std::condition_variable> stamping_cv_;
+    std::vector<bool> uploading_;
+    std::vector<int> to_upload_;                    // total number of bytes to upload
+    std::vector<int> uploaded_;                     // number of bytes uploaded so far
+    std::vector<std::mutex> uploading_mutex_;
+    std::vector<std::condition_variable> uploading_cv_;
+
+    std::vector<bool> downloading_;
+    std::vector<int> to_download_;                  // total number of bytes to upload
+    std::vector<int> downloaded_;                   // number of bytes uploaded so far
+    std::vector<std::mutex> downloading_mutex_;
+    std::vector<std::condition_variable> downloading_cv_;
 
     std::vector<bool> pinging_;
     std::vector<double> rtt_;
@@ -24,8 +30,10 @@ class WirelessNetwork {
     std::vector<std::condition_variable> pinging_cv_;
 
     int getRobotId(const ns3::Address &address);
-    void updateStampedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
-                            const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
+    void updateUploadedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
+                             const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
+    void updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &server_address,
+                               const ns3::Address &robot_address, const ns3::SeqTsSizeHeader &header);
     void saveRtt(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time);
 
 protected:
@@ -45,8 +53,9 @@ public:
     void createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y);
     void simulate();
 
-    int stamp(int robot_id, int n_bytes, const ns3::Time &max_duration);    // robot -> MEC server
-    double ping(int robot_id, const ns3::Time &max_rtt);                    // robot -> MEC server
+    int upload(int robot_id, int n_bytes, const ns3::Time &max_duration);
+    int download(int robot_id, int n_bytes, const ns3::Time &max_duration);
+    double ping(int robot_id, const ns3::Time &max_rtt);
 
     int nRobots() const;
     std::pair<int,int> getRobotRoom(int robot_id) const;

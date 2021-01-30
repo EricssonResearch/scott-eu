@@ -330,17 +330,17 @@ class TaskOffloadingEnv(Env):
         reward_temporal_coherence = (temporal_coherence**4 - 1) * reward_partial
         reward = reward_partial + reward_temporal_coherence
 
-        print()
-        print('risk_value: %f' % risk_value)
-        print('communication latency: %f' % communication_latency)
-        print('execution latency: %f' % execution_latency)
-        print('latency: %f' % latency)
-        print('energy: %f' % energy)
-        print('reward_latency: %f' % reward_latency)
-        print('reward_energy: %f' % reward_energy)
-        print('reward_model: %f' % reward_accuracy)
-        print('reward_temporal_coherence: %f' % reward_temporal_coherence)
-        print('reward: %f' % reward)
+        # print()
+        # print('risk_value: %f' % risk_value)
+        # print('communication latency: %f' % communication_latency)
+        # print('execution latency: %f' % execution_latency)
+        # print('latency: %f' % latency)
+        # print('energy: %f' % energy)
+        # print('reward_latency: %f' % reward_latency)
+        # print('reward_energy: %f' % reward_energy)
+        # print('reward_model: %f' % reward_accuracy)
+        # print('reward_temporal_coherence: %f' % reward_temporal_coherence)
+        # print('reward: %f' % reward)
 
         return reward
 

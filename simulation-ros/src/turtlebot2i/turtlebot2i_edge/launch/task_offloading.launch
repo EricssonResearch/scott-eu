@@ -29,25 +29,23 @@
     </include>
 
     <group ns="$(arg robot_name)">
-        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" ns="edge" output="screen">
+        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" ns="edge">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_edge.yaml"/>
             <param name="on_edge" type="bool" value="True"/>
             <remap from="generate_scene_graph" to="/$(arg robot_name)/generate_scene_graph"/>
         </node>
 
-        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" output="screen">
+        <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_robot.yaml"/>
             <param name="on_edge" type="bool" value="False"/>
         </node>
 
-        <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py" output="screen"/>
+        <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py"/>
 
         <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" output="screen">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/env.yaml"/>
-
             <param name="agent" type="str" value="$(arg agent)"/>
             <param name="mode" type="str" value="$(arg mode)"/>
-
             <param name="vrep/host" type="str" value="localhost"/>
             <param name="vrep/port" type="int" value="20001"/>
             <param name="rl/models/path" type="str" value="$(find turtlebot2i_edge)/models"/>

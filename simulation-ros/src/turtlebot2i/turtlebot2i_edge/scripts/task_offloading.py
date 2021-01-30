@@ -124,7 +124,7 @@ def main():
         agent.fit(
             env=env,
             nb_steps=10000,
-            visualize=True,
+            visualize=False,
             callbacks=[ModelIntervalCheckpoint(model_path, 100), TrainIntervalLogger(10), FileLogger(log_path)],
             verbose=2
         )

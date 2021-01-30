@@ -3,5 +3,7 @@
     <arg name="output" default="screen"/>
 
     <node name="network_monitor" pkg="turtlebot2i_edge" type="network_monitor.py" ns="$(arg robot_name)"
-          output="$(arg output)"/>
+          output="$(arg output)">
+        <remap from="edge/stamp" to="edge/upload"/>
+    </node>
 </launch>
