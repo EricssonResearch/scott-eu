@@ -69,11 +69,11 @@ void WirelessNetwork::createApplications() {
     packet_sink_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
     apps = packet_sink_helper.Install(mec_server_);         // upload
     app = apps.Get(0);
-    app->TraceConnectWithoutContext("RxWithTime", ns3::MakeCallback(&WirelessNetwork::updateUploadedBytes, this));
+    app->TraceConnectWithoutContext("RxWithSeqTsSize", ns3::MakeCallback(&WirelessNetwork::updateUploadedBytes, this));
     apps = packet_sink_helper.Install(robots_);             // download
     for (auto it=apps.Begin(); it!=apps.End(); it++) {
         app = *it;
-        app->TraceConnectWithoutContext("RxWithTime", ns3::MakeCallback(&WirelessNetwork::updateDownloadedBytes, this));
+        app->TraceConnectWithoutContext("RxWithSeqTsSize", ns3::MakeCallback(&WirelessNetwork::updateDownloadedBytes, this));
     }
 
     // app for receiving ping

@@ -52,7 +52,7 @@ class TaskOffloadingEnv(Env):
         if not vrep_simulation and vrep_scene_graph_extraction:
             raise ValueError('Cannot extract scene graph from V-REP if it is not a simulation')
 
-        self.max_rtt = max_rtt
+        self.max_rtt = max_rtt / 1e3
         self.max_throughput = max_throughput
         self.max_duration_throughput = max_duration_throughput
         self.max_risk_value = max_risk_value
@@ -252,7 +252,7 @@ class TaskOffloadingEnv(Env):
 
     def _observe(self):
         response = self._measure_network(
-            max_rtt=rospy.Duration.from_sec(self.max_rtt / 1e3),
+            max_rtt=rospy.Duration.from_sec(self.max_rtt),
             max_duration_throughput=rospy.Duration.from_sec(self.max_duration_throughput)
         )
         rtt = response.rtt.to_sec() * 1e3

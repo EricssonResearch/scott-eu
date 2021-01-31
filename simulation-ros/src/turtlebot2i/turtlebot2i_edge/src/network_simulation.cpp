@@ -13,8 +13,8 @@ void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_i
     const geometry_msgs::Point& position = msg->pose.pose.position;
     network->setRobotPosition(robot_id, {position.x, position.y, position.z});
     std::pair<int,int> room = network->getRobotRoom(robot_id);
-    ROS_INFO("Robot %d is in room {%d,%d}, position {%f,%f,%f}", robot_id, room.second, room.first, position.x,
-             position.y, position.z);
+//    ROS_INFO("Robot %d is in room {%d,%d}, position {%f,%f,%f}", robot_id, room.second, room.first, position.x,
+//             position.y, position.z);
 }
 
 bool transfer(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Stamp::Request &request,
@@ -50,10 +50,11 @@ bool ping(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtleb
 
 void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     ros::NodeHandle node_handle;
+    int n_robots = network->nRobots();
 
     ROS_INFO("Updating positions...");
     std::vector<ros::Subscriber> subscribers;
-    for (int i=0; i<network->nRobots(); i++) {
+    for (int i=0; i<n_robots; i++) {
         std::string topic = "odom_" + std::to_string(i);
         auto callback = [network, i](const nav_msgs::Odometry::ConstPtr &msg) { updatePosition(network, i, msg); };
         ros::Subscriber subscriber = node_handle.subscribe<nav_msgs::Odometry>(topic, 1, callback);
@@ -61,7 +62,7 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     }
 
     std::vector<ros::ServiceServer> service_servers;
-    for (int i=0; i<network->nRobots(); i++) {
+    for (int i=0; i<n_robots; i++) {
         std::string service = "upload_" + std::to_string(i);
         auto callback = [network, i](turtlebot2i_edge::Stamp::Request &request,
                                      turtlebot2i_edge::Stamp::Response &response) {
@@ -73,7 +74,7 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     }
     ROS_INFO("ROS services to upload ready");
 
-    for (int i=0; i<network->nRobots(); i++) {
+    for (int i=0; i<n_robots; i++) {
         std::string service = "download_" + std::to_string(i);
         auto callback = [network, i](turtlebot2i_edge::Stamp::Request &request,
                                      turtlebot2i_edge::Stamp::Response &response) {
@@ -85,7 +86,7 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     }
     ROS_INFO("ROS services to download ready");
 
-    for (int i=0; i<network->nRobots(); i++) {
+    for (int i=0; i<n_robots; i++) {
         std::string service = "ping_" + std::to_string(i);
         auto callback = [network, i](turtlebot2i_edge::Ping::Request &request,
                                      turtlebot2i_edge::Ping::Response &response) {
@@ -97,7 +98,9 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     }
     ROS_INFO("ROS services to ping ready");
 
-    ros::spin();
+    // 2 threads per robot, one for updating the position and one for using the network
+    ros::MultiThreadedSpinner spinner(2 * n_robots);
+    spinner.spin();
 }
 
 int main(int argc, char **argv) {
