@@ -14,14 +14,14 @@ class ModelPerformance:
         self.execution_latency = rospy.Duration.from_sec(execution_latency)
 
 
-def get_scene_graph(generate_scene_graph, model_performance, sleep=True):
+def get_scene_graph(generate_scene_graph, model_performance):
     time_start = rospy.Time.now()
     response = generate_scene_graph()
     time_elapsed = rospy.Time.now() - time_start
 
     time_sleep = model_performance.execution_latency - time_elapsed
     time_sleep = time_sleep.to_sec()
-    if time_sleep > 0 and sleep:
+    if time_sleep > 0:
         time.sleep(time_sleep)
 
     return response
@@ -35,7 +35,7 @@ def on_edge_proxy(generate_scene_graph, upload, download, model_performance, req
         return None
     upload_latency = rospy.Time.now() - request.header.stamp
 
-    response = get_scene_graph(generate_scene_graph, model_performance, sleep=False)
+    response = get_scene_graph(generate_scene_graph, model_performance)
     scene_graph = response.scene_graph
 
     n_bytes = asizeof(response)
@@ -57,7 +57,7 @@ def on_edge_proxy(generate_scene_graph, upload, download, model_performance, req
 def on_robot_proxy(generate_scene_graph, model_performance, request):
     communication_latency = rospy.Time.now() - request.header.stamp     # inter-process communication
 
-    response = get_scene_graph(generate_scene_graph, model_performance, sleep=False)
+    response = get_scene_graph(generate_scene_graph, model_performance)
     scene_graph = response.scene_graph
 
     return GenerateSceneGraphResponse(
