@@ -89,6 +89,7 @@ class TaskOffloadingEnv(Env):
         rospy.Subscriber('events/bumper', BumperEvent, self._save_collision)
 
         self._scene_graph_last = None
+        self._scene_graph_from_edge = False
         self._scene_graph_pub = rospy.Publisher('scene_graph', SceneGraph, queue_size=1)
 
         self._risk_value = None
@@ -133,6 +134,7 @@ class TaskOffloadingEnv(Env):
                 image_depth=self._image_depth_observation
             )
             self._scene_graph_last = response.scene_graph
+            self._scene_graph_from_edge = False
             self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
             self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
 
@@ -152,6 +154,7 @@ class TaskOffloadingEnv(Env):
                     image_depth=image_depth
                 )
                 self._scene_graph_last = response.scene_graph
+                self._scene_graph_from_edge = True
                 self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
                 self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
             except (rospy.ROSException, rospy.ServiceException):
@@ -312,12 +315,14 @@ class TaskOffloadingEnv(Env):
         else:
             energy = 0
 
-        # latency=1 s => +1 (the lower, the better... saturates at 5)
-        reward_latency = self.w_latency * min(1 / latency if latency != 0 else 5, 5)
+        # latency=0.1 s => +1 (the lower, the better... saturates at 5)
+        reward_latency = self.w_latency * min(0.1 / latency if latency != 0 else 5, 5)
+
+        # energy=0.1 W => +1 (the lower, the better... saturates at 5)
         reward_energy = self.w_energy * min(1 / energy if energy != 0 else 5, 5)
 
         # edge => +1 (better instance segmentation)
-        reward_accuracy = 1 if (self._action == 1 or self._action == 3) else 0
+        reward_accuracy = 1 if self._scene_graph_from_edge else 0
 
         # the higher risk, the more we are interested in having good latency and accurate scene graph
         # risk_value+1 so that when risk_value=0 the robot is motivated to decide well anyway
