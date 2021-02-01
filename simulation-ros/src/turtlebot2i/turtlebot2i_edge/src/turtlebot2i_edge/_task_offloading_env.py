@@ -20,18 +20,6 @@ from turtlebot2i_edge.srv import MeasureNetwork
 
 
 class TaskOffloadingEnv(Env):
-    """
-    TODO: write description, see https://github.com/openai/gym/blob/master/gym/envs/classic_control/cartpole.py
-    actions: 0 -> robot, 1 -> edge, 3 -> last output
-
-    observations:
-    - rtt (ms)
-    - packet_loss (percentage [0,1])
-    - throughput (Mbps uplink)
-    - risk_value
-    - temporal_coherence (mean of absolute differences): last robot rgb, last edge rgb
-    """
-
     metadata = {'render.modes': ['human', 'ansi']}
 
     action_space = Discrete(3)
@@ -73,12 +61,12 @@ class TaskOffloadingEnv(Env):
             self._vrep_scene_controller.open_connection(vrep_host, vrep_port)
 
         rospy.loginfo('Waiting for ROS service to generate scene graph on robot...')
-        self._generate_scene_graph_robot = rospy.ServiceProxy('generate_scene_graph_proxy', GenerateSceneGraph)
-        self._generate_scene_graph_robot.wait_for_service()
+        self._generate_scene_graph_on_robot = rospy.ServiceProxy('generate_scene_graph_proxy', GenerateSceneGraph)
+        self._generate_scene_graph_on_robot.wait_for_service()
 
         rospy.loginfo('Waiting for ROS service to generate scene graph on edge...')
-        self._generate_scene_graph_edge = rospy.ServiceProxy('edge/generate_scene_graph_proxy', GenerateSceneGraph)
-        self._generate_scene_graph_edge.wait_for_service()
+        self._generate_scene_graph_on_edge = rospy.ServiceProxy('edge/generate_scene_graph_proxy', GenerateSceneGraph)
+        self._generate_scene_graph_on_edge.wait_for_service()
 
         rospy.loginfo('Waiting for ROS service to measure the network...')
         self._measure_network = rospy.ServiceProxy('measure_network', MeasureNetwork)
@@ -124,65 +112,30 @@ class TaskOffloadingEnv(Env):
         self.seed()
         self.reset()
 
+        # for TaskOffloadingLogger
+        self.latency = None
+        self.energy = None
+        self.published = False
+
     def step(self, action):
         assert self.action_space.contains(action)
 
         if action == 0:
-            response = self._generate_scene_graph_robot(
-                header=Header(stamp=rospy.Time.now()),
-                image_rgb=self._image_rgb_observation,
-                image_depth=self._image_depth_observation
-            )
-            self._scene_graph_last = response.scene_graph
-            self._scene_graph_from_edge = False
-            self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
-            self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
-
+            response = self._compute_on_robot()
         elif action == 1:
-            image_rgb = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
-            image_depth = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
-            image_rgb = cv2.resize(image_rgb, self.network_image_size)
-            image_depth = cv2.resize(image_depth, self.network_image_size)
-            image_rgb = self._cv_bridge.cv2_to_imgmsg(image_rgb, 'rgb8')
-            image_depth = self._cv_bridge.cv2_to_imgmsg(image_depth, 'passthrough')
-
-            try:
-                self._generate_scene_graph_edge.wait_for_service(timeout=0.1)
-                response = self._generate_scene_graph_edge(
-                    header=Header(stamp=rospy.Time.now()),
-                    image_rgb=image_rgb,
-                    image_depth=image_depth
-                )
-                self._scene_graph_last = response.scene_graph
-                self._scene_graph_from_edge = True
-                self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
-                self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
-            except (rospy.ROSException, rospy.ServiceException):
-                response = GenerateSceneGraphResponse(
-                    communication_latency=rospy.Duration(0, 0),
-                    execution_latency=rospy.Duration(0, 0),
-                    scene_graph=None
-                )
-
+            response = self._compute_on_edge()
         elif action == 2:
-            if self._scene_graph_last is not None:
-                self._scene_graph_last.header.stamp = rospy.Time.now()
-            response = GenerateSceneGraphResponse(
-                communication_latency=rospy.Duration(0, 0),
-                execution_latency=rospy.Duration(0, 0),
-                scene_graph=self._scene_graph_last
-            )
-
+            response = self._use_last_output()
         else:
             raise ValueError
 
-        # the scene graph has not been computed if the agent chooses:
-        # - action=1 when the network is not available
-        # - action=2 without previous computation
+        # there is no scene graph if action=1 and the network is not available
         if response.scene_graph.sg_data != '':
             self._scene_graph_pub.publish(response.scene_graph)
+            self.published = True
         else:
             rospy.logwarn('Bad decision, no scene graph available')
+            self.published = False
 
         self._observation_last = self._observation_new
         self._action = action
@@ -197,24 +150,26 @@ class TaskOffloadingEnv(Env):
         self._pick_and_place_navigator.stop()
         if self.vrep_simulation:
             self._vrep_scene_controller.reset()
+        self._pick_and_place_navigator.start()
 
-        self._scene_graph_last = None
         self._image_rgb_observation = None
         self._image_rgb_last = None
         self._image_depth_observation = None
         self._image_depth_last = None
-
         with self._image_current_lock:
             self._image_rgb_current = None
             self._image_depth_current = None
-
         with self._risk_lock:
             self._risk_value = None
-
         with self._collision_lock:
             self._collision = False
 
-        self._pick_and_place_navigator.start()
+        # compute once on robot so that action=2 is valid
+        self._observation_new = self._observe()
+        response = self._compute_on_robot()
+        self._scene_graph_last = response.scene_graph
+        self._scene_graph_from_edge = False
+
         self._observation_new = self._observe()
         self._step = 1
 
@@ -298,28 +253,30 @@ class TaskOffloadingEnv(Env):
         }
 
     def _get_reward(self, response):
-        # no scene graph
+        # no scene graph => +0
         if response.scene_graph.sg_data == '':
+            self.latency = np.inf
+            self.energy = np.inf
             return 0
 
         communication_latency = response.communication_latency.to_sec()
         execution_latency = response.execution_latency.to_sec()
-        latency = communication_latency + execution_latency
+        self.latency = communication_latency + execution_latency
         risk_value = self._observation_last['risk_value']
         temporal_coherence = self._observation_last['temporal_coherence'] if self._action == 2 else 1
 
         if self._action == 0:
-            energy = self.robot_transmit_power * communication_latency
+            self.energy = self.robot_transmit_power * communication_latency
         elif self._action == 1:
-            energy = self.robot_compute_power * execution_latency
+            self.energy = self.robot_compute_power * execution_latency
         else:
-            energy = 0
+            self.energy = 0
 
         # latency=0.1 s => +1 (the lower, the better... saturates at 5)
-        reward_latency = self.w_latency * min(0.1 / latency if latency != 0 else 5, 5)
+        reward_latency = self.w_latency * min(0.1 / self.latency if self.latency != 0 else 5, 5)
 
         # energy=0.1 W => +1 (the lower, the better... saturates at 5)
-        reward_energy = self.w_energy * min(1 / energy if energy != 0 else 5, 5)
+        reward_energy = self.w_energy * min(1 / self.energy if self.energy != 0 else 5, 5)
 
         # edge => +1 (better instance segmentation)
         reward_accuracy = 1 if self._scene_graph_from_edge else 0
@@ -328,24 +285,11 @@ class TaskOffloadingEnv(Env):
         # risk_value+1 so that when risk_value=0 the robot is motivated to decide well anyway
         reward_partial = (risk_value+1) * (reward_latency + reward_accuracy) + reward_energy
 
-        # temporal_coherence=0 => -reward_partial (penalty so that total reward is 0)
-        # temporal_coherence=1 => -0 (no penalty)
+        # temporal_coherence=0 => -reward_partial => reward=0
+        # temporal_coherence=1 => -0 (no penalty) => reward=reward_partial
         # 0 < temporal_coherence < 1 => degree 4 trend (to be high, it must be very coherent)
-        # see below for the meaning of reward_partial
         reward_temporal_coherence = (temporal_coherence**4 - 1) * reward_partial
         reward = reward_partial + reward_temporal_coherence
-
-        # print()
-        # print('risk_value: %f' % risk_value)
-        # print('communication latency: %f' % communication_latency)
-        # print('execution latency: %f' % execution_latency)
-        # print('latency: %f' % latency)
-        # print('energy: %f' % energy)
-        # print('reward_latency: %f' % reward_latency)
-        # print('reward_energy: %f' % reward_energy)
-        # print('reward_model: %f' % reward_accuracy)
-        # print('reward_temporal_coherence: %f' % reward_temporal_coherence)
-        # print('reward: %f' % reward)
 
         return reward
 
@@ -356,6 +300,51 @@ class TaskOffloadingEnv(Env):
         if self._pick_and_place_navigator.completed_pick_and_place >= self.pick_and_place_per_episode:
             return True
         return False
+
+    def _compute_on_robot(self):
+        response = self._generate_scene_graph_on_robot(
+            header=Header(stamp=rospy.Time.now()),
+            image_rgb=self._image_rgb_observation,
+            image_depth=self._image_depth_observation
+        )
+        self._scene_graph_last = response.scene_graph
+        self._scene_graph_from_edge = False
+        self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
+        self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
+        return response
+
+    def _compute_on_edge(self):
+        image_rgb = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
+        image_depth = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
+        image_rgb = cv2.resize(image_rgb, self.network_image_size)
+        image_depth = cv2.resize(image_depth, self.network_image_size)
+        image_rgb = self._cv_bridge.cv2_to_imgmsg(image_rgb, 'rgb8')
+        image_depth = self._cv_bridge.cv2_to_imgmsg(image_depth, 'passthrough')
+
+        try:
+            self._generate_scene_graph_on_edge.wait_for_service(timeout=0.1)
+            response = self._generate_scene_graph_on_edge(
+                header=Header(stamp=rospy.Time.now()),
+                image_rgb=image_rgb,
+                image_depth=image_depth
+            )
+            self._scene_graph_last = response.scene_graph
+            self._scene_graph_from_edge = True
+            self._image_rgb_last = self._cv_bridge.imgmsg_to_cv2(self._image_rgb_observation, 'rgb8')
+            self._image_depth_last = self._cv_bridge.imgmsg_to_cv2(self._image_depth_observation, 'passthrough')
+        except (rospy.ROSException, rospy.ServiceException):
+            response = GenerateSceneGraphResponse()
+
+        return response
+
+    def _use_last_output(self):
+        self._scene_graph_last.header.stamp = rospy.Time.now()
+        response = GenerateSceneGraphResponse(
+            communication_latency=rospy.Duration(0, 0),
+            execution_latency=rospy.Duration(0, 0),
+            scene_graph=self._scene_graph_last
+        )
+        return response
 
     def _save_camera_image_rgb(self, image_rgb):
         with self._image_current_lock:

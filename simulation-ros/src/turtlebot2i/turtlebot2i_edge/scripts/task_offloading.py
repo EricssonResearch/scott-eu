@@ -11,8 +11,8 @@ from keras.optimizers import Adam
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
-from rl.callbacks import ModelIntervalCheckpoint, TrainIntervalLogger, FileLogger
-from turtlebot2i_edge import TaskOffloadingEnv, TaskOffloadingProcessor, NaiveAgent
+from rl.callbacks import ModelIntervalCheckpoint, TrainIntervalLogger
+from turtlebot2i_edge import TaskOffloadingEnv, TaskOffloadingProcessor, TaskOffloadingLogger, NaiveAgent
 
 
 def get_model(env):
@@ -118,26 +118,20 @@ def main():
     else:
         raise ValueError('Invalid agent')
 
-    # TODO: add metrics
     if mode == 'train':
         rospy.loginfo('Training...')
-        agent.fit(
-            env=env,
-            nb_steps=10000,
-            visualize=False,
-            callbacks=[ModelIntervalCheckpoint(model_path, 100), TrainIntervalLogger(10), FileLogger(log_path)],
-            verbose=2
-        )
+        callbacks = [
+            ModelIntervalCheckpoint(model_path, interval=100),
+            TrainIntervalLogger(interval=100),
+            TaskOffloadingLogger(log_path, interval=100)
+        ]
+        agent.fit(env, nb_steps=10000, visualize=False, callbacks=callbacks, verbose=2)
         rospy.loginfo('Saving weights to %s' % model_path)
         agent.save_weights(model_path, overwrite=True)
     elif mode == 'test':
         rospy.loginfo('Testing...')
-        agent.test(
-            env=env,
-            nb_episodes=1,
-            visualize=True,
-            verbose=2
-        )
+        callbacks = [TaskOffloadingLogger(log_path, interval=100)]
+        agent.test(env, nb_episodes=1, visualize=True, callbacks=callbacks, verbose=2)
     else:
         raise ValueError
 
