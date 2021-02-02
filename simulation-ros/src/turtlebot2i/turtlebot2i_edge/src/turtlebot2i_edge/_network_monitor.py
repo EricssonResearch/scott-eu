@@ -58,7 +58,6 @@ class NetworkMonitor:
             throughput = stamped * 8 * 1e-6 / time_elapsed
         except rospy.ROSException, rospy.ServiceException:
             throughput = 0
-
         return throughput
 
     def _ping(self, max_rtt):

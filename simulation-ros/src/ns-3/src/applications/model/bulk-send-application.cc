@@ -133,6 +133,7 @@ BulkSendApplication::Start (const Time &delay)
   NS_LOG_FUNCTION (this);
   m_totBytes = 0;
   m_unsentPacket = 0;
+  m_seq = 0;
   Simulator::Schedule(delay, &BulkSendApplication::StartApplication, this);
 }
 
@@ -249,10 +250,11 @@ void BulkSendApplication::SendData (const Address &from, const Address &to)
       else if (m_enableSeqTsSizeHeader)
         {
           SeqTsSizeHeader header;
+          uint64_t header_size = static_cast<uint64_t>(header.GetSerializedSize ());
+          toSend = std::max (toSend, header_size+1);    // send at least header + 1 byte
           header.SetSeq (m_seq++);
           header.SetSize (toSend);
 //          NS_ABORT_IF (toSend < header.GetSerializedSize ());
-          toSend = std::max (toSend, static_cast<uint64_t>(header.GetSerializedSize ()));
           packet = Create<Packet> (toSend - header.GetSerializedSize ());
           // Trace before adding header, for consistency with PacketSink
           m_txTraceWithSeqTsSize (packet, from, to, header);
@@ -310,11 +312,15 @@ void BulkSendApplication::ConnectionSucceeded (Ptr<Socket> socket)
 {
   NS_LOG_FUNCTION (this << socket);
   NS_LOG_LOGIC ("BulkSendApplication Connection succeeded");
-  m_connected = true;
-  Address from, to;
-  socket->GetSockName (from);
-  socket->GetPeerName (to);
-  SendData (from, to);
+
+  if (m_socket != 0)
+    {  // the application might be stopped before the connection is established
+      m_connected = true;
+      Address from, to;
+      socket->GetSockName (from);
+      socket->GetPeerName (to);
+      SendData (from, to);
+    }
 }
 
 void BulkSendApplication::ConnectionFailed (Ptr<Socket> socket)

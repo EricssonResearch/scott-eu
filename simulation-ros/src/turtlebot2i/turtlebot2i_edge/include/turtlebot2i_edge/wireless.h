@@ -15,12 +15,14 @@ class WirelessNetwork {
     std::vector<bool> uploading_;
     std::vector<int> to_upload_;                    // total number of bytes to upload
     std::vector<int> uploaded_;                     // number of bytes uploaded so far
+    std::vector<ns3::Time> uploading_start_;        // starting time
     std::vector<std::mutex> uploading_mutex_;
     std::vector<std::condition_variable> uploading_cv_;
 
     std::vector<bool> downloading_;
-    std::vector<int> to_download_;                  // total number of bytes to upload
-    std::vector<int> downloaded_;                   // number of bytes uploaded so far
+    std::vector<int> to_download_;
+    std::vector<int> downloaded_;
+    std::vector<ns3::Time> downloading_start_;
     std::vector<std::mutex> downloading_mutex_;
     std::vector<std::condition_variable> downloading_cv_;
 

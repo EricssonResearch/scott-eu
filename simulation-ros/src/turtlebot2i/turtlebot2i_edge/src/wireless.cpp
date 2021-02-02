@@ -5,10 +5,10 @@
 #include "ns3/internet-module.h"
 
 WirelessNetwork::WirelessNetwork(int n_robots) :
-        uploading_(n_robots), to_upload_(n_robots), uploaded_(n_robots), uploading_mutex_(n_robots),
-        uploading_cv_(n_robots), downloading_(n_robots), to_download_(n_robots), downloaded_(n_robots),
-        downloading_mutex_(n_robots), downloading_cv_(n_robots),  pinging_(n_robots), rtt_(n_robots),
-        pinging_mutex_(n_robots), pinging_cv_(n_robots) {
+        uploading_(n_robots), to_upload_(n_robots), uploaded_(n_robots), uploading_start_(n_robots),
+        uploading_mutex_(n_robots), uploading_cv_(n_robots), downloading_(n_robots), to_download_(n_robots),
+        downloading_start_(n_robots), downloaded_(n_robots), downloading_mutex_(n_robots), downloading_cv_(n_robots),
+        pinging_(n_robots), rtt_(n_robots), pinging_mutex_(n_robots), pinging_cv_(n_robots) {
     ns3::GlobalValue::Bind("SimulatorImplementationType", ns3::StringValue("ns3::RealtimeSimulatorImpl"));
     ns3::GlobalValue::Bind("ChecksumEnabled", ns3::BooleanValue(true));
 
@@ -124,12 +124,15 @@ void WirelessNetwork::updateUploadedBytes(ns3::Ptr<const ns3::Packet> packet, co
     (void) server_address;
     int robot_id = getRobotId(robot_address);
     int n_bytes = header.GetSize();
+    ns3::Time time = header.GetTs();
 
     std::unique_lock<std::mutex> ul(uploading_mutex_[robot_id]);
-    uploaded_[robot_id] += n_bytes;
-    if (uploaded_[robot_id] >= to_upload_[robot_id]) {
-        uploading_[robot_id] = false;
-        uploading_cv_[robot_id].notify_one();
+    if (time >= uploading_start_[robot_id]) {   // this packet belongs to this upload, not a previous one
+        uploaded_[robot_id] += n_bytes;
+        if (uploaded_[robot_id] >= to_upload_[robot_id]) {
+            uploading_[robot_id] = false;
+            uploading_cv_[robot_id].notify_one();
+        }
     }
 }
 
@@ -149,6 +152,7 @@ int WirelessNetwork::upload(int robot_id, int n_bytes, const ns3::Time &max_dura
     std::unique_lock<std::mutex> ul(uploading_mutex_[robot_id]);
     uploaded_[robot_id] = 0;
     to_upload_[robot_id] = n_bytes;
+    uploading_start_[robot_id] = ns3::Simulator::Now();
     uploading_[robot_id] = true;
     ul.unlock();
 
@@ -161,11 +165,11 @@ int WirelessNetwork::upload(int robot_id, int n_bytes, const ns3::Time &max_dura
     else
         uploading_cv_[robot_id].wait_for(ul, std::chrono::milliseconds(max_duration_),
                                          [this, robot_id]() { return !uploading_[robot_id]; });
-    int stamped = uploaded_[robot_id];
+    int uploaded = std::min(uploaded_[robot_id], to_upload_[robot_id]);     // it may have sent a bit more
     ul.unlock();
 
     app->Stop(ns3::Seconds(0));
-    return stamped;
+    return uploaded;
 }
 
 void WirelessNetwork::updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &server_address,
@@ -174,12 +178,15 @@ void WirelessNetwork::updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, 
     (void) server_address;
     int robot_id = getRobotId(robot_address);
     int n_bytes = header.GetSize();
+    ns3::Time time = header.GetTs();
 
     std::unique_lock<std::mutex> ul(downloading_mutex_[robot_id]);
-    downloaded_[robot_id] += n_bytes;
-    if (downloaded_[robot_id] >= to_download_[robot_id]) {
-        downloading_[robot_id] = false;
-        downloading_cv_[robot_id].notify_one();
+    if (time >= downloading_start_[robot_id]) {
+        downloaded_[robot_id] += n_bytes;
+        if (downloaded_[robot_id] >= to_download_[robot_id]) {
+            downloading_[robot_id] = false;
+            downloading_cv_[robot_id].notify_one();
+        }
     }
 }
 
@@ -191,6 +198,7 @@ int WirelessNetwork::download(int robot_id, int n_bytes, const ns3::Time &max_du
     std::unique_lock<std::mutex> ul(downloading_mutex_[robot_id]);
     downloaded_[robot_id] = 0;
     to_download_[robot_id] = n_bytes;
+    downloading_start_[robot_id] = ns3::Simulator::Now();
     downloading_[robot_id] = true;
     ul.unlock();
 
@@ -203,11 +211,11 @@ int WirelessNetwork::download(int robot_id, int n_bytes, const ns3::Time &max_du
     else
         downloading_cv_[robot_id].wait_for(ul, std::chrono::milliseconds(max_duration_),
                                            [this, robot_id]() { return !downloading_[robot_id]; });
-    int stamped = downloaded_[robot_id];
+    int downloaded = std::min(downloaded_[robot_id], to_download_[robot_id]);
     ul.unlock();
 
     app->Stop(ns3::Seconds(0));
-    return stamped;
+    return downloaded;
 }
 
 void WirelessNetwork::saveRtt(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time) {

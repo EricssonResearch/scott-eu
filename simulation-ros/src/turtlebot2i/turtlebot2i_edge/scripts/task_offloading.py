@@ -71,8 +71,8 @@ def main():
 
     if not os.path.exists(models_path):
         os.mkdir(models_path)
-    model_path = os.path.join(models_path, '%s_weights.h5f' % agent)
-    log_path = os.path.join(models_path, '%s_logs.h5f' % agent)
+    model_path = os.path.join(models_path, '%s_weights' % agent)
+    log_path = os.path.join(models_path, '%s_logs%s' % (agent, mode))
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
@@ -125,7 +125,7 @@ def main():
             TrainIntervalLogger(interval=100),
             TaskOffloadingLogger(log_path, interval=100)
         ]
-        agent.fit(env, nb_steps=10000, visualize=False, callbacks=callbacks, verbose=2)
+        agent.fit(env, nb_steps=10, visualize=False, callbacks=callbacks, verbose=2)
         rospy.loginfo('Saving weights to %s' % model_path)
         agent.save_weights(model_path, overwrite=True)
     elif mode == 'test':
