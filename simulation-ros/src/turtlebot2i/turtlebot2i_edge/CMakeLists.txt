@@ -164,6 +164,6 @@ install(
 )
 
 install(
-  PROGRAMS scripts/activate_netns.sh scripts/netns.py
+  PROGRAMS scripts/evaluate.py
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts
 )

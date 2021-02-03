@@ -10,4 +10,5 @@ keras-rl~=0.4.2
 actionlib~=1.12.1
 tf~=1.12.1
 opencv-python~=4.2.0.32
-Pympler==0.9
+Pympler~=0.9
+seaborn~=0.9.1

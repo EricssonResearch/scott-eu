@@ -72,7 +72,7 @@ def main():
     if not os.path.exists(models_path):
         os.mkdir(models_path)
     model_path = os.path.join(models_path, '%s_weights' % agent)
-    log_path = os.path.join(models_path, '%s_logs%s' % (agent, mode))
+    log_path = os.path.join(models_path, '%s_logs_%s' % (agent, mode))
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
@@ -88,7 +88,7 @@ def main():
         robot_transmit_power=robot_transmit_power,
         pick_goals=pick_goals,
         place_goals=place_goals,
-        pick_and_place_per_episode=10,
+        pick_and_place_per_episode=1,
         vrep_simulation=True,
         vrep_host=vrep_host,
         vrep_port=vrep_port,
@@ -125,7 +125,7 @@ def main():
             TrainIntervalLogger(interval=100),
             TaskOffloadingLogger(log_path, interval=100)
         ]
-        agent.fit(env, nb_steps=10, visualize=False, callbacks=callbacks, verbose=2)
+        agent.fit(env, nb_steps=10000, visualize=False, callbacks=callbacks, verbose=2)
         rospy.loginfo('Saving weights to %s' % model_path)
         agent.save_weights(model_path, overwrite=True)
     elif mode == 'test':
