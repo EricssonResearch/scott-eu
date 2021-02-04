@@ -57,9 +57,9 @@ def print_edge_list(M):
             if M[i][j] > 30:
                 print(str(i) + " " + str(j) + " " + str(M[i][j]))
 
-with open("/home/eiucale/compare_training.txt", "r+") as file:
+with open("/home/eiucale/analysis_test.txt", "r+") as file:
     blocks = file.readlines()
-n_lines_per_block = 18
+n_lines_per_block = 17
 i=0
 data = []
 action_list = [[0.0, 0.0], [0.2, 0.2], [0.4, 0.4], [0.6, 0.6], [0.7, 0.7], [0.8, 0.8], [0.9, 0.9], [1.0, 1.0], [1.1, 1.1], [1.2, 1.2], [1.3, 1.3], [1.4, 1.4]]
@@ -94,7 +94,7 @@ while i < len(blocks):
     i += n_lines_per_block
 
 #data = data[:45000]
-#data = data[:-30000]
+#data = data[20000:]
 
 stats_actions_converted = nested_dict(3, int)
 stats_actions_converted_action_changed = nested_dict(3, int)
@@ -213,20 +213,20 @@ for dist in distNO_categories:
         actions.append(act_dict)
 
 isObstacleCritical = {
-    'true': 'the obstacle is in the critical zone',
-    'false': 'the obstacle is not in the critical zone',
+    'true': 'the nearest obstacle is in the critical zone',
+    'false': 'the nearest obstacle is not in the critical zone',
     'verify': lambda s : s['distNO'] == 'Critical'
 }
 
 isObstacleWarning = {
-    'true': 'the obstacle is in the warning zone',
-    'false': 'the obstacle is not in the warning zone',
+    'true': 'the nearest obstacle is in the warning zone',
+    'false': 'the nearest obstacle is not in the warning zone',
     'verify': lambda s : s['distNO'] == 'Warning'
 }
 
 isObstacleSafe = {
-    'true': 'the obstacle is in the safe zone',
-    'false': 'the obstacle is not in the safe zone',
+    'true': 'the nearest obstacle is in the safe zone',
+    'false': 'the nearest obstacle is not in the safe zone',
     'verify': lambda s : s['distNO'] == 'Safe'
 }
 
@@ -285,6 +285,8 @@ progressive = int(input("Insert the progessive number of the axction to analyze 
 distNO_idx = distNO_categories.index(data[progressive]["NearestObsC"])
 speed_idx = speed_categories.index(data[progressive]["LinSpeedBeforeC"])
 state_idx = distNO_idx * 3 + speed_idx
+print("Distance Nearest Obstacle: " + data[progressive]["NearestObsC"])
+print("Speed: " + data[progressive]["LinSpeedBeforeC"])
 str = "The action selected from the algorithm is " + data[progressive]["LinSpeedScaleC"].upper() + "\n"
 action_idx = int(input(str + "Which action do you want to compare to the one cosen by the algorithm? Select a number:\n1 - Stop\n2 - Slow Down\n3 - Keep the same speed\n4 - Speed up\n"))
 explainer.getBehavioralDivergences(states[state_idx], action_categories[action_idx-1])
@@ -303,7 +305,15 @@ str1 = list("---")
 str2 = list("---")
 distance_idx = int(input("Select the distance of the obstacle. Select a number:\n0 - Don't select\n1 - Critical\n2 - Warning\n3 - Safe\n"))
 speed_idx = int(input("Select the speed of the robot. Select a number:\n0 - Don't select\n1 - Slow\n2 - Medium Speed\n3 - Fast\n"))
-print("What will you do when the obstacle is at " + distNO_categories[distance_idx-1].lower() + " distance from the nearest obstacle and is at " + speed_categories[speed_idx-1].lower() + " speed?")
+str = "What will you do when the obstacle is at "
+if distance_idx != 0:
+    str += distNO_categories[distance_idx-1].lower() + " distance from the nearest obstacle"
+    if speed_idx != 0:
+        str += "and is at "
+if speed_idx != 0:
+    str += speed_categories[speed_idx - 1].lower() + " speed"
+str += "?"
+print(str)
 if distance_idx > 0:
     str1[distance_idx-1] = "1"
 if speed_idx > 0:

@@ -13,7 +13,7 @@ global_costmap:
      cost_scaling_factor: 10
  global_frame: map
  robot_base_frame: turtlebot2i/base_footprint
- update_frequency: 5 #10
+ update_frequency: 10
  rolling_window: true
  width: 40.0
  height: 40.0

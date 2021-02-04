@@ -91,22 +91,22 @@ def setReward(state, done, action, i, distance, direction):
                 reward = -75 / maxRisk * (scaled_speed_factor + 1)
 
     elif i == 3:  # collision reward
-        if done:
+        if done: # collision happened
             reward = reward - 5000
 
     elif i == 4:  # direction reward
         if direction <= 3:  # obstacle on the left
-            if rotSpeed > 0.10:
+            if rotSpeed > 0.10: # turning clockwise
                 reward = +75 * maxRisk * (scaled_speed_factor + 1)
             else:
                 reward = -60 * maxRisk * (scaled_speed_factor + 1)
         elif direction > 3 or direction <= 7:  # obstacle in the center
-            if rotSpeed < 0.10 or rotSpeed > -0.10:
+            if rotSpeed < 0.10 or rotSpeed > -0.10: # basically not rotating
                 reward = -60 * maxRisk * (scaled_speed_factor + 1)
             else:
                 reward = +75 * maxRisk * (scaled_speed_factor + 1)
         elif direction > 7:  # obstacle on the right
-            if rotSpeed < -0.10:
+            if rotSpeed < -0.10: # turning counter-clockwise
                 reward = +75 * maxRisk * (scaled_speed_factor + 1)
             else:
                 reward = -60 * maxRisk * (scaled_speed_factor + 1)
@@ -159,7 +159,7 @@ def msx(input_data, action_list, action_number, reward_types):
 
     if other_action[0] == chosen_action[0]:
         print("The selected action is the same as the one performed. No meaning in MSX")
-        return
+        return False
 
     for i in range(reward_types):
         chosen_reward = setReward(input_data["State"], input_data["Done"], chosen_action, i, input_data["Distance"], input_data["Direction"])
@@ -171,13 +171,13 @@ def msx(input_data, action_list, action_number, reward_types):
 
     if np.sum(reward_differences) < 0:
         print("The selected action would actually be better than the one chosen by the alogrithm. No meaning in MSX")
-        return
+        return False
 
     d = -np.sum(reward_differences * (reward_differences < 0))
 
     if d == 0:
         print("The action by the algorithm is better than the one selected for each of the reward types. No meaning in MSX")
-        return
+        return False
 
     sorted_idx = np.argsort(-reward_differences)
     sum = 0
@@ -201,6 +201,9 @@ def msx(input_data, action_list, action_number, reward_types):
     msx_minus = reward_types_names[sorted_idx[:-reward_types+i:-1]]
 
     print("The MSX- set is represented by the rewards: " + ",".join(msx_minus))
+
+    if len(msx_minus) > 1:
+        return True
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -240,6 +243,41 @@ while i < len(blocks):
 # truncate results
 # data = data[:35000]
 
+top1=0
+top3=0
+top5=0
+
+# for input_data in data:
+#     for action in action_list:
+#         reward_list = []
+#         for i in range(reward_types):
+#             reward_list.append(setReward(input_data["State"], input_data["Done"], action, i, input_data["Distance"], input_data["Direction"]))
+#         rewards_per_type.append(reward_list)
+#         total_rewards.append(sum(reward_list))
+#     sorted_total_rewards = sorted(total_rewards, reverse=True)
+#     to_find = total_rewards[np.where(speed_scaling_list == input_data["LinSpeedScale"])[0][0]]
+#     idx=sorted_total_rewards.index(to_find)
+#     total_rewards = []
+#     if idx < 5:
+#         top5 += 1
+#     if idx < 3:
+#         top3 += 1
+#     if idx == 0:
+#         top1 += 1
+#
+# print("Top5: " + str(top5) + " (" + str(float(top5)/len(data)*100) + "%)")
+# print("Top3: " + str(top3) + " (" + str(float(top3)/len(data)*100) + "%)")
+# print("Top1: " + str(top1) + " (" + str(float(top1)/len(data)*100) + "%)")
+
+msx_more_than_1 = []
+
+# for n in range(len(data)):
+#     input_data = data[n]
+#     if msx(input_data, action_list, 11, reward_types):
+#         msx_more_than_1.append(n)
+#
+# print(msx_more_than_1)
+
 progressive = int(input("Insert the progessive number of the axction to analyze (max: "+ str(len(data)) +"): "))
 if(progressive > len(data) or progressive < 0):
     print("This progressive number doesn't belong to any action.")
@@ -264,35 +302,47 @@ else:
 #print(total_rewards)
 
 # plot speed distribution
-d = get_all_elements_by_key(data, "LinSpeedAfter")
-plt.hist(x=d, bins='auto')
-plt.title("LinSpeedAfter " + "\nAvg: " + str(np.mean(d)))
-plt.show()
+# d = get_all_elements_by_key(data, "LinSpeedAfter")
+# plt.hist(x=d, bins='auto')
+# plt.title("LinSpeedAfter " + "\nAvg: " + str(np.mean(d)))
+# plt.show()
 
 # plot reward distributions and avg
-d = get_all_elements_by_key(data, "ObsRWD")
-plt.hist(x=d, bins='auto')
-plt.title("ObsRWD" + "\nAvg: " + str(np.mean(d)))
-plt.show()
+# d = get_all_elements_by_key(data, "ObsRWD")
+# plt.hist(x=d, bins='auto')
+# plt.title("ObsRWD" + "\nAvg: " + str(np.mean(d)))
+# plt.show()
+#
+# d = get_all_elements_by_key(data, "SpeedRWD")
+# plt.hist(x=d, bins='auto')
+# plt.title("SpeedRWD" + "\nAvg: " + str(np.mean(d)))
+# plt.show()
+#
+# d = get_all_elements_by_key(data, "GoalRWD")
+# plt.hist(x=d, bins='auto')
+# plt.title("GoalRWD" + "\nAvg: " + str(np.mean(d)))
+# plt.show()
+#
+# d = get_all_elements_by_key(data, "CollisionRWD")
+# plt.hist(x=d, bins='auto')
+# plt.title("CollisionRWD" + "\nAvg: " + str(np.mean(d)))
+# plt.show()
+#
+# d = get_all_elements_by_key(data, "DirectionRWD")
+# plt.hist(x=d, bins='auto')
+# plt.title("DirectionRWD" + "\nAvg: " + str(np.mean(d)))
+# plt.show()
+#
 
-d = get_all_elements_by_key(data, "SpeedRWD")
-plt.hist(x=d, bins='auto')
-plt.title("SpeedRWD" + "\nAvg: " + str(np.mean(d)))
-plt.show()
+plt.figure()
+plt.bar([0.0, 0.2, 0.4, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4], total_rewards, 0.5)
+plt.xlabel('Speed Scaling (Red=Chosen Action)')
+plt.ylabel('Rewards')
+plt.title('Rewards per chosen scaling')
 
-d = get_all_elements_by_key(data, "GoalRWD")
-plt.hist(x=d, bins='auto')
-plt.title("GoalRWD" + "\nAvg: " + str(np.mean(d)))
-plt.show()
-
-d = get_all_elements_by_key(data, "CollisionRWD")
-plt.hist(x=d, bins='auto')
-plt.title("CollisionRWD" + "\nAvg: " + str(np.mean(d)))
-plt.show()
-
-d = get_all_elements_by_key(data, "DirectionRWD")
-plt.hist(x=d, bins='auto')
-plt.title("DirectionRWD" + "\nAvg: " + str(np.mean(d)))
+idx = np.where(speed_scaling_list == input_data["LinSpeedScale"])[0][0]
+plt.gca().get_xticklabels()[idx].set_color("red")
 plt.show()
 
 plot_bar_chart(total_rewards, rewards_per_type, reward_types, input_data)
+

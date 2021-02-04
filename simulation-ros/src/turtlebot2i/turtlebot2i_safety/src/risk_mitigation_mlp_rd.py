@@ -16,6 +16,7 @@ from keras.models import Sequential, load_model
 from keras.optimizers import RMSprop
 from keras.layers import Dense, Dropout, Activation
 from turtlebot2i_safety.msg import SafetyRisk
+from geometry_msgs.msg import Twist, Pose
 
 EPISODES = 3000
 
@@ -27,9 +28,9 @@ class ReinforceAgent():
         self.dirPath = self.dirPath.replace('scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src', 'scott-eu/simulation-ros/src/turtlebot2i/turtlebot2i_safety/src/models/mlp_')
         self.result = Float32MultiArray()
 
-        #self.load_model = True # Inference
+        # vself.load_model = True # Inference
         self.load_model = False # Training
-        #self.load_episode = 185 # Inference
+        #vself.load_episode = 160 # Inference
         self.load_episode = 0 # Training
         self.state_size = state_size
         self.action_size = action_size
@@ -190,7 +191,7 @@ if __name__ == '__main__':
         start_time = time.time()
 
         print('start training')
-        #training_mode = False  # Inference
+        # training_mode = False  # Inference
         training_mode = True    # Training
 
         if training_mode:
@@ -288,18 +289,20 @@ if __name__ == '__main__':
             prev_action = 0
             time_duration_list = []
 
+            progressive = 1
+            state = env.reset()
+
             while True:
                 data = None
-                progressive = 1
                 data = rospy.wait_for_message('/turtlebot2i/safety/obstacles_risk', SafetyRisk, timeout=500)
                 #time_previous = time.time()
                 if data == None:
                     print("no data")
                     env.publishScaleSpeed(1.0, 1.0)
-                elif len(data.risk_value) == 0:
-                    env.publishScaleSpeed(1.0, 1.0)
-                elif max(data.risk_value) == 0:
-                    env.publishScaleSpeed(1.0, 1.0)    
+                # elif len(data.risk_value) == 0:
+                #     env.publishScaleSpeed(1.0, 1.0)
+                # elif max(data.risk_value) == 0:
+                #     env.publishScaleSpeed(1.0, 1.0)
                 else:
                     state, done = env.getState(data)
                     nearest_obstacle_distance = min(state[:12])
@@ -342,6 +345,13 @@ if __name__ == '__main__':
                             prev_action = action
                     else:
                         env.publishScaleSpeed(1.0, 1.0)
+
+                    if done:
+                        print("RESETTING")
+                        env.publishScaleSpeed(1.0, 1.0)
+                        env.reset()
+                        env.prev_position = Pose()
+
 
                         # time_duration_list.append(time_end-time_previous)
                     # if len(time_duration_list) == 100:

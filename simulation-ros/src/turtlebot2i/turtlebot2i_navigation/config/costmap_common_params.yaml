@@ -10,7 +10,7 @@
 #inflation_layer:
 #    inflation_radius: 0.25 #0.15 #
 #    cost_scaling_factor: 5
-publish_frequency: 1.0
+publish_frequency: 10
 transform_tolerance: 10 # second
 robot_radius: 0.25
 
