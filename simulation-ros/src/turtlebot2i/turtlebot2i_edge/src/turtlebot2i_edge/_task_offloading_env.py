@@ -210,19 +210,12 @@ class TaskOffloadingEnv(Env):
         return [seed_]
 
     def _observe(self):
-        # network state (while loop because the ns-3 can crash, even if rarely)
-        rtt = None
-        throughput = None
-        while rtt is None or throughput is None:
-            try:
-                response = self._measure_network(
-                    max_rtt=rospy.Duration.from_sec(self.max_rtt),
-                    max_duration_throughput=rospy.Duration.from_sec(self.max_duration_throughput)
-                )
-                rtt = response.rtt.to_sec() * 1e3
-                throughput = response.throughput
-            except (rospy.ROSException, rospy.ServiceException):
-                pass
+        response = self._measure_network(
+            max_rtt=rospy.Duration.from_sec(self.max_rtt),
+            max_duration_throughput=rospy.Duration.from_sec(self.max_duration_throughput)
+        )
+        rtt = response.rtt.to_sec() * 1e3
+        throughput = response.throughput
 
         # most recent images (while loop because the camera image messages are filtered by the time synchronizer)
         self.image_rgb_observation = None

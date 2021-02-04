@@ -30,8 +30,13 @@ class NetworkMonitor:
         """
         if self.ns3_simulation:
             max_rtt = rospy.Time.from_sec(max_rtt)
-            response = self._ns3_ping(max_rtt=max_rtt)
-            rtt = response.rtt.to_sec() * 1e3
+            rtt = None
+            while rtt is None:      # while loop because the ns-3 can crash, even if rarely
+                try:
+                    response = self._ns3_ping(max_rtt=max_rtt)
+                    rtt = response.rtt.to_sec() * 1e3
+                except (rospy.ROSException, rospy.ServiceException):
+                    pass
         else:
             rtt = self._ping(max_rtt=max_rtt)
         return rtt
@@ -46,18 +51,22 @@ class NetworkMonitor:
         :return: throughput (Mbps)
         """
         max_duration = rospy.Time.from_sec(max_duration)
-        try:
-            self._stamp.wait_for_service(timeout=0.1)
-            bytes_ = b'\x00' * n_bytes
-            time_start = rospy.Time.now()
-            response = self._stamp(bytes=bytes_, max_duration=max_duration)
-            time_end = response.header.stamp
-            stamped = response.stamped
-            time_elapsed = time_end - time_start
-            time_elapsed = time_elapsed.to_sec()
-            throughput = stamped * 8 * 1e-6 / time_elapsed
-        except rospy.ROSException, rospy.ServiceException:
-            throughput = 0
+        throughput = None
+        while throughput is None:   # while loop because the ns-3 can crash, even if rarely
+            try:
+                self._stamp.wait_for_service(timeout=0.1)
+                bytes_ = b'\x00' * n_bytes
+                time_start = rospy.Time.now()
+                response = self._stamp(bytes=bytes_, max_duration=max_duration)
+                time_end = response.header.stamp
+                stamped = response.stamped
+                time_elapsed = time_end - time_start
+                time_elapsed = time_elapsed.to_sec()
+                throughput = stamped * 8 * 1e-6 / time_elapsed
+            except rospy.ROSException, rospy.ServiceException:
+                if not self.ns3_simulation:
+                    throughput = 0
+                    break
         return throughput
 
     def _ping(self, max_rtt):
