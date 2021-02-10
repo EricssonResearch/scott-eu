@@ -40,7 +40,7 @@ The main advatage of ROS is that (in most of the cases) it dispenses the necessi
 
 # 5. Installation
 
-This installation is intended for [ROS Melodic](http://wiki.ros.org/melodic) running on Ubuntu 18.04.
+This installation is intended for [ROS Melodic](http://wiki.ros.org/melodic) running on [Ubuntu 18.04 (Bionic Beaver)](https://releases.ubuntu.com/18.04/).
 
 ## 5.1. V-REP Installation
 
@@ -48,13 +48,21 @@ For simulated environment, download **V-REP Pro** or **V-REP Pro Edu**. The **V-
 
 **In this tutorial, the [V-REP 3.5](https://www.coppeliarobotics.com/previousVersions) was used. Other versions (e.g. CoppeliaSim) might not work.**
 
-Installation instructions can be found in [V-REP official documentation](https://www.coppeliarobotics.com/helpFiles/index.html).
+**Step 1.** Download V-REP 3.5
+```
+cd ~
+wget https://www.coppeliarobotics.com/files/V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
+tar -xzvf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
+rm V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
+```
 
-After installing V-REP, set the following `VREP_ROOT` environment variables by running the following lines in the terminal (replace the `<path_to_vrep>` by the full path to the V-REP folder), and several lines will be added to `~/.bashrc`:
+Now V-REP 3.5 is installed on your machine.
+
+**Step 2.** After installing V-REP, set the following `VREP_ROOT` environment variables by running the following lines in the terminal (replace the `<path_to_vrep>` by the full path to the V-REP folder), and several lines will be added to `~/.bashrc`:
 
 ```
-echo "export VREP_ROOT_DIR=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux" >> ~/.bashrc
-echo "export VREP_ROOT=/<path_to_vrep>/V-REP_PRO_EDU_V3_5_0_Linux" >> ~/.bashrc
+echo "export VREP_ROOT_DIR=~/V-REP_PRO_EDU_V3_5_0_Linux" >> ~/.bashrc
+echo "export VREP_ROOT=~/V-REP_PRO_EDU_V3_5_0_Linux" >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -65,88 +73,96 @@ For example, if you have V-REP under Home, add following two lines to **~/.bashr
 export VREP_ROOT_DIR=~/V-REP_PRO_EDU_V3_5_0_Linux
 export VREP_ROOT=~/V-REP_PRO_EDU_V3_5_0_Linux
 ```
+
 ## 5.2. Setting ROS Environment
 
-The instructions below targets the ROS Melodic running on Ubuntu 18.04.
+The instructions below targets the ROS Melodic running on **Ubuntu 18.04**.
 
 As a pre-requirement, it is necessary to install ROS Melodic following the instructions in this link: http://wiki.ros.org/melodic/Installation/Ubuntu
 
+* `ros-melodic-desktop` or `ros-melodic-desktop-full` versions are preffered.
 * When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
 "
 * **Please, ensure that ROS was properly installed before proceeding to the next steps.**
-* **Make sure that the [Environment Setup](http://wiki.ros.org/melodic/Installation/Ubuntu#melodic.2FInstallation.2FDebEnvironment.Environment_setup) step was properly made.**
+* **Make sure that the [Environment Setup](http://wiki.ros.org/melodic/Installation/Ubuntu#melodic.2FInstallation.2FDebEnvironment.Environment_setup) step was properly made:**
+  ```
+  echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+  source ~/.bashrc
+  ```
 
-Step 1. Create the ROS workspace by clonning the SCOTT repository
+**Step 1.** Create the ROS workspace by clonning the SCOTT repository
 
 For convenience, the scott repository will be cloned into the home path (~/), but other paths also can be used.
   ```
-  $ sudo apt install git
-  $ git clone https://github.com/EricssonResearch/scott-eu.git ~
+  sudo apt install git
+  cd ~
+  git clone -b melodic https://github.com/EricssonResearch/scott-eu.git
   ```
 
-Step 2. Install and get required packages
+**Step 2.** Install and get required packages
   ```
-  $ sudo apt install ros-melodic-controller-manager ros-melodic-moveit ros-melodic-kobuki-core ros-melodic-joy ros-melodic-kobuki-msgs ros-melodic-yocs-controllers ros-melodic-ecl-streams  
-  $ git clone https://github.com/turtlebot/turtlebot.git ~/scott-eu/simulation-ros/src
-  $ git clone https://github.com/yujinrobot/kobuki.git ~/scott-eu/simulation-ros/src
+  sudo apt install ros-melodic-controller-manager ros-melodic-moveit ros-melodic-kobuki-core ros-melodic-joy ros-melodic-kobuki-msgs ros-melodic-yocs-controllers ros-melodic-ecl-streams  
+  cd ~/scott-eu/simulation-ros/src
+  git clone https://github.com/turtlebot/turtlebot.git
+  git clone https://github.com/yujinrobot/kobuki.git
   ```
 
-Step 3. Setup the catkin workspace and set ROS environment variables
+**Step 3.** Setup the catkin workspace and set ROS environment variables
 
 Install catkin python tools and xsltproc (required by the vrep_ros_interface):
 
 ```
-$ sudo apt-get install python-catkin-tools xsltproc
+sudo apt-get install python-catkin-tools xsltproc
 ```
 
-Step 4. Compile the repository from the `simulation-ros` workspace root
+**Step 4.** Compile the repository from the `simulation-ros` workspace root
 
   ```
-  $ cd ~/scott-eu/simulation-ros
-  $ catkin build
+  cd ~/scott-eu/simulation-ros
+  catkin build
   ```
 
 Now you should have all packages built suceessfully.
 
-Step 5. Configure the ROS environment variables and the workspace
+**Step 5.** Configure the ROS environment variables and the workspace
 
 Run the following to add necessary lines to `~/.bashrc` file
 ```
-$ echo "source ~/scott-eu/simulation-ros/devel/setup.bash" >> ~/.bashrc
-$ echo "source ~/scott-eu/simulation-ros/install/setup.bash" >> ~/.bashrc
-$ echo "export ROS_PACKAGE_PATH=~/scott-eu/simulation-ros:$ROS_PACKAGE_PATH" >> ~/.bashrc
+echo "source ~/scott-eu/simulation-ros/devel/setup.bash" >> ~/.bashrc
+echo "export ROS_PACKAGE_PATH=~/scott-eu/simulation-ros:$ROS_PACKAGE_PATH" >> ~/.bashrc
 source ~/.bashrc
 ```
 
 And you can check the ROS_PACKAGE_PATH in the terminal:
 
 ```
-$ echo $ROS_PACKAGE_PATH
+echo $ROS_PACKAGE_PATH
 ```
 
-Step 6. Check whether you can find the ROS package **vrep_ros_interface** and now install it:
+**Step 6.** Check whether you can find the ROS package **vrep_ros_interface** and now install it:
 
 ```
-$ roscd vrep_ros_interface
-$ ./install.sh  
+roscd vrep_ros_interface
+./install.sh  
 ```
 
 ## 5.3. Running the Simulated Environment
 
-1. Start ROS CORE
-
+1. Start ROS core
+    
+    Open a new terminal and execute the following command:
     ```
-    $ roscore
+    roscore
     ```
 
-2. Open V-REP and load a scene
+2. In another terminal or tab, open V-REP and then load a scene
 
     ```
     cd $VREP_ROOT
     ./vrep.sh
     ```
-    - After loading V-REP, open the warehouse scenario scenario (File -> Open Scene...), which is locate in `turtlebot2i/turtlebot2i_description/v-rep_model/v-rep_model/warehouse_scene/warehouse_scene.ttt`. V-REP scenes have `.ttt` extension.
-    - Press play button to start the simulation.
+    - After loading V-REP, open the warehouse scenario scenario (File -> Open Scene...), which is locate in `~/scott-eu/simulation-ros/turtlebot2i/turtlebot2i_description/v-rep_model/warehouse_scene/warehouse_scene.ttt`. V-REP scenes have `.ttt` extension.
+    - Press play button to start the simulation (it can take few minutes, depending on the machine).
     - **For additional details** please check the [Turtlebot2i V-Rep Model and Warehouse Scenes documentation](https://github.com/EricssonResearch/scott-eu/blob/master/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model/README.md).
     
     **Note:** Without a running roscore, V-REP cannot communicate with other components. In case of that, check the terminal and make sure that ROS plugin is loaded successfully.
@@ -155,9 +171,9 @@ $ ./install.sh
 
     All ROS programs are stored in the corresponding ROS package (e.g. turtlebot2i_navigation, turtlebot2i_safety). The instructions to run the programs can be found in the README.md files located in each package.
     
-    Example to run the keyboard teleoperation:
+    Example to run the keyboard teleoperation. In a new terminal or tab execute the following:
     ```
-    $ roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
+    roslaunch turtlebot2i_navigation turtlebot2i_keyop.launch
     ```
     If everything is configured correctly, the terminal should show "KeyOp: connected". Otherwise, check whether roscore is running, whether V-rep scene is running and whether V-rep loaded RosInterface successfully.
 
