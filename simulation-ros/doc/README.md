@@ -40,11 +40,13 @@ The main advatage of ROS is that (in most of the cases) it dispenses the necessi
 
 # 5. Installation
 
+This installation is intended for [ROS Melodic](http://wiki.ros.org/melodic) running on Ubuntu 18.04.
+
 ## 5.1. V-REP Installation
 
 For simulated environment, download **V-REP Pro** or **V-REP Pro Edu**. The **V-REP Player** version was not tested here.
 
-In this tutorial, the [V-REP 3.5](https://www.coppeliarobotics.com/previousVersions) was used. Other versions (e.g. CoppeliaSim) might not work.
+**In this tutorial, the [V-REP 3.5](https://www.coppeliarobotics.com/previousVersions) was used. Other versions (e.g. CoppeliaSim) might not work.**
 
 Installation instructions can be found in [V-REP official documentation](https://www.coppeliarobotics.com/helpFiles/index.html).
 
@@ -65,24 +67,27 @@ export VREP_ROOT=~/V-REP_PRO_EDU_V3_5_0_Linux
 ```
 ## 5.2. Setting ROS Environment
 
-We strongly recommend to use **ROS Kinetic** distribution.
+The instructions below targets the ROS Melodic running on Ubuntu 18.04.
 
-Instructions to install ROS Kinect can be found in this link: http://wiki.ros.org/kinetic/Installation
+As a pre-requirement, it is necessary to install ROS Melodic following the instructions in this link: http://wiki.ros.org/melodic/Installation/Ubuntu
 
 * When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
 "
-* Please, **follow the "recommended" ROS installation before proceeding to the steps below**.
+* **Please, ensure that ROS was properly installed before proceeding to the next steps.**
 
-Step 1. Install Turttlebot2i packages from ROS
-  ```
-  $ sudo apt install ros-kinetic-turtlebot* libudev-dev ros-kinetic-find-object-2d ros-kinetic-rtabmap-ros ros-kinetic-moveit ros-kinetic-octomap-ros ros-kinetic-manipulation-msgs ros-kinetic-controller-manager python-wxgtk3.0 ros-kinetic-joint-* ros-kinetic-position-controllers ros-kinetic-effort-controllers
-  ```
+Step 1. Create the ROS workspace by clonning the SCOTT repository
 
-Step 2. Create the Turtlebot2i workspace by clonning the SCOTT repository
+The scott repository will be cloned into the home folder (~/).
   ```
   $ sudo apt install git
-  $ git clone https://github.com/EricssonResearch/scott-eu.git
-  $ cd scott-eu
+  $ git clone https://github.com/EricssonResearch/scott-eu.git ~
+  ```
+
+Step 2. Install and get required packages
+  ```
+  $ sudo apt install ros-melodic-controller-manager ros-melodic-moveit ros-melodic-kobuki-core ros-melodic-joy ros-melodic-kobuki-msgs ros-melodic-yocs-controllers ros-melodic-ecl-streams  
+  $ git clone https://github.com/turtlebot/turtlebot.git ~/scott-eu/simulation-ros/src
+  $ git clone https://github.com/yujinrobot/kobuki.git ~/scott-eu/simulation-ros/src
   ```
 
 Step 3. Setup the catkin workspace and set ROS environment variables
@@ -95,25 +100,26 @@ $ sudo apt-get install python-catkin-tools xsltproc
 
 Step 4. Compile the repository from the `simulation-ros` workspace root
 
-Go to the existing workspace under `/scott-eu/simulation-ros` and run:
-
   ```
+  $ cd ~/scott-eu/simulation-ros
   $ catkin build
-
   ```
 
-Now you should have 10 packages built suceessfully.
+Now you should have all packages built suceessfully.
 
 > Also read these instructions but do not create a new workspace: 
 > http://wiki.ros.org/catkin/Tutorials/create_a_workspace
 >
 > NB! Be careful to always select the "kinetic" version of ROS
 
-Step 5. Install V-REP ROS Interface
+Step 5. Configure the ROS environment variables and the workspace
 
-Add this line to ~/.bashrc:
+Run the following to add necessary lines to `~/.bashrc` file
 ```
-$ cat "export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/scott-eu/simulation-ros" >> ~/.bashrc
+$ cat "source ~/scott-eu/simulation-ros/devel/setup.bash" >> ~/.bashrc
+$ cat "source ~/scott-eu/simulation-ros/install/setup.bash" >> ~/.bashrc
+$ cat "export ROS_PACKAGE_PATH=~/scott-eu/simulation-ros:$ROS_PACKAGE_PATH" >> ~/.bashrc
+source ~/.bashrc
 ```
 
 And you can check the ROS_PACKAGE_PATH in the terminal:
@@ -122,12 +128,11 @@ And you can check the ROS_PACKAGE_PATH in the terminal:
 $ echo $ROS_PACKAGE_PATH
 ```
 
-Don't forget to source it manually if you don't want to restart the terminal. Check whether you can find the ROS package **vrep_ros_interface** and now install it:
+Step 6. Check whether you can find the ROS package **vrep_ros_interface** and now install it:
 
 ```
-  $ source ~/.bashrc
-  $ roscd vrep_ros_interface
-  $ ./install.sh  
+$ roscd vrep_ros_interface
+$ ./install.sh  
 ```
 
 ## 5.3. Running the Simulated Environment
@@ -170,7 +175,7 @@ The main simulation scene used in project is the warehouse environment. This sce
     
 **Note:** Additional information can be found in [**Turtlebot2i V-rep model** documentation](https://github.com/EricssonResearch/scott-eu/tree/master/simulation-ros/src/turtlebot2i/turtlebot2i_description/v-rep_model).
 
-## 5.4. Using Python VREP Remote API (Optional)
+## 5.4. Using Python V-REP Remote API (Optional)
 
 To use the python remote API provided by VREP, some adjustments are necessary:
 
