@@ -74,10 +74,11 @@ As a pre-requirement, it is necessary to install ROS Melodic following the instr
 * When running "sudo rosdep init", ignore the following error if it appears: "ERROR: default sources list file already exists:
 "
 * **Please, ensure that ROS was properly installed before proceeding to the next steps.**
+* **Make sure that the [Environment Setup](http://wiki.ros.org/melodic/Installation/Ubuntu#melodic.2FInstallation.2FDebEnvironment.Environment_setup) step was properly made.**
 
 Step 1. Create the ROS workspace by clonning the SCOTT repository
 
-The scott repository will be cloned into the home folder (~/).
+For convenience, the scott repository will be cloned into the home path (~/), but other paths also can be used.
   ```
   $ sudo apt install git
   $ git clone https://github.com/EricssonResearch/scott-eu.git ~
@@ -107,18 +108,13 @@ Step 4. Compile the repository from the `simulation-ros` workspace root
 
 Now you should have all packages built suceessfully.
 
-> Also read these instructions but do not create a new workspace: 
-> http://wiki.ros.org/catkin/Tutorials/create_a_workspace
->
-> NB! Be careful to always select the "kinetic" version of ROS
-
 Step 5. Configure the ROS environment variables and the workspace
 
 Run the following to add necessary lines to `~/.bashrc` file
 ```
-$ cat "source ~/scott-eu/simulation-ros/devel/setup.bash" >> ~/.bashrc
-$ cat "source ~/scott-eu/simulation-ros/install/setup.bash" >> ~/.bashrc
-$ cat "export ROS_PACKAGE_PATH=~/scott-eu/simulation-ros:$ROS_PACKAGE_PATH" >> ~/.bashrc
+$ echo "source ~/scott-eu/simulation-ros/devel/setup.bash" >> ~/.bashrc
+$ echo "source ~/scott-eu/simulation-ros/install/setup.bash" >> ~/.bashrc
+$ echo "export ROS_PACKAGE_PATH=~/scott-eu/simulation-ros:$ROS_PACKAGE_PATH" >> ~/.bashrc
 source ~/.bashrc
 ```
 
