@@ -2,7 +2,8 @@
 #include "ns3/nr-module.h"
 #include "ns3/point-to-point-module.h"
 #include "ns3/internet-module.h"
-#include "ns3/tap-bridge-module.h"
+
+// TODO: it is to fix and complete, not working
 
 Nr5GNetwork::Nr5GNetwork(int n_robots) : WirelessNetwork(n_robots) {
     gnb_ = ns3::CreateObject<ns3::Node>();
@@ -52,14 +53,14 @@ void Nr5GNetwork::createNetwork() {
     nr_helper->GetGnbPhy(gnb_net_device, 0)->SetAttribute("Numerology", ns3::UintegerValue(0));
 
     // install TapBridge net devices to communicate with OS's taps
-    ns3::TapBridgeHelper tap_bridge_helper;
-    tap_bridge_helper.SetAttribute("Mode", ns3::StringValue("UseLocal"));
-    for (int i=0; i<robots.GetN(); i++) {
-        std::string tap = std::string("nr") + std::to_string(i) + "tap";
-        std::cout << tap << std::endl;
-        tap_bridge_helper.SetAttribute("DeviceName", ns3::StringValue(tap));
-        tap_bridge_helper.Install(robots.Get(i), robot_net_devices.Get(i));
-    }
+//    ns3::TapBridgeHelper tap_bridge_helper;
+//    tap_bridge_helper.SetAttribute("Mode", ns3::StringValue("UseLocal"));
+//    for (int i=0; i<robots.GetN(); i++) {
+//        std::string tap = std::string("nr") + std::to_string(i) + "tap";
+//        std::cout << tap << std::endl;
+//        tap_bridge_helper.SetAttribute("DeviceName", ns3::StringValue(tap));
+//        tap_bridge_helper.Install(robots.Get(i), robot_net_devices.Get(i));
+//    }
 
     std::cout << "ciaoooo" << std::endl;
 
@@ -97,6 +98,11 @@ void Nr5GNetwork::createNetwork() {
 //    epc_helper->AssignUeIpv4Address(robot_net_devices);
 
     std::cout << "ciaoooo3" << std::endl;
+}
+
+double Nr5GNetwork::measureSnr(int robot_id, const ns3::Time &max_duration) {
+    // TODO
+    return 0;
 }
 
 void Nr5GNetwork::setGnbPosition(const ns3::Vector &position) {

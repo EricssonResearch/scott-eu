@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <condition_variable>
+#include <ns3/frame-exchange-manager.h>
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/buildings-module.h"
@@ -27,7 +28,7 @@ class WirelessNetwork {
     std::vector<std::condition_variable> downloading_cv_;
 
     std::vector<bool> pinging_;
-    std::vector<double> rtt_;
+    std::vector<ns3::Time> rtt_;
     std::vector<std::mutex> pinging_mutex_;
     std::vector<std::condition_variable> pinging_cv_;
 
@@ -42,6 +43,7 @@ protected:
     static void addMobility(const ns3::NodeContainer &nodes);
     static void addInternetStack(const ns3::NodeContainer &nodes);
     static void setNodePosition(const ns3::Ptr<ns3::Node> &node, const ns3::Vector &position);
+    static double dbm_to_watt(double dbm);
 
     ns3::NodeContainer robots() const;
     ns3::Ptr<ns3::Node> mecServer() const;
@@ -51,13 +53,14 @@ public:
     virtual ~WirelessNetwork();
 
     virtual void createNetwork() = 0;
-    void createApplications();
+    virtual void createApplications();
     void createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y);
     void simulate();
 
     int upload(int robot_id, int n_bytes, const ns3::Time &max_duration);
     int download(int robot_id, int n_bytes, const ns3::Time &max_duration);
-    double ping(int robot_id, const ns3::Time &max_rtt);
+    ns3::Time ping(int robot_id, const ns3::Time &max_rtt);
+    virtual double measureSnr(int robot_id, const ns3::Time &max_duration) = 0;
 
     int nRobots() const;
     std::pair<int,int> getRobotRoom(int robot_id) const;

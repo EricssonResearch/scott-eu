@@ -26,9 +26,11 @@ def main():
 
     rospy.loginfo('Getting server parameters...')
     host = rospy.get_param('/network/mec_server/host')
+    bandwidth = rospy.get_param('/network/bandwidth')
     rospy.loginfo('MEC server: %s' % host)
+    rospy.loginfo('Bandwidth: %f MHz' % bandwidth)
 
-    network_monitor = NetworkMonitor(host, ns3_simulation=True)
+    network_monitor = NetworkMonitor(host, bandwidth=bandwidth, shannon=True, ns3_simulation=True)
     rospy.Service(
         name='measure_network',
         service_class=MeasureNetwork,

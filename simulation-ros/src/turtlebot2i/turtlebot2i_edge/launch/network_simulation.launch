@@ -26,5 +26,10 @@
         <remap from="ping_1" to="/turtlebot2i_0/edge/ping"/>
         <remap from="ping_2" to="/turtlebot2i_1/edge/ping"/>
         <remap from="ping_3" to="/turtlebot2i_2/edge/ping"/>
+
+        <remap from="measure_snr_0" to="/turtlebot2i/edge/measure_snr"/>
+        <remap from="measure_snr_1" to="/turtlebot2i_0/edge/measure_snr"/>
+        <remap from="measure_snr_2" to="/turtlebot2i_1/edge/measure_snr"/>
+        <remap from="measure_snr_3" to="/turtlebot2i_2/edge/measure_snr"/>
     </node>
 </launch>

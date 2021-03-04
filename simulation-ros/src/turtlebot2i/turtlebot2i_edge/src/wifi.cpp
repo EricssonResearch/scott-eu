@@ -1,11 +1,9 @@
 #include <turtlebot2i_edge/wifi.h>
-#include "ns3/core-module.h"
-#include "ns3/network-module.h"
 #include "ns3/wifi-module.h"
 #include "ns3/internet-module.h"
-#include "ns3/tap-bridge-module.h"
 
-WifiNetwork::WifiNetwork(int n_robots) : WirelessNetwork(n_robots) {
+WifiNetwork::WifiNetwork(int n_robots) : WirelessNetwork(n_robots), snr_measuring_(n_robots), snr_(n_robots),
+                                         snr_mutex_(n_robots) {
     addMobility(mecServer());
 }
 
@@ -38,6 +36,42 @@ void WifiNetwork::createNetwork() {
     ns3::Ipv4AddressHelper ipv4_address_helper;
     ipv4_address_helper.SetBase("10.0.0.0", "/24");
     ipv4_address_helper.Assign(net_devices);
+}
+
+void WifiNetwork::createApplications() {
+    WirelessNetwork::createApplications();
+
+    ns3::Ptr<ns3::Node> mec_server = mecServer();
+    ns3::Ptr<ns3::NetDevice> server_net_device = mec_server->GetDevice(0);
+    server_net_device->TraceConnectWithoutContext("MonitorSnifferRx", ns3::MakeCallback(&WifiNetwork::saveSnr, this));
+}
+
+void WifiNetwork::saveSnr(ns3::Ptr<const ns3::Packet> packet, uint16_t channel_frequency, ns3::WifiTxVector tx_vector,
+                          ns3::MpduInfo a_mpdu, ns3::SignalNoiseDbm signal_noise, uint16_t robot_id) {
+    (void) packet;
+    (void) channel_frequency;
+    (void) tx_vector;
+    (void) a_mpdu;
+    double signal = dbm_to_watt(signal_noise.signal);
+    double noise = dbm_to_watt(signal_noise.noise);
+
+    std::unique_lock<std::mutex> ul(snr_mutex_[robot_id]);
+    if (!snr_measuring_[robot_id]) return;      // not measuring SNR, a packet has been received for another purpose
+    snr_[robot_id] = signal / noise;
+    snr_measuring_[robot_id] = false;
+}
+
+double WifiNetwork::measureSnr(int robot_id, const ns3::Time &max_duration) {
+    std::unique_lock<std::mutex> ul(snr_mutex_[robot_id]);
+    snr_measuring_[robot_id] = true;
+    snr_[robot_id] = 0;
+    ul.unlock();
+
+    ping(robot_id, max_duration);
+
+    ul.lock();
+    double snr = snr_measuring_[robot_id];
+    return snr;
 }
 
 void WifiNetwork::setMecServerPosition(const ns3::Vector &position) {

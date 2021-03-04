@@ -3,12 +3,19 @@ import subprocess
 import re
 import numpy as np
 from std_msgs.msg import Header
-from turtlebot2i_edge.srv import Stamp, Ping, PingResponse
+from turtlebot2i_edge.srv import Stamp, MeasureSnr, Ping, PingResponse
 
 
 class NetworkMonitor:
-    def __init__(self, server_host, ns3_simulation=False):
+    def __init__(self, server_host=None, bandwidth=None, shannon=False, ns3_simulation=False):
+        if not ns3_simulation and server_host is None:
+            raise ValueError('Server host is necessary for pinging if it not a simulation')
+        if bandwidth is None and shannon:
+            raise ValueError('Bandwidth is necessary for throughput estimation with Shannon-Hartley theorem')
+
         self.server_host = server_host
+        self.bandwidth = bandwidth
+        self.shannon = shannon
         self.ns3_simulation = ns3_simulation
 
         rospy.loginfo('Waiting for ROS service to stamp...')
@@ -19,15 +26,15 @@ class NetworkMonitor:
             rospy.loginfo('Waiting for ROS service to ping...')
             self._ns3_ping = rospy.ServiceProxy('edge/ping', Ping)
             self._ns3_ping.wait_for_service()
+
+            rospy.loginfo('Waiting for ROS service to measure SNR...')
+            self._ns3_measure_snr = rospy.ServiceProxy('edge/measure_snr', MeasureSnr)
+            self._ns3_measure_snr.wait_for_service()
         else:
             self._ns3_ping = None
+            self._ns3_measure_snr = None
 
     def measure_rtt(self, max_rtt=0.1):
-        """Measure RTT and packet loss of the network using a ping test.
-
-        :param max_rtt: float, max duration of ping test in seconds
-        :return: RTT
-        """
         if self.ns3_simulation:
             max_rtt = rospy.Time.from_sec(max_rtt)
             rtt = None
@@ -42,31 +49,39 @@ class NetworkMonitor:
         return rtt
 
     def measure_throughput(self, n_bytes=2**20, max_duration=0.1):
-        """Measures the throughput of the network using a ROS service.
-
-        :param n_bytes: int, bytes to send for the measurement. Since there is a communication overhead given by the
-            TCP 3-way handshake and the ROS service, the higher the size, the better the approximation of the
-            throughput. Do not use a too small value.
-        :param max_duration: float, max duration of the measurement in seconds
-        :return: throughput (Mbps)
-        """
         max_duration = rospy.Time.from_sec(max_duration)
-        throughput = None
-        while throughput is None:   # while loop because the ns-3 can crash, even if rarely
-            try:
-                self._stamp.wait_for_service(timeout=0.1)
-                bytes_ = b'\x00' * n_bytes
-                time_start = rospy.Time.now()
-                response = self._stamp(bytes=bytes_, max_duration=max_duration)
-                time_end = response.header.stamp
-                stamped = response.stamped
-                time_elapsed = time_end - time_start
-                time_elapsed = time_elapsed.to_sec()
-                throughput = stamped * 8 * 1e-6 / time_elapsed
-            except rospy.ROSException, rospy.ServiceException:
-                if not self.ns3_simulation:
-                    throughput = 0
-                    break
+
+        if self.shannon:
+            if self.ns3_simulation:
+                snr = None
+                while snr is None:
+                    try:
+                        response = self._ns3_measure_snr(max_duration=max_duration)
+                        snr = response.snr
+                    except (rospy.ROSException, rospy.ServiceException):
+                        pass
+            else:
+                snr = self._measure_snr(max_duration=max_duration)
+            throughput = self.bandwidth * np.log2(1 + snr)
+
+        else:
+            throughput = None
+            while throughput is None:   # while loop because the ns-3 can crash, even if rarely
+                try:
+                    self._stamp.wait_for_service(timeout=0.1)
+                    bytes_ = b'\x00' * n_bytes
+                    time_start = rospy.Time.now()
+                    response = self._stamp(bytes=bytes_, max_duration=max_duration)
+                    time_end = response.header.stamp
+                    stamped = response.stamped
+                    time_elapsed = time_end - time_start
+                    time_elapsed = time_elapsed.to_sec()
+                    throughput = stamped * 8 * 1e-6 / time_elapsed
+                except (rospy.ROSException, rospy.ServiceException):
+                    if not self.ns3_simulation:
+                        throughput = 0
+                        break
+
         return throughput
 
     def _ping(self, max_rtt):
@@ -94,3 +109,7 @@ class NetworkMonitor:
             rtt_mdev=rtt_mdev,
             packet_loss=packet_loss
         )
+
+    def _measure_snr(self, max_duration):
+        # TODO: implement with real network
+        raise NotImplementedError

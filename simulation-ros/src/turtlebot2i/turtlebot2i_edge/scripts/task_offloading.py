@@ -39,7 +39,7 @@ def main():
     pick_goals = rospy.get_param('/pick_and_place/goals/pick')
     place_goals = rospy.get_param('/pick_and_place/goals/place')
     max_rtt = rospy.get_param('~env/observation/max_rtt')
-    max_throughput = rospy.get_param('~env/observation/max_throughput')
+    bandwidth = rospy.get_param('~network/bandwidth')
     max_duration_throughput = rospy.get_param('~env/observation/max_duration_throughput')
     w_latency = rospy.get_param('~env/reward/w_latency')
     w_energy = rospy.get_param('~env/reward/w_energy')
@@ -58,7 +58,7 @@ def main():
     rospy.loginfo('Goals where to pick products: %s' % str(pick_goals))
     rospy.loginfo('Goals where to place products: %s' % str(place_goals))
     rospy.loginfo('Max RTT: %f ms' % max_rtt)
-    rospy.loginfo('Max throughput: %f Mbps' % max_throughput)
+    rospy.loginfo('Bandwidth: %f MHz' % bandwidth)
     rospy.loginfo('Max duration of throughput measurement: %f s' % max_duration_throughput)
     rospy.loginfo('Latency weight in reward: %f' % w_latency)
     rospy.loginfo('Energy weight in reward: %f' % w_energy)
@@ -77,7 +77,7 @@ def main():
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
         max_rtt=max_rtt,
-        max_throughput=max_throughput,
+        bandwidth=bandwidth,
         max_duration_throughput=max_duration_throughput,
         max_risk_value=max_risk_value,
         network_image_size=network_image_size,

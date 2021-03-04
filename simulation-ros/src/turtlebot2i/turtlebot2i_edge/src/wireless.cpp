@@ -221,18 +221,18 @@ int WirelessNetwork::download(int robot_id, int n_bytes, const ns3::Time &max_du
 void WirelessNetwork::saveRtt(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time) {
     int robot_id = robot->GetId();
     std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
-    rtt_[robot_id] = time.GetSeconds() * 1e3 - rtt_[robot_id];
+    rtt_[robot_id] = time - rtt_[robot_id];
     pinging_[robot_id] = false;
     pinging_cv_[robot_id].notify_one();
 }
 
-double WirelessNetwork::ping(int robot_id, const ns3::Time &max_rtt) {
+ns3::Time WirelessNetwork::ping(int robot_id, const ns3::Time &max_rtt) {
     ns3::Ptr<ns3::Node> robot = robots_.Get(robot_id);
     ns3::Ptr<ns3::UdpEchoClient> app = ns3::StaticCast<ns3::UdpEchoClient>(robot->GetApplication(1));
     int max_rtt_ = max_rtt.GetMilliSeconds();
 
     std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
-    rtt_[robot_id] = ns3::Simulator::Now().GetSeconds() * 1e3;  // not GetMilliSeconds() because it rounds to integer
+    rtt_[robot_id] = ns3::Simulator::Now();
     pinging_[robot_id] = true;
     ul.unlock();
 
@@ -244,7 +244,7 @@ double WirelessNetwork::ping(int robot_id, const ns3::Time &max_rtt) {
     else
         pinging_cv_[robot_id].wait_for(ul, std::chrono::milliseconds(max_rtt_),
                                        [this, robot_id]() { return !pinging_[robot_id]; });
-    double rtt = pinging_[robot_id] ? (max_rtt_+1) : rtt_[robot_id];
+    ns3::Time rtt = pinging_[robot_id] ? (max_rtt+ns3::Seconds(1)) : rtt_[robot_id];
     ul.unlock();
 
     app->Stop(ns3::Seconds(0));
@@ -292,4 +292,8 @@ void WirelessNetwork::addMobility(const ns3::NodeContainer &nodes) {
 void WirelessNetwork::addInternetStack(const ns3::NodeContainer &nodes) {
     ns3::InternetStackHelper internet_stack_helper;
     internet_stack_helper.Install(nodes);
+}
+
+double WirelessNetwork::dbm_to_watt(double dbm) {
+    return std::pow(10, dbm/10 - 3);
 }

@@ -8,11 +8,13 @@
 #include <turtlebot2i_edge/wifi.h>
 #include <turtlebot2i_edge/Stamp.h>
 #include <turtlebot2i_edge/Ping.h>
+#include <turtlebot2i_edge/MeasureSnr.h>
 
-void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_id, const nav_msgs::Odometry::ConstPtr &msg) {
+void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_id,
+                    const nav_msgs::Odometry::ConstPtr &msg) {
     const geometry_msgs::Point& position = msg->pose.pose.position;
     network->setRobotPosition(robot_id, {position.x, position.y, position.z});
-    std::pair<int,int> room = network->getRobotRoom(robot_id);
+//    std::pair<int,int> room = network->getRobotRoom(robot_id);
 //    ROS_INFO("Robot %d is in room {%d,%d}, position {%f,%f,%f}", robot_id, room.second, room.first, position.x,
 //             position.y, position.z);
 }
@@ -42,9 +44,17 @@ bool transfer(const std::shared_ptr<WirelessNetwork> &network, int robot_id, tur
 
 bool ping(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Ping::Request &request,
           turtlebot2i_edge::Ping::Response &response) {
-    double rtt = network->ping(robot_id, ns3::Seconds(request.max_rtt.toSec()));
-    response.rtt.fromSec(rtt / 1e3);
-    ROS_INFO("Robot %d executed a ping test", robot_id);
+    ns3::Time rtt = network->ping(robot_id, ns3::Seconds(request.max_rtt.toSec()));
+    response.rtt.fromSec(rtt.GetSeconds());
+    ROS_INFO("Robot %d measured RTT: %f ms", robot_id, rtt.GetSeconds() * 1e3);
+    return true;
+}
+
+bool measureSnr(const std::shared_ptr<WirelessNetwork> &network, int robot_id,
+                turtlebot2i_edge::MeasureSnr::Request &request, turtlebot2i_edge::MeasureSnr::Response &response) {
+    double snr = network->measureSnr(robot_id, ns3::Seconds(request.max_duration.toSec()));
+    response.snr = snr;
+    ROS_INFO("Robot %d measured SNR: %f", robot_id, snr);
     return true;
 }
 
@@ -98,6 +108,18 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     }
     ROS_INFO("ROS services to ping ready");
 
+    for (int i=0; i<n_robots; i++) {
+        std::string service = "measure_snr_" + std::to_string(i);
+        auto callback = [network, i](turtlebot2i_edge::MeasureSnr::Request &request,
+                                     turtlebot2i_edge::MeasureSnr::Response &response) {
+            return measureSnr(network, i, request, response);
+        };
+        ros::ServiceServer service_server = node_handle.advertiseService
+                <turtlebot2i_edge::MeasureSnr::Request, turtlebot2i_edge::MeasureSnr::Response>(service, callback);
+        service_servers.push_back(service_server);
+    }
+    ROS_INFO("ROS services to measure SNR ready");
+
     // 2 threads per robot, one for updating the position and one for using the network
     ros::MultiThreadedSpinner spinner(2 * n_robots);
     spinner.spin();
@@ -134,7 +156,6 @@ int main(int argc, char **argv) {
     ROS_INFO("Grid of rooms in warehouse: %dx%d", n_rooms_y, n_rooms_x);
 
     std::shared_ptr<WirelessNetwork> network;
-
     if (network_type == "5g") {
         if (!ros::param::get("/network/gnb/position/x", position.x) ||
             !ros::param::get("/network/gnb/position/y", position.y)) {
@@ -168,7 +189,7 @@ int main(int argc, char **argv) {
     network->createWarehouse(warehouse_boundaries, n_rooms_x, n_rooms_y);
 
     ROS_INFO("Starting ROS node...");
-    std::thread thread(runRosNode, network);   // on a second thread, because...
+    std::thread thread(runRosNode, network);        // on a second thread, because...
 
     ROS_INFO("Simulating network...");
     network->simulate();                            // ...this simulates the network

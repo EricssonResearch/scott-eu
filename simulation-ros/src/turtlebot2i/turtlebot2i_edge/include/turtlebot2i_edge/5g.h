@@ -21,4 +21,5 @@ public:
 
     void createNetwork() override;
     void setGnbPosition(const ns3::Vector &position);
+    double measureSnr(int robot_id, const ns3::Time &max_duration) override;
 };

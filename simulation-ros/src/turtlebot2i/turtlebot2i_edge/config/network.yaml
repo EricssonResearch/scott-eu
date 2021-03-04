@@ -1,4 +1,5 @@
 network:
+  bandwidth: 50       # MHz
   mec_server:
     host: mec_server
     position:         # used only for WiFi

@@ -30,7 +30,7 @@ class TaskOffloadingEnv(Env):
         temporal_coherence=Box(low=0, high=1, shape=(1,), dtype=np.float32)
     )
 
-    def __init__(self, max_rtt, max_throughput, max_duration_throughput, max_risk_value,
+    def __init__(self, max_rtt, bandwidth, max_duration_throughput, max_risk_value,
                  network_image_size, depth_image_size,
                  robot_compute_power, robot_transmit_power, w_latency, w_energy,
                  pick_goals, place_goals, pick_and_place_per_episode,
@@ -41,7 +41,7 @@ class TaskOffloadingEnv(Env):
             raise ValueError('Cannot extract scene graph from V-REP if it is not a simulation')
 
         self.max_rtt = max_rtt / 1e3
-        self.max_throughput = max_throughput
+        self.bandwidth = bandwidth
         self.max_duration_throughput = max_duration_throughput
         self.max_risk_value = max_risk_value
         self.network_image_size = network_image_size
