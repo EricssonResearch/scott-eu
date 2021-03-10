@@ -127,21 +127,20 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
 
 int main(int argc, char **argv) {
     std::string network_type;
-    ns3::Vector position;
-    ns3::Box warehouse_boundaries;
-    int n_robots, n_rooms_x, n_rooms_y;
+    std::vector<double> warehouse_boundaries, position;
+    int n_robots, n_rooms_x, n_rooms_y, n_congesting_nodes, congesting_data_rate;
+    double congesting_max_switch_time;
+    std::shared_ptr<WirelessNetwork> network;
 
     ros::init(argc, argv, "network_simulation");
 
     ROS_INFO("Getting parameters from parameter server...");
     if (!ros::param::get("/network/type", network_type) ||
         !ros::param::get("/network/robots/n", n_robots) ||
-        !ros::param::get("/network/warehouse/x_min", warehouse_boundaries.xMin) ||
-        !ros::param::get("/network/warehouse/x_max", warehouse_boundaries.xMax) ||
-        !ros::param::get("/network/warehouse/y_min", warehouse_boundaries.yMin) ||
-        !ros::param::get("/network/warehouse/y_max", warehouse_boundaries.yMax) ||
-        !ros::param::get("/network/warehouse/z_min", warehouse_boundaries.zMin) ||
-        !ros::param::get("/network/warehouse/z_max", warehouse_boundaries.zMax) ||
+        !ros::param::get("/network/congestion/n", n_congesting_nodes) ||
+        !ros::param::get("/network/congestion/data_rate", congesting_data_rate) ||
+        !ros::param::get("/network/congestion/max_switch_time", congesting_max_switch_time) ||
+        !ros::param::get("/network/warehouse/boundaries", warehouse_boundaries) ||
         !ros::param::get("/network/warehouse/rooms/n_x", n_rooms_x) ||
         !ros::param::get("/network/warehouse/rooms/n_y", n_rooms_y)) {
         ROS_ERROR("ROS parameter server does not contain the necessary parameters");
@@ -149,34 +148,34 @@ int main(int argc, char **argv) {
     }
     ROS_INFO("Network type: %s", network_type.c_str());
     ROS_INFO("Number of robots: %d", n_robots);
-    ROS_INFO("Boundaries of warehouse: {%f,%f,%f,%f,%f,%f}",
-             warehouse_boundaries.xMin, warehouse_boundaries.xMax,
-             warehouse_boundaries.yMin, warehouse_boundaries.yMax,
-             warehouse_boundaries.zMin, warehouse_boundaries.zMax);
+    ROS_INFO("Number of congesting nodes: %d", n_congesting_nodes);
+    ROS_INFO("Data rate of congesting nodes: %d bps", congesting_data_rate);
+    ROS_INFO("Max switch time of congesting nodes: %f s", congesting_max_switch_time);
     ROS_INFO("Grid of rooms in warehouse: %dx%d", n_rooms_y, n_rooms_x);
+    ROS_INFO("Boundaries of warehouse: {%f,%f,%f,%f,%f,%f}",
+             warehouse_boundaries[0], warehouse_boundaries[1],
+             warehouse_boundaries[2], warehouse_boundaries[3],
+             warehouse_boundaries[4], warehouse_boundaries[5]);
 
-    std::shared_ptr<WirelessNetwork> network;
     if (network_type == "5g") {
-        if (!ros::param::get("/network/gnb/position/x", position.x) ||
-            !ros::param::get("/network/gnb/position/y", position.y)) {
+        if (!ros::param::get("/network/gnb/position", position)) {
             ROS_ERROR("ROS parameter server does not contain the necessary parameters");
             return -1;
         }
-        ROS_INFO("Position of gNB: {%f,%f}", position.x, position.y);
+        ROS_INFO("Position of gNB: {%f,%f,%f}", position[0], position[1], position[2]);
 
-        std::shared_ptr<Nr5GNetwork> nr5g_network = std::make_shared<Nr5GNetwork>(n_robots);
-        nr5g_network->setGnbPosition(position);
+        std::shared_ptr<Nr5GNetwork> nr5g_network = std::make_shared<Nr5GNetwork>(n_robots, n_congesting_nodes);
+        nr5g_network->setGnbPosition({position[0], position[1], position[2]});
         network = nr5g_network;
     } else if (network_type == "wifi") {
-        if (!ros::param::get("/network/mec_server/position/x", position.x) ||
-            !ros::param::get("/network/mec_server/position/y", position.y)) {
+        if (!ros::param::get("/network/mec_server/position", position)) {
             ROS_ERROR("ROS parameter server does not contain the necessary parameters");
             return -1;
         }
-        ROS_INFO("Position of MEC server: {%f,%f}", position.x, position.y);
+        ROS_INFO("Position of MEC server: {%f,%f,%f}", position[0], position[1], position[2]);
 
-        std::shared_ptr<WifiNetwork> wifi_network = std::make_shared<WifiNetwork>(n_robots);
-        wifi_network->setMecServerPosition(position);
+        std::shared_ptr<WifiNetwork> wifi_network = std::make_shared<WifiNetwork>(n_robots, n_congesting_nodes);
+        wifi_network->setMecServerPosition({position[0], position[1], position[2]});
         network = wifi_network;
     } else {
         ROS_ERROR("Invalid network type");
@@ -185,8 +184,13 @@ int main(int argc, char **argv) {
 
     ROS_INFO("Setting up network...");
     network->createNetwork();
-    network->createApplications();                  // important: after creating network
-    network->createWarehouse(warehouse_boundaries, n_rooms_x, n_rooms_y);
+    network->createApplications();      // important: after creating network
+    network->createCongestion(congesting_data_rate, ns3::Seconds(congesting_max_switch_time));
+    network->createWarehouse({warehouse_boundaries[0], warehouse_boundaries[1],
+                              warehouse_boundaries[2], warehouse_boundaries[3],
+                              warehouse_boundaries[4], warehouse_boundaries[5]},
+                             n_rooms_x, n_rooms_y);
+    // TODO: position of congesting nodes
 
     ROS_INFO("Starting ROS node...");
     std::thread thread(runRosNode, network);        // on a second thread, because...

@@ -12,6 +12,8 @@ class NetworkMonitor:
             raise ValueError('Server host is necessary for pinging if it not a simulation')
         if bandwidth is None and shannon:
             raise ValueError('Bandwidth is necessary for throughput estimation with Shannon-Hartley theorem')
+        if shannon:     # TODO: investigate, SNR is always the same independently of the congestion
+            raise NotImplementedError('Throughput estimation with Shannon-Hartley does not work properly yet')
 
         self.server_host = server_host
         self.bandwidth = bandwidth
@@ -26,12 +28,14 @@ class NetworkMonitor:
             rospy.loginfo('Waiting for ROS service to ping...')
             self._ns3_ping = rospy.ServiceProxy('edge/ping', Ping)
             self._ns3_ping.wait_for_service()
+        else:
+            self._ns3_ping = None
 
+        if shannon:
             rospy.loginfo('Waiting for ROS service to measure SNR...')
             self._ns3_measure_snr = rospy.ServiceProxy('edge/measure_snr', MeasureSnr)
             self._ns3_measure_snr.wait_for_service()
         else:
-            self._ns3_ping = None
             self._ns3_measure_snr = None
 
     def measure_rtt(self, max_rtt=0.1):

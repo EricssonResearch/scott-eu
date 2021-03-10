@@ -5,8 +5,6 @@
  *      *       *       ...     *       *
  *      |       |               |       |
  *   robot1  robot2          robotN  MEC server
- *
- * In order to use it, you must first run: sudo python3 scripts/netns.py wifi setup
  */
 
 #pragma once
@@ -19,10 +17,10 @@ class WifiNetwork : public WirelessNetwork {
     std::vector<std::mutex> snr_mutex_;
 
     void saveSnr(ns3::Ptr<const ns3::Packet> packet, uint16_t channel_frequency, ns3::WifiTxVector tx_vector,
-                 ns3::MpduInfo a_mpdu, ns3::SignalNoiseDbm signal_noise, uint16_t robot_id);
+                 ns3::MpduInfo a_mpdu, ns3::SignalNoiseDbm signal_noise, uint16_t sta_id);
 
 public:
-    explicit WifiNetwork(int n_robots);
+    explicit WifiNetwork(int n_robots, int n_congesting_nodes);
 
     void createNetwork() override;
     void createApplications() override;

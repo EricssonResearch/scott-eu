@@ -5,7 +5,7 @@
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/network.yaml" ns="/"/>
     <param name="/network/type" value="$(arg network_type)"/>
 
-    <node name="network_simulation" pkg="turtlebot2i_edge" type="network_simulation" respawn="true"
+    <node name="network_simulation" pkg="turtlebot2i_edge" type="network_simulation" respawn="false"
           output="$(arg output)">
         <remap from="odom_0" to="/turtlebot2i/odom"/>
         <remap from="odom_1" to="/turtlebot2i_0/odom"/>

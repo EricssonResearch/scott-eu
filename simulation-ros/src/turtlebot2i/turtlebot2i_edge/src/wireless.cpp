@@ -1,10 +1,14 @@
 #include <thread>
 #include <sstream>
+#include <cassert>
 #include <turtlebot2i_edge/wireless.h>
 #include "ns3/mobility-module.h"
 #include "ns3/internet-module.h"
 
-WirelessNetwork::WirelessNetwork(int n_robots) :
+static const int ROBOT_PORT = 2000;         // listening on robots
+static const int SERVER_PORT = 2000;        // listening on MEC server
+
+WirelessNetwork::WirelessNetwork(int n_robots, int n_congesting_nodes) :
         uploading_(n_robots), to_upload_(n_robots), uploaded_(n_robots), uploading_start_(n_robots),
         uploading_mutex_(n_robots), uploading_cv_(n_robots), downloading_(n_robots), to_download_(n_robots),
         downloading_start_(n_robots), downloaded_(n_robots), downloading_mutex_(n_robots), downloading_cv_(n_robots),
@@ -14,10 +18,14 @@ WirelessNetwork::WirelessNetwork(int n_robots) :
 
     robots_ = ns3::NodeContainer(n_robots);         // first nodes, so that they get IDs in [0, n_robots-1]
     mec_server_ = ns3::CreateObject<ns3::Node>();
+    congesting_nodes_ = ns3::NodeContainer(n_congesting_nodes);
 
     addMobility(robots_);
+    addMobility(congesting_nodes_);
+
     addInternetStack(robots_);
     addInternetStack(mec_server_);
+    addInternetStack(congesting_nodes_);
 }
 
 WirelessNetwork::~WirelessNetwork() {
@@ -34,23 +42,27 @@ void WirelessNetwork::createApplications() {
 
     ns3::ApplicationContainer apps;
     ns3::Ptr<ns3::Application> app;
-    ns3::Ipv4Address any = ns3::Ipv4Address::GetAny();
+    ns3::Ipv4Address any_address = ns3::Ipv4Address::GetAny();
     ns3::Ipv4Address server_address = mec_server_->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
 
     // apps for sending bytes in upload (robot -> MEC server)
-    ns3::BulkSendHelper bulk_send_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(server_address, 2000));
+    ns3::BulkSendHelper bulk_send_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(server_address, SERVER_PORT));
     bulk_send_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
     apps = bulk_send_helper.Install(robots_);
-    apps.Stop(ns3::Seconds(0.1));
+    for (int i=0; i<apps.GetN(); i++) {
+        apps.Start(ns3::Seconds(0.1 * i));      // do not start all at once, TCP connection fails
+        apps.Stop(ns3::Seconds(0.1 * (i+1)));   // stop immediately, we want to use it on demand
+    }
 
     // apps for sending bytes in download (MEC server -> robot)
     for (int i=0; i<robots_.GetN(); i++) {
         ns3::Ptr<ns3::Node> robot = robots_.Get(i);
         ns3::Ipv4Address robot_address = robot->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
-        bulk_send_helper = ns3::BulkSendHelper("ns3::TcpSocketFactory", ns3::InetSocketAddress(robot_address, 2000));
+        bulk_send_helper = ns3::BulkSendHelper("ns3::TcpSocketFactory", ns3::InetSocketAddress(robot_address, ROBOT_PORT));
         bulk_send_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
         apps = bulk_send_helper.Install(mec_server_);
-        apps.Stop(ns3::Seconds(0.1));
+        apps.Start(ns3::Seconds(0.1 * i));      // do not start all at once, TCP connection fails
+        apps.Stop(ns3::Seconds(0.1 * (i+1)));   // stop immediately, we want to use it on demand
     }
 
     // apps for pinging (robot -> MEC server)
@@ -64,21 +76,42 @@ void WirelessNetwork::createApplications() {
         app->TraceConnectWithoutContext("RxWithTime", ns3::MakeCallback(&WirelessNetwork::saveRtt, this));
     }
 
-    // apps for receiving bytes
-    ns3::PacketSinkHelper packet_sink_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(any, 2000));
+    // apps for receiving bytes in upload (robot -> MEC server)
+    ns3::PacketSinkHelper packet_sink_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(any_address, SERVER_PORT));
     packet_sink_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
-    apps = packet_sink_helper.Install(mec_server_);         // upload
+    apps = packet_sink_helper.Install(mec_server_);
     app = apps.Get(0);
     app->TraceConnectWithoutContext("RxWithSeqTsSize", ns3::MakeCallback(&WirelessNetwork::updateUploadedBytes, this));
-    apps = packet_sink_helper.Install(robots_);             // download
+
+    // apps for receiving bytes in download (MEC server -> robot)
+    packet_sink_helper.SetAttribute("Local", ns3::AddressValue(ns3::InetSocketAddress(any_address, ROBOT_PORT)));
+    apps = packet_sink_helper.Install(robots_);
     for (auto it=apps.Begin(); it!=apps.End(); it++) {
         app = *it;
         app->TraceConnectWithoutContext("RxWithSeqTsSize", ns3::MakeCallback(&WirelessNetwork::updateDownloadedBytes, this));
     }
 
-    // app for receiving ping
+    // app for receiving ping (robot -> MEC server)
     ns3::UdpEchoServerHelper udp_echo_server_helper(9);
     udp_echo_server_helper.Install(mec_server_);
+}
+
+void WirelessNetwork::createCongestion(int congesting_data_rate, const ns3::Time &congesting_max_switch_time) {
+    ns3::ApplicationContainer apps;
+    ns3::Ipv4Address server_address = mec_server_->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
+    ns3::Ipv4Address any_address = ns3::Ipv4Address::GetAny();
+
+    // apps for sending bytes (congesting node -> MEC server)
+    ns3::Ptr<ns3::UniformRandomVariable> switch_time = ns3::CreateObject<ns3::UniformRandomVariable>();
+    switch_time->SetAttribute("Max", ns3::DoubleValue(congesting_max_switch_time.GetSeconds()));
+    ns3::OnOffHelper on_off_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(server_address, SERVER_PORT));
+    on_off_helper.SetAttribute("OnTime", ns3::PointerValue(switch_time));
+    on_off_helper.SetAttribute("OffTime", ns3::PointerValue(switch_time));
+    on_off_helper.SetAttribute("DataRate", ns3::DataRateValue(congesting_data_rate));
+    on_off_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
+    apps = on_off_helper.Install(congesting_nodes_);
+    for (int i=0; i<apps.GetN(); i++)
+        apps.Get(i)->SetStartTime(ns3::Seconds(0.1 * i));   // do not start all at once, TCP connection fails
 }
 
 void WirelessNetwork::createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y) {
@@ -97,23 +130,33 @@ void WirelessNetwork::simulate() {
 }
 
 int WirelessNetwork::getRobotId(const ns3::Address &address) {
-    ns3::Ipv4Address robot_address;
-    if (ns3::Ipv4Address::IsMatchingType(address))
-        robot_address = ns3::Ipv4Address::ConvertFrom(address);
-    else if (ns3::InetSocketAddress::IsMatchingType(address))
-        robot_address = ns3::InetSocketAddress::ConvertFrom(address).GetIpv4();
-    else
-        throw std::logic_error("Non-matching address type");
+    auto it = robots_.End();
 
-    auto it = std::find_if(robots_.Begin(), robots_.End(), [robot_address](const ns3::Ptr<ns3::Node> &robot) {
-        ns3::Ipv4Address robot_address_ = robot->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
-        return robot_address_ == robot_address;
-    });
-    if (it == robots_.End()) {
-        std::ostringstream oss;
-        oss << "No robot associated to address " << robot_address;
-        throw std::logic_error(oss.str());
+    if (ns3::Mac48Address::IsMatchingType(address)) {
+        ns3::Mac48Address robot_address = ns3::Mac48Address::ConvertFrom(address);
+        it = std::find_if(robots_.Begin(), robots_.End(), [robot_address](const ns3::Ptr<ns3::Node> &robot) {
+            ns3::Address address = robot->GetDevice(1)->GetAddress();
+            assert(ns3::Mac48Address::IsMatchingType(address));
+            ns3::Mac48Address robot_address_ = ns3::Mac48Address::ConvertFrom(address);
+            return robot_address_ == robot_address;
+        });
+    } else if (ns3::Ipv4Address::IsMatchingType(address) || ns3::InetSocketAddress::IsMatchingType(address)) {
+        ns3::Ipv4Address robot_address;
+        if (ns3::Ipv4Address::IsMatchingType(address))
+            robot_address = ns3::Ipv4Address::ConvertFrom(address);
+        else
+            robot_address = ns3::InetSocketAddress::ConvertFrom(address).GetIpv4();
+        it = std::find_if(robots_.Begin(), robots_.End(), [robot_address](const ns3::Ptr<ns3::Node> &robot) {
+            ns3::Ipv4Address robot_address_ = robot->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
+            return robot_address_ == robot_address;
+        });
+    } else {
+        throw std::logic_error("Non-matching address type");
     }
+
+    if (it == robots_.End())
+        throw std::logic_error("No robot associated to address");
+
     int robot_id = it - robots_.Begin();
     return robot_id;
 }
@@ -122,9 +165,15 @@ void WirelessNetwork::updateUploadedBytes(ns3::Ptr<const ns3::Packet> packet, co
                                           const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header) {
     (void) packet;
     (void) server_address;
-    int robot_id = getRobotId(robot_address);
+    int robot_id;
     int n_bytes = header.GetSize();
     ns3::Time time = header.GetTs();
+
+    try {
+        robot_id = getRobotId(robot_address);
+    } catch (const std::logic_error &e) {       // not from a robot
+        return;
+    }
 
     std::unique_lock<std::mutex> ul(uploading_mutex_[robot_id]);
     if (time >= uploading_start_[robot_id]) {   // this packet belongs to this upload, not a previous one
@@ -176,9 +225,15 @@ void WirelessNetwork::updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, 
                                             const ns3::Address &robot_address, const ns3::SeqTsSizeHeader &header) {
     (void) packet;
     (void) server_address;
-    int robot_id = getRobotId(robot_address);
+    int robot_id;
     int n_bytes = header.GetSize();
     ns3::Time time = header.GetTs();
+
+    try {
+        robot_id = getRobotId(robot_address);
+    } catch (const std::logic_error &e) {       // not from a robot
+        return;
+    }
 
     std::unique_lock<std::mutex> ul(downloading_mutex_[robot_id]);
     if (time >= downloading_start_[robot_id]) {
@@ -263,8 +318,16 @@ ns3::Ptr<ns3::Node> WirelessNetwork::mecServer() const {
     return mec_server_;
 }
 
+ns3::NodeContainer WirelessNetwork::congestingNodes() const {
+    return congesting_nodes_;
+}
+
 void WirelessNetwork::setRobotPosition(int robot_id, const ns3::Vector &position) {
     setNodePosition(robots_.Get(robot_id), position);
+}
+
+void WirelessNetwork::setCongestingNodePosition(int congesting_node_id, const ns3::Vector &position) {
+    setNodePosition(congesting_nodes_.Get(congesting_node_id), position);
 }
 
 std::pair<int,int> WirelessNetwork::getRobotRoom(int robot_id) const {

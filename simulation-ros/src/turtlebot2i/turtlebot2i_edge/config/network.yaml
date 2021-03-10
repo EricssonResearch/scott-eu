@@ -1,23 +1,22 @@
 network:
-  bandwidth: 50       # MHz
+  bandwidth: 50             # MHz
   mec_server:
     host: mec_server
-    position:         # used only for WiFi
-      x: 15
-      y: 15
+    position: [15, 15, 0]   # used only for WiFi
+  gnb:                      # used only for 5G
+    position: [ 15, 15, 0 ]
   robots:
-    n: 1
-  gnb:                # used only for 5G
-    position:
-      x: 15
-      y: 15
+    n: 1                    # number of robots, must coincide with robots in V-REP
   warehouse:
-    x_min: -20
-    x_max: 20
-    y_min: -20
-    y_max: 20
-    z_min: -1
-    z_max: 10         # height of warehouse
+    boundaries: [-20, 20, -20, 20, -1, 10]
     rooms:
       n_x: 4
       n_y: 4
+  congestion:
+    data_rate: 500000       # data rate in on state (bps)
+    max_switch_time: 5      # max time in on/off state before switching (s)
+    n: 10                   # number of nodes
+    position: [             # position of nodes
+      [ 0, 0, 0 ],
+      [ 0, 0, 0 ]
+    ]

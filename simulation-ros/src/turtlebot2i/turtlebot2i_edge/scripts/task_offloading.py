@@ -46,7 +46,7 @@ def main():
     robot_compute_power = rospy.get_param('~env/reward/robot/compute_power')
     robot_transmit_power = rospy.get_param('~env/reward/robot/transmit_power')
     max_risk_value = rospy.get_param('~env/task/max_risk_value')
-    network_image_size = rospy.get_param('~env/action/network_image_size')
+    network_image_size = rospy.get_param('~env/task/network_image_size')
     depth_image_size = rospy.get_param('~env/task/depth_image_size')
     models_path = rospy.get_param('~rl/models/path')
     network_image_size = (network_image_size['width'], network_image_size['height'])

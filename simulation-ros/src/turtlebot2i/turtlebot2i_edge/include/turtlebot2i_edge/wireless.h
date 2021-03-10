@@ -11,6 +11,7 @@
 class WirelessNetwork {
     ns3::NodeContainer robots_;
     ns3::Ptr<ns3::Node> mec_server_;
+    ns3::NodeContainer congesting_nodes_;
     ns3::Ptr<ns3::Building> warehouse_;
 
     std::vector<bool> uploading_;
@@ -32,7 +33,6 @@ class WirelessNetwork {
     std::vector<std::mutex> pinging_mutex_;
     std::vector<std::condition_variable> pinging_cv_;
 
-    int getRobotId(const ns3::Address &address);
     void updateUploadedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
                              const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
     void updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &server_address,
@@ -40,6 +40,7 @@ class WirelessNetwork {
     void saveRtt(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time);
 
 protected:
+    int getRobotId(const ns3::Address &address);
     static void addMobility(const ns3::NodeContainer &nodes);
     static void addInternetStack(const ns3::NodeContainer &nodes);
     static void setNodePosition(const ns3::Ptr<ns3::Node> &node, const ns3::Vector &position);
@@ -47,13 +48,15 @@ protected:
 
     ns3::NodeContainer robots() const;
     ns3::Ptr<ns3::Node> mecServer() const;
+    ns3::NodeContainer congestingNodes() const;
 
 public:
-    explicit WirelessNetwork(int n_robots);
+    explicit WirelessNetwork(int n_robots, int n_congesting_nodes);
     virtual ~WirelessNetwork();
 
     virtual void createNetwork() = 0;
     virtual void createApplications();
+    void createCongestion(int congesting_data_rate, const ns3::Time &congesting_max_switch_time);
     void createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y);
     void simulate();
 
@@ -65,4 +68,5 @@ public:
     int nRobots() const;
     std::pair<int,int> getRobotRoom(int robot_id) const;
     void setRobotPosition(int robot_id, const ns3::Vector &position);
+    void setCongestingNodePosition(int congesting_node_id, const ns3::Vector &position);
 };

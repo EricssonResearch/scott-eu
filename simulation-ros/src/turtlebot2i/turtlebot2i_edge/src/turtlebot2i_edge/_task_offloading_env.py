@@ -178,7 +178,6 @@ class TaskOffloadingEnv(Env):
         return self.observation
 
     def render(self, mode='human'):
-        # TODO: render graphically (e.g. video with camera image + data overlapped)
         if mode == 'human':
             rospy.loginfo('Step = %d' % self._step)
             rospy.loginfo('Last observation = %s' % str(self._observation_last))
