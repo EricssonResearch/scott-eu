@@ -7,4 +7,4 @@ transform_tolerance: 10.0 # second
 
 observation_sources: laser_scan_sensor
 
-laser_scan_sensor: {sensor_frame: /turtlebot2i/lidar/scan, data_type: LaserScan, topic: /turtlebot2i/lidar/scan, marking: true, clearing: true}
+laser_scan_sensor: {sensor_frame: turtlebot2i/lidar/scan, data_type: LaserScan, topic: /turtlebot2i/lidar/scan, marking: true, clearing: true}

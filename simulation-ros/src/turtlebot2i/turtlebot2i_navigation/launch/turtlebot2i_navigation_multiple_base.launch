@@ -58,13 +58,13 @@
       <!--<rosparam file="$(find turtlebot2i_navigation)/config/trajectory_local_planner_params.yaml" command="load" />-->
 
       <rosparam subst_value="true">
-          local_costmap/laser_scan_sensor/sensor_frame: /$(arg robot_name)/lidar/scan
-          local_costmap/laser_scan_sensor/topic: /$(arg robot_name)/lidar/scan
-          global_costmap/laser_scan_sensor/sensor_frame: /$(arg robot_name)/lidar/scan
-          global_costmap/laser_scan_sensor/topic: /$(arg robot_name)/lidar/scan
-          global_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
-          local_costmap/global_frame: /$(arg robot_name)/odom
-          local_costmap/robot_base_frame: /$(arg robot_name)/base_footprint
+          local_costmap/laser_scan_sensor/sensor_frame: $(arg robot_name)/lidar/scan
+          local_costmap/laser_scan_sensor/topic: $(arg robot_name)/lidar/scan
+          global_costmap/laser_scan_sensor/sensor_frame: $(arg robot_name)/lidar/scan
+          global_costmap/laser_scan_sensor/topic: $(arg robot_name)/lidar/scan
+          global_costmap/robot_base_frame: $(arg robot_name)/base_footprint
+          local_costmap/global_frame: $(arg robot_name)/odom
+          local_costmap/robot_base_frame: $(arg robot_name)/base_footprint
       </rosparam>
 
       <remap from="map" to="/map" />
