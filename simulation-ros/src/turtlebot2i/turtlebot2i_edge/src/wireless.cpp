@@ -7,6 +7,8 @@
 
 static const int ROBOT_PORT = 2000;         // listening on robots
 static const int SERVER_PORT = 2000;        // listening on MEC server
+static const ns3::Time INTERVAL_START = ns3::Seconds(0.1);
+static const ns3::Time INTERVAL_STOP = ns3::Seconds(0.1);
 
 WirelessNetwork::WirelessNetwork(int n_robots, int n_congesting_nodes) :
         uploading_(n_robots), to_upload_(n_robots), uploaded_(n_robots), uploading_start_(n_robots),
@@ -50,8 +52,9 @@ void WirelessNetwork::createApplications() {
     bulk_send_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
     apps = bulk_send_helper.Install(robots_);
     for (int i=0; i<apps.GetN(); i++) {
-        apps.Start(ns3::Seconds(0.1 * i));      // do not start all at once, TCP connection fails
-        apps.Stop(ns3::Seconds(0.1 * (i+1)));   // stop immediately, we want to use it on demand
+        apps.Start(next_tcp_start_);
+        apps.Stop(next_tcp_start_ + INTERVAL_STOP);     // stop, we want to use it on demand
+        next_tcp_start_ += INTERVAL_START;              // do not start all at once, TCP connection fails
     }
 
     // apps for sending bytes in download (MEC server -> robot)
@@ -61,8 +64,9 @@ void WirelessNetwork::createApplications() {
         bulk_send_helper = ns3::BulkSendHelper("ns3::TcpSocketFactory", ns3::InetSocketAddress(robot_address, ROBOT_PORT));
         bulk_send_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
         apps = bulk_send_helper.Install(mec_server_);
-        apps.Start(ns3::Seconds(0.1 * i));      // do not start all at once, TCP connection fails
-        apps.Stop(ns3::Seconds(0.1 * (i+1)));   // stop immediately, we want to use it on demand
+        apps.Start(next_tcp_start_);
+        apps.Stop(next_tcp_start_ + INTERVAL_STOP);     // stop, we want to use it on demand
+        next_tcp_start_ += INTERVAL_START;              // do not start all at once, TCP connection fails
     }
 
     // apps for pinging (robot -> MEC server)
@@ -96,22 +100,26 @@ void WirelessNetwork::createApplications() {
     udp_echo_server_helper.Install(mec_server_);
 }
 
-void WirelessNetwork::createCongestion(int congesting_data_rate, const ns3::Time &congesting_max_switch_time) {
+void WirelessNetwork::createCongestion(int data_rate, const ns3::Time &min_switch_time, const ns3::Time &max_switch_time) {
     ns3::ApplicationContainer apps;
     ns3::Ipv4Address server_address = mec_server_->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
-    ns3::Ipv4Address any_address = ns3::Ipv4Address::GetAny();
+
+    // random variable for switching
+    ns3::Ptr<ns3::UniformRandomVariable> switch_time = ns3::CreateObject<ns3::UniformRandomVariable>();
+    switch_time->SetAttribute("Min", ns3::DoubleValue(min_switch_time.GetSeconds()));
+    switch_time->SetAttribute("Max", ns3::DoubleValue(max_switch_time.GetSeconds()));
 
     // apps for sending bytes (congesting node -> MEC server)
-    ns3::Ptr<ns3::UniformRandomVariable> switch_time = ns3::CreateObject<ns3::UniformRandomVariable>();
-    switch_time->SetAttribute("Max", ns3::DoubleValue(congesting_max_switch_time.GetSeconds()));
     ns3::OnOffHelper on_off_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(server_address, SERVER_PORT));
     on_off_helper.SetAttribute("OnTime", ns3::PointerValue(switch_time));
     on_off_helper.SetAttribute("OffTime", ns3::PointerValue(switch_time));
-    on_off_helper.SetAttribute("DataRate", ns3::DataRateValue(congesting_data_rate));
+    on_off_helper.SetAttribute("DataRate", ns3::DataRateValue(data_rate));
     on_off_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
     apps = on_off_helper.Install(congesting_nodes_);
-    for (int i=0; i<apps.GetN(); i++)
-        apps.Get(i)->SetStartTime(ns3::Seconds(0.1 * i));   // do not start all at once, TCP connection fails
+    for (int i=0; i<apps.GetN(); i++) {
+        apps.Get(i)->SetStartTime(next_tcp_start_);
+        next_tcp_start_ += INTERVAL_START;              // do not start all at once, TCP connection fails
+    }
 }
 
 void WirelessNetwork::createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y) {

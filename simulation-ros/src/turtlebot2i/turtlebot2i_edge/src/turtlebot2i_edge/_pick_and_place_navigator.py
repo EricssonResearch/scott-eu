@@ -55,8 +55,7 @@ class PickAndPlaceNavigator:
         with self._lock:
             self._goal = goals[idx_goal]
 
-        x, y = goals[idx_goal]
-        z = 0.063
+        x, y, z = goals[idx_goal]
         yaw = self._rng.uniform(-np.pi, np.pi)
 
         pose = Pose(
@@ -75,7 +74,8 @@ class PickAndPlaceNavigator:
 
     def _check_goal(self, feedback):
         # move base reaches the goal with a certain tolerance (see xy_goal_tolerance in local planner parameters)
-        position = np.array((feedback.base_position.pose.position.x, feedback.base_position.pose.position.y))
+        position = feedback.base_position.pose.position
+        position = np.array((position.x, position.y, position.z))
         with self._lock:
             if np.linalg.norm(self._goal - position) < 0.5:
                 if self._goal in self.place_goals:

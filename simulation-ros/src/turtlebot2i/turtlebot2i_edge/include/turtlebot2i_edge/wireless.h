@@ -33,6 +33,8 @@ class WirelessNetwork {
     std::vector<std::mutex> pinging_mutex_;
     std::vector<std::condition_variable> pinging_cv_;
 
+    ns3::Time next_tcp_start_;                      // do not establish all TCP connections at once, they fail in ns-3
+
     void updateUploadedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &robot_address,
                              const ns3::Address &server_address, const ns3::SeqTsSizeHeader &header);
     void updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, const ns3::Address &server_address,
@@ -56,7 +58,7 @@ public:
 
     virtual void createNetwork() = 0;
     virtual void createApplications();
-    void createCongestion(int congesting_data_rate, const ns3::Time &congesting_max_switch_time);
+    void createCongestion(int data_rate, const ns3::Time &min_switch_time, const ns3::Time &max_switch_time);
     void createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y);
     void simulate();
 

@@ -125,72 +125,85 @@ void runRosNode(const std::shared_ptr<WirelessNetwork> &network) {
     spinner.spin();
 }
 
+ns3::Vector xmlrpc_to_position(const XmlRpc::XmlRpcValue &position) {
+    const XmlRpc::XmlRpcValue &x = position[0];
+    const XmlRpc::XmlRpcValue &y = position[1];
+    const XmlRpc::XmlRpcValue &z = position[2];
+    auto x_ = x.getType() == XmlRpc::XmlRpcValue::TypeDouble ? static_cast<double>(x) : static_cast<int>(x);
+    auto y_ = y.getType() == XmlRpc::XmlRpcValue::TypeDouble ? static_cast<double>(y) : static_cast<int>(y);
+    auto z_ = z.getType() == XmlRpc::XmlRpcValue::TypeDouble ? static_cast<double>(z) : static_cast<int>(z);
+    return {x_, y_, z_};
+}
+
 int main(int argc, char **argv) {
     std::string network_type;
-    std::vector<double> warehouse_boundaries, position;
+    std::vector<double> warehouse_boundaries, gnb_position, server_position;
+    XmlRpc::XmlRpcValue congesting_positions;
     int n_robots, n_rooms_x, n_rooms_y, n_congesting_nodes, congesting_data_rate;
-    double congesting_max_switch_time;
+    double congesting_min_switch_time, congesting_max_switch_time;
     std::shared_ptr<WirelessNetwork> network;
 
     ros::init(argc, argv, "network_simulation");
 
     ROS_INFO("Getting parameters from parameter server...");
     if (!ros::param::get("/network/type", network_type) ||
+        !ros::param::get("/network/gnb/position", gnb_position) ||
+        !ros::param::get("/network/gnb/position", server_position) ||
         !ros::param::get("/network/robots/n", n_robots) ||
         !ros::param::get("/network/congestion/n", n_congesting_nodes) ||
         !ros::param::get("/network/congestion/data_rate", congesting_data_rate) ||
-        !ros::param::get("/network/congestion/max_switch_time", congesting_max_switch_time) ||
+        !ros::param::get("/network/congestion/switch_time/min", congesting_min_switch_time) ||
+        !ros::param::get("/network/congestion/switch_time/max", congesting_max_switch_time) ||
+        !ros::param::get("/network/congestion/position", congesting_positions) ||
         !ros::param::get("/network/warehouse/boundaries", warehouse_boundaries) ||
         !ros::param::get("/network/warehouse/rooms/n_x", n_rooms_x) ||
         !ros::param::get("/network/warehouse/rooms/n_y", n_rooms_y)) {
         ROS_ERROR("ROS parameter server does not contain the necessary parameters");
         return -1;
     }
+
     ROS_INFO("Network type: %s", network_type.c_str());
+    ROS_INFO("Position of gNB (5G only): {%f,%f,%f}", gnb_position[0], gnb_position[1], gnb_position[2]);
+    ROS_INFO("Position of MEC server (WiFi only): {%f,%f,%f}", server_position[0], server_position[1], server_position[2]);
     ROS_INFO("Number of robots: %d", n_robots);
-    ROS_INFO("Number of congesting nodes: %d", n_congesting_nodes);
-    ROS_INFO("Data rate of congesting nodes: %d bps", congesting_data_rate);
-    ROS_INFO("Max switch time of congesting nodes: %f s", congesting_max_switch_time);
     ROS_INFO("Grid of rooms in warehouse: %dx%d", n_rooms_y, n_rooms_x);
     ROS_INFO("Boundaries of warehouse: {%f,%f,%f,%f,%f,%f}",
              warehouse_boundaries[0], warehouse_boundaries[1],
              warehouse_boundaries[2], warehouse_boundaries[3],
              warehouse_boundaries[4], warehouse_boundaries[5]);
+    ROS_INFO("Number of congesting nodes: %d", n_congesting_nodes);
+    ROS_INFO("Data rate of congesting nodes: %d bps", congesting_data_rate);
+    ROS_INFO("Switch time of congesting nodes: [%f,%f] s", congesting_min_switch_time, congesting_max_switch_time);
+    for (int i=0; i<n_congesting_nodes; i++) {
+        ns3::Vector cp = xmlrpc_to_position(congesting_positions[i]);
+        ROS_INFO("Position of congesting node %d: {%f,%f,%f}", i, cp.x, cp.y, cp.z);
+    }
 
+    ROS_INFO("Setting up network...");
     if (network_type == "5g") {
-        if (!ros::param::get("/network/gnb/position", position)) {
-            ROS_ERROR("ROS parameter server does not contain the necessary parameters");
-            return -1;
-        }
-        ROS_INFO("Position of gNB: {%f,%f,%f}", position[0], position[1], position[2]);
-
         std::shared_ptr<Nr5GNetwork> nr5g_network = std::make_shared<Nr5GNetwork>(n_robots, n_congesting_nodes);
-        nr5g_network->setGnbPosition({position[0], position[1], position[2]});
+        nr5g_network->setGnbPosition({gnb_position[0], gnb_position[1], gnb_position[2]});
         network = nr5g_network;
     } else if (network_type == "wifi") {
-        if (!ros::param::get("/network/mec_server/position", position)) {
-            ROS_ERROR("ROS parameter server does not contain the necessary parameters");
-            return -1;
-        }
-        ROS_INFO("Position of MEC server: {%f,%f,%f}", position[0], position[1], position[2]);
-
         std::shared_ptr<WifiNetwork> wifi_network = std::make_shared<WifiNetwork>(n_robots, n_congesting_nodes);
-        wifi_network->setMecServerPosition({position[0], position[1], position[2]});
+        wifi_network->setMecServerPosition({server_position[0], server_position[1], server_position[2]});
         network = wifi_network;
     } else {
         ROS_ERROR("Invalid network type");
         return -1;
     }
-
-    ROS_INFO("Setting up network...");
     network->createNetwork();
-    network->createApplications();      // important: after creating network
-    network->createCongestion(congesting_data_rate, ns3::Seconds(congesting_max_switch_time));
+    network->createApplications();                  // important: after creating network
+    network->createCongestion(congesting_data_rate, ns3::Seconds(congesting_min_switch_time),
+                              ns3::Seconds(congesting_max_switch_time));
     network->createWarehouse({warehouse_boundaries[0], warehouse_boundaries[1],
                               warehouse_boundaries[2], warehouse_boundaries[3],
                               warehouse_boundaries[4], warehouse_boundaries[5]},
                              n_rooms_x, n_rooms_y);
-    // TODO: position of congesting nodes
+    for (int i=0; i<n_congesting_nodes; i++) {
+        ns3::Vector cp = xmlrpc_to_position(congesting_positions[i]);
+        network->setCongestingNodePosition(i, cp);
+    }
 
     ROS_INFO("Starting ROS node...");
     std::thread thread(runRosNode, network);        // on a second thread, because...
