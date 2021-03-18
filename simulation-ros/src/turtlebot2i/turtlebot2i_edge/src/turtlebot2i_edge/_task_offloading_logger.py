@@ -32,10 +32,10 @@ class TaskOffloadingLogger(Callback):
         episode_logs['reward'].append(logs['reward'])
         episode_logs['latency'].append(self.env.latency)
         episode_logs['energy'].append(self.env.energy)
-        episode_logs['risk_value'].append(self.env.observation['risk_value'])
-        episode_logs['temporal_coherence'].append(self.env.observation['temporal_coherence'])
+        episode_logs['risk_value'].append(self.env.observation_last['risk_value'])
+        episode_logs['temporal_coherence'].append(self.env.observation_last['temporal_coherence'])
         episode_logs['published'].append(self.env.published)
-        episode_logs['edge_model'].append(self.env.scene_graph_from_edge)
+        episode_logs['edge_model'].append(self.env.observation['last_from_edge'])
 
         if step % self.interval == 0:
             self._save()

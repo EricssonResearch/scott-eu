@@ -12,3 +12,5 @@ tf~=1.12.1
 opencv-python~=4.2.0.32
 Pympler~=0.9
 seaborn~=0.9.1
+scikit-image~=0.14.5
+pydot~=1.2.4

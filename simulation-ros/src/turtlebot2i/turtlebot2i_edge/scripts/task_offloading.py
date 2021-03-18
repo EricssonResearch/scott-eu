@@ -6,10 +6,9 @@ import os
 import rospy
 from gym.spaces import flatdim
 from keras import Input, Model
-from keras.layers import Flatten, Dense
+from keras.layers import Flatten, Dense, LSTM
 from keras.optimizers import Adam
 from rl.agents.dqn import DQNAgent
-from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 from rl.callbacks import ModelIntervalCheckpoint, TrainIntervalLogger
 from turtlebot2i_edge import TaskOffloadingEnv, TaskOffloadingProcessor, TaskOffloadingLogger, NaiveAgent
@@ -39,10 +38,9 @@ def main():
     pick_goals = rospy.get_param('/pick_and_place/goals/pick')
     place_goals = rospy.get_param('/pick_and_place/goals/place')
     max_rtt = rospy.get_param('~env/observation/max_rtt')
-    bandwidth = rospy.get_param('~network/bandwidth')
+    bandwidth = rospy.get_param('/network/bandwidth')
     max_duration_throughput = rospy.get_param('~env/observation/max_duration_throughput')
-    w_latency = rospy.get_param('~env/reward/w_latency')
-    w_energy = rospy.get_param('~env/reward/w_energy')
+    good_latency = rospy.get_param('~env/reward/good_latency')
     robot_compute_power = rospy.get_param('~env/reward/robot/compute_power')
     robot_transmit_power = rospy.get_param('~env/reward/robot/transmit_power')
     max_risk_value = rospy.get_param('~env/task/max_risk_value')
@@ -60,8 +58,7 @@ def main():
     rospy.loginfo('Max RTT: %f ms' % max_rtt)
     rospy.loginfo('Bandwidth: %f MHz' % bandwidth)
     rospy.loginfo('Max duration of throughput measurement: %f s' % max_duration_throughput)
-    rospy.loginfo('Latency weight in reward: %f' % w_latency)
-    rospy.loginfo('Energy weight in reward: %f' % w_energy)
+    rospy.loginfo('Good latency (+1 in reward): %f s' % good_latency)
     rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
     rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
     rospy.loginfo('Max risk value: %f' % max_risk_value)
@@ -80,10 +77,9 @@ def main():
         bandwidth=bandwidth,
         max_duration_throughput=max_duration_throughput,
         max_risk_value=max_risk_value,
+        good_latency=good_latency,
         network_image_size=network_image_size,
         depth_image_size=depth_image_size,
-        w_latency=w_latency,
-        w_energy=w_energy,
         robot_compute_power=robot_compute_power,
         robot_transmit_power=robot_transmit_power,
         pick_goals=pick_goals,
@@ -105,7 +101,6 @@ def main():
             memory=SequentialMemory(limit=50000, window_length=1),
             nb_steps_warmup=50,
             target_model_update=1e-2,
-            policy=BoltzmannQPolicy()
         )
         agent.compile(Adam(lr=1e-3), metrics=['mae'])
         if mode != 'train':
@@ -125,13 +120,13 @@ def main():
             TrainIntervalLogger(interval=100),
             TaskOffloadingLogger(log_path, interval=100)
         ]
-        agent.fit(env, nb_steps=10000, visualize=False, callbacks=callbacks, verbose=2)
+        agent.fit(env, nb_steps=100000, visualize=False, callbacks=callbacks, verbose=2)
         rospy.loginfo('Saving weights to %s' % model_path)
         agent.save_weights(model_path, overwrite=True)
     elif mode == 'test':
         rospy.loginfo('Testing...')
         callbacks = [TaskOffloadingLogger(log_path, interval=100)]
-        agent.test(env, nb_episodes=1, visualize=True, callbacks=callbacks, verbose=2)
+        agent.test(env, nb_episodes=10, visualize=False, callbacks=callbacks, verbose=2)
     else:
         raise ValueError
 

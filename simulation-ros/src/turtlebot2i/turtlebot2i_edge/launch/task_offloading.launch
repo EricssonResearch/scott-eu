@@ -49,6 +49,7 @@
             <param name="vrep/host" type="str" value="localhost"/>
             <param name="vrep/port" type="int" value="20001"/>
             <param name="rl/models/path" type="str" value="$(find turtlebot2i_edge)/models"/>
+            <remap from="vrep/generate_scene_graph" to="/$(arg robot_name)/generate_scene_graph"/>
         </node>
     </group>
 </launch>

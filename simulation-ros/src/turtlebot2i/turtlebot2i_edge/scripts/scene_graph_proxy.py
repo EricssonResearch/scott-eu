@@ -3,9 +3,8 @@
 import rospy
 import time
 from pympler.asizeof import asizeof
-from turtlebot2i_scene_graph.srv import GenerateSceneGraph as GenerateSceneGraphOut
-from turtlebot2i_edge.srv import GenerateSceneGraph as GenerateSceneGraphIn
-from turtlebot2i_edge.srv import GenerateSceneGraphResponse, Stamp
+from turtlebot2i_scene_graph.srv import GenerateSceneGraph
+from turtlebot2i_edge.srv import GenerateSceneGraphProxy, GenerateSceneGraphProxyResponse, Stamp
 
 
 def get_scene_graph(generate_scene_graph, execution_latency):
@@ -40,7 +39,7 @@ def on_edge_proxy(generate_scene_graph, upload, download, execution_latency, req
         return None
     download_latency = rospy.Time.now() - time_start
 
-    return GenerateSceneGraphResponse(
+    return GenerateSceneGraphProxyResponse(
         communication_latency=upload_latency + download_latency,
         execution_latency=execution_latency,
         scene_graph=scene_graph
@@ -53,7 +52,7 @@ def on_robot_proxy(generate_scene_graph, execution_latency, request):
     response = get_scene_graph(generate_scene_graph, execution_latency)
     scene_graph = response.scene_graph
 
-    return GenerateSceneGraphResponse(
+    return GenerateSceneGraphProxyResponse(
         communication_latency=communication_latency,
         execution_latency=execution_latency,
         scene_graph=scene_graph
@@ -71,7 +70,7 @@ def main():
     execution_latency = rospy.Duration.from_sec(execution_latency)
 
     rospy.loginfo('Waiting for ROS service to generate scene graph...')
-    generate_scene_graph = rospy.ServiceProxy('generate_scene_graph', GenerateSceneGraphOut)
+    generate_scene_graph = rospy.ServiceProxy('generate_scene_graph', GenerateSceneGraph)
     generate_scene_graph.wait_for_service()
 
     if on_edge:
@@ -91,7 +90,7 @@ def main():
 
     rospy.Service(
         name='generate_scene_graph_proxy',
-        service_class=GenerateSceneGraphIn,
+        service_class=GenerateSceneGraphProxy,
         handler=proxy,
         buff_size=2**20     # 1 MB, enough for camera images
     )
