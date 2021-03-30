@@ -60,12 +60,12 @@ def get_direction(i, j):
 
 
 def get_type(i):
-    if re.match(r'80cmHighWall*', i.name):
+    if re.match(r'.*HighWall.*', i.name):
         obj_type = 3  # wall
-    elif re.match(r'Bill*', i.name):
+    elif re.match(r'.*Bill.*', i.name):
         obj_type = 2  # human
-    elif re.match(r'turtlebot*', i.name):
-        obj_type = 1  # robot # non-human dynamic objects
+    elif re.match(r'.*turtlebot.*', i.name):
+        obj_type = 1  # robot, non-human dynamic objects
     else:
         obj_type = 0  # static objects
     return obj_type

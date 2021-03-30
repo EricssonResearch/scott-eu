@@ -1,4 +1,3 @@
-from __future__ import print_function
 from __future__ import division
 
 import threading
@@ -192,8 +191,8 @@ class TaskOffloadingEnv(Env):
             rospy.loginfo('Action = %d' % self._action)
             rospy.loginfo('Reward = %f' % self._reward)
             rospy.loginfo('Published = %s' % str(self.published))
-            rospy.loginfo('Latency = %f' % self.latency)
-            rospy.loginfo('Energy = %f' % self.energy)
+            rospy.loginfo('Latency = %f s' % self.latency)
+            rospy.loginfo('Energy = %f J' % self.energy)
 
         elif mode == 'ansi':
             output = ('Step = %d\n' % self._step) + \
@@ -202,8 +201,8 @@ class TaskOffloadingEnv(Env):
                      ('Action = %d\n' % self._action) + \
                      ('Reward = %f\n' % self._reward) + \
                      ('Published = %s' % str(self.published)) + \
-                     ('Latency = %f' % self.latency) + \
-                     ('Energy = %f' % self.energy)
+                     ('Latency = %f s' % self.latency) + \
+                     ('Energy = %f J' % self.energy)
             return output
 
         else:
@@ -276,9 +275,9 @@ class TaskOffloadingEnv(Env):
 
         self.latency = communication_latency + execution_latency
         if self._action == 0:
-            self.energy = self.robot_transmit_power * communication_latency
-        elif self._action == 1:
             self.energy = self.robot_compute_power * execution_latency
+        elif self._action == 1:
+            self.energy = self.robot_transmit_power * communication_latency
         elif self._action == 2:
             self.energy = 0
         else:
@@ -312,10 +311,10 @@ class TaskOffloadingEnv(Env):
         return reward
 
     def _done(self):
-        # with self._collision_lock:
-        #     if self._collision:
-        #         self._vrep_scene_controller.reset()
-        #         self._collision = False
+        with self._collision_lock:
+            if self._collision:
+                self._vrep_scene_controller.reset()
+                self._collision = False
         if self._pick_and_place_navigator.completed_pick_and_place >= self.pick_and_place_per_episode:
             return True
         return False
@@ -381,5 +380,6 @@ class TaskOffloadingEnv(Env):
     def _save_collision(self, event):
         if event.state == 1:
             with self._collision_lock:
-                self._collision = True
-                rospy.logwarn('Collision')
+                if not self._collision:
+                    self._collision = True
+                    rospy.logwarn('Collision')
