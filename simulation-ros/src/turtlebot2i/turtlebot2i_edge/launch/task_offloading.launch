@@ -28,6 +28,11 @@
         <arg name="output" value="log"/>
     </include>
 
+    <include file="$(find turtlebot2i_safety)/launch/risk_management.launch">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+        <arg name="output" value="log"/>
+    </include>
+
     <group ns="$(arg robot_name)">
         <node name="scene_graph_proxy" pkg="turtlebot2i_edge" type="scene_graph_proxy.py" ns="edge">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_edge.yaml"/>
@@ -40,9 +45,7 @@
             <param name="on_edge" type="bool" value="False"/>
         </node>
 
-        <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py"/>
-
-        <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" output="screen">
+        <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" required="true" output="screen">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/env.yaml"/>
             <param name="agent" type="str" value="$(arg agent)"/>
             <param name="mode" type="str" value="$(arg mode)"/>

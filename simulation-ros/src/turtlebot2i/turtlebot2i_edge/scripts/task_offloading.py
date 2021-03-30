@@ -6,8 +6,7 @@ import os
 import rospy
 from gym.spaces import flatdim
 from keras import Input, Model
-from keras.layers import Flatten, Dense, LSTM
-from keras.optimizers import Adam
+from keras.layers import Flatten, Dense
 from rl.agents.dqn import DQNAgent
 from rl.memory import SequentialMemory
 from rl.callbacks import ModelIntervalCheckpoint, TrainIntervalLogger
@@ -84,7 +83,7 @@ def main():
         robot_transmit_power=robot_transmit_power,
         pick_goals=pick_goals,
         place_goals=place_goals,
-        pick_and_place_per_episode=1,
+        pick_and_place_per_episode=10,
         vrep_simulation=True,
         vrep_host=vrep_host,
         vrep_port=vrep_port,
@@ -99,10 +98,8 @@ def main():
             model=get_model(env),
             nb_actions=env.action_space.n,
             memory=SequentialMemory(limit=50000, window_length=1),
-            nb_steps_warmup=50,
-            target_model_update=1e-2,
         )
-        agent.compile(Adam(lr=1e-3), metrics=['mae'])
+        agent.compile(optimizer='adam', metrics=['mae'])
         if mode != 'train':
             rospy.loginfo('Loading weights from %s...' % model_path)
             agent.load_weights(model_path)
@@ -120,13 +117,13 @@ def main():
             TrainIntervalLogger(interval=100),
             TaskOffloadingLogger(log_path, interval=100)
         ]
-        agent.fit(env, nb_steps=100000, visualize=False, callbacks=callbacks, verbose=2)
+        agent.fit(env, nb_steps=10000, visualize=True, callbacks=callbacks, verbose=2)
         rospy.loginfo('Saving weights to %s' % model_path)
         agent.save_weights(model_path, overwrite=True)
     elif mode == 'test':
         rospy.loginfo('Testing...')
         callbacks = [TaskOffloadingLogger(log_path, interval=100)]
-        agent.test(env, nb_episodes=10, visualize=False, callbacks=callbacks, verbose=2)
+        agent.test(env, nb_episodes=1, visualize=False, callbacks=callbacks, verbose=2)
     else:
         raise ValueError
 

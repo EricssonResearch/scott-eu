@@ -69,7 +69,7 @@ def plot_action_pie(logs, output_dir=None, filename=None):
     plt.pie(wedge_sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
 
     if filename is None:
-        filename = 'actions.pdf'
+        filename = 'actions.jpg'
     filepath = os.path.join(output_dir, filename)
     if output_dir is not None:
         plt.savefig(filepath)
@@ -86,7 +86,7 @@ def plot_2d_density(logs, metric_x, metric_y, output_dir=None, filename=None):
     plot.set_axis_labels(xlabel=metric_x.replace('_', ' '), ylabel=metric_y.replace('_', ' '))
 
     if filename is None:
-        filename = '%s_%s.pdf' % (metric_x, metric_y)
+        filename = '%s_%s.jpg' % (metric_x, metric_y)
     filepath = os.path.join(output_dir, filename)
     if output_dir is not None:
         plot.savefig(filepath)
@@ -126,12 +126,12 @@ def main():
 
     filtered_logs = filter_logs_by_action(logs, [2])
     if filtered_logs is not None:
-        filename = 'risk_value_temporal_coherence_use_last.pdf'
+        filename = 'risk_value_temporal_coherence_use_last.jpg'
         plot_2d_density(filtered_logs, 'risk_value', 'temporal_coherence', output_dir=args.output, filename=filename)
 
     filtered_logs = filter_logs_by_action(logs, [0, 1])
     if filtered_logs is not None:
-        filename = 'risk_value_temporal_coherence_compute.pdf'
+        filename = 'risk_value_temporal_coherence_compute.jpg'
         plot_2d_density(filtered_logs, 'risk_value', 'temporal_coherence', output_dir=args.output, filename=filename)
 
 

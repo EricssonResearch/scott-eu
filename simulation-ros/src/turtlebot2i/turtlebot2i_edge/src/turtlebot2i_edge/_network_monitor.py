@@ -42,7 +42,7 @@ class NetworkMonitor:
         if self.ns3_simulation:
             max_rtt = rospy.Time.from_sec(max_rtt)
             rtt = None
-            while rtt is None:      # while loop because the ns-3 can crash, even if rarely
+            while rtt is None:      # while loop because ns-3 might crash when the robot is outside the network coverage
                 try:
                     response = self._ns3_ping(max_rtt=max_rtt)
                     rtt = response.rtt.to_sec() * 1e3
@@ -70,7 +70,7 @@ class NetworkMonitor:
 
         else:
             throughput = None
-            while throughput is None:   # while loop because the ns-3 can crash, even if rarely
+            while throughput is None:   # while loop because ns-3 can crash if the robot is outside the network coverage
                 try:
                     self._stamp.wait_for_service(timeout=0.1)
                     bytes_ = b'\x00' * n_bytes

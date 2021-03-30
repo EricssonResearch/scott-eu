@@ -6,7 +6,6 @@ import cv2
 import numpy as np
 import rospy
 import message_filters
-import pydot
 from gym import Env
 from gym.spaces import Discrete, Dict, Box
 from gym.utils.seeding import np_random
@@ -180,7 +179,7 @@ class TaskOffloadingEnv(Env):
         self._scene_graph_from_edge = False
 
         self.observation = self._observe()
-        self._step = 1
+        self._step = -1
 
         rospy.loginfo('Environment reset')
         return self.observation
@@ -190,15 +189,21 @@ class TaskOffloadingEnv(Env):
             rospy.loginfo('Step = %d' % self._step)
             rospy.loginfo('Last observation = %s' % str(self.observation_last))
             rospy.loginfo('New observation = %s' % str(self.observation))
-            rospy.loginfo('Action = %s' % str(self._action))
+            rospy.loginfo('Action = %d' % self._action)
             rospy.loginfo('Reward = %f' % self._reward)
+            rospy.loginfo('Published = %s' % str(self.published))
+            rospy.loginfo('Latency = %f' % self.latency)
+            rospy.loginfo('Energy = %f' % self.energy)
 
         elif mode == 'ansi':
             output = ('Step = %d\n' % self._step) + \
                      ('Last observation = %s\n' % self.observation_last) + \
                      ('New observation = %s\n' % self.observation) + \
                      ('Action = %d\n' % self._action) + \
-                     ('Reward = %f' % self._reward)
+                     ('Reward = %f\n' % self._reward) + \
+                     ('Published = %s' % str(self.published)) + \
+                     ('Latency = %f' % self.latency) + \
+                     ('Energy = %f' % self.energy)
             return output
 
         else:
@@ -259,22 +264,14 @@ class TaskOffloadingEnv(Env):
 
     def _get_reward(self, response):
         # no scene graph => +0
-        if response.scene_graph.sg_data == '':
+        if not self.published:
             self.latency = np.inf
             self.energy = np.inf
             return 0
 
-        # last scene graph re-used and objects are different => +0
-        if self._action == 2:
-            scene_graph_correct = pydot.graph_from_dot_data(self._generate_scene_graph_vrep().scene_graph.sg_data)[0]
-            scene_graph_last = pydot.graph_from_dot_data(response.scene_graph.sg_data)[0]
-            for node_correct, node_last in zip(scene_graph_correct.get_nodes(), scene_graph_last.get_nodes()):
-                if node_correct.get_name() != node_last.get_name():
-                    return 0
-
         communication_latency = response.communication_latency.to_sec()
         execution_latency = response.execution_latency.to_sec()
-        risk_value = self.observation_last['risk_value'] / self.max_risk_value     # normalized
+        risk_value = self.observation_last['risk_value']
         temporal_coherence = self.observation_last['temporal_coherence'] if self._action == 2 else 1
 
         self.latency = communication_latency + execution_latency
@@ -301,21 +298,24 @@ class TaskOffloadingEnv(Env):
         # - network more likely not to be congested at the next time step
         reward_no_congestion = 1 if self._action == 0 or self._action == 2 else 0
 
-        # When the risk is medium or high, we are very interested in latency and accuracy (output must be available as
-        # soon as possible and be correct). When the risk is low, we are not so interested in latency and accuracy, so
-        # we can save energy and avoid to congest the network.
-        w_risk = -risk_value**2 + 2*risk_value
+        # When the risk is medium or high, we are very interested in latency and accuracy.
+        # When the risk is low, we are not so interested in latency and accuracy, so we can save energy and avoid to
+        # congest the network.
+        risk_value_normalized = risk_value / self.max_risk_value
+        w_risk = -risk_value_normalized**2 + 2*risk_value_normalized
         reward = w_risk * (reward_latency + reward_accuracy) + (1 - w_risk) * (reward_energy + reward_no_congestion)
 
-        # the less temporal coherence, the more penalty
-        reward *= temporal_coherence**4
+        # When the risk is high, we are very interested in accuracy. Accuracy can also be increased by avoiding to use
+        # the previous output (fresh output).
+        reward *= temporal_coherence ** risk_value
 
         return reward
 
     def _done(self):
-        with self._collision_lock:
-            if self._collision:
-                return True
+        # with self._collision_lock:
+        #     if self._collision:
+        #         self._vrep_scene_controller.reset()
+        #         self._collision = False
         if self._pick_and_place_navigator.completed_pick_and_place >= self.pick_and_place_per_episode:
             return True
         return False
