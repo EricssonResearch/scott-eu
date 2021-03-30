@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import os
 import rospy
 from gym.spaces import flatdim
@@ -10,7 +8,7 @@ from keras.layers import Flatten, Dense
 from rl.agents.dqn import DQNAgent
 from rl.memory import SequentialMemory
 from rl.callbacks import ModelIntervalCheckpoint, TrainIntervalLogger
-from turtlebot2i_edge import TaskOffloadingEnv, TaskOffloadingProcessor, TaskOffloadingLogger, NaiveAgent
+from turtlebot2i_edge import TaskOffloadingEnv, TaskOffloadingProcessor, TaskOffloadingLogger, SafetyLogger, NaiveAgent
 
 
 def get_model(env):
@@ -68,7 +66,8 @@ def main():
     if not os.path.exists(models_path):
         os.mkdir(models_path)
     model_path = os.path.join(models_path, '%s_weights' % agent)
-    log_path = os.path.join(models_path, '%s_logs_%s' % (agent, mode))
+    log_path_offloading = os.path.join(models_path, '%s_%s_logs_offloading' % (agent, mode))
+    log_path_safety = os.path.join(models_path, '%s_%s_logs_safety' % (agent, mode))
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
@@ -83,7 +82,7 @@ def main():
         robot_transmit_power=robot_transmit_power,
         pick_goals=pick_goals,
         place_goals=place_goals,
-        pick_and_place_per_episode=10,
+        pick_and_place_per_episode=5,
         vrep_simulation=True,
         vrep_host=vrep_host,
         vrep_port=vrep_port,
@@ -115,15 +114,19 @@ def main():
         callbacks = [
             ModelIntervalCheckpoint(model_path, interval=100),
             TrainIntervalLogger(interval=100),
-            TaskOffloadingLogger(log_path, interval=100)
+            TaskOffloadingLogger(log_path_offloading, interval=100),
+            SafetyLogger(log_path_safety, interval=100)
         ]
         agent.fit(env, nb_steps=10000, visualize=True, callbacks=callbacks, verbose=2)
         rospy.loginfo('Saving weights to %s' % model_path)
         agent.save_weights(model_path, overwrite=True)
     elif mode == 'test':
         rospy.loginfo('Testing...')
-        callbacks = [TaskOffloadingLogger(log_path, interval=100)]
-        agent.test(env, nb_episodes=1, visualize=False, callbacks=callbacks, verbose=2)
+        callbacks = [
+            TaskOffloadingLogger(log_path_offloading, interval=100),
+            SafetyLogger(log_path_safety, interval=100)
+        ]
+        agent.test(env, nb_episodes=1, visualize=True, callbacks=callbacks, verbose=2)
     else:
         raise ValueError
 
