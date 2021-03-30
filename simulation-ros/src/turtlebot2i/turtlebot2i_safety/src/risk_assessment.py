@@ -272,11 +272,11 @@ if __name__ == "__main__":
     cal_risk(0, 1.0, 0.0, 0.0, 0.0) #FLS takes some time for initialization. Run it once before subscribe to a topic
     ## PUBLISHERS
     # Creates a publisher object
-    safe_vel_pub = rospy.Publisher('/turtlebot2i/safety/vel_scale', VelocityScale, queue_size=1)
-    risk_val_pub = rospy.Publisher('/turtlebot2i/safety/risk_val', std_msgs.msg.Float64, queue_size=1)
-    safe_risk_pub = rospy.Publisher('/turtlebot2i/safety/obstacles_risk', SafetyRisk, queue_size=1)
+    safe_vel_pub = rospy.Publisher('safety/vel_scale', VelocityScale, queue_size=1)
+    risk_val_pub = rospy.Publisher('safety/risk_val', std_msgs.msg.Float64, queue_size=1)
+    safe_risk_pub = rospy.Publisher('safety/obstacles_risk', SafetyRisk, queue_size=1)
     ## SUBSCRIBERS
     # Creates a subscriber object
-    rospy.Subscriber('/turtlebot2i/scene_graph', SceneGraph, topic_callback)
+    rospy.Subscriber('scene_graph', SceneGraph, topic_callback)
     print("initialization finished, Risk assesment ready!")
     rospy.spin()

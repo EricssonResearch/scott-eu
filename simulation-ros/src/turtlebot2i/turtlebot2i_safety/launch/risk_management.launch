@@ -1,0 +1,10 @@
+<launch>
+    <arg name="robot_name" default="turtlebot2i"/>
+    <arg name="output" default="screen"/>
+
+    <group ns="$(arg robot_name)">
+        <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py" output="$(arg output)"/>
+        <node name="zone_generation" pkg="turtlebot2i_safety" type="zone_generation.py" output="$(arg output)"/>
+        <node name="risk_mitigation" pkg="turtlebot2i_safety" type="risk_mitigation_fls.py" output="$(arg output)"/>
+    </group>
+</launch>

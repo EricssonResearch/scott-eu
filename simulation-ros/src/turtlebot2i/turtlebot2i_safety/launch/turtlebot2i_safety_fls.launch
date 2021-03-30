@@ -9,9 +9,10 @@
   <!-- Scene Graph Generator  -->
   <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch"/>
 
-  <!-- Scene Graph Parser+ Risk management  --> 
-  <node pkg="turtlebot2i_safety" name="risk_assessment"        type="risk_assessment.py"     output="screen"/>
-  <node pkg="turtlebot2i_safety" name="zone_generation_py"     type="zone_generation.py"     output="screen"/>
-  <node pkg="turtlebot2i_safety" name="risk_mitigation_fls_py" type="risk_mitigation_fls.py" output="screen"/>
-
+  <!-- Scene Graph Parser+ Risk management  -->
+  <group ns="turtlebot2i">
+    <node pkg="turtlebot2i_safety" name="risk_assessment"        type="risk_assessment.py"     output="screen"/>
+    <node pkg="turtlebot2i_safety" name="zone_generation_py"     type="zone_generation.py"     output="screen"/>
+    <node pkg="turtlebot2i_safety" name="risk_mitigation_fls_py" type="risk_mitigation_fls.py" output="screen"/>
+  </group>
 </launch>
