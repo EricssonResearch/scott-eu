@@ -5,6 +5,7 @@ from __future__ import division
 
 import argparse
 import os
+import shutil
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -65,8 +66,9 @@ def print_output(output, output_dir=None, filename=None):
 def plot_action_pie(logs, output_dir=None, filename=None):
     n_actions = TaskOffloadingEnv.action_space.n
     wedge_sizes = [len(np.where(logs['action'] == a)[0]) for a in range(n_actions)]
-    labels = ['on robot', 'on edge', 'use last']
-    plt.pie(wedge_sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
+    labels = ['compute on robot', 'compute on edge', 'use last output']
+    patches, _, _ = plt.pie(wedge_sizes, autopct='%1.1f%%', shadow=True, startangle=90)
+    plt.legend(patches, labels)
 
     if filename is None:
         filename = 'actions.jpg'
@@ -104,7 +106,8 @@ def main():
     args = get_command_line_arguments()
     if args.output is not None and os.path.isfile(args.output):
         raise ValueError('Invalid output path, it is a file')
-    if args.output is not None and not os.path.exists(args.output):
+    if args.output is not None:
+        shutil.rmtree(args.output)
         os.mkdir(args.output)
 
     logs = np.load(args.logs, allow_pickle=True)['logs']

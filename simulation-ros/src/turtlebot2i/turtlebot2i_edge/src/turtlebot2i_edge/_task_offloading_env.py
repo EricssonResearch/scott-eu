@@ -191,8 +191,8 @@ class TaskOffloadingEnv(Env):
             rospy.loginfo('Action = %d' % self._action)
             rospy.loginfo('Reward = %f' % self._reward)
             rospy.loginfo('Published = %s' % str(self.published))
-            rospy.loginfo('Latency = %f s' % self.latency)
-            rospy.loginfo('Energy = %f J' % self.energy)
+            rospy.loginfo('Latency = %f' % self.latency)
+            rospy.loginfo('Energy = %f' % self.energy)
 
         elif mode == 'ansi':
             output = ('Step = %d\n' % self._step) + \
@@ -201,8 +201,8 @@ class TaskOffloadingEnv(Env):
                      ('Action = %d\n' % self._action) + \
                      ('Reward = %f\n' % self._reward) + \
                      ('Published = %s' % str(self.published)) + \
-                     ('Latency = %f s' % self.latency) + \
-                     ('Energy = %f J' % self.energy)
+                     ('Latency = %f' % self.latency) + \
+                     ('Energy = %f' % self.energy)
             return output
 
         else:
@@ -306,7 +306,10 @@ class TaskOffloadingEnv(Env):
 
         # When the risk is high, we are very interested in accuracy. Accuracy can also be increased by avoiding to use
         # the previous output (fresh output).
-        reward *= temporal_coherence ** risk_value
+        # When the temporal coherence is low, we do not want to use the last output, because it is very different from
+        # the correct one.
+        w_tc = temporal_coherence**(2*risk_value) if temporal_coherence > 0.8 else 0
+        reward *= w_tc
 
         return reward
 

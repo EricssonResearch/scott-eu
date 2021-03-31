@@ -133,7 +133,7 @@ class SafetyLogger(Callback):
         self.logs[-1]['risk_value_x_speed_max'] = self._risk_value_x_speed_max
         self.logs[-1]['collisions'] = self._collisions
         self.logs[-1]['mean_distance'] = self._mean_distance_sum / self._mean_distance_count
-        self.logs[-1]['mean_min_distance'] = self._mean_min_distance / self.sensors
+        self.logs[-1]['mean_min_distance'] = sum(self._mean_min_distance) / self.sensors
         self.logs[-1]['min_distance'] = min(self._mean_min_distance)
         np.savez(self.filepath, logs=self.logs)
 
