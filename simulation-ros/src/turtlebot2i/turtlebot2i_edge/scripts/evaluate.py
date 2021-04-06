@@ -46,7 +46,9 @@ def filter_logs_by_action(logs, actions):
 def get_metric_per_step(logs, metric):
     metric_mean = logs[metric].mean()
     metric_std = logs[metric].std()
-    return metric_mean, metric_std
+    metric_min = logs[metric].min()
+    metric_max = logs[metric].max()
+    return metric_mean, metric_std, metric_min, metric_max
 
 
 def get_percentage_metric(logs, metric):
@@ -114,8 +116,8 @@ def main():
     logs = preprocess(logs)
 
     for metric in ['reward', 'latency', 'energy']:
-        metric_mean, metric_std = get_metric_per_step(logs, metric)
-        output = '%s per step: %.2f +- %.2f' % (metric, metric_mean, metric_std)
+        metric_mean, metric_std, metric_min, metric_max = get_metric_per_step(logs, metric)
+        output = '%s per step: %.2f +- %.2f [%.2f, %.2f]' % (metric, metric_mean, metric_std, metric_min, metric_max)
         print_output(output, output_dir=args.output)
 
     for metric in ['published', 'edge_model']:
