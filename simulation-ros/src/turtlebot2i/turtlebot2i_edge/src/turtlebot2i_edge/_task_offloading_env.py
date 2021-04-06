@@ -29,7 +29,7 @@ class TaskOffloadingEnv(Env):
         throughput=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         risk_value=Box(low=0, high=np.inf, shape=(1,), dtype=np.float32),
         temporal_coherence=Box(low=0, high=1, shape=(1,), dtype=np.float32),
-        last_from_edge=Discrete(n=2)
+        last_output_from_edge=Discrete(n=2)
     )
 
     def __init__(self, max_rtt, bandwidth, max_duration_throughput, max_risk_value, good_latency,
@@ -46,7 +46,6 @@ class TaskOffloadingEnv(Env):
         self.max_duration_throughput = max_duration_throughput
         self.max_risk_value = max_risk_value
         self.good_latency = good_latency
-        self._good_energy = good_latency * robot_transmit_power
         self.network_image_size = network_image_size
         self.depth_image_size = depth_image_size
         self.robot_compute_power = robot_compute_power
@@ -258,7 +257,7 @@ class TaskOffloadingEnv(Env):
             'throughput': throughput,
             'risk_value': risk_value,
             'temporal_coherence': temporal_coherence,
-            'last_from_edge': self._scene_graph_from_edge
+            'last_output_from_edge': self._scene_graph_from_edge
         }
 
     def _get_reward(self, response):
@@ -283,26 +282,24 @@ class TaskOffloadingEnv(Env):
         else:
             raise ValueError
 
-        # the lower the latency, the better (saturates at 1)
-        reward_latency = 1 if self.latency <= self.good_latency else self.good_latency / self.latency
+        # the lower the latency, the better (saturates at 0.5)
+        reward_latency = 0.5 if self.latency <= self.good_latency else 0.5 * self.good_latency / self.latency
 
-        # the lower the energy, the better (saturates at 1)
-        reward_energy = 1 if self.energy <= self._good_energy else self._good_energy / self.energy
-
-        # bonus of +1 if the scene graph was computed on the edge (better model)
-        reward_accuracy = 1 if self._scene_graph_from_edge else 0
+        # bonus of +0.5 if the scene graph was computed on the edge (better model)
+        reward_accuracy = 0.5 if self._scene_graph_from_edge else 0
 
         # bonus of +1 if the edge was not used, because:
         # - let other devices offload better
         # - network more likely not to be congested at the next time step
-        reward_no_congestion = 1 if self._action == 0 or self._action == 2 else 0
+        reward_no_congestion = 1 if self._action != 1 else 0
 
         # When the risk is medium or high, we are very interested in latency and accuracy.
-        # When the risk is low, we are not so interested in latency and accuracy, so we can save energy and avoid to
-        # congest the network.
+        # When the risk is low, we are more interested in avoiding to congest the network.
+        # The reward is in the same range [0,1] in either case, so that the agent does not learn to affect the risk
+        # (the module responsible for is the risk mitigation).
         risk_value_normalized = risk_value / self.max_risk_value
         w_risk = -risk_value_normalized**2 + 2*risk_value_normalized
-        reward = w_risk * (reward_latency + reward_accuracy) + (1 - w_risk) * (reward_energy + reward_no_congestion)
+        reward = w_risk * (reward_latency + reward_accuracy) + (1 - w_risk) * reward_no_congestion
 
         # When the risk is high, we are very interested in accuracy. Accuracy can also be increased by avoiding to use
         # the previous output (fresh output).

@@ -1,7 +1,7 @@
 <launch>
     <arg name="robot_name" default="turtlebot2i"/>
     <arg name="agent" default="dqn"/>
-    <arg name="mode" default="train"/>
+    <arg name="train" default="false"/>
     <arg name="network_type" default="wifi"/>
 
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/pick_and_place.yaml" ns="/"/>
@@ -28,7 +28,7 @@
         <arg name="output" value="log"/>
     </include>
 
-    <include file="$(find turtlebot2i_safety)/launch/risk_management.launch">
+    <include file="$(find turtlebot2i_safety)/launch/risk_management.launch" unless="$(arg train)">
         <arg name="robot_name" value="$(arg robot_name)"/>
         <arg name="output" value="log"/>
     </include>
@@ -45,10 +45,12 @@
             <param name="on_edge" type="bool" value="False"/>
         </node>
 
+        <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py" if="$(arg train)" output="log"/>
+
         <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" required="true" output="screen">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/env.yaml"/>
             <param name="agent" type="str" value="$(arg agent)"/>
-            <param name="mode" type="str" value="$(arg mode)"/>
+            <param name="train" type="bool" value="$(arg train)"/>
             <param name="vrep/host" type="str" value="localhost"/>
             <param name="vrep/port" type="int" value="20001"/>
             <param name="rl/models/path" type="str" value="$(find turtlebot2i_edge)/models"/>
