@@ -146,15 +146,18 @@ class SafetyLogger(Callback):
         now = rospy.Time.now()
 
         if distance_min <= self._safety_zone.critical_zone_radius:
-            if not self._in_warning_zone:
-                self._in_warning_zone_start = now
-            self._in_warning_zone = True
-            self._in_critical_zone = False
-        elif distance_min <= self._safety_zone.warning_zone_radius:
             if not self._in_critical_zone:
                 self._in_critical_zone_start = now
             self._in_critical_zone = True
             self._in_warning_zone = False
+        elif distance_min <= self._safety_zone.warning_zone_radius:
+            if not self._in_warning_zone:
+                self._in_warning_zone_start = now
+            self._in_warning_zone = True
+            self._in_critical_zone = False
+        else:
+            self._in_warning_zone = False
+            self._in_critical_zone = False
 
         if not self._in_warning_zone and in_warning_zone_previous:
             self._warning_zone_duration += now - self._in_warning_zone_start
