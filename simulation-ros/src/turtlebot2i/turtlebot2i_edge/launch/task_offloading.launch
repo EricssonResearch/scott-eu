@@ -28,6 +28,11 @@
         <arg name="output" value="log"/>
     </include>
 
+    <include file="$(find turtlebot2i_safety)/launch/risk_management.launch" if="$(arg train)">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+        <arg name="output" value="log"/>
+    </include>
+
     <include file="$(find turtlebot2i_safety)/launch/risk_management.launch" unless="$(arg train)">
         <arg name="robot_name" value="$(arg robot_name)"/>
         <arg name="output" value="log"/>
@@ -44,8 +49,6 @@
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/model_robot.yaml"/>
             <param name="on_edge" type="bool" value="False"/>
         </node>
-
-        <node name="risk_assessment" pkg="turtlebot2i_safety" type="risk_assessment.py" if="$(arg train)" output="log"/>
 
         <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" required="true" output="screen">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/env.yaml"/>
