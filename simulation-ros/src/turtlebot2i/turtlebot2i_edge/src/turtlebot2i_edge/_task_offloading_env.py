@@ -314,6 +314,7 @@ class TaskOffloadingEnv(Env):
         with self._collision_lock:
             if self._collision:
                 self._vrep_scene_controller.reset()
+                self._pick_and_place_navigator.refresh()
                 self._collision = False
         if self._pick_and_place_navigator.completed_pick_and_place >= self.pick_and_place_per_episode:
             return True

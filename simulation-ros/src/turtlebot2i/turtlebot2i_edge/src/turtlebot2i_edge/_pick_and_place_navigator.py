@@ -41,6 +41,12 @@ class PickAndPlaceNavigator:
             self._move_base_client.cancel_all_goals()
         rospy.loginfo('Pick-and-place navigator stopped')
 
+    def refresh(self):
+        with self._lock:
+            if self._active and self._goal is not None:
+                goal = self._get_goal(self._goal)
+                self._move_base_client.send_goal(goal, feedback_cb=self._check_goal)
+
     def seed(self, seed=None):
         self._rng, seed_ = np_random(seed)
 
@@ -55,9 +61,14 @@ class PickAndPlaceNavigator:
         with self._lock:
             self._goal = goals[idx_goal]
 
-        x, y, z = goals[idx_goal]
-        yaw = self._rng.uniform(-np.pi, np.pi)
+        goal = self._get_goal(self._goal)
+        with self._lock:
+            self._move_base_client.send_goal(goal, feedback_cb=self._check_goal)
+        rospy.loginfo('New goal: %s' % str(self._goal))
 
+    def _get_goal(self, goal):
+        x, y, z = goal
+        yaw = self._rng.uniform(-np.pi, np.pi)
         pose = Pose(
             position=Point(x, y, z),
             orientation=Quaternion(*list(quaternion_from_euler(0, 0, yaw)))
@@ -67,10 +78,7 @@ class PickAndPlaceNavigator:
             pose=pose
         )
         goal = MoveBaseGoal(target_pose=pose_stamped)
-
-        with self._lock:
-            self._move_base_client.send_goal(goal, feedback_cb=self._check_goal)
-        rospy.loginfo('New goal: %s' % str(self._goal))
+        return goal
 
     def _check_goal(self, feedback):
         # move base reaches the goal with a certain tolerance (see xy_goal_tolerance in local planner parameters)
