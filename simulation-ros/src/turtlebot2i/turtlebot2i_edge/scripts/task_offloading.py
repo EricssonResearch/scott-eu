@@ -65,9 +65,12 @@ def main():
 
     if not os.path.exists(models_path):
         os.mkdir(models_path)
-    model_path = os.path.join(models_path, '%s_weights' % agent)
-    log_path_offloading = os.path.join(models_path, '%s_logs_offloading%s' % (agent, '_train' if train else ''))
-    log_path_safety = os.path.join(models_path, '%s_logs_safety%s' % (agent, '_train' if train else ''))
+    models_path = os.path.join(models_path, agent)
+    if not os.path.exists(models_path):
+        os.mkdir(models_path)
+    model_path = os.path.join(models_path, 'weights')
+    log_path_offloading = os.path.join(models_path, 'logs_offloading%s' % ('_train' if train else ''))
+    log_path_safety = os.path.join(models_path, 'logs_safety%s' % ('_train' if train else ''))
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
