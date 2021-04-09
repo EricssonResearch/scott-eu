@@ -17,7 +17,7 @@ class NaiveAgent(Agent):
         elif self.mode == 'all_edge':
             return 1
         elif self.mode == 'random':
-            return np.random.choice(1)
+            return np.random.choice(2)
 
     def backward(self, reward, terminal):
         pass
