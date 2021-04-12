@@ -15,7 +15,7 @@ void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_i
     const geometry_msgs::Point& position = msg->pose.pose.position;
     network->setRobotPosition(robot_id, {position.x, position.y, position.z});
 //    std::pair<int,int> room = network->getRobotRoom(robot_id);
-//    ROS_INFO("Robot %d is in room {%d,%d}, position {%f,%f,%f}", robot_id, room.second, room.first, position.x,
+//    ROS_INFO("Robot %d is in room {%d,%d}, position {%f,%f,%f}", robot_id, room.first, room.second, position.x,
 //             position.y, position.z);
 }
 
