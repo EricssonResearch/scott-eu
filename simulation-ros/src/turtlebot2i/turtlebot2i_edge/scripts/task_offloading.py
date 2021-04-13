@@ -74,6 +74,7 @@ def main():
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
+        steps_per_epsiode=5000,
         max_rtt=max_rtt,
         bandwidth=bandwidth,
         max_duration_throughput=max_duration_throughput,
@@ -85,7 +86,6 @@ def main():
         robot_transmit_power=robot_transmit_power,
         pick_goals=pick_goals,
         place_goals=place_goals,
-        pick_and_place_per_episode=5,
         vrep_simulation=True,
         vrep_host=vrep_host,
         vrep_port=vrep_port,

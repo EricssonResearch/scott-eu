@@ -32,10 +32,10 @@ class TaskOffloadingEnv(Env):
         last_output_from_edge=Discrete(n=2)
     )
 
-    def __init__(self, max_rtt, bandwidth, max_duration_throughput, max_risk_value, good_latency,
-                 network_image_size, depth_image_size, robot_compute_power, robot_transmit_power,
-                 pick_goals, place_goals, pick_and_place_per_episode,
-                 vrep_simulation=False, vrep_host='localhost', vrep_port=19997, vrep_scene_graph_extraction=False):
+    def __init__(self, steps_per_epsiode, max_rtt, bandwidth, max_duration_throughput, max_risk_value,
+                 good_latency, network_image_size, depth_image_size, robot_compute_power, robot_transmit_power,
+                 pick_goals, place_goals, vrep_simulation=False, vrep_host='localhost', vrep_port=19997,
+                 vrep_scene_graph_extraction=False):
         super(TaskOffloadingEnv, self).__init__()
 
         if not vrep_simulation and vrep_scene_graph_extraction:
@@ -50,7 +50,7 @@ class TaskOffloadingEnv(Env):
         self.depth_image_size = depth_image_size
         self.robot_compute_power = robot_compute_power
         self.robot_transmit_power = robot_transmit_power
-        self.pick_and_place_per_episode = pick_and_place_per_episode
+        self.steps_per_episode = steps_per_epsiode
         self.vrep_simulation = vrep_simulation
         self.vrep_scene_graph_extraction = vrep_scene_graph_extraction
 
@@ -143,9 +143,8 @@ class TaskOffloadingEnv(Env):
             rospy.logwarn('Bad decision, no scene graph available')
             self.published = False
 
-        self.observation_last = self.observation
         self._action = action
-        self._step += 1
+        self.observation_last = self.observation
         self.observation = self._observe()
         self._reward = self._get_reward(response)
         done = self._done()
@@ -316,9 +315,8 @@ class TaskOffloadingEnv(Env):
                 self._vrep_scene_controller.reset()
                 self._pick_and_place_navigator.refresh()
                 self._collision = False
-        if self._pick_and_place_navigator.completed_pick_and_place >= self.pick_and_place_per_episode:
-            return True
-        return False
+        self._step += 1
+        return self._step >= self.steps_per_episode - 1
 
     def _compute_on_robot(self):
         response = self._generate_scene_graph_on_robot(
