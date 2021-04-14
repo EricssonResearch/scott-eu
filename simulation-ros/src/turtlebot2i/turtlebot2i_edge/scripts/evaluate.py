@@ -22,7 +22,7 @@ def preprocess_offloading(logs):
 
     # remove steps in which the output was not available
     idx_published = np.where(logs['published'] == 1)[0]
-    for k, v in logs.items():
+    for k in logs.keys():
         if k != 'published':
             logs[k] = logs[k][idx_published]
 
@@ -76,8 +76,8 @@ def plot_action_pie(logs, output_dir=None, filename=None):
 
     if filename is None:
         filename = 'actions.jpg'
-    filepath = os.path.join(output_dir, filename)
     if output_dir is not None:
+        filepath = os.path.join(output_dir, filename)
         plt.savefig(filepath)
     plt.show()          # after saving!
 
@@ -87,14 +87,14 @@ def plot_2d_density(logs, metric_x, metric_y, output_dir=None, filename=None):
         data=logs,
         x=metric_x,
         y=metric_y,
-        kind='hex'      # 'scatter', 'reg', 'resid', 'kde', or 'hex'
+        kind='kde'      # 'scatter', 'reg', 'resid', 'kde', or 'hex'
     )
     plot.set_axis_labels(xlabel=metric_x.replace('_', ' '), ylabel=metric_y.replace('_', ' '))
 
     if filename is None:
         filename = '%s_%s.jpg' % (metric_x, metric_y)
-    filepath = os.path.join(output_dir, filename)
     if output_dir is not None:
+        filepath = os.path.join(output_dir, filename)
         plot.savefig(filepath)
     plt.show()          # after saving!
 
@@ -114,7 +114,7 @@ def main():
     if args.output is not None:
         if os.path.exists(args.output):
             shutil.rmtree(args.output)
-        os.mkdir(args.output)
+        os.makedirs(args.output)
 
     logs_offloading = np.load(args.logs_offloading, allow_pickle=True)['logs']
     logs_safety = np.load(args.logs_safety, allow_pickle=True)['logs']
@@ -136,7 +136,7 @@ def main():
             print_output(output, output_dir=args.output)
 
         for metric in ['published', 'edge_model']:
-            metric_perc = get_percentage_metric(episode_logs_offloading, 'published')
+            metric_perc = get_percentage_metric(episode_logs_offloading, metric)
             output = '%s: %.2f%%' % (metric, metric_perc)
             print_output(output, output_dir=args.output)
 
@@ -151,8 +151,11 @@ def main():
             output = '%s: %f' % (metric, episode_logs_safety[metric])
             print_output(output, output_dir=args.output)
 
-        plot_dir = os.path.join(args.output, 'episode_%d' % (episode+1))
-        os.mkdir(plot_dir)
+        if args.output is not None:
+            plot_dir = os.path.join(args.output, 'episode_%d' % (episode+1))
+            os.mkdir(plot_dir)
+        else:
+            plot_dir = None
 
         plot_action_pie(episode_logs_offloading, output_dir=plot_dir)
         plot_2d_density(episode_logs_offloading, 'risk_value', 'latency', output_dir=plot_dir)
