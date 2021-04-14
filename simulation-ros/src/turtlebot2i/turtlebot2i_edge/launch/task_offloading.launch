@@ -28,12 +28,7 @@
         <arg name="output" value="log"/>
     </include>
 
-    <include file="$(find turtlebot2i_safety)/launch/risk_management.launch" if="$(arg train)">
-        <arg name="robot_name" value="$(arg robot_name)"/>
-        <arg name="output" value="log"/>
-    </include>
-
-    <include file="$(find turtlebot2i_safety)/launch/risk_management.launch" unless="$(arg train)">
+    <include file="$(find turtlebot2i_safety)/launch/risk_management.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
         <arg name="output" value="log"/>
     </include>
