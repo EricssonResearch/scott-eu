@@ -165,7 +165,7 @@ int WirelessNetwork::getRobotId(const ns3::Address &address) {
     if (it == robots_.End())
         throw std::logic_error("No robot associated to address");
 
-    int robot_id = it - robots_.Begin();
+    int robot_id = static_cast<int>(it - robots_.Begin());
     return robot_id;
 }
 
@@ -174,7 +174,7 @@ void WirelessNetwork::updateUploadedBytes(ns3::Ptr<const ns3::Packet> packet, co
     (void) packet;
     (void) server_address;
     int robot_id;
-    int n_bytes = header.GetSize();
+    int n_bytes = static_cast<int>(header.GetSize());
     ns3::Time time = header.GetTs();
 
     try {
@@ -204,7 +204,7 @@ int WirelessNetwork::upload(int robot_id, int n_bytes, const ns3::Time &max_dura
 
     ns3::Ptr<ns3::Node> robot = robots_.Get(robot_id);
     ns3::Ptr<ns3::BulkSendApplication> app = ns3::StaticCast<ns3::BulkSendApplication>(robot->GetApplication(0));
-    int max_duration_ = max_duration.GetMilliSeconds();
+    int max_duration_ = static_cast<int>(max_duration.GetMilliSeconds());
 
     std::unique_lock<std::mutex> ul(uploading_mutex_[robot_id]);
     uploaded_[robot_id] = 0;
@@ -234,7 +234,7 @@ void WirelessNetwork::updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, 
     (void) packet;
     (void) server_address;
     int robot_id;
-    int n_bytes = header.GetSize();
+    int n_bytes = static_cast<int>(header.GetSize());
     ns3::Time time = header.GetTs();
 
     try {
@@ -256,7 +256,7 @@ void WirelessNetwork::updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, 
 int WirelessNetwork::download(int robot_id, int n_bytes, const ns3::Time &max_duration) {
     ns3::Ptr<ns3::Application> app_ = mec_server_->GetApplication(robot_id);
     ns3::Ptr<ns3::BulkSendApplication> app = ns3::StaticCast<ns3::BulkSendApplication>(app_);
-    int max_duration_ = max_duration.GetMilliSeconds();
+    int max_duration_ = static_cast<int>(max_duration.GetMilliSeconds());
 
     std::unique_lock<std::mutex> ul(downloading_mutex_[robot_id]);
     downloaded_[robot_id] = 0;
@@ -282,7 +282,7 @@ int WirelessNetwork::download(int robot_id, int n_bytes, const ns3::Time &max_du
 }
 
 void WirelessNetwork::saveRtt(const ns3::Ptr<ns3::Node> &robot, const ns3::Time &time) {
-    int robot_id = robot->GetId();
+    int robot_id = static_cast<int>(robot->GetId());
     std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
     rtt_[robot_id] = time - rtt_[robot_id];
     pinging_[robot_id] = false;
@@ -292,7 +292,7 @@ void WirelessNetwork::saveRtt(const ns3::Ptr<ns3::Node> &robot, const ns3::Time 
 ns3::Time WirelessNetwork::ping(int robot_id, const ns3::Time &max_rtt) {
     ns3::Ptr<ns3::Node> robot = robots_.Get(robot_id);
     ns3::Ptr<ns3::UdpEchoClient> app = ns3::StaticCast<ns3::UdpEchoClient>(robot->GetApplication(1));
-    int max_rtt_ = max_rtt.GetMilliSeconds();
+    int max_rtt_ = static_cast<int>(max_rtt.GetMilliSeconds());
 
     std::unique_lock<std::mutex> ul(pinging_mutex_[robot_id]);
     rtt_[robot_id] = ns3::Simulator::Now();
@@ -315,7 +315,7 @@ ns3::Time WirelessNetwork::ping(int robot_id, const ns3::Time &max_rtt) {
 }
 
 int WirelessNetwork::nRobots() const {
-    return robots_.GetN();
+    return static_cast<int>(robots_.GetN());
 }
 
 ns3::NodeContainer WirelessNetwork::robots() const {

@@ -21,7 +21,7 @@ void updatePosition(const std::shared_ptr<WirelessNetwork> &network, int robot_i
 
 bool transfer(const std::shared_ptr<WirelessNetwork> &network, int robot_id, turtlebot2i_edge::Stamp::Request &request,
               turtlebot2i_edge::Stamp::Response &response, bool upload) {
-    int to_transfer = request.bytes.size();
+    int to_transfer = request.to_stamp;
     int transferred;
 
     if (upload)

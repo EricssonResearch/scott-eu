@@ -13,7 +13,7 @@ network:
       n_x: 3
       n_y: 4
   congestion:
-    data_rate: 5000000      # data rate in on state (bps)
+    data_rate: 2000000      # data rate in on state (bps)
     switch_time:
       min: 3                # min time in on/off state before switching (s)
       max: 5                # max time in on/off state before switching (s)

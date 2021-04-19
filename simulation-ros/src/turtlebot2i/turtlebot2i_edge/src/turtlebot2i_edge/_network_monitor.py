@@ -41,13 +41,12 @@ class NetworkMonitor:
     def measure_rtt(self, max_rtt=0.1):
         if self.ns3_simulation:
             max_rtt = rospy.Time.from_sec(max_rtt)
-            rtt = None
-            while rtt is None:      # while loop because ns-3 might crash when the robot is outside the network coverage
-                try:
-                    response = self._ns3_ping(max_rtt=max_rtt)
-                    rtt = response.rtt.to_sec() * 1e3
-                except (rospy.ROSException, rospy.ServiceException):
-                    pass
+            try:
+                self._ns3_ping.wait_for_service(timeout=0.1)
+                response = self._ns3_ping(max_rtt=max_rtt)
+                rtt = response.rtt.to_sec() * 1e3
+            except (rospy.ROSException, rospy.ServiceException):
+                rtt = (max_rtt.to_sec() + 1) * 1e3
         else:
             rtt = self._ping(max_rtt=max_rtt)
         return rtt
@@ -69,22 +68,17 @@ class NetworkMonitor:
             throughput = self.bandwidth * np.log2(1 + snr)
 
         else:
-            throughput = None
-            while throughput is None:   # while loop because ns-3 can crash if the robot is outside the network coverage
-                try:
-                    self._stamp.wait_for_service(timeout=0.1)
-                    bytes_ = b'\x00' * n_bytes
-                    time_start = rospy.Time.now()
-                    response = self._stamp(bytes=bytes_, max_duration=max_duration)
-                    time_end = response.header.stamp
-                    stamped = response.stamped
-                    time_elapsed = time_end - time_start
-                    time_elapsed = time_elapsed.to_sec()
-                    throughput = stamped * 8 * 1e-6 / time_elapsed
-                except (rospy.ROSException, rospy.ServiceException):
-                    if not self.ns3_simulation:
-                        throughput = 0
-                        break
+            try:
+                self._stamp.wait_for_service(timeout=0.1)
+                time_start = rospy.Time.now()
+                response = self._stamp(to_stamp=n_bytes, max_duration=max_duration)
+                time_end = response.header.stamp
+                stamped = response.stamped
+                time_elapsed = time_end - time_start
+                time_elapsed = time_elapsed.to_sec()
+                throughput = stamped * 8 * 1e-6 / time_elapsed
+            except (rospy.ROSException, rospy.ServiceException):
+                throughput = 0
 
         return throughput
 

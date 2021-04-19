@@ -769,6 +769,15 @@ TcpSocketBase::Close (void)
   return DoClose ();
 }
 
+int
+TcpSocketBase::CloseLinger (const Time &linger) {
+	NS_LOG_FUNCTION (this);
+
+	// We should send RST, but for simplicity we re-use the default Close() after emptying the tx buffer.
+	m_txBuffer->DiscardUpTo (m_txBuffer->TailSequence ());
+	return Close ();
+}
+
 /* Inherit from Socket class: Signal a termination of send */
 int
 TcpSocketBase::ShutdownSend (void)
@@ -3208,6 +3217,7 @@ TcpSocketBase::SendPendingData (bool withAck)
       return false; // Is this the right way to handle this condition?
     }
 
+std::cout << "sending data" << std::endl;
   uint32_t nPacketsSent = 0;
   uint32_t availableWindow = AvailableWindow ();
 

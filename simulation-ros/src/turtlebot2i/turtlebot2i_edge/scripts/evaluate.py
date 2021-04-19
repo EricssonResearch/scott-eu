@@ -101,8 +101,7 @@ def plot_2d_density(logs, metric_x, metric_y, output_dir=None, filename=None):
 
 def get_command_line_arguments():
     parser = argparse.ArgumentParser(description='Evaluate task offloading agent.')
-    parser.add_argument('logs_offloading', type=str, help='path to the offloading logs')
-    parser.add_argument('logs_safety', type=str, help='path to the safety logs')
+    parser.add_argument('logs', type=str, help='path to the directory containing logs')
     parser.add_argument('--output', type=str, help='path where to store results')
     return parser.parse_args()
 
@@ -116,8 +115,8 @@ def main():
             shutil.rmtree(args.output)
         os.makedirs(args.output)
 
-    logs_offloading = np.load(args.logs_offloading, allow_pickle=True)['logs']
-    logs_safety = np.load(args.logs_safety, allow_pickle=True)['logs']
+    logs_offloading = np.load(os.path.join(args.logs, 'logs_offloading.npz'), allow_pickle=True)['logs']
+    logs_safety = np.load(os.path.join(args.logs, 'logs_safety.npz'), allow_pickle=True)['logs']
     assert(len(logs_offloading) == len(logs_safety))
     n_episodes = len(logs_offloading)
 

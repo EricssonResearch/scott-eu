@@ -154,7 +154,7 @@ catkin_install_python(
   scripts/task_offloading.py
   scripts/scene_graph_proxy.py
   scripts/network_monitor.py
-  scripts/stamper.py
+  scripts/pick_and_place_navigation.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

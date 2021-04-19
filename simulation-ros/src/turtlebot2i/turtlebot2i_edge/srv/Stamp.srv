@@ -1,4 +1,4 @@
-uint8[] bytes
+uint64 to_stamp
 duration max_duration
 ---
 Header header

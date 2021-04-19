@@ -22,8 +22,7 @@ def get_scene_graph(generate_scene_graph, execution_latency):
 
 def on_edge_proxy(generate_scene_graph, upload, download, execution_latency, request):
     n_bytes = asizeof(request)
-    bytes_ = b'\x00' * n_bytes
-    response = upload(bytes=bytes_, max_duration=rospy.Time.from_sec(2))
+    response = upload(to_stamp=n_bytes, max_duration=rospy.Time.from_sec(2))
     if response.stamped != n_bytes:   # timeout
         return None
     upload_latency = rospy.Time.now() - request.header.stamp
@@ -32,9 +31,8 @@ def on_edge_proxy(generate_scene_graph, upload, download, execution_latency, req
     scene_graph = response.scene_graph
 
     n_bytes = asizeof(response)
-    bytes_ = b'\x00' * n_bytes
     time_start = rospy.Time.now()
-    response = download(bytes=bytes_, max_duration=rospy.Time.from_sec(2))
+    response = download(to_stamp=n_bytes, max_duration=rospy.Time.from_sec(2))
     if response.stamped != n_bytes:   # timeout
         return None
     download_latency = rospy.Time.now() - time_start

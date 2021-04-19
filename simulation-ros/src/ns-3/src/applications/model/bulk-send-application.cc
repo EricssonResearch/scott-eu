@@ -25,6 +25,7 @@
 #include "ns3/node.h"
 #include "ns3/nstime.h"
 #include "ns3/socket.h"
+#include "ns3/tcp-socket-base.h"
 #include "ns3/simulator.h"
 #include "ns3/socket-factory.h"
 #include "ns3/packet.h"
@@ -209,13 +210,17 @@ void BulkSendApplication::StopApplication (void) // Called at time specified by 
   NS_LOG_FUNCTION (this);
   if (m_socket != 0)
     {
-      m_socket->Close ();
+      Ptr<TcpSocketBase> m_tcp_socket = DynamicCast<TcpSocketBase> (m_socket);
+      if (m_tcp_socket)
+        {
+          m_tcp_socket->CloseLinger (Seconds (0));  // Close immediately, without sending the bytes in the tx buffer
+        }
+      else
+        {
+          m_socket->Close ();
+        }
       m_socket = 0;
       m_connected = false;
-    }
-  else
-    {
-      NS_LOG_WARN ("BulkSendApplication found null socket to close in StopApplication");
     }
 }
 

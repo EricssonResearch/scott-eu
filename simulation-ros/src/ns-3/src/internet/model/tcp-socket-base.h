@@ -581,6 +581,7 @@ public:
   virtual int Connect (const Address &address);      // Setup endpoint and call ProcessAction() to connect
   virtual int Listen (void);  // Verify the socket is in a correct state and call ProcessAction() to listen
   virtual int Close (void);   // Close by app: Kill socket upon tx buffer emptied
+  virtual int CloseLinger (const Time &linger);      // Close with SO_LINGER option
   virtual int ShutdownSend (void);    // Assert the m_shutdownSend flag to prevent send to network
   virtual int ShutdownRecv (void);    // Assert the m_shutdownRecv flag to prevent forward to app
   virtual int Send (Ptr<Packet> p, uint32_t flags);  // Call by app to send data to network
