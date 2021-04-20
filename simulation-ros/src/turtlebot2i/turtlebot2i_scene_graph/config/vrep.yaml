@@ -52,13 +52,20 @@ vrep:
       80cmHighPillar100cm, 80cmHighPillar100cm0, 80cmHighPillar100cm1, 80cmHighPillar100cm2, 80cmHighPillar100cm3,
       80cmHighPillar100cm4, 80cmHighPillar100cm5, 80cmHighPillar100cm6, 80cmHighPillar100cm7, 80cmHighPillar100cm8,
 
+      240cmHighPillar100cm, 240cmHighPillar100cm0, 240cmHighPillar100cm1, 240cmHighPillar100cm2, 240cmHighPillar100cm3,
+      240cmHighPillar100cm4, 240cmHighPillar100cm5, 240cmHighPillar100cm6, 240cmHighPillar100cm7, 240cmHighPillar100cm8,
+
       ConcreteBox, ConcreteBox0, ConcreteBox1, ConcreteBox2, ConcreteBox3, ConcreteBox4, ConcreteBox5,
       ConcreteBox6, ConcreteBox7, ConcreteBox8, ConcreteBox9,
 
       ConcreteBox#0, ConcreteBox#1, ConcreteBox#2, ConcreteBox#3, ConcreteBox#4, ConcreteBox#5,
       ConcreteBox#6, ConcreteBox#7, ConcreteBox#8, ConcreteBox#9, ConcreteBox#10, ConcreteBox#11,
       ConcreteBox#12, ConcreteBox#13, ConcreteBox#14, ConcreteBox#15, ConcreteBox#16, ConcreteBox#17,
-      ConcreteBox#18, ConcreteBox#19,
+      ConcreteBox#18, ConcreteBox#19, ConcreteBox#20, ConcreteBox#21, ConcreteBox#22, ConcreteBox#23,
+      ConcreteBox#24, ConcreteBox#25, ConcreteBox#26, ConcreteBox#27, ConcreteBox#28, ConcreteBox#29,
+      ConcreteBox#30, ConcreteBox#31, ConcreteBox#32, ConcreteBox#33, ConcreteBox#34, ConcreteBox#35,
+      ConcreteBox#36, ConcreteBox#37, ConcreteBox#38, ConcreteBox#39, ConcreteBox#40, ConcreteBox#41,
+      ConcreteBox#42, ConcreteBox#43, ConcreteBox#44, ConcreteBox#45, ConcreteBox#46, ConcreteBox#47,
 
       ConveyorBelt, ConveyorBelt#0, ConveyorBelt#1, ConveyorBelt#2, ConveyorBelt#3, ConveyorBelt#4, ConveyorBelt#5,
       ConveyorBelt#6, ConveyorBelt#7, ConveyorBelt#8, ConveyorBelt#9,
@@ -76,7 +83,10 @@ vrep:
 
   dynamic_objects: [
       Bill, Bill#0, Bill#1, Bill#2, Bill#3, Bill#4, Bill#5, Bill#6, Bill#7, Bill#8, Bill#9, Bill#10,
+      Bill#11, Bill#12, Bill#13, Bill#14, Bill#15, Bill#16, Bill#17, Bill#18, Bill#19, Bill#20,
 
       Walking_Bill, Walking_Bill#0, Walking_Bill#1, Walking_Bill#2, Walking_Bill#3, Walking_Bill#6, Walking_Bill#7,
       Walking_Bill#8, Walking_Bill#9, Walking_Bill#10, Walking_Bill#11, Walking_Bill#12, Walking_Bill#13,
+      Walking_Bill#14, Walking_Bill#15, Walking_Bill#16, Walking_Bill#17, Walking_Bill#18, Walking_Bill#19,
+      Walking_Bill#20
   ]
