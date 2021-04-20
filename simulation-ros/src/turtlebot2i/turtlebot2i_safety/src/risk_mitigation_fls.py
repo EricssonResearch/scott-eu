@@ -74,12 +74,12 @@ def init_risk_mitigation():
     object_risk_input['High'] = fuzz.gaussmf(range_risk, 3, 0.3)
     object_risk_input['VeryHigh'] = fuzz.gaussmf(range_risk, 4, 0.3)
     # Left Speed
-    left_speed['Stop'] = fuzz.gaussmf(range_meter_per_second, 0.1, 0.1)
+    left_speed['Stop'] = fuzz.gaussmf(range_meter_per_second, 0.0, 0.1)
     left_speed['Slow'] = fuzz.gaussmf(range_meter_per_second, 0.2, 0.2)
     left_speed['Medium'] = fuzz.gaussmf(range_meter_per_second, 0.8, 0.2)
     left_speed['Fast'] = fuzz.gaussmf(range_meter_per_second, 1.2, 0.2)
     # Right Speed
-    right_speed['Stop'] = fuzz.gaussmf(range_meter_per_second, 0.1, 0.1)
+    right_speed['Stop'] = fuzz.gaussmf(range_meter_per_second, 0.0, 0.1)
     right_speed['Slow'] = fuzz.gaussmf(range_meter_per_second, 0.2, 0.2)
     right_speed['Medium'] = fuzz.gaussmf(range_meter_per_second, 0.8, 0.2)
     right_speed['Fast'] = fuzz.gaussmf(range_meter_per_second, 1.2, 0.2)
@@ -114,9 +114,9 @@ def risk_callback(data):
     global time_duration_list
     # time_previous = time.time()
     if len(data.risk_value) == 0:
-        pub_safe_vel(1.0, 1.0)
+        pub_safe_vel(1.2, 1.2)      # fast
     elif max(data.risk_value) == 0:
-        pub_safe_vel(1.0, 1.0)
+        pub_safe_vel(1.2, 1.2)      # fast
     else:
         i = np.argmax(data.risk_value)
         left_vel_scale, right_vel_scale = cal_safe_vel(data.distance[i], data.direction[i], data.risk_value[i])
