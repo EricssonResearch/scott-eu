@@ -148,10 +148,13 @@ class SafetyLogger(Callback):
     def _update_collisions(self, event):
         if event.state == 1:
             with self._collision_lock:
-                if not self._collision:
+                if not self._collision:     # the collision is considered only once
                     self._collisions += 1
+                    self._collision = True
 
     def _update_risk_values(self, risk_value):
+        if self.logs is None:
+            return
         risk_value = risk_value.data
         self.logs[-1]['risk_value'].append(risk_value)
         with self._speed_lock:
