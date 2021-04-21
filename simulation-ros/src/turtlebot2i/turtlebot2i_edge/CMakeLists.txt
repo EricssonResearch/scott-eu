@@ -113,7 +113,7 @@ list(
 
 catkin_python_setup()
 
-add_service_files(FILES GenerateSceneGraphProxy.srv MeasureNetwork.srv Stamp.srv Ping.srv MeasureSnr.srv)
+add_service_files(FILES GenerateSceneGraphProxy.srv MeasureNetwork.srv Stamp.srv Ping.srv)
 generate_messages(DEPENDENCIES ${MSG_DEPENDS})
 
 catkin_package(
@@ -124,7 +124,7 @@ catkin_package(
 
 include_directories(include ${catkin_INCLUDE_DIRS} $ENV{NS3_ROOT}/build)
 
-add_library(${PROJECT_NAME}_network src/wireless.cpp src/5g.cpp src/wifi.cpp)
+add_library(${PROJECT_NAME}_network src/wireless.cpp src/wifi.cpp)
 target_link_libraries(${PROJECT_NAME}_network ${NS3_LIBRARIES} ${Threads_LIBRARIES})
 
 add_executable(${PROJECT_NAME}_network_simulation src/network_simulation.cpp)

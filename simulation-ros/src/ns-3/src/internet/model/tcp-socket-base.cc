@@ -3217,7 +3217,6 @@ TcpSocketBase::SendPendingData (bool withAck)
       return false; // Is this the right way to handle this condition?
     }
 
-std::cout << "sending data" << std::endl;
   uint32_t nPacketsSent = 0;
   uint32_t availableWindow = AvailableWindow ();
 

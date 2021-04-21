@@ -11,6 +11,7 @@
 class WirelessNetwork {
     ns3::NodeContainer robots_;
     ns3::Ptr<ns3::Node> mec_server_;
+    ns3::Ptr<ns3::Node> base_station_;
     ns3::NodeContainer congesting_nodes_;
     ns3::Ptr<ns3::Building> warehouse_;
 
@@ -50,10 +51,11 @@ protected:
 
     ns3::NodeContainer robots() const;
     ns3::Ptr<ns3::Node> mecServer() const;
+    ns3::Ptr<ns3::Node> baseStation() const;
     ns3::NodeContainer congestingNodes() const;
 
 public:
-    explicit WirelessNetwork(int n_robots, int n_congesting_nodes);
+    WirelessNetwork(int n_robots, int n_congesting_nodes);
     virtual ~WirelessNetwork();
 
     virtual void createNetwork() = 0;
@@ -65,10 +67,10 @@ public:
     int upload(int robot_id, int n_bytes, const ns3::Time &max_duration);
     int download(int robot_id, int n_bytes, const ns3::Time &max_duration);
     ns3::Time ping(int robot_id, const ns3::Time &max_rtt);
-    virtual double measureSnr(int robot_id, const ns3::Time &max_duration) = 0;
 
     int nRobots() const;
     std::pair<int,int> getRobotRoom(int robot_id) const;
     void setRobotPosition(int robot_id, const ns3::Vector &position);
+    void setBaseStationPosition(const ns3::Vector &position);
     void setCongestingNodePosition(int congesting_node_id, const ns3::Vector &position);
 };

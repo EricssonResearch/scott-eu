@@ -7,17 +7,11 @@ from turtlebot2i_edge.srv import Stamp, MeasureSnr, Ping, PingResponse
 
 
 class NetworkMonitor:
-    def __init__(self, server_host=None, bandwidth=None, shannon=False, ns3_simulation=False):
+    def __init__(self, server_host=None, ns3_simulation=False):
         if not ns3_simulation and server_host is None:
             raise ValueError('Server host is necessary for pinging if it not a simulation')
-        if bandwidth is None and shannon:
-            raise ValueError('Bandwidth is necessary for throughput estimation with Shannon-Hartley theorem')
-        if shannon:     # TODO: investigate, SNR is always the same independently of the congestion
-            raise NotImplementedError('Throughput estimation with Shannon-Hartley does not work properly yet')
 
         self.server_host = server_host
-        self.bandwidth = bandwidth
-        self.shannon = shannon
         self.ns3_simulation = ns3_simulation
 
         rospy.loginfo('Waiting for ROS service to stamp...')
@@ -30,13 +24,6 @@ class NetworkMonitor:
             self._ns3_ping.wait_for_service()
         else:
             self._ns3_ping = None
-
-        if shannon:
-            rospy.loginfo('Waiting for ROS service to measure SNR...')
-            self._ns3_measure_snr = rospy.ServiceProxy('edge/measure_snr', MeasureSnr)
-            self._ns3_measure_snr.wait_for_service()
-        else:
-            self._ns3_measure_snr = None
 
     def measure_rtt(self, max_rtt=0.1):
         if self.ns3_simulation:
@@ -53,33 +40,17 @@ class NetworkMonitor:
 
     def measure_throughput(self, n_bytes=2**20, max_duration=0.1):
         max_duration = rospy.Time.from_sec(max_duration)
-
-        if self.shannon:
-            if self.ns3_simulation:
-                snr = None
-                while snr is None:
-                    try:
-                        response = self._ns3_measure_snr(max_duration=max_duration)
-                        snr = response.snr
-                    except (rospy.ROSException, rospy.ServiceException):
-                        pass
-            else:
-                snr = self._measure_snr(max_duration=max_duration)
-            throughput = self.bandwidth * np.log2(1 + snr)
-
-        else:
-            try:
-                self._stamp.wait_for_service(timeout=0.1)
-                time_start = rospy.Time.now()
-                response = self._stamp(to_stamp=n_bytes, max_duration=max_duration)
-                time_end = response.header.stamp
-                stamped = response.stamped
-                time_elapsed = time_end - time_start
-                time_elapsed = time_elapsed.to_sec()
-                throughput = stamped * 8 * 1e-6 / time_elapsed
-            except (rospy.ROSException, rospy.ServiceException):
-                throughput = 0
-
+        try:
+            self._stamp.wait_for_service(timeout=0.1)
+            time_start = rospy.Time.now()
+            response = self._stamp(to_stamp=n_bytes, max_duration=max_duration)
+            time_end = response.header.stamp
+            stamped = response.stamped
+            time_elapsed = time_end - time_start
+            time_elapsed = time_elapsed.to_sec()
+            throughput = stamped * 8 * 1e-6 / time_elapsed
+        except (rospy.ROSException, rospy.ServiceException):
+            throughput = 0
         return throughput
 
     def _ping(self, max_rtt):
@@ -107,7 +78,3 @@ class NetworkMonitor:
             rtt_mdev=rtt_mdev,
             packet_loss=packet_loss
         )
-
-    def _measure_snr(self, max_duration):
-        # TODO: implement with real network
-        raise NotImplementedError

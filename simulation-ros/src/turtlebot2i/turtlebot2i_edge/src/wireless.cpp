@@ -20,12 +20,15 @@ WirelessNetwork::WirelessNetwork(int n_robots, int n_congesting_nodes) :
 
     robots_ = ns3::NodeContainer(n_robots);         // first nodes, so that they get IDs in [0, n_robots-1]
     mec_server_ = ns3::CreateObject<ns3::Node>();
+    base_station_ = ns3::CreateObject<ns3::Node>();
     congesting_nodes_ = ns3::NodeContainer(n_congesting_nodes);
 
     addMobility(robots_);
+    addMobility(base_station_);
     addMobility(congesting_nodes_);
 
     addInternetStack(robots_);
+    addInternetStack(base_station_);
     addInternetStack(mec_server_);
     addInternetStack(congesting_nodes_);
 }
@@ -326,12 +329,20 @@ ns3::Ptr<ns3::Node> WirelessNetwork::mecServer() const {
     return mec_server_;
 }
 
+ns3::Ptr<ns3::Node> WirelessNetwork::baseStation() const {
+    return base_station_;
+}
+
 ns3::NodeContainer WirelessNetwork::congestingNodes() const {
     return congesting_nodes_;
 }
 
 void WirelessNetwork::setRobotPosition(int robot_id, const ns3::Vector &position) {
     setNodePosition(robots_.Get(robot_id), position);
+}
+
+void WirelessNetwork::setBaseStationPosition(const ns3::Vector &position) {
+    setNodePosition(base_station_, position);
 }
 
 void WirelessNetwork::setCongestingNodePosition(int congesting_node_id, const ns3::Vector &position) {

@@ -85,7 +85,7 @@ class PickAndPlaceNavigator:
         position = feedback.base_position.pose.position
         position = np.array((position.x, position.y, position.z))
         with self._lock:
-            if np.linalg.norm(self._goal - position) < 0.7:
+            if np.linalg.norm(self._goal - position) < 0.5:
                 if self._goal in self.place_goals:
                     self.completed_pick_and_place += 1
                 if self._active:

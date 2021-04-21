@@ -2,8 +2,7 @@ network:
   bandwidth: 50             # MHz
   mec_server:
     host: mec_server
-    position: [10, 15, 0]   # used only for WiFi
-  gnb:                      # used only for 5G
+  base_station:
     position: [10, 15, 0]
   robots:
     n: 1                    # number of robots, must coincide with robots in V-REP
@@ -15,7 +14,7 @@ network:
   congestion:
     data_rate: 2000000      # data rate in on state (bps)
     switch_time:
-      min: 3                # min time in on/off state before switching (s)
+      min: 1                # min time in on/off state before switching (s)
       max: 5                # max time in on/off state before switching (s)
     n: 4                    # number of nodes
     position: [             # position of nodes
