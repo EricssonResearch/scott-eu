@@ -40,6 +40,7 @@ def main():
     good_latency = rospy.get_param('~env/reward/good_latency')
     robot_compute_power = rospy.get_param('~env/reward/robot/compute_power')
     robot_transmit_power = rospy.get_param('~env/reward/robot/transmit_power')
+    max_latency = rospy.get_param('~env/task/max_latency')
     max_risk_value = rospy.get_param('~env/task/max_risk_value')
     network_image_size = rospy.get_param('~env/task/network_image_size')
     depth_image_size = rospy.get_param('~env/task/depth_image_size')
@@ -58,6 +59,7 @@ def main():
     rospy.loginfo('Good latency (+1 in reward): %f s' % good_latency)
     rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
     rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
+    rospy.loginfo('Max latency: %f' % max_latency)
     rospy.loginfo('Max risk value: %f' % max_risk_value)
     rospy.loginfo('Image size over the network: (%d,%d)' % (network_image_size[0], network_image_size[1]))
     rospy.loginfo('Depth image size (if depth camera disabled): (%d,%d)' % (depth_image_size[0], depth_image_size[1]))
@@ -80,6 +82,7 @@ def main():
         max_duration_throughput=max_duration_throughput,
         max_risk_value=max_risk_value,
         good_latency=good_latency,
+        max_latency=max_latency,
         network_image_size=network_image_size,
         depth_image_size=depth_image_size,
         robot_compute_power=robot_compute_power,

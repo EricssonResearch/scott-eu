@@ -33,9 +33,9 @@ class TaskOffloadingEnv(Env):
     )
 
     def __init__(self, steps_per_epsiode, max_rtt, bandwidth, max_duration_throughput, max_risk_value,
-                 good_latency, network_image_size, depth_image_size, robot_compute_power, robot_transmit_power,
-                 pick_goals, place_goals, vrep_simulation=False, vrep_host='localhost', vrep_port=19997,
-                 vrep_scene_graph_extraction=False):
+                 good_latency, max_latency, network_image_size, depth_image_size,
+                 robot_compute_power, robot_transmit_power, pick_goals, place_goals,
+                 vrep_simulation=False, vrep_host='localhost', vrep_port=19997, vrep_scene_graph_extraction=False):
         super(TaskOffloadingEnv, self).__init__()
 
         if not vrep_simulation and vrep_scene_graph_extraction:
@@ -46,6 +46,7 @@ class TaskOffloadingEnv(Env):
         self.max_duration_throughput = max_duration_throughput
         self.max_risk_value = max_risk_value
         self.good_latency = good_latency
+        self.max_latency = rospy.Duration.from_sec(max_latency)
         self.network_image_size = network_image_size
         self.depth_image_size = depth_image_size
         self.robot_compute_power = robot_compute_power
@@ -281,21 +282,19 @@ class TaskOffloadingEnv(Env):
         else:
             raise ValueError
 
-        # the lower the latency, the better (saturates at 0.5)
-        reward_latency = 0.5 if self.latency <= self.good_latency else 0.5 * self.good_latency / self.latency
+        # the lower the latency, the better (saturates at 0.7)
+        reward_latency = 0.7 if self.latency <= self.good_latency else 0.7 * (self.good_latency / self.latency) ** 2
 
-        # bonus of +0.5 if the scene graph was computed on the edge (better model)
-        reward_accuracy = 0.5 if self._scene_graph_from_edge else 0
+        # bonus of +0.3 if the scene graph was computed on the edge (better model)
+        reward_accuracy = 0.3 if self._scene_graph_from_edge else 0
 
-        # bonus of +1 if the edge was not used, because:
+        # bonus of +0.5 if the edge was not used, because:
         # - let other devices offload better
         # - network more likely not to be congested at the next time step
-        reward_no_congestion = 1 if self._action != 1 else 0
+        reward_no_congestion = 0.5 if self._action != 1 else 0
 
         # When the risk is medium or high, we are very interested in latency and accuracy.
         # When the risk is low, we are more interested in avoiding to congest the network.
-        # The reward is in the same range [0,1] in either case, so that the agent does not learn to affect the risk
-        # (the module responsible for is the risk mitigation).
         risk_value_normalized = risk_value / self.max_risk_value
         w_risk = -risk_value_normalized**2 + 2*risk_value_normalized
         reward = w_risk * (reward_latency + reward_accuracy) + (1 - w_risk) * reward_no_congestion
@@ -311,9 +310,11 @@ class TaskOffloadingEnv(Env):
 
     def _done(self):
         with self._collision_lock:
-            if self._collision:
-                self._vrep_scene_controller.reset()
-                self._pick_and_place_navigator.refresh()
+            collision = self._collision     # reset after releasing the lock, resetting takes time
+        if collision:
+            self._vrep_scene_controller.reset()
+            self._pick_and_place_navigator.refresh()
+            with self._collision_lock:
                 self._collision = False
         self._step += 1
         return self._step >= self.steps_per_episode - 1
@@ -322,7 +323,7 @@ class TaskOffloadingEnv(Env):
         response = self._generate_scene_graph_on_robot(
             header=Header(stamp=rospy.Time.now()),
             image_rgb=self.image_rgb_observation,
-            image_depth=self.image_depth_observation
+            image_depth=self.image_depth_observation,
         )
         self._scene_graph_last = response.scene_graph
         self._scene_graph_from_edge = False
@@ -343,7 +344,8 @@ class TaskOffloadingEnv(Env):
             response = self._generate_scene_graph_on_edge(
                 header=Header(stamp=rospy.Time.now()),
                 image_rgb=image_rgb,
-                image_depth=image_depth
+                image_depth=image_depth,
+                max_latency=self.max_latency
             )
             self._scene_graph_last = response.scene_graph
             self._scene_graph_from_edge = True
@@ -377,7 +379,7 @@ class TaskOffloadingEnv(Env):
             self._risk_value = risk_value.data
 
     def _save_collision(self, event):
-        if event.state == 1:
+        if event.state == BumperEvent.PRESSED:
             with self._collision_lock:
                 if not self._collision:
                     self._collision = True

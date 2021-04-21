@@ -146,7 +146,7 @@ class SafetyLogger(Callback):
             self._mean_min_distance[i] = min(self._mean_min_distance[i], distances[i])
 
     def _update_collisions(self, event):
-        if event.state == 1:
+        if event.state == BumperEvent.PRESSED:
             with self._collision_lock:
                 if not self._collision:     # the collision is considered only once
                     self._collisions += 1

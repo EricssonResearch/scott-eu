@@ -2,6 +2,7 @@
 
 import rospy
 import time
+import numpy as np
 from pympler.asizeof import asizeof
 from turtlebot2i_scene_graph.srv import GenerateSceneGraph
 from turtlebot2i_edge.srv import GenerateSceneGraphProxy, GenerateSceneGraphProxyResponse, Stamp
@@ -12,27 +13,34 @@ def get_scene_graph(generate_scene_graph, execution_latency):
     response = generate_scene_graph()
     time_elapsed = rospy.Time.now() - time_start
 
+    execution_latency += rospy.Duration.from_sec(np.random.normal(scale=0.1*execution_latency.to_sec()))
     time_sleep = execution_latency - time_elapsed
     time_sleep = time_sleep.to_sec()
     if time_sleep > 0:
         time.sleep(time_sleep)
 
-    return response
+    return response, execution_latency
 
 
 def on_edge_proxy(generate_scene_graph, upload, download, execution_latency, request):
+    max_latency = request.max_latency
+
     n_bytes = asizeof(request)
-    response = upload(to_stamp=n_bytes, max_duration=rospy.Time.from_sec(2))
+    response = upload(to_stamp=n_bytes, max_duration=max_latency)
     if response.stamped != n_bytes:   # timeout
         return None
     upload_latency = rospy.Time.now() - request.header.stamp
 
-    response = get_scene_graph(generate_scene_graph, execution_latency)
+    response, execution_latency = get_scene_graph(generate_scene_graph, execution_latency)
     scene_graph = response.scene_graph
+
+    if upload_latency + execution_latency > max_latency:
+        return None
+    max_latency -= upload_latency + execution_latency
 
     n_bytes = asizeof(response)
     time_start = rospy.Time.now()
-    response = download(to_stamp=n_bytes, max_duration=rospy.Time.from_sec(2))
+    response = download(to_stamp=n_bytes, max_duration=max_latency)
     if response.stamped != n_bytes:   # timeout
         return None
     download_latency = rospy.Time.now() - time_start
@@ -47,7 +55,7 @@ def on_edge_proxy(generate_scene_graph, upload, download, execution_latency, req
 def on_robot_proxy(generate_scene_graph, execution_latency, request):
     communication_latency = rospy.Time.now() - request.header.stamp     # inter-process communication
 
-    response = get_scene_graph(generate_scene_graph, execution_latency)
+    response, execution_latency = get_scene_graph(generate_scene_graph, execution_latency)
     scene_graph = response.scene_graph
 
     return GenerateSceneGraphProxyResponse(
