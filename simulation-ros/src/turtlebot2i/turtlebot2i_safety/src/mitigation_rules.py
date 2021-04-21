@@ -7,7 +7,7 @@ from skfuzzy import control as ctrl
 def rule_list_generator(object_distance,object_direction,object_risk_input,left_speed,right_speed):
     # Mitigation Rule Format
     #rule00X= ctrl.Rule(object_distance['Near']&object_direction[]&object_risk_input , (left_speed['???'],right_speed['???']))
-    rule001= ctrl.Rule(object_distance['Near'] & object_direction['Front'], (left_speed['Stop'],right_speed['Stop']))
+    rule001= ctrl.Rule(object_distance['Near'] & object_direction['Front'], (left_speed['Slow'],right_speed['Slow']))
     
     rule002= ctrl.Rule( object_distance['Medium'] & object_direction['Front'] & object_risk_input['VeryLow'],  (left_speed['Medium'],right_speed['Medium']))
     rule003= ctrl.Rule( object_distance['Medium'] & object_direction['Front'] & object_risk_input['Low'],      (left_speed['Medium'],right_speed['Medium']))
@@ -50,8 +50,8 @@ def rule_list_generator(object_distance,object_direction,object_risk_input,left_
     rule034= ctrl.Rule( object_distance['Far'] & object_direction['FrontRight'],(left_speed['Fast'],right_speed['Fast']))
     rule035= ctrl.Rule( object_distance['Far'] & object_direction['Right'],     (left_speed['Fast'],right_speed['Fast']))
 
-    rule036= ctrl.Rule(object_distance['Near'] & object_direction['FrontLeft'],  (left_speed['Stop'],right_speed['Stop']))
-    rule037= ctrl.Rule(object_distance['Near'] & object_direction['FrontRight'], (left_speed['Stop'],right_speed['Stop']))
+    rule036= ctrl.Rule(object_distance['Near'] & object_direction['FrontLeft'],  (left_speed['Slow'],right_speed['Stop']))
+    rule037= ctrl.Rule(object_distance['Near'] & object_direction['FrontRight'], (left_speed['Stop'],right_speed['Slow']))
     rule038= ctrl.Rule(object_distance['Near'] & object_direction['Left'],       (left_speed['Slow'],right_speed['Stop']))
     rule039= ctrl.Rule(object_distance['Near'] & object_direction['Right'],      (left_speed['Stop'],right_speed['Slow']))
     
