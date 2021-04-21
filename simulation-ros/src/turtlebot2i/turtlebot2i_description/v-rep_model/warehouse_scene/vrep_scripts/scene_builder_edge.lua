@@ -112,10 +112,10 @@ function sysCall_init()
     addModel('dockstation', {13,8,0.052}, {0,0,0})
 
     -- Robots
-    addModel('turtlebot2i', {7,7,0.063}, {0,0,-math.pi/2})
---     addModel('turtlebot2i', {9,7,0.063}, {0,0,-math.pi/2})
---     addModel('turtlebot2i', {11,7,0.063}, {0,0,-math.pi/2})
---     addModel('turtlebot2i', {13,7,0.063}, {0,0,-math.pi/2})
+    addModel('turtlebot2i_edge', {7,7,0.063}, {0,0,-math.pi/2})
+--     addModel('turtlebot2i_edge', {9,7,0.063}, {0,0,-math.pi/2})
+--     addModel('turtlebot2i_edge', {11,7,0.063}, {0,0,-math.pi/2})
+--     addModel('turtlebot2i_edge', {13,7,0.063}, {0,0,-math.pi/2})
 
     -- Humans (after robots, otherwise the robots are spawn with name not starting from 0)
     addModel('Walking_Bill', {-10,15,0}, {0,0,math.pi})
