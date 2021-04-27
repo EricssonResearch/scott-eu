@@ -80,7 +80,7 @@ class TaskOffloadingEnv(Env):
 
         self._collision = False
         self._collision_lock = threading.Lock()
-        rospy.Subscriber('events/bumper', BumperEvent, self._save_collision)
+        rospy.Subscriber('events/bumper', BumperEvent, self._save_collision, queue_size=1)
 
         self._scene_graph_last = None
         self._scene_graph_from_edge = False
