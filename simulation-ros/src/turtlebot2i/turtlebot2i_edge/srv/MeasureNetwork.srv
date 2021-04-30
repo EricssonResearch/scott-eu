@@ -1,6 +1,6 @@
 duration max_rtt
 duration max_duration_throughput
+uint64 n_bytes_throughput
 ---
-Header header
 duration rtt
 float64 throughput      # Mbps

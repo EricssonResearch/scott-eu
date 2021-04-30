@@ -13,7 +13,7 @@ class TaskOffloadingProcessor(Processor):
         observation = copy.deepcopy(observation)
         observation['rtt'] = observation['rtt'] / self.env.max_rtt if observation['rtt'] <= self.env.max_rtt else 1
         if observation['throughput'] > 0:
-            observation['throughput'] = observation['throughput'] / self.env.bandwidth
+            observation['throughput'] = observation['throughput'] / self.env.network_speed
         if observation['risk_value'] > 0:
             observation['risk_value'] /= self.env.max_risk_value
 

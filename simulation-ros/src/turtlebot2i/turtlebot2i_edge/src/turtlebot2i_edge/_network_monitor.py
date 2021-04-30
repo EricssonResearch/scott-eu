@@ -1,9 +1,11 @@
+from __future__ import division
+
 import rospy
 import subprocess
 import re
 import numpy as np
 from std_msgs.msg import Header
-from turtlebot2i_edge.srv import Stamp, MeasureSnr, Ping, PingResponse
+from turtlebot2i_edge.srv import Stamp, Ping, PingResponse
 
 
 class NetworkMonitor:

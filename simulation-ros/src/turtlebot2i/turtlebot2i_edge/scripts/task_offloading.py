@@ -35,13 +35,13 @@ def main():
     pick_goals = rospy.get_param('/pick_and_place/goals/pick')
     place_goals = rospy.get_param('/pick_and_place/goals/place')
     max_rtt = rospy.get_param('~env/observation/max_rtt')
-    bandwidth = rospy.get_param('/network/bandwidth')
     max_duration_throughput = rospy.get_param('~env/observation/max_duration_throughput')
     good_latency = rospy.get_param('~env/reward/good_latency')
+    network_speed = rospy.get_param('~env/observation/network_speed')
     robot_compute_power = rospy.get_param('~env/reward/robot/compute_power')
     robot_transmit_power = rospy.get_param('~env/reward/robot/transmit_power')
     max_latency = rospy.get_param('~env/task/max_latency')
-    max_risk_value = rospy.get_param('~env/task/max_risk_value')
+    max_risk_value = rospy.get_param('~env/observation/max_risk_value')
     network_image_size = rospy.get_param('~env/task/network_image_size')
     depth_image_size = rospy.get_param('~env/task/depth_image_size')
     models_path = rospy.get_param('~rl/models/path')
@@ -54,9 +54,9 @@ def main():
     rospy.loginfo('Goals where to pick products: %s' % str(pick_goals))
     rospy.loginfo('Goals where to place products: %s' % str(place_goals))
     rospy.loginfo('Max RTT: %f ms' % max_rtt)
-    rospy.loginfo('Bandwidth: %f MHz' % bandwidth)
     rospy.loginfo('Max duration of throughput measurement: %f s' % max_duration_throughput)
     rospy.loginfo('Good latency (+1 in reward): %f s' % good_latency)
+    rospy.loginfo('Network speed: %f Mbps' % network_speed)
     rospy.loginfo('Robot compute power: %f W' % robot_compute_power)
     rospy.loginfo('Robot transmit power: %f W' % robot_transmit_power)
     rospy.loginfo('Max latency: %f' % max_latency)
@@ -78,11 +78,11 @@ def main():
     env = TaskOffloadingEnv(
         steps_per_epsiode=5000,
         max_rtt=max_rtt,
-        bandwidth=bandwidth,
         max_duration_throughput=max_duration_throughput,
         max_risk_value=max_risk_value,
         good_latency=good_latency,
         max_latency=max_latency,
+        network_speed=network_speed,
         network_image_size=network_image_size,
         depth_image_size=depth_image_size,
         robot_compute_power=robot_compute_power,

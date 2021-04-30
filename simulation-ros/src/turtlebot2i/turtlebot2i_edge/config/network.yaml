@@ -1,25 +1,23 @@
 network:
-  bandwidth: 50             # MHz
   mec_server:
-    host: mec_server
+    host: mec_server        # hostname, only for real network (not used in simulation)
   base_station:
-    position: [10, 15, 0]
+    position: [12.5, 12.5, 0]
   robots:
     n: 1                    # number of robots, must coincide with robots in V-REP
   warehouse:
-    boundaries: [-15, 15, -20, 20, -1, 10]
+    boundaries: [-15, 15, -15, 15, -1, 10]
     rooms:
       n_x: 3
-      n_y: 4
+      n_y: 3
   congestion:
-    data_rate: 2000000      # data rate in on state (bps)
-    switch_time:
-      min: 1                # min time in on/off state before switching (s)
-      max: 5                # max time in on/off state before switching (s)
+    data_rate: 6000000      # data rate in on state (bps)
+    on_time: [3, 5]         # min and max values for uniform random variable of the 'On' state
+    off_time: [5, 10]       # min and max values for uniform random variable of the 'Off' state
     n: 4                    # number of nodes
     position: [             # position of nodes
-      [10, 5, 0],
-      [-10, 5, 0],
-      [0, -5, 0],
-      [0, 15, 0],
+      [0, 10, 0],
+      [0, -10, 0],
+      [-10, 0, 0],
+      [10, 0, 0]
     ]

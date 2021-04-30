@@ -9,27 +9,14 @@
           output="$(arg output)">
         <remap from="odom_0" to="/turtlebot2i/odom"/>
         <remap from="odom_1" to="/turtlebot2i_0/odom"/>
-        <remap from="odom_2" to="/turtlebot2i_1/odom"/>
-        <remap from="odom_3" to="/turtlebot2i_2/odom"/>
 
         <remap from="upload_0" to="/turtlebot2i/edge/upload"/>
         <remap from="upload_1" to="/turtlebot2i_0/edge/upload"/>
-        <remap from="upload_2" to="/turtlebot2i_1/edge/upload"/>
-        <remap from="upload_3" to="/turtlebot2i_2/edge/upload"/>
 
         <remap from="download_0" to="/turtlebot2i/edge/download"/>
         <remap from="download_1" to="/turtlebot2i_0/edge/download"/>
-        <remap from="download_2" to="/turtlebot2i_1/edge/download"/>
-        <remap from="download_3" to="/turtlebot2i_2/edge/download"/>
 
         <remap from="ping_0" to="/turtlebot2i/edge/ping"/>
         <remap from="ping_1" to="/turtlebot2i_0/edge/ping"/>
-        <remap from="ping_2" to="/turtlebot2i_1/edge/ping"/>
-        <remap from="ping_3" to="/turtlebot2i_2/edge/ping"/>
-
-        <remap from="measure_snr_0" to="/turtlebot2i/edge/measure_snr"/>
-        <remap from="measure_snr_1" to="/turtlebot2i_0/edge/measure_snr"/>
-        <remap from="measure_snr_2" to="/turtlebot2i_1/edge/measure_snr"/>
-        <remap from="measure_snr_3" to="/turtlebot2i_2/edge/measure_snr"/>
     </node>
 </launch>

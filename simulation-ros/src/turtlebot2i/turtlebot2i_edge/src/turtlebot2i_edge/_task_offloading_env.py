@@ -32,8 +32,8 @@ class TaskOffloadingEnv(Env):
         last_output_from_edge=Discrete(n=2)
     )
 
-    def __init__(self, steps_per_epsiode, max_rtt, bandwidth, max_duration_throughput, max_risk_value,
-                 good_latency, max_latency, network_image_size, depth_image_size,
+    def __init__(self, steps_per_epsiode, max_rtt, max_duration_throughput, max_risk_value,
+                 good_latency, max_latency, network_speed, network_image_size, depth_image_size,
                  robot_compute_power, robot_transmit_power, pick_goals, place_goals,
                  vrep_simulation=False, vrep_host='localhost', vrep_port=19997, vrep_scene_graph_extraction=False):
         super(TaskOffloadingEnv, self).__init__()
@@ -42,11 +42,11 @@ class TaskOffloadingEnv(Env):
             raise ValueError('Cannot extract scene graph from V-REP if it is not a simulation')
 
         self.max_rtt = max_rtt / 1e3
-        self.bandwidth = bandwidth
         self.max_duration_throughput = max_duration_throughput
         self.max_risk_value = max_risk_value
         self.good_latency = good_latency
         self.max_latency = rospy.Duration.from_sec(max_latency)
+        self.network_speed = network_speed
         self.network_image_size = network_image_size
         self.depth_image_size = depth_image_size
         self.robot_compute_power = robot_compute_power

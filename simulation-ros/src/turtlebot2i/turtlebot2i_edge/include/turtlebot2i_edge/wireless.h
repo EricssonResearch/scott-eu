@@ -47,7 +47,6 @@ protected:
     static void addMobility(const ns3::NodeContainer &nodes);
     static void addInternetStack(const ns3::NodeContainer &nodes);
     static void setNodePosition(const ns3::Ptr<ns3::Node> &node, const ns3::Vector &position);
-    static double dbm_to_watt(double dbm);
 
     ns3::NodeContainer robots() const;
     ns3::Ptr<ns3::Node> mecServer() const;
@@ -60,10 +59,12 @@ public:
 
     virtual void createNetwork() = 0;
     virtual void createApplications();
-    void createCongestion(int data_rate, const ns3::Time &min_switch_time, const ns3::Time &max_switch_time);
     void createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y);
-    void simulate();
+    void createCongestion(const std::pair<ns3::Time,ns3::Time> &on_time_range,
+                          const std::pair<ns3::Time,ns3::Time> &off_time_range,
+                          int data_rate);
 
+    void simulate();
     int upload(int robot_id, int n_bytes, const ns3::Time &max_duration);
     int download(int robot_id, int n_bytes, const ns3::Time &max_duration);
     ns3::Time ping(int robot_id, const ns3::Time &max_rtt);

@@ -3,6 +3,6 @@ model:
   m_ap: 0.282                 # on COCO test-dev (https://github.com/dbolya/yolact)
 #  execution_latency: 0.55     # with i7-8650U optimized by OpenVINO
 
-  # i7-8650U is 91% faster than Intel Celeron J3455 (turtlebot2i's CPU) according to
-  # https://cpu.userbenchmark.com/Compare/Intel-Core-i7-8650U-vs-Intel-Celeron-J3455/m353957vsm200485
+  # i7-8650U is 91% faster than Intel Celeron J3455 (turtlebot2i's CPU)
+  # (https://cpu.userbenchmark.com/Compare/Intel-Core-i7-8650U-vs-Intel-Celeron-J3455/m353957vsm200485)
   execution_latency: 1.05

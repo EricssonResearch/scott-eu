@@ -1,6 +1,7 @@
 #include <thread>
 #include <memory>
 #include <vector>
+#include <sstream>
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Point.h>
@@ -30,13 +31,15 @@ bool transfer(const std::shared_ptr<WirelessNetwork> &network, int robot_id, tur
     response.header.stamp = ros::Time::now();
     response.stamped = transferred;
 
-    double percentage = 100 * static_cast<double>(transferred) / to_transfer;
-    if (upload)
-        ROS_INFO("Robot %d transferred %d bytes out of %d (%f%%) to MEC server",
-                 robot_id, transferred, to_transfer, percentage);
-    else
-        ROS_INFO("MEC server transferred %d bytes out of %d (%f%%) to robot %d",
-                 transferred, to_transfer, percentage, robot_id);
+    std::string sender = upload ? ("Robot " + std::to_string(robot_id)) : "MEC server";
+    std::string receiver = upload ? ("MEC server") : ("robot " + std::to_string(robot_id));
+    std::string percentage;
+    if (to_transfer != 0) {
+        std::ostringstream oss;
+        oss << " out of " << to_transfer << " (" << 100 * static_cast<double>(transferred) / to_transfer << "%)";
+        percentage = oss.str();
+    }
+    ROS_INFO("%s transferred %d bytes%s to %s", sender.c_str(), transferred, percentage.c_str(), receiver.c_str());
     return true;
 }
 
@@ -115,10 +118,9 @@ ns3::Vector xmlrpc_to_position(const XmlRpc::XmlRpcValue &position) {
 
 int main(int argc, char **argv) {
     std::string network_type;
-    std::vector<double> warehouse_boundaries, bs_position;
+    std::vector<double> warehouse_boundaries, bs_position, congesting_on_time, congesting_off_time;
     XmlRpc::XmlRpcValue congesting_positions;
     int n_robots, n_rooms_x, n_rooms_y, n_congesting_nodes, congesting_data_rate;
-    double congesting_min_switch_time, congesting_max_switch_time;
 
     ros::init(argc, argv, "network_simulation");
 
@@ -128,8 +130,8 @@ int main(int argc, char **argv) {
         !ros::param::get("/network/robots/n", n_robots) ||
         !ros::param::get("/network/congestion/n", n_congesting_nodes) ||
         !ros::param::get("/network/congestion/data_rate", congesting_data_rate) ||
-        !ros::param::get("/network/congestion/switch_time/min", congesting_min_switch_time) ||
-        !ros::param::get("/network/congestion/switch_time/max", congesting_max_switch_time) ||
+        !ros::param::get("/network/congestion/on_time", congesting_on_time) ||
+        !ros::param::get("/network/congestion/off_time", congesting_off_time) ||
         !ros::param::get("/network/congestion/position", congesting_positions) ||
         !ros::param::get("/network/warehouse/boundaries", warehouse_boundaries) ||
         !ros::param::get("/network/warehouse/rooms/n_x", n_rooms_x) ||
@@ -141,6 +143,10 @@ int main(int argc, char **argv) {
     ns3::Box warehouse_boundaries_(warehouse_boundaries[0], warehouse_boundaries[1],
                                    warehouse_boundaries[2], warehouse_boundaries[3],
                                    warehouse_boundaries[4], warehouse_boundaries[5]);
+    std::pair<ns3::Time,ns3::Time> congesting_on_time_ = {ns3::Seconds(congesting_on_time[0]),
+                                                          ns3::Seconds(congesting_on_time[1])};
+    std::pair<ns3::Time,ns3::Time> congesting_off_time_ = {ns3::Seconds(congesting_off_time[0]),
+                                                           ns3::Seconds(congesting_off_time[1])};
 
     ROS_INFO("Network type: %s", network_type.c_str());
     ROS_INFO("Position of base station: {%f,%f,%f}", bs_position_.x, bs_position_.y, bs_position_.z);
@@ -152,7 +158,8 @@ int main(int argc, char **argv) {
              warehouse_boundaries_.zMin, warehouse_boundaries_.zMax);
     ROS_INFO("Number of congesting nodes: %d", n_congesting_nodes);
     ROS_INFO("Data rate of congesting nodes: %d bps", congesting_data_rate);
-    ROS_INFO("Switch time of congesting nodes: [%f,%f] s", congesting_min_switch_time, congesting_max_switch_time);
+    ROS_INFO("On time of congesting nodes: [%f,%f] s", congesting_on_time[0], congesting_on_time[1]);
+    ROS_INFO("Off time of congesting nodes: [%f,%f] s", congesting_off_time[0], congesting_off_time[1]);
     for (int i=0; i<n_congesting_nodes; i++) {
         ns3::Vector cp = xmlrpc_to_position(congesting_positions[i]);
         ROS_INFO("Position of congesting node %d: {%f,%f,%f}", i, cp.x, cp.y, cp.z);
@@ -170,8 +177,7 @@ int main(int argc, char **argv) {
     network->createApplications();                  // important: after creating network
     network->createWarehouse(warehouse_boundaries_, n_rooms_x, n_rooms_y);
     network->setBaseStationPosition(bs_position_);
-    network->createCongestion(congesting_data_rate, ns3::Seconds(congesting_min_switch_time),
-                              ns3::Seconds(congesting_max_switch_time));
+    network->createCongestion(congesting_on_time_, congesting_off_time_, congesting_data_rate);
     for (int i=0; i<n_congesting_nodes; i++) {
         ns3::Vector cp = xmlrpc_to_position(congesting_positions[i]);
         network->setCongestingNodePosition(i, cp);

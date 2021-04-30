@@ -17,6 +17,9 @@ WirelessNetwork::WirelessNetwork(int n_robots, int n_congesting_nodes) :
         pinging_(n_robots), rtt_(n_robots), pinging_mutex_(n_robots), pinging_cv_(n_robots) {
     ns3::GlobalValue::Bind("SimulatorImplementationType", ns3::StringValue("ns3::RealtimeSimulatorImpl"));
     ns3::GlobalValue::Bind("ChecksumEnabled", ns3::BooleanValue(true));
+    ns3::Ptr<ns3::SimulatorImpl> simulator = ns3::Simulator::GetImplementation();
+    simulator->SetAttribute("SynchronizationMode", ns3::EnumValue(ns3::RealtimeSimulatorImpl::SYNC_HARD_LIMIT));
+    simulator->SetAttribute("HardLimit", ns3::TimeValue(ns3::Seconds(0.5)));
 
     robots_ = ns3::NodeContainer(n_robots);         // first nodes, so that they get IDs in [0, n_robots-1]
     mec_server_ = ns3::CreateObject<ns3::Node>();
@@ -103,28 +106,6 @@ void WirelessNetwork::createApplications() {
     udp_echo_server_helper.Install(mec_server_);
 }
 
-void WirelessNetwork::createCongestion(int data_rate, const ns3::Time &min_switch_time, const ns3::Time &max_switch_time) {
-    ns3::ApplicationContainer apps;
-    ns3::Ipv4Address server_address = mec_server_->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
-
-    // random variable for switching
-    ns3::Ptr<ns3::UniformRandomVariable> switch_time = ns3::CreateObject<ns3::UniformRandomVariable>();
-    switch_time->SetAttribute("Min", ns3::DoubleValue(min_switch_time.GetSeconds()));
-    switch_time->SetAttribute("Max", ns3::DoubleValue(max_switch_time.GetSeconds()));
-
-    // apps for sending bytes (congesting node -> MEC server)
-    ns3::OnOffHelper on_off_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(server_address, SERVER_PORT));
-    on_off_helper.SetAttribute("OnTime", ns3::PointerValue(switch_time));
-    on_off_helper.SetAttribute("OffTime", ns3::PointerValue(switch_time));
-    on_off_helper.SetAttribute("DataRate", ns3::DataRateValue(data_rate));
-    on_off_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
-    apps = on_off_helper.Install(congesting_nodes_);
-    for (int i=0; i<apps.GetN(); i++) {
-        apps.Get(i)->SetStartTime(next_tcp_start_);
-        next_tcp_start_ += INTERVAL_START;              // do not start all at once, TCP connection fails
-    }
-}
-
 void WirelessNetwork::createWarehouse(const ns3::Box &boundaries, int n_rooms_x, int n_rooms_y) {
     warehouse_ = ns3::CreateObject<ns3::Building>();
     warehouse_->SetBoundaries(boundaries);
@@ -133,6 +114,33 @@ void WirelessNetwork::createWarehouse(const ns3::Box &boundaries, int n_rooms_x,
     warehouse_->SetNFloors(1);
     warehouse_->SetNRoomsX(n_rooms_x);
     warehouse_->SetNRoomsY(n_rooms_y);
+}
+
+void WirelessNetwork::createCongestion(const std::pair<ns3::Time,ns3::Time> &on_time_range,
+                                       const std::pair<ns3::Time,ns3::Time> &off_time_range,
+                                       int data_rate) {
+    ns3::ApplicationContainer apps;
+    ns3::Ipv4Address server_address = mec_server_->GetObject<ns3::Ipv4>()->GetAddress(1, 0).GetLocal();
+
+    // random variable for switching
+    ns3::Ptr<ns3::UniformRandomVariable> on_time = ns3::CreateObject<ns3::UniformRandomVariable>();
+    ns3::Ptr<ns3::UniformRandomVariable> off_time = ns3::CreateObject<ns3::UniformRandomVariable>();
+    on_time->SetAttribute("Min", ns3::DoubleValue(on_time_range.first.GetSeconds()));
+    on_time->SetAttribute("Max", ns3::DoubleValue(on_time_range.second.GetSeconds()));
+    off_time->SetAttribute("Min", ns3::DoubleValue(off_time_range.first.GetSeconds()));
+    off_time->SetAttribute("Max", ns3::DoubleValue(off_time_range.second.GetSeconds()));
+
+    // apps for sending bytes (congesting node -> MEC server)
+    ns3::OnOffHelper on_off_helper("ns3::TcpSocketFactory", ns3::InetSocketAddress(server_address, SERVER_PORT));
+    on_off_helper.SetAttribute("OnTime", ns3::PointerValue(on_time));
+    on_off_helper.SetAttribute("OffTime", ns3::PointerValue(off_time));
+    on_off_helper.SetAttribute("DataRate", ns3::DataRateValue(data_rate));
+    on_off_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
+    apps = on_off_helper.Install(congesting_nodes_);
+    for (int i=0; i<apps.GetN(); i++) {
+        apps.Get(i)->SetStartTime(next_tcp_start_);
+        next_tcp_start_ += INTERVAL_START;              // do not start all at once, TCP connection fails
+    }
 }
 
 void WirelessNetwork::simulate() {
@@ -182,14 +190,15 @@ void WirelessNetwork::updateUploadedBytes(ns3::Ptr<const ns3::Packet> packet, co
 
     try {
         robot_id = getRobotId(robot_address);
-    } catch (const std::logic_error &e) {       // not from a robot
+    } catch (const std::logic_error &e) {                   // not from a robot
         return;
     }
 
     std::unique_lock<std::mutex> ul(uploading_mutex_[robot_id]);
-    if (time >= uploading_start_[robot_id]) {   // this packet belongs to this upload, not a previous one
+    if (time >= uploading_start_[robot_id]) {               // this packet belongs to this upload, not a previous one
         uploaded_[robot_id] += n_bytes;
-        if (uploaded_[robot_id] >= to_upload_[robot_id]) {
+        if (to_upload_[robot_id] > 0 && uploaded_[robot_id] >= to_upload_[robot_id]) {
+            uploaded_[robot_id] = to_upload_[robot_id];     // it may have sent a bit more
             uploading_[robot_id] = false;
             uploading_cv_[robot_id].notify_one();
         }
@@ -204,7 +213,6 @@ int WirelessNetwork::upload(int robot_id, int n_bytes, const ns3::Time &max_dura
      * synchronize the threads using mutex and condition variable. If the callback is called from the current thread,
      * mutex and condition variable are superfluous but the code still works.
      */
-
     ns3::Ptr<ns3::Node> robot = robots_.Get(robot_id);
     ns3::Ptr<ns3::BulkSendApplication> app = ns3::StaticCast<ns3::BulkSendApplication>(robot->GetApplication(0));
     int max_duration_ = static_cast<int>(max_duration.GetMilliSeconds());
@@ -225,7 +233,7 @@ int WirelessNetwork::upload(int robot_id, int n_bytes, const ns3::Time &max_dura
     else
         uploading_cv_[robot_id].wait_for(ul, std::chrono::milliseconds(max_duration_),
                                          [this, robot_id]() { return !uploading_[robot_id]; });
-    int uploaded = std::min(uploaded_[robot_id], to_upload_[robot_id]);     // it may have sent a bit more
+    int uploaded = uploaded_[robot_id];
     ul.unlock();
 
     app->Stop(ns3::Seconds(0));
@@ -242,14 +250,15 @@ void WirelessNetwork::updateDownloadedBytes(ns3::Ptr<const ns3::Packet> packet, 
 
     try {
         robot_id = getRobotId(robot_address);
-    } catch (const std::logic_error &e) {       // not from a robot
+    } catch (const std::logic_error &e) {
         return;
     }
 
     std::unique_lock<std::mutex> ul(downloading_mutex_[robot_id]);
     if (time >= downloading_start_[robot_id]) {
         downloaded_[robot_id] += n_bytes;
-        if (downloaded_[robot_id] >= to_download_[robot_id]) {
+        if (to_download_[robot_id] > 0 && downloaded_[robot_id] >= to_download_[robot_id]) {
+            downloaded_[robot_id] = to_download_[robot_id];
             downloading_[robot_id] = false;
             downloading_cv_[robot_id].notify_one();
         }
@@ -277,7 +286,7 @@ int WirelessNetwork::download(int robot_id, int n_bytes, const ns3::Time &max_du
     else
         downloading_cv_[robot_id].wait_for(ul, std::chrono::milliseconds(max_duration_),
                                            [this, robot_id]() { return !downloading_[robot_id]; });
-    int downloaded = std::min(downloaded_[robot_id], to_download_[robot_id]);
+    int downloaded = downloaded_[robot_id];
     ul.unlock();
 
     app->Stop(ns3::Seconds(0));
@@ -310,7 +319,7 @@ ns3::Time WirelessNetwork::ping(int robot_id, const ns3::Time &max_rtt) {
     else
         pinging_cv_[robot_id].wait_for(ul, std::chrono::milliseconds(max_rtt_),
                                        [this, robot_id]() { return !pinging_[robot_id]; });
-    ns3::Time rtt = pinging_[robot_id] ? (max_rtt+ns3::Seconds(1)) : rtt_[robot_id];
+    ns3::Time rtt = pinging_[robot_id] ? max_rtt : rtt_[robot_id];
     ul.unlock();
 
     app->Stop(ns3::Seconds(0));
@@ -374,8 +383,4 @@ void WirelessNetwork::addMobility(const ns3::NodeContainer &nodes) {
 void WirelessNetwork::addInternetStack(const ns3::NodeContainer &nodes) {
     ns3::InternetStackHelper internet_stack_helper;
     internet_stack_helper.Install(nodes);
-}
-
-double WirelessNetwork::dbm_to_watt(double dbm) {
-    return std::pow(10, dbm/10 - 3);
 }

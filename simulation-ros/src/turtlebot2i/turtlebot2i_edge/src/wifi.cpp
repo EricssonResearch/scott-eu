@@ -3,7 +3,15 @@
 #include "ns3/internet-module.h"
 #include "ns3/point-to-point-module.h"
 
-WifiNetwork::WifiNetwork(int n_robots, int n_congesting_nodes) : WirelessNetwork(n_robots, n_congesting_nodes) {}
+WifiNetwork::WifiNetwork(int n_robots, int n_congesting_nodes) : WirelessNetwork(n_robots, n_congesting_nodes) {
+    /*
+     * Routers adjust MSS based on MTU along the path, here we have to set it.
+     * It is very important because a MSS higher than the default improves a lot the throughput (tested).
+     *
+     * The value 1472 is taken from the example at https://www.nsnam.org/doxygen/wifi-tcp_8cc_source.html.
+     */
+    ns3::Config::SetDefault("ns3::TcpSocket::SegmentSize", ns3::UintegerValue(1472));
+}
 
 void WifiNetwork::createNetwork() {
     ns3::Ptr<ns3::Node> ap = baseStation();
@@ -12,10 +20,7 @@ void WifiNetwork::createNetwork() {
 
     // WiFi general settings
     ns3::WifiHelper wifi_helper;
-    wifi_helper.SetStandard(ns3::WIFI_STANDARD_80211n_5GHZ);    // high throughput
-    wifi_helper.SetRemoteStationManager("ns3::ConstantRateWifiManager",
-                                        "DataMode", ns3::StringValue("HtMcs7"),
-                                        "ControlMode", ns3::StringValue("HtMcs0"));
+    wifi_helper.SetStandard(ns3::WIFI_STANDARD_80211g);
 
     // WiFi PHY
     ns3::YansWifiChannelHelper channel_helper = ns3::YansWifiChannelHelper::Default();
@@ -26,11 +31,8 @@ void WifiNetwork::createNetwork() {
     // WiFi MAC
     ns3::Ssid ssid("hrc-warehouse");
     ns3::WifiMacHelper mac_helper_sta, mac_helper_ap;
-    mac_helper_sta.SetType("ns3::StaWifiMac",
-                           "Ssid", ns3::SsidValue(ssid),
-                           "ActiveProbing", ns3::BooleanValue(false));
-    mac_helper_ap.SetType("ns3::ApWifiMac",
-                          "Ssid", ns3::SsidValue(ssid));
+    mac_helper_sta.SetType("ns3::StaWifiMac", "Ssid", ns3::SsidValue(ssid), "ActiveProbing", ns3::BooleanValue(false));
+    mac_helper_ap.SetType("ns3::ApWifiMac", "Ssid", ns3::SsidValue(ssid));
 
     // P2P general settings
     ns3::PointToPointHelper point_to_point_helper;
