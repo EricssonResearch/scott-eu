@@ -135,6 +135,7 @@ void WirelessNetwork::createCongestion(const std::pair<ns3::Time,ns3::Time> &on_
     on_off_helper.SetAttribute("OnTime", ns3::PointerValue(on_time));
     on_off_helper.SetAttribute("OffTime", ns3::PointerValue(off_time));
     on_off_helper.SetAttribute("DataRate", ns3::DataRateValue(data_rate));
+    on_off_helper.SetAttribute("PacketSize", ns3::UintegerValue(65536));    // less events => less jitter to real-time
     on_off_helper.SetAttribute("EnableSeqTsSizeHeader", ns3::BooleanValue(true));
     apps = on_off_helper.Install(congesting_nodes_);
     for (int i=0; i<apps.GetN(); i++) {
