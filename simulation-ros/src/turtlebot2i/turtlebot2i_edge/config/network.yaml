@@ -11,13 +11,12 @@ network:
       n_x: 3
       n_y: 3
   congestion:
-    data_rate: 6000000      # data rate in on state (bps)
-    on_time: [3, 5]         # min and max values for uniform random variable of the 'On' state
+    data_rate: 3000000      # data rate in on state (bps)
+    on_time: [2, 5]         # min and max values for uniform random variable of the 'On' state
     off_time: [5, 10]       # min and max values for uniform random variable of the 'Off' state
-    n: 4                    # number of nodes
+    n: 3                    # number of nodes
     position: [             # position of nodes
       [0, 10, 0],
-      [0, -10, 0],
-      [-10, 0, 0],
-      [10, 0, 0]
+      [-10, -10, 0],
+      [-10, 10, 0],
     ]
