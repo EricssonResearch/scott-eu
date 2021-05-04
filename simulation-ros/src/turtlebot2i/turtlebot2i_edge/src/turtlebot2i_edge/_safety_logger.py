@@ -97,9 +97,9 @@ class SafetyLogger(Callback):
         self._save()
 
     def _save(self):
-        in_critical_zone = self._in_critical_zone_duration.to_sec() / self._duration.to_sec()
-        in_warning_zone = self._in_warning_zone_duration.to_sec() / self._duration.to_sec()
-        in_safe_zone = 100 - in_critical_zone - in_warning_zone
+        in_critical_zone = self._in_critical_zone_duration.to_sec()
+        in_warning_zone = self._in_warning_zone_duration.to_sec()
+        in_safe_zone = self._duration.to_sec() - in_critical_zone - in_warning_zone
 
         self.logs[-1]['in_critical_zone'] = in_critical_zone
         self.logs[-1]['in_warning_zone'] = in_warning_zone
