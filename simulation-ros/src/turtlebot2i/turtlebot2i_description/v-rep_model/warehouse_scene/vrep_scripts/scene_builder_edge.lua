@@ -47,11 +47,11 @@ function sysCall_init()
     addModel('ConveyorBelt_simple', {10,-14,0.113}, {0,0,-math.pi/2})
 
     -- Shelves
-    addModel('Shelf', {-7,7,0.066}, {0,0,0})
-    addModel('Shelf', {3,7,0.066}, {0,0,0})
-    addModel('Shelf', {-7,3,0.066}, {0,0,math.pi})
-    addModel('Shelf', {3,3,0.066}, {0,0,math.pi})
-    addModel('Shelf', {7,3,0.066}, {0,0,math.pi})
+    addModel('Shelf2', {-7,7,0.066}, {0,0,0})
+    addModel('Shelf2', {3,7,0.066}, {0,0,0})
+    addModel('Shelf2', {-7,3,0.066}, {0,0,math.pi})
+    addModel('Shelf2', {3,3,0.066}, {0,0,math.pi})
+    addModel('Shelf2', {7,3,0.066}, {0,0,math.pi})
 
     -- Other static obstacles
     addModel('80cmHighPillar100cm', {-10,10,0.4}, {0,0,0})
