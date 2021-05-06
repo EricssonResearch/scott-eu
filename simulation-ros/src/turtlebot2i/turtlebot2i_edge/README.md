@@ -60,7 +60,7 @@ The [RL environment](src/turtlebot2i_edge/_task_offloading_env.py) communicates 
 Since both the [scene graph generator](../turtlebot2i_scene_graph/src/turtlebot2i_scene_graph/_scene_graph_generator.py) and the [RL environment](src/turtlebot2i_edge/_task_offloading_env.py) use the V-REP remote API and the V-REP remote API server service allows only one client, you need to add other services. Furtherly, since the [RL environment](src/turtlebot2i_edge/_task_offloading_env.py) closes and restarts the V-REP scene after each collision, the services must be [continuous and not temporary](https://www.coppeliarobotics.com/helpFiles/en/remoteApiServerSide.htm). To do this, run the following commands:
 ```
 for i in $(echo {2..5}); do
-    let port=1998+$i
+    let port=19998+$i
     echo "portIndex${i}_port = $port"
     echo "portIndex${i}_debug = false"
     echo "portIndex${i}_syncSimTrigger = true"
@@ -68,12 +68,30 @@ for i in $(echo {2..5}); do
 done >> $VREP_ROOT/remoteApiConnections.txt
 ```
 
-## 2.3 Configurations
+## 2.3 Python requirements
+
+Some Python packages are required to run this package:
+```
+roscd turtlebot2i_edge
+pip install -r requirements.txt
+```
+
+## 2.4 Permissions
+
+Make sure to give the execution permission to the scripts and to the Python package:
+```
+roscd turtlebot2i_edge
+chmod +x -R scripts
+chmod +x -R src/turtlebot2i_edge
+```
+
+## 2.5 Configurations
 
 It is possible to tune several parameters in the [configurations](config). For example, the congestion of the network can be modified in the [network configurations](config/network.yaml).
 
-The warehouse can be modified by editing the [scene builder script](../turtlebot2i_description/v-rep_model/warehouse_scene/vrep_scripts/scene_builder_edge.lua). If you modify the size of the warehouse and/or the rooms, do not forget to update the [network configurations](config/network.yaml). 
+The warehouse can be modified by editing the [scene builder script](../turtlebot2i_description/v-rep_model/warehouse_scene/vrep_scripts/scene_builder_edge.lua). For example, for efficiency reasons, you can comment line 101 to disable the second robot while train the agent (only one robot needed). If you modify the size of the warehouse and/or the rooms, do not forget to update the [network configurations](config/network.yaml). 
 
+The [launch files](launch) accept several optional arguments (if not specified, default values are used). For example, you can set the seed for the [RL environment](src/turtlebot2i_edge/_task_offloading_env.py) by using the homonym argument of [task_offloading_single.launch](launch/task_offloading_single.launch). 
 # 3. Train and test agents
 
 ## 3.1 Start V-REP scene
@@ -86,29 +104,25 @@ $VREP_ROOT/vrep.sh -s $(rospack find turtlebot2i_description)/v-rep_model/wareho
 
 To train the DQN agent, run the following command:
 ```
-roslaunch turtlebot2i_edge task_offloading.launch agent:=dqn mode:=train
+roslaunch turtlebot2i_edge task_offloading_single.launch agent:=dqn mode:=train
 ```
-The trained weights are saved in the *models* directory, together with the training logs.
+The trained weights and the training logs are saved in the *models* and *results* directories, respectively.
 
 Notice that the navigation stack outputs several warnings and errors while the V-REP scene is stopped and restarted (environment reset). This is expected and you should not worry.
 
 ## 3.3 Test agent
 
-To test the RL agent or one of the baselines, run one of the following commands:
+To test an agent (either RL or one of the baselines), run one of the following commands:
 ```
-roslaunch turtlebot2i_edge task_offloading.launch agent:=dqn            # DQN agent
-roslaunch turtlebot2i_edge task_offloading.launch agent:=all_edge       # all_edge baseline
-roslaunch turtlebot2i_edge task_offloading.launch agent:=all_robot      # all_robot baseline
-roslaunch turtlebot2i_edge task_offloading.launch agent:=random         # random baseline
+# replace <agent> with one of {dqn, all_edge, all_robot, random}
+roslaunch turtlebot2i_edge task_offloading_single.launch agent:=<agent>                         # one robot
+roslaunch turtlebot2i_edge task_offloading_multiple.launch agent_0:=<agent> agent_1:=<agent>    # two robot
 ```
-The test logs are saved in the *models* folder.
+The test logs are saved in the *results* folder.
 
-To get the results, you need to analyze the test logs:
+To get the results, you need to analyze the test logs using the [evaluation script](scripts/evaluation.py):
 ```
 roscd turtlebot2i_edge
-python scripts/evaluate.py models/dqn --output results/dqn              # DQN agent
-python scripts/evaluate.py models/all_edge --output results/all_edge    # all_edge baseline
-python scripts/evaluate.py models/all_robot --output results/all_robot  # all_robot baseline
-python scripts/evaluate.py models/random --output results/random        # random baseline
+python scripts/evaluate.py results
 ```
-The results are saved in the *results* folder (or, if you changed the commands, in the path specified by the *output* argument).
+The script recursively walks through the directory and analyzes all the logs it finds, creating a folder for each episode containing the results.

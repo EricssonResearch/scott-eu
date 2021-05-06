@@ -189,13 +189,16 @@ class VrepObjectExtractor(VrepClient):
         objects = self.dynamic_objects + self.robots
         for object_ in objects:
             object_handle = self._get_object_handle(object_.name)
+            if object_handle is None:
+                rospy.logwarn('Scene stopped or restarting, skipping refresh...')
+                return
             if object_handle != object_.handle:
                 object_.handle = object_handle
                 scene_restarted = True
 
         # reload dynamic objects and robots if scene has been restarted
         if scene_restarted:
-            rospy.logwarn('Reloading dynamic objects and robots...')
+            rospy.logwarn('Scene restarted, reloading dynamic objects and robots...')
             dynamic_objects = [object_.name for object_ in self.dynamic_objects]
             robots = [robot.name for robot in self.robots]
             self.reset_connection()

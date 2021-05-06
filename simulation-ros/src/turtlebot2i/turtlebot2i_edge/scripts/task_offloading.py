@@ -29,7 +29,8 @@ def main():
 
     rospy.loginfo('Getting parameters...')
     agent = rospy.get_param('~agent')
-    train = rospy.get_param('~train')
+    mode = rospy.get_param('~mode')
+    seed = rospy.get_param('~env/seed')
     vrep_host = rospy.get_param('~vrep/host')
     vrep_port = rospy.get_param('~vrep/port')
     pick_goals = rospy.get_param('/pick_and_place/goals/pick')
@@ -44,12 +45,14 @@ def main():
     max_risk_value = rospy.get_param('~env/observation/max_risk_value')
     network_image_size = rospy.get_param('~env/task/network_image_size')
     depth_image_size = rospy.get_param('~env/task/depth_image_size')
-    models_path = rospy.get_param('~rl/models/path')
+    models_path = rospy.get_param('~paths/models')
+    logs_path = rospy.get_param('~paths/logs')
     network_image_size = (network_image_size['width'], network_image_size['height'])
     depth_image_size = (depth_image_size['width'], depth_image_size['height'])
 
     rospy.loginfo('Agent: %s' % agent)
-    rospy.loginfo('Train: %s' % train)
+    rospy.loginfo('Mode: %s' % mode)
+    rospy.loginfo('Seed: %d' % seed)
     rospy.loginfo('V-REP remote API server: %s:%d' % (vrep_host, vrep_port))
     rospy.loginfo('Goals where to pick products: %s' % str(pick_goals))
     rospy.loginfo('Goals where to place products: %s' % str(place_goals))
@@ -63,16 +66,22 @@ def main():
     rospy.loginfo('Max risk value: %f' % max_risk_value)
     rospy.loginfo('Image size over the network: (%d,%d)' % (network_image_size[0], network_image_size[1]))
     rospy.loginfo('Depth image size (if depth camera disabled): (%d,%d)' % (depth_image_size[0], depth_image_size[1]))
-    rospy.loginfo('RL models path: %s' % models_path)
+    rospy.loginfo('Models path: %s' % models_path)
+    rospy.loginfo('Logs path: %s' % logs_path)
 
-    if not os.path.exists(models_path):
-        os.mkdir(models_path)
-    models_path = os.path.join(models_path, agent)
-    if not os.path.exists(models_path):
-        os.mkdir(models_path)
-    model_path = os.path.join(models_path, 'weights')
-    log_path_offloading = os.path.join(models_path, 'logs_offloading%s' % ('_train' if train else ''))
-    log_path_safety = os.path.join(models_path, 'logs_safety%s' % ('_train' if train else ''))
+    if mode != 'train' and mode != 'test':
+        raise ValueError('Invalid mode')
+    training = mode == 'train'
+
+    model_path = os.path.join(models_path, agent)
+    if training and not os.path.exists(model_path):
+        os.makedirs(model_path)
+    model_path = os.path.join(model_path, 'weights')
+    logs_path = os.path.join(logs_path, agent, 'seed_%d' % seed, 'logs')
+    if not os.path.exists(logs_path):
+        os.makedirs(logs_path)
+    logs_path_offloading = os.path.join(logs_path, 'logs_offloading%s' % ('_train' if training else ''))
+    logs_path_safety = os.path.join(logs_path, 'logs_safety%s' % ('_train' if training else ''))
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
@@ -94,7 +103,7 @@ def main():
         vrep_port=vrep_port,
         vrep_scene_graph_extraction=True
     )
-    env.seed(1)
+    env.seed(seed)
 
     rospy.loginfo('Initializing agent...')
     if agent == 'dqn':
@@ -105,23 +114,23 @@ def main():
             memory=SequentialMemory(limit=50000, window_length=1),
         )
         agent.compile(optimizer='adam', metrics=['mae'])
-        if not train:
+        if not training:
             rospy.loginfo('Loading weights from %s...' % model_path)
             agent.load_weights(model_path)
     elif agent == 'all_robot' or 'all_edge' or 'random':
         agent = NaiveAgent(mode=agent)
-        if train:
+        if training:
             raise ValueError('Naive agents do not need to be trained')
     else:
         raise ValueError('Invalid agent')
 
-    if train:
+    if training:
         rospy.loginfo('Training...')
         callbacks = [
             ModelIntervalCheckpoint(model_path, interval=100),
             TrainIntervalLogger(interval=100),
-            TaskOffloadingLogger(log_path_offloading, interval=100),
-            SafetyLogger(log_path_safety, interval=100)
+            TaskOffloadingLogger(logs_path_offloading, interval=100),
+            SafetyLogger(logs_path_safety, interval=100)
         ]
         agent.fit(env, nb_steps=10000, visualize=True, callbacks=callbacks, verbose=2)
         rospy.loginfo('Saving weights to %s' % model_path)
@@ -129,8 +138,8 @@ def main():
     else:
         rospy.loginfo('Testing...')
         callbacks = [
-            TaskOffloadingLogger(log_path_offloading, interval=100),
-            SafetyLogger(log_path_safety, interval=100)
+            TaskOffloadingLogger(logs_path_offloading, interval=100),
+            SafetyLogger(logs_path_safety, interval=100)
         ]
         agent.test(env, nb_episodes=1, visualize=True, callbacks=callbacks, verbose=2)
 

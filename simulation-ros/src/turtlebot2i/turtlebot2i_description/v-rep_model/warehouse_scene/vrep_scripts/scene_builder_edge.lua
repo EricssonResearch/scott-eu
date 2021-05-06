@@ -98,7 +98,7 @@ function sysCall_init()
 
     -- Robots
     addModel('turtlebot2i_edge', {7,7,0.063}, {0,0,math.pi/2})
---     addModel('turtlebot2i_edge', {9,7,0.063}, {0,0,math.pi/2})
+    addModel('turtlebot2i_edge', {9,7,0.063}, {0,0,math.pi/2})
 
     -- Humans (after robots, otherwise the robots are spawn with name not starting from 0)
     addModel('Walking_Bill', {-10,12.5,0}, {0,0,math.pi})

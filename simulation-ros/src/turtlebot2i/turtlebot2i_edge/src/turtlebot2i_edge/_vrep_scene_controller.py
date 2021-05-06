@@ -9,22 +9,23 @@ class VrepSceneController(VrepClient):
         super(VrepSceneController, self).__init__()
 
     def reset(self):
-        vrep.simxStopSimulation(self.clientID, vrep.simx_opmode_blocking)
-        self._wait_simulation_stopped()
-        vrep.simxStartSimulation(self.clientID, vrep.simx_opmode_blocking)
-        self._wait_simulation_started()
-        rospy.loginfo('Simulation reset')
+        if self._is_running():
+            vrep.simxStopSimulation(self.clientID, vrep.simx_opmode_blocking)
+            self._wait_stopped_simulation()
+            vrep.simxStartSimulation(self.clientID, vrep.simx_opmode_blocking)
+            self.wait_running_simulation()
+            rospy.loginfo('Simulation reset')
+        else:       # another node is already resetting, just wait
+            self.wait_running_simulation()
 
-    def _wait_simulation_stopped(self):
-        handles = None
-        mode = vrep.simx_opmode_blocking
-        while handles is None or len(handles) > 0:
-            _, handles = vrep.simxGetObjects(self.clientID, vrep.sim_object_visionsensor_type, mode)
+    def _wait_stopped_simulation(self):
+        while self._is_running():
             time.sleep(1)
 
-    def _wait_simulation_started(self):
-        handles = []
-        mode = vrep.simx_opmode_blocking
-        while len(handles) == 0:
-            _, handles = vrep.simxGetObjects(self.clientID, vrep.sim_object_visionsensor_type, mode)
+    def wait_running_simulation(self):
+        while not self._is_running():
             time.sleep(1)
+
+    def _is_running(self):
+        _, handles = vrep.simxGetObjects(self.clientID, vrep.sim_object_visionsensor_type, vrep.simx_opmode_blocking)
+        return len(handles) > 0

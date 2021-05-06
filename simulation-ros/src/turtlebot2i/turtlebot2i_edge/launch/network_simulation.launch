@@ -1,5 +1,7 @@
 <launch>
     <arg name="network_type" default="wifi"/>
+    <arg name="robot_name_0" default="turtlebot2i"/>
+    <arg name="robot_name_1" default="turtlebot2i_0"/>
     <arg name="output" default="screen"/>
 
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/network.yaml" ns="/"/>
@@ -7,16 +9,16 @@
 
     <node name="network_simulation" pkg="turtlebot2i_edge" type="network_simulation" respawn="true"
           output="$(arg output)">
-        <remap from="odom_0" to="/turtlebot2i/odom"/>
-        <remap from="odom_1" to="/turtlebot2i_0/odom"/>
+        <remap from="odom_0" to="/$(arg robot_name_0)/odom"/>
+        <remap from="odom_1" to="/$(arg robot_name_1)/odom"/>
 
-        <remap from="upload_0" to="/turtlebot2i/edge/upload"/>
-        <remap from="upload_1" to="/turtlebot2i_0/edge/upload"/>
+        <remap from="upload_0" to="/$(arg robot_name_0)/edge/upload"/>
+        <remap from="upload_1" to="/$(arg robot_name_1)/edge/upload"/>
 
-        <remap from="download_0" to="/turtlebot2i/edge/download"/>
-        <remap from="download_1" to="/turtlebot2i_0/edge/download"/>
+        <remap from="download_0" to="/$(arg robot_name_0)/edge/download"/>
+        <remap from="download_1" to="/$(arg robot_name_1)/edge/download"/>
 
-        <remap from="ping_0" to="/turtlebot2i/edge/ping"/>
-        <remap from="ping_1" to="/turtlebot2i_0/edge/ping"/>
+        <remap from="ping_0" to="/$(arg robot_name_0)/edge/ping"/>
+        <remap from="ping_1" to="/$(arg robot_name_1)/edge/ping"/>
     </node>
 </launch>

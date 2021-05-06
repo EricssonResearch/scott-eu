@@ -18,6 +18,8 @@ class NaiveAgent(Agent):
             return 1
         elif self.mode == 'random':
             return np.random.choice(2)
+        else:
+            raise ValueError('Invalid mode')
 
     def backward(self, reward, terminal):
         pass

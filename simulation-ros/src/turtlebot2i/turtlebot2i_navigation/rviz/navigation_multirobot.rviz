@@ -7,7 +7,7 @@ Panels:
         - /Global Options1
         - /Status1
       Splitter Ratio: 0.5
-    Tree Height: 657
+    Tree Height: 699
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -17,7 +17,7 @@ Panels:
       - /2D Nav Goal1
       - /Publish Point1
     Name: Tool Properties
-    Splitter Ratio: 0.433333337
+    Splitter Ratio: 0.4333333373069763
   - Class: rviz/Views
     Expanded:
       - /Current View1
@@ -28,6 +28,10 @@ Panels:
     Name: Time
     SyncMode: 0
     SyncSource: LaserScan - R0
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
 Visualization Manager:
   Class: ""
   Displays:
@@ -37,7 +41,7 @@ Visualization Manager:
       Color: 160; 160; 164
       Enabled: true
       Line Style:
-        Line Width: 0.0299999993
+        Line Width: 0.029999999329447746
         Value: Lines
       Name: Grid
       Normal Cell Count: 0
@@ -300,7 +304,7 @@ Visualization Manager:
           Value: true
         turtlebot2i_0/wheel_right_link:
           Value: true
-      Marker Scale: 0.400000006
+      Marker Scale: 0.4000000059604645
       Name: TF
       Show Arrows: true
       Show Axes: true
@@ -1159,15 +1163,15 @@ Visualization Manager:
       Value: true
     - Alpha: 1
       Axes Length: 1
-      Axes Radius: 0.100000001
+      Axes Radius: 0.10000000149011612
       Class: rviz/Pose
       Color: 255; 25; 0
       Enabled: true
-      Head Length: 0.300000012
-      Head Radius: 0.100000001
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
       Name: Pose
       Shaft Length: 1
-      Shaft Radius: 0.0500000007
+      Shaft Radius: 0.05000000074505806
       Shape: Arrow
       Topic: /vrep_ros_interface/turtlebot2i/move_base/current_goal
       Unreliable: false
@@ -1177,11 +1181,11 @@ Visualization Manager:
       Class: rviz/Path
       Color: 255; 0; 0
       Enabled: true
-      Head Diameter: 0.300000012
-      Head Length: 0.200000003
-      Length: 0.300000012
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
       Line Style: Lines
-      Line Width: 0.0299999993
+      Line Width: 0.029999999329447746
       Name: Path Global - R0
       Offset:
         X: 0
@@ -1189,9 +1193,9 @@ Visualization Manager:
         Z: 0
       Pose Color: 255; 85; 255
       Pose Style: None
-      Radius: 0.0299999993
-      Shaft Diameter: 0.100000001
-      Shaft Length: 0.100000001
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
       Topic: /turtlebot2i/move_base_node/TrajectoryPlannerROS/global_plan
       Unreliable: false
       Value: true
@@ -1200,11 +1204,11 @@ Visualization Manager:
       Class: rviz/Path
       Color: 0; 0; 255
       Enabled: true
-      Head Diameter: 0.300000012
-      Head Length: 0.200000003
-      Length: 0.300000012
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
       Line Style: Lines
-      Line Width: 0.0299999993
+      Line Width: 0.029999999329447746
       Name: Path Local - R0
       Offset:
         X: 0
@@ -1212,9 +1216,9 @@ Visualization Manager:
         Z: 0
       Pose Color: 255; 85; 255
       Pose Style: None
-      Radius: 0.0299999993
-      Shaft Diameter: 0.100000001
-      Shaft Length: 0.100000001
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
       Topic: /turtlebot2i/move_base_node/TrajectoryPlannerROS/local_plan
       Unreliable: false
       Value: true
@@ -1223,11 +1227,11 @@ Visualization Manager:
       Class: rviz/Path
       Color: 255; 0; 0
       Enabled: true
-      Head Diameter: 0.300000012
-      Head Length: 0.200000003
-      Length: 0.300000012
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
       Line Style: Lines
-      Line Width: 0.0299999993
+      Line Width: 0.029999999329447746
       Name: Path Global - R1
       Offset:
         X: 0
@@ -1235,9 +1239,9 @@ Visualization Manager:
         Z: 0
       Pose Color: 255; 85; 255
       Pose Style: None
-      Radius: 0.0299999993
-      Shaft Diameter: 0.100000001
-      Shaft Length: 0.100000001
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
       Topic: /turtlebot2i_0/move_base_node/TrajectoryPlannerROS/global_plan
       Unreliable: false
       Value: true
@@ -1246,11 +1250,11 @@ Visualization Manager:
       Class: rviz/Path
       Color: 0; 0; 255
       Enabled: true
-      Head Diameter: 0.300000012
-      Head Length: 0.200000003
-      Length: 0.300000012
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
       Line Style: Lines
-      Line Width: 0.0299999993
+      Line Width: 0.029999999329447746
       Name: Path Local - R1
       Offset:
         X: 0
@@ -1258,9 +1262,9 @@ Visualization Manager:
         Z: 0
       Pose Color: 255; 85; 255
       Pose Style: None
-      Radius: 0.0299999993
-      Shaft Diameter: 0.100000001
-      Shaft Length: 0.100000001
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
       Topic: /turtlebot2i_0/move_base_node/TrajectoryPlannerROS/local_plan
       Unreliable: false
       Value: true
@@ -1287,7 +1291,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.00999999978
+      Size (m): 0.009999999776482582
       Style: Points
       Topic: /turtlebot2i/lidar/scan
       Unreliable: false
@@ -1317,7 +1321,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.00999999978
+      Size (m): 0.009999999776482582
       Style: Points
       Topic: /turtlebot2i_0/lidar/scan
       Unreliable: false
@@ -1334,7 +1338,7 @@ Visualization Manager:
       Unreliable: false
       Use Timestamp: false
       Value: true
-    - Alpha: 0.699999988
+    - Alpha: 0.699999988079071
       Class: rviz/Map
       Color Scheme: costmap
       Draw Behind: false
@@ -1345,17 +1349,17 @@ Visualization Manager:
       Use Timestamp: false
       Value: true
     - Alpha: 1
-      Arrow Length: 0.300000012
-      Axes Length: 0.300000012
-      Axes Radius: 0.00999999978
+      Arrow Length: 0.30000001192092896
+      Axes Length: 0.30000001192092896
+      Axes Radius: 0.009999999776482582
       Class: rviz/PoseArray
       Color: 255; 25; 0
       Enabled: true
-      Head Length: 0.0700000003
-      Head Radius: 0.0299999993
+      Head Length: 0.07000000029802322
+      Head Radius: 0.029999999329447746
       Name: PoseArray
-      Shaft Length: 0.230000004
-      Shaft Radius: 0.00999999978
+      Shaft Length: 0.23000000417232513
+      Shaft Radius: 0.009999999776482582
       Shape: Arrow (Flat)
       Topic: ""
       Unreliable: false
@@ -1363,6 +1367,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
+    Default Light: true
     Fixed Frame: map
     Frame Rate: 30
   Name: root
@@ -1374,7 +1379,10 @@ Visualization Manager:
     - Class: rviz/FocusCamera
     - Class: rviz/Measure
     - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
       Topic: initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
     - Class: rviz/SetGoal
       Topic: /turtlebot2i_0/move_base_simple/goal
     - Class: rviz/PublishPoint
@@ -1386,26 +1394,26 @@ Visualization Manager:
       Angle: 0
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
-        Stereo Eye Separation: 0.0599999987
+        Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Invert Z Axis: false
       Name: Current View
-      Near Clip Distance: 0.00999999978
-      Scale: 82.2002182
+      Near Clip Distance: 0.009999999776482582
+      Scale: 25.63998031616211
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 1.61696005
-      Y: -1.04161334
+      X: 2.5498766899108887
+      Y: -0.20541918277740479
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 968
+  Height: 1025
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000016a0000033efc0200000007fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afc000000280000033e000000fb0100001dfa000000010100000002fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000000ffffffff0000009b00fffffffb000000100044006900730070006c00610079007301000000000000016a0000016a00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f0000033efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007301000000280000033e000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000006650000003efc0100000002fb0000000800540069006d00650100000000000006650000030000fffffffb0000000800540069006d00650100000000000004500000000000000000000003e00000033e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000016a00000363fc0200000007fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afc0000003d00000363000000e60100001cfa000000010100000002fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000000ffffffff0000009d00fffffffb000000100044006900730070006c00610079007301000000000000016a0000015600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f00000363fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d00000363000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073d0000003efc0100000002fb0000000800540069006d006501000000000000073d000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004b80000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -1414,6 +1422,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1637
-  X: 43
-  Y: 24
+  Width: 1853
+  X: 67
+  Y: 27

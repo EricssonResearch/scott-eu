@@ -83,7 +83,7 @@ def main():
             pass
 
     else:
-        raise ValueError
+        raise ValueError('Invalid mode')
 
 
 if __name__ == '__main__':

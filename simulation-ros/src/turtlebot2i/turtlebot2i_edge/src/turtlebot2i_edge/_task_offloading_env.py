@@ -17,7 +17,6 @@ from kobuki_msgs.msg import BumperEvent
 from turtlebot2i_scene_graph.msg import SceneGraph
 from turtlebot2i_edge.srv import GenerateSceneGraphProxy, GenerateSceneGraphProxyRequest
 from turtlebot2i_edge.srv import GenerateSceneGraphProxyResponse, MeasureNetwork
-from turtlebot2i_scene_graph.srv import GenerateSceneGraph
 
 
 class TaskOffloadingEnv(Env):
@@ -73,10 +72,6 @@ class TaskOffloadingEnv(Env):
         rospy.loginfo('Waiting for ROS service to measure the network...')
         self._measure_network = rospy.ServiceProxy('measure_network', MeasureNetwork)
         self._measure_network.wait_for_service()
-
-        rospy.loginfo('Waiting for ROS service to extract scene graph from V-REP...')
-        self._generate_scene_graph_vrep = rospy.ServiceProxy('vrep/generate_scene_graph', GenerateSceneGraph)
-        self._generate_scene_graph_vrep.wait_for_service()
 
         self._collision = False
         self._collision_lock = threading.Lock()
@@ -310,12 +305,14 @@ class TaskOffloadingEnv(Env):
 
     def _done(self):
         with self._collision_lock:
-            collision = self._collision     # reset after releasing the lock, resetting takes time
+            collision = self._collision     # reset after releasing the lock, because resetting takes time
         if collision:
             self._vrep_scene_controller.reset()
-            self._pick_and_place_navigator.refresh()
             with self._collision_lock:
                 self._collision = False
+        else:                               # other robots might be resetting
+            self._vrep_scene_controller.wait_running_simulation()
+        self._pick_and_place_navigator.refresh()
         self._step += 1
         return self._step >= self.steps_per_episode - 1
 

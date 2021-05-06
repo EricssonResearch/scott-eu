@@ -1,0 +1,47 @@
+<launch>
+    <arg name="robot_name_0" default="turtlebot2i"/>
+    <arg name="robot_name_1" default="turtlebot2i_0"/>
+    <arg name="agent_0" default="dqn"/>
+    <arg name="agent_1" default="dqn"/>
+    <arg name="seed_0" default="1"/>
+    <arg name="seed_1" default="2"/>
+    <arg name="network_type" default="wifi"/>
+
+    <include file="$(find turtlebot2i_edge)/launch/network_simulation.launch">
+        <arg name="network_type" default="$(arg network_type)"/>
+        <arg name="robot_name_0" default="$(arg robot_name_0)"/>
+        <arg name="robot_name_1" default="$(arg robot_name_1)"/>
+        <arg name="output" default="log"/>
+    </include>
+
+    <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple.launch">
+        <arg name="robot_name_0" value="$(arg robot_name_0)"/>
+        <arg name="robot_name_1" value="$(arg robot_name_1)"/>
+    </include>
+
+    <include file="$(find turtlebot2i_edge)/launch/task_offloading_single.launch">
+        <arg name="robot_name" value="$(arg robot_name_0)"/>
+        <arg name="agent" value="$(arg agent_0)"/>
+        <arg name="mode" value="test"/>
+        <arg name="seed" value="$(arg seed_0)"/>
+        <arg name="network" value="false"/>
+        <arg name="navigation" value="false"/>
+        <arg name="vrep_host" value="localhost"/>
+        <arg name="vrep_port_0" value="20000"/>
+        <arg name="vrep_port_1" value="20001"/>
+        <arg name="output" value="screen"/>
+    </include>
+
+    <include file="$(find turtlebot2i_edge)/launch/task_offloading_single.launch">
+        <arg name="robot_name" value="$(arg robot_name_1)"/>
+        <arg name="agent" value="$(arg agent_1)"/>
+        <arg name="mode" value="test"/>
+        <arg name="seed" value="$(arg seed_1)"/>
+        <arg name="network" value="false"/>
+        <arg name="navigation" value="false"/>
+        <arg name="vrep_host" value="localhost"/>
+        <arg name="vrep_port_0" value="20002"/>
+        <arg name="vrep_port_1" value="20003"/>
+        <arg name="output" value="log"/>
+    </include>
+</launch>

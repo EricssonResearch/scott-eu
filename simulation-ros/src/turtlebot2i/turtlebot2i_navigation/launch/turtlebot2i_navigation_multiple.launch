@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="robot_name_0" default="turtlebot2i"/>
+  <arg name="robot_name_1" default="turtlebot2i_0"/>
 
   <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
     <param name="frame_id" value="map"/>
   </node>
 
   <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
-    <arg name="robot_name" value="turtlebot2i"/>
+    <arg name="robot_name" value="$(arg robot_name_0)"/>
     <arg name="moveit" value="false"/>
   </include>
 
   <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
-    <arg name="robot_name" value="turtlebot2i_0"/>
+    <arg name="robot_name" value="$(arg robot_name_1)"/>
     <arg name="moveit" value="false"/>
   </include>
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_multirobot.rviz" />

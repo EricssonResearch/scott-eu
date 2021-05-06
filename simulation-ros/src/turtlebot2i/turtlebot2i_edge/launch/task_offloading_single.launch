@@ -1,13 +1,23 @@
 <launch>
     <arg name="robot_name" default="turtlebot2i"/>
     <arg name="agent" default="dqn"/>
-    <arg name="train" default="false"/>
+    <arg name="mode" default="test"/>      <!-- train or test -->
+    <arg name="seed" default="1"/>
     <arg name="network_type" default="wifi"/>
+
+    <!-- just for task_offloading_multiple.launch -->
+    <arg name="vrep_host" default="localhost"/>
+    <arg name="vrep_port_0" default="20000"/>
+    <arg name="vrep_port_1" default="20001"/>
+    <arg name="network" default="true"/>
+    <arg name="navigation" default="true"/>
+    <arg name="output" default="screen"/>
 
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/pick_and_place.yaml" ns="/"/>
 
-    <include file="$(find turtlebot2i_edge)/launch/network_simulation.launch">
+    <include file="$(find turtlebot2i_edge)/launch/network_simulation.launch" if="$(arg network)">
         <arg name="network_type" value="$(arg network_type)"/>
+        <arg name="robot_name_0" value="$(arg robot_name)"/>
         <arg name="output" value="log"/>
     </include>
 
@@ -16,14 +26,14 @@
         <arg name="output" value="log"/>
     </include>
 
-    <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch">
+    <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch" if="$(arg navigation)">
         <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
 
     <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
-        <arg name="vrep_host" value="localhost"/>
-        <arg name="vrep_port" value="20000"/>
+        <arg name="vrep_host" value="$(arg vrep_host)"/>
+        <arg name="vrep_port" value="$(arg vrep_port_0)"/>
         <arg name="mode" value="service"/>
         <arg name="output" value="log"/>
     </include>
@@ -45,14 +55,16 @@
             <param name="on_edge" type="bool" value="False"/>
         </node>
 
-        <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" required="true" output="screen">
+        <node name="task_offloading" pkg="turtlebot2i_edge" type="task_offloading.py" required="true"
+              output="$(arg output)">
             <rosparam command="load" file="$(find turtlebot2i_edge)/config/env.yaml"/>
             <param name="agent" type="str" value="$(arg agent)"/>
-            <param name="train" type="bool" value="$(arg train)"/>
-            <param name="vrep/host" type="str" value="localhost"/>
-            <param name="vrep/port" type="int" value="20001"/>
-            <param name="rl/models/path" type="str" value="$(find turtlebot2i_edge)/models"/>
-            <remap from="vrep/generate_scene_graph" to="/$(arg robot_name)/generate_scene_graph"/>
+            <param name="mode" type="str" value="$(arg mode)"/>
+            <param name="env/seed" type="int" value="$(arg seed)"/>
+            <param name="vrep/host" type="str" value="$(arg vrep_host)"/>
+            <param name="vrep/port" type="int" value="$(arg vrep_port_1)"/>
+            <param name="paths/models" type="str" value="$(find turtlebot2i_edge)/models"/>
+            <param name="paths/logs" type="str" value="$(find turtlebot2i_edge)/results"/>
         </node>
     </group>
 </launch>

@@ -1,3 +1,12 @@
+/*
+ * Abstract class for implementations with the following general topology:
+ *
+ *             Wireless
+ *      *       *       ...     *       *
+ *      |       |               |       |      Point-to-point
+ *   robot1  robot2          robotN     BS ---------------------- MEC server
+ */
+
 #pragma once
 
 #include <mutex>

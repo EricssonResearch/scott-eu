@@ -4,7 +4,7 @@ network:
   base_station:
     position: [12.5, 12.5, 0]
   robots:
-    n: 1                    # number of robots, must coincide with robots in V-REP
+    n: 2                    # number of robots, must coincide with robots in V-REP
   warehouse:
     boundaries: [-15, 15, -15, 15, -1, 10]
     rooms:

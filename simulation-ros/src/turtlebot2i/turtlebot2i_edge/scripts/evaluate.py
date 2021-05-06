@@ -58,16 +58,14 @@ def get_percentage_metric(logs, metric):
     return metric_perc
 
 
-def print_output(output, output_dir=None, filename=None):
-    print(output)
+def print_metrics(output, output_dir, filename=None):
     if filename is None:
         filename = 'metrics.txt'
-    if output_dir is not None:
-        with open(os.path.join(output_dir, filename), mode='a') as f:
-            f.write(output + '\n')
+    with open(os.path.join(output_dir, filename), mode='a') as f:
+        f.write(output + '\n')
 
 
-def plot_action_pie(logs, output_dir=None, filename=None):
+def plot_action_pie(logs, output_dir, filename=None):
     n_actions = TaskOffloadingEnv.action_space.n
     wedge_sizes = [len(np.where(logs['action'] == a)[0]) for a in range(n_actions)]
     labels = ['compute on robot', 'compute on edge', 'use last output']
@@ -76,102 +74,95 @@ def plot_action_pie(logs, output_dir=None, filename=None):
 
     if filename is None:
         filename = 'actions.jpg'
-    if output_dir is not None:
-        filepath = os.path.join(output_dir, filename)
-        plt.savefig(filepath)
-    plt.show()          # after saving!
+    filepath = os.path.join(output_dir, filename)
+    plt.savefig(filepath)
 
 
-def plot_2d_density(logs, metric_x, metric_y, output_dir=None, filename=None):
-    plot = sns.jointplot(
-        data=logs,
-        x=metric_x,
-        y=metric_y,
-        kind='kde'      # 'scatter', 'reg', 'resid', 'kde', or 'hex'
-    )
-    plot.set_axis_labels(xlabel=metric_x.replace('_', ' '), ylabel=metric_y.replace('_', ' '))
+def plot_2d_density(logs, metric_x, metric_y, output_dir, filename=None):
+    try:
+        plot = sns.jointplot(
+            data=logs,
+            x=metric_x,
+            y=metric_y,
+            kind='kde'      # 'scatter', 'reg', 'resid', 'kde', or 'hex'
+        )
+        plot.set_axis_labels(xlabel=metric_x.replace('_', ' '), ylabel=metric_y.replace('_', ' '))
 
-    if filename is None:
-        filename = '%s_%s.jpg' % (metric_x, metric_y)
-    if output_dir is not None:
+        if filename is None:
+            filename = '%s_%s.jpg' % (metric_x, metric_y)
         filepath = os.path.join(output_dir, filename)
         plot.savefig(filepath)
-    plt.show()          # after saving!
+    except np.linalg.LinAlgError:
+        pass
 
 
 def get_command_line_arguments():
-    parser = argparse.ArgumentParser(description='Evaluate task offloading agent.')
-    parser.add_argument('logs', type=str, help='path to the directory containing logs')
-    parser.add_argument('--output', type=str, help='path where to store results')
+    parser = argparse.ArgumentParser(description='Evaluate logs of task offloading agents.')
+    parser.add_argument('logs', type=str, help='path to the directory containing logs (recursively analyzed)')
     return parser.parse_args()
 
 
 def main():
     args = get_command_line_arguments()
-    if args.output is not None and os.path.isfile(args.output):
-        raise ValueError('Invalid output path, it is a file')
-    if args.output is not None:
-        if os.path.exists(args.output):
-            shutil.rmtree(args.output)
-        os.makedirs(args.output)
 
-    logs_offloading = np.load(os.path.join(args.logs, 'logs_offloading.npz'), allow_pickle=True)['logs']
-    logs_safety = np.load(os.path.join(args.logs, 'logs_safety.npz'), allow_pickle=True)['logs']
-    assert(len(logs_offloading) == len(logs_safety))
-    n_episodes = len(logs_offloading)
+    for dir_path, dir_names, filenames in os.walk(args.logs):
+        if 'logs' not in dir_names:
+            continue
 
-    for episode in range(n_episodes):
-        episode_logs_offloading = preprocess_offloading(logs_offloading[episode])
-        episode_logs_safety = preprocess_safety(logs_safety[episode])
+        print('Evaluating %s... ' % dir_path, end='')
 
-        print_output('===========', output_dir=args.output)
-        print_output('episode: %d' % (episode+1), output_dir=args.output)
-        print_output('===========', output_dir=args.output)
+        logs_path = os.path.join(dir_path, 'logs')
+        logs_offloading = np.load(os.path.join(logs_path, 'logs_offloading.npz'), allow_pickle=True)['logs']
+        logs_safety = np.load(os.path.join(logs_path, 'logs_safety.npz'), allow_pickle=True)['logs']
+        n_episodes = len(logs_offloading)
+        assert n_episodes == len(logs_safety)
 
-        for metric in ['reward', 'latency', 'energy']:
-            metric_mean, metric_std, metric_min, metric_max = get_metric_per_step(episode_logs_offloading, metric)
-            output = '%s per step: %.2f +- %.2f (min=%.2f, max=%.2f)' % \
-                     (metric, metric_mean, metric_std, metric_min, metric_max)
-            print_output(output, output_dir=args.output)
+        for episode in range(n_episodes):
+            episode_dir = os.path.join(dir_path, 'episode_%d' % (episode+1))
+            if os.path.exists(episode_dir):
+                shutil.rmtree(episode_dir)
+            os.mkdir(episode_dir)
 
-        for metric in ['published', 'edge_model']:
-            metric_perc = get_percentage_metric(episode_logs_offloading, metric)
-            output = '%s: %.2f%%' % (metric, metric_perc)
-            print_output(output, output_dir=args.output)
+            episode_logs_offloading = preprocess_offloading(logs_offloading[episode])
+            episode_logs_safety = preprocess_safety(logs_safety[episode])
 
-        for metric in ['risk_value', 'risk_value_x_speed']:
-            metric_mean, metric_std, metric_min, metric_max = get_metric_per_step(episode_logs_safety, metric)
-            output = '%s per step: %.2f +- %.2f (min=%.2f, max=%.2f)' % \
-                     (metric, metric_mean, metric_std, metric_min, metric_max)
-            print_output(output, output_dir=args.output)
+            for metric in ['reward', 'latency', 'energy']:
+                metric_mean, metric_std, metric_min, metric_max = get_metric_per_step(episode_logs_offloading, metric)
+                output = '%s per step: %.2f +- %.2f (min=%.2f, max=%.2f)' % \
+                         (metric, metric_mean, metric_std, metric_min, metric_max)
+                print_metrics(output, episode_dir)
 
-        for metric in ['in_critical_zone', 'in_warning_zone', 'in_safe_zone', 'collisions', 'mean_distance',
-                       'mean_min_distance', 'min_distance']:
-            output = '%s: %f' % (metric, episode_logs_safety[metric])
-            print_output(output, output_dir=args.output)
+            for metric in ['published', 'edge_model']:
+                metric_perc = get_percentage_metric(episode_logs_offloading, metric)
+                output = '%s: %.2f%%' % (metric, metric_perc)
+                print_metrics(output, episode_dir)
 
-        if args.output is not None:
-            plot_dir = os.path.join(args.output, 'episode_%d' % (episode+1))
-            os.mkdir(plot_dir)
-        else:
-            plot_dir = None
+            for metric in ['risk_value', 'risk_value_x_speed']:
+                metric_mean, metric_std, metric_min, metric_max = get_metric_per_step(episode_logs_safety, metric)
+                output = '%s per step: %.2f +- %.2f (min=%.2f, max=%.2f)' % \
+                         (metric, metric_mean, metric_std, metric_min, metric_max)
+                print_metrics(output, episode_dir)
 
-        plot_action_pie(episode_logs_offloading, output_dir=plot_dir)
-        plot_2d_density(episode_logs_offloading, 'risk_value', 'latency', output_dir=plot_dir)
-        plot_2d_density(episode_logs_offloading, 'risk_value', 'edge_model', output_dir=plot_dir)
+            for metric in ['in_critical_zone', 'in_warning_zone', 'in_safe_zone', 'collisions', 'mean_distance',
+                           'mean_min_distance', 'min_distance']:
+                output = '%s: %f' % (metric, episode_logs_safety[metric])
+                print_metrics(output, episode_dir)
 
-        filtered_logs = filter_logs_by_action(episode_logs_offloading, [2])
-        if filtered_logs is not None:
-            filename = 'risk_value_temporal_coherence_use_last.jpg'
-            plot_2d_density(filtered_logs, 'risk_value', 'temporal_coherence', output_dir=plot_dir, filename=filename)
+            plot_action_pie(episode_logs_offloading, episode_dir)
+            plot_2d_density(episode_logs_offloading, 'risk_value', 'latency', episode_dir)
+            plot_2d_density(episode_logs_offloading, 'risk_value', 'edge_model', episode_dir)
 
-        filtered_logs = filter_logs_by_action(episode_logs_offloading, [0, 1])
-        if filtered_logs is not None:
-            filename = 'risk_value_temporal_coherence_compute.jpg'
-            plot_2d_density(filtered_logs, 'risk_value', 'temporal_coherence', output_dir=plot_dir, filename=filename)
+            filtered_logs = filter_logs_by_action(episode_logs_offloading, [2])
+            if filtered_logs is not None:
+                filename = 'risk_value_temporal_coherence_use_last.jpg'
+                plot_2d_density(filtered_logs, 'risk_value', 'temporal_coherence', episode_dir, filename=filename)
 
-        if episode < len(logs_offloading)-1:
-            print_output('', output_dir=args.output)
+            filtered_logs = filter_logs_by_action(episode_logs_offloading, [0, 1])
+            if filtered_logs is not None:
+                filename = 'risk_value_temporal_coherence_compute.jpg'
+                plot_2d_density(filtered_logs, 'risk_value', 'temporal_coherence', episode_dir, filename=filename)
+
+        print('done')
 
 
 if __name__ == '__main__':

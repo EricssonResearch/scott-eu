@@ -48,7 +48,7 @@ class PickAndPlaceNavigator:
                 self._move_base_client.send_goal(goal, feedback_cb=self._check_goal)
 
     def seed(self, seed=None):
-        self._rng, seed_ = np_random(seed)
+        self._rng, _ = np_random(seed)
 
     def _send_goal(self):
         with self._lock:
