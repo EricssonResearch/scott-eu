@@ -32,21 +32,22 @@ The scene understanding is performed using the [turtlebot2i_scene_graph package]
 
 To run the network simulation, you need to set up [ns-3](../../ns-3).
 
-First, compile it with an optimized configuration:
+First, add the following environment variables:
 ```
-cd ../../ns-3
-./waf configure -d optimized
-./waf
-```
-
-Next, add the following environment variables:
-```
-echo "export NS3_ROOT=~/Projects/hrc/simulation-ros/src/ns-3" >> ~/.bashrc
+# replace <path_to_repository> with your local path to this repository
+echo "export NS3_ROOT=<path_to_repository>/simulation-ros/src/ns-3" >> ~/.bashrc
 echo "export LD_LIBRARY_PATH=$NS3_ROOT/build/lib:$LD_LIBRARY_PATH" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-Finally, re-compile the catkin workspace:
+Next, compile ns-3 with an optimized configuration:
+```
+cd $NS3_ROOT
+./waf configure -d optimized
+./waf
+```
+
+Finally, recompile the catkin workspace:
 ```
 catkin clean -y
 catkin build
