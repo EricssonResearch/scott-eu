@@ -96,19 +96,19 @@ Notice that the navigation stack outputs several warnings and errors while the V
 
 To test the RL agent or one of the baselines, run one of the following commands:
 ```
-roslaunch turtlebot2i_edge task_offloading.launch agent:=dqn        # DQN agent
-roslaunch turtlebot2i_edge task_offloading.launch agent:=all_edge   # all_edge baseline
-roslaunch turtlebot2i_edge task_offloading.launch agent:=all_robot  # all_robot baseline
-roslaunch turtlebot2i_edge task_offloading.launch agent:=random     # random baseline
+roslaunch turtlebot2i_edge task_offloading.launch agent:=dqn            # DQN agent
+roslaunch turtlebot2i_edge task_offloading.launch agent:=all_edge       # all_edge baseline
+roslaunch turtlebot2i_edge task_offloading.launch agent:=all_robot      # all_robot baseline
+roslaunch turtlebot2i_edge task_offloading.launch agent:=random         # random baseline
 ```
 The test logs are saved in the *models* folder.
 
 To get the results, you need to analyze the test logs:
 ```
 roscd turtlebot2i_edge
-python scripts/evaluate.py models/dqn --output results/dqn          # DQN agent
-python scripts/evaluate.py models/dqn --output results/all_edge     # all_edge baseline
-python scripts/evaluate.py models/dqn --output results/all_robot    # all_robot baseline
-python scripts/evaluate.py models/dqn --output results/random       # random baseline
+python scripts/evaluate.py models/dqn --output results/dqn              # DQN agent
+python scripts/evaluate.py models/all_edge --output results/all_edge    # all_edge baseline
+python scripts/evaluate.py models/all_robot --output results/all_robot  # all_robot baseline
+python scripts/evaluate.py models/random --output results/random        # random baseline
 ```
 The results are saved in the *results* folder (or, if you changed the commands, in the path specified by the *output* argument).
