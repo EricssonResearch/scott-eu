@@ -1,6 +1,5 @@
 numpy~=1.16.6
 Shapely~=1.7.1
-rospy~=1.14.10
 graphviz~=0.14.1
 argparse~=1.2.1
 PyYAML~=5.3.1
