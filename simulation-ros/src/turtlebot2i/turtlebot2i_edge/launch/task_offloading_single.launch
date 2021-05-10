@@ -3,7 +3,6 @@
     <arg name="agent" default="dqn"/>
     <arg name="mode" default="test"/>      <!-- train or test -->
     <arg name="seed" default="1"/>
-    <arg name="network_type" default="wifi"/>
 
     <!-- just for task_offloading_multiple.launch -->
     <arg name="vrep_host" default="localhost"/>
@@ -16,7 +15,6 @@
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/pick_and_place.yaml" ns="/"/>
 
     <include file="$(find turtlebot2i_edge)/launch/network_simulation.launch" if="$(arg network)">
-        <arg name="network_type" value="$(arg network_type)"/>
         <arg name="robot_name_0" value="$(arg robot_name)"/>
         <arg name="output" value="log"/>
     </include>

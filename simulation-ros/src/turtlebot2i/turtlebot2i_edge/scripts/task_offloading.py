@@ -73,10 +73,9 @@ def main():
         raise ValueError('Invalid mode')
     training = mode == 'train'
 
-    model_path = os.path.join(models_path, agent)
-    if training and not os.path.exists(model_path):
-        os.makedirs(model_path)
-    model_path = os.path.join(model_path, 'weights')
+    if not os.path.exists(models_path):
+        os.mkdir(models_path)
+    model_path = os.path.join(models_path, '%s.h5' % agent)
     logs_path = os.path.join(logs_path, agent, 'seed_%d' % seed, 'logs')
     if not os.path.exists(logs_path):
         os.makedirs(logs_path)

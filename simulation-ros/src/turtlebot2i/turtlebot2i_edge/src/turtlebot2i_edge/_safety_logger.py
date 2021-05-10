@@ -12,7 +12,7 @@ from turtlebot2i_safety.msg import SafetyZone
 
 
 class SafetyLogger(Callback):
-    sensors = 675
+    _sensors = 675
 
     def __init__(self, filepath, interval=100):
         super(SafetyLogger, self).__init__()
@@ -46,7 +46,6 @@ class SafetyLogger(Callback):
         self._in_critical_zone_duration = rospy.Duration.from_sec(0)
         self._mean_distance_sum = 0
         self._mean_distance_count = 0
-        self._mean_min_distance = np.zeros(self.sensors)
         rospy.Subscriber('lidar/scan_transformed', LaserScan, self._lidar_callback)
 
         self._step_start = None
@@ -77,7 +76,6 @@ class SafetyLogger(Callback):
             self._in_critical_zone_duration = rospy.Duration.from_sec(0)
             self._mean_distance_sum = 0
             self._mean_distance_count = 0
-            self._mean_min_distance = np.zeros(self.sensors)
 
         if self.logs is None:
             self.logs = []      # init here and not in the constructor to avoid warning in on_step_end()
@@ -97,22 +95,21 @@ class SafetyLogger(Callback):
         self._save()
 
     def _save(self):
-        in_critical_zone = self._in_critical_zone_duration.to_sec()
-        in_warning_zone = self._in_warning_zone_duration.to_sec()
-        in_safe_zone = self._duration.to_sec() - in_critical_zone - in_warning_zone
+        duration = self._duration.to_sec()
+        in_critical_zone = self._in_critical_zone_duration.to_sec() / duration
+        in_warning_zone = self._in_warning_zone_duration.to_sec() / duration
+        in_safe_zone = 100 - in_critical_zone - in_warning_zone
 
         self.logs[-1]['in_critical_zone'] = in_critical_zone
         self.logs[-1]['in_warning_zone'] = in_warning_zone
         self.logs[-1]['in_safe_zone'] = in_safe_zone
         self.logs[-1]['collisions'] = self._collisions
         self.logs[-1]['mean_distance'] = self._mean_distance_sum / self._mean_distance_count
-        self.logs[-1]['mean_min_distance'] = sum(self._mean_min_distance) / self.sensors
-        self.logs[-1]['min_distance'] = min(self._mean_min_distance)
 
         np.savez(self.filepath, logs=self.logs)
 
     def _lidar_callback(self, data):
-        distances = data.ranges[4:self.sensors+4]
+        distances = data.ranges[4:self._sensors + 4]
         distance_min = min(distances)
 
         in_warning_zone_previous = self._in_warning_zone
@@ -145,11 +142,8 @@ class SafetyLogger(Callback):
         elif not self._in_critical_zone and in_critical_zone_previous:
             self._in_critical_zone_duration += now - self._in_critical_zone_start
 
-        self._mean_distance_sum += sum(distances) / self.sensors
+        self._mean_distance_sum += sum(distances) / self._sensors
         self._mean_distance_count += 1
-
-        for i in range(self.sensors):
-            self._mean_min_distance[i] = min(self._mean_min_distance[i], distances[i])
 
     def _update_collisions(self, event):
         if event.state == BumperEvent.PRESSED:

@@ -106,7 +106,7 @@ To train the DQN agent, run the following command:
 ```
 roslaunch turtlebot2i_edge task_offloading_single.launch agent:=dqn mode:=train
 ```
-The trained weights and the training logs are saved in the *models* and *results* directories, respectively.
+The trained weights are saved in *models/dqn.h5*. To test the DQN agent (next section), you need this file in this exact position. 
 
 Notice that the navigation stack outputs several warnings and errors while the V-REP scene is stopped and restarted (environment reset). This is expected and you should not worry.
 

@@ -33,25 +33,20 @@ def publish_scene_graph(generator, publisher):
 def main():
     rospy.init_node('scene_graph_generator')
 
-    rospy.loginfo('Parsing command line arguments...')
-    argv = rospy.myargv(sys.argv)
-    parser = argparse.ArgumentParser()
-    parser.add_argument('mode', type=str, choices=['service', 'topic'])
-    args = parser.parse_args(argv[1:])
-    rospy.loginfo('Mode: %s' % args.mode)
-
     rospy.loginfo('Getting V-REP parameters...')
+    robot = rospy.get_param('~robot/name')
+    mode = rospy.get_param('~mode')
     host = rospy.get_param('~vrep/host')
     port = rospy.get_param('~vrep/port')
     walls = rospy.get_param('/vrep/walls')
     robots = rospy.get_param('/vrep/robots')
     static_objects = rospy.get_param('/vrep/static_objects')
     dynamic_objects = rospy.get_param('/vrep/dynamic_objects')
-    robot = rospy.get_param('~robot/name')
     if '_' in robot:
         robot = robot.split('_')[0] + '#' + robot.split('_')[1]
-    rospy.loginfo('V-REP remote API server: %s:%d' % (host, port))
     rospy.loginfo('Robot: %s' % robot)
+    rospy.loginfo('Mode: %s' % mode)
+    rospy.loginfo('V-REP remote API server: %s:%d' % (host, port))
 
     rospy.loginfo('Connecting to V-REP, can take a while...')
     extractor = VrepObjectExtractor()
@@ -61,7 +56,7 @@ def main():
 
     generator = SceneGraphGenerator(robot, extractor)
 
-    if args.mode == 'service':
+    if mode == 'service':
         rospy.Service(
             name='generate_scene_graph',
             service_class=GenerateSceneGraph,
@@ -71,7 +66,7 @@ def main():
         rospy.loginfo('ROS service to generate scene graph ready')
         rospy.spin()
 
-    elif args.mode == 'topic':
+    elif mode == 'topic':
         rospy.loginfo('Publishing scene graph...')
         publisher = rospy.Publisher('scene_graph', SceneGraph, queue_size=1)
         rate = rospy.Rate(30)   # 30 FPS

@@ -1,4 +1,5 @@
 network:
+  type: wifi
   mec_server:
     host: mec_server        # hostname, only for real network (not used in simulation)
   base_station:

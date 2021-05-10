@@ -5,10 +5,8 @@
     <arg name="agent_1" default="dqn"/>
     <arg name="seed_0" default="1"/>
     <arg name="seed_1" default="2"/>
-    <arg name="network_type" default="wifi"/>
 
     <include file="$(find turtlebot2i_edge)/launch/network_simulation.launch">
-        <arg name="network_type" default="$(arg network_type)"/>
         <arg name="robot_name_0" default="$(arg robot_name_0)"/>
         <arg name="robot_name_1" default="$(arg robot_name_1)"/>
         <arg name="output" default="log"/>

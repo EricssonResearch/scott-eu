@@ -1,11 +1,9 @@
 <launch>
-    <arg name="network_type" default="wifi"/>
     <arg name="robot_name_0" default="turtlebot2i"/>
     <arg name="robot_name_1" default="turtlebot2i_0"/>
     <arg name="output" default="screen"/>
 
     <rosparam command="load" file="$(find turtlebot2i_edge)/config/network.yaml" ns="/"/>
-    <param name="/network/type" value="$(arg network_type)"/>
 
     <node name="network_simulation" pkg="turtlebot2i_edge" type="network_simulation" respawn="true"
           output="$(arg output)">

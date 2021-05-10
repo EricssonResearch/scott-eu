@@ -143,8 +143,7 @@ def main():
                          (metric, metric_mean, metric_std, metric_min, metric_max)
                 print_metrics(output, episode_dir)
 
-            for metric in ['in_critical_zone', 'in_warning_zone', 'in_safe_zone', 'collisions', 'mean_distance',
-                           'mean_min_distance', 'min_distance']:
+            for metric in ['in_critical_zone', 'in_warning_zone', 'in_safe_zone', 'collisions', 'mean_distance']:
                 output = '%s: %f' % (metric, episode_logs_safety[metric])
                 print_metrics(output, episode_dir)
 
