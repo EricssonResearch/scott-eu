@@ -47,12 +47,6 @@ find_library(
   REQUIRED
 )
 find_library(
-  NS3_NR_LIBRARY
-  NAMES ns3-dev-nr-optimized ns3-dev-nr-debug
-  HINTS $ENV{NS3_ROOT}/build/lib
-  REQUIRED
-)
-find_library(
   NS3_POINT_TO_POINT_LIBRARY
   NAMES ns3-dev-point-to-point-optimized ns3-dev-point-to-point-debug
   HINTS $ENV{NS3_ROOT}/build/lib
@@ -101,7 +95,6 @@ list(
   ${NS3_NETWORK_LIBRARY}
   ${NS3_WIFI_LIBRARY}
   ${NS3_LTE_LIBRARY}
-  ${NS3_NR_LIBRARY}
   ${NS3_POINT_TO_POINT_LIBRARY}
   ${NS3_INTERNET_LIBRARY}
   ${NS3_TAP_BRIDGE_LIBRARY}
