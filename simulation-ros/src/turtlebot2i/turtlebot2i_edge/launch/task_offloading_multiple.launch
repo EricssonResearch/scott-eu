@@ -15,6 +15,7 @@
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple.launch">
         <arg name="robot_name_0" value="$(arg robot_name_0)"/>
         <arg name="robot_name_1" value="$(arg robot_name_1)"/>
+        <arg name="map" value="map_edge"/>
     </include>
 
     <include file="$(find turtlebot2i_edge)/launch/task_offloading_single.launch">

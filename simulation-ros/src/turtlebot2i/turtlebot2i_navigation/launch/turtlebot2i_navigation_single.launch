@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="robot_name" default="turtlebot2i"/>
-  <arg name="cmd_vel_mux" default="false"/>
+    <arg name="robot_name" default="turtlebot2i"/>
+    <arg name="map" default="map"/>
 
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/map.yaml">
-    <param name="frame_id" value="map"/>
-  </node>
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot2i_mapping)/maps/$(arg map).yaml">
+        <param name="frame_id" value="map"/>
+    </node>
 
-  <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
-    <arg name="robot_name" value="$(arg robot_name)"/>
-    <arg name="moveit" value="false"/>
-    <arg name="cmd_vel_mux" value="$(arg cmd_vel_mux)"/>
-  </include>
+    <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+        <arg name="moveit" value="false"/>
+    </include>
 
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_single_robot.rviz" />
-
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_single_robot.rviz"/>
 </launch>

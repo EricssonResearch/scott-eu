@@ -26,6 +26,7 @@
 
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_single.launch" if="$(arg navigation)">
         <arg name="robot_name" value="$(arg robot_name)"/>
+        <arg name="map" value="map_edge"/>
     </include>
 
     <include file="$(find turtlebot2i_scene_graph)/launch/scene_graph_generator.launch">
