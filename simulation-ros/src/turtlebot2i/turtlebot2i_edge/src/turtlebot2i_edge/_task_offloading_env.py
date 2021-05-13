@@ -13,7 +13,6 @@ from turtlebot2i_edge import PickAndPlaceNavigator, VrepSceneController
 from cv_bridge import CvBridge
 from std_msgs.msg import Header, Float64
 from sensor_msgs.msg import Image
-from kobuki_msgs.msg import BumperEvent
 from turtlebot2i_scene_graph.msg import SceneGraph
 from turtlebot2i_edge.srv import GenerateSceneGraphProxy, GenerateSceneGraphProxyRequest
 from turtlebot2i_edge.srv import GenerateSceneGraphProxyResponse, MeasureNetwork
@@ -31,7 +30,7 @@ class TaskOffloadingEnv(Env):
         last_output_from_edge=Discrete(n=2)
     )
 
-    def __init__(self, steps_per_epsiode, max_rtt, max_duration_throughput, max_risk_value,
+    def __init__(self, pick_and_place_per_epsiode, max_rtt, max_duration_throughput, max_risk_value,
                  good_latency, max_latency, network_speed, network_image_size, depth_image_size,
                  robot_compute_power, robot_transmit_power, pick_goals, place_goals,
                  vrep_simulation=False, vrep_host='localhost', vrep_port=19997, vrep_scene_graph_extraction=False):
@@ -40,6 +39,7 @@ class TaskOffloadingEnv(Env):
         if not vrep_simulation and vrep_scene_graph_extraction:
             raise ValueError('Cannot extract scene graph from V-REP if it is not a simulation')
 
+        self.pick_and_place_per_episode = pick_and_place_per_epsiode
         self.max_rtt = max_rtt / 1e3
         self.max_duration_throughput = max_duration_throughput
         self.max_risk_value = max_risk_value
@@ -50,11 +50,10 @@ class TaskOffloadingEnv(Env):
         self.depth_image_size = depth_image_size
         self.robot_compute_power = robot_compute_power
         self.robot_transmit_power = robot_transmit_power
-        self.steps_per_episode = steps_per_epsiode
         self.vrep_simulation = vrep_simulation
         self.vrep_scene_graph_extraction = vrep_scene_graph_extraction
 
-        self._pick_and_place_navigator = PickAndPlaceNavigator(pick_goals, place_goals)
+        self.pick_and_place_navigator = PickAndPlaceNavigator(pick_goals, place_goals)
         self._cv_bridge = CvBridge()                        # for conversions ROS message <-> image
         self._vrep_scene_controller = VrepSceneController()
         if vrep_simulation:
@@ -72,10 +71,6 @@ class TaskOffloadingEnv(Env):
         rospy.loginfo('Waiting for ROS service to measure the network...')
         self._measure_network = rospy.ServiceProxy('measure_network', MeasureNetwork)
         self._measure_network.wait_for_service()
-
-        self._collision = False
-        self._collision_lock = threading.Lock()
-        rospy.Subscriber('events/bumper', BumperEvent, self._save_collision, queue_size=1)
 
         self._scene_graph_last = None
         self._scene_graph_from_edge = False
@@ -148,10 +143,11 @@ class TaskOffloadingEnv(Env):
         return self.observation, self._reward, done, {}
 
     def reset(self):
-        self._pick_and_place_navigator.stop()
+        self.pick_and_place_navigator.stop()
+        self.pick_and_place_navigator.completed_pick_and_place = 0
         if self.vrep_simulation:
             self._vrep_scene_controller.reset()
-        self._pick_and_place_navigator.start()
+        self.pick_and_place_navigator.start()
 
         self.image_rgb_observation = None
         self.image_rgb_last = None
@@ -162,8 +158,6 @@ class TaskOffloadingEnv(Env):
             self._image_depth_current = None
         with self._risk_lock:
             self._risk_value = None
-        with self._collision_lock:
-            self._collision = False
 
         # compute once on robot so that action=2 is valid
         self.observation = self._observe()
@@ -203,13 +197,13 @@ class TaskOffloadingEnv(Env):
             super(TaskOffloadingEnv, self).render(mode=mode)
 
     def close(self):
-        self._pick_and_place_navigator.stop()
+        self.pick_and_place_navigator.stop()
         if self.vrep_simulation:
             self._vrep_scene_controller.close_connection()
 
     def seed(self, seed=None):
         self._rng, seed_ = np_random(seed)
-        self._pick_and_place_navigator.seed(seed)
+        self.pick_and_place_navigator.seed(seed)
         if seed is not None:
             rospy.loginfo('Seed set to %d' % seed)
         return [seed_]
@@ -304,17 +298,16 @@ class TaskOffloadingEnv(Env):
         return reward
 
     def _done(self):
-        with self._collision_lock:
-            collision = self._collision     # reset after releasing the lock, because resetting takes time
-        if collision:
+        if not self.pick_and_place_navigator.active:
+            rospy.logwarn('Navigation failed, resetting V-REP...')
             self._vrep_scene_controller.reset()
-            with self._collision_lock:
-                self._collision = False
-        else:                               # other robots might be resetting
+            self.pick_and_place_navigator.start()
+        elif not self._vrep_scene_controller.is_running():       # another robot is resetting
+            rospy.logwarn('V-REP is resetting, waiting...')
             self._vrep_scene_controller.wait_running_simulation()
-        self._pick_and_place_navigator.refresh()
+            self.pick_and_place_navigator.start()
         self._step += 1
-        return self._step >= self.steps_per_episode - 1
+        return self.pick_and_place_navigator.completed_pick_and_place >= self.pick_and_place_per_episode
 
     def _compute_on_robot(self):
         response = self._generate_scene_graph_on_robot(
@@ -374,10 +367,3 @@ class TaskOffloadingEnv(Env):
     def _save_risk_value(self, risk_value):
         with self._risk_lock:
             self._risk_value = risk_value.data
-
-    def _save_collision(self, event):
-        if event.state == BumperEvent.PRESSED:
-            with self._collision_lock:
-                if not self._collision:
-                    self._collision = True
-                    rospy.logwarn('Collision')

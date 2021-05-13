@@ -84,7 +84,7 @@ def main():
 
     rospy.loginfo('Initializing environment...')
     env = TaskOffloadingEnv(
-        steps_per_epsiode=5000,
+        pick_and_place_per_epsiode=5,
         max_rtt=max_rtt,
         max_duration_throughput=max_duration_throughput,
         max_risk_value=max_risk_value,

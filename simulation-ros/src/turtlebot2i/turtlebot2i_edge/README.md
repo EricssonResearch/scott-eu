@@ -89,9 +89,10 @@ chmod +x -R src/turtlebot2i_edge
 
 It is possible to tune several parameters in the [configurations](config). For example, the congestion of the network can be modified in the [network configurations](config/network.yaml).
 
-The warehouse can be modified by editing the [scene builder script](../turtlebot2i_description/v-rep_model/warehouse_scene/vrep_scripts/scene_builder_edge.lua). For example, for efficiency reasons, you can comment line 101 to disable the second robot while train the agent (only one robot needed). If you modify the size of the warehouse and/or the rooms, do not forget to update the [network configurations](config/network.yaml). 
+The warehouse can be modified by editing the [scene builder script](../turtlebot2i_description/v-rep_model/warehouse_scene/vrep_scripts/scene_builder_edge.lua). For example, for efficiency reasons, you can comment line 101 to disable the second robot while train the agent (only one robot needed). If you modify the size of the warehouse and/or the rooms, do not forget to update the [network configurations](config/network.yaml) and to generate again the map using the [turtlebot2i_mapping package](../turtlebot2i_mapping). 
 
-The [launch files](launch) accept several optional arguments (if not specified, default values are used). For example, you can set the seed for the [RL environment](src/turtlebot2i_edge/_task_offloading_env.py) by using the homonym argument of [task_offloading_single.launch](launch/task_offloading_single.launch). 
+The [launch files](launch) accept several optional arguments (if not specified, default values are used). For example, you can set the seed for the [RL environment](src/turtlebot2i_edge/_task_offloading_env.py) by using the homonym argument of [task_offloading_single.launch](launch/task_offloading_single.launch).
+
 # 3. Train and test agents
 
 ## 3.1 Start V-REP scene
@@ -100,6 +101,7 @@ Before launching any launch file, you need to open and start the V-REP scene:
 ```
 $VREP_ROOT/vrep.sh -s $(rospack find turtlebot2i_description)/v-rep_model/warehouse_scene/warehouse_scene_edge.ttt
 ```
+
 ## 3.2 Train DQN agent
 
 To train the DQN agent, run the following command:

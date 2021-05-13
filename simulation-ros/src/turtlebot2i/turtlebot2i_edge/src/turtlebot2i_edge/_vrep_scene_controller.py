@@ -9,7 +9,7 @@ class VrepSceneController(VrepClient):
         super(VrepSceneController, self).__init__()
 
     def reset(self):
-        if self._is_running():
+        if self.is_running():
             vrep.simxStopSimulation(self.clientID, vrep.simx_opmode_blocking)
             self._wait_stopped_simulation()
             vrep.simxStartSimulation(self.clientID, vrep.simx_opmode_blocking)
@@ -19,13 +19,13 @@ class VrepSceneController(VrepClient):
             self.wait_running_simulation()
 
     def _wait_stopped_simulation(self):
-        while self._is_running():
+        while self.is_running():
             time.sleep(1)
 
     def wait_running_simulation(self):
-        while not self._is_running():
+        while not self.is_running():
             time.sleep(1)
 
-    def _is_running(self):
+    def is_running(self):
         _, handles = vrep.simxGetObjects(self.clientID, vrep.sim_object_visionsensor_type, vrep.simx_opmode_blocking)
         return len(handles) > 0

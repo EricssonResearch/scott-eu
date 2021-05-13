@@ -46,17 +46,12 @@ class SafetyLogger(Callback):
         self._in_critical_zone_duration = rospy.Duration.from_sec(0)
         self._mean_distance_sum = 0
         self._mean_distance_count = 0
+        self._episode_start = None
         rospy.Subscriber('lidar/scan_transformed', LaserScan, self._lidar_callback)
 
-        self._step_start = None
-        self._duration = rospy.Duration.from_sec(0)
-
-    def on_step_begin(self, step, logs=None):
-        with self._collision_lock:
-            self._collision = False
-        self._step_start = rospy.Time.now()
-
     def on_episode_begin(self, episode, logs=None):
+        self._episode_start = rospy.Time.now()
+
         with self._collision_lock:
             self._collisions = 0
             self._collision = False
@@ -85,9 +80,6 @@ class SafetyLogger(Callback):
         })
 
     def on_step_end(self, step, logs=None):
-        with self._collision_lock:
-            if not self._collision:
-                self._duration += rospy.Time.now() - self._step_start
         if step % self.interval == 0:
             self._save()
 
@@ -95,16 +87,19 @@ class SafetyLogger(Callback):
         self._save()
 
     def _save(self):
-        duration = self._duration.to_sec()
+        duration = rospy.Time.now() - self._episode_start
+        duration = duration.to_sec()
         in_critical_zone = self._in_critical_zone_duration.to_sec() / duration
         in_warning_zone = self._in_warning_zone_duration.to_sec() / duration
         in_safe_zone = 100 - in_critical_zone - in_warning_zone
 
+        self.logs[-1]['duration'] = duration
         self.logs[-1]['in_critical_zone'] = in_critical_zone
         self.logs[-1]['in_warning_zone'] = in_warning_zone
         self.logs[-1]['in_safe_zone'] = in_safe_zone
         self.logs[-1]['collisions'] = self._collisions
         self.logs[-1]['mean_distance'] = self._mean_distance_sum / self._mean_distance_count
+        self.logs[-1]['completed_pick_and_place'] = self.env.pick_and_place_navigator.completed_pick_and_place
 
         np.savez(self.filepath, logs=self.logs)
 
@@ -115,10 +110,6 @@ class SafetyLogger(Callback):
         in_warning_zone_previous = self._in_warning_zone
         in_critical_zone_previous = self._in_critical_zone
         now = rospy.Time.now()
-
-        with self._collision_lock:
-            if self._collision:
-                return
 
         with self._safety_zone_lock:
             if self._safety_zone is None:
@@ -151,16 +142,10 @@ class SafetyLogger(Callback):
                 if not self._collision:     # the collision is considered only once
                     self._collisions += 1
                     self._collision = True
-
-                    now = rospy.Time.now()
-                    with self._safety_zone_lock:
-                        if self._in_critical_zone:
-                            self._in_critical_zone_duration += now - self._in_critical_zone_start
-                            self._in_critical_zone = False
-                        elif self._in_warning_zone:     # should not happen, collision happens in critical zone
-                            self._in_warning_zone_duration += now - self._in_warning_zone_start
-                            self._in_warning_zone = False
-                    self._duration += now - self._step_start
+                    rospy.loginfo('Collision')
+        else:
+            with self._collision_lock:
+                self._collision = False
 
     def _update_risk_values(self, risk_value):
         if self.logs is None:
