@@ -1,4 +1,13 @@
-publish_frequency: 1.0
-transform_tolerance: 10 # second
-robot_radius: 0.2
+# Adapted from https://github.com/turtlebot/turtlebot_apps/tree/indigo/turtlebot_navigation/param
 
+robot_radius: 0.20              # distance a circular robot should be clear of the obstacle (kobuki: 0.18)
+transform_tolerance: 1.0
+
+obstacle_layer:
+  track_unknown_space: true     # true needed for disabling global path planning through unknown space
+  observation_sources: scan
+  scan:
+    data_type: LaserScan
+    topic: scan
+    marking: true
+    clearing: true

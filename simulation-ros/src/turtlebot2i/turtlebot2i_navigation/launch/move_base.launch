@@ -1,24 +1,16 @@
-<?xml version="1.0"?>
-
 <launch>
-  
-  <include file="$(find turtlebot2i_mapping)/launch/map_server.launch" />
-  
-<!--  <group ns="/vrep_ros_interface/turtlebot2i">-->
+    <include file="$(find turtlebot2i_mapping)/launch/map_server.launch"/>
+    <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description_multiple.launch"/>
 
-
-    <include file="$(find turtlebot2i_description)/launch/turtlebot2i_description_multiple.launch" />
-    
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-      <remap from="cmd_vel" to="/turtlebot2i/commands/velocity"/>
-      <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find turtlebot2i_navigation)/config/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find turtlebot2i_navigation)/config/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find turtlebot2i_navigation)/config/base_local_planner_params.yaml" command="load" />
+        <remap from="cmd_vel" to="/turtlebot2i/commands/velocity"/>
+        <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find turtlebot2i_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap"/>
+        <rosparam file="$(find turtlebot2i_navigation)/config/global_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find turtlebot2i_navigation)/config/local_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find turtlebot2i_navigation)/config/base_local_planner_params.yaml" command="load"/>
+        <rosparam file="$(find turtlebot2i_navigation)/config/move_base_params.yaml" command="load"/>
     </node>
 
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation.rviz" />
-<!--  </group>-->
-  
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation.rviz"/>
 </launch>

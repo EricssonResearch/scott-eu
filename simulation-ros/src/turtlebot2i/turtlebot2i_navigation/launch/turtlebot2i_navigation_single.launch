@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <launch>
     <arg name="robot_name" default="turtlebot2i"/>
     <arg name="map" default="map"/>
@@ -9,7 +8,6 @@
 
     <include file="$(find turtlebot2i_navigation)/launch/turtlebot2i_navigation_multiple_base.launch">
         <arg name="robot_name" value="$(arg robot_name)"/>
-        <arg name="moveit" value="false"/>
     </include>
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot2i_navigation)/rviz/navigation_single_robot.rviz"/>

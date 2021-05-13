@@ -18,7 +18,14 @@ def main():
     pick_and_place_navigator.start()
 
     rospy.on_shutdown(lambda: pick_and_place_navigator.stop())
-    rospy.spin()
+    rate = rospy.Rate(2)
+    try:
+        while not rospy.is_shutdown():
+            if not pick_and_place_navigator.active:
+                rospy.signal_shutdown('Pick and place navigator stopped for failure')
+            rate.sleep()
+    except rospy.ROSException:
+        pass
 
 
 if __name__ == '__main__':

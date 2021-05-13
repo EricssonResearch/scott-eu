@@ -1,20 +1,18 @@
+# Adapted from https://github.com/turtlebot/turtlebot_apps/tree/indigo/turtlebot_navigation/param
+# See also https://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide
+
 global_costmap:
- plugins: 
-     - {name: static_map, type: "costmap_2d::StaticLayer"}
-     - {name: obstacles, type: "costmap_2d::ObstacleLayer"}
-     - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
- obstacles:
-     observation_sources: base_scan
-     base_scan: {data_type: LaserScan, sensor_frame: turtlebot2i/lidar/scan, clearing: true, marking: true, topic: /turtlebot2i/lidar/scan}
-     obstacle_range: 2.5
-     raytrace_range: 3.0
- inflation_layer:
-     inflation_radius: 0.3
-     cost_scaling_factor: 10
- global_frame: map
- robot_base_frame: turtlebot2i/base_footprint
- update_frequency: 5
- rolling_window: true
- width: 100.0
- height: 100.0
- resolution: 0.05
+  global_frame: map
+  robot_base_frame: base_footprint
+  update_frequency: 1.0
+  publish_frequency: 0.5    # for visualization in rviz
+  width: 50.0
+  height: 50.0
+
+  plugins:
+    - {name: static_layer, type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}     # not voxel, we just have a LiDAR
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+  inflation_layer:
+    inflation_radius: 0.4

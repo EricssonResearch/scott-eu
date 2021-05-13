@@ -8,50 +8,35 @@ function setCirlceSize_cb(msg)
     sim.scaleObject(zoneRed_handle,    critical_scale, critical_scale,0,0)  
     sim.scaleObject(zoneYellow_handle, warning_scale,  warning_scale, 0,0)
     sim.scaleObject(zoneGreen_handle,  clear_scale,    clear_scale,   0,0)
-    --sim.setObjectSizeValues(zoneRed_handle,   {msg.critical_zone_radius, msg.critical_zone_radius ,0})  
-    --sim.setObjectSizeValues(zoneYellow_handle,{msg.warning_zone_radius,  msg.warning_zone_radius  ,0})
-    --sim.setObjectSizeValues(zoneGreen_handle, {msg.clear_zone_radius,    msg.clear_zone_radius    ,0})
-    --sim.scaleObject(obj_handle,scale,scale,0,0) 
-    --printf("New circle size received (seq): %d | %2.2f",msg.header.seq, msg.clear_zone_radius)
     previous_clear_zone_radius = msg.clear_zone_radius
     previous_warning_zone_radius = msg.warning_zone_radius
     previous_critical_zone_radius = msg.critical_zone_radius
 end
 --- Adjust robot speed
 function setVels_scale_cb(msg)
-   --velScale = msg.data--.scale  --a number: 0-2
-   --print("setVels_scale:")
    rightVelScale = msg.right_vel_scale
    leftVelScale = msg.left_vel_scale
-   --print("This should not be triggered.")Voxel
-   --printf("setVels_scale:%d",msg.data)
 end
 
 function setVels_cb(msg)
    -- not sure if a scale factor must be applied
    local linVel = msg.linear.x-- in m/s
    local rotVel = msg.angular.z*interWheelDistance -- in rad/s
-   printf(linVel)      
 
    -- Check if motor is enabled
    if (motor_power == 1) then
-       -- If robot is already very slow, do not apply scale so that it can move
-       if (linVel <= 0.1 and rotVel <= 0.1) then
+       -- Do not apply scale when linear speed is very slow (e.g. it is 0 during clearing rotation)
+       if (linVel <= 0.1) then
           velocityRight = linVel+rotVel
           velocityLeft  = linVel-rotVel
-          if ((linVel<=0.0) and (rotVel==0.0)) then
-             velocityRight = 0.1
-             velocityLeft  = 0.1
-          end
-          printf("linVel=%2.2f,rotVel=%2.2f | no scale applied",linVel,rotVel)
+          printf("linVel=%2.2f,rotVel=%2.2f | leftWheelVel=%2.2f,rightWheelVel=%2.2f | no scale applied due to low speed",
+                 linVel,rotVel,velocityLeft,velocityRight)
+       -- Normal case, apply risk mitigation scale
        else
           velocityRight = (linVel+rotVel)*rightVelScale
           velocityLeft  = (linVel-rotVel)*leftVelScale
-          if ((linVel<=0.0) and (rotVel==0.0)) then
-             velocityRight = 0.1*rightVelScale
-             velocityLeft  = 0.1*leftVelScale
-          end
-          printf("linVel=%2.2f,rotVel=%2.2f | rightVelScale=%2.2f,leftVelScale=%2.2f",linVel,rotVel,rightVelScale,leftVelScale)
+          printf("linVel=%2.2f,rotVel=%2.2f | leftWheelVel=%2.2f,rightWheelVel=%2.2f | rightVelScale=%2.2f,leftVelScale=%2.2f",
+                 linVel,rotVel,velocityLeft,velocityRight,rightVelScale,leftVelScale)
        end
    else
        velocityRight = 0 
