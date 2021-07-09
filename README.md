@@ -1,6 +1,8 @@
 ﻿# SCOTT sandbox
 
-<a href="https://travis-ci.org/EricssonResearch/scott-eu"><img src="https://travis-ci.org/EricssonResearch/scott-eu.svg?branch=master"/></a>
+> **The project is archived. [Abandoned issues and PRs](https://github.com/EricssonResearch/scott-eu/pulls?q=is%3Aclosed+sort%3Aupdated-desc+label%3A%22Status%3A+Abandoned%22+) have been closed without resolution.**
+
+---
 
 This repository contains all projects that are part of the *SCOTT Warehouse Sandbox* as described in the [SCOTT WP10](https://projects.avl.com/16/0094/WP10/default.aspx). SCOTT (www.scottproject.eu)  has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 737422.
 
